@@ -33,6 +33,7 @@ import { VotesModule } from './features/votes/votes.module';
       entities: [],
       synchronize: true,
       autoLoadEntities: true,
+      logging: true,
     }),
     AuthModule,
     UsersModule,
