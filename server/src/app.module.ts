@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './features/auth/auth.module';
 import { UsersModule } from './features/users/users.module';
 import { CardsModule } from './features/cards/cards.module';
@@ -22,6 +23,17 @@ import { VotesModule } from './features/votes/votes.module';
 
 @Module({
   imports: [
+    TypeOrmModule.forRoot({
+      type: 'postgres',
+      host: 'localhost',
+      port: 5432,
+      username: 'postgres',
+      password: 'postgres',
+      database: 'shop',
+      entities: [],
+      synchronize: true,
+      autoLoadEntities: true,
+    }),
     AuthModule,
     UsersModule,
     CardsModule,
