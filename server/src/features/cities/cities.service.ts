@@ -10,6 +10,20 @@ export class CitiesService {
     private citiesRepository: Repository<City>,
   ) {}
 
+  getMainCities(): Promise<City[]> {
+    return this.getCitiesQueryBuilder().getMany();
+  }
+
+  getMyCities(myId: number): Promise<City[]> {
+    return this.getCitiesQueryBuilder()
+      .where('ownerUser.id = :myId', { myId })
+      .getMany();
+  }
+
+  getAllCities(): Promise<City[]> {
+    return this.getCitiesQueryBuilder().getMany();
+  }
+
   private getCitiesQueryBuilder(): SelectQueryBuilder<City> {
     return this.citiesRepository
       .createQueryBuilder('city')

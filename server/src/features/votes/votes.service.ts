@@ -10,6 +10,22 @@ export class VotesService {
     private votesRepository: Repository<Vote>,
   ) {}
 
+  getMyVotes(myId: number): Promise<Vote[]> {
+    return this.getVotesQueryBuilder()
+      .where('voterUser.id = :myId', { myId })
+      .getMany();
+  }
+
+  getPolledVotes(myId: number): Promise<Vote[]> {
+    return this.getVotesQueryBuilder()
+      .where('pollerUser.id = :myId', { myId })
+      .getMany();
+  }
+
+  getAllVotes(): Promise<Vote[]> {
+    return this.getVotesQueryBuilder().getMany();
+  }
+
   private getVotesQueryBuilder(): SelectQueryBuilder<Vote> {
     return this.votesRepository
       .createQueryBuilder('vote')

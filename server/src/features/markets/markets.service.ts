@@ -10,6 +10,20 @@ export class MarketsService {
     private marketsRepository: Repository<Market>,
   ) {}
 
+  getMainMarkets(): Promise<Market[]> {
+    return this.getMarketsQueryBuilder().getMany();
+  }
+
+  getMyMarkets(myId: number): Promise<Market[]> {
+    return this.getMarketsQueryBuilder()
+      .where('ownerUser.id = :myId', { myId })
+      .getMany();
+  }
+
+  getAllMarkets(): Promise<Market[]> {
+    return this.getMarketsQueryBuilder().getMany();
+  }
+
   private getMarketsQueryBuilder(): SelectQueryBuilder<Market> {
     return this.marketsRepository
       .createQueryBuilder('market')

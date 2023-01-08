@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, SelectQueryBuilder } from 'typeorm';
 import { Ware } from './ware.entity';
+import { getDateWeekAgo } from '../../common/utils';
 
 @Injectable()
 export class WaresService {
@@ -9,6 +10,31 @@ export class WaresService {
     @InjectRepository(Ware)
     private waresRepository: Repository<Ware>,
   ) {}
+
+  getMainWares(): Promise<Ware[]> {
+    return this.getWaresQueryBuilder()
+      .where('ware.amountNow > 0 AND rent.createdAt > :createdAt', {
+        createdAt: getDateWeekAgo(),
+      })
+      .getMany();
+  }
+
+  getMyWares(myId: number): Promise<Ware[]> {
+    return this.getWaresQueryBuilder()
+      .where('sellerUser.id = :myId', { myId })
+      .getMany();
+  }
+
+  getPlacedWares(myId: number): Promise<Ware[]> {
+    return this.getWaresQueryBuilder()
+      .innerJoin('market.card', 'ownerCard')
+      .where('ownerCard.userId = :myId', { myId })
+      .getMany();
+  }
+
+  getAllWares(): Promise<Ware[]> {
+    return this.getWaresQueryBuilder().getMany();
+  }
 
   private getWaresQueryBuilder(): SelectQueryBuilder<Ware> {
     return this.waresRepository

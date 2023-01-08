@@ -10,6 +10,20 @@ export class StoresService {
     private storesRepository: Repository<Store>,
   ) {}
 
+  getMainStores(): Promise<Store[]> {
+    return this.getStoresQueryBuilder().getMany();
+  }
+
+  getMyStores(myId: number): Promise<Store[]> {
+    return this.getStoresQueryBuilder()
+      .where('ownerUser.id = :myId', { myId })
+      .getMany();
+  }
+
+  getAllStores(): Promise<Store[]> {
+    return this.getStoresQueryBuilder().getMany();
+  }
+
   private getStoresQueryBuilder(): SelectQueryBuilder<Store> {
     return this.storesRepository
       .createQueryBuilder('store')

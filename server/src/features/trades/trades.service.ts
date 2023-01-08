@@ -10,6 +10,23 @@ export class TradesService {
     private tradesRepository: Repository<Trade>,
   ) {}
 
+  getMyTrades(myId: number): Promise<Trade[]> {
+    return this.getTradesQueryBuilder()
+      .where('buyerUser.id = :myId OR sellerUser.id = :myId', { myId })
+      .getMany();
+  }
+
+  getPlacedTrades(myId: number): Promise<Trade[]> {
+    return this.getTradesQueryBuilder()
+      .innerJoin('market.card', 'ownerCard')
+      .where('ownerCard.userId = :myId', { myId })
+      .getMany();
+  }
+
+  getAllTrades(): Promise<Trade[]> {
+    return this.getTradesQueryBuilder().getMany();
+  }
+
   private getTradesQueryBuilder(): SelectQueryBuilder<Trade> {
     return this.tradesRepository
       .createQueryBuilder('trade')

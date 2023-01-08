@@ -10,6 +10,16 @@ export class PaymentsService {
     private paymentsRepository: Repository<Payment>,
   ) {}
 
+  getMyPayments(myId: number): Promise<Payment[]> {
+    return this.getPaymentsQueryBuilder()
+      .where('senderUser.id = :myId OR receiverUser.id = :myId', { myId })
+      .getMany();
+  }
+
+  getAllPayments(): Promise<Payment[]> {
+    return this.getPaymentsQueryBuilder().getMany();
+  }
+
   private getPaymentsQueryBuilder(): SelectQueryBuilder<Payment> {
     return this.paymentsRepository
       .createQueryBuilder('payment')

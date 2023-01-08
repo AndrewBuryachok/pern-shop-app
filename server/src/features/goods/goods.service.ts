@@ -10,6 +10,20 @@ export class GoodsService {
     private goodsRepository: Repository<Good>,
   ) {}
 
+  getMainGoods(): Promise<Good[]> {
+    return this.getGoodsQueryBuilder().getMany();
+  }
+
+  getMyGoods(myId: number): Promise<Good[]> {
+    return this.getGoodsQueryBuilder()
+      .where('sellerUser.id = :myId', { myId })
+      .getMany();
+  }
+
+  getAllGoods(): Promise<Good[]> {
+    return this.getGoodsQueryBuilder().getMany();
+  }
+
   private getGoodsQueryBuilder(): SelectQueryBuilder<Good> {
     return this.goodsRepository
       .createQueryBuilder('good')

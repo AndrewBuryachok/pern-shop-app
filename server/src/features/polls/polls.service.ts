@@ -10,6 +10,20 @@ export class PollsService {
     private pollsRepository: Repository<Poll>,
   ) {}
 
+  getMainPolls(myId: number): Promise<Poll[]> {
+    return this.getPollsQueryBuilder(myId).getMany();
+  }
+
+  getMyPolls(myId: number): Promise<Poll[]> {
+    return this.getPollsQueryBuilder(myId)
+      .where('pollerUser.id = :myId', { myId })
+      .getMany();
+  }
+
+  getAllPolls(myId: number): Promise<Poll[]> {
+    return this.getPollsQueryBuilder(myId).getMany();
+  }
+
   private getPollsQueryBuilder(myId: number): SelectQueryBuilder<Poll> {
     return this.pollsRepository
       .createQueryBuilder('poll')

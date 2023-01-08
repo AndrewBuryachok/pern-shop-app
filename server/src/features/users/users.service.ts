@@ -10,6 +10,30 @@ export class UsersService {
     private usersRepository: Repository<User>,
   ) {}
 
+  getMainUsers(): Promise<User[]> {
+    return this.getUsersQueryBuilder().getMany();
+  }
+
+  getMyUsers(myId: number): Promise<User[]> {
+    return this.getUsersQueryBuilder()
+      .where('city.userId = :myId', { myId })
+      .getMany();
+  }
+
+  getAllUsers(): Promise<User[]> {
+    return this.getUsersQueryBuilder().getMany();
+  }
+
+  async getSingleUser(userId: number): Promise<User> {
+    const user = await this.getUserQueryBuilder()
+      .where('user.id = :userId', { userId })
+      .getOne();
+    ['goods', 'wares', 'products', 'trades', 'sales'].forEach(
+      (stat) => (user[stat] = user[stat].length),
+    );
+    return user;
+  }
+
   private getUsersQueryBuilder(): SelectQueryBuilder<User> {
     return this.usersRepository
       .createQueryBuilder('user')
@@ -34,5 +58,52 @@ export class UsersService {
         'card.name',
         'card.color',
       ]);
+  }
+
+  private getUserQueryBuilder(): SelectQueryBuilder<User> {
+    return this.getUsersQueryBuilder()
+      .leftJoinAndMapMany(
+        'user.shops',
+        'shops',
+        'shop',
+        'user.id = shop.userId',
+      )
+      .leftJoinAndMapMany(
+        'user.goods',
+        'goods',
+        'good',
+        'shop.id = good.shopId',
+      )
+      .leftJoinAndMapMany(
+        'user.rents',
+        'rents',
+        'rent',
+        'card.id = rent.cardId',
+      )
+      .leftJoinAndMapMany(
+        'user.wares',
+        'wares',
+        'ware',
+        'rent.id = ware.rentId',
+      )
+      .leftJoinAndMapMany(
+        'user.products',
+        'products',
+        'product',
+        'card.id = product.cardId',
+      )
+      .leftJoinAndMapMany(
+        'user.trades',
+        'trades',
+        'trade',
+        'card.id = trade.cardId',
+      )
+      .leftJoinAndMapMany(
+        'user.sales',
+        'sales',
+        'sale',
+        'card.id = sale.cardId',
+      )
+      .addSelect(['good.id', 'ware.id', 'product.id', 'trade.id', 'sale.id']);
   }
 }

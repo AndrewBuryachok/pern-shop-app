@@ -10,6 +10,16 @@ export class ExchangesService {
     private exchangesRepository: Repository<Exchange>,
   ) {}
 
+  getMyExchanges(myId: number): Promise<Exchange[]> {
+    return this.getExchangesQueryBuilder()
+      .where('customerUser.id = :myId', { myId })
+      .getMany();
+  }
+
+  getAllExchanges(): Promise<Exchange[]> {
+    return this.getExchangesQueryBuilder().getMany();
+  }
+
   private getExchangesQueryBuilder(): SelectQueryBuilder<Exchange> {
     return this.exchangesRepository
       .createQueryBuilder('exchange')

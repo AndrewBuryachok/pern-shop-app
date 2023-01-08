@@ -10,6 +10,16 @@ export class CardsService {
     private cardsRepository: Repository<Card>,
   ) {}
 
+  getMyCards(myId: number): Promise<Card[]> {
+    return this.getCardsQueryBuilder()
+      .where('ownerUser.id = :myId', { myId })
+      .getMany();
+  }
+
+  getAllCards(): Promise<Card[]> {
+    return this.getCardsQueryBuilder().getMany();
+  }
+
   private getCardsQueryBuilder(): SelectQueryBuilder<Card> {
     return this.cardsRepository
       .createQueryBuilder('card')

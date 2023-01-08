@@ -10,6 +10,23 @@ export class SalesService {
     private salesRepository: Repository<Sale>,
   ) {}
 
+  getMySales(myId: number): Promise<Sale[]> {
+    return this.getSalesQueryBuilder()
+      .where('buyerUser.id = :myId OR sellerUser.id = :myId', { myId })
+      .getMany();
+  }
+
+  getPlacedSales(myId: number): Promise<Sale[]> {
+    return this.getSalesQueryBuilder()
+      .innerJoin('storage.card', 'ownerCard')
+      .where('ownerCard.userId = :myId', { myId })
+      .getMany();
+  }
+
+  getAllSales(): Promise<Sale[]> {
+    return this.getSalesQueryBuilder().getMany();
+  }
+
   private getSalesQueryBuilder(): SelectQueryBuilder<Sale> {
     return this.salesRepository
       .createQueryBuilder('sale')

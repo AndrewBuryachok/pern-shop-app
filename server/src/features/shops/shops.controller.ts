@@ -1,7 +1,23 @@
-import { Controller } from '@nestjs/common';
+import { Controller, Get } from '@nestjs/common';
 import { ShopsService } from './shops.service';
+import { Shop } from './shop.entity';
 
 @Controller('shops')
 export class ShopsController {
   constructor(private shopsService: ShopsService) {}
+
+  @Get()
+  getMainShops(): Promise<Shop[]> {
+    return this.shopsService.getMainShops();
+  }
+
+  @Get('my')
+  getMyShops(myId: number): Promise<Shop[]> {
+    return this.shopsService.getMyShops(myId);
+  }
+
+  @Get('all')
+  getAllShops(): Promise<Shop[]> {
+    return this.shopsService.getAllShops();
+  }
 }

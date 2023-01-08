@@ -10,6 +10,16 @@ export class LeasesService {
     private leasesRepository: Repository<Product>,
   ) {}
 
+  getMyLeases(myId: number): Promise<Product[]> {
+    return this.getLeasesQueryBuilder()
+      .where('renterUser.id = :myId OR lessorUser.id = :myId', { myId })
+      .getMany();
+  }
+
+  getAllLeases(): Promise<Product[]> {
+    return this.getLeasesQueryBuilder().getMany();
+  }
+
   private getLeasesQueryBuilder(): SelectQueryBuilder<Product> {
     return this.leasesRepository
       .createQueryBuilder('lease')

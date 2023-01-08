@@ -10,6 +10,20 @@ export class StoragesService {
     private storagesRepository: Repository<Storage>,
   ) {}
 
+  getMainStorages(): Promise<Storage[]> {
+    return this.getStoragesQueryBuilder().getMany();
+  }
+
+  getMyStorages(myId: number): Promise<Storage[]> {
+    return this.getStoragesQueryBuilder()
+      .where('ownerUser.id = :myId', { myId })
+      .getMany();
+  }
+
+  getAllStorages(): Promise<Storage[]> {
+    return this.getStoragesQueryBuilder().getMany();
+  }
+
   private getStoragesQueryBuilder(): SelectQueryBuilder<Storage> {
     return this.storagesRepository
       .createQueryBuilder('storage')

@@ -10,6 +10,16 @@ export class RentsService {
     private rentsRepository: Repository<Rent>,
   ) {}
 
+  getMyRents(myId: number): Promise<Rent[]> {
+    return this.getRentsQueryBuilder()
+      .where('renterUser.id = :myId OR lessorUser.id = :myId', { myId })
+      .getMany();
+  }
+
+  getAllRents(): Promise<Rent[]> {
+    return this.getRentsQueryBuilder().getMany();
+  }
+
   private getRentsQueryBuilder(): SelectQueryBuilder<Rent> {
     return this.rentsRepository
       .createQueryBuilder('rent')
