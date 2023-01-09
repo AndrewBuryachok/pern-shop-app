@@ -24,6 +24,21 @@ export class MarketsService {
     return this.getMarketsQueryBuilder().getMany();
   }
 
+  selectMyMarkets(myId: number): Promise<Market[]> {
+    return this.selectMarketsQueryBuilder()
+      .innerJoin('market.card', 'ownerCard')
+      .loadRelationCountAndMap('market.stores', 'market.stores')
+      .where('ownerCard.userId = :myId', { myId })
+      .getMany();
+  }
+
+  private selectMarketsQueryBuilder(): SelectQueryBuilder<Market> {
+    return this.marketsRepository
+      .createQueryBuilder('market')
+      .orderBy('market.name', 'ASC')
+      .select(['market.id', 'market.name', 'market.x', 'market.y']);
+  }
+
   private getMarketsQueryBuilder(): SelectQueryBuilder<Market> {
     return this.marketsRepository
       .createQueryBuilder('market')

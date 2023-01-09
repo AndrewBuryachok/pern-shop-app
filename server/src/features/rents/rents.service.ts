@@ -20,6 +20,30 @@ export class RentsService {
     return this.getRentsQueryBuilder().getMany();
   }
 
+  selectMyRents(myId: number): Promise<Rent[]> {
+    return this.selectRentsQueryBuilder()
+      .innerJoin('rent.card', 'renterCard')
+      .where('renterCard.userId = :myId', { myId })
+      .getMany();
+  }
+
+  private selectRentsQueryBuilder(): SelectQueryBuilder<Rent> {
+    return this.rentsRepository
+      .createQueryBuilder('rent')
+      .innerJoin('rent.store', 'store')
+      .innerJoin('store.market', 'market')
+      .orderBy('rent.id', 'DESC')
+      .select([
+        'rent.id',
+        'store.id',
+        'market.id',
+        'market.name',
+        'market.x',
+        'market.y',
+        'store.name',
+      ]);
+  }
+
   private getRentsQueryBuilder(): SelectQueryBuilder<Rent> {
     return this.rentsRepository
       .createQueryBuilder('rent')

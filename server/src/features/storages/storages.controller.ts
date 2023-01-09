@@ -20,4 +20,14 @@ export class StoragesController {
   getAllStorages(): Promise<Storage[]> {
     return this.storagesService.getAllStorages();
   }
+
+  @Get('my/select')
+  selectMyStorages(myId: number): Promise<Storage[]> {
+    return this.storagesService.selectMyStorages(myId);
+  }
+
+  @Get('free/select')
+  selectFreeStorages(): Promise<Storage[]> {
+    return this.storagesService.selectFreeStorages();
+  }
 }

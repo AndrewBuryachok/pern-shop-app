@@ -20,4 +20,9 @@ export class MarketsController {
   getAllMarkets(): Promise<Market[]> {
     return this.marketsService.getAllMarkets();
   }
+
+  @Get('my/select')
+  selectMyMarkets(myId: number): Promise<Market[]> {
+    return this.marketsService.selectMyMarkets(myId);
+  }
 }

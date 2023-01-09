@@ -15,4 +15,19 @@ export class CardsController {
   getAllCards(): Promise<Card[]> {
     return this.cardsService.getAllCards();
   }
+
+  @Get('my/select')
+  selectMyCards(myId: number): Promise<Card[]> {
+    return this.cardsService.selectUserCardsWithBalance(myId);
+  }
+
+  @Get(':userId/select')
+  selectUserCards(userId: number): Promise<Card[]> {
+    return this.cardsService.selectUserCards(userId);
+  }
+
+  @Get(':userId/ext-select')
+  selectUserCardsWithBalance(userId: number): Promise<Card[]> {
+    return this.cardsService.selectUserCardsWithBalance(userId);
+  }
 }

@@ -21,6 +21,16 @@ export class UsersController {
     return this.usersService.getAllUsers();
   }
 
+  @Get('all/select')
+  selectAllUsers(): Promise<User[]> {
+    return this.usersService.selectAllUsers();
+  }
+
+  @Get('free/select')
+  selectFreeUsers(): Promise<User[]> {
+    return this.usersService.selectFreeUsers();
+  }
+
   @Get(':userId')
   getSingleUser(userId: number): Promise<User> {
     return this.usersService.getSingleUser(userId);

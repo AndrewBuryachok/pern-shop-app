@@ -20,4 +20,9 @@ export class ShopsController {
   getAllShops(): Promise<Shop[]> {
     return this.shopsService.getAllShops();
   }
+
+  @Get('my/select')
+  selectMyShops(myId: number): Promise<Shop[]> {
+    return this.shopsService.selectMyShops(myId);
+  }
 }

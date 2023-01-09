@@ -15,4 +15,9 @@ export class RentsController {
   getAllRents(): Promise<Rent[]> {
     return this.rentsService.getAllRents();
   }
+
+  @Get('my/select')
+  selectMyRents(myId: number): Promise<Rent[]> {
+    return this.rentsService.selectMyRents(myId);
+  }
 }

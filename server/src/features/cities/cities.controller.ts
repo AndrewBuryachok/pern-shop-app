@@ -20,4 +20,9 @@ export class CitiesController {
   getAllCities(): Promise<City[]> {
     return this.citiesService.getAllCities();
   }
+
+  @Get('my/select')
+  selectMyCities(myId: number): Promise<City[]> {
+    return this.citiesService.selectMyCities(myId);
+  }
 }

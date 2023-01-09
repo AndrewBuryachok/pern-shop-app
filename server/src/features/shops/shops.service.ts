@@ -24,6 +24,19 @@ export class ShopsService {
     return this.getShopsQueryBuilder().getMany();
   }
 
+  selectMyShops(myId: number): Promise<Shop[]> {
+    return this.selectShopsQueryBuilder()
+      .where('shop.userId = :myId', { myId })
+      .getMany();
+  }
+
+  private selectShopsQueryBuilder(): SelectQueryBuilder<Shop> {
+    return this.shopsRepository
+      .createQueryBuilder('shop')
+      .orderBy('shop.name', 'ASC')
+      .select(['shop.id', 'shop.name', 'shop.x', 'shop.y']);
+  }
+
   private getShopsQueryBuilder(): SelectQueryBuilder<Shop> {
     return this.shopsRepository
       .createQueryBuilder('shop')

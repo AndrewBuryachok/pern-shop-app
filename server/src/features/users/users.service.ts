@@ -24,6 +24,14 @@ export class UsersService {
     return this.getUsersQueryBuilder().getMany();
   }
 
+  selectAllUsers(): Promise<User[]> {
+    return this.selectUsersQueryBuilder().getMany();
+  }
+
+  selectFreeUsers(): Promise<User[]> {
+    return this.selectUsersQueryBuilder().where('user.city IS NULL').getMany();
+  }
+
   async getSingleUser(userId: number): Promise<User> {
     const user = await this.getUserQueryBuilder()
       .where('user.id = :userId', { userId })
@@ -32,6 +40,13 @@ export class UsersService {
       (stat) => (user[stat] = user[stat].length),
     );
     return user;
+  }
+
+  private selectUsersQueryBuilder(): SelectQueryBuilder<User> {
+    return this.usersRepository
+      .createQueryBuilder('user')
+      .orderBy('user.name', 'ASC')
+      .select(['user.id', 'user.name']);
   }
 
   private getUsersQueryBuilder(): SelectQueryBuilder<User> {

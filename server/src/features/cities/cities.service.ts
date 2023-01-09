@@ -24,6 +24,19 @@ export class CitiesService {
     return this.getCitiesQueryBuilder().getMany();
   }
 
+  selectMyCities(myId: number): Promise<City[]> {
+    return this.selectCitiesQueryBuilder()
+      .where('city.userId = :myId', { myId })
+      .getMany();
+  }
+
+  private selectCitiesQueryBuilder(): SelectQueryBuilder<City> {
+    return this.citiesRepository
+      .createQueryBuilder('city')
+      .orderBy('city.name', 'ASC')
+      .select(['city.id', 'city.name', 'city.x', 'city.y']);
+  }
+
   private getCitiesQueryBuilder(): SelectQueryBuilder<City> {
     return this.citiesRepository
       .createQueryBuilder('city')
