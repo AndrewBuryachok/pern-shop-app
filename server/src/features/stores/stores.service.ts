@@ -24,6 +24,10 @@ export class StoresService {
     return this.getStoresQueryBuilder().getMany();
   }
 
+  async checkStoreExists(id: number): Promise<void> {
+    await this.storesRepository.findOneByOrFail({ id });
+  }
+
   private getStoresQueryBuilder(): SelectQueryBuilder<Store> {
     return this.storesRepository
       .createQueryBuilder('store')

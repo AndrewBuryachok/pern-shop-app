@@ -36,6 +36,10 @@ export class ProductsService {
     return this.getProductsQueryBuilder().getMany();
   }
 
+  async checkProductExists(id: number): Promise<void> {
+    await this.productsRepository.findOneByOrFail({ id });
+  }
+
   private getProductsQueryBuilder(): SelectQueryBuilder<Product> {
     return this.productsRepository
       .createQueryBuilder('product')

@@ -27,6 +27,10 @@ export class RentsService {
       .getMany();
   }
 
+  async checkRentExists(id: number): Promise<void> {
+    await this.rentsRepository.findOneByOrFail({ id });
+  }
+
   private selectRentsQueryBuilder(): SelectQueryBuilder<Rent> {
     return this.rentsRepository
       .createQueryBuilder('rent')

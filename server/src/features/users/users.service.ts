@@ -42,6 +42,10 @@ export class UsersService {
     return user;
   }
 
+  async checkUserExists(id: number): Promise<void> {
+    await this.usersRepository.findOneByOrFail({ id });
+  }
+
   private selectUsersQueryBuilder(): SelectQueryBuilder<User> {
     return this.usersRepository
       .createQueryBuilder('user')

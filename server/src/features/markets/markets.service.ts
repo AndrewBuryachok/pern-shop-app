@@ -32,6 +32,10 @@ export class MarketsService {
       .getMany();
   }
 
+  async checkMarketExists(id: number): Promise<void> {
+    await this.marketsRepository.findOneByOrFail({ id });
+  }
+
   private selectMarketsQueryBuilder(): SelectQueryBuilder<Market> {
     return this.marketsRepository
       .createQueryBuilder('market')

@@ -30,6 +30,10 @@ export class ShopsService {
       .getMany();
   }
 
+  async checkShopExists(id: number): Promise<void> {
+    await this.shopsRepository.findOneByOrFail({ id });
+  }
+
   private selectShopsQueryBuilder(): SelectQueryBuilder<Shop> {
     return this.shopsRepository
       .createQueryBuilder('shop')

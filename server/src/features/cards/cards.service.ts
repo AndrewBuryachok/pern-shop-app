@@ -30,6 +30,10 @@ export class CardsService {
       .getMany();
   }
 
+  async checkCardExists(id: number): Promise<void> {
+    await this.cardsRepository.findOneByOrFail({ id });
+  }
+
   private selectCardsQueryBuilder(userId: number): SelectQueryBuilder<Card> {
     return this.cardsRepository
       .createQueryBuilder('card')

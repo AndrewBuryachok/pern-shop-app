@@ -1,0 +1,9 @@
+export const MAX_CARDS_NUMBER = 3;
+export const MAX_CITIES_NUMBER = 1;
+export const MAX_SHOPS_NUMBER = 3;
+export const MAX_MARKETS_NUMBER = 3;
+export const MAX_STORAGES_NUMBER = 3;
+export const MAX_STORES_NUMBER = 30;
+export const MAX_CELLS_NUMBER = 30;
+export const MIN_CARD_BALANCE = 0;
+export const MAX_CARD_BALANCE = 32767;

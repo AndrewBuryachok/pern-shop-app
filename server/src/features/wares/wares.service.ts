@@ -36,6 +36,10 @@ export class WaresService {
     return this.getWaresQueryBuilder().getMany();
   }
 
+  async checkWareExists(id: number): Promise<void> {
+    await this.waresRepository.findOneByOrFail({ id });
+  }
+
   private getWaresQueryBuilder(): SelectQueryBuilder<Ware> {
     return this.waresRepository
       .createQueryBuilder('ware')

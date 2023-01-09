@@ -24,6 +24,10 @@ export class GoodsService {
     return this.getGoodsQueryBuilder().getMany();
   }
 
+  async checkGoodExists(id: number): Promise<void> {
+    await this.goodsRepository.findOneByOrFail({ id });
+  }
+
   private getGoodsQueryBuilder(): SelectQueryBuilder<Good> {
     return this.goodsRepository
       .createQueryBuilder('good')

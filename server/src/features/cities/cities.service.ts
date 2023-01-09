@@ -30,6 +30,10 @@ export class CitiesService {
       .getMany();
   }
 
+  async checkCityExists(id: number): Promise<void> {
+    await this.citiesRepository.findOneByOrFail({ id });
+  }
+
   private selectCitiesQueryBuilder(): SelectQueryBuilder<City> {
     return this.citiesRepository
       .createQueryBuilder('city')

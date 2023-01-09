@@ -51,6 +51,10 @@ export class StoragesService {
       );
   }
 
+  async checkStorageExists(id: number): Promise<void> {
+    await this.storagesRepository.findOneByOrFail({ id });
+  }
+
   private selectStoragesQueryBuilder(): SelectQueryBuilder<Storage> {
     return this.storagesRepository
       .createQueryBuilder('storage')

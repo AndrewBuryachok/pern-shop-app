@@ -24,6 +24,10 @@ export class PollsService {
     return this.getPollsQueryBuilder(myId).getMany();
   }
 
+  async checkPollExists(id: number): Promise<void> {
+    await this.pollsRepository.findOneByOrFail({ id });
+  }
+
   private getPollsQueryBuilder(myId: number): SelectQueryBuilder<Poll> {
     return this.pollsRepository
       .createQueryBuilder('poll')
