@@ -1,6 +1,7 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Param } from '@nestjs/common';
 import { CardsService } from './cards.service';
 import { Card } from './card.entity';
+import { UserIdDto } from '../users/user.dto';
 
 @Controller('cards')
 export class CardsController {
@@ -22,12 +23,12 @@ export class CardsController {
   }
 
   @Get(':userId/select')
-  selectUserCards(userId: number): Promise<Card[]> {
+  selectUserCards(@Param() { userId }: UserIdDto): Promise<Card[]> {
     return this.cardsService.selectUserCards(userId);
   }
 
   @Get(':userId/ext-select')
-  selectUserCardsWithBalance(userId: number): Promise<Card[]> {
+  selectUserCardsWithBalance(@Param() { userId }: UserIdDto): Promise<Card[]> {
     return this.cardsService.selectUserCardsWithBalance(userId);
   }
 }

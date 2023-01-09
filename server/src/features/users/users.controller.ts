@@ -1,6 +1,7 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Param } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { User } from './user.entity';
+import { UserIdDto } from './user.dto';
 
 @Controller('users')
 export class UsersController {
@@ -32,7 +33,7 @@ export class UsersController {
   }
 
   @Get(':userId')
-  getSingleUser(userId: number): Promise<User> {
+  getSingleUser(@Param() { userId }: UserIdDto): Promise<User> {
     return this.usersService.getSingleUser(userId);
   }
 }
