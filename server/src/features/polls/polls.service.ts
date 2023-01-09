@@ -2,6 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, SelectQueryBuilder } from 'typeorm';
 import { Poll } from './poll.entity';
+import { ExtCreatePollDto } from './poll.dto';
+import { AppException } from '../../common/exceptions';
+import { PollError } from './poll-error.enum';
 
 @Injectable()
 export class PollsService {
@@ -24,8 +27,24 @@ export class PollsService {
     return this.getPollsQueryBuilder(myId).getMany();
   }
 
+  async createPoll(dto: ExtCreatePollDto): Promise<void> {
+    await this.create(dto);
+  }
+
   async checkPollExists(id: number): Promise<void> {
     await this.pollsRepository.findOneByOrFail({ id });
+  }
+
+  private async create(dto: ExtCreatePollDto): Promise<void> {
+    try {
+      const poll = this.pollsRepository.create({
+        userId: dto.myId,
+        description: dto.description,
+      });
+      await this.pollsRepository.save(poll);
+    } catch (error) {
+      throw new AppException(PollError.CREATE_FAILED);
+    }
   }
 
   private getPollsQueryBuilder(myId: number): SelectQueryBuilder<Poll> {

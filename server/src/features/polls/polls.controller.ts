@@ -1,6 +1,7 @@
-import { Controller, Get } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import { PollsService } from './polls.service';
 import { Poll } from './poll.entity';
+import { CreatePollDto } from './poll.dto';
 
 @Controller('polls')
 export class PollsController {
@@ -19,5 +20,10 @@ export class PollsController {
   @Get('all')
   getAllPolls(myId: number): Promise<Poll[]> {
     return this.pollsService.getAllPolls(myId);
+  }
+
+  @Post()
+  createPoll(myId: number, @Body() dto: CreatePollDto): Promise<void> {
+    return this.pollsService.createPoll({ ...dto, myId });
   }
 }

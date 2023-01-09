@@ -2,12 +2,17 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, SelectQueryBuilder } from 'typeorm';
 import { Rent } from './rent.entity';
+import { StoresService } from '../stores/stores.service';
+import { ExtCreateRentDto } from './rent.dto';
+import { AppException } from '../../common/exceptions';
+import { RentError } from './rent-error.enum';
 
 @Injectable()
 export class RentsService {
   constructor(
     @InjectRepository(Rent)
     private rentsRepository: Repository<Rent>,
+    private storesService: StoresService,
   ) {}
 
   getMyRents(myId: number): Promise<Rent[]> {
@@ -27,8 +32,36 @@ export class RentsService {
       .getMany();
   }
 
+  async createRent(dto: ExtCreateRentDto): Promise<void> {
+    await this.storesService.reserveStore(dto);
+    await this.create(dto);
+  }
+
   async checkRentExists(id: number): Promise<void> {
     await this.rentsRepository.findOneByOrFail({ id });
+  }
+
+  async checkRentOwner(id: number, userId: number): Promise<Rent> {
+    const rent = await this.rentsRepository.findOneBy({
+      id,
+      card: { userId },
+    });
+    if (!rent) {
+      throw new AppException(RentError.NOT_OWNER);
+    }
+    return rent;
+  }
+
+  private async create(dto: ExtCreateRentDto): Promise<void> {
+    try {
+      const rent = this.rentsRepository.create({
+        storeId: dto.storeId,
+        cardId: dto.cardId,
+      });
+      await this.rentsRepository.save(rent);
+    } catch (error) {
+      throw new AppException(RentError.CREATE_FAILED);
+    }
   }
 
   private selectRentsQueryBuilder(): SelectQueryBuilder<Rent> {

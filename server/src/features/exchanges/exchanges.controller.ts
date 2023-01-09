@@ -1,6 +1,7 @@
-import { Controller, Get } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import { ExchangesService } from './exchanges.service';
 import { Exchange } from './exchange.entity';
+import { CreateExchangeDto } from './exchange.dto';
 
 @Controller('exchanges')
 export class ExchangesController {
@@ -14,5 +15,10 @@ export class ExchangesController {
   @Get('all')
   getAllExchanges(): Promise<Exchange[]> {
     return this.exchangesService.getAllExchanges();
+  }
+
+  @Post()
+  createExchange(myId: number, @Body() dto: CreateExchangeDto): Promise<void> {
+    return this.exchangesService.createExchange({ ...dto, myId });
   }
 }

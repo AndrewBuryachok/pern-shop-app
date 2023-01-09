@@ -2,12 +2,17 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, SelectQueryBuilder } from 'typeorm';
 import { Trade } from './trade.entity';
+import { WaresService } from '../wares/wares.service';
+import { ExtCreateTradeDto } from './trade.dto';
+import { AppException } from '../../common/exceptions';
+import { TradeError } from './trade-error.enum';
 
 @Injectable()
 export class TradesService {
   constructor(
     @InjectRepository(Trade)
     private tradesRepository: Repository<Trade>,
+    private waresService: WaresService,
   ) {}
 
   getMyTrades(myId: number): Promise<Trade[]> {
@@ -25,6 +30,24 @@ export class TradesService {
 
   getAllTrades(): Promise<Trade[]> {
     return this.getTradesQueryBuilder().getMany();
+  }
+
+  async createTrade(dto: ExtCreateTradeDto): Promise<void> {
+    await this.waresService.buyWare(dto);
+    await this.create(dto);
+  }
+
+  private async create(dto: ExtCreateTradeDto): Promise<void> {
+    try {
+      const trade = this.tradesRepository.create({
+        wareId: dto.wareId,
+        cardId: dto.cardId,
+        amount: dto.amount,
+      });
+      await this.tradesRepository.save(trade);
+    } catch (error) {
+      throw new AppException(TradeError.CREATE_FAILED);
+    }
   }
 
   private getTradesQueryBuilder(): SelectQueryBuilder<Trade> {

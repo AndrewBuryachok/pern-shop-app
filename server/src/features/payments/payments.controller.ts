@@ -1,6 +1,7 @@
-import { Controller, Get } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import { PaymentsService } from './payments.service';
 import { Payment } from './payment.entity';
+import { CreatePaymentDto } from './payment.dto';
 
 @Controller('payments')
 export class PaymentsController {
@@ -14,5 +15,10 @@ export class PaymentsController {
   @Get('all')
   getAllPayments(): Promise<Payment[]> {
     return this.paymentsService.getAllPayments();
+  }
+
+  @Post()
+  createPayment(myId: number, @Body() dto: CreatePaymentDto): Promise<void> {
+    return this.paymentsService.createPayment({ ...dto, myId });
   }
 }

@@ -2,12 +2,17 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, SelectQueryBuilder } from 'typeorm';
 import { Sale } from './sale.entity';
+import { ProductsService } from '../products/products.service';
+import { ExtCreateSaleDto } from './sale.dto';
+import { AppException } from '../../common/exceptions';
+import { SaleError } from './sale-error.enum';
 
 @Injectable()
 export class SalesService {
   constructor(
     @InjectRepository(Sale)
     private salesRepository: Repository<Sale>,
+    private productsService: ProductsService,
   ) {}
 
   getMySales(myId: number): Promise<Sale[]> {
@@ -25,6 +30,24 @@ export class SalesService {
 
   getAllSales(): Promise<Sale[]> {
     return this.getSalesQueryBuilder().getMany();
+  }
+
+  async createSale(dto: ExtCreateSaleDto): Promise<void> {
+    await this.productsService.buyProduct(dto);
+    await this.create(dto);
+  }
+
+  private async create(dto: ExtCreateSaleDto): Promise<void> {
+    try {
+      const sale = this.salesRepository.create({
+        productId: dto.productId,
+        cardId: dto.cardId,
+        amount: dto.amount,
+      });
+      await this.salesRepository.save(sale);
+    } catch (error) {
+      throw new AppException(SaleError.CREATE_FAILED);
+    }
   }
 
   private getSalesQueryBuilder(): SelectQueryBuilder<Sale> {

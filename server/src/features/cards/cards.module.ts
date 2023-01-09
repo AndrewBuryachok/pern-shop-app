@@ -9,5 +9,6 @@ import { IsCardExists } from '../../common/constraints';
   imports: [TypeOrmModule.forFeature([Card])],
   controllers: [CardsController],
   providers: [CardsService, IsCardExists],
+  exports: [CardsService],
 })
 export class CardsModule {}

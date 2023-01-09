@@ -1,13 +1,25 @@
-import { Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, SelectQueryBuilder } from 'typeorm';
 import { User } from './user.entity';
+import { CitiesService } from '../cities/cities.service';
+import {
+  CreateUserDto,
+  ExtUpdateUserCityDto,
+  ExtUpdateUserRolesDto,
+  UpdateUserTokenDto,
+} from './user.dto';
+import { AppException } from '../../common/exceptions';
+import { UserError } from './user-error.enum';
+import { Role } from './role.enum';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User)
     private usersRepository: Repository<User>,
+    @Inject(forwardRef(() => CitiesService))
+    private citiesService: CitiesService,
   ) {}
 
   getMainUsers(): Promise<User[]> {
@@ -42,8 +54,139 @@ export class UsersService {
     return user;
   }
 
+  async createUser(dto: CreateUserDto): Promise<User> {
+    await this.checkNameNotUsed(dto.name);
+    return this.create(dto);
+  }
+
+  async addUserToken(dto: UpdateUserTokenDto): Promise<void> {
+    const user = await this.usersRepository.findOneBy({ id: dto.userId });
+    await this.addToken(user, dto.token);
+  }
+
+  async removeUserToken(dto: UpdateUserTokenDto): Promise<void> {
+    const user = await this.usersRepository.findOneBy({ id: dto.userId });
+    await this.removeToken(user);
+  }
+
+  async addUserRole(dto: ExtUpdateUserRolesDto): Promise<void> {
+    const user = await this.usersRepository.findOneBy({ id: dto.userId });
+    if (user.roles.includes(dto.role)) {
+      throw new AppException(UserError.ALREADY_HAS_ROLE);
+    }
+    await this.addRole(user, dto.role);
+  }
+
+  async removeUserRole(dto: ExtUpdateUserRolesDto): Promise<void> {
+    const user = await this.usersRepository.findOneBy({ id: dto.userId });
+    if (!user.roles.includes(dto.role)) {
+      throw new AppException(UserError.NOT_HAS_ROLE);
+    }
+    await this.removeRole(user, dto.role);
+  }
+
+  async addUserCity(dto: ExtUpdateUserCityDto): Promise<void> {
+    await this.citiesService.checkCityOwner(dto.cityId, dto.myId);
+    const user = await this.usersRepository.findOneBy({ id: dto.userId });
+    if (user.cityId) {
+      throw new AppException(UserError.ALREADY_IN_CITY);
+    }
+    await this.addCity(user, dto.cityId);
+  }
+
+  async removeUserCity(dto: ExtUpdateUserCityDto): Promise<void> {
+    await this.citiesService.checkCityOwner(dto.cityId, dto.myId);
+    const user = await this.usersRepository.findOneBy({ id: dto.userId });
+    if (user.cityId !== dto.cityId) {
+      throw new AppException(UserError.NOT_IN_CITY);
+    }
+    await this.removeCity(user);
+  }
+
   async checkUserExists(id: number): Promise<void> {
     await this.usersRepository.findOneByOrFail({ id });
+  }
+
+  findUserById(id: number): Promise<User> {
+    return this.usersRepository.findOneBy({ id });
+  }
+
+  findUserByName(name: string): Promise<User> {
+    return this.usersRepository.findOneBy({ name });
+  }
+
+  private async checkNameNotUsed(name: string): Promise<void> {
+    const user = await this.usersRepository.findOneBy({ name });
+    if (user) {
+      throw new AppException(UserError.NAME_ALREADY_USED);
+    }
+  }
+
+  private async create(dto: CreateUserDto): Promise<User> {
+    try {
+      const user = this.usersRepository.create({
+        name: dto.name,
+        password: dto.password,
+      });
+      await this.usersRepository.save(user);
+      return user;
+    } catch (error) {
+      throw new AppException(UserError.CREATE_FAILED);
+    }
+  }
+
+  private async addToken(user: User, token: string): Promise<void> {
+    try {
+      user.token = token;
+      await this.usersRepository.save(user);
+    } catch (error) {
+      throw new AppException(UserError.ADD_TOKEN_FAILED);
+    }
+  }
+
+  private async removeToken(user: User): Promise<void> {
+    try {
+      user.token = null;
+      await this.usersRepository.save(user);
+    } catch (error) {
+      throw new AppException(UserError.REMOVE_TOKEN_FAILED);
+    }
+  }
+
+  private async addRole(user: User, role: Role): Promise<void> {
+    try {
+      user.roles = user.roles.concat(role).sort();
+      await this.usersRepository.save(user);
+    } catch (error) {
+      throw new AppException(UserError.ADD_ROLE_FAILED);
+    }
+  }
+
+  private async removeRole(user: User, role: Role): Promise<void> {
+    try {
+      user.roles = user.roles.filter((value) => value !== role);
+      await this.usersRepository.save(user);
+    } catch (error) {
+      throw new AppException(UserError.REMOVE_ROLE_FAILED);
+    }
+  }
+
+  private async addCity(user: User, cityId: number): Promise<void> {
+    try {
+      user.cityId = cityId;
+      await this.usersRepository.save(user);
+    } catch (error) {
+      throw new AppException(UserError.ADD_CITY_FAILED);
+    }
+  }
+
+  private async removeCity(user: User): Promise<void> {
+    try {
+      user.cityId = null;
+      await this.usersRepository.save(user);
+    } catch (error) {
+      throw new AppException(UserError.REMOVE_CITY_FAILED);
+    }
   }
 
   private selectUsersQueryBuilder(): SelectQueryBuilder<User> {

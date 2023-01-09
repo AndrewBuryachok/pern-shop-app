@@ -9,5 +9,6 @@ import { IsShopExists } from '../../common/constraints';
   imports: [TypeOrmModule.forFeature([Shop])],
   controllers: [ShopsController],
   providers: [ShopsService, IsShopExists],
+  exports: [ShopsService],
 })
 export class ShopsModule {}

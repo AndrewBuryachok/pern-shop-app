@@ -1,6 +1,7 @@
-import { Controller, Get } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { GoodsService } from './goods.service';
 import { Good } from './good.entity';
+import { CreateGoodDto, GoodIdDto } from './good.dto';
 
 @Controller('goods')
 export class GoodsController {
@@ -19,5 +20,15 @@ export class GoodsController {
   @Get('all')
   getAllGoods(): Promise<Good[]> {
     return this.goodsService.getAllGoods();
+  }
+
+  @Post()
+  createGood(myId: number, @Body() dto: CreateGoodDto): Promise<void> {
+    return this.goodsService.createGood({ ...dto, myId });
+  }
+
+  @Delete(':goodId')
+  deleteGood(myId: number, @Param() { goodId }: GoodIdDto): Promise<void> {
+    return this.goodsService.deleteGood({ goodId, myId });
   }
 }

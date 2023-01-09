@@ -1,6 +1,7 @@
-import { Controller, Get } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import { WaresService } from './wares.service';
 import { Ware } from './ware.entity';
+import { CreateWareDto } from './ware.dto';
 
 @Controller('wares')
 export class WaresController {
@@ -24,5 +25,10 @@ export class WaresController {
   @Get('all')
   getAllWares(): Promise<Ware[]> {
     return this.waresService.getAllWares();
+  }
+
+  @Post()
+  createWare(myId: number, @Body() dto: CreateWareDto): Promise<void> {
+    return this.waresService.createWare({ ...dto, myId });
   }
 }
