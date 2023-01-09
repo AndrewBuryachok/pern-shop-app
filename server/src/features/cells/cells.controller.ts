@@ -2,6 +2,8 @@ import { Body, Controller, Get, Post } from '@nestjs/common';
 import { CellsService } from './cells.service';
 import { Cell } from './cell.entity';
 import { CreateCellDto } from './cell.dto';
+import { MyId, Roles } from '../../common/decorators';
+import { Role } from '../users/role.enum';
 
 @Controller('cells')
 export class CellsController {
@@ -13,17 +15,18 @@ export class CellsController {
   }
 
   @Get('my')
-  getMyCells(myId: number): Promise<Cell[]> {
+  getMyCells(@MyId() myId: number): Promise<Cell[]> {
     return this.cellsService.getMyCells(myId);
   }
 
+  @Roles(Role.MANAGER)
   @Get('all')
   getAllCells(): Promise<Cell[]> {
     return this.cellsService.getAllCells();
   }
 
   @Post()
-  createCell(myId: number, @Body() dto: CreateCellDto): Promise<void> {
+  createCell(@MyId() myId: number, @Body() dto: CreateCellDto): Promise<void> {
     return this.cellsService.createCell({ ...dto, myId });
   }
 }

@@ -1,7 +1,8 @@
-import { NestFactory } from '@nestjs/core';
+import { NestFactory, Reflector } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { useContainer } from 'class-validator';
 import { AppModule } from './app.module';
+import { AtGuard, RolesGuard } from './common/guards';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -12,6 +13,10 @@ async function bootstrap() {
       transform: true,
       whitelist: true,
     }),
+  );
+  app.useGlobalGuards(
+    new AtGuard(new Reflector()),
+    new RolesGuard(new Reflector()),
   );
   await app.listen(3000);
 }

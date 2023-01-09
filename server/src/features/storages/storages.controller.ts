@@ -2,6 +2,8 @@ import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
 import { StoragesService } from './storages.service';
 import { Storage } from './storage.entity';
 import { CreateStorageDto, EditStorageDto, StorageIdDto } from './storage.dto';
+import { MyId, Roles } from '../../common/decorators';
+import { Role } from '../users/role.enum';
 
 @Controller('storages')
 export class StoragesController {
@@ -13,17 +15,18 @@ export class StoragesController {
   }
 
   @Get('my')
-  getMyStorages(myId: number): Promise<Storage[]> {
+  getMyStorages(@MyId() myId: number): Promise<Storage[]> {
     return this.storagesService.getMyStorages(myId);
   }
 
+  @Roles(Role.MANAGER)
   @Get('all')
   getAllStorages(): Promise<Storage[]> {
     return this.storagesService.getAllStorages();
   }
 
   @Get('my/select')
-  selectMyStorages(myId: number): Promise<Storage[]> {
+  selectMyStorages(@MyId() myId: number): Promise<Storage[]> {
     return this.storagesService.selectMyStorages(myId);
   }
 
@@ -33,13 +36,16 @@ export class StoragesController {
   }
 
   @Post()
-  createStorage(myId: number, @Body() dto: CreateStorageDto): Promise<void> {
+  createStorage(
+    @MyId() myId: number,
+    @Body() dto: CreateStorageDto,
+  ): Promise<void> {
     return this.storagesService.createStorage({ ...dto, myId });
   }
 
   @Patch(':storageId')
   editStorage(
-    myId: number,
+    @MyId() myId: number,
     @Param() { storageId }: StorageIdDto,
     @Body() dto: EditStorageDto,
   ): Promise<void> {

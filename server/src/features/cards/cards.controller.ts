@@ -3,23 +3,26 @@ import { CardsService } from './cards.service';
 import { Card } from './card.entity';
 import { CardIdDto, CreateCardDto, EditCardDto } from './card.dto';
 import { UserIdDto } from '../users/user.dto';
+import { MyId, Roles } from '../../common/decorators';
+import { Role } from '../users/role.enum';
 
 @Controller('cards')
 export class CardsController {
   constructor(private cardsService: CardsService) {}
 
   @Get('my')
-  getMyCards(myId: number): Promise<Card[]> {
+  getMyCards(@MyId() myId: number): Promise<Card[]> {
     return this.cardsService.getMyCards(myId);
   }
 
+  @Roles(Role.BANKER)
   @Get('all')
   getAllCards(): Promise<Card[]> {
     return this.cardsService.getAllCards();
   }
 
   @Get('my/select')
-  selectMyCards(myId: number): Promise<Card[]> {
+  selectMyCards(@MyId() myId: number): Promise<Card[]> {
     return this.cardsService.selectUserCardsWithBalance(myId);
   }
 
@@ -28,19 +31,20 @@ export class CardsController {
     return this.cardsService.selectUserCards(userId);
   }
 
+  @Roles(Role.BANKER)
   @Get(':userId/ext-select')
   selectUserCardsWithBalance(@Param() { userId }: UserIdDto): Promise<Card[]> {
     return this.cardsService.selectUserCardsWithBalance(userId);
   }
 
   @Post()
-  createCard(myId: number, @Body() dto: CreateCardDto): Promise<void> {
+  createCard(@MyId() myId: number, @Body() dto: CreateCardDto): Promise<void> {
     return this.cardsService.createCard({ ...dto, myId });
   }
 
   @Patch(':cardId')
   editCard(
-    myId: number,
+    @MyId() myId: number,
     @Param() { cardId }: CardIdDto,
     @Body() dto: EditCardDto,
   ): Promise<void> {

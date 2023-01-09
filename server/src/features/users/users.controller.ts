@@ -2,6 +2,8 @@ import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { User } from './user.entity';
 import { UpdateUserCityDto, UpdateUserRolesDto, UserIdDto } from './user.dto';
+import { MyId, Roles } from '../../common/decorators';
+import { Role } from './role.enum';
 
 @Controller('users')
 export class UsersController {
@@ -13,10 +15,11 @@ export class UsersController {
   }
 
   @Get('my')
-  getMyUsers(myId: number): Promise<User[]> {
+  getMyUsers(@MyId() myId: number): Promise<User[]> {
     return this.usersService.getMyUsers(myId);
   }
 
+  @Roles(Role.ADMIN)
   @Get('all')
   getAllUsers(): Promise<User[]> {
     return this.usersService.getAllUsers();
@@ -37,6 +40,7 @@ export class UsersController {
     return this.usersService.getSingleUser(userId);
   }
 
+  @Roles(Role.ADMIN)
   @Post(':userId/roles')
   addUserRole(
     @Param() { userId }: UserIdDto,
@@ -45,6 +49,7 @@ export class UsersController {
     return this.usersService.addUserRole({ ...dto, userId });
   }
 
+  @Roles(Role.ADMIN)
   @Delete(':userId/roles')
   removeUserRole(
     @Param() { userId }: UserIdDto,
@@ -55,7 +60,7 @@ export class UsersController {
 
   @Post(':userId/city')
   addUserCity(
-    myId: number,
+    @MyId() myId: number,
     @Param() { userId }: UserIdDto,
     @Body() dto: UpdateUserCityDto,
   ): Promise<void> {
@@ -64,7 +69,7 @@ export class UsersController {
 
   @Delete(':userId/city')
   removeUserCity(
-    myId: number,
+    @MyId() myId: number,
     @Param() { userId }: UserIdDto,
     @Body() dto: UpdateUserCityDto,
   ): Promise<void> {
