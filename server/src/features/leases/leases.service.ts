@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, SelectQueryBuilder } from 'typeorm';
 import { Product } from '../products/product.entity';
+import { Request, Response } from '../../common/interfaces';
 
 @Injectable()
 export class LeasesService {
@@ -10,17 +11,21 @@ export class LeasesService {
     private leasesRepository: Repository<Product>,
   ) {}
 
-  getMyLeases(myId: number): Promise<Product[]> {
-    return this.getLeasesQueryBuilder()
-      .where('renterUser.id = :myId OR lessorUser.id = :myId', { myId })
-      .getMany();
+  async getMyLeases(myId: number, req: Request): Promise<Response<Product>> {
+    const [result, count] = await this.getLeasesQueryBuilder(req)
+      .andWhere('(renterUser.id = :myId OR lessorUser.id = :myId)', { myId })
+      .getManyAndCount();
+    return { result, count };
   }
 
-  getAllLeases(): Promise<Product[]> {
-    return this.getLeasesQueryBuilder().getMany();
+  async getAllLeases(req: Request): Promise<Response<Product>> {
+    const [result, count] = await this.getLeasesQueryBuilder(
+      req,
+    ).getManyAndCount();
+    return { result, count };
   }
 
-  private getLeasesQueryBuilder(): SelectQueryBuilder<Product> {
+  private getLeasesQueryBuilder(req: Request): SelectQueryBuilder<Product> {
     return this.leasesRepository
       .createQueryBuilder('lease')
       .innerJoin('lease.cell', 'cell')
@@ -35,8 +40,14 @@ export class LeasesService {
         'product',
         'lease.id = product.id',
       )
+      .where(
+        '(renterUser.name ILIKE :search OR lessorUser.name ILIKE :search)',
+        { search: `%${req.search || ''}%` },
+      )
       .orderBy('lease.id', 'DESC')
       .addOrderBy('product.id', 'ASC')
+      .skip(req.skip)
+      .take(req.take)
       .select([
         'lease.id',
         'cell.id',

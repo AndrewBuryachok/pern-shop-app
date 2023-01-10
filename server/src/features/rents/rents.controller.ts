@@ -1,7 +1,8 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { RentsService } from './rents.service';
 import { Rent } from './rent.entity';
 import { CreateRentDto } from './rent.dto';
+import { Request, Response } from '../../common/interfaces';
 import { MyId, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
 
@@ -10,14 +11,17 @@ export class RentsController {
   constructor(private rentsService: RentsService) {}
 
   @Get('my')
-  getMyRents(@MyId() myId: number): Promise<Rent[]> {
-    return this.rentsService.getMyRents(myId);
+  getMyRents(
+    @MyId() myId: number,
+    @Query() req: Request,
+  ): Promise<Response<Rent>> {
+    return this.rentsService.getMyRents(myId, req);
   }
 
   @Roles(Role.MANAGER)
   @Get('all')
-  getAllRents(): Promise<Rent[]> {
-    return this.rentsService.getAllRents();
+  getAllRents(@Query() req: Request): Promise<Response<Rent>> {
+    return this.rentsService.getAllRents(req);
   }
 
   @Get('my/select')

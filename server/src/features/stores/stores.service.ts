@@ -5,6 +5,7 @@ import { Store } from './store.entity';
 import { MarketsService } from '../markets/markets.service';
 import { PaymentsService } from '../payments/payments.service';
 import { ExtCreateStoreDto, ReserveStoreDto } from './store.dto';
+import { Request, Response } from '../../common/interfaces';
 import { getDateWeekAgo } from '../../common/utils';
 import { MAX_STORES_NUMBER } from '../../common/constants';
 import { AppException } from '../../common/exceptions';
@@ -19,18 +20,25 @@ export class StoresService {
     private paymentsService: PaymentsService,
   ) {}
 
-  getMainStores(): Promise<Store[]> {
-    return this.getStoresQueryBuilder().getMany();
+  async getMainStores(req: Request): Promise<Response<Store>> {
+    const [result, count] = await this.getStoresQueryBuilder(
+      req,
+    ).getManyAndCount();
+    return { result, count };
   }
 
-  getMyStores(myId: number): Promise<Store[]> {
-    return this.getStoresQueryBuilder()
-      .where('ownerUser.id = :myId', { myId })
-      .getMany();
+  async getMyStores(myId: number, req: Request): Promise<Response<Store>> {
+    const [result, count] = await this.getStoresQueryBuilder(req)
+      .andWhere('ownerUser.id = :myId', { myId })
+      .getManyAndCount();
+    return { result, count };
   }
 
-  getAllStores(): Promise<Store[]> {
-    return this.getStoresQueryBuilder().getMany();
+  async getAllStores(req: Request): Promise<Response<Store>> {
+    const [result, count] = await this.getStoresQueryBuilder(
+      req,
+    ).getManyAndCount();
+    return { result, count };
   }
 
   async createStore(dto: ExtCreateStoreDto): Promise<void> {
@@ -99,13 +107,18 @@ export class StoresService {
     }
   }
 
-  private getStoresQueryBuilder(): SelectQueryBuilder<Store> {
+  private getStoresQueryBuilder(req: Request): SelectQueryBuilder<Store> {
     return this.storesRepository
       .createQueryBuilder('store')
       .innerJoin('store.market', 'market')
       .innerJoin('market.card', 'ownerCard')
       .innerJoin('ownerCard.user', 'ownerUser')
+      .where('ownerUser.name ILIKE :search', {
+        search: `%${req.search || ''}%`,
+      })
       .orderBy('store.id', 'DESC')
+      .skip(req.skip)
+      .take(req.take)
       .select([
         'store.id',
         'market.id',

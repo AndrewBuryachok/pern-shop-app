@@ -1,7 +1,8 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { SalesService } from './sales.service';
 import { Sale } from './sale.entity';
 import { CreateSaleDto } from './sale.dto';
+import { Request, Response } from '../../common/interfaces';
 import { MyId, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
 
@@ -10,19 +11,25 @@ export class SalesController {
   constructor(private salesService: SalesService) {}
 
   @Get('my')
-  getMySales(@MyId() myId: number): Promise<Sale[]> {
-    return this.salesService.getMySales(myId);
+  getMySales(
+    @MyId() myId: number,
+    @Query() req: Request,
+  ): Promise<Response<Sale>> {
+    return this.salesService.getMySales(myId, req);
   }
 
   @Get('placed')
-  getPlacedSales(@MyId() myId: number): Promise<Sale[]> {
-    return this.salesService.getPlacedSales(myId);
+  getPlacedSales(
+    @MyId() myId: number,
+    @Query() req: Request,
+  ): Promise<Response<Sale>> {
+    return this.salesService.getPlacedSales(myId, req);
   }
 
   @Roles(Role.MANAGER)
   @Get('all')
-  getAllSales(): Promise<Sale[]> {
-    return this.salesService.getAllSales();
+  getAllSales(@Query() req: Request): Promise<Response<Sale>> {
+    return this.salesService.getAllSales(req);
   }
 
   @Post()

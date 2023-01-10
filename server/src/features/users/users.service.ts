@@ -9,6 +9,7 @@ import {
   ExtUpdateUserRolesDto,
   UpdateUserTokenDto,
 } from './user.dto';
+import { Request, Response } from '../../common/interfaces';
 import { AppException } from '../../common/exceptions';
 import { UserError } from './user-error.enum';
 import { Role } from './role.enum';
@@ -22,18 +23,25 @@ export class UsersService {
     private citiesService: CitiesService,
   ) {}
 
-  getMainUsers(): Promise<User[]> {
-    return this.getUsersQueryBuilder().getMany();
+  async getMainUsers(req: Request): Promise<Response<User>> {
+    const [result, count] = await this.getUsersQueryBuilder(
+      req,
+    ).getManyAndCount();
+    return { result, count };
   }
 
-  getMyUsers(myId: number): Promise<User[]> {
-    return this.getUsersQueryBuilder()
-      .where('city.userId = :myId', { myId })
-      .getMany();
+  async getMyUsers(myId: number, req: Request): Promise<Response<User>> {
+    const [result, count] = await this.getUsersQueryBuilder(req)
+      .andWhere('city.userId = :myId', { myId })
+      .getManyAndCount();
+    return { result, count };
   }
 
-  getAllUsers(): Promise<User[]> {
-    return this.getUsersQueryBuilder().getMany();
+  async getAllUsers(req: Request): Promise<Response<User>> {
+    const [result, count] = await this.getUsersQueryBuilder(
+      req,
+    ).getManyAndCount();
+    return { result, count };
   }
 
   selectAllUsers(): Promise<User[]> {
@@ -196,7 +204,7 @@ export class UsersService {
       .select(['user.id', 'user.name']);
   }
 
-  private getUsersQueryBuilder(): SelectQueryBuilder<User> {
+  private getUsersQueryBuilder(req: Request): SelectQueryBuilder<User> {
     return this.usersRepository
       .createQueryBuilder('user')
       .leftJoin('user.city', 'city')
@@ -206,8 +214,11 @@ export class UsersService {
         'card',
         'user.id = card.userId',
       )
+      .where('user.name ILIKE :search', { search: `%${req.search || ''}%` })
       .orderBy('user.id', 'DESC')
       .addOrderBy('card.id', 'ASC')
+      .skip(req.skip)
+      .take(req.take)
       .select([
         'user.id',
         'user.name',
@@ -223,7 +234,7 @@ export class UsersService {
   }
 
   private getUserQueryBuilder(): SelectQueryBuilder<User> {
-    return this.getUsersQueryBuilder()
+    return this.getUsersQueryBuilder({})
       .leftJoinAndMapMany(
         'user.shops',
         'shops',

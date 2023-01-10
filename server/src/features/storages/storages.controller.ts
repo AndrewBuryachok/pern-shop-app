@@ -1,7 +1,16 @@
-import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
+} from '@nestjs/common';
 import { StoragesService } from './storages.service';
 import { Storage } from './storage.entity';
 import { CreateStorageDto, EditStorageDto, StorageIdDto } from './storage.dto';
+import { Request, Response } from '../../common/interfaces';
 import { MyId, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
 
@@ -10,19 +19,22 @@ export class StoragesController {
   constructor(private storagesService: StoragesService) {}
 
   @Get()
-  getMainStorages(): Promise<Storage[]> {
-    return this.storagesService.getMainStorages();
+  getMainStorages(@Query() req: Request): Promise<Response<Storage>> {
+    return this.storagesService.getMainStorages(req);
   }
 
   @Get('my')
-  getMyStorages(@MyId() myId: number): Promise<Storage[]> {
-    return this.storagesService.getMyStorages(myId);
+  getMyStorages(
+    @MyId() myId: number,
+    @Query() req: Request,
+  ): Promise<Response<Storage>> {
+    return this.storagesService.getMyStorages(myId, req);
   }
 
   @Roles(Role.MANAGER)
   @Get('all')
-  getAllStorages(): Promise<Storage[]> {
-    return this.storagesService.getAllStorages();
+  getAllStorages(@Query() req: Request): Promise<Response<Storage>> {
+    return this.storagesService.getAllStorages(req);
   }
 
   @Get('my/select')

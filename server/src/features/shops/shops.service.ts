@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, SelectQueryBuilder } from 'typeorm';
 import { Shop } from './shop.entity';
 import { ExtCreateShopDto, ExtEditShopDto } from './shop.dto';
+import { Request, Response } from '../../common/interfaces';
 import { MAX_SHOPS_NUMBER } from '../../common/constants';
 import { AppException } from '../../common/exceptions';
 import { ShopError } from './shop-error.enum';
@@ -14,18 +15,25 @@ export class ShopsService {
     private shopsRepository: Repository<Shop>,
   ) {}
 
-  getMainShops(): Promise<Shop[]> {
-    return this.getShopsQueryBuilder().getMany();
+  async getMainShops(req: Request): Promise<Response<Shop>> {
+    const [result, count] = await this.getShopsQueryBuilder(
+      req,
+    ).getManyAndCount();
+    return { result, count };
   }
 
-  getMyShops(myId: number): Promise<Shop[]> {
-    return this.getShopsQueryBuilder()
-      .where('ownerUser.id = :myId', { myId })
-      .getMany();
+  async getMyShops(myId: number, req: Request): Promise<Response<Shop>> {
+    const [result, count] = await this.getShopsQueryBuilder(req)
+      .andWhere('ownerUser.id = :myId', { myId })
+      .getManyAndCount();
+    return { result, count };
   }
 
-  getAllShops(): Promise<Shop[]> {
-    return this.getShopsQueryBuilder().getMany();
+  async getAllShops(req: Request): Promise<Response<Shop>> {
+    const [result, count] = await this.getShopsQueryBuilder(
+      req,
+    ).getManyAndCount();
+    return { result, count };
   }
 
   selectMyShops(myId: number): Promise<Shop[]> {
@@ -114,7 +122,7 @@ export class ShopsService {
       .select(['shop.id', 'shop.name', 'shop.x', 'shop.y']);
   }
 
-  private getShopsQueryBuilder(): SelectQueryBuilder<Shop> {
+  private getShopsQueryBuilder(req: Request): SelectQueryBuilder<Shop> {
     return this.shopsRepository
       .createQueryBuilder('shop')
       .innerJoin('shop.user', 'ownerUser')
@@ -124,8 +132,13 @@ export class ShopsService {
         'good',
         'shop.id = good.shopId',
       )
+      .where('ownerUser.name ILIKE :search', {
+        search: `%${req.search || ''}%`,
+      })
       .orderBy('shop.id', 'DESC')
       .addOrderBy('good.id', 'ASC')
+      .skip(req.skip)
+      .take(req.take)
       .select([
         'shop.id',
         'ownerUser.id',

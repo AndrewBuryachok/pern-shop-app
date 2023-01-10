@@ -4,6 +4,7 @@ import { Repository, SelectQueryBuilder } from 'typeorm';
 import { City } from './city.entity';
 import { UsersService } from '../users/users.service';
 import { ExtCreateCityDto, ExtEditCityDto } from './city.dto';
+import { Request, Response } from '../../common/interfaces';
 import { MAX_CITIES_NUMBER } from '../../common/constants';
 import { AppException } from '../../common/exceptions';
 import { CityError } from './city-error.enum';
@@ -17,18 +18,25 @@ export class CitiesService {
     private usersService: UsersService,
   ) {}
 
-  getMainCities(): Promise<City[]> {
-    return this.getCitiesQueryBuilder().getMany();
+  async getMainCities(req: Request): Promise<Response<City>> {
+    const [result, count] = await this.getCitiesQueryBuilder(
+      req,
+    ).getManyAndCount();
+    return { result, count };
   }
 
-  getMyCities(myId: number): Promise<City[]> {
-    return this.getCitiesQueryBuilder()
-      .where('ownerUser.id = :myId', { myId })
-      .getMany();
+  async getMyCities(myId: number, req: Request): Promise<Response<City>> {
+    const [result, count] = await this.getCitiesQueryBuilder(req)
+      .andWhere('ownerUser.id = :myId', { myId })
+      .getManyAndCount();
+    return { result, count };
   }
 
-  getAllCities(): Promise<City[]> {
-    return this.getCitiesQueryBuilder().getMany();
+  async getAllCities(req: Request): Promise<Response<City>> {
+    const [result, count] = await this.getCitiesQueryBuilder(
+      req,
+    ).getManyAndCount();
+    return { result, count };
   }
 
   selectMyCities(myId: number): Promise<City[]> {
@@ -120,7 +128,7 @@ export class CitiesService {
       .select(['city.id', 'city.name', 'city.x', 'city.y']);
   }
 
-  private getCitiesQueryBuilder(): SelectQueryBuilder<City> {
+  private getCitiesQueryBuilder(req: Request): SelectQueryBuilder<City> {
     return this.citiesRepository
       .createQueryBuilder('city')
       .innerJoin('city.user', 'ownerUser')
@@ -130,8 +138,13 @@ export class CitiesService {
         'user',
         'city.id = user.cityId',
       )
+      .where('ownerUser.name ILIKE :search', {
+        search: `%${req.search || ''}%`,
+      })
       .orderBy('city.id', 'DESC')
       .addOrderBy('user.id', 'ASC')
+      .skip(req.skip)
+      .take(req.take)
       .select([
         'city.id',
         'ownerUser.id',

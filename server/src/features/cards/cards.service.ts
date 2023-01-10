@@ -7,6 +7,7 @@ import {
   ExtEditCardDto,
   UpdateCardBalanceDto,
 } from './card.dto';
+import { Request, Response } from '../../common/interfaces';
 import {
   MAX_CARDS_NUMBER,
   MAX_CARD_BALANCE,
@@ -22,14 +23,18 @@ export class CardsService {
     private cardsRepository: Repository<Card>,
   ) {}
 
-  getMyCards(myId: number): Promise<Card[]> {
-    return this.getCardsQueryBuilder()
-      .where('ownerUser.id = :myId', { myId })
-      .getMany();
+  async getMyCards(myId: number, req: Request): Promise<Response<Card>> {
+    const [result, count] = await this.getCardsQueryBuilder(req)
+      .andWhere('ownerUser.id = :myId', { myId })
+      .getManyAndCount();
+    return { result, count };
   }
 
-  getAllCards(): Promise<Card[]> {
-    return this.getCardsQueryBuilder().getMany();
+  async getAllCards(req: Request): Promise<Response<Card>> {
+    const [result, count] = await this.getCardsQueryBuilder(
+      req,
+    ).getManyAndCount();
+    return { result, count };
   }
 
   selectUserCards(userId: number): Promise<Card[]> {
@@ -144,11 +149,16 @@ export class CardsService {
       .select(['card.id', 'card.name']);
   }
 
-  private getCardsQueryBuilder(): SelectQueryBuilder<Card> {
+  private getCardsQueryBuilder(req: Request): SelectQueryBuilder<Card> {
     return this.cardsRepository
       .createQueryBuilder('card')
       .innerJoin('card.user', 'ownerUser')
+      .where('ownerUser.name ILIKE :search', {
+        search: `%${req.search || ''}%`,
+      })
       .orderBy('card.id', 'DESC')
+      .skip(req.skip)
+      .take(req.take)
       .select([
         'card.id',
         'ownerUser.id',

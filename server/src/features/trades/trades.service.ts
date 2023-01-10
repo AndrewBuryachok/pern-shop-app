@@ -4,6 +4,7 @@ import { Repository, SelectQueryBuilder } from 'typeorm';
 import { Trade } from './trade.entity';
 import { WaresService } from '../wares/wares.service';
 import { ExtCreateTradeDto } from './trade.dto';
+import { Request, Response } from '../../common/interfaces';
 import { AppException } from '../../common/exceptions';
 import { TradeError } from './trade-error.enum';
 
@@ -15,21 +16,26 @@ export class TradesService {
     private waresService: WaresService,
   ) {}
 
-  getMyTrades(myId: number): Promise<Trade[]> {
-    return this.getTradesQueryBuilder()
-      .where('buyerUser.id = :myId OR sellerUser.id = :myId', { myId })
-      .getMany();
+  async getMyTrades(myId: number, req: Request): Promise<Response<Trade>> {
+    const [result, count] = await this.getTradesQueryBuilder(req)
+      .andWhere('(buyerUser.id = :myId OR sellerUser.id = :myId)', { myId })
+      .getManyAndCount();
+    return { result, count };
   }
 
-  getPlacedTrades(myId: number): Promise<Trade[]> {
-    return this.getTradesQueryBuilder()
+  async getPlacedTrades(myId: number, req: Request): Promise<Response<Trade>> {
+    const [result, count] = await this.getTradesQueryBuilder(req)
       .innerJoin('market.card', 'ownerCard')
-      .where('ownerCard.userId = :myId', { myId })
-      .getMany();
+      .andWhere('ownerCard.userId = :myId', { myId })
+      .getManyAndCount();
+    return { result, count };
   }
 
-  getAllTrades(): Promise<Trade[]> {
-    return this.getTradesQueryBuilder().getMany();
+  async getAllTrades(req: Request): Promise<Response<Trade>> {
+    const [result, count] = await this.getTradesQueryBuilder(
+      req,
+    ).getManyAndCount();
+    return { result, count };
   }
 
   async createTrade(dto: ExtCreateTradeDto): Promise<void> {
@@ -50,7 +56,7 @@ export class TradesService {
     }
   }
 
-  private getTradesQueryBuilder(): SelectQueryBuilder<Trade> {
+  private getTradesQueryBuilder(req: Request): SelectQueryBuilder<Trade> {
     return this.tradesRepository
       .createQueryBuilder('trade')
       .innerJoin('trade.ware', 'ware')
@@ -61,7 +67,13 @@ export class TradesService {
       .innerJoin('sellerCard.user', 'sellerUser')
       .innerJoin('trade.card', 'buyerCard')
       .innerJoin('buyerCard.user', 'buyerUser')
+      .where(
+        '(buyerUser.name ILIKE :search OR sellerUser.name ILIKE :search)',
+        { search: `%${req.search || ''}%` },
+      )
       .orderBy('trade.id', 'DESC')
+      .skip(req.skip)
+      .take(req.take)
       .select([
         'trade.id',
         'ware.id',

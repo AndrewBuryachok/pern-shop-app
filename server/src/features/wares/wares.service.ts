@@ -5,6 +5,7 @@ import { Ware } from './ware.entity';
 import { RentsService } from '../rents/rents.service';
 import { PaymentsService } from '../payments/payments.service';
 import { BuyWareDto, ExtCreateWareDto } from './ware.dto';
+import { Request, Response } from '../../common/interfaces';
 import { getDateWeekAgo } from '../../common/utils';
 import { AppException } from '../../common/exceptions';
 import { WareError } from './ware-error.enum';
@@ -18,29 +19,35 @@ export class WaresService {
     private paymentsService: PaymentsService,
   ) {}
 
-  getMainWares(): Promise<Ware[]> {
-    return this.getWaresQueryBuilder()
-      .where('ware.amountNow > 0 AND rent.createdAt > :createdAt', {
+  async getMainWares(req: Request): Promise<Response<Ware>> {
+    const [result, count] = await this.getWaresQueryBuilder(req)
+      .andWhere('ware.amountNow > 0 AND rent.createdAt > :createdAt', {
         createdAt: getDateWeekAgo(),
       })
-      .getMany();
+      .getManyAndCount();
+    return { result, count };
   }
 
-  getMyWares(myId: number): Promise<Ware[]> {
-    return this.getWaresQueryBuilder()
-      .where('sellerUser.id = :myId', { myId })
-      .getMany();
+  async getMyWares(myId: number, req: Request): Promise<Response<Ware>> {
+    const [result, count] = await this.getWaresQueryBuilder(req)
+      .andWhere('sellerUser.id = :myId', { myId })
+      .getManyAndCount();
+    return { result, count };
   }
 
-  getPlacedWares(myId: number): Promise<Ware[]> {
-    return this.getWaresQueryBuilder()
+  async getPlacedWares(myId: number, req: Request): Promise<Response<Ware>> {
+    const [result, count] = await this.getWaresQueryBuilder(req)
       .innerJoin('market.card', 'ownerCard')
-      .where('ownerCard.userId = :myId', { myId })
-      .getMany();
+      .andWhere('ownerCard.userId = :myId', { myId })
+      .getManyAndCount();
+    return { result, count };
   }
 
-  getAllWares(): Promise<Ware[]> {
-    return this.getWaresQueryBuilder().getMany();
+  async getAllWares(req: Request): Promise<Response<Ware>> {
+    const [result, count] = await this.getWaresQueryBuilder(
+      req,
+    ).getManyAndCount();
+    return { result, count };
   }
 
   async createWare(dto: ExtCreateWareDto): Promise<void> {
@@ -97,7 +104,7 @@ export class WaresService {
     }
   }
 
-  private getWaresQueryBuilder(): SelectQueryBuilder<Ware> {
+  private getWaresQueryBuilder(req: Request): SelectQueryBuilder<Ware> {
     return this.waresRepository
       .createQueryBuilder('ware')
       .innerJoin('ware.rent', 'rent')
@@ -105,7 +112,12 @@ export class WaresService {
       .innerJoin('store.market', 'market')
       .innerJoin('rent.card', 'sellerCard')
       .innerJoin('sellerCard.user', 'sellerUser')
+      .where('sellerUser.name ILIKE :search', {
+        search: `%${req.search || ''}%`,
+      })
       .orderBy('ware.id', 'DESC')
+      .skip(req.skip)
+      .take(req.take)
       .select([
         'ware.id',
         'rent.id',

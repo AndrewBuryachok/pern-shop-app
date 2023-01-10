@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, SelectQueryBuilder } from 'typeorm';
 import { Poll } from './poll.entity';
 import { ExtCreatePollDto } from './poll.dto';
+import { Request, Response } from '../../common/interfaces';
 import { AppException } from '../../common/exceptions';
 import { PollError } from './poll-error.enum';
 
@@ -13,18 +14,27 @@ export class PollsService {
     private pollsRepository: Repository<Poll>,
   ) {}
 
-  getMainPolls(myId: number): Promise<Poll[]> {
-    return this.getPollsQueryBuilder(myId).getMany();
+  async getMainPolls(myId: number, req: Request): Promise<Response<Poll>> {
+    const [result, count] = await this.getPollsQueryBuilder(
+      myId,
+      req,
+    ).getManyAndCount();
+    return { result, count };
   }
 
-  getMyPolls(myId: number): Promise<Poll[]> {
-    return this.getPollsQueryBuilder(myId)
-      .where('pollerUser.id = :myId', { myId })
-      .getMany();
+  async getMyPolls(myId: number, req: Request): Promise<Response<Poll>> {
+    const [result, count] = await this.getPollsQueryBuilder(myId, req)
+      .andWhere('pollerUser.id = :myId', { myId })
+      .getManyAndCount();
+    return { result, count };
   }
 
-  getAllPolls(myId: number): Promise<Poll[]> {
-    return this.getPollsQueryBuilder(myId).getMany();
+  async getAllPolls(myId: number, req: Request): Promise<Response<Poll>> {
+    const [result, count] = await this.getPollsQueryBuilder(
+      myId,
+      req,
+    ).getManyAndCount();
+    return { result, count };
   }
 
   async createPoll(dto: ExtCreatePollDto): Promise<void> {
@@ -47,7 +57,10 @@ export class PollsService {
     }
   }
 
-  private getPollsQueryBuilder(myId: number): SelectQueryBuilder<Poll> {
+  private getPollsQueryBuilder(
+    myId: number,
+    req: Request,
+  ): SelectQueryBuilder<Poll> {
     return this.pollsRepository
       .createQueryBuilder('poll')
       .innerJoin('poll.user', 'pollerUser')
@@ -67,7 +80,12 @@ export class PollsService {
         'myVote.userId = :myId',
         { myId },
       )
+      .where('pollerUser.name ILIKE :search', {
+        search: `%${req.search || ''}%`,
+      })
       .orderBy('poll.id', 'DESC')
+      .skip(req.skip)
+      .take(req.take)
       .select([
         'poll.id',
         'pollerUser.id',

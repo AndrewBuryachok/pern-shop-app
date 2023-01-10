@@ -1,8 +1,17 @@
-import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
+} from '@nestjs/common';
 import { CardsService } from './cards.service';
 import { Card } from './card.entity';
 import { CardIdDto, CreateCardDto, EditCardDto } from './card.dto';
 import { UserIdDto } from '../users/user.dto';
+import { Request, Response } from '../../common/interfaces';
 import { MyId, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
 
@@ -11,14 +20,17 @@ export class CardsController {
   constructor(private cardsService: CardsService) {}
 
   @Get('my')
-  getMyCards(@MyId() myId: number): Promise<Card[]> {
-    return this.cardsService.getMyCards(myId);
+  getMyCards(
+    @MyId() myId: number,
+    @Query() req: Request,
+  ): Promise<Response<Card>> {
+    return this.cardsService.getMyCards(myId, req);
   }
 
   @Roles(Role.BANKER)
   @Get('all')
-  getAllCards(): Promise<Card[]> {
-    return this.cardsService.getAllCards();
+  getAllCards(@Query() req: Request): Promise<Response<Card>> {
+    return this.cardsService.getAllCards(req);
   }
 
   @Get('my/select')

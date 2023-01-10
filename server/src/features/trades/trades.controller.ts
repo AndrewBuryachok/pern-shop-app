@@ -1,7 +1,8 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { TradesService } from './trades.service';
 import { Trade } from './trade.entity';
 import { CreateTradeDto } from './trade.dto';
+import { Request, Response } from '../../common/interfaces';
 import { MyId, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
 
@@ -10,19 +11,25 @@ export class TradesController {
   constructor(private tradesService: TradesService) {}
 
   @Get('my')
-  getMyTrades(@MyId() myId: number): Promise<Trade[]> {
-    return this.tradesService.getMyTrades(myId);
+  getMyTrades(
+    @MyId() myId: number,
+    @Query() req: Request,
+  ): Promise<Response<Trade>> {
+    return this.tradesService.getMyTrades(myId, req);
   }
 
   @Get('placed')
-  getPlacedTrades(@MyId() myId: number): Promise<Trade[]> {
-    return this.tradesService.getPlacedTrades(myId);
+  getPlacedTrades(
+    @MyId() myId: number,
+    @Query() req: Request,
+  ): Promise<Response<Trade>> {
+    return this.tradesService.getPlacedTrades(myId, req);
   }
 
   @Roles(Role.MANAGER)
   @Get('all')
-  getAllTrades(): Promise<Trade[]> {
-    return this.tradesService.getAllTrades();
+  getAllTrades(@Query() req: Request): Promise<Response<Trade>> {
+    return this.tradesService.getAllTrades(req);
   }
 
   @Post()

@@ -1,7 +1,16 @@
-import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
+} from '@nestjs/common';
 import { CitiesService } from './cities.service';
 import { City } from './city.entity';
 import { CityIdDto, CreateCityDto, EditCityDto } from './city.dto';
+import { Request, Response } from '../../common/interfaces';
 import { MyId, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
 
@@ -10,19 +19,22 @@ export class CitiesController {
   constructor(private citiesService: CitiesService) {}
 
   @Get()
-  getMainCities(): Promise<City[]> {
-    return this.citiesService.getMainCities();
+  getMainCities(@Query() req: Request): Promise<Response<City>> {
+    return this.citiesService.getMainCities(req);
   }
 
   @Get('my')
-  getMyCities(@MyId() myId: number): Promise<City[]> {
-    return this.citiesService.getMyCities(myId);
+  getMyCities(
+    @MyId() myId: number,
+    @Query() req: Request,
+  ): Promise<Response<City>> {
+    return this.citiesService.getMyCities(myId, req);
   }
 
   @Roles(Role.ADMIN)
   @Get('all')
-  getAllCities(): Promise<City[]> {
-    return this.citiesService.getAllCities();
+  getAllCities(@Query() req: Request): Promise<Response<City>> {
+    return this.citiesService.getAllCities(req);
   }
 
   @Get('my/select')

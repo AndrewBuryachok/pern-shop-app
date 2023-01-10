@@ -5,6 +5,7 @@ import { Product } from './product.entity';
 import { CellsService } from '../cells/cells.service';
 import { PaymentsService } from '../payments/payments.service';
 import { BuyProductDto, ExtCreateProductDto } from './product.dto';
+import { Request, Response } from '../../common/interfaces';
 import { getDateWeekAgo } from '../../common/utils';
 import { AppException } from '../../common/exceptions';
 import { ProductError } from './product-error.enum';
@@ -18,29 +19,38 @@ export class ProductsService {
     private paymentsService: PaymentsService,
   ) {}
 
-  getMainProducts(): Promise<Product[]> {
-    return this.getProductsQueryBuilder()
-      .where('product.amountNow > 0 AND product.createdAt > :createdAt', {
+  async getMainProducts(req: Request): Promise<Response<Product>> {
+    const [result, count] = await this.getProductsQueryBuilder(req)
+      .andWhere('product.amountNow > 0 AND product.createdAt > :createdAt', {
         createdAt: getDateWeekAgo(),
       })
-      .getMany();
+      .getManyAndCount();
+    return { result, count };
   }
 
-  getMyProducts(myId: number): Promise<Product[]> {
-    return this.getProductsQueryBuilder()
-      .where('sellerUser.id = :myId', { myId })
-      .getMany();
+  async getMyProducts(myId: number, req: Request): Promise<Response<Product>> {
+    const [result, count] = await this.getProductsQueryBuilder(req)
+      .andWhere('sellerUser.id = :myId', { myId })
+      .getManyAndCount();
+    return { result, count };
   }
 
-  getPlacedProducts(myId: number): Promise<Product[]> {
-    return this.getProductsQueryBuilder()
+  async getPlacedProducts(
+    myId: number,
+    req: Request,
+  ): Promise<Response<Product>> {
+    const [result, count] = await this.getProductsQueryBuilder(req)
       .innerJoin('storage.card', 'ownerCard')
-      .where('ownerCard.userId = :myId', { myId })
-      .getMany();
+      .andWhere('ownerCard.userId = :myId', { myId })
+      .getManyAndCount();
+    return { result, count };
   }
 
-  getAllProducts(): Promise<Product[]> {
-    return this.getProductsQueryBuilder().getMany();
+  async getAllProducts(req: Request): Promise<Response<Product>> {
+    const [result, count] = await this.getProductsQueryBuilder(
+      req,
+    ).getManyAndCount();
+    return { result, count };
   }
 
   async createProduct(dto: ExtCreateProductDto): Promise<void> {
@@ -97,14 +107,19 @@ export class ProductsService {
     }
   }
 
-  private getProductsQueryBuilder(): SelectQueryBuilder<Product> {
+  private getProductsQueryBuilder(req: Request): SelectQueryBuilder<Product> {
     return this.productsRepository
       .createQueryBuilder('product')
       .innerJoin('product.cell', 'cell')
       .innerJoin('cell.storage', 'storage')
       .innerJoin('product.card', 'sellerCard')
       .innerJoin('sellerCard.user', 'sellerUser')
+      .where('sellerUser.name ILIKE :search', {
+        search: `%${req.search || ''}%`,
+      })
       .orderBy('product.id', 'DESC')
+      .skip(req.skip)
+      .take(req.take)
       .select([
         'product.id',
         'cell.id',

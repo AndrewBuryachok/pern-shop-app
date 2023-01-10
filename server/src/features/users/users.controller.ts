@@ -1,7 +1,16 @@
-import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Query,
+} from '@nestjs/common';
 import { UsersService } from './users.service';
 import { User } from './user.entity';
 import { UpdateUserCityDto, UpdateUserRolesDto, UserIdDto } from './user.dto';
+import { Request, Response } from '../../common/interfaces';
 import { MyId, Roles } from '../../common/decorators';
 import { Role } from './role.enum';
 
@@ -10,19 +19,22 @@ export class UsersController {
   constructor(private usersService: UsersService) {}
 
   @Get()
-  getMainUsers(): Promise<User[]> {
-    return this.usersService.getMainUsers();
+  getMainUsers(@Query() req: Request): Promise<Response<User>> {
+    return this.usersService.getMainUsers(req);
   }
 
   @Get('my')
-  getMyUsers(@MyId() myId: number): Promise<User[]> {
-    return this.usersService.getMyUsers(myId);
+  getMyUsers(
+    @MyId() myId: number,
+    @Query() req: Request,
+  ): Promise<Response<User>> {
+    return this.usersService.getMyUsers(myId, req);
   }
 
   @Roles(Role.ADMIN)
   @Get('all')
-  getAllUsers(): Promise<User[]> {
-    return this.usersService.getAllUsers();
+  getAllUsers(@Query() req: Request): Promise<Response<User>> {
+    return this.usersService.getAllUsers(req);
   }
 
   @Get('all/select')

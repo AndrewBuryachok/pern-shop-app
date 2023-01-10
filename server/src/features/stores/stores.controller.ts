@@ -1,7 +1,8 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { StoresService } from './stores.service';
 import { Store } from './store.entity';
 import { CreateStoreDto } from './store.dto';
+import { Request, Response } from '../../common/interfaces';
 import { MyId, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
 
@@ -10,19 +11,22 @@ export class StoresController {
   constructor(private storesService: StoresService) {}
 
   @Get()
-  getMainStores(): Promise<Store[]> {
-    return this.storesService.getMainStores();
+  getMainStores(@Query() req: Request): Promise<Response<Store>> {
+    return this.storesService.getMainStores(req);
   }
 
   @Get('my')
-  getMyStores(@MyId() myId: number): Promise<Store[]> {
-    return this.storesService.getMyStores(myId);
+  getMyStores(
+    @MyId() myId: number,
+    @Query() req: Request,
+  ): Promise<Response<Store>> {
+    return this.storesService.getMyStores(myId, req);
   }
 
   @Roles(Role.MANAGER)
   @Get('all')
-  getAllStores(): Promise<Store[]> {
-    return this.storesService.getAllStores();
+  getAllStores(@Query() req: Request): Promise<Response<Store>> {
+    return this.storesService.getAllStores(req);
   }
 
   @Post()

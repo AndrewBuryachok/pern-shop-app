@@ -5,6 +5,7 @@ import { Cell } from './cell.entity';
 import { StoragesService } from '../storages/storages.service';
 import { PaymentsService } from '../payments/payments.service';
 import { ExtCreateCellDto, ReserveCellDto } from './cell.dto';
+import { Request, Response } from '../../common/interfaces';
 import { getDateWeekAgo } from '../../common/utils';
 import { MAX_CELLS_NUMBER } from '../../common/constants';
 import { AppException } from '../../common/exceptions';
@@ -19,18 +20,25 @@ export class CellsService {
     private paymentsService: PaymentsService,
   ) {}
 
-  getMainCells(): Promise<Cell[]> {
-    return this.getCellsQueryBuilder().getMany();
+  async getMainCells(req: Request): Promise<Response<Cell>> {
+    const [result, count] = await this.getCellsQueryBuilder(
+      req,
+    ).getManyAndCount();
+    return { result, count };
   }
 
-  getMyCells(myId: number): Promise<Cell[]> {
-    return this.getCellsQueryBuilder()
-      .where('ownerUser.id = :myId', { myId })
-      .getMany();
+  async getMyCells(myId: number, req: Request): Promise<Response<Cell>> {
+    const [result, count] = await this.getCellsQueryBuilder(req)
+      .andWhere('ownerUser.id = :myId', { myId })
+      .getManyAndCount();
+    return { result, count };
   }
 
-  getAllCells(): Promise<Cell[]> {
-    return this.getCellsQueryBuilder().getMany();
+  async getAllCells(req: Request): Promise<Response<Cell>> {
+    const [result, count] = await this.getCellsQueryBuilder(
+      req,
+    ).getManyAndCount();
+    return { result, count };
   }
 
   async createCell(dto: ExtCreateCellDto): Promise<void> {
@@ -96,13 +104,18 @@ export class CellsService {
     }
   }
 
-  private getCellsQueryBuilder(): SelectQueryBuilder<Cell> {
+  private getCellsQueryBuilder(req: Request): SelectQueryBuilder<Cell> {
     return this.cellsRepository
       .createQueryBuilder('cell')
       .innerJoin('cell.storage', 'storage')
       .innerJoin('storage.card', 'ownerCard')
       .innerJoin('ownerCard.user', 'ownerUser')
+      .where('ownerUser.name ILIKE :search', {
+        search: `%${req.search || ''}%`,
+      })
       .orderBy('cell.id', 'DESC')
+      .skip(req.skip)
+      .take(req.take)
       .select([
         'cell.id',
         'storage.id',

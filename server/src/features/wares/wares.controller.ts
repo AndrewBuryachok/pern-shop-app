@@ -1,7 +1,8 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { WaresService } from './wares.service';
 import { Ware } from './ware.entity';
 import { CreateWareDto } from './ware.dto';
+import { Request, Response } from '../../common/interfaces';
 import { MyId, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
 
@@ -10,24 +11,30 @@ export class WaresController {
   constructor(private waresService: WaresService) {}
 
   @Get()
-  getMainWares(): Promise<Ware[]> {
-    return this.waresService.getMainWares();
+  getMainWares(@Query() req: Request): Promise<Response<Ware>> {
+    return this.waresService.getMainWares(req);
   }
 
   @Get('my')
-  getMyWares(@MyId() myId: number): Promise<Ware[]> {
-    return this.waresService.getMyWares(myId);
+  getMyWares(
+    @MyId() myId: number,
+    @Query() req: Request,
+  ): Promise<Response<Ware>> {
+    return this.waresService.getMyWares(myId, req);
   }
 
   @Get('placed')
-  getPlacedWares(@MyId() myId: number): Promise<Ware[]> {
-    return this.waresService.getPlacedWares(myId);
+  getPlacedWares(
+    @MyId() myId: number,
+    @Query() req: Request,
+  ): Promise<Response<Ware>> {
+    return this.waresService.getPlacedWares(myId, req);
   }
 
   @Roles(Role.MANAGER)
   @Get('all')
-  getAllWares(): Promise<Ware[]> {
-    return this.waresService.getAllWares();
+  getAllWares(@Query() req: Request): Promise<Response<Ware>> {
+    return this.waresService.getAllWares(req);
   }
 
   @Post()

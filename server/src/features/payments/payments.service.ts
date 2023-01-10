@@ -4,6 +4,7 @@ import { Repository, SelectQueryBuilder } from 'typeorm';
 import { Payment } from './payment.entity';
 import { CardsService } from '../cards/cards.service';
 import { ExtCreatePaymentDto } from './payment.dto';
+import { Request, Response } from '../../common/interfaces';
 import { AppException } from '../../common/exceptions';
 import { PaymentError } from './payment-error.enum';
 
@@ -15,14 +16,18 @@ export class PaymentsService {
     private cardsService: CardsService,
   ) {}
 
-  getMyPayments(myId: number): Promise<Payment[]> {
-    return this.getPaymentsQueryBuilder()
-      .where('senderUser.id = :myId OR receiverUser.id = :myId', { myId })
-      .getMany();
+  async getMyPayments(myId: number, req: Request): Promise<Response<Payment>> {
+    const [result, count] = await this.getPaymentsQueryBuilder(req)
+      .andWhere('(senderUser.id = :myId OR receiverUser.id = :myId)', { myId })
+      .getManyAndCount();
+    return { result, count };
   }
 
-  getAllPayments(): Promise<Payment[]> {
-    return this.getPaymentsQueryBuilder().getMany();
+  async getAllPayments(req: Request): Promise<Response<Payment>> {
+    const [result, count] = await this.getPaymentsQueryBuilder(
+      req,
+    ).getManyAndCount();
+    return { result, count };
   }
 
   async createPayment(dto: ExtCreatePaymentDto): Promise<void> {
@@ -52,14 +57,20 @@ export class PaymentsService {
     }
   }
 
-  private getPaymentsQueryBuilder(): SelectQueryBuilder<Payment> {
+  private getPaymentsQueryBuilder(req: Request): SelectQueryBuilder<Payment> {
     return this.paymentsRepository
       .createQueryBuilder('payment')
       .innerJoin('payment.senderCard', 'senderCard')
       .innerJoin('senderCard.user', 'senderUser')
       .innerJoin('payment.receiverCard', 'receiverCard')
       .innerJoin('receiverCard.user', 'receiverUser')
+      .where(
+        '(senderUser.name ILIKE :search OR receiverUser.name ILIKE :search)',
+        { search: `%${req.search || ''}%` },
+      )
       .orderBy('payment.id', 'DESC')
+      .skip(req.skip)
+      .take(req.take)
       .select([
         'payment.id',
         'senderCard.id',

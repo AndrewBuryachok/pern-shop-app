@@ -1,6 +1,7 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Query } from '@nestjs/common';
 import { LeasesService } from './leases.service';
 import { Product } from '../products/product.entity';
+import { Request, Response } from '../../common/interfaces';
 import { MyId, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
 
@@ -9,13 +10,16 @@ export class LeasesController {
   constructor(private leasesService: LeasesService) {}
 
   @Get('my')
-  getMyLeases(@MyId() myId: number): Promise<Product[]> {
-    return this.leasesService.getMyLeases(myId);
+  getMyLeases(
+    @MyId() myId: number,
+    @Query() req: Request,
+  ): Promise<Response<Product>> {
+    return this.leasesService.getMyLeases(myId, req);
   }
 
   @Roles(Role.MANAGER)
   @Get('all')
-  getAllLeases(): Promise<Product[]> {
-    return this.leasesService.getAllLeases();
+  getAllLeases(@Query() req: Request): Promise<Response<Product>> {
+    return this.leasesService.getAllLeases(req);
   }
 }

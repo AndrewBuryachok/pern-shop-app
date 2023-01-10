@@ -1,7 +1,16 @@
-import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
+} from '@nestjs/common';
 import { ShopsService } from './shops.service';
 import { Shop } from './shop.entity';
 import { CreateShopDto, EditShopDto, ShopIdDto } from './shop.dto';
+import { Request, Response } from '../../common/interfaces';
 import { MyId, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
 
@@ -10,19 +19,22 @@ export class ShopsController {
   constructor(private shopsService: ShopsService) {}
 
   @Get()
-  getMainShops(): Promise<Shop[]> {
-    return this.shopsService.getMainShops();
+  getMainShops(@Query() req: Request): Promise<Response<Shop>> {
+    return this.shopsService.getMainShops(req);
   }
 
   @Get('my')
-  getMyShops(@MyId() myId: number): Promise<Shop[]> {
-    return this.shopsService.getMyShops(myId);
+  getMyShops(
+    @MyId() myId: number,
+    @Query() req: Request,
+  ): Promise<Response<Shop>> {
+    return this.shopsService.getMyShops(myId, req);
   }
 
   @Roles(Role.MANAGER)
   @Get('all')
-  getAllShops(): Promise<Shop[]> {
-    return this.shopsService.getAllShops();
+  getAllShops(@Query() req: Request): Promise<Response<Shop>> {
+    return this.shopsService.getAllShops(req);
   }
 
   @Get('my/select')

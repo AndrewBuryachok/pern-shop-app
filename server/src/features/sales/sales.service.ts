@@ -4,6 +4,7 @@ import { Repository, SelectQueryBuilder } from 'typeorm';
 import { Sale } from './sale.entity';
 import { ProductsService } from '../products/products.service';
 import { ExtCreateSaleDto } from './sale.dto';
+import { Request, Response } from '../../common/interfaces';
 import { AppException } from '../../common/exceptions';
 import { SaleError } from './sale-error.enum';
 
@@ -15,21 +16,26 @@ export class SalesService {
     private productsService: ProductsService,
   ) {}
 
-  getMySales(myId: number): Promise<Sale[]> {
-    return this.getSalesQueryBuilder()
-      .where('buyerUser.id = :myId OR sellerUser.id = :myId', { myId })
-      .getMany();
+  async getMySales(myId: number, req: Request): Promise<Response<Sale>> {
+    const [result, count] = await this.getSalesQueryBuilder(req)
+      .andWhere('(buyerUser.id = :myId OR sellerUser.id = :myId)', { myId })
+      .getManyAndCount();
+    return { result, count };
   }
 
-  getPlacedSales(myId: number): Promise<Sale[]> {
-    return this.getSalesQueryBuilder()
+  async getPlacedSales(myId: number, req: Request): Promise<Response<Sale>> {
+    const [result, count] = await this.getSalesQueryBuilder(req)
       .innerJoin('storage.card', 'ownerCard')
-      .where('ownerCard.userId = :myId', { myId })
-      .getMany();
+      .andWhere('ownerCard.userId = :myId', { myId })
+      .getManyAndCount();
+    return { result, count };
   }
 
-  getAllSales(): Promise<Sale[]> {
-    return this.getSalesQueryBuilder().getMany();
+  async getAllSales(req: Request): Promise<Response<Sale>> {
+    const [result, count] = await this.getSalesQueryBuilder(
+      req,
+    ).getManyAndCount();
+    return { result, count };
   }
 
   async createSale(dto: ExtCreateSaleDto): Promise<void> {
@@ -50,7 +56,7 @@ export class SalesService {
     }
   }
 
-  private getSalesQueryBuilder(): SelectQueryBuilder<Sale> {
+  private getSalesQueryBuilder(req: Request): SelectQueryBuilder<Sale> {
     return this.salesRepository
       .createQueryBuilder('sale')
       .innerJoin('sale.product', 'product')
@@ -60,7 +66,13 @@ export class SalesService {
       .innerJoin('sellerCard.user', 'sellerUser')
       .innerJoin('sale.card', 'buyerCard')
       .innerJoin('buyerCard.user', 'buyerUser')
+      .where(
+        '(buyerUser.name ILIKE :search OR sellerUser.name ILIKE :search)',
+        { search: `%${req.search || ''}%` },
+      )
       .orderBy('sale.id', 'DESC')
+      .skip(req.skip)
+      .take(req.take)
       .select([
         'sale.id',
         'product.id',

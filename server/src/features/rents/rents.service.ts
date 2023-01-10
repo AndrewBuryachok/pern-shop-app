@@ -4,6 +4,7 @@ import { Repository, SelectQueryBuilder } from 'typeorm';
 import { Rent } from './rent.entity';
 import { StoresService } from '../stores/stores.service';
 import { ExtCreateRentDto } from './rent.dto';
+import { Request, Response } from '../../common/interfaces';
 import { AppException } from '../../common/exceptions';
 import { RentError } from './rent-error.enum';
 
@@ -15,14 +16,18 @@ export class RentsService {
     private storesService: StoresService,
   ) {}
 
-  getMyRents(myId: number): Promise<Rent[]> {
-    return this.getRentsQueryBuilder()
-      .where('renterUser.id = :myId OR lessorUser.id = :myId', { myId })
-      .getMany();
+  async getMyRents(myId: number, req: Request): Promise<Response<Rent>> {
+    const [result, count] = await this.getRentsQueryBuilder(req)
+      .andWhere('(renterUser.id = :myId OR lessorUser.id = :myId)', { myId })
+      .getManyAndCount();
+    return { result, count };
   }
 
-  getAllRents(): Promise<Rent[]> {
-    return this.getRentsQueryBuilder().getMany();
+  async getAllRents(req: Request): Promise<Response<Rent>> {
+    const [result, count] = await this.getRentsQueryBuilder(
+      req,
+    ).getManyAndCount();
+    return { result, count };
   }
 
   selectMyRents(myId: number): Promise<Rent[]> {
@@ -81,7 +86,7 @@ export class RentsService {
       ]);
   }
 
-  private getRentsQueryBuilder(): SelectQueryBuilder<Rent> {
+  private getRentsQueryBuilder(req: Request): SelectQueryBuilder<Rent> {
     return this.rentsRepository
       .createQueryBuilder('rent')
       .innerJoin('rent.store', 'store')
@@ -96,8 +101,14 @@ export class RentsService {
         'ware',
         'rent.id = ware.rentId',
       )
+      .where(
+        '(renterUser.name ILIKE :search OR lessorUser.name ILIKE :search)',
+        { search: `%${req.search || ''}%` },
+      )
       .orderBy('rent.id', 'DESC')
       .addOrderBy('ware.id', 'ASC')
+      .skip(req.skip)
+      .take(req.take)
       .select([
         'rent.id',
         'store.id',

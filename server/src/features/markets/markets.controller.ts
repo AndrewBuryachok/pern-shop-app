@@ -1,7 +1,16 @@
-import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
+} from '@nestjs/common';
 import { MarketsService } from './markets.service';
 import { Market } from './market.entity';
 import { CreateMarketDto, EditMarketDto, MarketIdDto } from './market.dto';
+import { Request, Response } from '../../common/interfaces';
 import { MyId, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
 
@@ -10,19 +19,22 @@ export class MarketsController {
   constructor(private marketsService: MarketsService) {}
 
   @Get()
-  getMainMarkets(): Promise<Market[]> {
-    return this.marketsService.getMainMarkets();
+  getMainMarkets(@Query() req: Request): Promise<Response<Market>> {
+    return this.marketsService.getMainMarkets(req);
   }
 
   @Get('my')
-  getMyMarkets(@MyId() myId: number): Promise<Market[]> {
-    return this.marketsService.getMyMarkets(myId);
+  getMyMarkets(
+    @MyId() myId: number,
+    @Query() req: Request,
+  ): Promise<Response<Market>> {
+    return this.marketsService.getMyMarkets(myId, req);
   }
 
   @Roles(Role.MANAGER)
   @Get('all')
-  getAllMarkets(): Promise<Market[]> {
-    return this.marketsService.getAllMarkets();
+  getAllMarkets(@Query() req: Request): Promise<Response<Market>> {
+    return this.marketsService.getAllMarkets(req);
   }
 
   @Get('my/select')

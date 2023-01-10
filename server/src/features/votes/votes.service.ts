@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, SelectQueryBuilder } from 'typeorm';
 import { Vote } from './vote.entity';
 import { ExtCreateVoteDto } from './vote.dto';
+import { Request, Response } from '../../common/interfaces';
 import { AppException } from '../../common/exceptions';
 import { VoteError } from './vote-error.enum';
 
@@ -13,20 +14,25 @@ export class VotesService {
     private votesRepository: Repository<Vote>,
   ) {}
 
-  getMyVotes(myId: number): Promise<Vote[]> {
-    return this.getVotesQueryBuilder()
-      .where('voterUser.id = :myId', { myId })
-      .getMany();
+  async getMyVotes(myId: number, req: Request): Promise<Response<Vote>> {
+    const [result, count] = await this.getVotesQueryBuilder(req)
+      .andWhere('voterUser.id = :myId', { myId })
+      .getManyAndCount();
+    return { result, count };
   }
 
-  getPolledVotes(myId: number): Promise<Vote[]> {
-    return this.getVotesQueryBuilder()
-      .where('pollerUser.id = :myId', { myId })
-      .getMany();
+  async getPolledVotes(myId: number, req: Request): Promise<Response<Vote>> {
+    const [result, count] = await this.getVotesQueryBuilder(req)
+      .andWhere('pollerUser.id = :myId', { myId })
+      .getManyAndCount();
+    return { result, count };
   }
 
-  getAllVotes(): Promise<Vote[]> {
-    return this.getVotesQueryBuilder().getMany();
+  async getAllVotes(req: Request): Promise<Response<Vote>> {
+    const [result, count] = await this.getVotesQueryBuilder(
+      req,
+    ).getManyAndCount();
+    return { result, count };
   }
 
   async createVote(dto: ExtCreateVoteDto): Promise<void> {
@@ -73,13 +79,19 @@ export class VotesService {
     }
   }
 
-  private getVotesQueryBuilder(): SelectQueryBuilder<Vote> {
+  private getVotesQueryBuilder(req: Request): SelectQueryBuilder<Vote> {
     return this.votesRepository
       .createQueryBuilder('vote')
       .innerJoin('vote.poll', 'poll')
       .innerJoin('poll.user', 'pollerUser')
       .innerJoin('vote.user', 'voterUser')
+      .where(
+        '(voterUser.name ILIKE :search OR pollerUser.name ILIKE :search)',
+        { search: `%${req.search || ''}%` },
+      )
       .orderBy('vote.id', 'DESC')
+      .skip(req.skip)
+      .take(req.take)
       .select([
         'vote.id',
         'poll.id',

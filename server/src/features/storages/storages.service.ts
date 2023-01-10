@@ -4,6 +4,7 @@ import { Repository, SelectQueryBuilder } from 'typeorm';
 import { Storage } from './storage.entity';
 import { CardsService } from '../cards/cards.service';
 import { ExtCreateStorageDto, ExtEditStorageDto } from './storage.dto';
+import { Request, Response } from '../../common/interfaces';
 import { getDateWeekAgo } from '../../common/utils';
 import { MAX_STORAGES_NUMBER } from '../../common/constants';
 import { AppException } from '../../common/exceptions';
@@ -17,18 +18,25 @@ export class StoragesService {
     private cardsService: CardsService,
   ) {}
 
-  getMainStorages(): Promise<Storage[]> {
-    return this.getStoragesQueryBuilder().getMany();
+  async getMainStorages(req: Request): Promise<Response<Storage>> {
+    const [result, count] = await this.getStoragesQueryBuilder(
+      req,
+    ).getManyAndCount();
+    return { result, count };
   }
 
-  getMyStorages(myId: number): Promise<Storage[]> {
-    return this.getStoragesQueryBuilder()
-      .where('ownerUser.id = :myId', { myId })
-      .getMany();
+  async getMyStorages(myId: number, req: Request): Promise<Response<Storage>> {
+    const [result, count] = await this.getStoragesQueryBuilder(req)
+      .andWhere('ownerUser.id = :myId', { myId })
+      .getManyAndCount();
+    return { result, count };
   }
 
-  getAllStorages(): Promise<Storage[]> {
-    return this.getStoragesQueryBuilder().getMany();
+  async getAllStorages(req: Request): Promise<Response<Storage>> {
+    const [result, count] = await this.getStoragesQueryBuilder(
+      req,
+    ).getManyAndCount();
+    return { result, count };
   }
 
   selectMyStorages(myId: number): Promise<Storage[]> {
@@ -139,7 +147,7 @@ export class StoragesService {
       .select(['storage.id', 'storage.name', 'storage.x', 'storage.y']);
   }
 
-  private getStoragesQueryBuilder(): SelectQueryBuilder<Storage> {
+  private getStoragesQueryBuilder(req: Request): SelectQueryBuilder<Storage> {
     return this.storagesRepository
       .createQueryBuilder('storage')
       .innerJoin('storage.card', 'ownerCard')
@@ -150,8 +158,13 @@ export class StoragesService {
         'cell',
         'storage.id = cell.storageId',
       )
+      .where('ownerUser.name ILIKE :search', {
+        search: `%${req.search || ''}%`,
+      })
       .orderBy('storage.id', 'DESC')
       .addOrderBy('cell.id', 'ASC')
+      .skip(req.skip)
+      .take(req.take)
       .select([
         'storage.id',
         'ownerCard.id',

@@ -4,6 +4,7 @@ import { Repository, SelectQueryBuilder } from 'typeorm';
 import { Exchange } from './exchange.entity';
 import { CardsService } from '../cards/cards.service';
 import { ExtCreateExchangeDto } from './exchange.dto';
+import { Request, Response } from '../../common/interfaces';
 import { AppException } from '../../common/exceptions';
 import { ExchangeError } from './exchange-error.enum';
 
@@ -15,14 +16,21 @@ export class ExchangesService {
     private cardsService: CardsService,
   ) {}
 
-  getMyExchanges(myId: number): Promise<Exchange[]> {
-    return this.getExchangesQueryBuilder()
-      .where('customerUser.id = :myId', { myId })
-      .getMany();
+  async getMyExchanges(
+    myId: number,
+    req: Request,
+  ): Promise<Response<Exchange>> {
+    const [result, count] = await this.getExchangesQueryBuilder(req)
+      .andWhere('customerUser.id = :myId', { myId })
+      .getManyAndCount();
+    return { result, count };
   }
 
-  getAllExchanges(): Promise<Exchange[]> {
-    return this.getExchangesQueryBuilder().getMany();
+  async getAllExchanges(req: Request): Promise<Response<Exchange>> {
+    const [result, count] = await this.getExchangesQueryBuilder(
+      req,
+    ).getManyAndCount();
+    return { result, count };
   }
 
   async createExchange(dto: ExtCreateExchangeDto): Promise<void> {
@@ -46,13 +54,19 @@ export class ExchangesService {
     }
   }
 
-  private getExchangesQueryBuilder(): SelectQueryBuilder<Exchange> {
+  private getExchangesQueryBuilder(req: Request): SelectQueryBuilder<Exchange> {
     return this.exchangesRepository
       .createQueryBuilder('exchange')
       .innerJoin('exchange.executorUser', 'executorUser')
       .innerJoin('exchange.customerCard', 'customerCard')
       .innerJoin('customerCard.user', 'customerUser')
+      .where(
+        '(executorUser.name ILIKE :search OR customerUser.name ILIKE :search)',
+        { search: `%${req.search || ''}%` },
+      )
       .orderBy('exchange.id', 'DESC')
+      .skip(req.skip)
+      .take(req.take)
       .select([
         'exchange.id',
         'executorUser.id',

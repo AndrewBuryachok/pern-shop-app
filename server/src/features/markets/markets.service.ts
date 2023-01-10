@@ -4,6 +4,7 @@ import { Repository, SelectQueryBuilder } from 'typeorm';
 import { Market } from './market.entity';
 import { CardsService } from '../cards/cards.service';
 import { ExtCreateMarketDto, ExtEditMarketDto } from './market.dto';
+import { Request, Response } from '../../common/interfaces';
 import { MAX_MARKETS_NUMBER } from '../../common/constants';
 import { AppException } from '../../common/exceptions';
 import { MarketError } from './market-error.enum';
@@ -16,18 +17,25 @@ export class MarketsService {
     private cardsService: CardsService,
   ) {}
 
-  getMainMarkets(): Promise<Market[]> {
-    return this.getMarketsQueryBuilder().getMany();
+  async getMainMarkets(req: Request): Promise<Response<Market>> {
+    const [result, count] = await this.getMarketsQueryBuilder(
+      req,
+    ).getManyAndCount();
+    return { result, count };
   }
 
-  getMyMarkets(myId: number): Promise<Market[]> {
-    return this.getMarketsQueryBuilder()
-      .where('ownerUser.id = :myId', { myId })
-      .getMany();
+  async getMyMarkets(myId: number, req: Request): Promise<Response<Market>> {
+    const [result, count] = await this.getMarketsQueryBuilder(req)
+      .andWhere('ownerUser.id = :myId', { myId })
+      .getManyAndCount();
+    return { result, count };
   }
 
-  getAllMarkets(): Promise<Market[]> {
-    return this.getMarketsQueryBuilder().getMany();
+  async getAllMarkets(req: Request): Promise<Response<Market>> {
+    const [result, count] = await this.getMarketsQueryBuilder(
+      req,
+    ).getManyAndCount();
+    return { result, count };
   }
 
   selectMyMarkets(myId: number): Promise<Market[]> {
@@ -120,7 +128,7 @@ export class MarketsService {
       .select(['market.id', 'market.name', 'market.x', 'market.y']);
   }
 
-  private getMarketsQueryBuilder(): SelectQueryBuilder<Market> {
+  private getMarketsQueryBuilder(req: Request): SelectQueryBuilder<Market> {
     return this.marketsRepository
       .createQueryBuilder('market')
       .innerJoin('market.card', 'ownerCard')
@@ -131,8 +139,13 @@ export class MarketsService {
         'store',
         'market.id = store.marketId',
       )
+      .where('ownerUser.name ILIKE :search', {
+        search: `%${req.search || ''}%`,
+      })
       .orderBy('market.id', 'DESC')
       .addOrderBy('store.id', 'ASC')
+      .skip(req.skip)
+      .take(req.take)
       .select([
         'market.id',
         'ownerCard.id',

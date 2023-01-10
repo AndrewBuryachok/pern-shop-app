@@ -4,6 +4,7 @@ import { Repository, SelectQueryBuilder } from 'typeorm';
 import { Good } from './good.entity';
 import { ShopsService } from '../shops/shops.service';
 import { DeleteGoodDto, ExtCreateGoodDto } from './good.dto';
+import { Request, Response } from '../../common/interfaces';
 import { AppException } from '../../common/exceptions';
 import { GoodError } from './good-error.enum';
 
@@ -15,18 +16,25 @@ export class GoodsService {
     private shopsService: ShopsService,
   ) {}
 
-  getMainGoods(): Promise<Good[]> {
-    return this.getGoodsQueryBuilder().getMany();
+  async getMainGoods(req: Request): Promise<Response<Good>> {
+    const [result, count] = await this.getGoodsQueryBuilder(
+      req,
+    ).getManyAndCount();
+    return { result, count };
   }
 
-  getMyGoods(myId: number): Promise<Good[]> {
-    return this.getGoodsQueryBuilder()
-      .where('sellerUser.id = :myId', { myId })
-      .getMany();
+  async getMyGoods(myId: number, req: Request): Promise<Response<Good>> {
+    const [result, count] = await this.getGoodsQueryBuilder(req)
+      .andWhere('sellerUser.id = :myId', { myId })
+      .getManyAndCount();
+    return { result, count };
   }
 
-  getAllGoods(): Promise<Good[]> {
-    return this.getGoodsQueryBuilder().getMany();
+  async getAllGoods(req: Request): Promise<Response<Good>> {
+    const [result, count] = await this.getGoodsQueryBuilder(
+      req,
+    ).getManyAndCount();
+    return { result, count };
   }
 
   async createGood(dto: ExtCreateGoodDto): Promise<void> {
@@ -76,12 +84,17 @@ export class GoodsService {
     }
   }
 
-  private getGoodsQueryBuilder(): SelectQueryBuilder<Good> {
+  private getGoodsQueryBuilder(req: Request): SelectQueryBuilder<Good> {
     return this.goodsRepository
       .createQueryBuilder('good')
       .innerJoin('good.shop', 'shop')
       .innerJoin('shop.user', 'sellerUser')
+      .where('sellerUser.name ILIKE :search', {
+        search: `%${req.search || ''}%`,
+      })
       .orderBy('good.id', 'DESC')
+      .skip(req.skip)
+      .take(req.take)
       .select([
         'good.id',
         'shop.id',
