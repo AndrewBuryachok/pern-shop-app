@@ -1,10 +1,12 @@
 import { Controller, Get, Query } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { LeasesService } from './leases.service';
 import { Product } from '../products/product.entity';
 import { Request, Response } from '../../common/interfaces';
 import { MyId, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
 
+@ApiTags('leases')
 @Controller('leases')
 export class LeasesController {
   constructor(private leasesService: LeasesService) {}

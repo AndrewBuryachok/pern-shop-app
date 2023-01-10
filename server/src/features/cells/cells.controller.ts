@@ -1,4 +1,5 @@
 import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { CellsService } from './cells.service';
 import { Cell } from './cell.entity';
 import { CreateCellDto } from './cell.dto';
@@ -6,6 +7,7 @@ import { Request, Response } from '../../common/interfaces';
 import { MyId, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
 
+@ApiTags('cells')
 @Controller('cells')
 export class CellsController {
   constructor(private cellsService: CellsService) {}

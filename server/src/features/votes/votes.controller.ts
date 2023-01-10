@@ -1,4 +1,5 @@
 import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { VotesService } from './votes.service';
 import { Vote } from './vote.entity';
 import { CreateVoteDto } from './vote.dto';
@@ -6,6 +7,7 @@ import { Request, Response } from '../../common/interfaces';
 import { MyId, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
 
+@ApiTags('votes')
 @Controller('votes')
 export class VotesController {
   constructor(private votesService: VotesService) {}

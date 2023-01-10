@@ -1,4 +1,5 @@
 import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { TradesService } from './trades.service';
 import { Trade } from './trade.entity';
 import { CreateTradeDto } from './trade.dto';
@@ -6,6 +7,7 @@ import { Request, Response } from '../../common/interfaces';
 import { MyId, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
 
+@ApiTags('trades')
 @Controller('trades')
 export class TradesController {
   constructor(private tradesService: TradesService) {}

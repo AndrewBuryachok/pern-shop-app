@@ -7,6 +7,7 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { ShopsService } from './shops.service';
 import { Shop } from './shop.entity';
 import { CreateShopDto, EditShopDto, ShopIdDto } from './shop.dto';
@@ -14,6 +15,7 @@ import { Request, Response } from '../../common/interfaces';
 import { MyId, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
 
+@ApiTags('shops')
 @Controller('shops')
 export class ShopsController {
   constructor(private shopsService: ShopsService) {}

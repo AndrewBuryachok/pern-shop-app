@@ -7,6 +7,7 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { CitiesService } from './cities.service';
 import { City } from './city.entity';
 import { CityIdDto, CreateCityDto, EditCityDto } from './city.dto';
@@ -14,6 +15,7 @@ import { Request, Response } from '../../common/interfaces';
 import { MyId, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
 
+@ApiTags('cities')
 @Controller('cities')
 export class CitiesController {
   constructor(private citiesService: CitiesService) {}

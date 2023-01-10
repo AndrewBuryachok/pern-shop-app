@@ -1,4 +1,5 @@
 import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { StoresService } from './stores.service';
 import { Store } from './store.entity';
 import { CreateStoreDto } from './store.dto';
@@ -6,6 +7,7 @@ import { Request, Response } from '../../common/interfaces';
 import { MyId, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
 
+@ApiTags('stores')
 @Controller('stores')
 export class StoresController {
   constructor(private storesService: StoresService) {}

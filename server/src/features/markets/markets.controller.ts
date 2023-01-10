@@ -7,6 +7,7 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { MarketsService } from './markets.service';
 import { Market } from './market.entity';
 import { CreateMarketDto, EditMarketDto, MarketIdDto } from './market.dto';
@@ -14,6 +15,7 @@ import { Request, Response } from '../../common/interfaces';
 import { MyId, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
 
+@ApiTags('markets')
 @Controller('markets')
 export class MarketsController {
   constructor(private marketsService: MarketsService) {}

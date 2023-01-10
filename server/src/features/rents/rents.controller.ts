@@ -1,4 +1,5 @@
 import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { RentsService } from './rents.service';
 import { Rent } from './rent.entity';
 import { CreateRentDto } from './rent.dto';
@@ -6,6 +7,7 @@ import { Request, Response } from '../../common/interfaces';
 import { MyId, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
 
+@ApiTags('rents')
 @Controller('rents')
 export class RentsController {
   constructor(private rentsService: RentsService) {}

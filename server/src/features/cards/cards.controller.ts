@@ -7,6 +7,7 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { CardsService } from './cards.service';
 import { Card } from './card.entity';
 import { CardIdDto, CreateCardDto, EditCardDto } from './card.dto';
@@ -15,6 +16,7 @@ import { Request, Response } from '../../common/interfaces';
 import { MyId, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
 
+@ApiTags('cards')
 @Controller('cards')
 export class CardsController {
   constructor(private cardsService: CardsService) {}
