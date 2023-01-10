@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/users.service';
 import { User } from '../users/user.entity';
@@ -11,6 +12,7 @@ import { AuthError } from './auth-error.enum';
 @Injectable()
 export class AuthService {
   constructor(
+    private configService: ConfigService,
     private jwtService: JwtService,
     private usersService: UsersService,
   ) {}
@@ -42,11 +44,11 @@ export class AuthService {
     const payload = { sub: user.id, name: user.name };
     const [access, refresh] = await Promise.all([
       this.jwtService.signAsync(payload, {
-        secret: 'at-secret',
+        secret: this.configService.get('AT_SECRET'),
         expiresIn: '1d',
       }),
       this.jwtService.signAsync(payload, {
-        secret: 'rt-secret',
+        secret: this.configService.get('RT_SECRET'),
         expiresIn: '7d',
       }),
     ]);
