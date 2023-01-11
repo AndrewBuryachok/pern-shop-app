@@ -16,3 +16,10 @@ export interface PlaceWithCard extends Place {
   card: MdCard;
   price: number;
 }
+
+export interface ExtPlace extends Place {
+  type: number;
+  owner: string;
+  price?: number;
+  data: string[];
+}
