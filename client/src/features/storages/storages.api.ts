@@ -1,6 +1,10 @@
 import { emptyApi } from '../../app/empty.api';
 import { IRequest, IResponse } from '../../common/interfaces';
-import { SelectStorage, SmStorage, Storage } from './storage.model';
+import {
+  SelectStorage,
+  SelectStorageWithPrice,
+  Storage,
+} from './storage.model';
 import { CreateStorageDto, EditStorageDto } from './storage.dto';
 import { getQuery } from '../../common/utils';
 
@@ -24,13 +28,13 @@ export const storagesApi = emptyApi.injectEndpoints({
       }),
       providesTags: ['Storage'],
     }),
-    selectMyStorages: build.query<SmStorage[], void>({
+    selectMyStorages: build.query<SelectStorage[], void>({
       query: () => ({
         url: '/storages/my/select',
       }),
       providesTags: ['Storage'],
     }),
-    selectFreeStorages: build.query<SelectStorage[], void>({
+    selectFreeStorages: build.query<SelectStorageWithPrice[], void>({
       query: () => ({
         url: '/storages/free/select',
       }),

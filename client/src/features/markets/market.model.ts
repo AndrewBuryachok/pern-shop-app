@@ -8,3 +8,7 @@ export interface MdMarket extends PlaceWithCard {}
 export interface Market extends MdMarket {
   stores: SmStore[];
 }
+
+export interface SelectMarket extends SmMarket {
+  stores: number;
+}
