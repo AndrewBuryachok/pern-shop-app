@@ -1,0 +1,50 @@
+import { emptyApi } from '../../app/empty.api';
+import { IRequest, IResponse } from '../../common/interfaces';
+import { Ware } from './ware.model';
+import { CreateWareDto } from './ware.dto';
+import { getQuery } from '../../common/utils';
+
+export const waresApi = emptyApi.injectEndpoints({
+  endpoints: (build) => ({
+    getMainWares: build.query<IResponse<Ware>, IRequest>({
+      query: (req) => ({
+        url: `/wares?${getQuery(req)}`,
+      }),
+      providesTags: ['Ware'],
+    }),
+    getMyWares: build.query<IResponse<Ware>, IRequest>({
+      query: (req) => ({
+        url: `/wares/my?${getQuery(req)}`,
+      }),
+      providesTags: ['Ware'],
+    }),
+    getPlacedWares: build.query<IResponse<Ware>, IRequest>({
+      query: (req) => ({
+        url: `/wares/placed?${getQuery(req)}`,
+      }),
+      providesTags: ['Ware'],
+    }),
+    getAllWares: build.query<IResponse<Ware>, IRequest>({
+      query: (req) => ({
+        url: `/wares/all?${getQuery(req)}`,
+      }),
+      providesTags: ['Ware'],
+    }),
+    createWare: build.mutation<void, CreateWareDto>({
+      query: (dto) => ({
+        url: '/wares',
+        method: 'POST',
+        body: dto,
+      }),
+      invalidatesTags: ['Ware', 'Rent'],
+    }),
+  }),
+});
+
+export const {
+  useGetMainWaresQuery,
+  useGetMyWaresQuery,
+  useGetPlacedWaresQuery,
+  useGetAllWaresQuery,
+  useCreateWareMutation,
+} = waresApi;
