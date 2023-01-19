@@ -17,21 +17,24 @@ import { Color } from '../../common/constants';
 type Props = IModal<Store>;
 
 export default function ReserveStoreModal({ data: store }: Props) {
+  const myCard = { balance: 0 };
+
   const form = useForm({
     initialValues: {
       storeId: store.id,
       card: '',
     },
     transformValues: ({ card, ...rest }) => ({ ...rest, cardId: +card }),
+    validate: {
+      card: () =>
+        myCard.balance < store.market.price ? 'Not enough balance' : null,
+    },
   });
 
   const { data: cards } = useSelectMyCardsQuery();
 
-  const card = cards?.find((card) => card.id === +form.values.card);
-  card &&
-    (card.balance < store.market.price
-      ? form.setFieldError('card', 'Not enough balance')
-      : form.clearFieldError('card'));
+  myCard.balance =
+    cards?.find((card) => card.id === +form.values.card)?.balance || 0;
 
   const [createRent, { isLoading }] = useCreateRentMutation();
 
@@ -64,6 +67,6 @@ export const reserveStoreAction = {
       title: 'Reserve Store',
       children: <ReserveStoreModal data={store} />,
     }),
-  disable: (store: Store) => !!store.reservedAt,
+  disable: () => false,
   color: Color.GREEN,
 };

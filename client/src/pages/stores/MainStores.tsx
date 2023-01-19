@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useDebouncedValue } from '@mantine/hooks';
 import { useGetMainStoresQuery } from '../../features/stores/stores.api';
 import StoresTable from '../../features/stores/StoresTable';
+import { reserveStoreAction } from '../../features/stores/ReserveStoreModal';
 import { isUserNotHasRole } from '../../common/utils';
 import { Role } from '../../common/constants';
 
@@ -19,6 +20,8 @@ export default function MainStores() {
     { label: 'All', to: 'all', disabled: isUserNotHasRole(Role.MANAGER) },
   ];
 
+  const actions = [reserveStoreAction];
+
   return (
     <StoresTable
       {...response}
@@ -28,6 +31,7 @@ export default function MainStores() {
       setSearch={setSearch}
       links={links}
       title='Main Stores'
+      actions={actions}
     />
   );
 }

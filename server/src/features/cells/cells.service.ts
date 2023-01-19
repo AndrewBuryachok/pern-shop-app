@@ -21,9 +21,11 @@ export class CellsService {
   ) {}
 
   async getMainCells(req: Request): Promise<Response<Cell>> {
-    const [result, count] = await this.getCellsQueryBuilder(
-      req,
-    ).getManyAndCount();
+    const [result, count] = await this.getCellsQueryBuilder(req)
+      .andWhere('(cell.reservedAt IS NULL OR cell.reservedAt < :date)', {
+        date: getDateWeekAgo(),
+      })
+      .getManyAndCount();
     return { result, count };
   }
 

@@ -21,9 +21,11 @@ export class StoresService {
   ) {}
 
   async getMainStores(req: Request): Promise<Response<Store>> {
-    const [result, count] = await this.getStoresQueryBuilder(
-      req,
-    ).getManyAndCount();
+    const [result, count] = await this.getStoresQueryBuilder(req)
+      .andWhere('(store.reservedAt IS NULL OR store.reservedAt < :date)', {
+        date: getDateWeekAgo(),
+      })
+      .getManyAndCount();
     return { result, count };
   }
 
