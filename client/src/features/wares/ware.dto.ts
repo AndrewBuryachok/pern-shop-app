@@ -1,5 +1,5 @@
-import { CreateThingWithAmountDto } from '../things/thing.dto';
+import { CreateThingDto } from '../things/thing.dto';
 
-export interface CreateWareDto extends CreateThingWithAmountDto {
+export interface CreateWareDto extends CreateThingDto {
   rentId: number;
 }

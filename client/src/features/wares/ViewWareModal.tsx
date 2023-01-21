@@ -24,9 +24,9 @@ export default function ViewWareModal({ data: ware }: Props) {
         disabled
       />
       <Textarea label='Description' value={ware.description} disabled />
-      <TextInput label='Market' value={parseStore(ware.rent.store)} disabled />
       <TextInput label='Amount' value={parseThingAmount(ware)} disabled />
       <TextInput label='Price' value={`${ware.price}$`} disabled />
+      <TextInput label='Market' value={parseStore(ware.rent.store)} disabled />
       <TextInput
         label='Created'
         value={`${created.date} ${created.time}`}

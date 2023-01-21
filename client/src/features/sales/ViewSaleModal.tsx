@@ -29,15 +29,15 @@ export default function ViewSaleModal({ data: sale }: Props) {
         value={sale.product.description}
         disabled
       />
-      <TextInput
-        label='Storage'
-        value={parseCell(sale.product.cell)}
-        disabled
-      />
       <TextInput label='Amount' value={parseSaleAmount(sale)} disabled />
       <TextInput
         label='Sum'
         value={`${sale.amount * sale.product.price}$`}
+        disabled
+      />
+      <TextInput
+        label='Storage'
+        value={parseCell(sale.product.cell)}
         disabled
       />
       <TextInput

@@ -2,7 +2,7 @@ import { Stack, Textarea, TextInput } from '@mantine/core';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { Good } from './good.model';
-import { parseDate, parsePlace } from '../../common/utils';
+import { parseDate, parsePlace, parseThingAmount } from '../../common/utils';
 import { Color, items } from '../../common/constants';
 
 type Props = IModal<Good>;
@@ -20,6 +20,7 @@ export default function ViewGoodModal({ data: good }: Props) {
       />
       <Textarea label='Description' value={good.description} disabled />
       <TextInput label='Shop' value={parsePlace(good.shop)} disabled />
+      <TextInput label='Amount' value={parseThingAmount(good)} disabled />
       <TextInput label='Price' value={`${good.price}$`} disabled />
       <TextInput
         label='Created'

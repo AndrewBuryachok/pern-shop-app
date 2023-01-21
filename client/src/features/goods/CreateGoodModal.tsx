@@ -5,9 +5,16 @@ import { useCreateGoodMutation } from './goods.api';
 import { useSelectMyShopsQuery } from '../shops/shops.api';
 import { CreateGoodDto } from './good.dto';
 import CustomForm from '../../common/components/CustomForm';
-import { selectCategories, selectItems, selectShops } from '../../common/utils';
 import {
+  selectCategories,
+  selectItems,
+  selectKits,
+  selectShops,
+} from '../../common/utils';
+import {
+  MAX_AMOUNT_VALUE,
   MAX_DESCRIPTION_LENGTH,
+  MAX_INTAKE_VALUE,
   MAX_PRICE_VALUE,
 } from '../../common/constants';
 
@@ -18,12 +25,16 @@ export default function CreateGoodModal() {
       category: '',
       item: '',
       description: '-',
+      amount: 1,
+      intake: 1,
+      kit: '',
       price: 1,
     },
-    transformValues: ({ shop, item, ...rest }) => ({
+    transformValues: ({ shop, item, kit, ...rest }) => ({
       ...rest,
       shopId: +shop,
       item: +item,
+      kit: +kit,
     }),
   });
 
@@ -67,6 +78,28 @@ export default function CreateGoodModal() {
         required
         maxLength={MAX_DESCRIPTION_LENGTH}
         {...form.getInputProps('description')}
+      />
+      <NumberInput
+        label='Amount'
+        placeholder='Amount'
+        required
+        min={1}
+        max={MAX_AMOUNT_VALUE}
+        {...form.getInputProps('amount')}
+      />
+      <NumberInput
+        label='Intake'
+        placeholder='Intake'
+        required
+        min={1}
+        max={MAX_INTAKE_VALUE}
+        {...form.getInputProps('intake')}
+      />
+      <NativeSelect
+        label='Kit'
+        data={selectKits()}
+        required
+        {...form.getInputProps('kit')}
       />
       <NumberInput
         label='Price'

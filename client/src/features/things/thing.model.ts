@@ -1,20 +1,16 @@
-export interface Thing {
+export interface SmThing {
   id: number;
   item: number;
 }
 
-export interface ThingWithPrice extends Thing {
+export interface MdThing extends SmThing {
   description: string;
+  intake: number;
+  kit: number;
   price: number;
 }
 
-export interface ThingWithKit extends ThingWithPrice {
-  intake: number;
-  kit: number;
-}
-
-export interface ThingWithAmount extends ThingWithKit {
-  amountNow: number;
-  amountAll: number;
+export interface LgThing extends MdThing {
+  amount: number;
   createdAt: Date;
 }

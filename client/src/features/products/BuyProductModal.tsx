@@ -66,7 +66,7 @@ export default function BuyProductModal({ data: product }: Props) {
         placeholder='Amount'
         required
         min={1}
-        max={customMin(product.amountNow, maxAmount)}
+        max={customMin(product.amount, maxAmount)}
         {...form.getInputProps('amount')}
       />
     </CustomForm>

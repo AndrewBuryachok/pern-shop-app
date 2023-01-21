@@ -29,15 +29,15 @@ export default function ViewTradeModal({ data: trade }: Props) {
         disabled
       />
       <TextInput label='Description' value={trade.ware.description} disabled />
-      <TextInput
-        label='Market'
-        value={parseStore(trade.ware.rent.store)}
-        disabled
-      />
       <TextInput label='Amount' value={parseTradeAmount(trade)} disabled />
       <TextInput
         label='Sum'
         value={`${trade.amount * trade.ware.price}$`}
+        disabled
+      />
+      <TextInput
+        label='Market'
+        value={parseStore(trade.ware.rent.store)}
         disabled
       />
       <TextInput

@@ -40,14 +40,10 @@ export const parseCell = (cell: MdCell) =>
   `${parsePlace(cell.storage)} #${cell.name}`;
 
 export const parseThingAmount = (data: {
-  amountNow: number;
-  amountAll: number;
+  amount: number;
   intake: number;
   kit: number;
-}) =>
-  `${data.amountNow} / ${data.amountAll} * ${data.intake} ${
-    kits[data.kit - 1]
-  }`;
+}) => `${data.amount} * ${data.intake} ${kits[data.kit - 1]}`;
 
 export const parseTradeAmount = (trade: Trade) =>
   `${trade.amount} * ${trade.ware.intake} ${kits[trade.ware.kit - 1]}`;

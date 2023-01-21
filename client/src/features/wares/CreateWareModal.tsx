@@ -56,7 +56,7 @@ export default function CreateWareModal() {
         label='Rent'
         data={selectRents(rents)}
         required
-        {...form.getInputProps('storage')}
+        {...form.getInputProps('rent')}
       />
       <NativeSelect
         label='Category'

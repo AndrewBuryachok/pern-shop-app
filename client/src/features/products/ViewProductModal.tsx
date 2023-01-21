@@ -24,9 +24,9 @@ export default function ViewProductModal({ data: product }: Props) {
         disabled
       />
       <Textarea label='Description' value={product.description} disabled />
-      <TextInput label='Storage' value={parseCell(product.cell)} disabled />
       <TextInput label='Amount' value={parseThingAmount(product)} disabled />
       <TextInput label='Price' value={`${product.price}$`} disabled />
+      <TextInput label='Storage' value={parseCell(product.cell)} disabled />
       <TextInput
         label='Created'
         value={`${created.date} ${created.time}`}

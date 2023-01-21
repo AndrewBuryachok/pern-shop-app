@@ -21,7 +21,7 @@ export default function WaresTable({ actions = [], ...props }: Props) {
         'Item',
         'Amount',
         'Price',
-        'Storage',
+        'Market',
         'Created',
         'Action',
       ]}

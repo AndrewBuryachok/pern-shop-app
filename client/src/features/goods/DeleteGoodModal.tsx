@@ -6,7 +6,7 @@ import { Good } from './good.model';
 import { useDeleteGoodMutation } from './goods.api';
 import { DeleteGoodDto } from './good.dto';
 import CustomForm from '../../common/components/CustomForm';
-import { parseDate, parsePlace } from '../../common/utils';
+import { parseDate, parsePlace, parseThingAmount } from '../../common/utils';
 import { Color, items } from '../../common/constants';
 
 type Props = IModal<Good>;
@@ -39,6 +39,7 @@ export default function DeleteGoodModal({ data: good }: Props) {
         disabled
       />
       <Textarea label='Description' value={good.description} disabled />
+      <TextInput label='Amount' value={parseThingAmount(good)} disabled />
       <TextInput label='Price' value={`${good.price}$`} disabled />
       <TextInput label='Shop' value={parsePlace(good.shop)} disabled />
       <TextInput

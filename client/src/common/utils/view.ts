@@ -1,7 +1,7 @@
 import { SmUser } from '../../features/users/user.model';
 import { SmCard } from '../../features/cards/card.model';
 import { Container } from '../../features/containers/container.model';
-import { Thing } from '../../features/things/thing.model';
+import { SmThing } from '../../features/things/thing.model';
 import { items, Role, roles as allRoles } from '../constants';
 
 export const viewData = (data: string[]) => [`Total: ${data.length}`, ...data];
@@ -18,5 +18,5 @@ export const viewCards = (cards: SmCard[]) =>
 export const viewContainers = (containers: Container[]) =>
   viewData(containers.map((container) => `#${container.name}`));
 
-export const viewThings = (things: Thing[]) =>
+export const viewThings = (things: SmThing[]) =>
   viewData(things.map((thing) => items[thing.item - 1].substring(3)));
