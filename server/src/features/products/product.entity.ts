@@ -1,10 +1,10 @@
 import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
-import { ThingWithAmount } from '../things/thing.entity';
+import { Thing } from '../things/thing.entity';
 import { Cell } from '../cells/cell.entity';
 import { Card } from '../cards/card.entity';
 
 @Entity('products')
-export class Product extends ThingWithAmount {
+export class Product extends Thing {
   @Column({ name: 'cell_id' })
   cellId: number;
 

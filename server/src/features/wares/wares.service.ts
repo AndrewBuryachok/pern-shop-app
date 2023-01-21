@@ -21,7 +21,7 @@ export class WaresService {
 
   async getMainWares(req: Request): Promise<Response<Ware>> {
     const [result, count] = await this.getWaresQueryBuilder(req)
-      .andWhere('ware.amountNow > 0 AND rent.createdAt > :createdAt', {
+      .andWhere('ware.amount > 0 AND rent.createdAt > :createdAt', {
         createdAt: getDateWeekAgo(),
       })
       .getManyAndCount();
@@ -60,7 +60,7 @@ export class WaresService {
       relations: ['rent'],
       where: { id: dto.wareId },
     });
-    if (ware.amountNow < dto.amount) {
+    if (ware.amount < dto.amount) {
       throw new AppException(WareError.NOT_ENOUGH_AMOUNT);
     }
     await this.paymentsService.createPayment({
@@ -83,8 +83,7 @@ export class WaresService {
         rentId: dto.rentId,
         item: dto.item,
         description: dto.description,
-        amountNow: dto.amount,
-        amountAll: dto.amount,
+        amount: dto.amount,
         intake: dto.intake,
         kit: dto.kit,
         price: dto.price,
@@ -97,7 +96,7 @@ export class WaresService {
 
   private async buy(ware: Ware, amount: number): Promise<void> {
     try {
-      ware.amountNow -= amount;
+      ware.amount -= amount;
       await this.waresRepository.save(ware);
     } catch (error) {
       throw new AppException(WareError.BUY_FAILED);
@@ -134,8 +133,7 @@ export class WaresService {
         'sellerCard.color',
         'ware.item',
         'ware.description',
-        'ware.amountNow',
-        'ware.amountAll',
+        'ware.amount',
         'ware.intake',
         'ware.kit',
         'ware.price',

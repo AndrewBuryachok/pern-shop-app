@@ -7,7 +7,7 @@ import {
   IsProductExists,
   IsStorageExists,
 } from '../../common/constraints';
-import { CreateThingWithAmountDto } from '../things/thing.dto';
+import { CreateThingDto } from '../things/thing.dto';
 import { ExtCreateSaleDto } from '../sales/sale.dto';
 
 export class ProductIdDto {
@@ -18,7 +18,7 @@ export class ProductIdDto {
   productId: number;
 }
 
-export class CreateProductDto extends CreateThingWithAmountDto {
+export class CreateProductDto extends CreateThingDto {
   @ApiProperty()
   @IsId()
   @Validate(IsStorageExists)

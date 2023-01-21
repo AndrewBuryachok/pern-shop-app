@@ -11,22 +11,17 @@ export abstract class Thing {
   description: string;
 
   @Column()
-  price: number;
-
-  @CreateDateColumn({ type: 'timestamptz', name: 'created_at' })
-  createdAt: Date;
-}
-
-export abstract class ThingWithAmount extends Thing {
-  @Column({ name: 'amount_now' })
-  amountNow: number;
-
-  @Column({ name: 'amount_all' })
-  amountAll: number;
+  amount: number;
 
   @Column()
   intake: number;
 
   @Column()
   kit: number;
+
+  @Column()
+  price: number;
+
+  @CreateDateColumn({ type: 'timestamptz', name: 'created_at' })
+  createdAt: Date;
 }

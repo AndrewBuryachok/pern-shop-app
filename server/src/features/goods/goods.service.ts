@@ -68,6 +68,9 @@ export class GoodsService {
         shopId: dto.shopId,
         item: dto.item,
         description: dto.description,
+        amount: dto.amount,
+        intake: dto.intake,
+        kit: dto.kit,
         price: dto.price,
       });
       await this.goodsRepository.save(good);
@@ -105,6 +108,9 @@ export class GoodsService {
         'shop.y',
         'good.item',
         'good.description',
+        'good.amount',
+        'good.intake',
+        'good.kit',
         'good.price',
         'good.createdAt',
       ]);

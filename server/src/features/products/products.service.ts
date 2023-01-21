@@ -21,7 +21,7 @@ export class ProductsService {
 
   async getMainProducts(req: Request): Promise<Response<Product>> {
     const [result, count] = await this.getProductsQueryBuilder(req)
-      .andWhere('product.amountNow > 0 AND product.createdAt > :createdAt', {
+      .andWhere('product.amount > 0 AND product.createdAt > :createdAt', {
         createdAt: getDateWeekAgo(),
       })
       .getManyAndCount();
@@ -62,7 +62,7 @@ export class ProductsService {
     const product = await this.productsRepository.findOneBy({
       id: dto.productId,
     });
-    if (product.amountNow < dto.amount) {
+    if (product.amount < dto.amount) {
       throw new AppException(ProductError.NOT_ENOUGH_AMOUNT);
     }
     await this.paymentsService.createPayment({
@@ -86,8 +86,7 @@ export class ProductsService {
         cardId: dto.cardId,
         item: dto.item,
         description: dto.description,
-        amountNow: dto.amount,
-        amountAll: dto.amount,
+        amount: dto.amount,
         intake: dto.intake,
         kit: dto.kit,
         price: dto.price,
@@ -100,7 +99,7 @@ export class ProductsService {
 
   private async buy(product: Product, amount: number): Promise<void> {
     try {
-      product.amountNow -= amount;
+      product.amount -= amount;
       await this.productsRepository.save(product);
     } catch (error) {
       throw new AppException(ProductError.BUY_FAILED);
@@ -135,8 +134,7 @@ export class ProductsService {
         'sellerCard.color',
         'product.item',
         'product.description',
-        'product.amountNow',
-        'product.amountAll',
+        'product.amount',
         'product.intake',
         'product.kit',
         'product.price',

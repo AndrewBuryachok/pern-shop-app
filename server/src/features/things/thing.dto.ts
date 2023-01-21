@@ -18,12 +18,6 @@ export abstract class CreateThingDto {
   description: string;
 
   @ApiProperty()
-  @IsPrice()
-  price: number;
-}
-
-export abstract class CreateThingWithAmountDto extends CreateThingDto {
-  @ApiProperty()
   @IsAmount()
   amount: number;
 
@@ -34,4 +28,8 @@ export abstract class CreateThingWithAmountDto extends CreateThingDto {
   @ApiProperty()
   @IsKit()
   kit: number;
+
+  @ApiProperty()
+  @IsPrice()
+  price: number;
 }

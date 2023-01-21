@@ -3,7 +3,7 @@ import { Validate } from 'class-validator';
 import { Type } from 'class-transformer';
 import { IsId } from '../../common/decorators';
 import { IsRentExists, IsWareExists } from '../../common/constraints';
-import { CreateThingWithAmountDto } from '../things/thing.dto';
+import { CreateThingDto } from '../things/thing.dto';
 import { ExtCreateTradeDto } from '../trades/trade.dto';
 
 export class WareIdDto {
@@ -14,7 +14,7 @@ export class WareIdDto {
   productId: number;
 }
 
-export class CreateWareDto extends CreateThingWithAmountDto {
+export class CreateWareDto extends CreateThingDto {
   @ApiProperty()
   @IsId()
   @Validate(IsRentExists)

@@ -1,9 +1,9 @@
 import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
-import { ThingWithAmount } from '../things/thing.entity';
+import { Thing } from '../things/thing.entity';
 import { Rent } from '../rents/rent.entity';
 
 @Entity('wares')
-export class Ware extends ThingWithAmount {
+export class Ware extends Thing {
   @Column({ name: 'rent_id' })
   rentId: number;
 
