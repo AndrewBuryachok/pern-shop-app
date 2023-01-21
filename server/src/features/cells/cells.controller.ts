@@ -4,7 +4,7 @@ import { CellsService } from './cells.service';
 import { Cell } from './cell.entity';
 import { CreateCellDto } from './cell.dto';
 import { Request, Response } from '../../common/interfaces';
-import { MyId, Roles } from '../../common/decorators';
+import { MyId, Public, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
 
 @ApiTags('cells')
@@ -12,6 +12,7 @@ import { Role } from '../users/role.enum';
 export class CellsController {
   constructor(private cellsService: CellsService) {}
 
+  @Public()
   @Get()
   getMainCells(@Query() req: Request): Promise<Response<Cell>> {
     return this.cellsService.getMainCells(req);

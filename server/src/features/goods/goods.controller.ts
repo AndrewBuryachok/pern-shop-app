@@ -12,7 +12,7 @@ import { GoodsService } from './goods.service';
 import { Good } from './good.entity';
 import { CreateGoodDto, GoodIdDto } from './good.dto';
 import { Request, Response } from '../../common/interfaces';
-import { MyId, Roles } from '../../common/decorators';
+import { MyId, Public, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
 
 @ApiTags('goods')
@@ -20,6 +20,7 @@ import { Role } from '../users/role.enum';
 export class GoodsController {
   constructor(private goodsService: GoodsService) {}
 
+  @Public()
   @Get()
   getMainGoods(@Query() req: Request): Promise<Response<Good>> {
     return this.goodsService.getMainGoods(req);

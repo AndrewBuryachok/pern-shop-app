@@ -4,7 +4,7 @@ import { WaresService } from './wares.service';
 import { Ware } from './ware.entity';
 import { CreateWareDto } from './ware.dto';
 import { Request, Response } from '../../common/interfaces';
-import { MyId, Roles } from '../../common/decorators';
+import { MyId, Public, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
 
 @ApiTags('wares')
@@ -12,6 +12,7 @@ import { Role } from '../users/role.enum';
 export class WaresController {
   constructor(private waresService: WaresService) {}
 
+  @Public()
   @Get()
   getMainWares(@Query() req: Request): Promise<Response<Ware>> {
     return this.waresService.getMainWares(req);

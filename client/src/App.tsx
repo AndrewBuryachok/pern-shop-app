@@ -95,7 +95,7 @@ export default function App() {
   const [opened, toggle] = useToggle();
 
   const pages = [
-    { index: true, element: Home, public: true },
+    { index: true, element: Home },
     { path: 'map', element: Map },
     {
       path: 'users',
@@ -247,11 +247,7 @@ export default function App() {
         { path: 'all', element: AllVotes, role: Role.ADMIN },
       ],
     },
-    {
-      path: '*',
-      element: NotFound,
-      public: true,
-    },
+    { path: '*', element: NotFound },
   ];
 
   return (
@@ -289,9 +285,13 @@ export default function App() {
                             key={`${page.path} ${route.path}`}
                             {...route}
                             element={
-                              <Protected role={route.role}>
+                              route.index && page.path !== 'polls' ? (
                                 <route.element />
-                              </Protected>
+                              ) : (
+                                <Protected role={route.role}>
+                                  <route.element />
+                                </Protected>
+                              )
                             }
                           />
                         ))}
@@ -300,15 +300,7 @@ export default function App() {
                       <Route
                         key={page.path || 'home'}
                         {...page}
-                        element={
-                          page.public ? (
-                            <page.element />
-                          ) : (
-                            <Protected>
-                              <page.element />
-                            </Protected>
-                          )
-                        }
+                        element={<page.element />}
                       />
                     ),
                   )}

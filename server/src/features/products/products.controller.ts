@@ -4,7 +4,7 @@ import { ProductsService } from './products.service';
 import { Product } from './product.entity';
 import { CreateProductDto } from './product.dto';
 import { Request, Response } from '../../common/interfaces';
-import { MyId, Roles } from '../../common/decorators';
+import { MyId, Public, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
 
 @ApiTags('products')
@@ -12,6 +12,7 @@ import { Role } from '../users/role.enum';
 export class ProductsController {
   constructor(private productsService: ProductsService) {}
 
+  @Public()
   @Get()
   getMainProducts(@Query() req: Request): Promise<Response<Product>> {
     return this.productsService.getMainProducts(req);

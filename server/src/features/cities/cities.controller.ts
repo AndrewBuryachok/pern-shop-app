@@ -12,7 +12,7 @@ import { CitiesService } from './cities.service';
 import { City } from './city.entity';
 import { CityIdDto, CreateCityDto, EditCityDto } from './city.dto';
 import { Request, Response } from '../../common/interfaces';
-import { MyId, Roles } from '../../common/decorators';
+import { MyId, Public, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
 
 @ApiTags('cities')
@@ -20,6 +20,7 @@ import { Role } from '../users/role.enum';
 export class CitiesController {
   constructor(private citiesService: CitiesService) {}
 
+  @Public()
   @Get()
   getMainCities(@Query() req: Request): Promise<Response<City>> {
     return this.citiesService.getMainCities(req);

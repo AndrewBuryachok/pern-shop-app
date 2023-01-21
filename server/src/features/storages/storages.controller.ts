@@ -12,7 +12,7 @@ import { StoragesService } from './storages.service';
 import { Storage } from './storage.entity';
 import { CreateStorageDto, EditStorageDto, StorageIdDto } from './storage.dto';
 import { Request, Response } from '../../common/interfaces';
-import { MyId, Roles } from '../../common/decorators';
+import { MyId, Public, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
 
 @ApiTags('storages')
@@ -20,6 +20,7 @@ import { Role } from '../users/role.enum';
 export class StoragesController {
   constructor(private storagesService: StoragesService) {}
 
+  @Public()
   @Get()
   getMainStorages(@Query() req: Request): Promise<Response<Storage>> {
     return this.storagesService.getMainStorages(req);

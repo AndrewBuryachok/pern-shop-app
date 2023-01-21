@@ -4,7 +4,7 @@ import { StoresService } from './stores.service';
 import { Store } from './store.entity';
 import { CreateStoreDto } from './store.dto';
 import { Request, Response } from '../../common/interfaces';
-import { MyId, Roles } from '../../common/decorators';
+import { MyId, Public, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
 
 @ApiTags('stores')
@@ -12,6 +12,7 @@ import { Role } from '../users/role.enum';
 export class StoresController {
   constructor(private storesService: StoresService) {}
 
+  @Public()
   @Get()
   getMainStores(@Query() req: Request): Promise<Response<Store>> {
     return this.storesService.getMainStores(req);

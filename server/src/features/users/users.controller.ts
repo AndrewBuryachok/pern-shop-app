@@ -12,7 +12,7 @@ import { UsersService } from './users.service';
 import { User } from './user.entity';
 import { UpdateUserCityDto, UpdateUserRolesDto, UserIdDto } from './user.dto';
 import { Request, Response } from '../../common/interfaces';
-import { MyId, Roles } from '../../common/decorators';
+import { MyId, Public, Roles } from '../../common/decorators';
 import { Role } from './role.enum';
 
 @ApiTags('users')
@@ -20,6 +20,7 @@ import { Role } from './role.enum';
 export class UsersController {
   constructor(private usersService: UsersService) {}
 
+  @Public()
   @Get()
   getMainUsers(@Query() req: Request): Promise<Response<User>> {
     return this.usersService.getMainUsers(req);
@@ -39,6 +40,7 @@ export class UsersController {
     return this.usersService.getAllUsers(req);
   }
 
+  @Public()
   @Get('all/select')
   selectAllUsers(): Promise<User[]> {
     return this.usersService.selectAllUsers();

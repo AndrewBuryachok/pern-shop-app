@@ -12,7 +12,7 @@ import { ShopsService } from './shops.service';
 import { Shop } from './shop.entity';
 import { CreateShopDto, EditShopDto, ShopIdDto } from './shop.dto';
 import { Request, Response } from '../../common/interfaces';
-import { MyId, Roles } from '../../common/decorators';
+import { MyId, Public, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
 
 @ApiTags('shops')
@@ -20,6 +20,7 @@ import { Role } from '../users/role.enum';
 export class ShopsController {
   constructor(private shopsService: ShopsService) {}
 
+  @Public()
   @Get()
   getMainShops(@Query() req: Request): Promise<Response<Shop>> {
     return this.shopsService.getMainShops(req);
