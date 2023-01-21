@@ -1,7 +1,7 @@
 import { emptyApi } from '../../app/empty.api';
 import { IRequest, IResponse } from '../../common/interfaces';
 import { Good } from './good.model';
-import { CreateGoodDto, DeleteGoodDto } from './good.dto';
+import { CreateGoodDto, DeleteGoodDto, EditGoodDto } from './good.dto';
 import { getQuery } from '../../common/utils';
 
 export const goodsApi = emptyApi.injectEndpoints({
@@ -32,6 +32,14 @@ export const goodsApi = emptyApi.injectEndpoints({
       }),
       invalidatesTags: ['Good', 'Shop'],
     }),
+    editGood: build.mutation<void, EditGoodDto>({
+      query: ({ goodId, ...dto }) => ({
+        url: `/goods/${goodId}`,
+        method: 'PATCH',
+        body: dto,
+      }),
+      invalidatesTags: ['Good', 'Shop'],
+    }),
     deleteGood: build.mutation<void, DeleteGoodDto>({
       query: ({ goodId }) => ({
         url: `/goods/${goodId}`,
@@ -47,5 +55,6 @@ export const {
   useGetMyGoodsQuery,
   useGetAllGoodsQuery,
   useCreateGoodMutation,
+  useEditGoodMutation,
   useDeleteGoodMutation,
 } = goodsApi;

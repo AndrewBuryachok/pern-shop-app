@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, SelectQueryBuilder } from 'typeorm';
 import { Good } from './good.entity';
 import { ShopsService } from '../shops/shops.service';
-import { DeleteGoodDto, ExtCreateGoodDto } from './good.dto';
+import { DeleteGoodDto, ExtCreateGoodDto, ExtEditGoodDto } from './good.dto';
 import { Request, Response } from '../../common/interfaces';
 import { AppException } from '../../common/exceptions';
 import { GoodError } from './good-error.enum';
@@ -42,6 +42,11 @@ export class GoodsService {
     await this.create(dto);
   }
 
+  async editGood(dto: ExtEditGoodDto): Promise<void> {
+    const good = await this.checkGoodOwner(dto.goodId, dto.myId);
+    await this.edit(good, dto);
+  }
+
   async deleteGood(dto: DeleteGoodDto): Promise<void> {
     const good = await this.checkGoodOwner(dto.goodId, dto.myId);
     await this.delete(good);
@@ -76,6 +81,20 @@ export class GoodsService {
       await this.goodsRepository.save(good);
     } catch (error) {
       throw new AppException(GoodError.CREATE_FAILED);
+    }
+  }
+
+  private async edit(good: Good, dto: ExtEditGoodDto): Promise<void> {
+    try {
+      good.item = dto.item;
+      good.description = dto.description;
+      good.amount = dto.amount;
+      good.intake = dto.intake;
+      good.kit = dto.kit;
+      good.price = dto.price;
+      await this.goodsRepository.save(good);
+    } catch (error) {
+      throw new AppException(GoodError.EDIT_FAILED);
     }
   }
 

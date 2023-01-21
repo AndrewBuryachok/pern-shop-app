@@ -3,6 +3,7 @@ import { useDebouncedValue } from '@mantine/hooks';
 import { useGetMyGoodsQuery } from '../../features/goods/goods.api';
 import GoodsTable from '../../features/goods/GoodsTable';
 import { createGoodButton } from '../../features/goods/CreateGoodModal';
+import { editGoodAction } from '../../features/goods/EditGoodModal';
 import { deleteGoodAction } from '../../features/goods/DeleteGoodModal';
 import { isUserNotHasRole } from '../../common/utils';
 import { Role } from '../../common/constants';
@@ -23,7 +24,7 @@ export default function MyGoods() {
 
   const button = createGoodButton;
 
-  const actions = [deleteGoodAction];
+  const actions = [editGoodAction, deleteGoodAction];
 
   return (
     <GoodsTable

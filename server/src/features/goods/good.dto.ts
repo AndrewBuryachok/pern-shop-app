@@ -24,6 +24,13 @@ export class ExtCreateGoodDto extends CreateGoodDto {
   myId: number;
 }
 
+export class EditGoodDto extends CreateThingDto {}
+
+export class ExtEditGoodDto extends EditGoodDto {
+  goodId: number;
+  myId: number;
+}
+
 export class DeleteGoodDto extends GoodIdDto {
   myId: number;
 }
