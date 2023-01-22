@@ -27,6 +27,7 @@ export class UsersService {
     const [result, count] = await this.getUsersQueryBuilder(
       req,
     ).getManyAndCount();
+    await this.loadCards(result);
     return { result, count };
   }
 
@@ -34,6 +35,7 @@ export class UsersService {
     const [result, count] = await this.getUsersQueryBuilder(req)
       .andWhere('city.userId = :myId', { myId })
       .getManyAndCount();
+    await this.loadCards(result);
     return { result, count };
   }
 
@@ -41,6 +43,7 @@ export class UsersService {
     const [result, count] = await this.getUsersQueryBuilder(
       req,
     ).getManyAndCount();
+    await this.loadCards(result);
     return { result, count };
   }
 
@@ -56,6 +59,7 @@ export class UsersService {
     const user = await this.getUserQueryBuilder()
       .where('user.id = :userId', { userId })
       .getOne();
+    await this.loadCards([user]);
     ['goods', 'wares', 'products', 'trades', 'sales'].forEach(
       (stat) => (user[stat] = user[stat].length),
     );
@@ -204,19 +208,32 @@ export class UsersService {
       .select(['user.id', 'user.name']);
   }
 
+  private async loadCards(users: User[]): Promise<void> {
+    const promises = users.map(async (user) => {
+      user['cards'] = (
+        await this.usersRepository
+          .createQueryBuilder('user')
+          .leftJoinAndMapMany(
+            'user.cards',
+            'cards',
+            'card',
+            'user.id = card.userId',
+          )
+          .where('user.id = :userId', { userId: user.id })
+          .orderBy('card.id', 'ASC')
+          .select(['user.id', 'card.id', 'card.name', 'card.color'])
+          .getOne()
+      )['cards'];
+    });
+    await Promise.all(promises);
+  }
+
   private getUsersQueryBuilder(req: Request): SelectQueryBuilder<User> {
     return this.usersRepository
       .createQueryBuilder('user')
       .leftJoin('user.city', 'city')
-      .leftJoinAndMapMany(
-        'user.cards',
-        'cards',
-        'card',
-        'user.id = card.userId',
-      )
       .where('user.name ILIKE :search', { search: `%${req.search || ''}%` })
       .orderBy('user.id', 'DESC')
-      .addOrderBy('card.id', 'ASC')
       .skip(req.skip)
       .take(req.take)
       .select([
@@ -227,14 +244,17 @@ export class UsersService {
         'city.name',
         'city.x',
         'city.y',
-        'card.id',
-        'card.name',
-        'card.color',
       ]);
   }
 
   private getUserQueryBuilder(): SelectQueryBuilder<User> {
     return this.getUsersQueryBuilder({})
+      .leftJoinAndMapMany(
+        'user.cards',
+        'cards',
+        'card',
+        'user.id = card.userId',
+      )
       .leftJoinAndMapMany(
         'user.shops',
         'shops',

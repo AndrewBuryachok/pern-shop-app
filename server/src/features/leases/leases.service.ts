@@ -15,6 +15,7 @@ export class LeasesService {
     const [result, count] = await this.getLeasesQueryBuilder(req)
       .andWhere('(renterUser.id = :myId OR lessorUser.id = :myId)', { myId })
       .getManyAndCount();
+    await this.loadProducts(result);
     return { result, count };
   }
 
@@ -22,7 +23,28 @@ export class LeasesService {
     const [result, count] = await this.getLeasesQueryBuilder(
       req,
     ).getManyAndCount();
+    await this.loadProducts(result);
     return { result, count };
+  }
+
+  private async loadProducts(leases: Product[]): Promise<void> {
+    const promises = leases.map(async (lease) => {
+      lease['products'] = (
+        await this.leasesRepository
+          .createQueryBuilder('lease')
+          .leftJoinAndMapMany(
+            'lease.products',
+            'products',
+            'product',
+            'lease.id = product.id',
+          )
+          .where('lease.id = :leaseId', { leaseId: lease.id })
+          .orderBy('product.id', 'ASC')
+          .select(['lease.id', 'product.id', 'product.item'])
+          .getOne()
+      )['products'];
+    });
+    await Promise.all(promises);
   }
 
   private getLeasesQueryBuilder(req: Request): SelectQueryBuilder<Product> {
@@ -34,18 +56,11 @@ export class LeasesService {
       .innerJoin('lessorCard.user', 'lessorUser')
       .innerJoin('lease.card', 'renterCard')
       .innerJoin('renterCard.user', 'renterUser')
-      .leftJoinAndMapMany(
-        'lease.products',
-        'products',
-        'product',
-        'lease.id = product.id',
-      )
       .where(
         '(renterUser.name ILIKE :search OR lessorUser.name ILIKE :search)',
         { search: `%${req.search || ''}%` },
       )
       .orderBy('lease.id', 'DESC')
-      .addOrderBy('product.id', 'ASC')
       .skip(req.skip)
       .take(req.take)
       .select([
@@ -68,8 +83,6 @@ export class LeasesService {
         'renterCard.name',
         'renterCard.color',
         'lease.createdAt',
-        'product.id',
-        'product.item',
       ]);
   }
 }

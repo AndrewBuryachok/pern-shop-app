@@ -22,6 +22,7 @@ export class CitiesService {
     const [result, count] = await this.getCitiesQueryBuilder(
       req,
     ).getManyAndCount();
+    await this.loadUsers(result);
     return { result, count };
   }
 
@@ -29,6 +30,7 @@ export class CitiesService {
     const [result, count] = await this.getCitiesQueryBuilder(req)
       .andWhere('ownerUser.id = :myId', { myId })
       .getManyAndCount();
+    await this.loadUsers(result);
     return { result, count };
   }
 
@@ -36,6 +38,7 @@ export class CitiesService {
     const [result, count] = await this.getCitiesQueryBuilder(
       req,
     ).getManyAndCount();
+    await this.loadUsers(result);
     return { result, count };
   }
 
@@ -128,21 +131,34 @@ export class CitiesService {
       .select(['city.id', 'city.name', 'city.x', 'city.y']);
   }
 
+  private async loadUsers(cities: City[]): Promise<void> {
+    const promises = cities.map(async (city) => {
+      city['users'] = (
+        await this.citiesRepository
+          .createQueryBuilder('city')
+          .leftJoinAndMapMany(
+            'city.users',
+            'users',
+            'user',
+            'city.id = user.cityId',
+          )
+          .where('city.id = :cityId', { cityId: city.id })
+          .orderBy('user.id', 'ASC')
+          .select(['city.id', 'user.id', 'user.name'])
+          .getOne()
+      )['users'];
+    });
+    await Promise.all(promises);
+  }
+
   private getCitiesQueryBuilder(req: Request): SelectQueryBuilder<City> {
     return this.citiesRepository
       .createQueryBuilder('city')
       .innerJoin('city.user', 'ownerUser')
-      .leftJoinAndMapMany(
-        'city.users',
-        'users',
-        'user',
-        'city.id = user.cityId',
-      )
       .where('ownerUser.name ILIKE :search', {
         search: `%${req.search || ''}%`,
       })
       .orderBy('city.id', 'DESC')
-      .addOrderBy('user.id', 'ASC')
       .skip(req.skip)
       .take(req.take)
       .select([
@@ -152,8 +168,6 @@ export class CitiesService {
         'city.name',
         'city.x',
         'city.y',
-        'user.id',
-        'user.name',
       ]);
   }
 }

@@ -21,6 +21,7 @@ export class MarketsService {
     const [result, count] = await this.getMarketsQueryBuilder(
       req,
     ).getManyAndCount();
+    await this.loadStores(result);
     return { result, count };
   }
 
@@ -28,6 +29,7 @@ export class MarketsService {
     const [result, count] = await this.getMarketsQueryBuilder(req)
       .andWhere('ownerUser.id = :myId', { myId })
       .getManyAndCount();
+    await this.loadStores(result);
     return { result, count };
   }
 
@@ -35,6 +37,7 @@ export class MarketsService {
     const [result, count] = await this.getMarketsQueryBuilder(
       req,
     ).getManyAndCount();
+    await this.loadStores(result);
     return { result, count };
   }
 
@@ -128,22 +131,35 @@ export class MarketsService {
       .select(['market.id', 'market.name', 'market.x', 'market.y']);
   }
 
+  private async loadStores(markets: Market[]): Promise<void> {
+    const promises = markets.map(async (market) => {
+      market['stores'] = (
+        await this.marketsRepository
+          .createQueryBuilder('market')
+          .leftJoinAndMapMany(
+            'market.stores',
+            'stores',
+            'store',
+            'market.id = store.marketId',
+          )
+          .where('market.id = :marketId', { marketId: market.id })
+          .orderBy('store.id', 'ASC')
+          .select(['market.id', 'store.id', 'store.name'])
+          .getOne()
+      )['stores'];
+    });
+    await Promise.all(promises);
+  }
+
   private getMarketsQueryBuilder(req: Request): SelectQueryBuilder<Market> {
     return this.marketsRepository
       .createQueryBuilder('market')
       .innerJoin('market.card', 'ownerCard')
       .innerJoin('ownerCard.user', 'ownerUser')
-      .leftJoinAndMapMany(
-        'market.stores',
-        'stores',
-        'store',
-        'market.id = store.marketId',
-      )
       .where('ownerUser.name ILIKE :search', {
         search: `%${req.search || ''}%`,
       })
       .orderBy('market.id', 'DESC')
-      .addOrderBy('store.id', 'ASC')
       .skip(req.skip)
       .take(req.take)
       .select([
@@ -157,8 +173,6 @@ export class MarketsService {
         'market.x',
         'market.y',
         'market.price',
-        'store.id',
-        'store.name',
       ]);
   }
 }

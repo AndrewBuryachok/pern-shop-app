@@ -19,6 +19,7 @@ export class ShopsService {
     const [result, count] = await this.getShopsQueryBuilder(
       req,
     ).getManyAndCount();
+    await this.loadGoods(result);
     return { result, count };
   }
 
@@ -26,6 +27,7 @@ export class ShopsService {
     const [result, count] = await this.getShopsQueryBuilder(req)
       .andWhere('ownerUser.id = :myId', { myId })
       .getManyAndCount();
+    await this.loadGoods(result);
     return { result, count };
   }
 
@@ -33,6 +35,7 @@ export class ShopsService {
     const [result, count] = await this.getShopsQueryBuilder(
       req,
     ).getManyAndCount();
+    await this.loadGoods(result);
     return { result, count };
   }
 
@@ -122,21 +125,34 @@ export class ShopsService {
       .select(['shop.id', 'shop.name', 'shop.x', 'shop.y']);
   }
 
+  private async loadGoods(shops: Shop[]): Promise<void> {
+    const promises = shops.map(async (shop) => {
+      shop['goods'] = (
+        await this.shopsRepository
+          .createQueryBuilder('shop')
+          .leftJoinAndMapMany(
+            'shop.goods',
+            'goods',
+            'good',
+            'shop.id = good.shopId',
+          )
+          .where('shop.id = :shopId', { shopId: shop.id })
+          .orderBy('good.id', 'ASC')
+          .select(['shop.id', 'good.id', 'good.item'])
+          .getOne()
+      )['goods'];
+    });
+    await Promise.all(promises);
+  }
+
   private getShopsQueryBuilder(req: Request): SelectQueryBuilder<Shop> {
     return this.shopsRepository
       .createQueryBuilder('shop')
       .innerJoin('shop.user', 'ownerUser')
-      .leftJoinAndMapMany(
-        'shop.goods',
-        'goods',
-        'good',
-        'shop.id = good.shopId',
-      )
       .where('ownerUser.name ILIKE :search', {
         search: `%${req.search || ''}%`,
       })
       .orderBy('shop.id', 'DESC')
-      .addOrderBy('good.id', 'ASC')
       .skip(req.skip)
       .take(req.take)
       .select([
@@ -146,8 +162,6 @@ export class ShopsService {
         'shop.name',
         'shop.x',
         'shop.y',
-        'good.id',
-        'good.item',
       ]);
   }
 }

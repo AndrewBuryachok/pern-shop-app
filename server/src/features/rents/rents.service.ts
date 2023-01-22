@@ -20,6 +20,7 @@ export class RentsService {
     const [result, count] = await this.getRentsQueryBuilder(req)
       .andWhere('(renterUser.id = :myId OR lessorUser.id = :myId)', { myId })
       .getManyAndCount();
+    await this.loadWares(result);
     return { result, count };
   }
 
@@ -27,6 +28,7 @@ export class RentsService {
     const [result, count] = await this.getRentsQueryBuilder(
       req,
     ).getManyAndCount();
+    await this.loadWares(result);
     return { result, count };
   }
 
@@ -86,6 +88,26 @@ export class RentsService {
       ]);
   }
 
+  private async loadWares(rents: Rent[]): Promise<void> {
+    const promises = rents.map(async (rent) => {
+      rent['wares'] = (
+        await this.rentsRepository
+          .createQueryBuilder('rent')
+          .leftJoinAndMapMany(
+            'rent.wares',
+            'wares',
+            'ware',
+            'rent.id = ware.rentId',
+          )
+          .where('rent.id = :rentId', { rentId: rent.id })
+          .orderBy('ware.id', 'ASC')
+          .select(['rent.id', 'ware.id', 'ware.item'])
+          .getOne()
+      )['wares'];
+    });
+    await Promise.all(promises);
+  }
+
   private getRentsQueryBuilder(req: Request): SelectQueryBuilder<Rent> {
     return this.rentsRepository
       .createQueryBuilder('rent')
@@ -95,18 +117,11 @@ export class RentsService {
       .innerJoin('lessorCard.user', 'lessorUser')
       .innerJoin('rent.card', 'renterCard')
       .innerJoin('renterCard.user', 'renterUser')
-      .leftJoinAndMapMany(
-        'rent.wares',
-        'wares',
-        'ware',
-        'rent.id = ware.rentId',
-      )
       .where(
         '(renterUser.name ILIKE :search OR lessorUser.name ILIKE :search)',
         { search: `%${req.search || ''}%` },
       )
       .orderBy('rent.id', 'DESC')
-      .addOrderBy('ware.id', 'ASC')
       .skip(req.skip)
       .take(req.take)
       .select([
@@ -129,8 +144,6 @@ export class RentsService {
         'renterCard.name',
         'renterCard.color',
         'rent.createdAt',
-        'ware.id',
-        'ware.item',
       ]);
   }
 }

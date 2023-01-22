@@ -22,6 +22,7 @@ export class StoragesService {
     const [result, count] = await this.getStoragesQueryBuilder(
       req,
     ).getManyAndCount();
+    await this.loadCells(result);
     return { result, count };
   }
 
@@ -29,6 +30,7 @@ export class StoragesService {
     const [result, count] = await this.getStoragesQueryBuilder(req)
       .andWhere('ownerUser.id = :myId', { myId })
       .getManyAndCount();
+    await this.loadCells(result);
     return { result, count };
   }
 
@@ -36,6 +38,7 @@ export class StoragesService {
     const [result, count] = await this.getStoragesQueryBuilder(
       req,
     ).getManyAndCount();
+    await this.loadCells(result);
     return { result, count };
   }
 
@@ -147,22 +150,35 @@ export class StoragesService {
       .select(['storage.id', 'storage.name', 'storage.x', 'storage.y']);
   }
 
+  private async loadCells(storages: Storage[]): Promise<void> {
+    const promises = storages.map(async (storage) => {
+      storage['cells'] = (
+        await this.storagesRepository
+          .createQueryBuilder('storage')
+          .leftJoinAndMapMany(
+            'storage.cells',
+            'cells',
+            'cell',
+            'storage.id = cell.storageId',
+          )
+          .where('storage.id = :storageId', { storageId: storage.id })
+          .orderBy('cell.id', 'ASC')
+          .select(['storage.id', 'cell.id', 'cell.name'])
+          .getOne()
+      )['cells'];
+    });
+    await Promise.all(promises);
+  }
+
   private getStoragesQueryBuilder(req: Request): SelectQueryBuilder<Storage> {
     return this.storagesRepository
       .createQueryBuilder('storage')
       .innerJoin('storage.card', 'ownerCard')
       .innerJoin('ownerCard.user', 'ownerUser')
-      .leftJoinAndMapMany(
-        'storage.cells',
-        'cells',
-        'cell',
-        'storage.id = cell.storageId',
-      )
       .where('ownerUser.name ILIKE :search', {
         search: `%${req.search || ''}%`,
       })
       .orderBy('storage.id', 'DESC')
-      .addOrderBy('cell.id', 'ASC')
       .skip(req.skip)
       .take(req.take)
       .select([
@@ -176,8 +192,6 @@ export class StoragesService {
         'storage.x',
         'storage.y',
         'storage.price',
-        'cell.id',
-        'cell.name',
       ]);
   }
 }
