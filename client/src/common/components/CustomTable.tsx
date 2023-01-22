@@ -12,7 +12,13 @@ export default function CustomTable<T>(props: Props<T>) {
   return (
     <Stack spacing={8}>
       <CustomNav {...props} />
-      <CustomHead {...props} />
+      <CustomHead
+        {...props}
+        setSearch={(search) => {
+          props.setSearch(search);
+          props.setPage(1);
+        }}
+      />
       <Paper>
         <ScrollArea>
           <Table

@@ -4,7 +4,9 @@ import { Container } from '../../features/containers/container.model';
 import { SmThing } from '../../features/things/thing.model';
 import { items, Role, roles as allRoles } from '../constants';
 
-export const viewData = (data: string[]) => [`Total: ${data.length}`, ...data];
+export const viewData = (
+  data: (string | { value: string; label: string })[],
+) => [`Total: ${data.length}`, ...data];
 
 export const viewRoles = (roles: Role[]) =>
   viewData(roles.map((role) => allRoles[role - 1]));
@@ -19,4 +21,9 @@ export const viewContainers = (containers: Container[]) =>
   viewData(containers.map((container) => `#${container.name}`));
 
 export const viewThings = (things: SmThing[]) =>
-  viewData(things.map((thing) => items[thing.item - 1].substring(3)));
+  viewData(
+    things.map((thing) => ({
+      value: `${thing.id}`,
+      label: items[thing.item - 1].substring(3),
+    })),
+  );

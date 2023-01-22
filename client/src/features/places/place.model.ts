@@ -21,5 +21,5 @@ export interface ExtPlace extends Place {
   type: number;
   owner: string;
   price?: number;
-  data: string[];
+  data: (string | { value: string; label: string })[];
 }

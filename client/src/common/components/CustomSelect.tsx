@@ -2,7 +2,7 @@ import { NativeSelect } from '@mantine/core';
 
 type Props = {
   label: string;
-  data: string[];
+  data: (string | { value: string; label: string })[];
 };
 
 export default function CustomSelect(props: Props) {

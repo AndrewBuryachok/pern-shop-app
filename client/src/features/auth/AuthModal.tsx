@@ -55,8 +55,8 @@ export default function AuthModal() {
       />
       <Text size='xs'>
         {type === 'Login'
-          ? 'Already have an account? '
-          : "Don't have an account? "}
+          ? "Don't have an account? "
+          : 'Already have an account? '}
         {
           <Anchor
             component='button'
