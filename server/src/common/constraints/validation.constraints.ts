@@ -5,6 +5,7 @@ import {
 } from 'class-validator';
 import { UsersService } from '../../features/users/users.service';
 import { CardsService } from '../../features/cards/cards.service';
+import { InvoicesService } from '../../features/invoices/invoices.service';
 import { CitiesService } from '../../features/cities/cities.service';
 import { ShopsService } from '../../features/shops/shops.service';
 import { MarketsService } from '../../features/markets/markets.service';
@@ -51,6 +52,25 @@ export class IsCardExists implements ValidatorConstraintInterface {
 
   defaultMessage(): string {
     return 'Unknown card';
+  }
+}
+
+@Injectable()
+@ValidatorConstraint({ name: 'isInvoiceExists', async: true })
+export class IsInvoiceExists implements ValidatorConstraintInterface {
+  constructor(private invoicesService: InvoicesService) {}
+
+  async validate(value: number): Promise<boolean> {
+    try {
+      await this.invoicesService.checkInvoiceExists(value);
+    } catch (error) {
+      return false;
+    }
+    return true;
+  }
+
+  defaultMessage(): string {
+    return 'Unknown invoice';
   }
 }
 

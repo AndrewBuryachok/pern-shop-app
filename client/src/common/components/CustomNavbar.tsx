@@ -31,7 +31,7 @@ export default function CustomNavbar(props: Props) {
     {
       label: 'Wallet',
       icon: IconWallet,
-      nested: ['Cards', 'Payments', 'Exchanges'],
+      nested: ['Cards', 'Payments', 'Exchanges', 'Invoices'],
       my: true,
     },
     {

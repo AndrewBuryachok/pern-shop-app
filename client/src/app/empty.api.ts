@@ -8,6 +8,7 @@ export const emptyApi = createApi({
     'Card',
     'Exchange',
     'Payment',
+    'Invoice',
     'City',
     'Shop',
     'Market',

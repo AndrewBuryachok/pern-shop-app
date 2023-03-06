@@ -6,6 +6,7 @@ import { UsersModule } from './features/users/users.module';
 import { CardsModule } from './features/cards/cards.module';
 import { ExchangesModule } from './features/exchanges/exchanges.module';
 import { PaymentsModule } from './features/payments/payments.module';
+import { InvoicesModule } from './features/invoices/invoices.module';
 import { CitiesModule } from './features/cities/cities.module';
 import { ShopsModule } from './features/shops/shops.module';
 import { MarketsModule } from './features/markets/markets.module';
@@ -45,6 +46,7 @@ import { VotesModule } from './features/votes/votes.module';
     CardsModule,
     ExchangesModule,
     PaymentsModule,
+    InvoicesModule,
     CitiesModule,
     ShopsModule,
     MarketsModule,
