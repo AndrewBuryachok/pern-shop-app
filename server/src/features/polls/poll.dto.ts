@@ -21,3 +21,11 @@ export class CreatePollDto {
 export class ExtCreatePollDto extends CreatePollDto {
   myId: number;
 }
+
+export class CompletePollDto extends PollIdDto {
+  myId: number;
+}
+
+export class DeletePollDto extends PollIdDto {
+  myId: number;
+}

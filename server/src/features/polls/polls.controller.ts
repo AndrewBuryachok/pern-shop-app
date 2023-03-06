@@ -1,8 +1,16 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Query,
+} from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { PollsService } from './polls.service';
 import { Poll } from './poll.entity';
-import { CreatePollDto } from './poll.dto';
+import { CreatePollDto, PollIdDto } from './poll.dto';
 import { Request, Response } from '../../common/interfaces';
 import { MyId, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
@@ -40,5 +48,21 @@ export class PollsController {
   @Post()
   createPoll(@MyId() myId: number, @Body() dto: CreatePollDto): Promise<void> {
     return this.pollsService.createPoll({ ...dto, myId });
+  }
+
+  @Post(':pollId')
+  completePoll(
+    @MyId() myId: number,
+    @Param() { pollId }: PollIdDto,
+  ): Promise<void> {
+    return this.pollsService.completePoll({ pollId, myId });
+  }
+
+  @Delete(':pollId')
+  deletePoll(
+    @MyId() myId: number,
+    @Param() { pollId }: PollIdDto,
+  ): Promise<void> {
+    return this.pollsService.deletePoll({ pollId, myId });
   }
 }

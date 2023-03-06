@@ -3,6 +3,8 @@ import { useDebouncedValue } from '@mantine/hooks';
 import { useGetMyPollsQuery } from '../../features/polls/polls.api';
 import PollsTable from '../../features/polls/PollsTable';
 import { createPollButton } from '../../features/polls/CreatePollModal';
+import { completePollAction } from '../../features/polls/CompletePollModal';
+import { deletePollAction } from '../../features/polls/DeletePollModal';
 import { isUserNotHasRole } from '../../common/utils';
 import { Role } from '../../common/constants';
 
@@ -22,6 +24,8 @@ export default function MyPolls() {
 
   const button = createPollButton;
 
+  const actions = [completePollAction, deletePollAction];
+
   return (
     <PollsTable
       {...response}
@@ -31,6 +35,7 @@ export default function MyPolls() {
       setSearch={setSearch}
       links={links}
       button={button}
+      actions={actions}
       title='My Polls'
     />
   );

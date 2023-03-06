@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, SelectQueryBuilder } from 'typeorm';
 import { Vote } from './vote.entity';
+import { PollsService } from '../polls/polls.service';
 import { ExtCreateVoteDto } from './vote.dto';
 import { Request, Response } from '../../common/interfaces';
 import { AppException } from '../../common/exceptions';
@@ -12,6 +13,7 @@ export class VotesService {
   constructor(
     @InjectRepository(Vote)
     private votesRepository: Repository<Vote>,
+    private pollsService: PollsService,
   ) {}
 
   async getMyVotes(myId: number, req: Request): Promise<Response<Vote>> {
@@ -36,6 +38,7 @@ export class VotesService {
   }
 
   async createVote(dto: ExtCreateVoteDto): Promise<void> {
+    await this.pollsService.checkPollNotCompleted(dto.pollId);
     const vote = await this.votesRepository.findOneBy({
       pollId: dto.pollId,
       userId: dto.myId,

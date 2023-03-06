@@ -1,22 +1,41 @@
-import { Stack, Textarea, TextInput } from '@mantine/core';
+import { Textarea, TextInput } from '@mantine/core';
+import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { Poll } from './poll.model';
+import { useCompletePollMutation } from './polls.api';
+import { CompletePollDto } from './poll.dto';
+import CustomForm from '../../common/components/CustomForm';
 import { parseDate } from '../../common/utils';
 import { Color } from '../../common/constants';
 
 type Props = IModal<Poll>;
 
-export default function ViewPollModal({ data: poll }: Props) {
+export default function CompletePollModal({ data: poll }: Props) {
   const total = poll.upVotes + poll.downVotes;
   const votes = [poll.upVotes, poll.downVotes].map(
-    (value) => `${value} (${total && Math.round((value * 100) / total)}%)`,
+    (value) => `${value} (${Math.round((value * 100) / total)}%)`,
   );
   const created = parseDate(poll.createdAt);
-  const completed = poll.completedAt && parseDate(poll.completedAt);
+
+  const form = useForm({
+    initialValues: {
+      pollId: poll.id,
+    },
+  });
+
+  const [completePoll, { isLoading }] = useCompletePollMutation();
+
+  const handleSubmit = async (dto: CompletePollDto) => {
+    await completePoll(dto);
+  };
 
   return (
-    <Stack spacing={8}>
+    <CustomForm
+      onSubmit={form.onSubmit(handleSubmit)}
+      isLoading={isLoading}
+      text={'Complete poll'}
+    >
       <TextInput label='Poller' value={poll.user.name} disabled />
       <Textarea label='Description' value={poll.description} disabled />
       <TextInput label='Up' value={votes[0]} disabled />
@@ -31,21 +50,16 @@ export default function ViewPollModal({ data: poll }: Props) {
         value={`${created.date} ${created.time}`}
         disabled
       />
-      <TextInput
-        label='Completed'
-        value={completed ? `${completed.date} ${completed.time}` : '-'}
-        disabled
-      />
-    </Stack>
+    </CustomForm>
   );
 }
 
-export const viewPollAction = {
+export const completePollAction = {
   open: (poll: Poll) =>
     openModal({
-      title: 'View Poll',
-      children: <ViewPollModal data={poll} />,
+      title: 'Complete Poll',
+      children: <CompletePollModal data={poll} />,
     }),
-  disable: () => false,
-  color: Color.BLUE,
+  disable: (poll: Poll) => !!poll.completedAt,
+  color: Color.GREEN,
 };

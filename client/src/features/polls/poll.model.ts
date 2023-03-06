@@ -12,4 +12,5 @@ export interface Poll extends SmPoll {
   downVotes: number;
   myVote?: SmVote;
   createdAt: Date;
+  completedAt?: Date;
 }

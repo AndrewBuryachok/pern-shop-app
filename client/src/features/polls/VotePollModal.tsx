@@ -43,7 +43,7 @@ export const createUpVoteAction = {
       title: 'Vote Poll',
       children: <VotePollModal data={{ ...poll, type: true }} />,
     }),
-  disable: () => false,
+  disable: (poll: Poll) => !!poll.completedAt,
   color: Color.GREEN,
 };
 
@@ -53,6 +53,6 @@ export const createDownVoteAction = {
       title: 'Vote Poll',
       children: <VotePollModal data={{ ...poll, type: false }} />,
     }),
-  disable: () => false,
+  disable: (poll: Poll) => !!poll.completedAt,
   color: Color.RED,
 };

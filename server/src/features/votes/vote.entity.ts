@@ -17,7 +17,7 @@ export class Vote {
   @Column({ name: 'poll_id' })
   pollId: number;
 
-  @ManyToOne(() => Poll, { nullable: false })
+  @ManyToOne(() => Poll, { nullable: false, onDelete: 'CASCADE' })
   @JoinColumn({ name: 'poll_id' })
   poll: Poll;
 

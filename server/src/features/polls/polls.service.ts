@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, SelectQueryBuilder } from 'typeorm';
 import { Poll } from './poll.entity';
-import { ExtCreatePollDto } from './poll.dto';
+import { CompletePollDto, DeletePollDto, ExtCreatePollDto } from './poll.dto';
 import { Request, Response } from '../../common/interfaces';
 import { AppException } from '../../common/exceptions';
 import { PollError } from './poll-error.enum';
@@ -41,8 +41,40 @@ export class PollsService {
     await this.create(dto);
   }
 
+  async completePoll(dto: CompletePollDto): Promise<void> {
+    const poll = await this.checkPollOwner(dto.pollId, dto.myId);
+    if (poll.completedAt) {
+      throw new AppException(PollError.ALREADY_COMPLETED);
+    }
+    await this.complete(poll);
+  }
+
+  async deletePoll(dto: DeletePollDto): Promise<void> {
+    const poll = await this.checkPollOwner(dto.pollId, dto.myId);
+    if (poll.completedAt) {
+      throw new AppException(PollError.ALREADY_COMPLETED);
+    }
+    await this.delete(poll);
+  }
+
   async checkPollExists(id: number): Promise<void> {
     await this.pollsRepository.findOneByOrFail({ id });
+  }
+
+  async checkPollOwner(id: number, userId: number): Promise<Poll> {
+    const poll = await this.pollsRepository.findOneBy({ id, userId });
+    if (!poll) {
+      throw new AppException(PollError.NOT_OWNER);
+    }
+    return poll;
+  }
+
+  async checkPollNotCompleted(id: number): Promise<Poll> {
+    const poll = await this.pollsRepository.findOneBy({ id });
+    if (poll.completedAt) {
+      throw new AppException(PollError.ALREADY_COMPLETED);
+    }
+    return poll;
   }
 
   private async create(dto: ExtCreatePollDto): Promise<void> {
@@ -54,6 +86,23 @@ export class PollsService {
       await this.pollsRepository.save(poll);
     } catch (error) {
       throw new AppException(PollError.CREATE_FAILED);
+    }
+  }
+
+  private async complete(poll: Poll): Promise<void> {
+    try {
+      poll.completedAt = new Date();
+      await this.pollsRepository.save(poll);
+    } catch (error) {
+      throw new AppException(PollError.COMPLETE_FAILED);
+    }
+  }
+
+  private async delete(poll: Poll): Promise<void> {
+    try {
+      await this.pollsRepository.remove(poll);
+    } catch (error) {
+      throw new AppException(PollError.DELETE_FAILED);
     }
   }
 
@@ -92,6 +141,7 @@ export class PollsService {
         'pollerUser.name',
         'poll.description',
         'poll.createdAt',
+        'poll.completedAt',
         'myVote.id',
         'myVote.type',
       ]);

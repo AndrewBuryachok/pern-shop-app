@@ -31,7 +31,7 @@ export default function CardsTable({ actions = [], ...props }: Props) {
             />
           </td>
           <td>
-            <ColorBadge color={card.color} />
+            <ColorBadge color={colors[card.color - 1]} />
           </td>
           <td>
             <SingleText text={`${card.balance}$`} />

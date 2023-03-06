@@ -9,5 +9,6 @@ import { IsPollExists } from '../../common/constraints';
   imports: [TypeOrmModule.forFeature([Poll])],
   controllers: [PollsController],
   providers: [PollsService, IsPollExists],
+  exports: [PollsService],
 })
 export class PollsModule {}

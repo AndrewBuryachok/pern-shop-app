@@ -1,4 +1,4 @@
-import { Progress } from '@mantine/core';
+import { Group, Progress, Text } from '@mantine/core';
 
 type Props = {
   upVotes: number;
@@ -8,22 +8,21 @@ type Props = {
 
 export default function CustomProgress(props: Props) {
   const total = props.upVotes + props.downVotes;
-  const color = props.myVote ? (props.myVote.type ? 'green' : 'red') : 'violet';
+  const sections = [props.upVotes, props.downVotes].map((value, index) => ({
+    value: total && (value * 100) / total,
+    color: ['violet', 'gray'][index],
+  }));
 
   return (
-    <Progress
-      aria-label='Results'
-      size='xl'
-      radius='xl'
-      sections={
-        total
-          ? [props.upVotes, props.downVotes].map((value, index) => ({
-              value: (value * 100) / total,
-              label: `${value}`,
-              color: [color, 'gray'][color === 'red' ? 1 - index : index],
-            }))
-          : [{ value: 100, label: '0', color: 'gray' }]
-      }
-    />
+    <>
+      <Group position='apart'>
+        {[props.upVotes, props.downVotes].map((value, index) => (
+          <Text key={index} size='xs' weight={700}>
+            {value}
+          </Text>
+        ))}
+      </Group>
+      <Progress aria-label='Results' sections={sections} />
+    </>
   );
 }

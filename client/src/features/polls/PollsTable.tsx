@@ -1,9 +1,9 @@
-import { Progress } from '@mantine/core';
 import { ITableWithActions } from '../../common/interfaces';
 import { Poll } from './poll.model';
 import CustomTable from '../../common/components/CustomTable';
 import AvatarWithSingleText from '../../common/components/AvatarWithSingleText';
 import SingleText from '../../common/components/SingleText';
+import ColorBadge from '../../common/components/ColorBadge';
 import CustomProgress from '../../common/components/CustomProgress';
 import DateText from '../../common/components/DateText';
 import CustomActions from '../../common/components/CustomActions';
@@ -15,7 +15,14 @@ export default function PollsTable({ actions = [], ...props }: Props) {
   return (
     <CustomTable
       minWidth={800}
-      columns={['Poller', 'Description', 'Results', 'Created', 'Action']}
+      columns={[
+        'Poller',
+        'Description',
+        'Vote',
+        'Results',
+        'Completed',
+        'Action',
+      ]}
       {...props}
     >
       {props.data?.result.map((poll) => (
@@ -27,10 +34,21 @@ export default function PollsTable({ actions = [], ...props }: Props) {
             <SingleText text={poll.description} />
           </td>
           <td>
+            <ColorBadge
+              color={
+                poll.myVote ? (poll.myVote.type ? 'green' : 'red') : 'gray'
+              }
+            />
+          </td>
+          <td>
             <CustomProgress {...poll} />
           </td>
           <td>
-            <DateText date={poll.createdAt} />
+            {poll.completedAt ? (
+              <DateText date={poll.completedAt} />
+            ) : (
+              <SingleText text={'-'} />
+            )}
           </td>
           <td>
             <CustomActions data={poll} actions={[viewPollAction, ...actions]} />
