@@ -20,7 +20,7 @@ export const paymentsApi = emptyApi.injectEndpoints({
     }),
     createPayment: build.mutation<void, CreatePaymentDto>({
       query: (dto) => ({
-        url: '/transactions',
+        url: '/payments',
         method: 'POST',
         body: dto,
       }),
