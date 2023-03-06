@@ -2,10 +2,13 @@ import { Link } from 'react-router-dom';
 import { Button, Group } from '@mantine/core';
 import { IconExternalLink, IconPlus } from '@tabler/icons';
 import { INav } from '../interfaces';
+import { getCurrentUser } from '../../features/auth/auth.slice';
 
 type Props = INav;
 
 export default function CustomNav(props: Props) {
+  const user = getCurrentUser();
+
   return (
     <Group spacing={8}>
       {props.links.map((link) => (
@@ -14,7 +17,7 @@ export default function CustomNav(props: Props) {
           component={Link}
           to={link.to}
           leftIcon={<IconExternalLink size={14} />}
-          disabled={link.disabled}
+          disabled={!user || link.disabled}
           compact
         >
           {link.label}

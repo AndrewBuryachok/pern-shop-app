@@ -103,6 +103,7 @@ export default function CustomNavbar(props: Props) {
                   label={label}
                   component={Link}
                   to={`${label.toLocaleLowerCase()}${link.my ? '/my' : ''}`}
+                  active={label === active}
                 />
               ))}
             </NavLink>

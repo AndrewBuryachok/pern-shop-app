@@ -1,4 +1,6 @@
+import { Link } from 'react-router-dom';
 import {
+  Anchor,
   Card,
   Container,
   SimpleGrid,
@@ -16,6 +18,7 @@ import {
   IconBuildingStadium,
   IconBuildingStore,
   IconBuildingWarehouse,
+  IconBusinessplan,
   IconCashBanknote,
   IconChartBar,
   IconCreditCard,
@@ -28,7 +31,6 @@ import {
   IconReportMoney,
   IconShoppingBag,
   IconShoppingCart,
-  IconUsers,
 } from '@tabler/icons';
 
 export default function Home() {
@@ -38,20 +40,24 @@ export default function Home() {
 
   const features = [
     {
-      title: 'Users',
-      icon: IconUsers,
-    },
-    {
       title: 'Cards',
       icon: IconCreditCard,
+      my: true,
     },
     {
       title: 'Payments',
       icon: IconCashBanknote,
+      my: true,
     },
     {
       title: 'Exchanges',
       icon: IconExchange,
+      my: true,
+    },
+    {
+      title: 'Invoices',
+      icon: IconBusinessplan,
+      my: true,
     },
     {
       title: 'Goods',
@@ -68,10 +74,12 @@ export default function Home() {
     {
       title: 'Trades',
       icon: IconPaperBag,
+      my: true,
     },
     {
       title: 'Sales',
       icon: IconGardenCart,
+      my: true,
     },
     {
       title: 'Map',
@@ -104,10 +112,12 @@ export default function Home() {
     {
       title: 'Rents',
       icon: IconFileDollar,
+      my: true,
     },
     {
       title: 'Leases',
       icon: IconReportMoney,
+      my: true,
     },
     {
       title: 'Polls',
@@ -116,6 +126,7 @@ export default function Home() {
     {
       title: 'Votes',
       icon: IconNotes,
+      my: true,
     },
   ];
 
@@ -139,7 +150,15 @@ export default function Home() {
                   {feature.title}
                 </Text>
                 <Text size='sm' color='dimmed'>
-                  {`Create and view ${feature.title.toLowerCase()}`}
+                  {'Create and view '}
+                  <Anchor
+                    component={Link}
+                    to={`/${feature.title.toLowerCase()}${
+                      feature.my ? '/my' : ''
+                    }`}
+                  >
+                    {feature.title.toLowerCase()}
+                  </Anchor>
                 </Text>
               </Stack>
             </Card>

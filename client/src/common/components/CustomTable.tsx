@@ -1,4 +1,3 @@
-import { ReactNode } from 'react';
 import { Paper, ScrollArea, Skeleton, Stack, Table } from '@mantine/core';
 import { IPage } from '../interfaces';
 import CustomNav from './CustomNav';
@@ -36,17 +35,17 @@ export default function CustomTable<T>(props: Props<T>) {
               </tr>
             </thead>
             <tbody>
-              {props.isLoading &&
-                [...Array(4).keys()].map((key) => (
-                  <tr key={key - 4}>
-                    {props.columns.map((column) => (
-                      <td key={column}>
-                        <Skeleton height={16} />
-                      </td>
-                    ))}
-                  </tr>
-                ))}
-              {props.children}
+              {props.isFetching
+                ? [...Array(4).keys()].map((key) => (
+                    <tr key={key - 4}>
+                      {props.columns.map((column) => (
+                        <td key={column}>
+                          <Skeleton height={16} />
+                        </td>
+                      ))}
+                    </tr>
+                  ))
+                : props.children}
             </tbody>
             {props.data && (
               <caption style={{ marginTop: 0 }}>
