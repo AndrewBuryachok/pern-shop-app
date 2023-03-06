@@ -26,7 +26,7 @@ export default function TradesTable({ actions = [], ...props }: Props) {
         'Item',
         'Amount',
         'Sum',
-        'Storage',
+        'Market',
         'Created',
         'Action',
       ]}

@@ -15,7 +15,7 @@ export default function ViewVoteModal({ data: vote }: Props) {
       <TextInput label='Voter' value={vote.user.name} disabled />
       <TextInput label='Poller' value={vote.poll.user.name} disabled />
       <Textarea label='Description' value={vote.poll.description} disabled />
-      <TextInput label='Type' value={vote.type ? 'up' : 'down'} disabled />
+      <TextInput label='Vote' value={vote.type ? 'up' : 'down'} disabled />
       <TextInput
         label='Created'
         value={`${created.date} ${created.time}`}

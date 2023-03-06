@@ -15,7 +15,7 @@ export default function VotesTable({ actions = [], ...props }: Props) {
   return (
     <CustomTable
       minWidth={800}
-      columns={['Voter', 'Owner', 'Description', 'Type', 'Created', 'Action']}
+      columns={['Voter', 'Poller', 'Description', 'Vote', 'Created', 'Action']}
       {...props}
     >
       {props.data?.result.map((vote) => (

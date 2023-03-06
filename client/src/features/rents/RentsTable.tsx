@@ -25,7 +25,7 @@ export default function RentsTable({ actions = [], ...props }: Props) {
         'Market',
         'Sum',
         'Created',
-        'Products',
+        'Wares',
         'Action',
       ]}
       {...props}

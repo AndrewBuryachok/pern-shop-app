@@ -15,7 +15,7 @@ export default function PollsTable({ actions = [], ...props }: Props) {
   return (
     <CustomTable
       minWidth={800}
-      columns={['Owner', 'Description', 'Results', 'Created', 'Action']}
+      columns={['Poller', 'Description', 'Results', 'Created', 'Action']}
       {...props}
     >
       {props.data?.result.map((poll) => (

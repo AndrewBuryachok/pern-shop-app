@@ -25,7 +25,7 @@ export default function LeasesTable({ actions = [], ...props }: Props) {
         'Storage',
         'Sum',
         'Created',
-        'Wared',
+        'Products',
         'Action',
       ]}
       {...props}

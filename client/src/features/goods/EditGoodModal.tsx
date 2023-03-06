@@ -37,10 +37,10 @@ export default function EditGoodModal({ data: good }: Props) {
     }),
   });
 
-  const [createGood, { isLoading }] = useEditGoodMutation();
+  const [editGood, { isLoading }] = useEditGoodMutation();
 
   const handleSubmit = async (dto: EditGoodDto) => {
-    await createGood(dto);
+    await editGood(dto);
   };
 
   return (
