@@ -32,7 +32,7 @@ export class PaymentsService {
 
   async createPayment(dto: ExtCreatePaymentDto): Promise<void> {
     await this.cardsService.checkCardOwner(dto.senderCardId, dto.myId);
-    await this.cardsService.reduceCardBalance({
+    await this.cardsService.decreaseCardBalance({
       ...dto,
       cardId: dto.senderCardId,
     });

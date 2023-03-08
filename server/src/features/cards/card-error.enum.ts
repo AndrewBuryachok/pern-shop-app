@@ -7,5 +7,5 @@ export enum CardError {
   CREATE_FAILED = '500: Failed to create card',
   EDIT_FAILED = '500: Failed to edit card',
   INCREASE_BALANCE_FAILED = '500: Failed to increase card balance',
-  REDUCE_BALANCE_FAILED = '500: Failed to reduce card balance',
+  DECREASE_BALANCE_FAILED = '500: Failed to decrease card balance',
 }

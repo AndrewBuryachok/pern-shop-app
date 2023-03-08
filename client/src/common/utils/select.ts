@@ -75,7 +75,7 @@ export const selectColors = () =>
   colors.map((color, index) => ({ value: `${index + 1}`, label: color }));
 
 export const selectTypes = () =>
-  ['reduce', 'increase'].map((type, index) => ({
+  ['decrease', 'increase'].map((type, index) => ({
     value: `${index}`,
     label: type,
   }));

@@ -36,7 +36,7 @@ export class ExchangesService {
   async createExchange(dto: ExtCreateExchangeDto): Promise<void> {
     dto.type
       ? await this.cardsService.increaseCardBalance(dto)
-      : await this.cardsService.reduceCardBalance(dto);
+      : await this.cardsService.decreaseCardBalance(dto);
     this.create(dto);
   }
 

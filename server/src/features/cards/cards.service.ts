@@ -66,12 +66,12 @@ export class CardsService {
     await this.increaseBalance(card, dto.sum);
   }
 
-  async reduceCardBalance(dto: UpdateCardBalanceDto): Promise<void> {
+  async decreaseCardBalance(dto: UpdateCardBalanceDto): Promise<void> {
     const card = await this.cardsRepository.findOneBy({ id: dto.cardId });
     if (card.balance - dto.sum < MIN_CARD_BALANCE) {
       throw new AppException(CardError.NOT_ENOUGH_BALANCE);
     }
-    await this.reduceBalance(card, dto.sum);
+    await this.decreaseBalance(card, dto.sum);
   }
 
   async checkCardExists(id: number): Promise<void> {
@@ -132,12 +132,12 @@ export class CardsService {
     }
   }
 
-  private async reduceBalance(card: Card, sum: number): Promise<void> {
+  private async decreaseBalance(card: Card, sum: number): Promise<void> {
     try {
       card.balance -= sum;
       await this.cardsRepository.save(card);
     } catch (error) {
-      throw new AppException(CardError.REDUCE_BALANCE_FAILED);
+      throw new AppException(CardError.DECREASE_BALANCE_FAILED);
     }
   }
 
