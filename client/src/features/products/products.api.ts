@@ -1,11 +1,17 @@
 import { emptyApi } from '../../app/empty.api';
-import { IRequest, IResponse } from '../../common/interfaces';
+import { IRequest, IResponse, IStats } from '../../common/interfaces';
 import { Product } from './product.model';
 import { CreateProductDto } from './product.dto';
 import { getQuery } from '../../common/utils';
 
 export const productsApi = emptyApi.injectEndpoints({
   endpoints: (build) => ({
+    getProductsStats: build.query<IStats, void>({
+      query: () => ({
+        url: '/products/stats',
+      }),
+      providesTags: ['Product'],
+    }),
     getMainProducts: build.query<IResponse<Product>, IRequest>({
       query: (req) => ({
         url: `/products?${getQuery(req)}`,
@@ -49,6 +55,7 @@ export const productsApi = emptyApi.injectEndpoints({
 });
 
 export const {
+  useGetProductsStatsQuery,
   useGetMainProductsQuery,
   useGetMyProductsQuery,
   useGetPlacedProductsQuery,

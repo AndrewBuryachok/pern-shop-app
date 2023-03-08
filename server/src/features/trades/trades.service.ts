@@ -4,7 +4,8 @@ import { Repository, SelectQueryBuilder } from 'typeorm';
 import { Trade } from './trade.entity';
 import { WaresService } from '../wares/wares.service';
 import { ExtCreateTradeDto } from './trade.dto';
-import { Request, Response } from '../../common/interfaces';
+import { Request, Response, Stats } from '../../common/interfaces';
+import { getDateMonthAgo } from '../../common/utils';
 import { AppException } from '../../common/exceptions';
 import { TradeError } from './trade-error.enum';
 
@@ -15,6 +16,22 @@ export class TradesService {
     private tradesRepository: Repository<Trade>,
     private waresService: WaresService,
   ) {}
+
+  async getTradesStats(): Promise<Stats> {
+    const current = await this.tradesRepository
+      .createQueryBuilder('trade')
+      .where('trade.createdAt >= :currentMonth', {
+        currentMonth: getDateMonthAgo(1),
+      })
+      .getCount();
+    const previous = await this.tradesRepository
+      .createQueryBuilder('trade')
+      .where('trade.createdAt >= :previousMonth', {
+        previousMonth: getDateMonthAgo(2),
+      })
+      .getCount();
+    return { current, previous: previous - current };
+  }
 
   async getMyTrades(myId: number, req: Request): Promise<Response<Trade>> {
     const [result, count] = await this.getTradesQueryBuilder(req)

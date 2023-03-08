@@ -5,8 +5,8 @@ import { Product } from './product.entity';
 import { CellsService } from '../cells/cells.service';
 import { PaymentsService } from '../payments/payments.service';
 import { BuyProductDto, ExtCreateProductDto } from './product.dto';
-import { Request, Response } from '../../common/interfaces';
-import { getDateWeekAgo } from '../../common/utils';
+import { Request, Response, Stats } from '../../common/interfaces';
+import { getDateMonthAgo, getDateWeekAgo } from '../../common/utils';
 import { AppException } from '../../common/exceptions';
 import { ProductError } from './product-error.enum';
 
@@ -18,6 +18,22 @@ export class ProductsService {
     private cellsService: CellsService,
     private paymentsService: PaymentsService,
   ) {}
+
+  async getProductsStats(): Promise<Stats> {
+    const current = await this.productsRepository
+      .createQueryBuilder('product')
+      .where('product.createdAt >= :currentMonth', {
+        currentMonth: getDateMonthAgo(1),
+      })
+      .getCount();
+    const previous = await this.productsRepository
+      .createQueryBuilder('product')
+      .where('product.createdAt >= :previousMonth', {
+        previousMonth: getDateMonthAgo(2),
+      })
+      .getCount();
+    return { current, previous: previous - current };
+  }
 
   async getMainProducts(req: Request): Promise<Response<Product>> {
     const [result, count] = await this.getProductsQueryBuilder(req)

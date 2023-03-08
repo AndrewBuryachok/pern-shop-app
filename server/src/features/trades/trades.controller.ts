@@ -3,14 +3,20 @@ import { ApiTags } from '@nestjs/swagger';
 import { TradesService } from './trades.service';
 import { Trade } from './trade.entity';
 import { CreateTradeDto } from './trade.dto';
-import { Request, Response } from '../../common/interfaces';
-import { MyId, Roles } from '../../common/decorators';
+import { Request, Response, Stats } from '../../common/interfaces';
+import { MyId, Public, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
 
 @ApiTags('trades')
 @Controller('trades')
 export class TradesController {
   constructor(private tradesService: TradesService) {}
+
+  @Public()
+  @Get('stats')
+  getTradesStats(): Promise<Stats> {
+    return this.tradesService.getTradesStats();
+  }
 
   @Get('my')
   getMyTrades(

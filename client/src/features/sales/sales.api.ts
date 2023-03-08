@@ -1,11 +1,17 @@
 import { emptyApi } from '../../app/empty.api';
-import { IRequest, IResponse } from '../../common/interfaces';
+import { IRequest, IResponse, IStats } from '../../common/interfaces';
 import { Sale } from './sale.model';
 import { CreateSaleDto } from './sale.dto';
 import { getQuery } from '../../common/utils';
 
 export const salesApi = emptyApi.injectEndpoints({
   endpoints: (build) => ({
+    getSalesStats: build.query<IStats, void>({
+      query: () => ({
+        url: '/sales/stats',
+      }),
+      providesTags: ['Sale'],
+    }),
     getMySales: build.query<IResponse<Sale>, IRequest>({
       query: (req) => ({
         url: `/sales/my?${getQuery(req)}`,
@@ -36,6 +42,7 @@ export const salesApi = emptyApi.injectEndpoints({
 });
 
 export const {
+  useGetSalesStatsQuery,
   useGetMySalesQuery,
   useGetPlacedSalesQuery,
   useGetAllSalesQuery,

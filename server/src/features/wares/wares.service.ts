@@ -5,8 +5,8 @@ import { Ware } from './ware.entity';
 import { RentsService } from '../rents/rents.service';
 import { PaymentsService } from '../payments/payments.service';
 import { BuyWareDto, ExtCreateWareDto } from './ware.dto';
-import { Request, Response } from '../../common/interfaces';
-import { getDateWeekAgo } from '../../common/utils';
+import { Request, Response, Stats } from '../../common/interfaces';
+import { getDateMonthAgo, getDateWeekAgo } from '../../common/utils';
 import { AppException } from '../../common/exceptions';
 import { WareError } from './ware-error.enum';
 
@@ -18,6 +18,22 @@ export class WaresService {
     private rentsService: RentsService,
     private paymentsService: PaymentsService,
   ) {}
+
+  async getWaresStats(): Promise<Stats> {
+    const current = await this.waresRepository
+      .createQueryBuilder('ware')
+      .where('ware.createdAt >= :currentMonth', {
+        currentMonth: getDateMonthAgo(1),
+      })
+      .getCount();
+    const previous = await this.waresRepository
+      .createQueryBuilder('ware')
+      .where('ware.createdAt >= :previousMonth', {
+        previousMonth: getDateMonthAgo(2),
+      })
+      .getCount();
+    return { current, previous: previous - current };
+  }
 
   async getMainWares(req: Request): Promise<Response<Ware>> {
     const [result, count] = await this.getWaresQueryBuilder(req)

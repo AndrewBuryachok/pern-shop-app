@@ -3,7 +3,7 @@ import { ApiTags } from '@nestjs/swagger';
 import { WaresService } from './wares.service';
 import { Ware } from './ware.entity';
 import { CreateWareDto } from './ware.dto';
-import { Request, Response } from '../../common/interfaces';
+import { Request, Response, Stats } from '../../common/interfaces';
 import { MyId, Public, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
 
@@ -11,6 +11,12 @@ import { Role } from '../users/role.enum';
 @Controller('wares')
 export class WaresController {
   constructor(private waresService: WaresService) {}
+
+  @Public()
+  @Get('stats')
+  getWaresStats(): Promise<Stats> {
+    return this.waresService.getWaresStats();
+  }
 
   @Public()
   @Get()

@@ -4,7 +4,8 @@ import { Repository, SelectQueryBuilder } from 'typeorm';
 import { Sale } from './sale.entity';
 import { ProductsService } from '../products/products.service';
 import { ExtCreateSaleDto } from './sale.dto';
-import { Request, Response } from '../../common/interfaces';
+import { Request, Response, Stats } from '../../common/interfaces';
+import { getDateMonthAgo } from '../../common/utils';
 import { AppException } from '../../common/exceptions';
 import { SaleError } from './sale-error.enum';
 
@@ -15,6 +16,22 @@ export class SalesService {
     private salesRepository: Repository<Sale>,
     private productsService: ProductsService,
   ) {}
+
+  async getSalesStats(): Promise<Stats> {
+    const current = await this.salesRepository
+      .createQueryBuilder('sale')
+      .where('sale.createdAt >= :currentMonth', {
+        currentMonth: getDateMonthAgo(1),
+      })
+      .getCount();
+    const previous = await this.salesRepository
+      .createQueryBuilder('sale')
+      .where('sale.createdAt >= :previousMonth', {
+        previousMonth: getDateMonthAgo(2),
+      })
+      .getCount();
+    return { current, previous: previous - current };
+  }
 
   async getMySales(myId: number, req: Request): Promise<Response<Sale>> {
     const [result, count] = await this.getSalesQueryBuilder(req)

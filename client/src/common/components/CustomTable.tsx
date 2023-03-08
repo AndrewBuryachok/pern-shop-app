@@ -1,6 +1,7 @@
 import { Paper, ScrollArea, Skeleton, Stack, Table } from '@mantine/core';
 import { IPage } from '../interfaces';
 import CustomNav from './CustomNav';
+import CustomStats from './CustomStats';
 import CustomHead from './CustomHead';
 import CustomPagination from './CustomPagination';
 import { ROWS_PER_PAGE } from '../constants';
@@ -11,6 +12,8 @@ export default function CustomTable<T>(props: Props<T>) {
   return (
     <Stack spacing={8}>
       <CustomNav {...props} />
+      {['Goods', 'Wares', 'Products'].includes(props.title.split(' ')[1]) &&
+        props.title.split(' ')[0] === 'Main' && <CustomStats />}
       <CustomHead
         {...props}
         setSearch={(search) => {

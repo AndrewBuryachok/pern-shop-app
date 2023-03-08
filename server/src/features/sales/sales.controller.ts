@@ -3,14 +3,20 @@ import { ApiTags } from '@nestjs/swagger';
 import { SalesService } from './sales.service';
 import { Sale } from './sale.entity';
 import { CreateSaleDto } from './sale.dto';
-import { Request, Response } from '../../common/interfaces';
-import { MyId, Roles } from '../../common/decorators';
+import { Request, Response, Stats } from '../../common/interfaces';
+import { MyId, Public, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
 
 @ApiTags('sales')
 @Controller('sales')
 export class SalesController {
   constructor(private salesService: SalesService) {}
+
+  @Public()
+  @Get('stats')
+  getSalesStats(): Promise<Stats> {
+    return this.salesService.getSalesStats();
+  }
 
   @Get('my')
   getMySales(

@@ -1,11 +1,17 @@
 import { emptyApi } from '../../app/empty.api';
-import { IRequest, IResponse } from '../../common/interfaces';
+import { IRequest, IResponse, IStats } from '../../common/interfaces';
 import { Ware } from './ware.model';
 import { CreateWareDto } from './ware.dto';
 import { getQuery } from '../../common/utils';
 
 export const waresApi = emptyApi.injectEndpoints({
   endpoints: (build) => ({
+    getWaresStats: build.query<IStats, void>({
+      query: () => ({
+        url: '/wares/stats',
+      }),
+      providesTags: ['Ware'],
+    }),
     getMainWares: build.query<IResponse<Ware>, IRequest>({
       query: (req) => ({
         url: `/wares?${getQuery(req)}`,
@@ -42,6 +48,7 @@ export const waresApi = emptyApi.injectEndpoints({
 });
 
 export const {
+  useGetWaresStatsQuery,
   useGetMainWaresQuery,
   useGetMyWaresQuery,
   useGetPlacedWaresQuery,

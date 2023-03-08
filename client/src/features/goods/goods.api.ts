@@ -1,11 +1,17 @@
 import { emptyApi } from '../../app/empty.api';
-import { IRequest, IResponse } from '../../common/interfaces';
+import { IRequest, IResponse, IStats } from '../../common/interfaces';
 import { Good } from './good.model';
 import { CreateGoodDto, DeleteGoodDto, EditGoodDto } from './good.dto';
 import { getQuery } from '../../common/utils';
 
 export const goodsApi = emptyApi.injectEndpoints({
   endpoints: (build) => ({
+    getGoodsStats: build.query<IStats, void>({
+      query: () => ({
+        url: '/goods/stats',
+      }),
+      providesTags: ['Good'],
+    }),
     getMainGoods: build.query<IResponse<Good>, IRequest>({
       query: (req) => ({
         url: `/goods?${getQuery(req)}`,
@@ -51,6 +57,7 @@ export const goodsApi = emptyApi.injectEndpoints({
 });
 
 export const {
+  useGetGoodsStatsQuery,
   useGetMainGoodsQuery,
   useGetMyGoodsQuery,
   useGetAllGoodsQuery,

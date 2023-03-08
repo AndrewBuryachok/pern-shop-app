@@ -1,11 +1,17 @@
 import { emptyApi } from '../../app/empty.api';
-import { IRequest, IResponse } from '../../common/interfaces';
+import { IRequest, IResponse, IStats } from '../../common/interfaces';
 import { Trade } from './trade.model';
 import { CreateTradeDto } from './trade.dto';
 import { getQuery } from '../../common/utils';
 
 export const tradesApi = emptyApi.injectEndpoints({
   endpoints: (build) => ({
+    getTradesStats: build.query<IStats, void>({
+      query: () => ({
+        url: '/trades/stats',
+      }),
+      providesTags: ['Trade'],
+    }),
     getMyTrades: build.query<IResponse<Trade>, IRequest>({
       query: (req) => ({
         url: `/trades/my?${getQuery(req)}`,
@@ -36,6 +42,7 @@ export const tradesApi = emptyApi.injectEndpoints({
 });
 
 export const {
+  useGetTradesStatsQuery,
   useGetMyTradesQuery,
   useGetPlacedTradesQuery,
   useGetAllTradesQuery,
