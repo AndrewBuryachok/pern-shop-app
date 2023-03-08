@@ -1,8 +1,7 @@
 import { Link } from 'react-router-dom';
 import {
   Anchor,
-  Card,
-  Container,
+  Paper,
   SimpleGrid,
   Stack,
   Text,
@@ -131,40 +130,39 @@ export default function Home() {
   ];
 
   return (
-    <Container>
-      <Stack align='center'>
-        <Title order={1}>Online shop app</Title>
-        <SimpleGrid
-          cols={4}
-          breakpoints={[
-            { maxWidth: 'xl', cols: 3 },
-            { maxWidth: 'md', cols: 2 },
-            { maxWidth: 'xs', cols: 1 },
-          ]}
-        >
-          {features.map((feature) => (
-            <Card key={feature.title} shadow='md' radius='md'>
-              <Stack spacing={8}>
-                <feature.icon size={48} color={theme.fn.primaryColor()} />
-                <Text size='lg' weight='bold'>
-                  {feature.title}
-                </Text>
-                <Text size='sm' color='dimmed'>
-                  {'Create and view '}
-                  <Anchor
-                    component={Link}
-                    to={`/${feature.title.toLowerCase()}${
-                      feature.my ? '/my' : ''
-                    }`}
-                  >
-                    {feature.title.toLowerCase()}
-                  </Anchor>
-                </Text>
-              </Stack>
-            </Card>
-          ))}
-        </SimpleGrid>
-      </Stack>
-    </Container>
+    <Stack align='center'>
+      <Title order={1}>Online shop app</Title>
+      <SimpleGrid
+        cols={5}
+        breakpoints={[
+          { maxWidth: 'xl', cols: 4 },
+          { maxWidth: 'lg', cols: 3 },
+          { maxWidth: 'md', cols: 2 },
+          { maxWidth: 'xs', cols: 1 },
+        ]}
+      >
+        {features.map((feature) => (
+          <Paper key={feature.title} p='md'>
+            <Stack spacing={0}>
+              <feature.icon size={48} color={theme.fn.primaryColor()} />
+              <Text size='lg' weight='bold'>
+                {feature.title}
+              </Text>
+              <Text size='sm' color='dimmed'>
+                {'Create and view '}
+                <Anchor
+                  component={Link}
+                  to={`/${feature.title.toLowerCase()}${
+                    feature.my ? '/my' : ''
+                  }`}
+                >
+                  {feature.title.toLowerCase()}
+                </Anchor>
+              </Text>
+            </Stack>
+          </Paper>
+        ))}
+      </SimpleGrid>
+    </Stack>
   );
 }

@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { Paper, ScrollArea, Skeleton, Stack, Table } from '@mantine/core';
 import { IPage } from '../interfaces';
 import CustomNav from './CustomNav';
@@ -9,22 +10,18 @@ import { ROWS_PER_PAGE } from '../constants';
 type Props<T> = IPage<T>;
 
 export default function CustomTable<T>(props: Props<T>) {
+  useEffect(() => props.setPage(1), [props.search]);
+
   return (
     <Stack spacing={8}>
       <CustomNav {...props} />
       {['Goods', 'Wares', 'Products'].includes(props.title.split(' ')[1]) &&
         props.title.split(' ')[0] === 'Main' && <CustomStats />}
-      <CustomHead
-        {...props}
-        setSearch={(search) => {
-          props.setSearch(search);
-          props.setPage(1);
-        }}
-      />
+      <CustomHead {...props} />
       <Paper>
         <ScrollArea>
           <Table
-            sx={{ minWidth: props.minWidth }}
+            miw={props.minWidth}
             horizontalSpacing={8}
             verticalSpacing={8}
             captionSide='bottom'
@@ -39,8 +36,8 @@ export default function CustomTable<T>(props: Props<T>) {
             </thead>
             <tbody>
               {props.isFetching
-                ? [...Array(4).keys()].map((key) => (
-                    <tr key={key - 4}>
+                ? [...Array(5).keys()].map((key) => (
+                    <tr key={key}>
                       {props.columns.map((column) => (
                         <td key={column}>
                           <Skeleton height={16} />
@@ -50,9 +47,9 @@ export default function CustomTable<T>(props: Props<T>) {
                   ))
                 : props.children}
             </tbody>
-            {props.data && (
+            {!props.isFetching && (
               <caption style={{ marginTop: 0 }}>
-                {props.data.result.length
+                {props.data?.result.length
                   ? `Showing ${
                       (props.page - 1) * ROWS_PER_PAGE + 1
                     } to ${Math.min(

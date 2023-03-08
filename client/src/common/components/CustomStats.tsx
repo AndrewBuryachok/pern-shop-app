@@ -34,23 +34,24 @@ export default function CustomStats() {
   return (
     <SimpleGrid
       cols={5}
+      spacing={8}
       breakpoints={[
         { maxWidth: 'xl', cols: 4 },
-        { maxWidth: 'md', cols: 3 },
-        { maxWidth: 'sm', cols: 2 },
+        { maxWidth: 'lg', cols: 3 },
+        { maxWidth: 'md', cols: 2 },
         { maxWidth: 'xs', cols: 1 },
       ]}
     >
       {stats.map((stat) => (
         <Skeleton key={stat.label} visible={stat.isLoading}>
-          <Paper p='md' radius='md'>
+          <Paper p={8}>
             <Group position='apart' spacing={0}>
               <div>
                 <Text size='xs' weight='bold' color='dimmed'>
                   {`new ${stat.label}`.toUpperCase()}
                 </Text>
                 <Text size='xl' weight='bold'>
-                  {stat.current}
+                  {stat.current || 0}
                 </Text>
               </div>
               <ThemeIcon
@@ -75,7 +76,7 @@ export default function CustomStats() {
               %
             </Text>
             <Text size='xs' color='dimmed'>
-              Compared to previous month ({stat.previous})
+              Compared to previous month
             </Text>
           </Paper>
         </Skeleton>

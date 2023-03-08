@@ -1,4 +1,4 @@
-import { Avatar, Group, Paper, Stack, Text } from '@mantine/core';
+import { Avatar, Group, Paper, SimpleGrid, Stack, Text } from '@mantine/core';
 import { IconBuildingSkyscraper } from '@tabler/icons';
 import { ExtUser } from './user.model';
 import RolesBadge from '../../common/components/RolesBadge';
@@ -19,49 +19,51 @@ export default function UserProfile({ data: user }: Props) {
   ];
 
   return (
-    <Paper p='xl' withBorder>
-      <Stack align='center' spacing={8}>
-        <Avatar
-          size={128}
-          src={`https://minotar.net/bust/${user.name}/128.png`}
-          alt={user.name}
-        />
-        <Text size='xl' weight='bold'>
-          {user.name}
-        </Text>
-        <RolesBadge roles={user.roles} />
-        {user.city && (
-          <Group spacing={8}>
-            <IconBuildingSkyscraper size={32} />
-            <div>
-              <PlaceText {...user.city} />
-            </div>
-          </Group>
-        )}
-        {!!user.cards.length && (
-          <Group spacing={16}>
-            {user.cards.map((card) => (
-              <Paper key={card.id} p={8} withBorder>
-                <Text size='sm' color={colors[card.color - 1]}>
-                  {card.name}
-                </Text>
-              </Paper>
-            ))}
-          </Group>
-        )}
-        <Group spacing={32}>
-          {stats.map((stat, index) => (
-            <div key={stat.label}>
-              <Text align='center' size='lg' weight='bold'>
-                {stat.value}
+    <Stack align='center' spacing={8}>
+      <Avatar
+        size={128}
+        src={`https://minotar.net/bust/${user.name}/128.png`}
+        alt={user.name}
+      />
+      <Text size='xl' weight='bold'>
+        {user.name}
+      </Text>
+      <RolesBadge roles={user.roles} />
+      {user.city && (
+        <Group spacing={8}>
+          <IconBuildingSkyscraper size={32} />
+          <div>
+            <PlaceText {...user.city} />
+          </div>
+        </Group>
+      )}
+      {!!user.cards.length && (
+        <Group spacing={8}>
+          {user.cards.map((card) => (
+            <Paper key={card.id} p={4}>
+              <Text size='sm' color={colors[card.color - 1]}>
+                {card.name}
               </Text>
-              <Text align='center' size='sm' color={colors[index]}>
-                {stat.label}
-              </Text>
-            </div>
+            </Paper>
           ))}
         </Group>
-      </Stack>
-    </Paper>
+      )}
+      <SimpleGrid
+        cols={5}
+        spacing={8}
+        breakpoints={[{ maxWidth: 'xs', cols: 3 }]}
+      >
+        {stats.map((stat, index) => (
+          <Paper key={stat.label} p={4}>
+            <Text align='center' size='lg' weight='bold'>
+              {stat.value}
+            </Text>
+            <Text align='center' size='sm' color={colors[index]}>
+              {stat.label}
+            </Text>
+          </Paper>
+        ))}
+      </SimpleGrid>
+    </Stack>
   );
 }

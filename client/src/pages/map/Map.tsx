@@ -1,4 +1,4 @@
-import { Box, LoadingOverlay, useMantineTheme } from '@mantine/core';
+import { Center, Skeleton, Stack, useMantineTheme } from '@mantine/core';
 import { useDocumentTitle } from '@mantine/hooks';
 import { useGetMainCitiesQuery } from '../../features/cities/cities.api';
 import { useGetMainShopsQuery } from '../../features/shops/shops.api';
@@ -30,50 +30,47 @@ export default function Map() {
   const { data: markets, isLoading: isLoading3 } = useGetMainMarketsQuery({});
   const { data: storages, isLoading: isLoading4 } = useGetMainStoragesQuery({});
 
+  const isLoading = isLoading1 || isLoading2 || isLoading3 || isLoading4;
+
   return (
-    <Box pos='relative' w='100%' h='100%'>
-      <LoadingOverlay
-        visible={isLoading1 || isLoading2 || isLoading3 || isLoading4}
-      />
-      <svg width='100%' height='100%'>
-        {lines.map((line, index) => (
-          <line
-            key={index}
-            {...line}
-            stroke={theme.colors[colors[index]][7]}
-            strokeWidth='2'
-          ></line>
-        ))}
-        <circle cx='50%' cy='50%' r='8' fill={theme.colors.violet[7]}></circle>
-        {[
-          cities?.result.map((city) => ({
-            ...city,
-            type: 0,
-            owner: city.user.name,
-            data: viewUsers(city.users),
-          })),
-          shops?.result.map((shop) => ({
-            ...shop,
-            type: 1,
-            owner: shop.user.name,
-            data: viewThings(shop.goods),
-          })),
-          markets?.result.map((market) => ({
-            ...market,
-            type: 2,
-            owner: parseCard(market.card),
-            data: viewContainers(market.stores),
-          })),
-          storages?.result.map((storage) => ({
-            ...storage,
-            type: 3,
-            owner: parseCard(storage.card),
-            data: viewContainers(storage.cells),
-          })),
-        ].map((allPlaces) =>
-          allPlaces?.map((place) => <PlacePath key={place.id} data={place} />),
-        )}
-      </svg>
-    </Box>
+    <svg width='100%' height='100%'>
+      {lines.map((line, index) => (
+        <line
+          key={index}
+          {...line}
+          stroke={theme.colors[isLoading ? 'gray' : colors[index]][7]}
+          strokeWidth='2'
+        ></line>
+      ))}
+      <circle cx='50%' cy='50%' r='8' fill={theme.colors.violet[7]}></circle>
+      {[
+        cities?.result.map((city) => ({
+          ...city,
+          type: 0,
+          owner: city.user.name,
+          data: viewUsers(city.users),
+        })),
+        shops?.result.map((shop) => ({
+          ...shop,
+          type: 1,
+          owner: shop.user.name,
+          data: viewThings(shop.goods),
+        })),
+        markets?.result.map((market) => ({
+          ...market,
+          type: 2,
+          owner: parseCard(market.card),
+          data: viewContainers(market.stores),
+        })),
+        storages?.result.map((storage) => ({
+          ...storage,
+          type: 3,
+          owner: parseCard(storage.card),
+          data: viewContainers(storage.cells),
+        })),
+      ].map((allPlaces) =>
+        allPlaces?.map((place) => <PlacePath key={place.id} data={place} />),
+      )}
+    </svg>
   );
 }
