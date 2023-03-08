@@ -1,10 +1,11 @@
-import { NativeSelect, NumberInput, Textarea } from '@mantine/core';
+import { NumberInput, Select, Textarea } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { useCreateWareMutation } from './wares.api';
 import { useSelectMyRentsQuery } from '../rents/rents.api';
 import { CreateWareDto } from './ware.dto';
 import CustomForm from '../../common/components/CustomForm';
+import { ThingsItem } from '../../common/components/ThingItem';
 import {
   selectCategories,
   selectItems,
@@ -52,23 +53,28 @@ export default function CreateWareModal() {
       isLoading={isLoading}
       text={'Create ware'}
     >
-      <NativeSelect
+      <Select
         label='Rent'
+        placeholder='Rent'
         data={selectRents(rents)}
+        searchable
         required
         {...form.getInputProps('rent')}
       />
-      <NativeSelect
+      <Select
         label='Category'
+        placeholder='Category'
         data={selectCategories()}
+        searchable
         required
         {...form.getInputProps('category')}
       />
-      <NativeSelect
+      <Select
         label='Item'
-        data={selectItems().filter(
-          (item) => item.category === form.values.category || !item.value,
-        )}
+        placeholder='Item'
+        itemComponent={ThingsItem}
+        data={selectItems(form.values.category)}
+        searchable
         required
         {...form.getInputProps('item')}
       />
@@ -95,9 +101,11 @@ export default function CreateWareModal() {
         max={MAX_INTAKE_VALUE}
         {...form.getInputProps('intake')}
       />
-      <NativeSelect
+      <Select
         label='Kit'
+        placeholder='Kit'
         data={selectKits()}
+        searchable
         required
         {...form.getInputProps('kit')}
       />

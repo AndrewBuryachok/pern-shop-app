@@ -1,4 +1,4 @@
-import { NativeSelect, TextInput } from '@mantine/core';
+import { Select, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
@@ -33,11 +33,13 @@ export default function RemoveUserRoleModal({ data: user }: Props) {
       text={'Remove user role'}
     >
       <TextInput label='User' value={user.name} disabled />
-      <NativeSelect
+      <Select
         label='Role'
+        placeholder='Role'
         data={selectRoles().filter(
           (role) => user.roles.includes(+role.value) || !role.value,
         )}
+        searchable
         required
         {...form.getInputProps('role')}
       />

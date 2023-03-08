@@ -1,4 +1,4 @@
-import { NativeSelect, TextInput } from '@mantine/core';
+import { Select, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { useCreateStoreMutation } from './stores.api';
@@ -36,9 +36,11 @@ export default function CreateStoreModal() {
       isLoading={isLoading}
       text={'Create store'}
     >
-      <NativeSelect
+      <Select
         label='Market'
+        placeholder='Market'
         data={selectMarkets(markets)}
+        searchable
         required
         {...form.getInputProps('market')}
       />

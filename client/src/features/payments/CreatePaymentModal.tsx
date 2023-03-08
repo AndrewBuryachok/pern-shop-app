@@ -1,4 +1,4 @@
-import { NativeSelect, NumberInput, Textarea } from '@mantine/core';
+import { NumberInput, Select, Textarea } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { useCreatePaymentMutation } from './payments.api';
@@ -7,6 +7,7 @@ import { useSelectAllUsersQuery } from '../users/users.api';
 import { useSelectUserCardsQuery } from '../cards/cards.api';
 import { CreatePaymentDto } from './payment.dto';
 import CustomForm from '../../common/components/CustomForm';
+import { UsersItem } from '../../common/components/UsersItem';
 import {
   customMin,
   selectCards,
@@ -52,21 +53,28 @@ export default function CreatePaymentModal() {
       isLoading={isLoading}
       text={'Create payment'}
     >
-      <NativeSelect
+      <Select
         label='Sender Card'
+        placeholder='Sender Card'
         data={selectCardsWithBalance(myCards)}
+        searchable
         required
         {...form.getInputProps('senderCard')}
       />
-      <NativeSelect
+      <Select
         label='User'
+        placeholder='User'
+        itemComponent={UsersItem}
         data={selectUsers(users)}
+        searchable
         required
         {...form.getInputProps('user')}
       />
-      <NativeSelect
+      <Select
         label='Receiver Card'
+        placeholder='Receiver Card'
         data={selectCards(cards)}
+        searchable
         required
         {...form.getInputProps('receiverCard')}
       />

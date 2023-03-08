@@ -1,4 +1,4 @@
-import { NativeSelect, NumberInput, Textarea, TextInput } from '@mantine/core';
+import { NumberInput, Select, Textarea, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
@@ -55,9 +55,11 @@ export default function BuyWareModal({ data: ware }: Props) {
       <TextInput label='Amount' value={parseThingAmount(ware)} disabled />
       <TextInput label='Price' value={`${ware.price}$`} disabled />
       <TextInput label='Market' value={parseStore(ware.rent.store)} disabled />
-      <NativeSelect
+      <Select
         label='Card'
+        placeholder='Card'
         data={selectCardsWithBalance(cards)}
+        searchable
         required
         {...form.getInputProps('card')}
       />

@@ -1,4 +1,4 @@
-import { NativeSelect, NumberInput, Textarea } from '@mantine/core';
+import { NumberInput, Select, Textarea } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { useCreateProductMutation } from './products.api';
@@ -6,6 +6,7 @@ import { useSelectFreeStoragesQuery } from '../storages/storages.api';
 import { useSelectMyCardsQuery } from '../cards/cards.api';
 import { CreateProductDto } from './product.dto';
 import CustomForm from '../../common/components/CustomForm';
+import { ThingsItem } from '../../common/components/ThingItem';
 import {
   selectCardsWithBalance,
   selectCategories,
@@ -57,29 +58,36 @@ export default function CreateProductModal() {
       isLoading={isLoading}
       text={'Create product'}
     >
-      <NativeSelect
+      <Select
         label='Storage'
+        placeholder='Storage'
         data={selectStoragesWithPrice(storages)}
+        searchable
         required
         {...form.getInputProps('storage')}
       />
-      <NativeSelect
+      <Select
         label='Card'
+        placeholder='Card'
         data={selectCardsWithBalance(cards)}
+        searchable
         required
         {...form.getInputProps('card')}
       />
-      <NativeSelect
+      <Select
         label='Category'
+        placeholder='Category'
         data={selectCategories()}
+        searchable
         required
         {...form.getInputProps('category')}
       />
-      <NativeSelect
+      <Select
         label='Item'
-        data={selectItems().filter(
-          (item) => item.category === form.values.category || !item.value,
-        )}
+        placeholder='Item'
+        itemComponent={ThingsItem}
+        data={selectItems(form.values.category)}
+        searchable
         required
         {...form.getInputProps('item')}
       />
@@ -106,9 +114,11 @@ export default function CreateProductModal() {
         max={MAX_INTAKE_VALUE}
         {...form.getInputProps('intake')}
       />
-      <NativeSelect
+      <Select
         label='Kit'
+        placeholder='Kit'
         data={selectKits()}
+        searchable
         required
         {...form.getInputProps('kit')}
       />

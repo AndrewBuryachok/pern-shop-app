@@ -3,7 +3,7 @@ import { Sale } from './sale.model';
 import { getCurrentUser } from '../auth/auth.slice';
 import CustomTable from '../../common/components/CustomTable';
 import AvatarWithDoubleText from '../../common/components/AvatarWithDoubleText';
-import ItemImage from '../../common/components/ItemImage';
+import ThingImageWithText from '../../common/components/ThingImageWithText';
 import SingleText from '../../common/components/SingleText';
 import SumText from '../../common/components/SumText';
 import PlaceText from '../../common/components/PlaceText';
@@ -51,7 +51,7 @@ export default function SalesTable({ actions = [], ...props }: Props) {
             />
           </td>
           <td>
-            <ItemImage
+            <ThingImageWithText
               item={sale.product.item}
               description={sale.product.description}
             />

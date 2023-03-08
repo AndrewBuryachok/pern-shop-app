@@ -1,4 +1,4 @@
-import { NativeSelect } from '@mantine/core';
+import { Select } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { useAddUserCityMutation } from './users.api';
@@ -6,6 +6,7 @@ import { useSelectMyCitiesQuery } from '../cities/cities.api';
 import { useSelectFreeUsersQuery } from './users.api';
 import { UpdateUserCityDto } from './user.dto';
 import CustomForm from '../../common/components/CustomForm';
+import { UsersItem } from '../../common/components/UsersItem';
 import { selectCities, selectUsers } from '../../common/utils';
 
 export default function AddCityUserModal() {
@@ -35,15 +36,20 @@ export default function AddCityUserModal() {
       isLoading={isLoading}
       text={'Add city user'}
     >
-      <NativeSelect
+      <Select
         label='City'
+        placeholder='City'
         data={selectCities(cities)}
+        searchable
         required
         {...form.getInputProps('city')}
       />
-      <NativeSelect
+      <Select
         label='User'
+        placeholder='User'
+        itemComponent={UsersItem}
         data={selectUsers(users)}
+        searchable
         required
         {...form.getInputProps('user')}
       />

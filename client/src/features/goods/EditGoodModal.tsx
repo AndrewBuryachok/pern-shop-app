@@ -1,4 +1,4 @@
-import { NativeSelect, NumberInput, Textarea } from '@mantine/core';
+import { NumberInput, Select, Textarea } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
@@ -6,6 +6,7 @@ import { Good } from './good.model';
 import { useEditGoodMutation } from './goods.api';
 import { EditGoodDto } from './good.dto';
 import CustomForm from '../../common/components/CustomForm';
+import { ThingsItem } from '../../common/components/ThingItem';
 import { selectCategories, selectItems, selectKits } from '../../common/utils';
 import {
   Color,
@@ -49,17 +50,20 @@ export default function EditGoodModal({ data: good }: Props) {
       isLoading={isLoading}
       text={'Edit good'}
     >
-      <NativeSelect
+      <Select
         label='Category'
+        placeholder='Category'
         data={selectCategories()}
+        searchable
         required
         {...form.getInputProps('category')}
       />
-      <NativeSelect
+      <Select
         label='Item'
-        data={selectItems().filter(
-          (item) => item.category === form.values.category || !item.value,
-        )}
+        placeholder='Item'
+        itemComponent={ThingsItem}
+        data={selectItems(form.values.category)}
+        searchable
         required
         {...form.getInputProps('item')}
       />
@@ -86,9 +90,11 @@ export default function EditGoodModal({ data: good }: Props) {
         max={MAX_INTAKE_VALUE}
         {...form.getInputProps('intake')}
       />
-      <NativeSelect
+      <Select
         label='Kit'
+        placeholder='Kit'
         data={selectKits()}
+        searchable
         required
         {...form.getInputProps('kit')}
       />

@@ -1,4 +1,4 @@
-import { NativeSelect, NumberInput } from '@mantine/core';
+import { NumberInput, Select } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { useCreateExchangeMutation } from './exchanges.api';
@@ -6,9 +6,11 @@ import { useSelectAllUsersQuery } from '../users/users.api';
 import { useSelectUserCardsWithBalanceQuery } from '../cards/cards.api';
 import { CreateExchangeDto } from './exchange.dto';
 import CustomForm from '../../common/components/CustomForm';
+import { UsersItem } from '../../common/components/UsersItem';
 import {
   customMin,
   selectCardsWithBalance,
+  selectTypes,
   selectUsers,
 } from '../../common/utils';
 import { MAX_SUM_VALUE } from '../../common/constants';
@@ -18,7 +20,7 @@ export default function CreateExchangeModal() {
     initialValues: {
       user: '',
       card: '',
-      type: '1',
+      type: '',
       sum: 1,
     },
     transformValues: ({ user, card, type, ...rest }) => ({
@@ -50,25 +52,28 @@ export default function CreateExchangeModal() {
       isLoading={isLoading}
       text={'Create exchange'}
     >
-      <NativeSelect
+      <Select
         label='User'
+        placeholder='User'
+        itemComponent={UsersItem}
         data={selectUsers(users)}
+        searchable
         required
         {...form.getInputProps('user')}
       />
-      <NativeSelect
+      <Select
         label='Card'
+        placeholder='Card'
         data={selectCardsWithBalance(cards)}
+        searchable
         required
         {...form.getInputProps('card')}
       />
-      <NativeSelect
+      <Select
         label='Type'
-        data={[
-          { value: '', label: '' },
-          { value: '1', label: 'increase' },
-          { value: '0', label: 'reduce' },
-        ]}
+        placeholder='Type'
+        data={selectTypes()}
+        searchable
         required
         {...form.getInputProps('type')}
       />

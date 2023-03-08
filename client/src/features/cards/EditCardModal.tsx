@@ -1,4 +1,4 @@
-import { NativeSelect, TextInput } from '@mantine/core';
+import { Select, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
@@ -45,9 +45,11 @@ export default function EditCardModal({ data: card }: Props) {
         maxLength={MAX_TEXT_LENGTH}
         {...form.getInputProps('name')}
       />
-      <NativeSelect
+      <Select
         label='Color'
+        placeholder='Color'
         data={selectColors()}
+        searchable
         required
         {...form.getInputProps('color')}
       />

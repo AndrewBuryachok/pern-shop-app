@@ -1,4 +1,4 @@
-import { NativeSelect, NumberInput, Textarea, TextInput } from '@mantine/core';
+import { Select, Textarea, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
@@ -59,9 +59,11 @@ export default function CompleteInvoiceModal({ data: invoice }: Props) {
         disabled
       />
       <TextInput label='Receiver' value={invoice.receiverUser.name} disabled />
-      <NativeSelect
+      <Select
         label='Card'
+        placeholder='Card'
         data={selectCardsWithBalance(cards)}
+        searchable
         required
         {...form.getInputProps('card')}
       />

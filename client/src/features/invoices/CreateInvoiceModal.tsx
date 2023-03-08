@@ -1,4 +1,4 @@
-import { NativeSelect, NumberInput, Textarea } from '@mantine/core';
+import { NumberInput, Select, Textarea } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { useCreateInvoiceMutation } from './invoices.api';
@@ -6,6 +6,7 @@ import { useSelectMyCardsQuery } from '../cards/cards.api';
 import { useSelectAllUsersQuery } from '../users/users.api';
 import { CreateInvoiceDto } from './invoice.dto';
 import CustomForm from '../../common/components/CustomForm';
+import { UsersItem } from '../../common/components/UsersItem';
 import { selectCardsWithBalance, selectUsers } from '../../common/utils';
 import { MAX_DESCRIPTION_LENGTH, MAX_SUM_VALUE } from '../../common/constants';
 
@@ -39,15 +40,20 @@ export default function CreateInvoiceModal() {
       isLoading={isLoading}
       text={'Create invoice'}
     >
-      <NativeSelect
+      <Select
         label='Sender Card'
+        placeholder='Sender Card'
         data={selectCardsWithBalance(myCards)}
+        searchable
         required
         {...form.getInputProps('senderCard')}
       />
-      <NativeSelect
+      <Select
         label='Receiver User'
+        placeholder='Receiver User'
+        itemComponent={UsersItem}
         data={selectUsers(users)}
+        searchable
         required
         {...form.getInputProps('receiverUser')}
       />

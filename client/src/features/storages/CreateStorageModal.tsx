@@ -1,4 +1,4 @@
-import { NativeSelect, NumberInput, TextInput } from '@mantine/core';
+import { NumberInput, Select, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { useCreateStorageMutation } from './storages.api';
@@ -39,9 +39,11 @@ export default function CreateStorageModal() {
       isLoading={isLoading}
       text={'Create storage'}
     >
-      <NativeSelect
+      <Select
         label='Card'
+        placeholder='Card'
         data={selectCardsWithBalance(cards)}
+        searchable
         required
         {...form.getInputProps('card')}
       />

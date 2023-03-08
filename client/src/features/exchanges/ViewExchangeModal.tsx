@@ -20,7 +20,7 @@ export default function ViewExchangeModal({ data: exchange }: Props) {
       />
       <TextInput
         label='Type'
-        value={exchange.type ? 'increase' : 'reduce'}
+        value={exchange.type ? 'increase' : 'decrease'}
         disabled
       />
       <TextInput label='Sum' value={`${exchange.sum}$`} disabled />

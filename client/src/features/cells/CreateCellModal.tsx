@@ -1,4 +1,4 @@
-import { NativeSelect, TextInput } from '@mantine/core';
+import { Select, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { useCreateCellMutation } from './cells.api';
@@ -38,9 +38,11 @@ export default function CreateCellModal() {
       isLoading={isLoading}
       text={'Create cell'}
     >
-      <NativeSelect
+      <Select
         label='Storage'
+        placeholder='Storage'
         data={selectStorages(storages)}
+        searchable
         required
         {...form.getInputProps('storage')}
       />

@@ -3,6 +3,7 @@ import { useDocumentTitle } from '@mantine/hooks';
 import { IconSearch } from '@tabler/icons';
 import { IHead } from '../interfaces';
 import { useSelectAllUsersQuery } from '../../features/users/users.api';
+import { UsersItem } from './UsersItem';
 
 type Props = IHead;
 
@@ -20,7 +21,8 @@ export default function CustomHead(props: Props) {
         icon={isLoading ? <Loader size={16} /> : <IconSearch size={16} />}
         value={props.search}
         onChange={props.setSearch}
-        data={users?.map((user) => user.name) || []}
+        itemComponent={UsersItem}
+        data={users?.map((user) => ({ ...user, value: user.name })) || []}
       />
     </Group>
   );
