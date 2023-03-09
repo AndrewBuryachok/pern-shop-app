@@ -51,6 +51,7 @@ export class UsersController {
     return this.usersService.selectFreeUsers();
   }
 
+  @Public()
   @Get(':userId')
   getSingleUser(@Param() { userId }: UserIdDto): Promise<User> {
     return this.usersService.getSingleUser(userId);

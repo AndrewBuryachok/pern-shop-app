@@ -294,7 +294,8 @@ export default function App() {
                             key={`${page.path} ${route.path}`}
                             {...route}
                             element={
-                              route.index && page.path !== 'polls' ? (
+                              (route.index && page.path !== 'polls') ||
+                              (route.path && route.path === ':userId') ? (
                                 <route.element />
                               ) : (
                                 <Protected role={route.role}>
