@@ -5,10 +5,9 @@ import AvatarWithSingleText from '../../common/components/AvatarWithSingleText';
 import RolesBadge from '../../common/components/RolesBadge';
 import SingleText from '../../common/components/SingleText';
 import PlaceText from '../../common/components/PlaceText';
-import CustomSelect from '../../common/components/CustomSelect';
+import TotalText from '../../common/components/TotalText';
 import CustomActions from '../../common/components/CustomActions';
 import { viewUserAction } from './ViewUserModal';
-import { viewCards } from '../../common/utils';
 
 type Props = ITableWithActions<User>;
 
@@ -39,7 +38,7 @@ export default function UsersTable({ actions = [], ...props }: Props) {
             )}
           </td>
           <td>
-            <CustomSelect label='Cards' data={viewCards(user.cards)} />
+            <TotalText data={user.cards.length} />
           </td>
           <td>
             <CustomActions data={user} actions={[viewUserAction, ...actions]} />

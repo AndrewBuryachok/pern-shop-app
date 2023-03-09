@@ -3,7 +3,7 @@ import { Trade } from './trade.model';
 import { getCurrentUser } from '../auth/auth.slice';
 import CustomTable from '../../common/components/CustomTable';
 import AvatarWithDoubleText from '../../common/components/AvatarWithDoubleText';
-import ThingImageWithText from '../../common/components/ThingImageWithText';
+import ThingImage from '../../common/components/ThingImage';
 import SingleText from '../../common/components/SingleText';
 import SumText from '../../common/components/SumText';
 import PlaceText from '../../common/components/PlaceText';
@@ -51,7 +51,7 @@ export default function TradesTable({ actions = [], ...props }: Props) {
             />
           </td>
           <td>
-            <ThingImageWithText
+            <ThingImage
               item={trade.ware.item}
               description={trade.ware.description}
             />

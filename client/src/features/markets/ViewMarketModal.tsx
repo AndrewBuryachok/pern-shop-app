@@ -1,4 +1,4 @@
-import { NativeSelect, Stack, TextInput } from '@mantine/core';
+import { Select, Stack, TextInput } from '@mantine/core';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { Market } from './market.model';
@@ -15,7 +15,12 @@ export default function ViewMarketModal({ data: market }: Props) {
       <TextInput label='X' value={market.x} disabled />
       <TextInput label='Y' value={market.y} disabled />
       <TextInput label='Price' value={`${market.price}$`} disabled />
-      <NativeSelect label='Stores' data={viewContainers(market.stores)} />
+      <Select
+        label='Stores'
+        placeholder='Stores'
+        data={viewContainers(market.stores)}
+        searchable
+      />
     </Stack>
   );
 }

@@ -6,10 +6,9 @@ import AvatarWithDoubleText from '../../common/components/AvatarWithDoubleText';
 import PlaceText from '../../common/components/PlaceText';
 import SumText from '../../common/components/SumText';
 import DateText from '../../common/components/DateText';
-import CustomSelect from '../../common/components/CustomSelect';
+import TotalText from '../../common/components/TotalText';
 import CustomActions from '../../common/components/CustomActions';
 import { viewLeaseAction } from './ViewLeaseModal';
-import { viewThings } from '../../common/utils';
 
 type Props = ITableWithActions<Lease>;
 
@@ -68,7 +67,7 @@ export default function LeasesTable({ actions = [], ...props }: Props) {
             <DateText date={lease.createdAt} />
           </td>
           <td>
-            <CustomSelect label='Products' data={viewThings(lease.products)} />
+            <TotalText data={lease.products.length} />
           </td>
           <td>
             <CustomActions

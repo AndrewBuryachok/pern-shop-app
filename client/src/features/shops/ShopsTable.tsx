@@ -4,10 +4,9 @@ import CustomTable from '../../common/components/CustomTable';
 import AvatarWithSingleText from '../../common/components/AvatarWithSingleText';
 import PlaceText from '../../common/components/PlaceText';
 import SingleText from '../../common/components/SingleText';
-import CustomSelect from '../../common/components/CustomSelect';
+import TotalText from '../../common/components/TotalText';
 import CustomActions from '../../common/components/CustomActions';
 import { viewShopAction } from './ViewShopModal';
-import { viewThings } from '../../common/utils';
 
 type Props = ITableWithActions<Shop>;
 
@@ -33,7 +32,7 @@ export default function ShopsTable({ actions = [], ...props }: Props) {
             <SingleText text={`${shop.y}`} />
           </td>
           <td>
-            <CustomSelect label='Goods' data={viewThings(shop.goods)} />
+            <TotalText data={shop.goods.length} />
           </td>
           <td>
             <CustomActions data={shop} actions={[viewShopAction, ...actions]} />

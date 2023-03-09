@@ -4,10 +4,9 @@ import CustomTable from '../../common/components/CustomTable';
 import AvatarWithDoubleText from '../../common/components/AvatarWithDoubleText';
 import PlaceText from '../../common/components/PlaceText';
 import SingleText from '../../common/components/SingleText';
-import CustomSelect from '../../common/components/CustomSelect';
+import TotalText from '../../common/components/TotalText';
 import CustomActions from '../../common/components/CustomActions';
 import { viewStorageAction } from './ViewStorageModal';
-import { viewContainers } from '../../common/utils';
 
 type Props = ITableWithActions<Storage>;
 
@@ -41,7 +40,7 @@ export default function StoragesTable({ actions = [], ...props }: Props) {
             <SingleText text={`${storage.price}$`} />
           </td>
           <td>
-            <CustomSelect label='Cells' data={viewContainers(storage.cells)} />
+            <TotalText data={storage.cells.length} />
           </td>
           <td>
             <CustomActions

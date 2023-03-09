@@ -1,7 +1,8 @@
-import { NativeSelect, Stack, TextInput } from '@mantine/core';
+import { Select, Stack, TextInput } from '@mantine/core';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { Shop } from './shop.model';
+import { ThingsItem } from '../../common/components/ThingItem';
 import { viewThings } from '../../common/utils';
 import { Color } from '../../common/constants';
 
@@ -14,7 +15,13 @@ export default function ViewShopModal({ data: shop }: Props) {
       <TextInput label='Shop' value={shop.name} disabled />
       <TextInput label='X' value={shop.x} disabled />
       <TextInput label='Y' value={shop.y} disabled />
-      <NativeSelect label='Goods' data={viewThings(shop.goods)} />
+      <Select
+        label='Goods'
+        placeholder='Goods'
+        itemComponent={ThingsItem}
+        data={viewThings(shop.goods)}
+        searchable
+      />
     </Stack>
   );
 }

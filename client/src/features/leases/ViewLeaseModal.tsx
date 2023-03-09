@@ -1,7 +1,8 @@
-import { NativeSelect, Stack, TextInput } from '@mantine/core';
+import { Select, Stack, TextInput } from '@mantine/core';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { Lease } from './lease.model';
+import { ThingsItem } from '../../common/components/ThingItem';
 import {
   parseCard,
   parseCell,
@@ -30,7 +31,13 @@ export default function ViewLeaseModal({ data: lease }: Props) {
         value={`${created.date} ${created.time}`}
         disabled
       />
-      <NativeSelect label='Products' data={viewThings(lease.products)} />
+      <Select
+        label='Products'
+        placeholder='Products'
+        itemComponent={ThingsItem}
+        data={viewThings(lease.products)}
+        searchable
+      />
     </Stack>
   );
 }

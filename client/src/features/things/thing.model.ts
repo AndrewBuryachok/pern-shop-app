@@ -1,10 +1,10 @@
 export interface SmThing {
   id: number;
   item: number;
+  description: string;
 }
 
 export interface MdThing extends SmThing {
-  description: string;
   intake: number;
   kit: number;
   price: number;

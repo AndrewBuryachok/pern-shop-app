@@ -40,7 +40,12 @@ export class LeasesService {
           )
           .where('lease.id = :leaseId', { leaseId: lease.id })
           .orderBy('product.id', 'ASC')
-          .select(['lease.id', 'product.id', 'product.item'])
+          .select([
+            'lease.id',
+            'product.id',
+            'product.item',
+            'product.description',
+          ])
           .getOne()
       )['products'];
     });

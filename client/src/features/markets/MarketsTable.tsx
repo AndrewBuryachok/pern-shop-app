@@ -4,10 +4,9 @@ import CustomTable from '../../common/components/CustomTable';
 import AvatarWithDoubleText from '../../common/components/AvatarWithDoubleText';
 import PlaceText from '../../common/components/PlaceText';
 import SingleText from '../../common/components/SingleText';
-import CustomSelect from '../../common/components/CustomSelect';
+import TotalText from '../../common/components/TotalText';
 import CustomActions from '../../common/components/CustomActions';
 import { viewMarketAction } from './ViewMarketModal';
-import { viewContainers } from '../../common/utils';
 
 type Props = ITableWithActions<Market>;
 
@@ -41,7 +40,7 @@ export default function MarketsTable({ actions = [], ...props }: Props) {
             <SingleText text={`${market.price}$`} />
           </td>
           <td>
-            <CustomSelect label='Stores' data={viewContainers(market.stores)} />
+            <TotalText data={market.stores.length} />
           </td>
           <td>
             <CustomActions

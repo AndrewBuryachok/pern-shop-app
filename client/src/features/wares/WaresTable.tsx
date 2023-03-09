@@ -2,7 +2,7 @@ import { ITableWithActions } from '../../common/interfaces';
 import { Ware } from './ware.model';
 import CustomTable from '../../common/components/CustomTable';
 import AvatarWithDoubleText from '../../common/components/AvatarWithDoubleText';
-import ThingImageWithText from '../../common/components/ThingImageWithText';
+import ThingImage from '../../common/components/ThingImage';
 import SingleText from '../../common/components/SingleText';
 import PlaceText from '../../common/components/PlaceText';
 import DateText from '../../common/components/DateText';
@@ -38,10 +38,7 @@ export default function WaresTable({ actions = [], ...props }: Props) {
             />
           </td>
           <td>
-            <ThingImageWithText
-              item={ware.item}
-              description={ware.description}
-            />
+            <ThingImage item={ware.item} description={ware.description} />
           </td>
           <td>
             <SingleText text={parseThingAmount(ware)} />

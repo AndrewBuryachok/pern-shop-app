@@ -1,4 +1,4 @@
-import { NativeSelect, Stack, TextInput } from '@mantine/core';
+import { Select, Stack, TextInput } from '@mantine/core';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { Storage } from './storage.model';
@@ -15,7 +15,12 @@ export default function ViewStorageModal({ data: storage }: Props) {
       <TextInput label='X' value={storage.x} disabled />
       <TextInput label='Y' value={storage.y} disabled />
       <TextInput label='Price' value={`${storage.price}$`} disabled />
-      <NativeSelect label='Cells' data={viewContainers(storage.cells)} />
+      <Select
+        label='Cells'
+        placeholder='Cells'
+        data={viewContainers(storage.cells)}
+        searchable
+      />
     </Stack>
   );
 }

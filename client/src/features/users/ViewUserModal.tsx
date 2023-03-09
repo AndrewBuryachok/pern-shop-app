@@ -1,4 +1,4 @@
-import { NativeSelect, Stack, TextInput } from '@mantine/core';
+import { Select, Stack, TextInput } from '@mantine/core';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { User } from './user.model';
@@ -11,13 +11,23 @@ export default function ViewUserModal({ data: user }: Props) {
   return (
     <Stack spacing={8}>
       <TextInput label='User' value={user.name} disabled />
-      <NativeSelect label='Roles' data={viewRoles(user.roles)} />
+      <Select
+        label='Roles'
+        placeholder='Roles'
+        data={viewRoles(user.roles)}
+        searchable
+      />
       <TextInput
         label='City'
         value={user.city ? parsePlace(user.city) : '-'}
         disabled
       />
-      <NativeSelect label='Cards' data={viewCards(user.cards)} />
+      <Select
+        label='Cards'
+        placeholder='Cards'
+        data={viewCards(user.cards)}
+        searchable
+      />
     </Stack>
   );
 }

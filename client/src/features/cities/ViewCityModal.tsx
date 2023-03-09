@@ -1,7 +1,8 @@
-import { NativeSelect, Stack, TextInput } from '@mantine/core';
+import { Select, Stack, TextInput } from '@mantine/core';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { City } from './city.model';
+import { UsersItem } from '../../common/components/UsersItem';
 import { viewUsers } from '../../common/utils';
 import { Color } from '../../common/constants';
 
@@ -14,7 +15,13 @@ export default function ViewCityModal({ data: city }: Props) {
       <TextInput label='City' value={city.name} disabled />
       <TextInput label='X' value={city.x} disabled />
       <TextInput label='Y' value={city.y} disabled />
-      <NativeSelect label='Citizens' data={viewUsers(city.users)} />
+      <Select
+        label='Users'
+        placeholder='Users'
+        itemComponent={UsersItem}
+        data={viewUsers(city.users)}
+        searchable
+      />
     </Stack>
   );
 }

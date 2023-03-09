@@ -101,7 +101,7 @@ export class RentsService {
           )
           .where('rent.id = :rentId', { rentId: rent.id })
           .orderBy('ware.id', 'ASC')
-          .select(['rent.id', 'ware.id', 'ware.item'])
+          .select(['rent.id', 'ware.id', 'ware.item', 'ware.description'])
           .getOne()
       )['wares'];
     });

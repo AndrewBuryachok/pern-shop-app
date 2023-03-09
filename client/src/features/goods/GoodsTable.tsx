@@ -2,7 +2,7 @@ import { ITableWithActions } from '../../common/interfaces';
 import { Good } from './good.model';
 import CustomTable from '../../common/components/CustomTable';
 import AvatarWithSingleText from '../../common/components/AvatarWithSingleText';
-import ThingImageWithText from '../../common/components/ThingImageWithText';
+import ThingImage from '../../common/components/ThingImage';
 import SingleText from '../../common/components/SingleText';
 import PlaceText from '../../common/components/PlaceText';
 import DateText from '../../common/components/DateText';
@@ -36,10 +36,7 @@ export default function GoodsTable({ actions = [], ...props }: Props) {
             />
           </td>
           <td>
-            <ThingImageWithText
-              item={good.item}
-              description={good.description}
-            />
+            <ThingImage item={good.item} description={good.description} />
           </td>
           <td>
             <SingleText text={parseThingAmount(good)} />

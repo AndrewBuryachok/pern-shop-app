@@ -4,10 +4,9 @@ import CustomTable from '../../common/components/CustomTable';
 import AvatarWithSingleText from '../../common/components/AvatarWithSingleText';
 import PlaceText from '../../common/components/PlaceText';
 import SingleText from '../../common/components/SingleText';
-import CustomSelect from '../../common/components/CustomSelect';
+import TotalText from '../../common/components/TotalText';
 import CustomActions from '../../common/components/CustomActions';
 import { viewCityAction } from './ViewCityModal';
-import { viewUsers } from '../../common/utils';
 
 type Props = ITableWithActions<City>;
 
@@ -33,7 +32,7 @@ export default function CitiesTable({ actions = [], ...props }: Props) {
             <SingleText text={`${city.y}`} />
           </td>
           <td>
-            <CustomSelect label='Users' data={viewUsers(city.users)} />
+            <TotalText data={city.users.length} />
           </td>
           <td>
             <CustomActions data={city} actions={[viewCityAction, ...actions]} />
