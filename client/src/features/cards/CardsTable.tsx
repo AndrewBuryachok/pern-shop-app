@@ -21,7 +21,7 @@ export default function CardsTable({ actions = [], ...props }: Props) {
       {props.data?.result.map((card) => (
         <tr key={card.id}>
           <td>
-            <AvatarWithSingleText id={card.user.id} name={card.user.name} />
+            <AvatarWithSingleText {...card.user} />
           </td>
           <td>
             <DoubleText

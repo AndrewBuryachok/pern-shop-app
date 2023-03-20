@@ -32,28 +32,13 @@ export default function LeasesTable({ actions = [], ...props }: Props) {
       {props.data?.result.map((lease) => (
         <tr key={lease.id}>
           <td>
-            <AvatarWithDoubleText
-              id={lease.card.user.id}
-              name={lease.card.user.name}
-              text={lease.card.name}
-              color={lease.card.color}
-            />
+            <AvatarWithDoubleText {...lease.card} />
           </td>
           <td>
-            <AvatarWithDoubleText
-              id={lease.cell.storage.card.user.id}
-              name={lease.cell.storage.card.user.name}
-              text={lease.cell.storage.card.name}
-              color={lease.cell.storage.card.color}
-            />
+            <AvatarWithDoubleText {...lease.cell.storage.card} />
           </td>
           <td>
-            <PlaceText
-              name={lease.cell.storage.name}
-              x={lease.cell.storage.x}
-              y={lease.cell.storage.y}
-              container={lease.cell.name}
-            />
+            <PlaceText {...lease.cell.storage} container={lease.cell.name} />
           </td>
           <td>
             <SumText

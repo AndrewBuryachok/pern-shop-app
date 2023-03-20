@@ -4,6 +4,7 @@ import CustomTable from '../../common/components/CustomTable';
 import AvatarWithDoubleText from '../../common/components/AvatarWithDoubleText';
 import PlaceText from '../../common/components/PlaceText';
 import SingleText from '../../common/components/SingleText';
+import PriceText from '../../common/components/PriceText';
 import TotalText from '../../common/components/TotalText';
 import CustomActions from '../../common/components/CustomActions';
 import { viewMarketAction } from './ViewMarketModal';
@@ -20,15 +21,10 @@ export default function MarketsTable({ actions = [], ...props }: Props) {
       {props.data?.result.map((market) => (
         <tr key={market.id}>
           <td>
-            <AvatarWithDoubleText
-              id={market.card.user.id}
-              name={market.card.user.name}
-              text={market.card.name}
-              color={market.card.color}
-            />
+            <AvatarWithDoubleText {...market.card} />
           </td>
           <td>
-            <PlaceText name={market.name} x={market.x} y={market.y} />
+            <PlaceText {...market} />
           </td>
           <td>
             <SingleText text={`${market.x}`} />
@@ -37,7 +33,7 @@ export default function MarketsTable({ actions = [], ...props }: Props) {
             <SingleText text={`${market.y}`} />
           </td>
           <td>
-            <SingleText text={`${market.price}$`} />
+            <PriceText {...market} />
           </td>
           <td>
             <TotalText data={market.stores.length} />

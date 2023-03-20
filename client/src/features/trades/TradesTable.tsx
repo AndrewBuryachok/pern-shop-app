@@ -3,7 +3,7 @@ import { Trade } from './trade.model';
 import { getCurrentUser } from '../auth/auth.slice';
 import CustomTable from '../../common/components/CustomTable';
 import AvatarWithDoubleText from '../../common/components/AvatarWithDoubleText';
-import ThingImage from '../../common/components/ThingImage';
+import ThingImageWithText from '../../common/components/ThingImageWithText';
 import SingleText from '../../common/components/SingleText';
 import SumText from '../../common/components/SumText';
 import PlaceText from '../../common/components/PlaceText';
@@ -35,26 +35,13 @@ export default function TradesTable({ actions = [], ...props }: Props) {
       {props.data?.result.map((trade) => (
         <tr key={trade.id}>
           <td>
-            <AvatarWithDoubleText
-              id={trade.card.user.id}
-              name={trade.card.user.name}
-              text={trade.card.name}
-              color={trade.card.color}
-            />
+            <AvatarWithDoubleText {...trade.card} />
           </td>
           <td>
-            <AvatarWithDoubleText
-              id={trade.ware.rent.card.user.id}
-              name={trade.ware.rent.card.user.name}
-              text={trade.ware.rent.card.name}
-              color={trade.ware.rent.card.color}
-            />
+            <AvatarWithDoubleText {...trade.ware.rent.card} />
           </td>
           <td>
-            <ThingImage
-              item={trade.ware.item}
-              description={trade.ware.description}
-            />
+            <ThingImageWithText {...trade.ware} />
           </td>
           <td>
             <SingleText text={parseTradeAmount(trade)} />
@@ -69,9 +56,7 @@ export default function TradesTable({ actions = [], ...props }: Props) {
           </td>
           <td>
             <PlaceText
-              name={trade.ware.rent.store.market.name}
-              x={trade.ware.rent.store.market.x}
-              y={trade.ware.rent.store.market.y}
+              {...trade.ware.rent.store.market}
               container={trade.ware.rent.store.name}
             />
           </td>

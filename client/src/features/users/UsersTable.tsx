@@ -21,18 +21,14 @@ export default function UsersTable({ actions = [], ...props }: Props) {
       {props.data?.result.map((user) => (
         <tr key={user.id}>
           <td>
-            <AvatarWithSingleText id={user.id} name={user.name} />
+            <AvatarWithSingleText {...user} />
           </td>
           <td>
             <RolesBadge roles={user.roles} />
           </td>
           <td>
             {user.city ? (
-              <PlaceText
-                name={user.city.name}
-                x={user.city.x}
-                y={user.city.y}
-              />
+              <PlaceText {...user.city} />
             ) : (
               <SingleText text={'-'} />
             )}

@@ -28,7 +28,7 @@ export default function PollsTable({ actions = [], ...props }: Props) {
       {props.data?.result.map((poll) => (
         <tr key={poll.id}>
           <td>
-            <AvatarWithSingleText id={poll.user.id} name={poll.user.name} />
+            <AvatarWithSingleText {...poll.user} />
           </td>
           <td>
             <SingleText text={poll.description} />
@@ -44,11 +44,7 @@ export default function PollsTable({ actions = [], ...props }: Props) {
             <CustomProgress {...poll} />
           </td>
           <td>
-            {poll.completedAt ? (
-              <DateText date={poll.completedAt} />
-            ) : (
-              <SingleText text={'-'} />
-            )}
+            <DateText date={poll.completedAt} />
           </td>
           <td>
             <CustomActions data={poll} actions={[viewPollAction, ...actions]} />

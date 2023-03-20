@@ -2,8 +2,9 @@ import { ITableWithActions } from '../../common/interfaces';
 import { Good } from './good.model';
 import CustomTable from '../../common/components/CustomTable';
 import AvatarWithSingleText from '../../common/components/AvatarWithSingleText';
-import ThingImage from '../../common/components/ThingImage';
+import ThingImageWithText from '../../common/components/ThingImageWithText';
 import SingleText from '../../common/components/SingleText';
+import PriceText from '../../common/components/PriceText';
 import PlaceText from '../../common/components/PlaceText';
 import DateText from '../../common/components/DateText';
 import CustomActions from '../../common/components/CustomActions';
@@ -30,22 +31,19 @@ export default function GoodsTable({ actions = [], ...props }: Props) {
       {props.data?.result.map((good) => (
         <tr key={good.id}>
           <td>
-            <AvatarWithSingleText
-              id={good.shop.user.id}
-              name={good.shop.user.name}
-            />
+            <AvatarWithSingleText {...good.shop.user} />
           </td>
           <td>
-            <ThingImage item={good.item} description={good.description} />
+            <ThingImageWithText {...good} />
           </td>
           <td>
             <SingleText text={parseThingAmount(good)} />
           </td>
           <td>
-            <SingleText text={`${good.price}$`} />
+            <PriceText {...good} />
           </td>
           <td>
-            <PlaceText name={good.shop.name} x={good.shop.x} y={good.shop.y} />
+            <PlaceText {...good.shop} />
           </td>
           <td>
             <DateText date={good.createdAt} />

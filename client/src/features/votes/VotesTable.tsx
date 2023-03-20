@@ -20,13 +20,10 @@ export default function VotesTable({ actions = [], ...props }: Props) {
       {props.data?.result.map((vote) => (
         <tr key={vote.id}>
           <td>
-            <AvatarWithSingleText id={vote.user.id} name={vote.user.name} />
+            <AvatarWithSingleText {...vote.user} />
           </td>
           <td>
-            <AvatarWithSingleText
-              id={vote.poll.user.id}
-              name={vote.poll.user.name}
-            />
+            <AvatarWithSingleText {...vote.poll.user} />
           </td>
           <td>
             <SingleText text={vote.poll.description} />

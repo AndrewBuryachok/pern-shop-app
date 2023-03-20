@@ -22,20 +22,10 @@ export default function PaymentsTable({ actions = [], ...props }: Props) {
       {props.data?.result.map((payment) => (
         <tr key={payment.id}>
           <td>
-            <AvatarWithDoubleText
-              id={payment.senderCard.user.id}
-              name={payment.senderCard.user.name}
-              text={payment.senderCard.name}
-              color={payment.senderCard.color}
-            />
+            <AvatarWithDoubleText {...payment.senderCard} />
           </td>
           <td>
-            <AvatarWithDoubleText
-              id={payment.receiverCard.user.id}
-              name={payment.receiverCard.user.name}
-              text={payment.receiverCard.name}
-              color={payment.receiverCard.color}
-            />
+            <AvatarWithDoubleText {...payment.receiverCard} />
           </td>
           <td>
             <SumText

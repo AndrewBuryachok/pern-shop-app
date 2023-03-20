@@ -32,28 +32,13 @@ export default function RentsTable({ actions = [], ...props }: Props) {
       {props.data?.result.map((rent) => (
         <tr key={rent.id}>
           <td>
-            <AvatarWithDoubleText
-              id={rent.card.user.id}
-              name={rent.card.user.name}
-              text={rent.card.name}
-              color={rent.card.color}
-            />
+            <AvatarWithDoubleText {...rent.card} />
           </td>
           <td>
-            <AvatarWithDoubleText
-              id={rent.store.market.card.user.id}
-              name={rent.store.market.card.user.name}
-              text={rent.store.market.card.name}
-              color={rent.store.market.card.color}
-            />
+            <AvatarWithDoubleText {...rent.store.market.card} />
           </td>
           <td>
-            <PlaceText
-              name={rent.store.market.name}
-              x={rent.store.market.x}
-              y={rent.store.market.y}
-              container={rent.store.name}
-            />
+            <PlaceText {...rent.store.market} container={rent.store.name} />
           </td>
           <td>
             <SumText

@@ -4,6 +4,7 @@ import CustomTable from '../../common/components/CustomTable';
 import AvatarWithDoubleText from '../../common/components/AvatarWithDoubleText';
 import PlaceText from '../../common/components/PlaceText';
 import SingleText from '../../common/components/SingleText';
+import PriceText from '../../common/components/PriceText';
 import DateText from '../../common/components/DateText';
 import CustomActions from '../../common/components/CustomActions';
 import { viewCellAction } from './ViewCellModal';
@@ -20,32 +21,19 @@ export default function CellsTable({ actions = [], ...props }: Props) {
       {props.data?.result.map((cell) => (
         <tr key={cell.id}>
           <td>
-            <AvatarWithDoubleText
-              id={cell.storage.card.user.id}
-              name={cell.storage.card.user.name}
-              text={cell.storage.card.name}
-              color={cell.storage.card.color}
-            />
+            <AvatarWithDoubleText {...cell.storage.card} />
           </td>
           <td>
-            <PlaceText
-              name={cell.storage.name}
-              x={cell.storage.x}
-              y={cell.storage.y}
-            />
+            <PlaceText {...cell.storage} />
           </td>
           <td>
             <SingleText text={`#${cell.name}`} />
           </td>
           <td>
-            <SingleText text={`${cell.storage.price}$`} />
+            <PriceText {...cell.storage} />
           </td>
           <td>
-            {cell.reservedAt ? (
-              <DateText date={cell.reservedAt} />
-            ) : (
-              <SingleText text={'-'} />
-            )}
+            <DateText date={cell.reservedAt} />
           </td>
           <td>
             <CustomActions data={cell} actions={[viewCellAction, ...actions]} />

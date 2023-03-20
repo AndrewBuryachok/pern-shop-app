@@ -6,7 +6,6 @@ import AvatarWithDoubleText from '../../common/components/AvatarWithDoubleText';
 import AvatarWithSingleText from '../../common/components/AvatarWithSingleText';
 import SumText from '../../common/components/SumText';
 import DateText from '../../common/components/DateText';
-import SingleText from '../../common/components/SingleText';
 import CustomActions from '../../common/components/CustomActions';
 import { viewInvoiceAction } from './ViewInvoiceModal';
 
@@ -24,26 +23,13 @@ export default function InvoicesTable({ actions = [], ...props }: Props) {
       {props.data?.result.map((invoice) => (
         <tr key={invoice.id}>
           <td>
-            <AvatarWithDoubleText
-              id={invoice.senderCard.user.id}
-              name={invoice.senderCard.user.name}
-              text={invoice.senderCard.name}
-              color={invoice.senderCard.color}
-            />
+            <AvatarWithDoubleText {...invoice.senderCard} />
           </td>
           <td>
             {invoice.receiverCard ? (
-              <AvatarWithDoubleText
-                id={invoice.receiverCard.user.id}
-                name={invoice.receiverCard.user.name}
-                text={invoice.receiverCard.name}
-                color={invoice.receiverCard.color}
-              />
+              <AvatarWithDoubleText {...invoice.receiverCard} />
             ) : (
-              <AvatarWithSingleText
-                id={invoice.receiverUser.id}
-                name={invoice.receiverUser.name}
-              />
+              <AvatarWithSingleText {...invoice.receiverUser} />
             )}
           </td>
           <td>
@@ -55,11 +41,7 @@ export default function InvoicesTable({ actions = [], ...props }: Props) {
             />
           </td>
           <td>
-            {invoice.completedAt ? (
-              <DateText date={invoice.completedAt} />
-            ) : (
-              <SingleText text={'-'} />
-            )}
+            <DateText date={invoice.completedAt} />
           </td>
           <td>
             <CustomActions

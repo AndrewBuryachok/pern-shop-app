@@ -20,10 +20,10 @@ export default function ShopsTable({ actions = [], ...props }: Props) {
       {props.data?.result.map((shop) => (
         <tr key={shop.id}>
           <td>
-            <AvatarWithSingleText id={shop.user.id} name={shop.user.name} />
+            <AvatarWithSingleText {...shop.user} />
           </td>
           <td>
-            <PlaceText name={shop.name} x={shop.x} y={shop.y} />
+            <PlaceText {...shop} />
           </td>
           <td>
             <SingleText text={`${shop.x}`} />

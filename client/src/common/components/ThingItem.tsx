@@ -1,5 +1,5 @@
 import { forwardRef } from 'react';
-import ThingImage from './ThingImage';
+import ThingImageWithText from './ThingImageWithText';
 
 interface Props extends React.ComponentPropsWithoutRef<'div'> {
   item: number;
@@ -9,7 +9,7 @@ interface Props extends React.ComponentPropsWithoutRef<'div'> {
 export const ThingsItem = forwardRef<HTMLDivElement, Props>(
   (props: Props, ref) => (
     <div ref={ref} {...props}>
-      <ThingImage {...props} />
+      <ThingImageWithText {...props} />
     </div>
   ),
 );

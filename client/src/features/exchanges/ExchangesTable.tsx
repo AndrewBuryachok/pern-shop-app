@@ -21,18 +21,10 @@ export default function ExchangesTable({ actions = [], ...props }: Props) {
       {props.data?.result.map((exchange) => (
         <tr key={exchange.id}>
           <td>
-            <AvatarWithSingleText
-              id={exchange.executorUser.id}
-              name={exchange.executorUser.name}
-            />
+            <AvatarWithSingleText {...exchange.executorUser} />
           </td>
           <td>
-            <AvatarWithDoubleText
-              id={exchange.customerCard.user.id}
-              name={exchange.customerCard.user.name}
-              text={exchange.customerCard.name}
-              color={exchange.customerCard.color}
-            />
+            <AvatarWithDoubleText {...exchange.customerCard} />
           </td>
           <td>
             <SingleText

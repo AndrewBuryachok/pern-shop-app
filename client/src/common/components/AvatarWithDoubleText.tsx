@@ -1,22 +1,18 @@
 import { Group } from '@mantine/core';
-import CustomAvatar from './CustomAvatar';
+import { MdCard } from '../../features/cards/card.model';
+import LinkedAvatar from './LinkedAvatar';
 import DoubleText from './DoubleText';
 
-type Props = {
-  id: number;
-  name: string;
-  text: string;
-  color: number;
-};
+type Props = MdCard;
 
 export default function AvatarWithDoubleText(props: Props) {
   return (
     <Group spacing={8}>
-      <CustomAvatar id={props.id} name={props.name} />
+      <LinkedAvatar {...props.user} />
       <div>
         <DoubleText
-          text={props.name}
-          subtext={props.text}
+          text={props.user.name}
+          subtext={props.name}
           color={props.color}
         />
       </div>

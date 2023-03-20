@@ -3,7 +3,7 @@ import { Sale } from './sale.model';
 import { getCurrentUser } from '../auth/auth.slice';
 import CustomTable from '../../common/components/CustomTable';
 import AvatarWithDoubleText from '../../common/components/AvatarWithDoubleText';
-import ThingImage from '../../common/components/ThingImage';
+import ThingImageWithText from '../../common/components/ThingImageWithText';
 import SingleText from '../../common/components/SingleText';
 import SumText from '../../common/components/SumText';
 import PlaceText from '../../common/components/PlaceText';
@@ -35,26 +35,13 @@ export default function SalesTable({ actions = [], ...props }: Props) {
       {props.data?.result.map((sale) => (
         <tr key={sale.id}>
           <td>
-            <AvatarWithDoubleText
-              id={sale.card.user.id}
-              name={sale.card.user.name}
-              text={sale.card.name}
-              color={sale.card.color}
-            />
+            <AvatarWithDoubleText {...sale.card} />
           </td>
           <td>
-            <AvatarWithDoubleText
-              id={sale.product.card.user.id}
-              name={sale.product.card.user.name}
-              text={sale.product.card.name}
-              color={sale.product.card.color}
-            />
+            <AvatarWithDoubleText {...sale.product.card} />
           </td>
           <td>
-            <ThingImage
-              item={sale.product.item}
-              description={sale.product.description}
-            />
+            <ThingImageWithText {...sale.product} />
           </td>
           <td>
             <SingleText text={parseSaleAmount(sale)} />
@@ -69,9 +56,7 @@ export default function SalesTable({ actions = [], ...props }: Props) {
           </td>
           <td>
             <PlaceText
-              name={sale.product.cell.storage.name}
-              x={sale.product.cell.storage.x}
-              y={sale.product.cell.storage.y}
+              {...sale.product.cell.storage}
               container={sale.product.cell.name}
             />
           </td>

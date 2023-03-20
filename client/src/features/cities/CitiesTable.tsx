@@ -20,10 +20,10 @@ export default function CitiesTable({ actions = [], ...props }: Props) {
       {props.data?.result.map((city) => (
         <tr key={city.id}>
           <td>
-            <AvatarWithSingleText id={city.user.id} name={city.user.name} />
+            <AvatarWithSingleText {...city.user} />
           </td>
           <td>
-            <PlaceText name={city.name} x={city.x} y={city.y} />
+            <PlaceText {...city} />
           </td>
           <td>
             <SingleText text={`${city.x}`} />

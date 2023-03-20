@@ -4,6 +4,7 @@ import CustomTable from '../../common/components/CustomTable';
 import AvatarWithDoubleText from '../../common/components/AvatarWithDoubleText';
 import PlaceText from '../../common/components/PlaceText';
 import SingleText from '../../common/components/SingleText';
+import PriceText from '../../common/components/PriceText';
 import TotalText from '../../common/components/TotalText';
 import CustomActions from '../../common/components/CustomActions';
 import { viewStorageAction } from './ViewStorageModal';
@@ -20,15 +21,10 @@ export default function StoragesTable({ actions = [], ...props }: Props) {
       {props.data?.result.map((storage) => (
         <tr key={storage.id}>
           <td>
-            <AvatarWithDoubleText
-              id={storage.card.user.id}
-              name={storage.card.user.name}
-              text={storage.card.name}
-              color={storage.card.color}
-            />
+            <AvatarWithDoubleText {...storage.card} />
           </td>
           <td>
-            <PlaceText name={storage.name} x={storage.x} y={storage.y} />
+            <PlaceText {...storage} />
           </td>
           <td>
             <SingleText text={`${storage.x}`} />
@@ -37,7 +33,7 @@ export default function StoragesTable({ actions = [], ...props }: Props) {
             <SingleText text={`${storage.y}`} />
           </td>
           <td>
-            <SingleText text={`${storage.price}$`} />
+            <PriceText {...storage} />
           </td>
           <td>
             <TotalText data={storage.cells.length} />

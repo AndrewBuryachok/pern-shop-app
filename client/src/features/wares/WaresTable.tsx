@@ -2,8 +2,9 @@ import { ITableWithActions } from '../../common/interfaces';
 import { Ware } from './ware.model';
 import CustomTable from '../../common/components/CustomTable';
 import AvatarWithDoubleText from '../../common/components/AvatarWithDoubleText';
-import ThingImage from '../../common/components/ThingImage';
+import ThingImageWithText from '../../common/components/ThingImageWithText';
 import SingleText from '../../common/components/SingleText';
+import PriceText from '../../common/components/PriceText';
 import PlaceText from '../../common/components/PlaceText';
 import DateText from '../../common/components/DateText';
 import CustomActions from '../../common/components/CustomActions';
@@ -30,27 +31,20 @@ export default function WaresTable({ actions = [], ...props }: Props) {
       {props.data?.result.map((ware) => (
         <tr key={ware.id}>
           <td>
-            <AvatarWithDoubleText
-              id={ware.rent.card.user.id}
-              name={ware.rent.card.user.name}
-              text={ware.rent.card.name}
-              color={ware.rent.card.color}
-            />
+            <AvatarWithDoubleText {...ware.rent.card} />
           </td>
           <td>
-            <ThingImage item={ware.item} description={ware.description} />
+            <ThingImageWithText {...ware} />
           </td>
           <td>
             <SingleText text={parseThingAmount(ware)} />
           </td>
           <td>
-            <SingleText text={`${ware.price}$`} />
+            <PriceText {...ware} />
           </td>
           <td>
             <PlaceText
-              name={ware.rent.store.market.name}
-              x={ware.rent.store.market.x}
-              y={ware.rent.store.market.y}
+              {...ware.rent.store.market}
               container={ware.rent.store.name}
             />
           </td>

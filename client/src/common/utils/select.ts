@@ -15,9 +15,9 @@ import { categories, colors, items, kits, roles } from '../../common/constants';
 
 export const selectUsers = (users?: SmUser[]) =>
   users?.map((user) => ({
-    name: user.name,
     value: `${user.id}`,
     label: user.name,
+    name: user.name,
   })) || [];
 
 export const selectCards = (cards?: SelectCard[]) =>
@@ -89,9 +89,9 @@ export const selectCategories = () =>
 export const selectItems = (category: string) =>
   items
     .map((item, index) => ({
-      item: index + 1,
       value: `${index + 1}`,
       label: item.substring(3),
+      item: index + 1,
       category: item[0],
     }))
     .filter((item) => item.category === category);

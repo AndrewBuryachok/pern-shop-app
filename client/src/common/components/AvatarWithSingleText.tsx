@@ -1,16 +1,14 @@
 import { Group } from '@mantine/core';
-import CustomAvatar from './CustomAvatar';
+import { SmUser } from '../../features/users/user.model';
+import LinkedAvatar from './LinkedAvatar';
 import SingleText from './SingleText';
 
-type Props = {
-  id: number;
-  name: string;
-};
+type Props = SmUser;
 
 export default function AvatarWithSingleText(props: Props) {
   return (
     <Group spacing={8}>
-      <CustomAvatar id={props.id} name={props.name} />
+      <LinkedAvatar {...props} />
       <SingleText text={props.name} />
     </Group>
   );

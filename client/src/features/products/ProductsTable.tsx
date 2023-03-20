@@ -2,8 +2,9 @@ import { ITableWithActions } from '../../common/interfaces';
 import { Product } from './product.model';
 import CustomTable from '../../common/components/CustomTable';
 import AvatarWithDoubleText from '../../common/components/AvatarWithDoubleText';
-import ThingImage from '../../common/components/ThingImage';
+import ThingImageWithText from '../../common/components/ThingImageWithText';
 import SingleText from '../../common/components/SingleText';
+import PriceText from '../../common/components/PriceText';
 import PlaceText from '../../common/components/PlaceText';
 import DateText from '../../common/components/DateText';
 import CustomActions from '../../common/components/CustomActions';
@@ -30,27 +31,20 @@ export default function ProductsTable({ actions = [], ...props }: Props) {
       {props.data?.result.map((product) => (
         <tr key={product.id}>
           <td>
-            <AvatarWithDoubleText
-              id={product.card.user.id}
-              name={product.card.user.name}
-              text={product.card.name}
-              color={product.card.color}
-            />
+            <AvatarWithDoubleText {...product.card} />
           </td>
           <td>
-            <ThingImage item={product.item} description={product.description} />
+            <ThingImageWithText {...product} />
           </td>
           <td>
             <SingleText text={parseThingAmount(product)} />
           </td>
           <td>
-            <SingleText text={`${product.price}$`} />
+            <PriceText {...product} />
           </td>
           <td>
             <PlaceText
-              name={product.cell.storage.name}
-              x={product.cell.storage.x}
-              y={product.cell.storage.y}
+              {...product.cell.storage}
               container={product.cell.name}
             />
           </td>

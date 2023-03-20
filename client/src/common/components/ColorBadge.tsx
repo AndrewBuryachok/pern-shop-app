@@ -4,7 +4,7 @@ type Props = {
   color: string;
 };
 
-export default function StatusBadge(props: Props) {
+export default function ColorBadge(props: Props) {
   return (
     <Group spacing={0}>
       <Badge size='xs' variant='filled' color={props.color} />
