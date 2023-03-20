@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { NumberInput, Select, Textarea } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
@@ -6,6 +7,7 @@ import { Good } from './good.model';
 import { useEditGoodMutation } from './goods.api';
 import { EditGoodDto } from './good.dto';
 import CustomForm from '../../common/components/CustomForm';
+import ThingImage from '../../common/components/ThingImage';
 import { ThingsItem } from '../../common/components/ThingItem';
 import { selectCategories, selectItems, selectKits } from '../../common/utils';
 import {
@@ -38,6 +40,10 @@ export default function EditGoodModal({ data: good }: Props) {
     }),
   });
 
+  useEffect(() => form.setFieldValue('item', ''), [form.values.category]);
+
+  useEffect(() => form.setFieldValue('item', `${good.item}`), []);
+
   const [editGood, { isLoading }] = useEditGoodMutation();
 
   const handleSubmit = async (dto: EditGoodDto) => {
@@ -61,6 +67,8 @@ export default function EditGoodModal({ data: good }: Props) {
       <Select
         label='Item'
         placeholder='Item'
+        icon={form.values.item && <ThingImage item={+form.values.item} />}
+        iconWidth={48}
         itemComponent={ThingsItem}
         data={selectItems(form.values.category)}
         searchable

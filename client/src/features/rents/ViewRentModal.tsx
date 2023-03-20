@@ -2,6 +2,7 @@ import { Select, Stack, TextInput } from '@mantine/core';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { Rent } from './rent.model';
+import CustomAvatar from '../../common/components/CustomAvatar';
 import { ThingsItem } from '../../common/components/ThingItem';
 import {
   parseCard,
@@ -18,9 +19,17 @@ export default function ViewRentModal({ data: rent }: Props) {
 
   return (
     <Stack spacing={8}>
-      <TextInput label='Renter' value={parseCard(rent.card)} disabled />
+      <TextInput
+        label='Renter'
+        icon={<CustomAvatar {...rent.card.user} />}
+        iconWidth={48}
+        value={parseCard(rent.card)}
+        disabled
+      />
       <TextInput
         label='Lessor'
+        icon={<CustomAvatar {...rent.store.market.card.user} />}
+        iconWidth={48}
         value={parseCard(rent.store.market.card)}
         disabled
       />

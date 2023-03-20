@@ -7,6 +7,7 @@ import { useCreateRentMutation } from '../rents/rents.api';
 import { useSelectMyCardsQuery } from '../cards/cards.api';
 import { CreateRentDto } from '../rents/rent.dto';
 import CustomForm from '../../common/components/CustomForm';
+import CustomAvatar from '../../common/components/CustomAvatar';
 import {
   parseCard,
   parseStore,
@@ -48,7 +49,13 @@ export default function ReserveStoreModal({ data: store }: Props) {
       isLoading={isLoading}
       text={'Reserve store'}
     >
-      <TextInput label='Owner' value={parseCard(store.market.card)} disabled />
+      <TextInput
+        label='Owner'
+        icon={<CustomAvatar {...store.market.card.user} />}
+        iconWidth={48}
+        value={parseCard(store.market.card)}
+        disabled
+      />
       <TextInput label='Store' value={parseStore(store)} disabled />
       <TextInput label='Price' value={`${store.market.price}$`} disabled />
       <Select

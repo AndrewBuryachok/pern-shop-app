@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { NumberInput, Select, Textarea } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
@@ -5,6 +6,7 @@ import { useCreateGoodMutation } from './goods.api';
 import { useSelectMyShopsQuery } from '../shops/shops.api';
 import { CreateGoodDto } from './good.dto';
 import CustomForm from '../../common/components/CustomForm';
+import ThingImage from '../../common/components/ThingImage';
 import { ThingsItem } from '../../common/components/ThingItem';
 import {
   selectCategories,
@@ -39,6 +41,8 @@ export default function CreateGoodModal() {
     }),
   });
 
+  useEffect(() => form.setFieldValue('item', ''), [form.values.category]);
+
   const { data: shops } = useSelectMyShopsQuery();
 
   const [createGood, { isLoading }] = useCreateGoodMutation();
@@ -72,6 +76,8 @@ export default function CreateGoodModal() {
       <Select
         label='Item'
         placeholder='Item'
+        icon={form.values.item && <ThingImage item={+form.values.item} />}
+        iconWidth={48}
         itemComponent={ThingsItem}
         data={selectItems(form.values.category)}
         searchable

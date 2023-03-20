@@ -6,6 +6,7 @@ import { Poll } from './poll.model';
 import { useCreateVoteMutation } from '../votes/votes.api';
 import { CreateVoteDto } from '../votes/vote.dto';
 import CustomForm from '../../common/components/CustomForm';
+import CustomAvatar from '../../common/components/CustomAvatar';
 import { Color } from '../../common/constants';
 
 type Props = IModal<Poll & { type: boolean }>;
@@ -30,7 +31,13 @@ export default function VotePollModal({ data: poll }: Props) {
       isLoading={isLoading}
       text={'Vote poll'}
     >
-      <TextInput label='Poller' value={poll.user.name} disabled />
+      <TextInput
+        label='Poller'
+        icon={<CustomAvatar {...poll.user} />}
+        iconWidth={48}
+        value={poll.user.name}
+        disabled
+      />
       <Textarea label='Description' value={poll.description} disabled />
       <TextInput label='Vote' value={poll.type ? 'up' : 'down'} disabled />
     </CustomForm>

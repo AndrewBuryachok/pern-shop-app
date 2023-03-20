@@ -6,6 +6,8 @@ import { Good } from './good.model';
 import { useDeleteGoodMutation } from './goods.api';
 import { DeleteGoodDto } from './good.dto';
 import CustomForm from '../../common/components/CustomForm';
+import CustomAvatar from '../../common/components/CustomAvatar';
+import ThingImage from '../../common/components/ThingImage';
 import { parseDate, parsePlace, parseThingAmount } from '../../common/utils';
 import { Color, items } from '../../common/constants';
 
@@ -32,9 +34,17 @@ export default function DeleteGoodModal({ data: good }: Props) {
       isLoading={isLoading}
       text={'Delete good'}
     >
-      <TextInput label='Seller' value={good.shop.user.name} disabled />
+      <TextInput
+        label='Seller'
+        icon={<CustomAvatar {...good.shop.user} />}
+        iconWidth={48}
+        value={good.shop.user.name}
+        disabled
+      />
       <TextInput
         label='Item'
+        icon={<ThingImage {...good} />}
+        iconWidth={48}
         value={items[good.item - 1].substring(3)}
         disabled
       />

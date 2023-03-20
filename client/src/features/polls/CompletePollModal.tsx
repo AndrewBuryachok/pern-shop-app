@@ -6,6 +6,7 @@ import { Poll } from './poll.model';
 import { useCompletePollMutation } from './polls.api';
 import { CompletePollDto } from './poll.dto';
 import CustomForm from '../../common/components/CustomForm';
+import CustomAvatar from '../../common/components/CustomAvatar';
 import { parseDate } from '../../common/utils';
 import { Color } from '../../common/constants';
 
@@ -36,7 +37,13 @@ export default function CompletePollModal({ data: poll }: Props) {
       isLoading={isLoading}
       text={'Complete poll'}
     >
-      <TextInput label='Poller' value={poll.user.name} disabled />
+      <TextInput
+        label='Poller'
+        icon={<CustomAvatar {...poll.user} />}
+        iconWidth={48}
+        value={poll.user.name}
+        disabled
+      />
       <Textarea label='Description' value={poll.description} disabled />
       <TextInput label='Up' value={votes[0]} disabled />
       <TextInput label='Down' value={votes[1]} disabled />

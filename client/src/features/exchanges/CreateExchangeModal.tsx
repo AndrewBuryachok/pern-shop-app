@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { NumberInput, Select } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
@@ -6,6 +7,7 @@ import { useSelectAllUsersQuery } from '../users/users.api';
 import { useSelectUserCardsWithBalanceQuery } from '../cards/cards.api';
 import { CreateExchangeDto } from './exchange.dto';
 import CustomForm from '../../common/components/CustomForm';
+import CustomAvatar from '../../common/components/CustomAvatar';
 import { UsersItem } from '../../common/components/UsersItem';
 import {
   customMin,
@@ -31,6 +33,8 @@ export default function CreateExchangeModal() {
     }),
   });
 
+  useEffect(() => form.setFieldValue('card', ''), [form.values.user]);
+
   const { data: users } = useSelectAllUsersQuery();
   const { data: cards } = useSelectUserCardsWithBalanceQuery(
     +form.values.user,
@@ -55,6 +59,14 @@ export default function CreateExchangeModal() {
       <Select
         label='User'
         placeholder='User'
+        icon={
+          form.values.user && (
+            <CustomAvatar
+              {...users?.find((user) => user.id === +form.values.user)!}
+            />
+          )
+        }
+        iconWidth={48}
         itemComponent={UsersItem}
         data={selectUsers(users)}
         searchable

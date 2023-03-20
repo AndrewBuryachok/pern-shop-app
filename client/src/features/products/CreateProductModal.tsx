@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { NumberInput, Select, Textarea } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
@@ -6,6 +7,7 @@ import { useSelectFreeStoragesQuery } from '../storages/storages.api';
 import { useSelectMyCardsQuery } from '../cards/cards.api';
 import { CreateProductDto } from './product.dto';
 import CustomForm from '../../common/components/CustomForm';
+import ThingImage from '../../common/components/ThingImage';
 import { ThingsItem } from '../../common/components/ThingItem';
 import {
   selectCardsWithBalance,
@@ -42,6 +44,8 @@ export default function CreateProductModal() {
       kit: +kit,
     }),
   });
+
+  useEffect(() => form.setFieldValue('item', ''), [form.values.category]);
 
   const { data: storages } = useSelectFreeStoragesQuery();
   const { data: cards } = useSelectMyCardsQuery();
@@ -85,6 +89,8 @@ export default function CreateProductModal() {
       <Select
         label='Item'
         placeholder='Item'
+        icon={form.values.item && <ThingImage item={+form.values.item} />}
+        iconWidth={48}
         itemComponent={ThingsItem}
         data={selectItems(form.values.category)}
         searchable

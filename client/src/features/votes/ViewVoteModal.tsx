@@ -2,6 +2,7 @@ import { Stack, Textarea, TextInput } from '@mantine/core';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { Vote } from './vote.model';
+import CustomAvatar from '../../common/components/CustomAvatar';
 import { parseDate } from '../../common/utils';
 import { Color } from '../../common/constants';
 
@@ -12,8 +13,20 @@ export default function ViewVoteModal({ data: vote }: Props) {
 
   return (
     <Stack spacing={8}>
-      <TextInput label='Voter' value={vote.user.name} disabled />
-      <TextInput label='Poller' value={vote.poll.user.name} disabled />
+      <TextInput
+        label='Voter'
+        icon={<CustomAvatar {...vote.user} />}
+        iconWidth={48}
+        value={vote.user.name}
+        disabled
+      />
+      <TextInput
+        label='Poller'
+        icon={<CustomAvatar {...vote.poll.user} />}
+        iconWidth={48}
+        value={vote.poll.user.name}
+        disabled
+      />
       <Textarea label='Description' value={vote.poll.description} disabled />
       <TextInput label='Vote' value={vote.type ? 'up' : 'down'} disabled />
       <TextInput

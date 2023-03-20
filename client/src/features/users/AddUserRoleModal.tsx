@@ -6,6 +6,7 @@ import { User } from './user.model';
 import { useAddUserRoleMutation } from './users.api';
 import { UpdateUserRolesDto } from './user.dto';
 import CustomForm from '../../common/components/CustomForm';
+import CustomAvatar from '../../common/components/CustomAvatar';
 import { selectRoles } from '../../common/utils';
 import { Color, roles } from '../../common/constants';
 
@@ -32,7 +33,13 @@ export default function AddUserRoleModal({ data: user }: Props) {
       isLoading={isLoading}
       text={'Add user role'}
     >
-      <TextInput label='User' value={user.name} disabled />
+      <TextInput
+        label='User'
+        icon={<CustomAvatar {...user} />}
+        iconWidth={48}
+        value={user.name}
+        disabled
+      />
       <Select
         label='Role'
         placeholder='Role'

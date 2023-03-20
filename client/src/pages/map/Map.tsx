@@ -1,16 +1,11 @@
-import { Center, Skeleton, Stack, useMantineTheme } from '@mantine/core';
+import { useMantineTheme } from '@mantine/core';
 import { useDocumentTitle } from '@mantine/hooks';
 import { useGetMainCitiesQuery } from '../../features/cities/cities.api';
 import { useGetMainShopsQuery } from '../../features/shops/shops.api';
 import { useGetMainMarketsQuery } from '../../features/markets/markets.api';
 import { useGetMainStoragesQuery } from '../../features/storages/storages.api';
 import PlacePath from '../../features/places/PlacePath';
-import {
-  parseCard,
-  viewContainers,
-  viewThings,
-  viewUsers,
-} from '../../common/utils';
+import { viewContainers, viewThings, viewUsers } from '../../common/utils';
 import { colors } from '../../common/constants';
 
 export default function Map() {
@@ -47,25 +42,27 @@ export default function Map() {
         cities?.result.map((city) => ({
           ...city,
           type: 0,
-          owner: city.user.name,
+          owner: city.user,
           data: viewUsers(city.users),
         })),
         shops?.result.map((shop) => ({
           ...shop,
           type: 1,
-          owner: shop.user.name,
+          owner: shop.user,
           data: viewThings(shop.goods),
         })),
         markets?.result.map((market) => ({
           ...market,
           type: 2,
-          owner: parseCard(market.card),
+          owner: market.card.user,
+          card: market.card,
           data: viewContainers(market.stores),
         })),
         storages?.result.map((storage) => ({
           ...storage,
           type: 3,
-          owner: parseCard(storage.card),
+          owner: storage.card.user,
+          card: storage.card,
           data: viewContainers(storage.cells),
         })),
       ].map((allPlaces) =>

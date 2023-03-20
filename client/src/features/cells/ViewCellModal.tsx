@@ -2,6 +2,7 @@ import { Stack, TextInput } from '@mantine/core';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { Cell } from './cell.model';
+import CustomAvatar from '../../common/components/CustomAvatar';
 import { parseCard, parseDate, parsePlace } from '../../common/utils';
 import { Color } from '../../common/constants';
 
@@ -12,7 +13,13 @@ export default function ViewCellModal({ data: cell }: Props) {
 
   return (
     <Stack spacing={8}>
-      <TextInput label='Owner' value={parseCard(cell.storage.card)} disabled />
+      <TextInput
+        label='Owner'
+        icon={<CustomAvatar {...cell.storage.card.user} />}
+        iconWidth={48}
+        value={parseCard(cell.storage.card)}
+        disabled
+      />
       <TextInput label='Storage' value={parsePlace(cell.storage)} disabled />
       <TextInput label='Cell' value={`#${cell.name}`} disabled />
       <TextInput label='Price' value={`${cell.storage.price}$`} disabled />

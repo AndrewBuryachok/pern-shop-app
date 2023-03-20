@@ -2,6 +2,8 @@ import { Stack, TextInput } from '@mantine/core';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { Sale } from './sale.model';
+import CustomAvatar from '../../common/components/CustomAvatar';
+import ThingImage from '../../common/components/ThingImage';
 import {
   parseCard,
   parseCell,
@@ -17,10 +19,24 @@ export default function ViewSaleModal({ data: sale }: Props) {
 
   return (
     <Stack spacing={8}>
-      <TextInput label='Buyer' value={parseCard(sale.card)} disabled />
-      <TextInput label='Seller' value={parseCard(sale.product.card)} disabled />
+      <TextInput
+        label='Buyer'
+        icon={<CustomAvatar {...sale.card.user} />}
+        iconWidth={48}
+        value={parseCard(sale.card)}
+        disabled
+      />
+      <TextInput
+        label='Seller'
+        icon={<CustomAvatar {...sale.product.card.user} />}
+        iconWidth={48}
+        value={parseCard(sale.product.card)}
+        disabled
+      />
       <TextInput
         label='Item'
+        icon={<ThingImage {...sale.product} />}
+        iconWidth={48}
         value={items[sale.product.item - 1].substring(3)}
         disabled
       />

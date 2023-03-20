@@ -6,6 +6,7 @@ import { useSelectMyCitiesQuery } from '../cities/cities.api';
 import { useSelectFreeUsersQuery } from './users.api';
 import { UpdateUserCityDto } from './user.dto';
 import CustomForm from '../../common/components/CustomForm';
+import CustomAvatar from '../../common/components/CustomAvatar';
 import { UsersItem } from '../../common/components/UsersItem';
 import { selectCities, selectUsers } from '../../common/utils';
 
@@ -47,6 +48,14 @@ export default function AddCityUserModal() {
       <Select
         label='User'
         placeholder='User'
+        icon={
+          form.values.user && (
+            <CustomAvatar
+              {...users?.find((user) => user.id === +form.values.user)!}
+            />
+          )
+        }
+        iconWidth={48}
         itemComponent={UsersItem}
         data={selectUsers(users)}
         searchable

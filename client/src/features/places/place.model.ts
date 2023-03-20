@@ -19,7 +19,8 @@ export interface PlaceWithCard extends Place {
 
 export interface ExtPlace extends Place {
   type: number;
-  owner: string;
+  owner: SmUser;
+  card?: MdCard;
   price?: number;
   data: (string | { value: string; label: string })[];
 }

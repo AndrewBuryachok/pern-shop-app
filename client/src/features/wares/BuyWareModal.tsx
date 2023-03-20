@@ -7,6 +7,8 @@ import { useCreateTradeMutation } from '../trades/trades.api';
 import { useSelectMyCardsQuery } from '../cards/cards.api';
 import { CreateTradeDto } from '../trades/trade.dto';
 import CustomForm from '../../common/components/CustomForm';
+import CustomAvatar from '../../common/components/CustomAvatar';
+import ThingImage from '../../common/components/ThingImage';
 import {
   customMin,
   parseCard,
@@ -45,9 +47,17 @@ export default function BuyWareModal({ data: ware }: Props) {
       isLoading={isLoading}
       text={'Buy ware'}
     >
-      <TextInput label='Seller' value={parseCard(ware.rent.card)} disabled />
+      <TextInput
+        label='Seller'
+        icon={<CustomAvatar {...ware.rent.card.user} />}
+        iconWidth={48}
+        value={parseCard(ware.rent.card)}
+        disabled
+      />
       <TextInput
         label='Item'
+        icon={<ThingImage {...ware} />}
+        iconWidth={48}
         value={items[ware.item - 1].substring(3)}
         disabled
       />

@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { NumberInput, Select, Textarea } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
@@ -7,6 +8,7 @@ import { useSelectAllUsersQuery } from '../users/users.api';
 import { useSelectUserCardsQuery } from '../cards/cards.api';
 import { CreatePaymentDto } from './payment.dto';
 import CustomForm from '../../common/components/CustomForm';
+import CustomAvatar from '../../common/components/CustomAvatar';
 import { UsersItem } from '../../common/components/UsersItem';
 import {
   customMin,
@@ -31,6 +33,8 @@ export default function CreatePaymentModal() {
       receiverCardId: +receiverCard,
     }),
   });
+
+  useEffect(() => form.setFieldValue('receiverCard', ''), [form.values.user]);
 
   const { data: myCards } = useSelectMyCardsQuery();
   const { data: users } = useSelectAllUsersQuery();
@@ -64,9 +68,18 @@ export default function CreatePaymentModal() {
       <Select
         label='User'
         placeholder='User'
+        icon={
+          form.values.user && (
+            <CustomAvatar
+              {...users?.find((user) => user.id === +form.values.user)!}
+            />
+          )
+        }
+        iconWidth={48}
         itemComponent={UsersItem}
         data={selectUsers(users)}
         searchable
+        allowDeselect
         required
         {...form.getInputProps('user')}
       />

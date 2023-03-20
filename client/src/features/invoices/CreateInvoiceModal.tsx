@@ -6,6 +6,7 @@ import { useSelectMyCardsQuery } from '../cards/cards.api';
 import { useSelectAllUsersQuery } from '../users/users.api';
 import { CreateInvoiceDto } from './invoice.dto';
 import CustomForm from '../../common/components/CustomForm';
+import CustomAvatar from '../../common/components/CustomAvatar';
 import { UsersItem } from '../../common/components/UsersItem';
 import { selectCardsWithBalance, selectUsers } from '../../common/utils';
 import { MAX_DESCRIPTION_LENGTH, MAX_SUM_VALUE } from '../../common/constants';
@@ -51,6 +52,14 @@ export default function CreateInvoiceModal() {
       <Select
         label='Receiver User'
         placeholder='Receiver User'
+        icon={
+          form.values.receiverUser && (
+            <CustomAvatar
+              {...users?.find((user) => user.id === +form.values.receiverUser)!}
+            />
+          )
+        }
+        iconWidth={48}
         itemComponent={UsersItem}
         data={selectUsers(users)}
         searchable

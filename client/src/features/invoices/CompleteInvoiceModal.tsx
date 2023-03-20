@@ -7,6 +7,7 @@ import { useCompleteInvoiceMutation } from './invoices.api';
 import { useSelectMyCardsQuery } from '../cards/cards.api';
 import { CompleteInvoiceDto } from './invoice.dto';
 import CustomForm from '../../common/components/CustomForm';
+import CustomAvatar from '../../common/components/CustomAvatar';
 import {
   parseCard,
   parseDate,
@@ -55,10 +56,18 @@ export default function CompleteInvoiceModal({ data: invoice }: Props) {
     >
       <TextInput
         label='Sender'
+        icon={<CustomAvatar {...invoice.senderCard.user} />}
+        iconWidth={48}
         value={parseCard(invoice.senderCard)}
         disabled
       />
-      <TextInput label='Receiver' value={invoice.receiverUser.name} disabled />
+      <TextInput
+        label='Receiver'
+        icon={<CustomAvatar {...invoice.receiverUser} />}
+        iconWidth={48}
+        value={invoice.receiverUser.name}
+        disabled
+      />
       <Select
         label='Card'
         placeholder='Card'

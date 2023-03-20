@@ -2,6 +2,8 @@ import { Stack, TextInput } from '@mantine/core';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { Trade } from './trade.model';
+import CustomAvatar from '../../common/components/CustomAvatar';
+import ThingImage from '../../common/components/ThingImage';
 import {
   parseCard,
   parseDate,
@@ -17,14 +19,24 @@ export default function ViewTradeModal({ data: trade }: Props) {
 
   return (
     <Stack spacing={8}>
-      <TextInput label='Buyer' value={parseCard(trade.card)} disabled />
+      <TextInput
+        label='Buyer'
+        icon={<CustomAvatar {...trade.card.user} />}
+        iconWidth={48}
+        value={parseCard(trade.card)}
+        disabled
+      />
       <TextInput
         label='Seller'
+        icon={<CustomAvatar {...trade.ware.rent.card.user} />}
+        iconWidth={48}
         value={parseCard(trade.ware.rent.card)}
         disabled
       />
       <TextInput
         label='Item'
+        icon={<ThingImage {...trade.ware} />}
+        iconWidth={48}
         value={items[trade.ware.item - 1].substring(3)}
         disabled
       />

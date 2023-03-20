@@ -7,6 +7,8 @@ import { useCreateSaleMutation } from '../sales/sales.api';
 import { useSelectMyCardsQuery } from '../cards/cards.api';
 import { CreateSaleDto } from '../sales/sale.dto';
 import CustomForm from '../../common/components/CustomForm';
+import CustomAvatar from '../../common/components/CustomAvatar';
+import ThingImage from '../../common/components/ThingImage';
 import {
   customMin,
   parseCard,
@@ -45,9 +47,17 @@ export default function BuyProductModal({ data: product }: Props) {
       isLoading={isLoading}
       text={'Buy product'}
     >
-      <TextInput label='Seller' value={parseCard(product.card)} disabled />
+      <TextInput
+        label='Seller'
+        icon={<CustomAvatar {...product.card.user} />}
+        iconWidth={48}
+        value={parseCard(product.card)}
+        disabled
+      />
       <TextInput
         label='Item'
+        icon={<ThingImage {...product} />}
+        iconWidth={48}
         value={items[product.item - 1].substring(3)}
         disabled
       />

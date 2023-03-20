@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { NumberInput, Select, Textarea } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
@@ -5,6 +6,7 @@ import { useCreateWareMutation } from './wares.api';
 import { useSelectMyRentsQuery } from '../rents/rents.api';
 import { CreateWareDto } from './ware.dto';
 import CustomForm from '../../common/components/CustomForm';
+import ThingImage from '../../common/components/ThingImage';
 import { ThingsItem } from '../../common/components/ThingItem';
 import {
   selectCategories,
@@ -39,6 +41,8 @@ export default function CreateWareModal() {
     }),
   });
 
+  useEffect(() => form.setFieldValue('item', ''), [form.values.category]);
+
   const { data: rents } = useSelectMyRentsQuery();
 
   const [createWare, { isLoading }] = useCreateWareMutation();
@@ -72,6 +76,8 @@ export default function CreateWareModal() {
       <Select
         label='Item'
         placeholder='Item'
+        icon={form.values.item && <ThingImage item={+form.values.item} />}
+        iconWidth={48}
         itemComponent={ThingsItem}
         data={selectItems(form.values.category)}
         searchable

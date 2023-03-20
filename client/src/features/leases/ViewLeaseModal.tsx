@@ -2,6 +2,7 @@ import { Select, Stack, TextInput } from '@mantine/core';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { Lease } from './lease.model';
+import CustomAvatar from '../../common/components/CustomAvatar';
 import { ThingsItem } from '../../common/components/ThingItem';
 import {
   parseCard,
@@ -18,9 +19,17 @@ export default function ViewLeaseModal({ data: lease }: Props) {
 
   return (
     <Stack spacing={8}>
-      <TextInput label='Renter' value={parseCard(lease.card)} disabled />
+      <TextInput
+        label='Renter'
+        icon={<CustomAvatar {...lease.card.user} />}
+        iconWidth={48}
+        value={parseCard(lease.card)}
+        disabled
+      />
       <TextInput
         label='Lessor'
+        icon={<CustomAvatar {...lease.cell.storage.card.user} />}
+        iconWidth={48}
         value={parseCard(lease.cell.storage.card)}
         disabled
       />

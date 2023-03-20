@@ -2,6 +2,8 @@ import { Stack, Textarea, TextInput } from '@mantine/core';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { Ware } from './ware.model';
+import CustomAvatar from '../../common/components/CustomAvatar';
+import ThingImage from '../../common/components/ThingImage';
 import {
   parseCard,
   parseDate,
@@ -17,9 +19,17 @@ export default function ViewWareModal({ data: ware }: Props) {
 
   return (
     <Stack spacing={8}>
-      <TextInput label='Seller' value={parseCard(ware.rent.card)} disabled />
+      <TextInput
+        label='Seller'
+        icon={<CustomAvatar {...ware.rent.card.user} />}
+        iconWidth={48}
+        value={parseCard(ware.rent.card)}
+        disabled
+      />
       <TextInput
         label='Item'
+        icon={<ThingImage {...ware} />}
+        iconWidth={48}
         value={items[ware.item - 1].substring(3)}
         disabled
       />

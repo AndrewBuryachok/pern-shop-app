@@ -6,6 +6,7 @@ import { User } from './user.model';
 import { useRemoveUserCityMutation } from './users.api';
 import { UpdateUserCityDto } from './user.dto';
 import CustomForm from '../../common/components/CustomForm';
+import CustomAvatar from '../../common/components/CustomAvatar';
 import { Color } from '../../common/constants';
 
 type Props = IModal<User>;
@@ -31,7 +32,13 @@ export default function RemoveCityUserModal({ data: user }: Props) {
       text={'Remove city user'}
     >
       <TextInput label='City' value={user.city!.name} disabled />
-      <TextInput label='User' value={user.name} disabled />
+      <TextInput
+        label='User'
+        icon={<CustomAvatar {...user} />}
+        iconWidth={48}
+        value={user.name}
+        disabled
+      />
     </CustomForm>
   );
 }
