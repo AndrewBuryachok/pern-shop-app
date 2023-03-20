@@ -18,6 +18,7 @@ export const selectUsers = (users?: SmUser[]) =>
     value: `${user.id}`,
     label: user.name,
     name: user.name,
+    status: `${+user.status}`,
   })) || [];
 
 export const selectCards = (cards?: SelectCard[]) =>

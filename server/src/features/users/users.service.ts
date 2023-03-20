@@ -63,6 +63,7 @@ export class UsersService {
     ['goods', 'wares', 'products', 'trades', 'sales'].forEach(
       (stat) => (user[stat] = user[stat].length),
     );
+    delete user['rents'];
     return user;
   }
 
@@ -150,6 +151,7 @@ export class UsersService {
   private async addToken(user: User, token: string): Promise<void> {
     try {
       user.token = token;
+      user.status = true;
       await this.usersRepository.save(user);
     } catch (error) {
       throw new AppException(UserError.ADD_TOKEN_FAILED);
@@ -159,6 +161,7 @@ export class UsersService {
   private async removeToken(user: User): Promise<void> {
     try {
       user.token = null;
+      user.status = false;
       await this.usersRepository.save(user);
     } catch (error) {
       throw new AppException(UserError.REMOVE_TOKEN_FAILED);
@@ -204,8 +207,9 @@ export class UsersService {
   private selectUsersQueryBuilder(): SelectQueryBuilder<User> {
     return this.usersRepository
       .createQueryBuilder('user')
-      .orderBy('user.name', 'ASC')
-      .select(['user.id', 'user.name']);
+      .orderBy('user.status', 'DESC')
+      .addOrderBy('user.name', 'ASC')
+      .select(['user.id', 'user.name', 'user.status']);
   }
 
   private async loadCards(users: User[]): Promise<void> {
@@ -233,12 +237,14 @@ export class UsersService {
       .createQueryBuilder('user')
       .leftJoin('user.city', 'city')
       .where('user.name ILIKE :search', { search: `%${req.search || ''}%` })
-      .orderBy('user.id', 'DESC')
+      .orderBy('user.status', 'DESC')
+      .addOrderBy('user.id', 'DESC')
       .skip(req.skip)
       .take(req.take)
       .select([
         'user.id',
         'user.name',
+        'user.status',
         'user.roles',
         'city.id',
         'city.name',

@@ -146,6 +146,7 @@ export class ProductsService {
         'sellerCard.id',
         'sellerUser.id',
         'sellerUser.name',
+        'sellerUser.status',
         'sellerCard.name',
         'sellerCard.color',
         'product.item',

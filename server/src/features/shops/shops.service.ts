@@ -159,6 +159,7 @@ export class ShopsService {
         'shop.id',
         'ownerUser.id',
         'ownerUser.name',
+        'ownerUser.status',
         'shop.name',
         'shop.x',
         'shop.y',

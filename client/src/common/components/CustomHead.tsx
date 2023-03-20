@@ -22,7 +22,13 @@ export default function CustomHead(props: Props) {
         value={props.search}
         onChange={props.setSearch}
         itemComponent={UsersItem}
-        data={users?.map((user) => ({ ...user, value: user.name })) || []}
+        data={
+          users?.map((user) => ({
+            name: user.name,
+            status: `${+user.status}`,
+            value: user.name,
+          })) || []
+        }
       />
     </Group>
   );

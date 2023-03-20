@@ -163,6 +163,7 @@ export class CardsService {
         'card.id',
         'ownerUser.id',
         'ownerUser.name',
+        'ownerUser.status',
         'card.name',
         'card.color',
         'card.balance',

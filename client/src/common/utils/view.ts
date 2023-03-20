@@ -15,6 +15,7 @@ export const viewUsers = (users: SmUser[]) =>
     value: `${user.id}`,
     label: user.name,
     name: user.name,
+    status: `${+user.status}`,
     disabled: true,
   }));
 

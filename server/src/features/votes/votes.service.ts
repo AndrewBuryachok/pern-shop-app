@@ -100,9 +100,11 @@ export class VotesService {
         'poll.id',
         'pollerUser.id',
         'pollerUser.name',
+        'pollerUser.status',
         'poll.description',
         'voterUser.id',
         'voterUser.name',
+        'voterUser.status',
         'vote.type',
         'vote.createdAt',
       ]);

@@ -1,6 +1,7 @@
 import { Avatar, Group, Paper, SimpleGrid, Stack, Text } from '@mantine/core';
 import { IconBuildingSkyscraper } from '@tabler/icons';
 import { ExtUser } from './user.model';
+import CustomIndicator from '../../common/components/CustomIndicator';
 import RolesBadge from '../../common/components/RolesBadge';
 import PlaceText from '../../common/components/PlaceText';
 import { colors } from '../../common/constants';
@@ -20,11 +21,13 @@ export default function UserProfile({ data: user }: Props) {
 
   return (
     <Stack align='center' spacing={8}>
-      <Avatar
-        size={128}
-        src={`https://minotar.net/bust/${user.name}/128.png`}
-        alt={user.name}
-      />
+      <CustomIndicator status={user.status}>
+        <Avatar
+          size={128}
+          src={`https://minotar.net/bust/${user.name}/128.png`}
+          alt={user.name}
+        />
+      </CustomIndicator>
       <Text size='xl' weight='bold'>
         {user.name}
       </Text>

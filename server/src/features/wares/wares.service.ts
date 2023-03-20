@@ -145,6 +145,7 @@ export class WaresService {
         'sellerCard.id',
         'sellerUser.id',
         'sellerUser.name',
+        'sellerUser.status',
         'sellerCard.name',
         'sellerCard.color',
         'ware.item',

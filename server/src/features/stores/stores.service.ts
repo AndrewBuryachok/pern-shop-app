@@ -127,6 +127,7 @@ export class StoresService {
         'ownerCard.id',
         'ownerUser.id',
         'ownerUser.name',
+        'ownerUser.status',
         'ownerCard.name',
         'ownerCard.color',
         'market.name',

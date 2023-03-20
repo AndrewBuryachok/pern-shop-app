@@ -186,6 +186,7 @@ export class StoragesService {
         'ownerCard.id',
         'ownerUser.id',
         'ownerUser.name',
+        'ownerUser.status',
         'ownerCard.name',
         'ownerCard.color',
         'storage.name',

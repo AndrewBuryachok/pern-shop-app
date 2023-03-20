@@ -4,6 +4,7 @@ import SingleText from './SingleText';
 
 type Props = {
   name: string;
+  status: boolean;
 };
 
 export default function CustomAvatarWithText(props: Props) {
