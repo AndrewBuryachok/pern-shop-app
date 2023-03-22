@@ -35,15 +35,10 @@ export class TradesService {
 
   async getMyTrades(myId: number, req: Request): Promise<Response<Trade>> {
     const [result, count] = await this.getTradesQueryBuilder(req)
-      .andWhere('(buyerUser.id = :myId OR sellerUser.id = :myId)', { myId })
-      .getManyAndCount();
-    return { result, count };
-  }
-
-  async getPlacedTrades(myId: number, req: Request): Promise<Response<Trade>> {
-    const [result, count] = await this.getTradesQueryBuilder(req)
-      .innerJoin('market.card', 'ownerCard')
-      .andWhere('ownerCard.userId = :myId', { myId })
+      .andWhere(
+        '(ownerUser.id = :myId OR buyerUser.id = :myId OR sellerUser.id = :myId)',
+        { myId },
+      )
       .getManyAndCount();
     return { result, count };
   }
@@ -80,12 +75,14 @@ export class TradesService {
       .innerJoin('ware.rent', 'rent')
       .innerJoin('rent.store', 'store')
       .innerJoin('store.market', 'market')
+      .innerJoin('market.card', 'ownerCard')
+      .innerJoin('ownerCard.user', 'ownerUser')
       .innerJoin('rent.card', 'sellerCard')
       .innerJoin('sellerCard.user', 'sellerUser')
       .innerJoin('trade.card', 'buyerCard')
       .innerJoin('buyerCard.user', 'buyerUser')
       .where(
-        '(buyerUser.name ILIKE :search OR sellerUser.name ILIKE :search)',
+        '(ownerUser.name ILIKE :search OR buyerUser.name ILIKE :search OR sellerUser.name ILIKE :search)',
         { search: `%${req.search || ''}%` },
       )
       .orderBy('trade.id', 'DESC')

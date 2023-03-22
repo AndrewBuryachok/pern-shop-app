@@ -15,7 +15,6 @@ export default function MyTrades() {
   const response = useGetMyTradesQuery({ page, search: debounced });
 
   const links = [
-    { label: 'Placed', to: '../placed' },
     { label: 'All', to: '../all', disabled: isUserNotHasRole(Role.MANAGER) },
   ];
 

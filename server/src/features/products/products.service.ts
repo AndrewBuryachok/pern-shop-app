@@ -46,18 +46,7 @@ export class ProductsService {
 
   async getMyProducts(myId: number, req: Request): Promise<Response<Product>> {
     const [result, count] = await this.getProductsQueryBuilder(req)
-      .andWhere('sellerUser.id = :myId', { myId })
-      .getManyAndCount();
-    return { result, count };
-  }
-
-  async getPlacedProducts(
-    myId: number,
-    req: Request,
-  ): Promise<Response<Product>> {
-    const [result, count] = await this.getProductsQueryBuilder(req)
-      .innerJoin('storage.card', 'ownerCard')
-      .andWhere('ownerCard.userId = :myId', { myId })
+      .andWhere('(ownerUser.id = :myId OR sellerUser.id = :myId)', { myId })
       .getManyAndCount();
     return { result, count };
   }
@@ -127,11 +116,14 @@ export class ProductsService {
       .createQueryBuilder('product')
       .innerJoin('product.cell', 'cell')
       .innerJoin('cell.storage', 'storage')
+      .innerJoin('storage.card', 'ownerCard')
+      .innerJoin('ownerCard.user', 'ownerUser')
       .innerJoin('product.card', 'sellerCard')
       .innerJoin('sellerCard.user', 'sellerUser')
-      .where('sellerUser.name ILIKE :search', {
-        search: `%${req.search || ''}%`,
-      })
+      .where(
+        '(ownerUser.name ILIKE :search OR sellerUser.name ILIKE :search)',
+        { search: `%${req.search || ''}%` },
+      )
       .orderBy('product.id', 'DESC')
       .skip(req.skip)
       .take(req.take)

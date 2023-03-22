@@ -17,7 +17,6 @@ export default function MyWares() {
 
   const links = [
     { label: 'Main', to: '..' },
-    { label: 'Placed', to: '../placed' },
     { label: 'All', to: '../all', disabled: isUserNotHasRole(Role.MANAGER) },
   ];
 

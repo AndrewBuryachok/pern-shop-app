@@ -15,7 +15,6 @@ export default function MyVotes() {
   const response = useGetMyVotesQuery({ page, search: debounced });
 
   const links = [
-    { label: 'Polled', to: '../polled' },
     { label: 'All', to: '../all', disabled: isUserNotHasRole(Role.ADMIN) },
   ];
 

@@ -26,14 +26,6 @@ export class TradesController {
     return this.tradesService.getMyTrades(myId, req);
   }
 
-  @Get('placed')
-  getPlacedTrades(
-    @MyId() myId: number,
-    @Query() req: Request,
-  ): Promise<Response<Trade>> {
-    return this.tradesService.getPlacedTrades(myId, req);
-  }
-
   @Roles(Role.MANAGER)
   @Get('all')
   getAllTrades(@Query() req: Request): Promise<Response<Trade>> {

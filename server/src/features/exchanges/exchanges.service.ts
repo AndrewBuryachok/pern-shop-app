@@ -21,7 +21,9 @@ export class ExchangesService {
     req: Request,
   ): Promise<Response<Exchange>> {
     const [result, count] = await this.getExchangesQueryBuilder(req)
-      .andWhere('customerUser.id = :myId', { myId })
+      .andWhere('(executorUser.id = :myId OR customerUser.id = :myId)', {
+        myId,
+      })
       .getManyAndCount();
     return { result, count };
   }

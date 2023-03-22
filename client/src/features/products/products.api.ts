@@ -24,12 +24,6 @@ export const productsApi = emptyApi.injectEndpoints({
       }),
       providesTags: ['Product'],
     }),
-    getPlacedProducts: build.query<IResponse<Product>, IRequest>({
-      query: (req) => ({
-        url: `/products/placed?${getQuery(req)}`,
-      }),
-      providesTags: ['Product'],
-    }),
     getAllProducts: build.query<IResponse<Product>, IRequest>({
       query: (req) => ({
         url: `/products/all?${getQuery(req)}`,
@@ -58,7 +52,6 @@ export const {
   useGetProductsStatsQuery,
   useGetMainProductsQuery,
   useGetMyProductsQuery,
-  useGetPlacedProductsQuery,
   useGetAllProductsQuery,
   useCreateProductMutation,
 } = productsApi;

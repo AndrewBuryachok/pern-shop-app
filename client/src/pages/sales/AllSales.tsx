@@ -12,10 +12,7 @@ export default function AllSales() {
 
   const response = useGetAllSalesQuery({ page, search: debounced });
 
-  const links = [
-    { label: 'My', to: '../my' },
-    { label: 'Placed', to: '../placed' },
-  ];
+  const links = [{ label: 'My', to: '../my' }];
 
   return (
     <SalesTable

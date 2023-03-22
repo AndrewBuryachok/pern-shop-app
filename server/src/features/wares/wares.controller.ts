@@ -32,14 +32,6 @@ export class WaresController {
     return this.waresService.getMyWares(myId, req);
   }
 
-  @Get('placed')
-  getPlacedWares(
-    @MyId() myId: number,
-    @Query() req: Request,
-  ): Promise<Response<Ware>> {
-    return this.waresService.getPlacedWares(myId, req);
-  }
-
   @Roles(Role.MANAGER)
   @Get('all')
   getAllWares(@Query() req: Request): Promise<Response<Ware>> {

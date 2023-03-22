@@ -46,15 +46,7 @@ export class WaresService {
 
   async getMyWares(myId: number, req: Request): Promise<Response<Ware>> {
     const [result, count] = await this.getWaresQueryBuilder(req)
-      .andWhere('sellerUser.id = :myId', { myId })
-      .getManyAndCount();
-    return { result, count };
-  }
-
-  async getPlacedWares(myId: number, req: Request): Promise<Response<Ware>> {
-    const [result, count] = await this.getWaresQueryBuilder(req)
-      .innerJoin('market.card', 'ownerCard')
-      .andWhere('ownerCard.userId = :myId', { myId })
+      .andWhere('(ownerUser.id = :myId OR sellerUser.id = :myId)', { myId })
       .getManyAndCount();
     return { result, count };
   }
@@ -125,11 +117,14 @@ export class WaresService {
       .innerJoin('ware.rent', 'rent')
       .innerJoin('rent.store', 'store')
       .innerJoin('store.market', 'market')
+      .innerJoin('market.card', 'ownerCard')
+      .innerJoin('ownerCard.user', 'ownerUser')
       .innerJoin('rent.card', 'sellerCard')
       .innerJoin('sellerCard.user', 'sellerUser')
-      .where('sellerUser.name ILIKE :search', {
-        search: `%${req.search || ''}%`,
-      })
+      .where(
+        '(ownerUser.name ILIKE :search OR sellerUser.name ILIKE :search)',
+        { search: `%${req.search || ''}%` },
+      )
       .orderBy('ware.id', 'DESC')
       .skip(req.skip)
       .take(req.take)

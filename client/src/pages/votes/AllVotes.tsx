@@ -12,10 +12,7 @@ export default function AllVotes() {
 
   const response = useGetAllVotesQuery({ page, search: debounced });
 
-  const links = [
-    { label: 'My', to: '../my' },
-    { label: 'Polled', to: '../polled' },
-  ];
+  const links = [{ label: 'My', to: '../my' }];
 
   return (
     <VotesTable
