@@ -52,8 +52,12 @@ export default function CustomHeader(props: Props) {
           <Menu.Target>
             <Avatar
               size={32}
+              color='violet'
               src={
-                user?.name && `https://minotar.net/avatar/${user.name}/32.png`
+                user?.name &&
+                `${import.meta.env.VITE_AVATAR_URL}${
+                  import.meta.env.VITE_HEAD_ROUTE
+                }${user.name}`
               }
               alt={user?.name}
               style={{ cursor: 'pointer' }}

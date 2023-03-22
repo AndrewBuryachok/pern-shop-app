@@ -8,7 +8,7 @@ import { addCurrentUser, removeCurrentUser } from '../features/auth/auth.slice';
 import { Tokens } from '../features/auth/auth.model';
 
 export const baseQuery = fetchBaseQuery({
-  baseUrl: import.meta.env.VITE_URL,
+  baseUrl: import.meta.env.VITE_API_URL,
   prepareHeaders: (headers, { getState }) => {
     const token = (getState() as RootState).auth.user?.access;
     if (token && !headers.has('Authorization')) {

@@ -11,7 +11,9 @@ export default function CustomAvatar(props: Props) {
     <CustomIndicator status={props.status}>
       <Avatar
         size={32}
-        src={`https://minotar.net/avatar/${props.name}/32.png`}
+        src={`${import.meta.env.VITE_AVATAR_URL}${
+          import.meta.env.VITE_HEAD_ROUTE
+        }${props.name}`}
         alt={props.name}
       />
     </CustomIndicator>

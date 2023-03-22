@@ -24,7 +24,9 @@ export default function UserProfile({ data: user }: Props) {
       <CustomIndicator status={user.status}>
         <Avatar
           size={128}
-          src={`https://minotar.net/bust/${user.name}/128.png`}
+          src={`${import.meta.env.VITE_AVATAR_URL}${
+            import.meta.env.VITE_BUST_ROUTE
+          }${user.name}`}
           alt={user.name}
         />
       </CustomIndicator>
