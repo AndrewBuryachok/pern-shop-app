@@ -65,6 +65,13 @@ export default function BuyWareModal({ data: ware }: Props) {
       <TextInput label='Amount' value={parseThingAmount(ware)} disabled />
       <TextInput label='Price' value={`${ware.price}$`} disabled />
       <TextInput label='Market' value={parseStore(ware.rent.store)} disabled />
+      <TextInput
+        label='Owner'
+        icon={<CustomAvatar {...ware.rent.store.market.card.user} />}
+        iconWidth={48}
+        value={parseCard(ware.rent.store.market.card)}
+        disabled
+      />
       <Select
         label='Card'
         placeholder='Card'

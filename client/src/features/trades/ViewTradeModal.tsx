@@ -53,6 +53,13 @@ export default function ViewTradeModal({ data: trade }: Props) {
         disabled
       />
       <TextInput
+        label='Owner'
+        icon={<CustomAvatar {...trade.ware.rent.store.market.card.user} />}
+        iconWidth={48}
+        value={parseCard(trade.ware.rent.store.market.card)}
+        disabled
+      />
+      <TextInput
         label='Created'
         value={`${created.date} ${created.time}`}
         disabled

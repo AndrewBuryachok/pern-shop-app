@@ -57,6 +57,13 @@ export default function ViewSaleModal({ data: sale }: Props) {
         disabled
       />
       <TextInput
+        label='Owner'
+        icon={<CustomAvatar {...sale.product.cell.storage.card.user} />}
+        iconWidth={48}
+        value={parseCard(sale.product.cell.storage.card)}
+        disabled
+      />
+      <TextInput
         label='Created'
         value={`${created.date} ${created.time}`}
         disabled

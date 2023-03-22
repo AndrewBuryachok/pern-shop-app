@@ -3,7 +3,7 @@ import { LgStore, MdStore } from '../stores/store.model';
 import { SmWare } from '../wares/ware.model';
 
 export interface SmRent extends Receipt {
-  store: MdStore;
+  store: LgStore;
 }
 
 export interface Rent extends ReceiptWithDate {

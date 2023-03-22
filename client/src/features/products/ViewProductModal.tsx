@@ -38,6 +38,13 @@ export default function ViewProductModal({ data: product }: Props) {
       <TextInput label='Price' value={`${product.price}$`} disabled />
       <TextInput label='Storage' value={parseCell(product.cell)} disabled />
       <TextInput
+        label='Owner'
+        icon={<CustomAvatar {...product.cell.storage.card.user} />}
+        iconWidth={48}
+        value={parseCard(product.cell.storage.card)}
+        disabled
+      />
+      <TextInput
         label='Created'
         value={`${created.date} ${created.time}`}
         disabled

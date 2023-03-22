@@ -38,6 +38,13 @@ export default function ViewWareModal({ data: ware }: Props) {
       <TextInput label='Price' value={`${ware.price}$`} disabled />
       <TextInput label='Market' value={parseStore(ware.rent.store)} disabled />
       <TextInput
+        label='Owner'
+        icon={<CustomAvatar {...ware.rent.store.market.card.user} />}
+        iconWidth={48}
+        value={parseCard(ware.rent.store.market.card)}
+        disabled
+      />
+      <TextInput
         label='Created'
         value={`${created.date} ${created.time}`}
         disabled

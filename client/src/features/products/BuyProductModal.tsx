@@ -65,6 +65,13 @@ export default function BuyProductModal({ data: product }: Props) {
       <TextInput label='Amount' value={parseThingAmount(product)} disabled />
       <TextInput label='Price' value={`${product.price}$`} disabled />
       <TextInput label='Storage' value={parseCell(product.cell)} disabled />
+      <TextInput
+        label='Owner'
+        icon={<CustomAvatar {...product.cell.storage.card.user} />}
+        iconWidth={48}
+        value={parseCard(product.cell.storage.card)}
+        disabled
+      />
       <Select
         label='Card'
         placeholder='Card'

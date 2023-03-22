@@ -1,10 +1,8 @@
+import { Place } from '../../features/places/place.model';
 import DoubleText from './DoubleText';
 import { parseCoordinates } from '../../common/utils';
 
-type Props = {
-  name: string;
-  x: number;
-  y: number;
+type Props = Place & {
   container?: number;
 };
 

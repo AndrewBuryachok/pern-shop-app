@@ -5,7 +5,7 @@ import AvatarWithDoubleText from '../../common/components/AvatarWithDoubleText';
 import ThingImageWithText from '../../common/components/ThingImageWithText';
 import SingleText from '../../common/components/SingleText';
 import PriceText from '../../common/components/PriceText';
-import PlaceText from '../../common/components/PlaceText';
+import CustomPlaceWithAvatar from '../../common/components/CustomPlaceWithAvatar';
 import DateText from '../../common/components/DateText';
 import CustomActions from '../../common/components/CustomActions';
 import { viewWareAction } from './ViewWareModal';
@@ -43,7 +43,7 @@ export default function WaresTable({ actions = [], ...props }: Props) {
             <PriceText {...ware} />
           </td>
           <td>
-            <PlaceText
+            <CustomPlaceWithAvatar
               {...ware.rent.store.market}
               container={ware.rent.store.name}
             />
