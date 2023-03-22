@@ -18,7 +18,7 @@ export default function CustomTable<T>(props: Props<T>) {
       {['Goods', 'Wares', 'Products'].includes(props.title.split(' ')[1]) &&
         props.title.split(' ')[0] === 'Main' && <CustomStats />}
       <CustomHead {...props} />
-      <Paper>
+      <Paper withBorder>
         <ScrollArea>
           <Table
             miw={props.minWidth}

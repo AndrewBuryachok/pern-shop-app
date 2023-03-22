@@ -44,7 +44,7 @@ export default function CustomStats() {
     >
       {stats.map((stat) => (
         <Skeleton key={stat.label} visible={stat.isLoading}>
-          <Paper p={8}>
+          <Paper p={8} withBorder>
             <Group position='apart' spacing={0}>
               <div>
                 <Text size='xs' weight='bold' color='dimmed'>

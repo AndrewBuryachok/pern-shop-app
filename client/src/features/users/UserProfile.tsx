@@ -43,7 +43,7 @@ export default function UserProfile({ data: user }: Props) {
       {!!user.cards.length && (
         <Group spacing={8}>
           {user.cards.map((card) => (
-            <Paper key={card.id} p={4}>
+            <Paper key={card.id} p={8} withBorder>
               <Text size='sm' color={colors[card.color - 1]}>
                 {card.name}
               </Text>
@@ -57,7 +57,7 @@ export default function UserProfile({ data: user }: Props) {
         breakpoints={[{ maxWidth: 'xs', cols: 3 }]}
       >
         {stats.map((stat, index) => (
-          <Paper key={stat.label} p={4}>
+          <Paper key={stat.label} p={8} withBorder>
             <Text align='center' size='lg' weight='bold'>
               {stat.value}
             </Text>

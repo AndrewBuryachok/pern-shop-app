@@ -142,7 +142,7 @@ export default function Home() {
         ]}
       >
         {features.map((feature) => (
-          <Paper key={feature.title} p='md'>
+          <Paper key={feature.title} p='md' withBorder>
             <Stack spacing={0}>
               <feature.icon size={48} color={theme.fn.primaryColor()} />
               <Text size='lg' weight='bold'>
