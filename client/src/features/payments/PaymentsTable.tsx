@@ -4,6 +4,7 @@ import { getCurrentUser } from '../auth/auth.slice';
 import CustomTable from '../../common/components/CustomTable';
 import AvatarWithDoubleText from '../../common/components/AvatarWithDoubleText';
 import SumText from '../../common/components/SumText';
+import SingleText from '../../common/components/SingleText';
 import DateText from '../../common/components/DateText';
 import CustomActions from '../../common/components/CustomActions';
 import { viewPaymentAction } from './ViewPaymentModal';
@@ -15,8 +16,15 @@ export default function PaymentsTable({ actions = [], ...props }: Props) {
 
   return (
     <CustomTable
-      minWidth={800}
-      columns={['Sender', 'Receiver', 'Sum', 'Created', 'Action']}
+      minWidth={1000}
+      columns={[
+        'Sender',
+        'Receiver',
+        'Sum',
+        'Description',
+        'Created',
+        'Action',
+      ]}
       {...props}
     >
       {props.data?.result.map((payment) => (
@@ -34,6 +42,9 @@ export default function PaymentsTable({ actions = [], ...props }: Props) {
               toId={payment.receiverCard.user.id}
               sum={payment.sum}
             />
+          </td>
+          <td>
+            <SingleText text={payment.description} />
           </td>
           <td>
             <DateText date={payment.createdAt} />

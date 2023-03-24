@@ -1,16 +1,21 @@
 import { useState } from 'react';
-import { useDebouncedValue } from '@mantine/hooks';
+import { ISearch } from '../../common/interfaces';
 import { useGetAllPaymentsQuery } from '../../features/payments/payments.api';
 import PaymentsTable from '../../features/payments/PaymentsTable';
 
 export default function AllPayments() {
   const [page, setPage] = useState(1);
 
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState<ISearch>({
+    user: '',
+    filters: ['Mode', 'Sender', 'Receiver'].map((label, index) => ({
+      label,
+      value: !!index,
+    })),
+    description: '',
+  });
 
-  const [debounced] = useDebouncedValue(search, 300);
-
-  const response = useGetAllPaymentsQuery({ page, search: debounced });
+  const response = useGetAllPaymentsQuery({ page, search });
 
   const links = [{ label: 'My', to: '../my' }];
 

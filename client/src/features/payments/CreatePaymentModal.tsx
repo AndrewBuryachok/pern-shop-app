@@ -79,7 +79,6 @@ export default function CreatePaymentModal() {
         itemComponent={UsersItem}
         data={selectUsers(users)}
         searchable
-        allowDeselect
         required
         {...form.getInputProps('user')}
       />

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useDebouncedValue } from '@mantine/hooks';
+import { ISearch } from '../../common/interfaces';
 import { useGetMyInvoicesQuery } from '../../features/invoices/invoices.api';
 import InvoicesTable from '../../features/invoices/InvoicesTable';
 import { createInvoiceButton } from '../../features/invoices/CreateInvoiceModal';
@@ -11,11 +11,16 @@ import { Role } from '../../common/constants';
 export default function MyInvoices() {
   const [page, setPage] = useState(1);
 
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState<ISearch>({
+    user: '',
+    filters: ['Mode', 'Sender', 'Receiver'].map((label, index) => ({
+      label,
+      value: !!index,
+    })),
+    description: '',
+  });
 
-  const [debounced] = useDebouncedValue(search, 300);
-
-  const response = useGetMyInvoicesQuery({ page, search: debounced });
+  const response = useGetMyInvoicesQuery({ page, search });
 
   const links = [
     { label: 'All', to: '../all', disabled: isUserNotHasRole(Role.BANKER) },

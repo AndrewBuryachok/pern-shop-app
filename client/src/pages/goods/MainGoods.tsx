@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useDebouncedValue } from '@mantine/hooks';
+import { ISearch } from '../../common/interfaces';
 import { useGetMainGoodsQuery } from '../../features/goods/goods.api';
 import GoodsTable from '../../features/goods/GoodsTable';
 import { isUserNotHasRole } from '../../common/utils';
@@ -8,11 +8,13 @@ import { Role } from '../../common/constants';
 export default function MainGoods() {
   const [page, setPage] = useState(1);
 
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState<ISearch>({
+    user: '',
+    item: '',
+    description: '',
+  });
 
-  const [debounced] = useDebouncedValue(search, 300);
-
-  const response = useGetMainGoodsQuery({ page, search: debounced });
+  const response = useGetMainGoodsQuery({ page, search });
 
   const links = [
     { label: 'My', to: 'my' },

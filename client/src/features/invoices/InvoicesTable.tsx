@@ -5,6 +5,7 @@ import CustomTable from '../../common/components/CustomTable';
 import AvatarWithDoubleText from '../../common/components/AvatarWithDoubleText';
 import AvatarWithSingleText from '../../common/components/AvatarWithSingleText';
 import SumText from '../../common/components/SumText';
+import SingleText from '../../common/components/SingleText';
 import DateText from '../../common/components/DateText';
 import CustomActions from '../../common/components/CustomActions';
 import { viewInvoiceAction } from './ViewInvoiceModal';
@@ -16,8 +17,15 @@ export default function InvoicesTable({ actions = [], ...props }: Props) {
 
   return (
     <CustomTable
-      minWidth={800}
-      columns={['Sender', 'Receiver', 'Sum', 'Completed', 'Action']}
+      minWidth={1000}
+      columns={[
+        'Sender',
+        'Receiver',
+        'Sum',
+        'Description',
+        'Completed',
+        'Action',
+      ]}
       {...props}
     >
       {props.data?.result.map((invoice) => (
@@ -39,6 +47,9 @@ export default function InvoicesTable({ actions = [], ...props }: Props) {
               toId={invoice.senderCard.user.id}
               sum={invoice.sum}
             />
+          </td>
+          <td>
+            <SingleText text={invoice.description} />
           </td>
           <td>
             <DateText date={invoice.completedAt} />

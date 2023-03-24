@@ -1,16 +1,22 @@
 import { useState } from 'react';
-import { useDebouncedValue } from '@mantine/hooks';
+import { ISearch } from '../../common/interfaces';
 import { useGetAllProductsQuery } from '../../features/products/products.api';
 import ProductsTable from '../../features/products/ProductsTable';
 
 export default function AllProducts() {
   const [page, setPage] = useState(1);
 
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState<ISearch>({
+    user: '',
+    filters: ['Mode', 'Seller', 'Owner'].map((label, index) => ({
+      label,
+      value: !!index,
+    })),
+    item: '',
+    description: '',
+  });
 
-  const [debounced] = useDebouncedValue(search, 300);
-
-  const response = useGetAllProductsQuery({ page, search: debounced });
+  const response = useGetAllProductsQuery({ page, search });
 
   const links = [
     { label: 'Main', to: '..' },

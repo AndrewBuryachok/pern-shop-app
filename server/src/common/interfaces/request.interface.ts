@@ -1,6 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsInt, IsOptional, IsString, Min } from 'class-validator';
-import { Type } from 'class-transformer';
+import {
+  IsArray,
+  IsBoolean,
+  IsInt,
+  IsOptional,
+  IsString,
+  Min,
+} from 'class-validator';
+import { Transform, Type } from 'class-transformer';
 
 export class Request {
   @ApiProperty()
@@ -19,6 +26,41 @@ export class Request {
 
   @ApiProperty()
   @IsOptional()
+  @IsInt()
+  @Type(() => Number)
+  user?: number = 0;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsBoolean()
+  @Transform(({ value }) => value === 'true')
+  mode?: boolean = false;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsArray()
+  @Transform(({ value }) => value?.split(','))
+  filters?: string[] = [];
+
+  @ApiProperty()
+  @IsOptional()
   @IsString()
-  search?: string;
+  name?: string = '';
+
+  @ApiProperty()
+  @IsOptional()
+  @IsInt()
+  @Type(() => Number)
+  item?: number = 0;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
+  description?: string = '';
+
+  @ApiProperty()
+  @IsOptional()
+  @IsInt()
+  @Type(() => Number)
+  type?: number = 0;
 }

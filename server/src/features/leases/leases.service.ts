@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, SelectQueryBuilder } from 'typeorm';
+import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { Product } from '../products/product.entity';
 import { Request, Response } from '../../common/interfaces';
 
@@ -13,7 +13,12 @@ export class LeasesService {
 
   async getMyLeases(myId: number, req: Request): Promise<Response<Product>> {
     const [result, count] = await this.getLeasesQueryBuilder(req)
-      .andWhere('(renterUser.id = :myId OR lessorUser.id = :myId)', { myId })
+      .andWhere(
+        new Brackets((qb) =>
+          qb.where('renterUser.id = :myId').orWhere('lessorUser.id = :myId'),
+        ),
+        { myId },
+      )
       .getManyAndCount();
     await this.loadProducts(result);
     return { result, count };
@@ -62,8 +67,52 @@ export class LeasesService {
       .innerJoin('lease.card', 'renterCard')
       .innerJoin('renterCard.user', 'renterUser')
       .where(
-        '(renterUser.name ILIKE :search OR lessorUser.name ILIKE :search)',
-        { search: `%${req.search || ''}%` },
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.user}`)
+            .orWhere(
+              new Brackets((qb) =>
+                qb
+                  .where(`${req.mode}`)
+                  .andWhere(
+                    `renterUser.id ${
+                      req.filters.includes('renter') ? '=' : '!='
+                    } :userId`,
+                  )
+                  .andWhere(
+                    `lessorUser.id ${
+                      req.filters.includes('lessor') ? '=' : '!='
+                    } :userId`,
+                  ),
+              ),
+            )
+            .orWhere(
+              new Brackets((qb) =>
+                qb
+                  .where(`${!req.mode}`)
+                  .andWhere(
+                    new Brackets((qb) =>
+                      qb
+                        .where(
+                          new Brackets((qb) =>
+                            qb
+                              .where(`${req.filters.includes('renter')}`)
+                              .andWhere('renterUser.id = :userId'),
+                          ),
+                        )
+                        .orWhere(
+                          new Brackets((qb) =>
+                            qb
+                              .where(`${req.filters.includes('lessor')}`)
+                              .andWhere('lessorUser.id = :userId'),
+                          ),
+                        ),
+                    ),
+                  ),
+              ),
+            ),
+        ),
+        { userId: req.user },
       )
       .orderBy('lease.id', 'DESC')
       .skip(req.skip)

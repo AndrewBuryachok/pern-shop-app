@@ -1,16 +1,21 @@
 import { useState } from 'react';
-import { useDebouncedValue } from '@mantine/hooks';
+import { ISearch } from '../../common/interfaces';
 import { useGetAllInvoicesQuery } from '../../features/invoices/invoices.api';
 import InvoicesTable from '../../features/invoices/InvoicesTable';
 
 export default function AllInvoices() {
   const [page, setPage] = useState(1);
 
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState<ISearch>({
+    user: '',
+    filters: ['Mode', 'Sender', 'Receiver'].map((label, index) => ({
+      label,
+      value: !!index,
+    })),
+    description: '',
+  });
 
-  const [debounced] = useDebouncedValue(search, 300);
-
-  const response = useGetAllInvoicesQuery({ page, search: debounced });
+  const response = useGetAllInvoicesQuery({ page, search });
 
   const links = [{ label: 'My', to: '../my' }];
 

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, SelectQueryBuilder } from 'typeorm';
+import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { Storage } from './storage.entity';
 import { CardsService } from '../cards/cards.service';
 import { ExtCreateStorageDto, ExtEditStorageDto } from './storage.dto';
@@ -57,9 +57,11 @@ export class StoragesService {
         'storage.cells',
         'cell',
         (qb) =>
-          qb.where('cell.reservedAt IS NULL OR cell.reservedAt > :reservedAt', {
-            reservedAt: getDateWeekAgo(),
-          }),
+          qb
+            .where('cell.reservedAt IS NULL')
+            .orWhere('cell.reservedAt < :date', {
+              date: getDateWeekAgo(),
+            }),
       )
       .addSelect(['storage.price'])
       .getMany()
@@ -175,9 +177,14 @@ export class StoragesService {
       .createQueryBuilder('storage')
       .innerJoin('storage.card', 'ownerCard')
       .innerJoin('ownerCard.user', 'ownerUser')
-      .where('ownerUser.name ILIKE :search', {
-        search: `%${req.search || ''}%`,
-      })
+      .where(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.user}`)
+            .orWhere('ownerUser.id = :userId', { userId: req.user }),
+        ),
+      )
+      .andWhere('storage.name ILIKE :name', { name: `%${req.name}%` })
       .orderBy('storage.id', 'DESC')
       .skip(req.skip)
       .take(req.take)

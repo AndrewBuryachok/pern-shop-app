@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useDebouncedValue } from '@mantine/hooks';
+import { ISearch } from '../../common/interfaces';
 import { useGetMyCardsQuery } from '../../features/cards/cards.api';
 import CardsTable from '../../features/cards/CardsTable';
 import { createCardButton } from '../../features/cards/CreateCardModal';
@@ -10,11 +10,9 @@ import { Role } from '../../common/constants';
 export default function MyCards() {
   const [page, setPage] = useState(1);
 
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState<ISearch>({ user: '', name: '' });
 
-  const [debounced] = useDebouncedValue(search, 300);
-
-  const response = useGetMyCardsQuery({ page, search: debounced });
+  const response = useGetMyCardsQuery({ page, search });
 
   const links = [
     { label: 'All', to: '../all', disabled: isUserNotHasRole(Role.BANKER) },

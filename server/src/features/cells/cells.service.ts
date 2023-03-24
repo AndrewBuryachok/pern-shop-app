@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, SelectQueryBuilder } from 'typeorm';
+import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { Cell } from './cell.entity';
 import { StoragesService } from '../storages/storages.service';
 import { PaymentsService } from '../payments/payments.service';
@@ -22,9 +22,15 @@ export class CellsService {
 
   async getMainCells(req: Request): Promise<Response<Cell>> {
     const [result, count] = await this.getCellsQueryBuilder(req)
-      .andWhere('(cell.reservedAt IS NULL OR cell.reservedAt < :date)', {
-        date: getDateWeekAgo(),
-      })
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where('cell.reservedAt IS NULL')
+            .orWhere('cell.reservedAt < :date', {
+              date: getDateWeekAgo(),
+            }),
+        ),
+      )
       .getManyAndCount();
     return { result, count };
   }
@@ -74,9 +80,13 @@ export class CellsService {
     const cell = await this.cellsRepository
       .createQueryBuilder('cell')
       .innerJoinAndSelect('cell.storage', 'storage')
-      .where(
-        'storage.id = :storageId AND (cell.reservedAt IS NULL OR cell.reservedAt < :reservedAt)',
-        { storageId, reservedAt: getDateWeekAgo() },
+      .where('storage.id = :storageId', { storageId })
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where('cell.reservedAt IS NULL')
+            .orWhere('cell.reservedAt < :date', { date: getDateWeekAgo() }),
+        ),
       )
       .getOne();
     if (!cell) {
@@ -112,9 +122,14 @@ export class CellsService {
       .innerJoin('cell.storage', 'storage')
       .innerJoin('storage.card', 'ownerCard')
       .innerJoin('ownerCard.user', 'ownerUser')
-      .where('ownerUser.name ILIKE :search', {
-        search: `%${req.search || ''}%`,
-      })
+      .where(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.user}`)
+            .orWhere('ownerUser.id = :userId', { userId: req.user }),
+        ),
+      )
+      .andWhere('storage.name ILIKE :name', { name: `%${req.name}%` })
       .orderBy('cell.id', 'DESC')
       .skip(req.skip)
       .take(req.take)

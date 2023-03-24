@@ -1,16 +1,20 @@
 import { useState } from 'react';
-import { useDebouncedValue } from '@mantine/hooks';
+import { ISearch } from '../../common/interfaces';
 import { useGetAllLeasesQuery } from '../../features/leases/leases.api';
 import LeasesTable from '../../features/leases/LeasesTable';
 
 export default function AllLeases() {
   const [page, setPage] = useState(1);
 
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState<ISearch>({
+    user: '',
+    filters: ['Mode', 'Renter', 'Lessor'].map((label, index) => ({
+      label,
+      value: !!index,
+    })),
+  });
 
-  const [debounced] = useDebouncedValue(search, 300);
-
-  const response = useGetAllLeasesQuery({ page, search: debounced });
+  const response = useGetAllLeasesQuery({ page, search });
 
   const links = [{ label: 'My', to: '../my' }];
 

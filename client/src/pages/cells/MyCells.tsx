@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useDebouncedValue } from '@mantine/hooks';
+import { ISearch } from '../../common/interfaces';
 import { useGetMyCellsQuery } from '../../features/cells/cells.api';
 import CellsTable from '../../features/cells/CellsTable';
 import { createCellButton } from '../../features/cells/CreateCellModal';
@@ -9,11 +9,9 @@ import { Role } from '../../common/constants';
 export default function MyCells() {
   const [page, setPage] = useState(1);
 
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState<ISearch>({ user: '', name: '' });
 
-  const [debounced] = useDebouncedValue(search, 300);
-
-  const response = useGetMyCellsQuery({ page, search: debounced });
+  const response = useGetMyCellsQuery({ page, search });
 
   const links = [
     { label: 'Main', to: '..' },

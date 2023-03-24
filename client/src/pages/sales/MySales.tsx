@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useDebouncedValue } from '@mantine/hooks';
+import { ISearch } from '../../common/interfaces';
 import { useGetMySalesQuery } from '../../features/sales/sales.api';
 import SalesTable from '../../features/sales/SalesTable';
 import { isUserNotHasRole } from '../../common/utils';
@@ -8,11 +8,17 @@ import { Role } from '../../common/constants';
 export default function MySales() {
   const [page, setPage] = useState(1);
 
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState<ISearch>({
+    user: '',
+    filters: ['Mode', 'Buyer', 'Seller', 'Owner'].map((label, index) => ({
+      label,
+      value: !!index,
+    })),
+    item: '',
+    description: '',
+  });
 
-  const [debounced] = useDebouncedValue(search, 300);
-
-  const response = useGetMySalesQuery({ page, search: debounced });
+  const response = useGetMySalesQuery({ page, search });
 
   const links = [
     { label: 'All', to: '../all', disabled: isUserNotHasRole(Role.MANAGER) },

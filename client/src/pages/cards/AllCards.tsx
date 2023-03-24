@@ -1,16 +1,14 @@
 import { useState } from 'react';
-import { useDebouncedValue } from '@mantine/hooks';
+import { ISearch } from '../../common/interfaces';
 import { useGetAllCardsQuery } from '../../features/cards/cards.api';
 import CardsTable from '../../features/cards/CardsTable';
 
 export default function AllCards() {
   const [page, setPage] = useState(1);
 
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState<ISearch>({ user: '', name: '' });
 
-  const [debounced] = useDebouncedValue(search, 300);
-
-  const response = useGetAllCardsQuery({ page, search: debounced });
+  const response = useGetAllCardsQuery({ page, search });
 
   const links = [{ label: 'My', to: '../my' }];
 

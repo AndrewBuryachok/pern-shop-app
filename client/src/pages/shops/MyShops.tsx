@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useDebouncedValue } from '@mantine/hooks';
+import { ISearch } from '../../common/interfaces';
 import { useGetMyShopsQuery } from '../../features/shops/shops.api';
 import ShopsTable from '../../features/shops/ShopsTable';
 import { createShopButton } from '../../features/shops/CreateShopModal';
@@ -10,11 +10,9 @@ import { Role } from '../../common/constants';
 export default function MyShops() {
   const [page, setPage] = useState(1);
 
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState<ISearch>({ user: '', name: '' });
 
-  const [debounced] = useDebouncedValue(search, 300);
-
-  const response = useGetMyShopsQuery({ page, search: debounced });
+  const response = useGetMyShopsQuery({ page, search });
 
   const links = [
     { label: 'Main', to: '..' },

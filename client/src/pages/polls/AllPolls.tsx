@@ -1,16 +1,14 @@
 import { useState } from 'react';
-import { useDebouncedValue } from '@mantine/hooks';
+import { ISearch } from '../../common/interfaces';
 import { useGetAllPollsQuery } from '../../features/polls/polls.api';
 import PollsTable from '../../features/polls/PollsTable';
 
 export default function AllPolls() {
   const [page, setPage] = useState(1);
 
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState<ISearch>({ user: '', description: '' });
 
-  const [debounced] = useDebouncedValue(search, 300);
-
-  const response = useGetAllPollsQuery({ page, search: debounced });
+  const response = useGetAllPollsQuery({ page, search });
 
   const links = [
     { label: 'Main', to: '..' },

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useDebouncedValue } from '@mantine/hooks';
+import { ISearch } from '../../common/interfaces';
 import { useGetMyUsersQuery } from '../../features/users/users.api';
 import UsersTable from '../../features/users/UsersTable';
 import { addCityUserButton } from '../../features/users/AddCityUserModal';
@@ -10,11 +10,9 @@ import { Role } from '../../common/constants';
 export default function MyUsers() {
   const [page, setPage] = useState(1);
 
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState<ISearch>({ user: '', name: '' });
 
-  const [debounced] = useDebouncedValue(search, 300);
-
-  const response = useGetMyUsersQuery({ page, search: debounced });
+  const response = useGetMyUsersQuery({ page, search });
 
   const links = [
     { label: 'Main', to: '..' },

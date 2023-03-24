@@ -1,6 +1,6 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, SelectQueryBuilder } from 'typeorm';
+import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { User } from './user.entity';
 import { CitiesService } from '../cities/cities.service';
 import {
@@ -236,7 +236,14 @@ export class UsersService {
     return this.usersRepository
       .createQueryBuilder('user')
       .leftJoin('user.city', 'city')
-      .where('user.name ILIKE :search', { search: `%${req.search || ''}%` })
+      .where(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.user}`)
+            .orWhere('user.id = :userId', { userId: req.user }),
+        ),
+      )
+      .andWhere('user.name ILIKE :name', { name: `%${req.name}%` })
       .orderBy('user.status', 'DESC')
       .addOrderBy('user.id', 'DESC')
       .skip(req.skip)

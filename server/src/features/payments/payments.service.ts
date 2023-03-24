@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, SelectQueryBuilder } from 'typeorm';
+import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { Payment } from './payment.entity';
 import { CardsService } from '../cards/cards.service';
 import { ExtCreatePaymentDto } from './payment.dto';
@@ -18,7 +18,12 @@ export class PaymentsService {
 
   async getMyPayments(myId: number, req: Request): Promise<Response<Payment>> {
     const [result, count] = await this.getPaymentsQueryBuilder(req)
-      .andWhere('(senderUser.id = :myId OR receiverUser.id = :myId)', { myId })
+      .andWhere(
+        new Brackets((qb) =>
+          qb.where('senderUser.id = :myId').orWhere('receiverUser.id = :myId'),
+        ),
+        { myId },
+      )
       .getManyAndCount();
     return { result, count };
   }
@@ -65,9 +70,56 @@ export class PaymentsService {
       .innerJoin('payment.receiverCard', 'receiverCard')
       .innerJoin('receiverCard.user', 'receiverUser')
       .where(
-        '(senderUser.name ILIKE :search OR receiverUser.name ILIKE :search)',
-        { search: `%${req.search || ''}%` },
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.user}`)
+            .orWhere(
+              new Brackets((qb) =>
+                qb
+                  .where(`${req.mode}`)
+                  .andWhere(
+                    `senderUser.id ${
+                      req.filters.includes('sender') ? '=' : '!='
+                    } :userId`,
+                  )
+                  .andWhere(
+                    `receiverUser.id ${
+                      req.filters.includes('receiver') ? '=' : '!='
+                    } :userId`,
+                  ),
+              ),
+            )
+            .orWhere(
+              new Brackets((qb) =>
+                qb
+                  .where(`${!req.mode}`)
+                  .andWhere(
+                    new Brackets((qb) =>
+                      qb
+                        .where(
+                          new Brackets((qb) =>
+                            qb
+                              .where(`${req.filters.includes('sender')}`)
+                              .andWhere('senderUser.id = :userId'),
+                          ),
+                        )
+                        .orWhere(
+                          new Brackets((qb) =>
+                            qb
+                              .where(`${req.filters.includes('receiver')}`)
+                              .andWhere('receiverUser.id = :userId'),
+                          ),
+                        ),
+                    ),
+                  ),
+              ),
+            ),
+        ),
+        { userId: req.user },
       )
+      .andWhere('payment.description ILIKE :description', {
+        description: `%${req.description}%`,
+      })
       .orderBy('payment.id', 'DESC')
       .skip(req.skip)
       .take(req.take)

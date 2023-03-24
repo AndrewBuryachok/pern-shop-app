@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, SelectQueryBuilder } from 'typeorm';
+import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { Product } from './product.entity';
 import { CellsService } from '../cells/cells.service';
 import { PaymentsService } from '../payments/payments.service';
@@ -37,16 +37,20 @@ export class ProductsService {
 
   async getMainProducts(req: Request): Promise<Response<Product>> {
     const [result, count] = await this.getProductsQueryBuilder(req)
-      .andWhere('product.amount > 0 AND product.createdAt > :createdAt', {
-        createdAt: getDateWeekAgo(),
-      })
+      .andWhere('product.amount > 0')
+      .andWhere('product.createdAt > :date', { date: getDateWeekAgo() })
       .getManyAndCount();
     return { result, count };
   }
 
   async getMyProducts(myId: number, req: Request): Promise<Response<Product>> {
     const [result, count] = await this.getProductsQueryBuilder(req)
-      .andWhere('(ownerUser.id = :myId OR sellerUser.id = :myId)', { myId })
+      .andWhere(
+        new Brackets((qb) =>
+          qb.where('sellerUser.id = :myId').orWhere('ownerUser.id = :myId'),
+        ),
+        { myId },
+      )
       .getManyAndCount();
     return { result, count };
   }
@@ -121,9 +125,63 @@ export class ProductsService {
       .innerJoin('product.card', 'sellerCard')
       .innerJoin('sellerCard.user', 'sellerUser')
       .where(
-        '(ownerUser.name ILIKE :search OR sellerUser.name ILIKE :search)',
-        { search: `%${req.search || ''}%` },
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.user}`)
+            .orWhere(
+              new Brackets((qb) =>
+                qb
+                  .where(`${req.mode}`)
+                  .andWhere(
+                    `sellerUser.id ${
+                      req.filters.includes('seller') ? '=' : '!='
+                    } :userId`,
+                  )
+                  .andWhere(
+                    `ownerUser.id ${
+                      req.filters.includes('owner') ? '=' : '!='
+                    } :userId`,
+                  ),
+              ),
+            )
+            .orWhere(
+              new Brackets((qb) =>
+                qb
+                  .where(`${!req.mode}`)
+                  .andWhere(
+                    new Brackets((qb) =>
+                      qb
+                        .where(
+                          new Brackets((qb) =>
+                            qb
+                              .where(`${req.filters.includes('seller')}`)
+                              .andWhere('sellerUser.id = :userId'),
+                          ),
+                        )
+                        .orWhere(
+                          new Brackets((qb) =>
+                            qb
+                              .where(`${req.filters.includes('owner')}`)
+                              .andWhere('ownerUser.id = :userId'),
+                          ),
+                        ),
+                    ),
+                  ),
+              ),
+            ),
+        ),
+        { userId: req.user },
       )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.item}`)
+            .orWhere('product.item = :item', { item: req.item }),
+        ),
+      )
+      .andWhere('product.description ILIKE :description', {
+        description: `%${req.description}%`,
+      })
       .orderBy('product.id', 'DESC')
       .skip(req.skip)
       .take(req.take)

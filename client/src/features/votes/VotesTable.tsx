@@ -13,7 +13,7 @@ type Props = ITableWithActions<Vote>;
 export default function VotesTable({ actions = [], ...props }: Props) {
   return (
     <CustomTable
-      minWidth={800}
+      minWidth={1000}
       columns={['Voter', 'Poller', 'Description', 'Vote', 'Created', 'Action']}
       {...props}
     >

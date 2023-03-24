@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, SelectQueryBuilder } from 'typeorm';
+import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { Exchange } from './exchange.entity';
 import { CardsService } from '../cards/cards.service';
 import { ExtCreateExchangeDto } from './exchange.dto';
@@ -21,9 +21,14 @@ export class ExchangesService {
     req: Request,
   ): Promise<Response<Exchange>> {
     const [result, count] = await this.getExchangesQueryBuilder(req)
-      .andWhere('(executorUser.id = :myId OR customerUser.id = :myId)', {
-        myId,
-      })
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where('executorUser.id = :myId')
+            .orWhere('customerUser.id = :myId'),
+        ),
+        { myId },
+      )
       .getManyAndCount();
     return { result, count };
   }
@@ -63,8 +68,59 @@ export class ExchangesService {
       .innerJoin('exchange.customerCard', 'customerCard')
       .innerJoin('customerCard.user', 'customerUser')
       .where(
-        '(executorUser.name ILIKE :search OR customerUser.name ILIKE :search)',
-        { search: `%${req.search || ''}%` },
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.user}`)
+            .orWhere(
+              new Brackets((qb) =>
+                qb
+                  .where(`${req.mode}`)
+                  .andWhere(
+                    `executorUser.id ${
+                      req.filters.includes('executor') ? '=' : '!='
+                    } :userId`,
+                  )
+                  .andWhere(
+                    `customerUser.id ${
+                      req.filters.includes('customer') ? '=' : '!='
+                    } :userId`,
+                  ),
+              ),
+            )
+            .orWhere(
+              new Brackets((qb) =>
+                qb
+                  .where(`${!req.mode}`)
+                  .andWhere(
+                    new Brackets((qb) =>
+                      qb
+                        .where(
+                          new Brackets((qb) =>
+                            qb
+                              .where(`${req.filters.includes('executor')}`)
+                              .andWhere('executorUser.id = :userId'),
+                          ),
+                        )
+                        .orWhere(
+                          new Brackets((qb) =>
+                            qb
+                              .where(`${req.filters.includes('customer')}`)
+                              .andWhere('customerUser.id = :userId'),
+                          ),
+                        ),
+                    ),
+                  ),
+              ),
+            ),
+        ),
+        { userId: req.user },
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.type}`)
+            .orWhere('exchange.type = :type', { type: req.type === 1 }),
+        ),
       )
       .orderBy('exchange.id', 'DESC')
       .skip(req.skip)

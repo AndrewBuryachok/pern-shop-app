@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, SelectQueryBuilder } from 'typeorm';
+import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { Vote } from './vote.entity';
 import { PollsService } from '../polls/polls.service';
 import { ExtCreateVoteDto } from './vote.dto';
@@ -18,7 +18,12 @@ export class VotesService {
 
   async getMyVotes(myId: number, req: Request): Promise<Response<Vote>> {
     const [result, count] = await this.getVotesQueryBuilder(req)
-      .andWhere('(voterUser.id = :myId OR pollerUser.id = :myId)', { myId })
+      .andWhere(
+        new Brackets((qb) =>
+          qb.where('voterUser.id = :myId').orWhere('pollerUser.id = :myId'),
+        ),
+        { myId },
+      )
       .getManyAndCount();
     return { result, count };
   }
@@ -82,8 +87,62 @@ export class VotesService {
       .innerJoin('poll.user', 'pollerUser')
       .innerJoin('vote.user', 'voterUser')
       .where(
-        '(voterUser.name ILIKE :search OR pollerUser.name ILIKE :search)',
-        { search: `%${req.search || ''}%` },
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.user}`)
+            .orWhere(
+              new Brackets((qb) =>
+                qb
+                  .where(`${req.mode}`)
+                  .andWhere(
+                    `voterUser.id ${
+                      req.filters.includes('voter') ? '=' : '!='
+                    } :userId`,
+                  )
+                  .andWhere(
+                    `pollerUser.id ${
+                      req.filters.includes('poller') ? '=' : '!='
+                    } :userId`,
+                  ),
+              ),
+            )
+            .orWhere(
+              new Brackets((qb) =>
+                qb
+                  .where(`${!req.mode}`)
+                  .andWhere(
+                    new Brackets((qb) =>
+                      qb
+                        .where(
+                          new Brackets((qb) =>
+                            qb
+                              .where(`${req.filters.includes('voter')}`)
+                              .andWhere('voterUser.id = :userId'),
+                          ),
+                        )
+                        .orWhere(
+                          new Brackets((qb) =>
+                            qb
+                              .where(`${req.filters.includes('poller')}`)
+                              .andWhere('pollerUser.id = :userId'),
+                          ),
+                        ),
+                    ),
+                  ),
+              ),
+            ),
+        ),
+        { userId: req.user },
+      )
+      .andWhere('poll.description ILIKE :description', {
+        description: `%${req.description}%`,
+      })
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.type}`)
+            .orWhere('vote.type = :type', { type: req.type === 1 }),
+        ),
       )
       .orderBy('vote.id', 'DESC')
       .skip(req.skip)

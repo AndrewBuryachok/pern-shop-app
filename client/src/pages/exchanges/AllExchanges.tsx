@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useDebouncedValue } from '@mantine/hooks';
+import { ISearch } from '../../common/interfaces';
 import { useGetAllExchangesQuery } from '../../features/exchanges/exchanges.api';
 import ExchangesTable from '../../features/exchanges/ExchangesTable';
 import { createExchangeButton } from '../../features/exchanges/CreateExchangeModal';
@@ -7,11 +7,16 @@ import { createExchangeButton } from '../../features/exchanges/CreateExchangeMod
 export default function AllExchanges() {
   const [page, setPage] = useState(1);
 
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState<ISearch>({
+    user: '',
+    filters: ['Mode', 'Executor', 'Customer'].map((label, index) => ({
+      label,
+      value: !!index,
+    })),
+    type: '',
+  });
 
-  const [debounced] = useDebouncedValue(search, 300);
-
-  const response = useGetAllExchangesQuery({ page, search: debounced });
+  const response = useGetAllExchangesQuery({ page, search });
 
   const links = [{ label: 'My', to: '../my' }];
 

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useDebouncedValue } from '@mantine/hooks';
+import { ISearch } from '../../common/interfaces';
 import { useGetMyVotesQuery } from '../../features/votes/votes.api';
 import VotesTable from '../../features/votes/VotesTable';
 import { isUserNotHasRole } from '../../common/utils';
@@ -8,11 +8,17 @@ import { Role } from '../../common/constants';
 export default function MyVotes() {
   const [page, setPage] = useState(1);
 
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState<ISearch>({
+    user: '',
+    filters: ['Mode', 'Voter', 'Poller'].map((label, index) => ({
+      label,
+      value: !!index,
+    })),
+    description: '',
+    type: '',
+  });
 
-  const [debounced] = useDebouncedValue(search, 300);
-
-  const response = useGetMyVotesQuery({ page, search: debounced });
+  const response = useGetMyVotesQuery({ page, search });
 
   const links = [
     { label: 'All', to: '../all', disabled: isUserNotHasRole(Role.ADMIN) },

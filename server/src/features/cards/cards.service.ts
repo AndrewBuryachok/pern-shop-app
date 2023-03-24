@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, SelectQueryBuilder } from 'typeorm';
+import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { Card } from './card.entity';
 import {
   ExtCreateCardDto,
@@ -153,9 +153,14 @@ export class CardsService {
     return this.cardsRepository
       .createQueryBuilder('card')
       .innerJoin('card.user', 'ownerUser')
-      .where('ownerUser.name ILIKE :search', {
-        search: `%${req.search || ''}%`,
-      })
+      .where(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.user}`)
+            .orWhere('ownerUser.id = :userId', { userId: req.user }),
+        ),
+      )
+      .andWhere('card.name ILIKE :name', { name: `%${req.name}%` })
       .orderBy('card.id', 'DESC')
       .skip(req.skip)
       .take(req.take)

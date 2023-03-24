@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useDebouncedValue } from '@mantine/hooks';
+import { ISearch } from '../../common/interfaces';
 import { useGetMyMarketsQuery } from '../../features/markets/markets.api';
 import MarketsTable from '../../features/markets/MarketsTable';
 import { createMarketButton } from '../../features/markets/CreateMarketModal';
@@ -10,11 +10,9 @@ import { Role } from '../../common/constants';
 export default function MyMarkets() {
   const [page, setPage] = useState(1);
 
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState<ISearch>({ user: '', name: '' });
 
-  const [debounced] = useDebouncedValue(search, 300);
-
-  const response = useGetMyMarketsQuery({ page, search: debounced });
+  const response = useGetMyMarketsQuery({ page, search });
 
   const links = [
     { label: 'Main', to: '..' },

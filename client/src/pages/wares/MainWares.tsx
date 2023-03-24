@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useDebouncedValue } from '@mantine/hooks';
+import { ISearch } from '../../common/interfaces';
 import { useGetMainWaresQuery } from '../../features/wares/wares.api';
 import WaresTable from '../../features/wares/WaresTable';
 import { buyWareAction } from '../../features/wares/BuyWareModal';
@@ -9,11 +9,17 @@ import { Role } from '../../common/constants';
 export default function MainWares() {
   const [page, setPage] = useState(1);
 
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState<ISearch>({
+    user: '',
+    filters: ['Mode', 'Seller', 'Owner'].map((label, index) => ({
+      label,
+      value: !!index,
+    })),
+    item: '',
+    description: '',
+  });
 
-  const [debounced] = useDebouncedValue(search, 300);
-
-  const response = useGetMainWaresQuery({ page, search: debounced });
+  const response = useGetMainWaresQuery({ page, search });
 
   const links = [
     { label: 'My', to: 'my' },

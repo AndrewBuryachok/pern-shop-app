@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, SelectQueryBuilder } from 'typeorm';
+import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { Poll } from './poll.entity';
 import { CompletePollDto, DeletePollDto, ExtCreatePollDto } from './poll.dto';
 import { Request, Response } from '../../common/interfaces';
@@ -129,8 +129,15 @@ export class PollsService {
         'myVote.userId = :myId',
         { myId },
       )
-      .where('pollerUser.name ILIKE :search', {
-        search: `%${req.search || ''}%`,
+      .where(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.user}`)
+            .orWhere('pollerUser.id = :userId', { userId: req.user }),
+        ),
+      )
+      .andWhere('poll.description ILIKE :description', {
+        description: `%${req.description}%`,
       })
       .orderBy('poll.id', 'DESC')
       .skip(req.skip)

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, SelectQueryBuilder } from 'typeorm';
+import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { Good } from './good.entity';
 import { ShopsService } from '../shops/shops.service';
 import { DeleteGoodDto, ExtCreateGoodDto, ExtEditGoodDto } from './good.dto';
@@ -128,8 +128,22 @@ export class GoodsService {
       .createQueryBuilder('good')
       .innerJoin('good.shop', 'shop')
       .innerJoin('shop.user', 'sellerUser')
-      .where('sellerUser.name ILIKE :search', {
-        search: `%${req.search || ''}%`,
+      .where(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.user}`)
+            .orWhere('sellerUser.id = :userId', { userId: req.user }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.item}`)
+            .orWhere('good.item = :item', { item: req.item }),
+        ),
+      )
+      .andWhere('good.description ILIKE :description', {
+        description: `%${req.description}%`,
       })
       .orderBy('good.id', 'DESC')
       .skip(req.skip)

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useDebouncedValue } from '@mantine/hooks';
+import { ISearch } from '../../common/interfaces';
 import { useGetMyCitiesQuery } from '../../features/cities/cities.api';
 import CitiesTable from '../../features/cities/CitiesTable';
 import { createCityButton } from '../../features/cities/CreateCityModal';
@@ -10,11 +10,9 @@ import { Role } from '../../common/constants';
 export default function MyCities() {
   const [page, setPage] = useState(1);
 
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState<ISearch>({ user: '', name: '' });
 
-  const [debounced] = useDebouncedValue(search, 300);
-
-  const response = useGetMyCitiesQuery({ page, search: debounced });
+  const response = useGetMyCitiesQuery({ page, search });
 
   const links = [
     { label: 'Main', to: '..' },

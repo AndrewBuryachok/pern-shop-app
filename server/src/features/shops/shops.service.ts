@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, SelectQueryBuilder } from 'typeorm';
+import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { Shop } from './shop.entity';
 import { ExtCreateShopDto, ExtEditShopDto } from './shop.dto';
 import { Request, Response } from '../../common/interfaces';
@@ -149,9 +149,14 @@ export class ShopsService {
     return this.shopsRepository
       .createQueryBuilder('shop')
       .innerJoin('shop.user', 'ownerUser')
-      .where('ownerUser.name ILIKE :search', {
-        search: `%${req.search || ''}%`,
-      })
+      .where(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.user}`)
+            .orWhere('ownerUser.id = :userId', { userId: req.user }),
+        ),
+      )
+      .andWhere('shop.name ILIKE :name', { name: `%${req.name}%` })
       .orderBy('shop.id', 'DESC')
       .skip(req.skip)
       .take(req.take)

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, SelectQueryBuilder } from 'typeorm';
+import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { Store } from './store.entity';
 import { MarketsService } from '../markets/markets.service';
 import { PaymentsService } from '../payments/payments.service';
@@ -22,9 +22,15 @@ export class StoresService {
 
   async getMainStores(req: Request): Promise<Response<Store>> {
     const [result, count] = await this.getStoresQueryBuilder(req)
-      .andWhere('(store.reservedAt IS NULL OR store.reservedAt < :date)', {
-        date: getDateWeekAgo(),
-      })
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where('store.reservedAt IS NULL')
+            .orWhere('store.reservedAt < :date', {
+              date: getDateWeekAgo(),
+            }),
+        ),
+      )
       .getManyAndCount();
     return { result, count };
   }
@@ -77,9 +83,13 @@ export class StoresService {
     const store = await this.storesRepository
       .createQueryBuilder('store')
       .innerJoinAndSelect('store.market', 'market')
-      .where(
-        'store.id = :storeId AND (store.reservedAt IS NULL OR store.reservedAt < :reservedAt)',
-        { storeId, reservedAt: getDateWeekAgo() },
+      .where('store.id = :storeId', { storeId })
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where('store.reservedAt IS NULL')
+            .orWhere('store.reservedAt < :date', { date: getDateWeekAgo() }),
+        ),
       )
       .getOne();
     if (!store) {
@@ -115,9 +125,14 @@ export class StoresService {
       .innerJoin('store.market', 'market')
       .innerJoin('market.card', 'ownerCard')
       .innerJoin('ownerCard.user', 'ownerUser')
-      .where('ownerUser.name ILIKE :search', {
-        search: `%${req.search || ''}%`,
-      })
+      .where(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.user}`)
+            .orWhere('ownerUser.id = :userId', { userId: req.user }),
+        ),
+      )
+      .andWhere('market.name ILIKE :name', { name: `%${req.name}%` })
       .orderBy('store.id', 'DESC')
       .skip(req.skip)
       .take(req.take)

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, SelectQueryBuilder } from 'typeorm';
+import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { Market } from './market.entity';
 import { CardsService } from '../cards/cards.service';
 import { ExtCreateMarketDto, ExtEditMarketDto } from './market.dto';
@@ -156,9 +156,14 @@ export class MarketsService {
       .createQueryBuilder('market')
       .innerJoin('market.card', 'ownerCard')
       .innerJoin('ownerCard.user', 'ownerUser')
-      .where('ownerUser.name ILIKE :search', {
-        search: `%${req.search || ''}%`,
-      })
+      .where(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.user}`)
+            .orWhere('ownerUser.id = :userId', { userId: req.user }),
+        ),
+      )
+      .andWhere('market.name ILIKE :name', { name: `%${req.name}%` })
       .orderBy('market.id', 'DESC')
       .skip(req.skip)
       .take(req.take)

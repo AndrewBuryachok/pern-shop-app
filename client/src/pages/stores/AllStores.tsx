@@ -1,16 +1,14 @@
 import { useState } from 'react';
-import { useDebouncedValue } from '@mantine/hooks';
+import { ISearch } from '../../common/interfaces';
 import { useGetAllStoresQuery } from '../../features/stores/stores.api';
 import StoresTable from '../../features/stores/StoresTable';
 
 export default function AllStores() {
   const [page, setPage] = useState(1);
 
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState<ISearch>({ user: '', name: '' });
 
-  const [debounced] = useDebouncedValue(search, 300);
-
-  const response = useGetAllStoresQuery({ page, search: debounced });
+  const response = useGetAllStoresQuery({ page, search });
 
   const links = [
     { label: 'Main', to: '..' },

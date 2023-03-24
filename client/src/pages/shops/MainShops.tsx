@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useDebouncedValue } from '@mantine/hooks';
+import { ISearch } from '../../common/interfaces';
 import { useGetMainShopsQuery } from '../../features/shops/shops.api';
 import ShopsTable from '../../features/shops/ShopsTable';
 import { isUserNotHasRole } from '../../common/utils';
@@ -8,11 +8,9 @@ import { Role } from '../../common/constants';
 export default function MainShops() {
   const [page, setPage] = useState(1);
 
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState<ISearch>({ user: '', name: '' });
 
-  const [debounced] = useDebouncedValue(search, 300);
-
-  const response = useGetMainShopsQuery({ page, search: debounced });
+  const response = useGetMainShopsQuery({ page, search });
 
   const links = [
     { label: 'My', to: 'my' },

@@ -1,16 +1,20 @@
 import { useState } from 'react';
-import { useDebouncedValue } from '@mantine/hooks';
+import { ISearch } from '../../common/interfaces';
 import { useGetAllRentsQuery } from '../../features/rents/rents.api';
 import RentsTable from '../../features/rents/RentsTable';
 
 export default function AllRents() {
   const [page, setPage] = useState(1);
 
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState<ISearch>({
+    user: '',
+    filters: ['Mode', 'Renter', 'Lessor'].map((label, index) => ({
+      label,
+      value: !!index,
+    })),
+  });
 
-  const [debounced] = useDebouncedValue(search, 300);
-
-  const response = useGetAllRentsQuery({ page, search: debounced });
+  const response = useGetAllRentsQuery({ page, search });
 
   const links = [{ label: 'My', to: '../my' }];
 
