@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import {
   Avatar,
   Burger,
@@ -6,6 +7,7 @@ import {
   MediaQuery,
   Menu,
   Title,
+  Tooltip,
   useMantineColorScheme,
 } from '@mantine/core';
 import {
@@ -14,6 +16,7 @@ import {
   IconLogout,
   IconMoon,
   IconSun,
+  IconUser,
 } from '@tabler/icons';
 import { useAppDispatch } from '../../app/hooks';
 import {
@@ -53,18 +56,25 @@ export default function CustomHeader(props: Props) {
         <Title order={1}>Shop</Title>
         <Menu offset={4} position='bottom-end'>
           <Menu.Target>
-            <Avatar
-              size={32}
-              color='violet'
-              src={
-                user?.name &&
-                `${import.meta.env.VITE_AVATAR_URL}${
-                  import.meta.env.VITE_HEAD_ROUTE
-                }${user.name}`
-              }
-              alt={user?.name}
-              style={{ cursor: 'pointer' }}
-            />
+            <Tooltip
+              label={user?.name}
+              hidden={!user}
+              position='left'
+              withArrow
+            >
+              <Avatar
+                size={32}
+                color='violet'
+                src={
+                  user?.name &&
+                  `${import.meta.env.VITE_AVATAR_URL}${
+                    import.meta.env.VITE_HEAD_ROUTE
+                  }${user.name}`
+                }
+                alt={user?.name}
+                style={{ cursor: 'pointer' }}
+              />
+            </Tooltip>
           </Menu.Target>
           <Menu.Dropdown>
             <Menu.Label>Settings</Menu.Label>
@@ -77,6 +87,13 @@ export default function CustomHeader(props: Props) {
             <Menu.Label>Account</Menu.Label>
             {user ? (
               <>
+                <Menu.Item
+                  icon={<IconUser size={14} />}
+                  component={Link}
+                  to={`/users/${user.id}`}
+                >
+                  Profile
+                </Menu.Item>
                 <Menu.Item
                   icon={<IconLock size={14} />}
                   onClick={openUpdatePasswordModal}
