@@ -10,7 +10,10 @@ import {
   Tooltip,
   useMantineColorScheme,
 } from '@mantine/core';
+import { useFullscreen } from '@mantine/hooks';
 import {
+  IconArrowsMaximize,
+  IconArrowsMinimize,
   IconLock,
   IconLogin,
   IconLogout,
@@ -35,6 +38,7 @@ type Props = {
 export default function CustomHeader(props: Props) {
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
   const dark = colorScheme === 'dark';
+  const { fullscreen, toggle: toggleFullscreen } = useFullscreen();
 
   const dispatch = useAppDispatch();
 
@@ -83,6 +87,18 @@ export default function CustomHeader(props: Props) {
               onClick={() => toggleColorScheme()}
             >
               {dark ? 'Light' : 'Dark'} theme
+            </Menu.Item>
+            <Menu.Item
+              icon={
+                fullscreen ? (
+                  <IconArrowsMinimize size={14} />
+                ) : (
+                  <IconArrowsMaximize size={14} />
+                )
+              }
+              onClick={() => toggleFullscreen()}
+            >
+              {fullscreen ? 'Exit' : 'Enter'} fullscreen
             </Menu.Item>
             <Menu.Label>Account</Menu.Label>
             {user ? (

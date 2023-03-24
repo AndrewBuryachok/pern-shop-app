@@ -8,6 +8,7 @@ import {
 } from '@mantine/core';
 import {
   useColorScheme,
+  useFullscreen,
   useHotkeys,
   useLocalStorage,
   useToggle,
@@ -32,7 +33,12 @@ export default function App() {
   const toggleColorScheme = (value?: ColorScheme) =>
     setColorScheme(value || (colorScheme === 'dark' ? 'light' : 'dark'));
 
-  useHotkeys([['mod+J', () => toggleColorScheme()]]);
+  const { toggle: toggleFullscreen } = useFullscreen();
+
+  useHotkeys([
+    ['J', () => toggleColorScheme()],
+    ['F', () => toggleFullscreen()],
+  ]);
 
   const [opened, toggle] = useToggle();
 
