@@ -10,7 +10,7 @@ import {
 } from '@mantine/core';
 import { useDocumentTitle } from '@mantine/hooks';
 import { useForm } from '@mantine/form';
-import { IconSearch } from '@tabler/icons';
+import { IconRefresh, IconSearch } from '@tabler/icons';
 import { IHead, ISearch } from '../interfaces';
 import { useSelectAllUsersQuery } from '../../features/users/users.api';
 import CustomForm from './CustomForm';
@@ -61,6 +61,14 @@ export default function CustomHead(props: Props) {
   return (
     <Group position='apart' spacing={8}>
       <Title order={3}>{props.title}</Title>
+      <Button
+        leftIcon={<IconRefresh size={16} />}
+        loading={props.isFetching}
+        onClick={props.refetch}
+        compact
+      >
+        Refresh
+      </Button>
       <Menu offset={4} position='bottom-end'>
         <Menu.Target>
           <Button leftIcon={<IconSearch size={16} />} compact>
