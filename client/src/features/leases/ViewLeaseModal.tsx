@@ -42,7 +42,7 @@ export default function ViewLeaseModal({ data: lease }: Props) {
       />
       <Select
         label='Products'
-        placeholder='Products'
+        placeholder={`Total: ${lease.products.length}`}
         itemComponent={ThingsItem}
         data={viewThings(lease.products)}
         searchable

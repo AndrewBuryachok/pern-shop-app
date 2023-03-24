@@ -24,7 +24,7 @@ export default function ViewStorageModal({ data: storage }: Props) {
       <TextInput label='Price' value={`${storage.price}$`} disabled />
       <Select
         label='Cells'
-        placeholder='Cells'
+        placeholder={`Total: ${storage.cells.length}`}
         data={viewContainers(storage.cells)}
         searchable
       />

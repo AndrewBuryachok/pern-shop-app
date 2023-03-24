@@ -24,7 +24,7 @@ export default function ViewShopModal({ data: shop }: Props) {
       <TextInput label='Y' value={shop.y} disabled />
       <Select
         label='Goods'
-        placeholder='Goods'
+        placeholder={`Total: ${shop.goods.length}`}
         itemComponent={ThingsItem}
         data={viewThings(shop.goods)}
         searchable

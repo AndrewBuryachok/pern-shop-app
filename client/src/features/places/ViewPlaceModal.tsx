@@ -29,7 +29,7 @@ export default function PlaceModal({ data: place }: Props) {
       {place.price && <TextInput label='Price' value={place.price} disabled />}
       <Select
         label={label}
-        placeholder={label}
+        placeholder={`Total: ${place.data.length}`}
         itemComponent={component}
         data={place.data}
         searchable

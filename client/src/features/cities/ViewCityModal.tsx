@@ -24,7 +24,7 @@ export default function ViewCityModal({ data: city }: Props) {
       <TextInput label='Y' value={city.y} disabled />
       <Select
         label='Users'
-        placeholder='Users'
+        placeholder={`Total: ${city.users.length}`}
         itemComponent={UsersItem}
         data={viewUsers(city.users)}
         searchable

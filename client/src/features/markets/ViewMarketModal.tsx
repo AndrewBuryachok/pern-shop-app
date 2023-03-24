@@ -24,7 +24,7 @@ export default function ViewMarketModal({ data: market }: Props) {
       <TextInput label='Price' value={`${market.price}$`} disabled />
       <Select
         label='Stores'
-        placeholder='Stores'
+        placeholder={`Total: ${market.stores.length}`}
         data={viewContainers(market.stores)}
         searchable
       />

@@ -42,7 +42,7 @@ export default function ViewRentModal({ data: rent }: Props) {
       />
       <Select
         label='Wares'
-        placeholder='Wares'
+        placeholder={`Total: ${rent.wares.length}`}
         itemComponent={ThingsItem}
         data={viewThings(rent.wares)}
         searchable

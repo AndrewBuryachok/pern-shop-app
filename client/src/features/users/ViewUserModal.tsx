@@ -20,7 +20,7 @@ export default function ViewUserModal({ data: user }: Props) {
       />
       <Select
         label='Roles'
-        placeholder='Roles'
+        placeholder={`Total: ${user.roles.length}`}
         data={viewRoles(user.roles)}
         searchable
       />
@@ -31,7 +31,7 @@ export default function ViewUserModal({ data: user }: Props) {
       />
       <Select
         label='Cards'
-        placeholder='Cards'
+        placeholder={`Total: ${user.cards.length}`}
         data={viewCards(user.cards)}
         searchable
       />
