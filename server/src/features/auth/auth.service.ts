@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/users.service';
 import { User } from '../users/user.entity';
-import { AuthDto } from './auth.dto';
+import { AuthDto, UpdatePasswordDto } from './auth.dto';
 import { Tokens } from './auth.interface';
 import { compareHash, hashData } from '../../common/utils';
 import { AppException } from '../../common/exceptions';
@@ -38,6 +38,15 @@ export class AuthService {
   async refresh(userId: number): Promise<Tokens> {
     const user = await this.usersService.findUserById(userId);
     return this.signTokens(user);
+  }
+
+  async updatePassword(userId: number, dto: UpdatePasswordDto): Promise<void> {
+    const user = await this.usersService.findUserById(userId);
+    if (!(await compareHash(dto.oldPassword, user.password))) {
+      throw new AppException(AuthError.INVALID_CREDENTIALS);
+    }
+    const hash = await hashData(dto.newPassword);
+    await this.usersService.updateUserPassword(user, hash);
   }
 
   private async signTokens(user: User): Promise<Tokens> {

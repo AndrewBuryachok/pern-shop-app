@@ -8,7 +8,13 @@ import {
   Title,
   useMantineColorScheme,
 } from '@mantine/core';
-import { IconLogin, IconLogout, IconMoon, IconSun } from '@tabler/icons';
+import {
+  IconLock,
+  IconLogin,
+  IconLogout,
+  IconMoon,
+  IconSun,
+} from '@tabler/icons';
 import { useAppDispatch } from '../../app/hooks';
 import {
   getCurrentUser,
@@ -16,6 +22,7 @@ import {
 } from '../../features/auth/auth.slice';
 import { useLogoutMutation } from '../../features/auth/auth.api';
 import { openAuthModal } from '../../features/auth/AuthModal';
+import { openUpdatePasswordModal } from '../../features/auth/UpdatePasswordModal';
 
 type Props = {
   opened: boolean;
@@ -41,11 +48,7 @@ export default function CustomHeader(props: Props) {
     <Header height={60} px='md'>
       <Group sx={{ height: '100%' }} position='apart'>
         <MediaQuery largerThan='sm' styles={{ display: 'none' }}>
-          <Burger
-            opened={props.opened}
-            onClick={() => props.toggle()}
-            size='sm'
-          />
+          <Burger opened={props.opened} onClick={props.toggle} size='sm' />
         </MediaQuery>
         <Title order={1}>Shop</Title>
         <Menu offset={4} position='bottom-end'>
@@ -73,9 +76,20 @@ export default function CustomHeader(props: Props) {
             </Menu.Item>
             <Menu.Label>Account</Menu.Label>
             {user ? (
-              <Menu.Item icon={<IconLogout size={14} />} onClick={handleSubmit}>
-                Logout
-              </Menu.Item>
+              <>
+                <Menu.Item
+                  icon={<IconLock size={14} />}
+                  onClick={openUpdatePasswordModal}
+                >
+                  Password
+                </Menu.Item>
+                <Menu.Item
+                  icon={<IconLogout size={14} />}
+                  onClick={handleSubmit}
+                >
+                  Logout
+                </Menu.Item>
+              </>
             ) : (
               <Menu.Item icon={<IconLogin size={14} />} onClick={openAuthModal}>
                 Login

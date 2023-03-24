@@ -1,7 +1,7 @@
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Patch, Post, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
-import { AuthDto } from './auth.dto';
+import { AuthDto, UpdatePasswordDto } from './auth.dto';
 import { Tokens } from './auth.interface';
 import { MyId, Public } from '../../common/decorators';
 import { RtGuard } from '../../common/guards';
@@ -33,5 +33,13 @@ export class AuthController {
   @Post('refresh')
   refresh(@MyId() myId: number): Promise<Tokens> {
     return this.authService.refresh(myId);
+  }
+
+  @Patch('password')
+  updatePassword(
+    @MyId() myId: number,
+    @Body() dto: UpdatePasswordDto,
+  ): Promise<void> {
+    return this.authService.updatePassword(myId, dto);
   }
 }

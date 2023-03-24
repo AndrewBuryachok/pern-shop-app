@@ -82,6 +82,10 @@ export class UsersService {
     await this.removeToken(user);
   }
 
+  async updateUserPassword(user: User, password: string): Promise<void> {
+    await this.updatePassword(user, password);
+  }
+
   async addUserRole(dto: ExtUpdateUserRolesDto): Promise<void> {
     const user = await this.usersRepository.findOneBy({ id: dto.userId });
     if (user.roles.includes(dto.role)) {
@@ -165,6 +169,15 @@ export class UsersService {
       await this.usersRepository.save(user);
     } catch (error) {
       throw new AppException(UserError.REMOVE_TOKEN_FAILED);
+    }
+  }
+
+  private async updatePassword(user: User, password: string): Promise<void> {
+    try {
+      user.password = password;
+      await this.usersRepository.save(user);
+    } catch (error) {
+      throw new AppException(UserError.UPDATE_PASSWORD_FAILED);
     }
   }
 

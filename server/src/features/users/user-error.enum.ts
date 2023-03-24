@@ -7,6 +7,7 @@ export enum UserError {
   CREATE_FAILED = '500: Failed to create user',
   ADD_TOKEN_FAILED = '500: Failed to add user token',
   REMOVE_TOKEN_FAILED = '500: Failed to remove user token',
+  UPDATE_PASSWORD_FAILED = '500: Failed to update user password',
   ADD_ROLE_FAILED = '500: Failed to add user role',
   REMOVE_ROLE_FAILED = '500: Failed to remove user role',
   ADD_CITY_FAILED = '500: Failed to add user city',

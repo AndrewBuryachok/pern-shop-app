@@ -1,6 +1,6 @@
 import { emptyApi } from '../../app/empty.api';
 import { Tokens } from './auth.model';
-import { AuthDto } from './auth.dto';
+import { AuthDto, UpdatePasswordDto } from './auth.dto';
 
 export const authApi = emptyApi.injectEndpoints({
   endpoints: (build) => ({
@@ -18,14 +18,25 @@ export const authApi = emptyApi.injectEndpoints({
         body: dto,
       }),
     }),
-    logout: build.mutation<Tokens, void>({
+    logout: build.mutation<void, void>({
       query: () => ({
         url: '/auth/logout',
         method: 'POST',
       }),
     }),
+    updatePassword: build.mutation<void, UpdatePasswordDto>({
+      query: (dto) => ({
+        url: '/auth/password',
+        method: 'PATCH',
+        body: dto,
+      }),
+    }),
   }),
 });
 
-export const { useRegisterMutation, useLoginMutation, useLogoutMutation } =
-  authApi;
+export const {
+  useRegisterMutation,
+  useLoginMutation,
+  useLogoutMutation,
+  useUpdatePasswordMutation,
+} = authApi;
