@@ -20,7 +20,7 @@ export default function UserProfile({ data: user }: Props) {
   ];
 
   return (
-    <Stack align='center' spacing={8}>
+    <Stack align='center'>
       <CustomIndicator status={user.status}>
         <Avatar
           size={128}

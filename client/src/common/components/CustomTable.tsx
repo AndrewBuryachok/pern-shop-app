@@ -40,7 +40,7 @@ export default function CustomTable<T>(props: Props<T>) {
                     <tr key={key}>
                       {props.columns.map((column) => (
                         <td key={column}>
-                          <Skeleton height={16} />
+                          <Skeleton h={16} />
                         </td>
                       ))}
                     </tr>
