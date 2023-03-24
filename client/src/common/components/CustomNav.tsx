@@ -16,7 +16,7 @@ export default function CustomNav(props: Props) {
           key={link.label}
           component={Link}
           to={link.to}
-          leftIcon={<IconExternalLink size={14} />}
+          leftIcon={<IconExternalLink size={16} />}
           disabled={!user || link.disabled}
           compact
         >
@@ -27,7 +27,7 @@ export default function CustomNav(props: Props) {
         <Button
           key={props.button.label}
           onClick={props.button.open}
-          leftIcon={<IconPlus size={14} />}
+          leftIcon={<IconPlus size={16} />}
           color='green'
           compact
         >

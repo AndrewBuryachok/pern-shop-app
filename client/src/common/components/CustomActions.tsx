@@ -12,10 +12,10 @@ export default function CustomActions<T>(props: Props<T>) {
   const user = getCurrentUser();
 
   const icons = [
-    <IconMinus size={14} />,
-    <IconPencil size={14} />,
-    <IconPlus size={14} />,
-    <IconDots size={14} />,
+    <IconMinus size={16} />,
+    <IconPencil size={16} />,
+    <IconPlus size={16} />,
+    <IconDots size={16} />,
   ];
 
   return (

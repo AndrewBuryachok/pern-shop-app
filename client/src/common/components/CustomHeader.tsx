@@ -83,7 +83,7 @@ export default function CustomHeader(props: Props) {
           <Menu.Dropdown>
             <Menu.Label>Settings</Menu.Label>
             <Menu.Item
-              icon={dark ? <IconSun size={14} /> : <IconMoon size={14} />}
+              icon={dark ? <IconSun size={16} /> : <IconMoon size={16} />}
               onClick={() => toggleColorScheme()}
             >
               {dark ? 'Light' : 'Dark'} theme
@@ -91,9 +91,9 @@ export default function CustomHeader(props: Props) {
             <Menu.Item
               icon={
                 fullscreen ? (
-                  <IconArrowsMinimize size={14} />
+                  <IconArrowsMinimize size={16} />
                 ) : (
-                  <IconArrowsMaximize size={14} />
+                  <IconArrowsMaximize size={16} />
                 )
               }
               onClick={() => toggleFullscreen()}
@@ -104,27 +104,27 @@ export default function CustomHeader(props: Props) {
             {user ? (
               <>
                 <Menu.Item
-                  icon={<IconUser size={14} />}
+                  icon={<IconUser size={16} />}
                   component={Link}
                   to={`/users/${user.id}`}
                 >
                   Profile
                 </Menu.Item>
                 <Menu.Item
-                  icon={<IconLock size={14} />}
+                  icon={<IconLock size={16} />}
                   onClick={openUpdatePasswordModal}
                 >
                   Password
                 </Menu.Item>
                 <Menu.Item
-                  icon={<IconLogout size={14} />}
+                  icon={<IconLogout size={16} />}
                   onClick={handleSubmit}
                 >
                   Logout
                 </Menu.Item>
               </>
             ) : (
-              <Menu.Item icon={<IconLogin size={14} />} onClick={openAuthModal}>
+              <Menu.Item icon={<IconLogin size={16} />} onClick={openAuthModal}>
                 Login
               </Menu.Item>
             )}
