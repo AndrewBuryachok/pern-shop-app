@@ -50,8 +50,8 @@ export class StoragesService {
       .getMany();
   }
 
-  selectFreeStorages(): Promise<Storage[]> {
-    return this.selectStoragesQueryBuilder()
+  async selectFreeStorages(): Promise<Storage[]> {
+    const storages = await this.selectStoragesQueryBuilder()
       .loadRelationCountAndMap(
         'storage.cellsCount',
         'storage.cells',
@@ -64,10 +64,13 @@ export class StoragesService {
             }),
       )
       .addSelect(['storage.price'])
-      .getMany()
-      .then((storages) =>
-        storages.filter((storage) => storage['cellsCount'] > 0),
-      );
+      .getMany();
+    return storages
+      .filter((storage) => storage['cellsCount'] > 0)
+      .map((storage) => {
+        delete storage['cellsCount'];
+        return storage;
+      });
   }
 
   async createStorage(dto: ExtCreateStorageDto): Promise<void> {

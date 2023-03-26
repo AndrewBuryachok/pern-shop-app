@@ -63,6 +63,7 @@ export class UsersService {
     ['goods', 'wares', 'products', 'trades', 'sales'].forEach(
       (stat) => (user[stat] = user[stat].length),
     );
+    delete user['shops'];
     delete user['rents'];
     return user;
   }
