@@ -7,6 +7,7 @@ import ColorBadge from '../../common/components/ColorBadge';
 import DateText from '../../common/components/DateText';
 import CustomActions from '../../common/components/CustomActions';
 import { viewVoteAction } from './ViewVoteModal';
+import { Color } from '../../common/constants';
 
 type Props = ITableWithActions<Vote>;
 
@@ -29,7 +30,7 @@ export default function VotesTable({ actions = [], ...props }: Props) {
             <SingleText text={vote.poll.description} />
           </td>
           <td>
-            <ColorBadge color={vote.type ? 'green' : 'red'} />
+            <ColorBadge color={vote.type ? Color.GREEN : Color.RED} />
           </td>
           <td>
             <DateText date={vote.createdAt} />

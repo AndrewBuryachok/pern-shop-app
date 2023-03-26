@@ -11,6 +11,6 @@ export const MAX_AMOUNT_VALUE = 16;
 export const MAX_INTAKE_VALUE = 128;
 export const MAX_PRICE_VALUE = 2000;
 export const MAX_ROLE_VALUE = 3;
-export const MAX_COLOR_VALUE = 5;
+export const MAX_COLOR_VALUE = 4;
 export const MAX_ITEM_VALUE = 1050;
 export const MAX_KIT_VALUE = 3;

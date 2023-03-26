@@ -2,12 +2,10 @@ import { ITableWithActions } from '../../common/interfaces';
 import { Card } from './card.model';
 import CustomTable from '../../common/components/CustomTable';
 import AvatarWithSingleText from '../../common/components/AvatarWithSingleText';
-import DoubleText from '../../common/components/DoubleText';
-import ColorBadge from '../../common/components/ColorBadge';
 import SingleText from '../../common/components/SingleText';
+import ColorBadge from '../../common/components/ColorBadge';
 import CustomActions from '../../common/components/CustomActions';
 import { viewCardAction } from './ViewCardModal';
-import { colors } from '../../common/constants';
 
 type Props = ITableWithActions<Card>;
 
@@ -24,14 +22,10 @@ export default function CardsTable({ actions = [], ...props }: Props) {
             <AvatarWithSingleText {...card.user} />
           </td>
           <td>
-            <DoubleText
-              text={card.name}
-              subtext={colors[card.color - 1]}
-              color={card.color}
-            />
+            <SingleText text={card.name} color={card.color} />
           </td>
           <td>
-            <ColorBadge color={colors[card.color - 1]} />
+            <ColorBadge color={card.color} />
           </td>
           <td>
             <SingleText text={`${card.balance}$`} />

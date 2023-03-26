@@ -8,6 +8,7 @@ import CustomProgress from '../../common/components/CustomProgress';
 import DateText from '../../common/components/DateText';
 import CustomActions from '../../common/components/CustomActions';
 import { viewPollAction } from './ViewPollModal';
+import { Color } from '../../common/constants';
 
 type Props = ITableWithActions<Poll>;
 
@@ -36,7 +37,7 @@ export default function PollsTable({ actions = [], ...props }: Props) {
           <td>
             <ColorBadge
               color={
-                poll.myVote ? (poll.myVote.type ? 'green' : 'red') : 'gray'
+                poll.myVote && (poll.myVote.type ? Color.GREEN : Color.RED)
               }
             />
           </td>

@@ -5,4 +5,4 @@ export enum Color {
   BLUE = 4,
 }
 
-export const colors = ['red', 'yellow', 'green', 'blue', 'violet'];
+export const colors = ['red', 'yellow', 'green', 'blue'];

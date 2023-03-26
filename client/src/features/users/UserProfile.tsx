@@ -12,11 +12,11 @@ type Props = {
 
 export default function UserProfile({ data: user }: Props) {
   const stats = [
-    { label: 'Goods', value: user.goods },
-    { label: 'Wares', value: user.wares },
-    { label: 'Products', value: user.products },
-    { label: 'Trades', value: user.trades },
-    { label: 'Sales', value: user.sales },
+    { label: 'Goods', value: user.goods, color: 'red' },
+    { label: 'Wares', value: user.wares, color: 'yellow' },
+    { label: 'Products', value: user.products, color: 'green' },
+    { label: 'Trades', value: user.trades, color: 'blue' },
+    { label: 'Sales', value: user.sales, color: 'violet' },
   ];
 
   return (
@@ -58,12 +58,12 @@ export default function UserProfile({ data: user }: Props) {
         spacing={8}
         breakpoints={[{ maxWidth: 'xs', cols: 3 }]}
       >
-        {stats.map((stat, index) => (
+        {stats.map((stat) => (
           <Paper key={stat.label} p={8} withBorder>
             <Text align='center' size='lg' weight='bold'>
               {stat.value}
             </Text>
-            <Text align='center' size='sm' color={colors[index]}>
+            <Text align='center' size='sm' color={stat.color}>
               {stat.label}
             </Text>
           </Paper>
