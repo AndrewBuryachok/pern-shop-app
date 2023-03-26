@@ -22,6 +22,9 @@ export class User {
   @Column({ nullable: true })
   token?: string;
 
+  @Column({ default: false })
+  status: boolean;
+
   @Column({ type: 'enum', enum: Role, array: true, default: [] })
   roles: Role[];
 
@@ -31,7 +34,4 @@ export class User {
   @ManyToOne(() => City, { nullable: true })
   @JoinColumn({ name: 'city_id' })
   city: City;
-
-  @Column({ default: false })
-  status: boolean;
 }

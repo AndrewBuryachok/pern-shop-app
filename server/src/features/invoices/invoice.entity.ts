@@ -33,7 +33,7 @@ export class Invoice {
 
   @ManyToOne(() => Card, { nullable: true })
   @JoinColumn({ name: 'receiver_card_id' })
-  receiverCard: Card;
+  receiverCard?: Card;
 
   @Column()
   sum: number;
