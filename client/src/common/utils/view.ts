@@ -4,32 +4,44 @@ import { Container } from '../../features/containers/container.model';
 import { SmThing } from '../../features/things/thing.model';
 import { items, Role, roles as allRoles } from '../constants';
 
-export const viewData = (data: string[]) =>
-  data.map((value) => ({ value, label: value, disabled: true }));
-
 export const viewRoles = (roles: Role[]) =>
-  viewData(!!roles.length ? roles.map((role) => allRoles[role - 1]) : ['User']);
+  roles.map((role) => ({
+    text: allRoles[role - 1],
+    color: `${role}`,
+    value: `${role}`,
+    label: allRoles[role - 1],
+    disabled: true,
+  }));
 
 export const viewUsers = (users: SmUser[]) =>
   users.map((user) => ({
+    ...user,
+    status: +user.status,
     value: `${user.id}`,
     label: user.name,
-    name: user.name,
-    status: `${+user.status}`,
     disabled: true,
   }));
 
 export const viewCards = (cards: SmCard[]) =>
-  viewData(cards.map((card) => card.name));
+  cards.map((card) => ({
+    ...card,
+    color: `${card.color}`,
+    value: `${card.id}`,
+    label: card.name,
+    disabled: true,
+  }));
 
 export const viewContainers = (containers: Container[]) =>
-  viewData(containers.map((container) => `#${container.name}`));
+  containers.map((container) => ({
+    value: `${container.id}`,
+    label: `#${container.name}`,
+    disabled: true,
+  }));
 
 export const viewThings = (things: SmThing[]) =>
   things.map((thing) => ({
+    ...thing,
     value: `${thing.id}`,
     label: items[thing.item - 1].substring(3),
-    item: thing.item,
-    description: thing.description,
     disabled: true,
   }));

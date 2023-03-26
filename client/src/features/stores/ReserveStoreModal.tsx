@@ -8,6 +8,7 @@ import { useSelectMyCardsQuery } from '../cards/cards.api';
 import { CreateRentDto } from '../rents/rent.dto';
 import CustomForm from '../../common/components/CustomForm';
 import CustomAvatar from '../../common/components/CustomAvatar';
+import { CardsItem } from '../../common/components/CardsItem';
 import {
   parseCard,
   parseStore,
@@ -61,6 +62,7 @@ export default function ReserveStoreModal({ data: store }: Props) {
       <Select
         label='Card'
         placeholder='Card'
+        itemComponent={CardsItem}
         data={selectCardsWithBalance(cards)}
         searchable
         required

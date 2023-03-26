@@ -9,6 +9,6 @@ export interface Market extends MdMarket {
   stores: SmStore[];
 }
 
-export interface SelectMarket extends SmMarket {
+export interface MyMarket extends SmMarket {
   stores: number;
 }

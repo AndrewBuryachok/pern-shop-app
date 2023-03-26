@@ -7,6 +7,7 @@ import { useAddUserRoleMutation } from './users.api';
 import { UpdateUserRolesDto } from './user.dto';
 import CustomForm from '../../common/components/CustomForm';
 import CustomAvatar from '../../common/components/CustomAvatar';
+import { ColorsItem } from '../../common/components/ColorsItem';
 import { selectRoles } from '../../common/utils';
 import { Color, roles } from '../../common/constants';
 
@@ -43,9 +44,8 @@ export default function AddUserRoleModal({ data: user }: Props) {
       <Select
         label='Role'
         placeholder='Role'
-        data={selectRoles().filter(
-          (role) => !user.roles.includes(+role.value) || !role.value,
-        )}
+        itemComponent={ColorsItem}
+        data={selectRoles().filter((role) => !user.roles.includes(+role.value))}
         searchable
         required
         {...form.getInputProps('role')}

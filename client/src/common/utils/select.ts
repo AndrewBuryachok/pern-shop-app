@@ -1,79 +1,98 @@
 import { SmUser } from '../../features/users/user.model';
-import {
-  SelectCard,
-  SelectCardWithBalance,
-} from '../../features/cards/card.model';
+import { SmCard, SmCardWithBalance } from '../../features/cards/card.model';
 import { SmCity } from '../../features/cities/city.model';
 import { SmShop } from '../../features/shops/shop.model';
-import { SelectMarket } from '../../features/markets/market.model';
+import { SmMarket } from '../../features/markets/market.model';
 import {
-  SelectStorage,
-  SelectStorageWithPrice,
+  SmStorage,
+  SmStorageWithPrice,
 } from '../../features/storages/storage.model';
 import { SelectRent } from '../../features/rents/rent.model';
 import { categories, colors, items, kits, roles } from '../../common/constants';
 
 export const selectUsers = (users?: SmUser[]) =>
   users?.map((user) => ({
+    ...user,
+    status: +user.status,
     value: `${user.id}`,
     label: user.name,
-    name: user.name,
-    status: `${+user.status}`,
   })) || [];
 
-export const selectCards = (cards?: SelectCard[]) =>
+export const selectCards = (cards?: SmCard[]) =>
   cards?.map((card) => ({
+    ...card,
+    color: `${card.color}`,
     value: `${card.id}`,
     label: card.name,
   })) || [];
 
-export const selectCardsWithBalance = (cards?: SelectCardWithBalance[]) =>
+export const selectCardsWithBalance = (cards?: SmCardWithBalance[]) =>
   cards?.map((card) => ({
+    ...card,
+    color: `${card.color}`,
     value: `${card.id}`,
-    label: `${card.name} (${card.balance}$)`,
+    label: `${card.name} ${card.balance}$`,
   })) || [];
 
 export const selectCities = (cities?: SmCity[]) =>
   cities?.map((city) => ({
+    ...city,
     value: `${city.id}`,
     label: `${city.name} (${city.x} ${city.y})`,
   })) || [];
 
 export const selectShops = (shops?: SmShop[]) =>
   shops?.map((shop) => ({
+    ...shop,
     value: `${shop.id}`,
     label: `${shop.name} (${shop.x} ${shop.y})`,
   })) || [];
 
-export const selectMarkets = (markets?: SelectMarket[]) =>
+export const selectMarkets = (markets?: SmMarket[]) =>
   markets?.map((market) => ({
+    ...market,
     value: `${market.id}`,
     label: `${market.name} (${market.x} ${market.y})`,
   })) || [];
 
-export const selectStorages = (storages?: SelectStorage[]) =>
+export const selectStorages = (storages?: SmStorage[]) =>
   storages?.map((storage) => ({
+    ...storage,
     value: `${storage.id}`,
     label: `${storage.name} (${storage.x} ${storage.y})`,
   })) || [];
 
-export const selectStoragesWithPrice = (storages?: SelectStorageWithPrice[]) =>
+export const selectStoragesWithPrice = (storages?: SmStorageWithPrice[]) =>
   storages?.map((storage) => ({
+    ...storage,
+    withPrice: true,
     value: `${storage.id}`,
-    label: `${storage.name} (${storage.x} ${storage.y}) (${storage.price}$)`,
+    label: `${storage.name} (${storage.x} ${storage.y}) ${storage.price}$`,
   })) || [];
 
 export const selectRents = (rents?: SelectRent[]) =>
   rents?.map((rent) => ({
+    ...rent.store.market,
+    container: rent.store.name,
     value: `${rent.id}`,
     label: `${rent.store.market.name} (${rent.store.market.x} ${rent.store.market.y}) #${rent.store.name}`,
   })) || [];
 
 export const selectRoles = () =>
-  roles.map((role, index) => ({ value: `${index + 1}`, label: role }));
+  roles.map((role, index) => ({
+    text: role,
+    color: `${index + 1}`,
+    value: `${index + 1}`,
+    label: role,
+  }));
 
 export const selectColors = () =>
-  colors.map((color, index) => ({ value: `${index + 1}`, label: color }));
+  colors.map((color, index) => ({
+    text: color,
+    color: `${index + 1}`,
+    value: `${index + 1}`,
+    label: color,
+  }));
 
 export const selectTypes = () =>
   ['decrease', 'increase'].map((type, index) => ({
@@ -90,10 +109,10 @@ export const selectCategories = () =>
 export const selectItems = (category: string) =>
   items
     .map((item, index) => ({
-      value: `${index + 1}`,
-      label: item.substring(3),
       item: index + 1,
       category: item[0],
+      value: `${index + 1}`,
+      label: item.substring(3),
     }))
     .filter((item) => item.category === category);
 

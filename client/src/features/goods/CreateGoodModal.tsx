@@ -8,6 +8,7 @@ import { CreateGoodDto } from './good.dto';
 import CustomForm from '../../common/components/CustomForm';
 import ThingImage from '../../common/components/ThingImage';
 import { ThingsItem } from '../../common/components/ThingItem';
+import { PlacesItem } from '../../common/components/PlacesItem';
 import {
   selectCategories,
   selectItems,
@@ -60,6 +61,7 @@ export default function CreateGoodModal() {
       <Select
         label='Shop'
         placeholder='Shop'
+        itemComponent={PlacesItem}
         data={selectShops(shops)}
         searchable
         required

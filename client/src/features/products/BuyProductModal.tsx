@@ -9,6 +9,7 @@ import { CreateSaleDto } from '../sales/sale.dto';
 import CustomForm from '../../common/components/CustomForm';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import ThingImage from '../../common/components/ThingImage';
+import { CardsItem } from '../../common/components/CardsItem';
 import {
   customMin,
   parseCard,
@@ -75,6 +76,7 @@ export default function BuyProductModal({ data: product }: Props) {
       <Select
         label='Card'
         placeholder='Card'
+        itemComponent={CardsItem}
         data={selectCardsWithBalance(cards)}
         searchable
         required

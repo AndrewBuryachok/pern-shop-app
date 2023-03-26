@@ -5,6 +5,7 @@ import { useCreateCellMutation } from './cells.api';
 import { useSelectMyStoragesQuery } from '../storages/storages.api';
 import { CreateCellDto } from './cell.dto';
 import CustomForm from '../../common/components/CustomForm';
+import { PlacesItem } from '../../common/components/PlacesItem';
 import { selectStorages } from '../../common/utils';
 
 export default function CreateCellModal() {
@@ -41,6 +42,7 @@ export default function CreateCellModal() {
       <Select
         label='Storage'
         placeholder='Storage'
+        itemComponent={PlacesItem}
         data={selectStorages(storages)}
         searchable
         required

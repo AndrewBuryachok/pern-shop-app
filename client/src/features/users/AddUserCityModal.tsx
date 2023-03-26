@@ -8,6 +8,7 @@ import { UpdateUserCityDto } from './user.dto';
 import CustomForm from '../../common/components/CustomForm';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import { UsersItem } from '../../common/components/UsersItem';
+import { PlacesItem } from '../../common/components/PlacesItem';
 import { selectCities, selectUsers } from '../../common/utils';
 
 export default function AddUserCityModal() {
@@ -57,6 +58,7 @@ export default function AddUserCityModal() {
       <Select
         label='City'
         placeholder='City'
+        itemComponent={PlacesItem}
         data={selectCities(cities)}
         searchable
         required

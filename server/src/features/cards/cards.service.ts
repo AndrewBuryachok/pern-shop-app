@@ -146,7 +146,7 @@ export class CardsService {
       .createQueryBuilder('card')
       .where('card.userId = :userId', { userId })
       .orderBy('card.name', 'ASC')
-      .select(['card.id', 'card.name']);
+      .select(['card.id', 'card.name', 'card.color']);
   }
 
   private getCardsQueryBuilder(req: Request): SelectQueryBuilder<Card> {

@@ -8,6 +8,7 @@ import { CreateWareDto } from './ware.dto';
 import CustomForm from '../../common/components/CustomForm';
 import ThingImage from '../../common/components/ThingImage';
 import { ThingsItem } from '../../common/components/ThingItem';
+import { PlacesItem } from '../../common/components/PlacesItem';
 import {
   selectCategories,
   selectItems,
@@ -60,6 +61,7 @@ export default function CreateWareModal() {
       <Select
         label='Rent'
         placeholder='Rent'
+        itemComponent={PlacesItem}
         data={selectRents(rents)}
         searchable
         required

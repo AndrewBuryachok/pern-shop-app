@@ -8,6 +8,7 @@ import { CreateInvoiceDto } from './invoice.dto';
 import CustomForm from '../../common/components/CustomForm';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import { UsersItem } from '../../common/components/UsersItem';
+import { CardsItem } from '../../common/components/CardsItem';
 import { selectCardsWithBalance, selectUsers } from '../../common/utils';
 import { MAX_DESCRIPTION_LENGTH, MAX_SUM_VALUE } from '../../common/constants';
 
@@ -44,6 +45,7 @@ export default function CreateInvoiceModal() {
       <Select
         label='Sender Card'
         placeholder='Sender Card'
+        itemComponent={CardsItem}
         data={selectCardsWithBalance(myCards)}
         searchable
         required

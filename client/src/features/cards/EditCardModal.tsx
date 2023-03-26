@@ -6,6 +6,7 @@ import { Card } from './card.model';
 import { useEditCardMutation } from './cards.api';
 import { EditCardDto } from './card.dto';
 import CustomForm from '../../common/components/CustomForm';
+import { ColorsItem } from '../../common/components/ColorsItem';
 import { selectColors } from '../../common/utils';
 import {
   Color,
@@ -48,6 +49,7 @@ export default function EditCardModal({ data: card }: Props) {
       <Select
         label='Color'
         placeholder='Color'
+        itemComponent={ColorsItem}
         data={selectColors()}
         searchable
         required

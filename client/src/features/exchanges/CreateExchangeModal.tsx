@@ -9,6 +9,7 @@ import { CreateExchangeDto } from './exchange.dto';
 import CustomForm from '../../common/components/CustomForm';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import { UsersItem } from '../../common/components/UsersItem';
+import { CardsItem } from '../../common/components/CardsItem';
 import {
   customMin,
   selectCardsWithBalance,
@@ -76,6 +77,7 @@ export default function CreateExchangeModal() {
       <Select
         label='Card'
         placeholder='Card'
+        itemComponent={CardsItem}
         data={selectCardsWithBalance(cards)}
         searchable
         required

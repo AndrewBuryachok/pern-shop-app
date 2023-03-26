@@ -5,6 +5,7 @@ import { useCreateMarketMutation } from './markets.api';
 import { useSelectMyCardsQuery } from '../cards/cards.api';
 import { CreateMarketDto } from './market.dto';
 import CustomForm from '../../common/components/CustomForm';
+import { CardsItem } from '../../common/components/CardsItem';
 import { selectCardsWithBalance } from '../../common/utils';
 import {
   MAX_COORDINATE_VALUE,
@@ -42,6 +43,7 @@ export default function CreateMarketModal() {
       <Select
         label='Card'
         placeholder='Card'
+        itemComponent={CardsItem}
         data={selectCardsWithBalance(cards)}
         searchable
         required

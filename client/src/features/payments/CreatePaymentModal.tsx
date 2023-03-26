@@ -10,6 +10,7 @@ import { CreatePaymentDto } from './payment.dto';
 import CustomForm from '../../common/components/CustomForm';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import { UsersItem } from '../../common/components/UsersItem';
+import { CardsItem } from '../../common/components/CardsItem';
 import {
   customMin,
   selectCards,
@@ -60,6 +61,7 @@ export default function CreatePaymentModal() {
       <Select
         label='Sender Card'
         placeholder='Sender Card'
+        itemComponent={CardsItem}
         data={selectCardsWithBalance(myCards)}
         searchable
         required
@@ -85,6 +87,7 @@ export default function CreatePaymentModal() {
       <Select
         label='Receiver Card'
         placeholder='Receiver Card'
+        itemComponent={CardsItem}
         data={selectCards(cards)}
         searchable
         required

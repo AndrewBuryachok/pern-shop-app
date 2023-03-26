@@ -14,11 +14,6 @@ export interface Card extends MdCard {
   balance: number;
 }
 
-export interface SelectCard {
-  id: number;
-  name: string;
-}
-
-export interface SelectCardWithBalance extends SelectCard {
+export interface SmCardWithBalance extends SmCard {
   balance: number;
 }

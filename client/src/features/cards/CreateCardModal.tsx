@@ -4,6 +4,7 @@ import { openModal } from '@mantine/modals';
 import { useCreateCardMutation } from './cards.api';
 import { CreateCardDto } from './card.dto';
 import CustomForm from '../../common/components/CustomForm';
+import { ColorsItem } from '../../common/components/ColorsItem';
 import { selectColors } from '../../common/utils';
 import { MAX_TEXT_LENGTH, MIN_TEXT_LENGTH } from '../../common/constants';
 
@@ -39,6 +40,7 @@ export default function CreateCardModal() {
       <Select
         label='Color'
         placeholder='Color'
+        itemComponent={ColorsItem}
         data={selectColors()}
         searchable
         required

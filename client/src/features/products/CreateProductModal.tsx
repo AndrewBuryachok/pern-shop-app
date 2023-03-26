@@ -9,6 +9,8 @@ import { CreateProductDto } from './product.dto';
 import CustomForm from '../../common/components/CustomForm';
 import ThingImage from '../../common/components/ThingImage';
 import { ThingsItem } from '../../common/components/ThingItem';
+import { CardsItem } from '../../common/components/CardsItem';
+import { PlacesItem } from '../../common/components/PlacesItem';
 import {
   selectCardsWithBalance,
   selectCategories,
@@ -65,6 +67,7 @@ export default function CreateProductModal() {
       <Select
         label='Storage'
         placeholder='Storage'
+        itemComponent={PlacesItem}
         data={selectStoragesWithPrice(storages)}
         searchable
         required
@@ -73,6 +76,7 @@ export default function CreateProductModal() {
       <Select
         label='Card'
         placeholder='Card'
+        itemComponent={CardsItem}
         data={selectCardsWithBalance(cards)}
         searchable
         required

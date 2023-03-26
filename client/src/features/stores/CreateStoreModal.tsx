@@ -5,6 +5,7 @@ import { useCreateStoreMutation } from './stores.api';
 import { useSelectMyMarketsQuery } from '../markets/markets.api';
 import { CreateStoreDto } from './store.dto';
 import CustomForm from '../../common/components/CustomForm';
+import { PlacesItem } from '../../common/components/PlacesItem';
 import { selectMarkets } from '../../common/utils';
 
 export default function CreateStoreModal() {
@@ -39,6 +40,7 @@ export default function CreateStoreModal() {
       <Select
         label='Market'
         placeholder='Market'
+        itemComponent={PlacesItem}
         data={selectMarkets(markets)}
         searchable
         required

@@ -9,10 +9,10 @@ export interface Storage extends MdStorage {
   cells: SmCell[];
 }
 
-export interface SelectStorage extends SmStorage {
+export interface MyStorage extends SmStorage {
   cells: number;
 }
 
-export interface SelectStorageWithPrice extends SmStorage {
+export interface SmStorageWithPrice extends SmStorage {
   price: number;
 }
