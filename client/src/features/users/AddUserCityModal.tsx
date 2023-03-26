@@ -10,15 +10,15 @@ import CustomAvatar from '../../common/components/CustomAvatar';
 import { UsersItem } from '../../common/components/UsersItem';
 import { selectCities, selectUsers } from '../../common/utils';
 
-export default function AddCityUserModal() {
+export default function AddUserCityModal() {
   const form = useForm({
     initialValues: {
-      city: '',
       user: '',
+      city: '',
     },
-    transformValues: ({ city, user }) => ({
-      cityId: +city,
+    transformValues: ({ user, city }) => ({
       userId: +user,
+      cityId: +city,
     }),
   });
 
@@ -35,16 +35,8 @@ export default function AddCityUserModal() {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={'Add city user'}
+      text={'Add user city'}
     >
-      <Select
-        label='City'
-        placeholder='City'
-        data={selectCities(cities)}
-        searchable
-        required
-        {...form.getInputProps('city')}
-      />
       <Select
         label='User'
         placeholder='User'
@@ -62,15 +54,23 @@ export default function AddCityUserModal() {
         required
         {...form.getInputProps('user')}
       />
+      <Select
+        label='City'
+        placeholder='City'
+        data={selectCities(cities)}
+        searchable
+        required
+        {...form.getInputProps('city')}
+      />
     </CustomForm>
   );
 }
 
-export const addCityUserButton = {
+export const addUserCityButton = {
   label: 'Add User',
   open: () =>
     openModal({
-      title: 'Add City User',
-      children: <AddCityUserModal />,
+      title: 'Add User City',
+      children: <AddUserCityModal />,
     }),
 };

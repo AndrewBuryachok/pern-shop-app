@@ -68,6 +68,13 @@ export default function CompleteInvoiceModal({ data: invoice }: Props) {
         value={invoice.receiverUser.name}
         disabled
       />
+      <TextInput label='Sum' value={`${invoice.sum}$`} disabled />
+      <Textarea label='Description' value={invoice.description} disabled />
+      <TextInput
+        label='Created'
+        value={`${created.date} ${created.time}`}
+        disabled
+      />
       <Select
         label='Card'
         placeholder='Card'
@@ -75,13 +82,6 @@ export default function CompleteInvoiceModal({ data: invoice }: Props) {
         searchable
         required
         {...form.getInputProps('card')}
-      />
-      <TextInput label='Sum' value={`${invoice.sum}$`} disabled />
-      <Textarea label='Description' value={invoice.description} disabled />
-      <TextInput
-        label='Created'
-        value={`${created.date} ${created.time}`}
-        disabled
       />
     </CustomForm>
   );

@@ -11,11 +11,11 @@ import { Color } from '../../common/constants';
 
 type Props = IModal<User>;
 
-export default function RemoveCityUserModal({ data: user }: Props) {
+export default function RemoveUserCityModal({ data: user }: Props) {
   const form = useForm({
     initialValues: {
-      cityId: user.city!.id,
       userId: user.id,
+      cityId: user.city!.id,
     },
   });
 
@@ -29,9 +29,8 @@ export default function RemoveCityUserModal({ data: user }: Props) {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={'Remove city user'}
+      text={'Remove user city'}
     >
-      <TextInput label='City' value={user.city!.name} disabled />
       <TextInput
         label='User'
         icon={<CustomAvatar {...user} />}
@@ -39,15 +38,16 @@ export default function RemoveCityUserModal({ data: user }: Props) {
         value={user.name}
         disabled
       />
+      <TextInput label='City' value={user.city!.name} disabled />
     </CustomForm>
   );
 }
 
-export const removeCityUserAction = {
+export const removeUserCityAction = {
   open: (user: User) =>
     openModal({
-      title: 'Remove City User',
-      children: <RemoveCityUserModal data={user} />,
+      title: 'Remove User City',
+      children: <RemoveUserCityModal data={user} />,
     }),
   disable: () => false,
   color: Color.RED,

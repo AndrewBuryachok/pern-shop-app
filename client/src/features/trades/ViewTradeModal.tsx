@@ -1,4 +1,4 @@
-import { Stack, TextInput } from '@mantine/core';
+import { Stack, Textarea, TextInput } from '@mantine/core';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { Trade } from './trade.model';
@@ -40,7 +40,7 @@ export default function ViewTradeModal({ data: trade }: Props) {
         value={items[trade.ware.item - 1].substring(3)}
         disabled
       />
-      <TextInput label='Description' value={trade.ware.description} disabled />
+      <Textarea label='Description' value={trade.ware.description} disabled />
       <TextInput label='Amount' value={parseTradeAmount(trade)} disabled />
       <TextInput
         label='Sum'
