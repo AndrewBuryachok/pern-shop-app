@@ -138,6 +138,13 @@ export class GoodsService {
       .andWhere(
         new Brackets((qb) =>
           qb
+            .where(`${!req.shop}`)
+            .orWhere('shop.id = :shopId', { shopId: req.shop }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
             .where(`${!req.item}`)
             .orWhere('good.item = :item', { item: req.item }),
         ),

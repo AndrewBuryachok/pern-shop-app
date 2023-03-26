@@ -13,9 +13,11 @@ export default function MyInvoices() {
 
   const [search, setSearch] = useState<ISearch>({
     user: '',
-    filters: ['Mode', 'Sender', 'Receiver'].map((label, index) => ({
+    card: '',
+    mode: 'false',
+    filters: ['Sender', 'Receiver'].map((label) => ({
       label,
-      value: !!index,
+      value: true,
     })),
     description: '',
   });

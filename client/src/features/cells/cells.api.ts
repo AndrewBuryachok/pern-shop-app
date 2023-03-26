@@ -1,6 +1,6 @@
 import { emptyApi } from '../../app/empty.api';
 import { IRequest, IResponse } from '../../common/interfaces';
-import { Cell } from './cell.model';
+import { Cell, SmCell } from './cell.model';
 import { CreateCellDto } from './cell.dto';
 import { getQuery } from '../../common/utils';
 
@@ -24,6 +24,12 @@ export const cellsApi = emptyApi.injectEndpoints({
       }),
       providesTags: ['Cell'],
     }),
+    selectStorageCells: build.query<SmCell[], number>({
+      query: (userId) => ({
+        url: `/cells/${userId}/select`,
+      }),
+      providesTags: ['Cell'],
+    }),
     createCell: build.mutation<void, CreateCellDto>({
       query: (dto) => ({
         url: '/cells',
@@ -39,5 +45,6 @@ export const {
   useGetMainCellsQuery,
   useGetMyCellsQuery,
   useGetAllCellsQuery,
+  useSelectStorageCellsQuery,
   useCreateCellMutation,
 } = cellsApi;

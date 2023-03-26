@@ -8,10 +8,14 @@ export default function AllRents() {
 
   const [search, setSearch] = useState<ISearch>({
     user: '',
-    filters: ['Mode', 'Renter', 'Lessor'].map((label, index) => ({
+    card: '',
+    mode: 'false',
+    filters: ['Renter', 'Lessor'].map((label) => ({
       label,
-      value: !!index,
+      value: true,
     })),
+    market: '',
+    store: '',
   });
 
   const response = useGetAllRentsQuery({ page, search });

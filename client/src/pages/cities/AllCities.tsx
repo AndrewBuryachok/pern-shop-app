@@ -6,7 +6,11 @@ import CitiesTable from '../../features/cities/CitiesTable';
 export default function AllCities() {
   const [page, setPage] = useState(1);
 
-  const [search, setSearch] = useState<ISearch>({ user: '', name: '' });
+  const [search, setSearch] = useState<ISearch>({
+    user: '',
+    city: '',
+    name: '',
+  });
 
   const response = useGetAllCitiesQuery({ page, search });
 

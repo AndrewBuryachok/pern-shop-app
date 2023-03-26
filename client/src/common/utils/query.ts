@@ -8,19 +8,38 @@ export const getQuery = ({ page, search }: IRequest) => {
     query.append('take', `${ROWS_PER_PAGE}`);
   }
   if (search?.user) {
-    query.append('user', `${search.user}`);
+    query.append('user', search.user);
   }
-  if (search?.filters?.find((filter) => filter.label === 'Mode')?.value) {
-    query.append('mode', 'true');
+  if (search?.card) {
+    query.append('card', search.card);
   }
-  const filters = search?.filters?.filter(
-    (filter) => filter.label !== 'Mode' && filter.value,
-  );
+  if (search?.mode) {
+    query.append('mode', search.mode);
+  }
+  const filters = search?.filters?.filter((filter) => filter.value);
   if (filters?.length) {
     query.append(
       'filters',
       filters.map((filter) => filter.label.toLowerCase()).join(),
     );
+  }
+  if (search?.city) {
+    query.append('city', search.city);
+  }
+  if (search?.shop) {
+    query.append('shop', search.shop);
+  }
+  if (search?.market) {
+    query.append('market', search.market);
+  }
+  if (search?.storage) {
+    query.append('storage', search.storage);
+  }
+  if (search?.store) {
+    query.append('store', search.store);
+  }
+  if (search?.cell) {
+    query.append('cell', search.cell);
   }
   if (search?.name) {
     query.append('name', search.name);

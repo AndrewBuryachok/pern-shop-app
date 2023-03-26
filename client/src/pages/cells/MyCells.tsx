@@ -9,7 +9,13 @@ import { Role } from '../../common/constants';
 export default function MyCells() {
   const [page, setPage] = useState(1);
 
-  const [search, setSearch] = useState<ISearch>({ user: '', name: '' });
+  const [search, setSearch] = useState<ISearch>({
+    user: '',
+    card: '',
+    storage: '',
+    cell: '',
+    name: '',
+  });
 
   const response = useGetMyCellsQuery({ page, search });
 

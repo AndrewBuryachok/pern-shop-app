@@ -1,6 +1,6 @@
 import { emptyApi } from '../../app/empty.api';
 import { IRequest, IResponse } from '../../common/interfaces';
-import { Market, MyMarket } from './market.model';
+import { Market, MyMarket, SmMarketWithCard } from './market.model';
 import { CreateMarketDto, EditMarketDto } from './market.dto';
 import { getQuery } from '../../common/utils';
 
@@ -21,6 +21,12 @@ export const marketsApi = emptyApi.injectEndpoints({
     getAllMarkets: build.query<IResponse<Market>, IRequest>({
       query: (req) => ({
         url: `/markets/all?${getQuery(req)}`,
+      }),
+      providesTags: ['Market'],
+    }),
+    selectAllMarkets: build.query<SmMarketWithCard[], void>({
+      query: () => ({
+        url: '/markets/all/select',
       }),
       providesTags: ['Market'],
     }),
@@ -53,6 +59,7 @@ export const {
   useGetMainMarketsQuery,
   useGetMyMarketsQuery,
   useGetAllMarketsQuery,
+  useSelectAllMarketsQuery,
   useSelectMyMarketsQuery,
   useCreateMarketMutation,
   useEditMarketMutation,

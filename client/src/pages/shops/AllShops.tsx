@@ -6,7 +6,11 @@ import ShopsTable from '../../features/shops/ShopsTable';
 export default function AllShops() {
   const [page, setPage] = useState(1);
 
-  const [search, setSearch] = useState<ISearch>({ user: '', name: '' });
+  const [search, setSearch] = useState<ISearch>({
+    user: '',
+    shop: '',
+    name: '',
+  });
 
   const response = useGetAllShopsQuery({ page, search });
 

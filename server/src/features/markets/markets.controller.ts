@@ -40,6 +40,12 @@ export class MarketsController {
     return this.marketsService.getAllMarkets(req);
   }
 
+  @Public()
+  @Get('all/select')
+  selectAllMarkets(): Promise<Market[]> {
+    return this.marketsService.selectAllMarkets();
+  }
+
   @Get('my/select')
   selectMyMarkets(@MyId() myId: number): Promise<Market[]> {
     return this.marketsService.selectMyMarkets(myId);

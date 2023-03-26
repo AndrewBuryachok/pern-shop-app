@@ -9,9 +9,11 @@ export default function AllExchanges() {
 
   const [search, setSearch] = useState<ISearch>({
     user: '',
-    filters: ['Mode', 'Executor', 'Customer'].map((label, index) => ({
+    card: '',
+    mode: 'false',
+    filters: ['Executor', 'Customer'].map((label) => ({
       label,
-      value: !!index,
+      value: true,
     })),
     type: '',
   });

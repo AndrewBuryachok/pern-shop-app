@@ -9,7 +9,13 @@ import { Role } from '../../common/constants';
 export default function MyStores() {
   const [page, setPage] = useState(1);
 
-  const [search, setSearch] = useState<ISearch>({ user: '', name: '' });
+  const [search, setSearch] = useState<ISearch>({
+    user: '',
+    card: '',
+    market: '',
+    store: '',
+    name: '',
+  });
 
   const response = useGetMyStoresQuery({ page, search });
 

@@ -49,6 +49,10 @@ export class StoresService {
     return { result, count };
   }
 
+  selectMarketStores(marketId: number): Promise<Store[]> {
+    return this.selectStoresQueryBuilder(marketId).getMany();
+  }
+
   async createStore(dto: ExtCreateStoreDto): Promise<void> {
     await this.marketsService.checkMarketOwner(dto.marketId, dto.myId);
     const name = await this.checkHasNotEnough(dto.marketId);
@@ -119,6 +123,16 @@ export class StoresService {
     }
   }
 
+  private selectStoresQueryBuilder(
+    marketId: number,
+  ): SelectQueryBuilder<Store> {
+    return this.storesRepository
+      .createQueryBuilder('store')
+      .where('store.marketId = :marketId', { marketId })
+      .orderBy('store.id', 'ASC')
+      .select(['store.id', 'store.name']);
+  }
+
   private getStoresQueryBuilder(req: Request): SelectQueryBuilder<Store> {
     return this.storesRepository
       .createQueryBuilder('store')
@@ -130,6 +144,27 @@ export class StoresService {
           qb
             .where(`${!req.user}`)
             .orWhere('ownerUser.id = :userId', { userId: req.user }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.card}`)
+            .orWhere('ownerCard.id = :cardId', { cardId: req.card }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.market}`)
+            .orWhere('market.id = :marketId', { marketId: req.market }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.store}`)
+            .orWhere('store.id = :storeId', { storeId: req.store }),
         ),
       )
       .andWhere('market.name ILIKE :name', { name: `%${req.name}%` })

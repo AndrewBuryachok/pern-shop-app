@@ -1,6 +1,6 @@
 import { emptyApi } from '../../app/empty.api';
 import { IRequest, IResponse } from '../../common/interfaces';
-import { Shop, SmShop } from './shop.model';
+import { Shop, SmShop, SmShopWithUser } from './shop.model';
 import { CreateShopDto, EditShopDto } from './shop.dto';
 import { getQuery } from '../../common/utils';
 
@@ -21,6 +21,12 @@ export const shopsApi = emptyApi.injectEndpoints({
     getAllShops: build.query<IResponse<Shop>, IRequest>({
       query: (req) => ({
         url: `/shops/all?${getQuery(req)}`,
+      }),
+      providesTags: ['Shop'],
+    }),
+    selectAllShops: build.query<SmShopWithUser[], void>({
+      query: () => ({
+        url: '/shops/all/select',
       }),
       providesTags: ['Shop'],
     }),
@@ -53,6 +59,7 @@ export const {
   useGetMainShopsQuery,
   useGetMyShopsQuery,
   useGetAllShopsQuery,
+  useSelectAllShopsQuery,
   useSelectMyShopsQuery,
   useCreateShopMutation,
   useEditShopMutation,

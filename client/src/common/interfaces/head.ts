@@ -1,11 +1,4 @@
-export interface ISearch {
-  user?: string;
-  filters?: { label: string; value: boolean }[];
-  name?: string;
-  item?: string;
-  description?: string;
-  type?: string;
-}
+import { ISearch } from './search';
 
 export interface IHead {
   title: string;

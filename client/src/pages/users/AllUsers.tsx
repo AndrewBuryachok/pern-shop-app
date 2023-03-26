@@ -8,7 +8,12 @@ import { removeUserRoleAction } from '../../features/users/RemoveUserRoleModal';
 export default function AllUsers() {
   const [page, setPage] = useState(1);
 
-  const [search, setSearch] = useState<ISearch>({ user: '', name: '' });
+  const [search, setSearch] = useState<ISearch>({
+    user: '',
+    city: '',
+    name: '',
+    users: true,
+  });
 
   const response = useGetAllUsersQuery({ page, search });
 

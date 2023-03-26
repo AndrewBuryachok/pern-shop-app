@@ -6,7 +6,12 @@ import CardsTable from '../../features/cards/CardsTable';
 export default function AllCards() {
   const [page, setPage] = useState(1);
 
-  const [search, setSearch] = useState<ISearch>({ user: '', name: '' });
+  const [search, setSearch] = useState<ISearch>({
+    user: '',
+    card: '',
+    name: '',
+    cards: true,
+  });
 
   const response = useGetAllCardsQuery({ page, search });
 

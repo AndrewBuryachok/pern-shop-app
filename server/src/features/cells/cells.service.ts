@@ -49,6 +49,10 @@ export class CellsService {
     return { result, count };
   }
 
+  selectStorageCells(storageId: number): Promise<Cell[]> {
+    return this.selectCellsQueryBuilder(storageId).getMany();
+  }
+
   async createCell(dto: ExtCreateCellDto): Promise<void> {
     await this.storagesService.checkStorageOwner(dto.storageId, dto.myId);
     const name = await this.checkHasNotEnough(dto.storageId);
@@ -116,6 +120,14 @@ export class CellsService {
     }
   }
 
+  private selectCellsQueryBuilder(storageId: number): SelectQueryBuilder<Cell> {
+    return this.cellsRepository
+      .createQueryBuilder('cell')
+      .where('cell.storageId = :storageId', { storageId })
+      .orderBy('cell.id', 'ASC')
+      .select(['cell.id', 'cell.name']);
+  }
+
   private getCellsQueryBuilder(req: Request): SelectQueryBuilder<Cell> {
     return this.cellsRepository
       .createQueryBuilder('cell')
@@ -127,6 +139,27 @@ export class CellsService {
           qb
             .where(`${!req.user}`)
             .orWhere('ownerUser.id = :userId', { userId: req.user }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.card}`)
+            .orWhere('ownerCard.id = :cardId', { cardId: req.card }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.storage}`)
+            .orWhere('storage.id = :storageId', { storageId: req.storage }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.cell}`)
+            .orWhere('cell.id = :cellId', { cellId: req.cell }),
         ),
       )
       .andWhere('storage.name ILIKE :name', { name: `%${req.name}%` })

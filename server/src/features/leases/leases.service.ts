@@ -114,6 +114,68 @@ export class LeasesService {
         ),
         { userId: req.user },
       )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.card}`)
+            .orWhere(
+              new Brackets((qb) =>
+                qb
+                  .where(`${req.mode}`)
+                  .andWhere(
+                    `renterCard.id ${
+                      req.filters.includes('renter') ? '=' : '!='
+                    } :cardId`,
+                  )
+                  .andWhere(
+                    `lessorCard.id ${
+                      req.filters.includes('lessor') ? '=' : '!='
+                    } :cardId`,
+                  ),
+              ),
+            )
+            .orWhere(
+              new Brackets((qb) =>
+                qb
+                  .where(`${!req.mode}`)
+                  .andWhere(
+                    new Brackets((qb) =>
+                      qb
+                        .where(
+                          new Brackets((qb) =>
+                            qb
+                              .where(`${req.filters.includes('renter')}`)
+                              .andWhere('renterCard.id = :cardId'),
+                          ),
+                        )
+                        .orWhere(
+                          new Brackets((qb) =>
+                            qb
+                              .where(`${req.filters.includes('lessor')}`)
+                              .andWhere('lessorCard.id = :cardId'),
+                          ),
+                        ),
+                    ),
+                  ),
+              ),
+            ),
+        ),
+        { cardId: req.card },
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.storage}`)
+            .orWhere('storage.id = :storageId', { storageId: req.storage }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.cell}`)
+            .orWhere('cell.id = :cellId', { cellId: req.cell }),
+        ),
+      )
       .orderBy('lease.id', 'DESC')
       .skip(req.skip)
       .take(req.take)

@@ -1,8 +1,9 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { CellsService } from './cells.service';
 import { Cell } from './cell.entity';
 import { CreateCellDto } from './cell.dto';
+import { StorageIdDto } from '../storages/storage.dto';
 import { Request, Response } from '../../common/interfaces';
 import { MyId, Public, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
@@ -30,6 +31,12 @@ export class CellsController {
   @Get('all')
   getAllCells(@Query() req: Request): Promise<Response<Cell>> {
     return this.cellsService.getAllCells(req);
+  }
+
+  @Public()
+  @Get(':storageId/select')
+  selectStorageCells(@Param() { storageId }: StorageIdDto): Promise<Cell[]> {
+    return this.cellsService.selectStorageCells(storageId);
   }
 
   @Post()

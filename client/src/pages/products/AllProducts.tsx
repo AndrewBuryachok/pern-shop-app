@@ -8,10 +8,14 @@ export default function AllProducts() {
 
   const [search, setSearch] = useState<ISearch>({
     user: '',
-    filters: ['Mode', 'Seller', 'Owner'].map((label, index) => ({
+    card: '',
+    mode: 'false',
+    filters: ['Seller', 'Owner'].map((label) => ({
       label,
-      value: !!index,
+      value: true,
     })),
+    storage: '',
+    cell: '',
     item: '',
     description: '',
   });

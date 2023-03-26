@@ -42,6 +42,10 @@ export class CitiesService {
     return { result, count };
   }
 
+  selectAllCities(): Promise<City[]> {
+    return this.selectCitiesQueryBuilder().addSelect('city.userId').getMany();
+  }
+
   selectMyCities(myId: number): Promise<City[]> {
     return this.selectCitiesQueryBuilder()
       .where('city.userId = :myId', { myId })
@@ -160,6 +164,13 @@ export class CitiesService {
           qb
             .where(`${!req.user}`)
             .orWhere('ownerUser.id = :userId', { userId: req.user }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.city}`)
+            .orWhere('city.id = :cityId', { cityId: req.city }),
         ),
       )
       .andWhere('city.name ILIKE :name', { name: `%${req.name}%` })

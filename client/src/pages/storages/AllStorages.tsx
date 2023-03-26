@@ -6,7 +6,12 @@ import StoragesTable from '../../features/storages/StoragesTable';
 export default function AllStorages() {
   const [page, setPage] = useState(1);
 
-  const [search, setSearch] = useState<ISearch>({ user: '', name: '' });
+  const [search, setSearch] = useState<ISearch>({
+    user: '',
+    card: '',
+    storage: '',
+    name: '',
+  });
 
   const response = useGetAllStoragesQuery({ page, search });
 

@@ -10,10 +10,14 @@ export default function MyLeases() {
 
   const [search, setSearch] = useState<ISearch>({
     user: '',
-    filters: ['Mode', 'Renter', 'Lessor'].map((label, index) => ({
+    card: '',
+    mode: 'false',
+    filters: ['Renter', 'Lessor'].map((label) => ({
       label,
-      value: !!index,
+      value: true,
     })),
+    storage: '',
+    cell: '',
   });
 
   const response = useGetMyLeasesQuery({ page, search });

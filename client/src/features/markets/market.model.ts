@@ -1,7 +1,9 @@
-import { Place, PlaceWithCard } from '../places/place.model';
+import { Place, PlaceWithCard, SmPlaceWithCard } from '../places/place.model';
 import { SmStore } from '../stores/store.model';
 
 export interface SmMarket extends Place {}
+
+export interface SmMarketWithCard extends SmPlaceWithCard {}
 
 export interface MdMarket extends PlaceWithCard {}
 

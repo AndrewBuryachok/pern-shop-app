@@ -8,9 +8,10 @@ export default function AllVotes() {
 
   const [search, setSearch] = useState<ISearch>({
     user: '',
-    filters: ['Mode', 'Voter', 'Poller'].map((label, index) => ({
+    mode: 'false',
+    filters: ['Voter', 'Poller'].map((label) => ({
       label,
-      value: !!index,
+      value: true,
     })),
     description: '',
     type: '',

@@ -8,7 +8,11 @@ import { Role } from '../../common/constants';
 export default function MainShops() {
   const [page, setPage] = useState(1);
 
-  const [search, setSearch] = useState<ISearch>({ user: '', name: '' });
+  const [search, setSearch] = useState<ISearch>({
+    user: '',
+    shop: '',
+    name: '',
+  });
 
   const response = useGetMainShopsQuery({ page, search });
 

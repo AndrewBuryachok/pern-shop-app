@@ -8,3 +8,4 @@ export * from './table';
 export * from './action';
 export * from './page';
 export * from './modal';
+export * from './search';

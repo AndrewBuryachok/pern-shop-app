@@ -8,7 +8,12 @@ import { Role } from '../../common/constants';
 export default function MainStorages() {
   const [page, setPage] = useState(1);
 
-  const [search, setSearch] = useState<ISearch>({ user: '', name: '' });
+  const [search, setSearch] = useState<ISearch>({
+    user: '',
+    card: '',
+    storage: '',
+    name: '',
+  });
 
   const response = useGetMainStoragesQuery({ page, search });
 

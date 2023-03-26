@@ -6,7 +6,12 @@ import MarketsTable from '../../features/markets/MarketsTable';
 export default function AllMarkets() {
   const [page, setPage] = useState(1);
 
-  const [search, setSearch] = useState<ISearch>({ user: '', name: '' });
+  const [search, setSearch] = useState<ISearch>({
+    user: '',
+    card: '',
+    market: '',
+    name: '',
+  });
 
   const response = useGetAllMarketsQuery({ page, search });
 

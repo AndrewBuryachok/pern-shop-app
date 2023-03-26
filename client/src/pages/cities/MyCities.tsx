@@ -10,7 +10,11 @@ import { Role } from '../../common/constants';
 export default function MyCities() {
   const [page, setPage] = useState(1);
 
-  const [search, setSearch] = useState<ISearch>({ user: '', name: '' });
+  const [search, setSearch] = useState<ISearch>({
+    user: '',
+    city: '',
+    name: '',
+  });
 
   const response = useGetMyCitiesQuery({ page, search });
 

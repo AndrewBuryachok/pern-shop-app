@@ -8,10 +8,14 @@ export default function AllTrades() {
 
   const [search, setSearch] = useState<ISearch>({
     user: '',
-    filters: ['Mode', 'Buyer', 'Seller', 'Owner'].map((label, index) => ({
+    card: '',
+    mode: 'false',
+    filters: ['Buyer', 'Seller', 'Owner'].map((label) => ({
       label,
-      value: !!index,
+      value: true,
     })),
+    market: '',
+    store: '',
     item: '',
     description: '',
   });

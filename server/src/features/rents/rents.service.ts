@@ -170,6 +170,68 @@ export class RentsService {
         ),
         { userId: req.user },
       )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.card}`)
+            .orWhere(
+              new Brackets((qb) =>
+                qb
+                  .where(`${req.mode}`)
+                  .andWhere(
+                    `renterCard.id ${
+                      req.filters.includes('renter') ? '=' : '!='
+                    } :cardId`,
+                  )
+                  .andWhere(
+                    `lessorCard.id ${
+                      req.filters.includes('lessor') ? '=' : '!='
+                    } :cardId`,
+                  ),
+              ),
+            )
+            .orWhere(
+              new Brackets((qb) =>
+                qb
+                  .where(`${!req.mode}`)
+                  .andWhere(
+                    new Brackets((qb) =>
+                      qb
+                        .where(
+                          new Brackets((qb) =>
+                            qb
+                              .where(`${req.filters.includes('renter')}`)
+                              .andWhere('renterCard.id = :cardId'),
+                          ),
+                        )
+                        .orWhere(
+                          new Brackets((qb) =>
+                            qb
+                              .where(`${req.filters.includes('lessor')}`)
+                              .andWhere('lessorCard.id = :cardId'),
+                          ),
+                        ),
+                    ),
+                  ),
+              ),
+            ),
+        ),
+        { cardId: req.card },
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.market}`)
+            .orWhere('market.id = :marketId', { marketId: req.market }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.store}`)
+            .orWhere('store.id = :storeId', { storeId: req.store }),
+        ),
+      )
       .orderBy('rent.id', 'DESC')
       .skip(req.skip)
       .take(req.take)

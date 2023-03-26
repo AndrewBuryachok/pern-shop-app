@@ -118,6 +118,13 @@ export class ExchangesService {
       .andWhere(
         new Brackets((qb) =>
           qb
+            .where(`${!req.card}`)
+            .orWhere('customerCard.id = :cardId', { cardId: req.card }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
             .where(`${!req.type}`)
             .orWhere('exchange.type = :type', { type: req.type === 1 }),
         ),

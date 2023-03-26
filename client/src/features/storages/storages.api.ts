@@ -1,6 +1,11 @@
 import { emptyApi } from '../../app/empty.api';
 import { IRequest, IResponse } from '../../common/interfaces';
-import { MyStorage, SmStorageWithPrice, Storage } from './storage.model';
+import {
+  MyStorage,
+  SmStorageWithCard,
+  SmStorageWithPrice,
+  Storage,
+} from './storage.model';
 import { CreateStorageDto, EditStorageDto } from './storage.dto';
 import { getQuery } from '../../common/utils';
 
@@ -21,6 +26,12 @@ export const storagesApi = emptyApi.injectEndpoints({
     getAllStorages: build.query<IResponse<Storage>, IRequest>({
       query: (req) => ({
         url: `/storages/all?${getQuery(req)}`,
+      }),
+      providesTags: ['Storage'],
+    }),
+    selectAllStorages: build.query<SmStorageWithCard[], void>({
+      query: () => ({
+        url: '/storages/all/select',
       }),
       providesTags: ['Storage'],
     }),
@@ -59,6 +70,7 @@ export const {
   useGetMainStoragesQuery,
   useGetMyStoragesQuery,
   useGetAllStoragesQuery,
+  useSelectAllStoragesQuery,
   useSelectMyStoragesQuery,
   useSelectFreeStoragesQuery,
   useCreateStorageMutation,

@@ -257,6 +257,13 @@ export class UsersService {
             .orWhere('user.id = :userId', { userId: req.user }),
         ),
       )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.city}`)
+            .orWhere('city.id = :cityId', { cityId: req.city }),
+        ),
+      )
       .andWhere('user.name ILIKE :name', { name: `%${req.name}%` })
       .orderBy('user.status', 'DESC')
       .addOrderBy('user.id', 'DESC')

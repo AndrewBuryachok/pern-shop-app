@@ -1,8 +1,9 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { StoresService } from './stores.service';
 import { Store } from './store.entity';
 import { CreateStoreDto } from './store.dto';
+import { MarketIdDto } from '../markets/market.dto';
 import { Request, Response } from '../../common/interfaces';
 import { MyId, Public, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
@@ -30,6 +31,12 @@ export class StoresController {
   @Get('all')
   getAllStores(@Query() req: Request): Promise<Response<Store>> {
     return this.storesService.getAllStores(req);
+  }
+
+  @Public()
+  @Get(':marketId/select')
+  selectMarketStores(@Param() { marketId }: MarketIdDto): Promise<Store[]> {
+    return this.storesService.selectMarketStores(marketId);
   }
 
   @Post()

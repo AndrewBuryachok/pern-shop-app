@@ -8,7 +8,12 @@ import { Role } from '../../common/constants';
 export default function MainUsers() {
   const [page, setPage] = useState(1);
 
-  const [search, setSearch] = useState<ISearch>({ user: '', name: '' });
+  const [search, setSearch] = useState<ISearch>({
+    user: '',
+    city: '',
+    name: '',
+    users: true,
+  });
 
   const response = useGetMainUsersQuery({ page, search });
 

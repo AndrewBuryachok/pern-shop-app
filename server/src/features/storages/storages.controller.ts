@@ -40,6 +40,12 @@ export class StoragesController {
     return this.storagesService.getAllStorages(req);
   }
 
+  @Public()
+  @Get('all/select')
+  selectAllStorages(): Promise<Storage[]> {
+    return this.storagesService.selectAllStorages();
+  }
+
   @Get('my/select')
   selectMyStorages(@MyId() myId: number): Promise<Storage[]> {
     return this.storagesService.selectMyStorages(myId);

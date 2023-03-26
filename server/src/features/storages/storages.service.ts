@@ -42,6 +42,12 @@ export class StoragesService {
     return { result, count };
   }
 
+  selectAllStorages(): Promise<Storage[]> {
+    return this.selectStoragesQueryBuilder()
+      .addSelect(['storage.cardId'])
+      .getMany();
+  }
+
   selectMyStorages(myId: number): Promise<Storage[]> {
     return this.selectStoragesQueryBuilder()
       .innerJoin('storage.card', 'ownerCard')
@@ -185,6 +191,20 @@ export class StoragesService {
           qb
             .where(`${!req.user}`)
             .orWhere('ownerUser.id = :userId', { userId: req.user }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.card}`)
+            .orWhere('ownerCard.id = :cardId', { cardId: req.card }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.storage}`)
+            .orWhere('storage.id = :storageId', { storageId: req.storage }),
         ),
       )
       .andWhere('storage.name ILIKE :name', { name: `%${req.name}%` })

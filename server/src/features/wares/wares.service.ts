@@ -176,6 +176,68 @@ export class WaresService {
       .andWhere(
         new Brackets((qb) =>
           qb
+            .where(`${!req.card}`)
+            .orWhere(
+              new Brackets((qb) =>
+                qb
+                  .where(`${req.mode}`)
+                  .andWhere(
+                    `sellerCard.id ${
+                      req.filters.includes('seller') ? '=' : '!='
+                    } :cardId`,
+                  )
+                  .andWhere(
+                    `ownerCard.id ${
+                      req.filters.includes('owner') ? '=' : '!='
+                    } :cardId`,
+                  ),
+              ),
+            )
+            .orWhere(
+              new Brackets((qb) =>
+                qb
+                  .where(`${!req.mode}`)
+                  .andWhere(
+                    new Brackets((qb) =>
+                      qb
+                        .where(
+                          new Brackets((qb) =>
+                            qb
+                              .where(`${req.filters.includes('seller')}`)
+                              .andWhere('sellerCard.id = :cardId'),
+                          ),
+                        )
+                        .orWhere(
+                          new Brackets((qb) =>
+                            qb
+                              .where(`${req.filters.includes('owner')}`)
+                              .andWhere('ownerCard.id = :cardId'),
+                          ),
+                        ),
+                    ),
+                  ),
+              ),
+            ),
+        ),
+        { cardId: req.card },
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.market}`)
+            .orWhere('market.id = :marketId', { marketId: req.market }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.store}`)
+            .orWhere('store.id = :storeId', { storeId: req.store }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
             .where(`${!req.item}`)
             .orWhere('ware.item = :item', { item: req.item }),
         ),

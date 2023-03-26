@@ -6,7 +6,13 @@ import StoresTable from '../../features/stores/StoresTable';
 export default function AllStores() {
   const [page, setPage] = useState(1);
 
-  const [search, setSearch] = useState<ISearch>({ user: '', name: '' });
+  const [search, setSearch] = useState<ISearch>({
+    user: '',
+    card: '',
+    market: '',
+    store: '',
+    name: '',
+  });
 
   const response = useGetAllStoresQuery({ page, search });
 

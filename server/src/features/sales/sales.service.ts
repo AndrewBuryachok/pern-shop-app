@@ -146,6 +146,78 @@ export class SalesService {
       .andWhere(
         new Brackets((qb) =>
           qb
+            .where(`${!req.card}`)
+            .orWhere(
+              new Brackets((qb) =>
+                qb
+                  .where(`${req.mode}`)
+                  .andWhere(
+                    `buyerCard.id ${
+                      req.filters.includes('buyer') ? '=' : '!='
+                    } :cardId`,
+                  )
+                  .andWhere(
+                    `sellerCard.id ${
+                      req.filters.includes('seller') ? '=' : '!='
+                    } :cardId`,
+                  )
+                  .andWhere(
+                    `ownerCard.id ${
+                      req.filters.includes('owner') ? '=' : '!='
+                    } :cardId`,
+                  ),
+              ),
+            )
+            .orWhere(
+              new Brackets((qb) =>
+                qb.where(`${!req.mode}`).andWhere(
+                  new Brackets((qb) =>
+                    qb
+                      .where(
+                        new Brackets((qb) =>
+                          qb
+                            .where(`${req.filters.includes('buyer')}`)
+                            .andWhere('buyerCard.id = :cardId'),
+                        ),
+                      )
+                      .orWhere(
+                        new Brackets((qb) =>
+                          qb
+                            .where(`${req.filters.includes('seller')}`)
+                            .andWhere('sellerCard.id = :cardId'),
+                        ),
+                      )
+                      .orWhere(
+                        new Brackets((qb) =>
+                          qb
+                            .where(`${req.filters.includes('owner')}`)
+                            .andWhere('ownerCard.id = :cardId'),
+                        ),
+                      ),
+                  ),
+                ),
+              ),
+            ),
+        ),
+        { cardId: req.card },
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.storage}`)
+            .orWhere('storage.id = :storageId', { storageId: req.storage }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.cell}`)
+            .orWhere('cell.id = :cellId', { cellId: req.cell }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
             .where(`${!req.item}`)
             .orWhere('product.item = :item', { item: req.item }),
         ),

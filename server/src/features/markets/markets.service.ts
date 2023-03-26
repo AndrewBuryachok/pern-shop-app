@@ -41,6 +41,12 @@ export class MarketsService {
     return { result, count };
   }
 
+  selectAllMarkets(): Promise<Market[]> {
+    return this.selectMarketsQueryBuilder()
+      .addSelect('market.cardId')
+      .getMany();
+  }
+
   selectMyMarkets(myId: number): Promise<Market[]> {
     return this.selectMarketsQueryBuilder()
       .innerJoin('market.card', 'ownerCard')
@@ -161,6 +167,20 @@ export class MarketsService {
           qb
             .where(`${!req.user}`)
             .orWhere('ownerUser.id = :userId', { userId: req.user }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.card}`)
+            .orWhere('ownerCard.id = :cardId', { cardId: req.card }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.market}`)
+            .orWhere('market.id = :marketId', { marketId: req.market }),
         ),
       )
       .andWhere('market.name ILIKE :name', { name: `%${req.name}%` })

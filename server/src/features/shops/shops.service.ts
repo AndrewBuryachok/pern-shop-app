@@ -39,6 +39,10 @@ export class ShopsService {
     return { result, count };
   }
 
+  selectAllShops(): Promise<Shop[]> {
+    return this.selectShopsQueryBuilder().addSelect('shop.userId').getMany();
+  }
+
   selectMyShops(myId: number): Promise<Shop[]> {
     return this.selectShopsQueryBuilder()
       .where('shop.userId = :myId', { myId })
@@ -154,6 +158,13 @@ export class ShopsService {
           qb
             .where(`${!req.user}`)
             .orWhere('ownerUser.id = :userId', { userId: req.user }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.shop}`)
+            .orWhere('shop.id = :shopId', { shopId: req.shop }),
         ),
       )
       .andWhere('shop.name ILIKE :name', { name: `%${req.name}%` })

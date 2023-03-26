@@ -160,6 +160,13 @@ export class CardsService {
             .orWhere('ownerUser.id = :userId', { userId: req.user }),
         ),
       )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.card}`)
+            .orWhere('card.id = :cardId', { cardId: req.card }),
+        ),
+      )
       .andWhere('card.name ILIKE :name', { name: `%${req.name}%` })
       .orderBy('card.id', 'DESC')
       .skip(req.skip)

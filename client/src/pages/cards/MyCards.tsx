@@ -10,7 +10,12 @@ import { Role } from '../../common/constants';
 export default function MyCards() {
   const [page, setPage] = useState(1);
 
-  const [search, setSearch] = useState<ISearch>({ user: '', name: '' });
+  const [search, setSearch] = useState<ISearch>({
+    user: '',
+    card: '',
+    name: '',
+    cards: true,
+  });
 
   const response = useGetMyCardsQuery({ page, search });
 

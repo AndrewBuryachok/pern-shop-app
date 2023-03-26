@@ -1,6 +1,6 @@
 import { emptyApi } from '../../app/empty.api';
 import { IRequest, IResponse } from '../../common/interfaces';
-import { City, SmCity } from './city.model';
+import { City, SmCity, SmCityWithUser } from './city.model';
 import { CreateCityDto, EditCityDto } from './city.dto';
 import { getQuery } from '../../common/utils';
 
@@ -21,6 +21,12 @@ export const citiesApi = emptyApi.injectEndpoints({
     getAllCities: build.query<IResponse<City>, IRequest>({
       query: (req) => ({
         url: `/cities/all?${getQuery(req)}`,
+      }),
+      providesTags: ['City'],
+    }),
+    selectAllCities: build.query<SmCityWithUser[], void>({
+      query: () => ({
+        url: '/cities/all/select',
       }),
       providesTags: ['City'],
     }),
@@ -53,6 +59,7 @@ export const {
   useGetMainCitiesQuery,
   useGetMyCitiesQuery,
   useGetAllCitiesQuery,
+  useSelectAllCitiesQuery,
   useSelectMyCitiesQuery,
   useCreateCityMutation,
   useEditCityMutation,

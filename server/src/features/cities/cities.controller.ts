@@ -40,6 +40,12 @@ export class CitiesController {
     return this.citiesService.getAllCities(req);
   }
 
+  @Public()
+  @Get('all/select')
+  selectAllCities(): Promise<City[]> {
+    return this.citiesService.selectAllCities();
+  }
+
   @Get('my/select')
   selectMyCities(@MyId() myId: number): Promise<City[]> {
     return this.citiesService.selectMyCities(myId);

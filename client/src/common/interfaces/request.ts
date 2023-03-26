@@ -1,4 +1,4 @@
-import { ISearch } from './head';
+import { ISearch } from './search';
 
 export interface IRequest {
   page?: number;

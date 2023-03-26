@@ -10,6 +10,7 @@ export default function MainGoods() {
 
   const [search, setSearch] = useState<ISearch>({
     user: '',
+    shop: '',
     item: '',
     description: '',
   });

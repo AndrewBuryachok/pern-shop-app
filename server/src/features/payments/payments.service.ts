@@ -117,6 +117,54 @@ export class PaymentsService {
         ),
         { userId: req.user },
       )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.card}`)
+            .orWhere(
+              new Brackets((qb) =>
+                qb
+                  .where(`${req.mode}`)
+                  .andWhere(
+                    `senderCard.id ${
+                      req.filters.includes('sender') ? '=' : '!='
+                    } :cardId`,
+                  )
+                  .andWhere(
+                    `receiverCard.id ${
+                      req.filters.includes('receiver') ? '=' : '!='
+                    } :cardId`,
+                  ),
+              ),
+            )
+            .orWhere(
+              new Brackets((qb) =>
+                qb
+                  .where(`${!req.mode}`)
+                  .andWhere(
+                    new Brackets((qb) =>
+                      qb
+                        .where(
+                          new Brackets((qb) =>
+                            qb
+                              .where(`${req.filters.includes('sender')}`)
+                              .andWhere('senderCard.id = :cardId'),
+                          ),
+                        )
+                        .orWhere(
+                          new Brackets((qb) =>
+                            qb
+                              .where(`${req.filters.includes('receiver')}`)
+                              .andWhere('receiverCard.id = :cardId'),
+                          ),
+                        ),
+                    ),
+                  ),
+              ),
+            ),
+        ),
+        { cardId: req.card },
+      )
       .andWhere('payment.description ILIKE :description', {
         description: `%${req.description}%`,
       })

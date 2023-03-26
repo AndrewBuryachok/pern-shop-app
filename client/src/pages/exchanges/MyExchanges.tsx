@@ -10,16 +10,14 @@ export default function MyExchanges() {
 
   const [search, setSearch] = useState<ISearch>({
     user: '',
-    filters: ['Mode', 'Executor', 'Customer'].map((label, index) => ({
+    card: '',
+    mode: 'false',
+    filters: ['Executor', 'Customer'].map((label) => ({
       label,
-      value: !!index,
+      value: true,
     })),
     type: '',
   });
-
-  const [filters, setFilters] = useState(
-    ['Executor', 'Customer'].map((label) => ({ label, value: false })),
-  );
 
   const response = useGetMyExchangesQuery({ page, search });
 

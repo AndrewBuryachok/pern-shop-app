@@ -40,6 +40,12 @@ export class ShopsController {
     return this.shopsService.getAllShops(req);
   }
 
+  @Public()
+  @Get('all/select')
+  selectAllShops(): Promise<Shop[]> {
+    return this.shopsService.selectAllShops();
+  }
+
   @Get('my/select')
   selectMyShops(@MyId() myId: number): Promise<Shop[]> {
     return this.shopsService.selectMyShops(myId);

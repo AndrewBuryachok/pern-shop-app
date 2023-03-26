@@ -1,12 +1,13 @@
 import { SmUser } from '../../features/users/user.model';
 import { SmCard, SmCardWithBalance } from '../../features/cards/card.model';
-import { SmCity } from '../../features/cities/city.model';
-import { SmShop } from '../../features/shops/shop.model';
-import { SmMarket } from '../../features/markets/market.model';
+import { SmCityWithUser } from '../../features/cities/city.model';
+import { SmShopWithUser } from '../../features/shops/shop.model';
+import { SmMarketWithCard } from '../../features/markets/market.model';
 import {
-  SmStorage,
+  SmStorageWithCard,
   SmStorageWithPrice,
 } from '../../features/storages/storage.model';
+import { Container } from '../../features/containers/container.model';
 import { SelectRent } from '../../features/rents/rent.model';
 import { categories, colors, items, kits, roles } from '../../common/constants';
 
@@ -34,30 +35,34 @@ export const selectCardsWithBalance = (cards?: SmCardWithBalance[]) =>
     label: `${card.name} ${card.balance}$`,
   })) || [];
 
-export const selectCities = (cities?: SmCity[]) =>
-  cities?.map((city) => ({
+export const selectCities = (cities?: SmCityWithUser[]) =>
+  cities?.map(({ userId, ...city }) => ({
     ...city,
+    user: userId,
     value: `${city.id}`,
     label: `${city.name} (${city.x} ${city.y})`,
   })) || [];
 
-export const selectShops = (shops?: SmShop[]) =>
-  shops?.map((shop) => ({
+export const selectShops = (shops?: SmShopWithUser[]) =>
+  shops?.map(({ userId, ...shop }) => ({
     ...shop,
+    user: userId,
     value: `${shop.id}`,
     label: `${shop.name} (${shop.x} ${shop.y})`,
   })) || [];
 
-export const selectMarkets = (markets?: SmMarket[]) =>
-  markets?.map((market) => ({
+export const selectMarkets = (markets?: SmMarketWithCard[]) =>
+  markets?.map(({ cardId, ...market }) => ({
     ...market,
+    card: cardId,
     value: `${market.id}`,
     label: `${market.name} (${market.x} ${market.y})`,
   })) || [];
 
-export const selectStorages = (storages?: SmStorage[]) =>
-  storages?.map((storage) => ({
+export const selectStorages = (storages?: SmStorageWithCard[]) =>
+  storages?.map(({ cardId, ...storage }) => ({
     ...storage,
+    card: cardId,
     value: `${storage.id}`,
     label: `${storage.name} (${storage.x} ${storage.y})`,
   })) || [];
@@ -68,6 +73,12 @@ export const selectStoragesWithPrice = (storages?: SmStorageWithPrice[]) =>
     withPrice: true,
     value: `${storage.id}`,
     label: `${storage.name} (${storage.x} ${storage.y}) ${storage.price}$`,
+  })) || [];
+
+export const selectContainers = (containers?: Container[]) =>
+  containers?.map((container) => ({
+    value: `${container.id}`,
+    label: `#${container.name}`,
   })) || [];
 
 export const selectRents = (rents?: SelectRent[]) =>

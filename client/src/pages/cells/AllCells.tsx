@@ -6,7 +6,13 @@ import CellsTable from '../../features/cells/CellsTable';
 export default function AllCells() {
   const [page, setPage] = useState(1);
 
-  const [search, setSearch] = useState<ISearch>({ user: '', name: '' });
+  const [search, setSearch] = useState<ISearch>({
+    user: '',
+    card: '',
+    storage: '',
+    cell: '',
+    name: '',
+  });
 
   const response = useGetAllCellsQuery({ page, search });
 
