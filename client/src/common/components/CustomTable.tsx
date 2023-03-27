@@ -36,11 +36,11 @@ export default function CustomTable<T>(props: Props<T>) {
             </thead>
             <tbody>
               {props.isFetching
-                ? [...Array(5).keys()].map((key) => (
+                ? [...Array(10).keys()].map((key) => (
                     <tr key={key}>
                       {props.columns.map((column) => (
                         <td key={column}>
-                          <Skeleton h={16} />
+                          <Skeleton h={32} />
                         </td>
                       ))}
                     </tr>

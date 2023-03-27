@@ -1,4 +1,4 @@
-import { Group, Pagination, Skeleton } from '@mantine/core';
+import { Pagination } from '@mantine/core';
 import { IPagination } from '../interfaces/pagination';
 
 type Props = IPagination & {
@@ -7,18 +7,13 @@ type Props = IPagination & {
 };
 
 export default function CustomHead(props: Props) {
-  return props.isFetching ? (
-    <Group spacing={8}>
-      {[...Array(5).keys()].map((key) => (
-        <Skeleton key={key} h={32} w={32} />
-      ))}
-    </Group>
-  ) : (
+  return (
     <Pagination
-      withControls={false}
       total={props.total || 1}
       page={props.page}
       onChange={props.setPage}
+      withControls={false}
+      disabled={props.isFetching}
     />
   );
 }
