@@ -37,6 +37,7 @@ export default function EditStorageModal({ data: storage }: Props) {
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
       text={'Edit storage'}
+      isChanged={!form.isDirty()}
     >
       <TextInput
         label='Name'

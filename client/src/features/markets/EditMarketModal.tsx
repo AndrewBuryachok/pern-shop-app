@@ -37,6 +37,7 @@ export default function EditMarketModal({ data: market }: Props) {
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
       text={'Edit market'}
+      isChanged={!form.isDirty()}
     >
       <TextInput
         label='Name'

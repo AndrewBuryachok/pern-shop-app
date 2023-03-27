@@ -55,6 +55,7 @@ export default function EditGoodModal({ data: good }: Props) {
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
       text={'Edit good'}
+      isChanged={!form.isDirty()}
     >
       <Select
         label='Category'

@@ -6,6 +6,7 @@ type Props = {
   onSubmit: () => void;
   isLoading: boolean;
   text?: string;
+  isChanged?: boolean;
 };
 
 export default function CustomForm(props: Props) {
@@ -15,7 +16,9 @@ export default function CustomForm(props: Props) {
         <LoadingOverlay visible={props.isLoading} />
         {props.children}
         {props.text && <Text size='xs'>{props.text}?</Text>}
-        <Button type='submit'>Submit</Button>
+        <Button type='submit' disabled={props.isLoading || props.isChanged}>
+          Submit
+        </Button>
       </Stack>
     </form>
   );

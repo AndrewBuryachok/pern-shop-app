@@ -37,6 +37,7 @@ export default function EditShopModal({ data: shop }: Props) {
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
       text={'Edit shop'}
+      isChanged={!form.isDirty()}
     >
       <TextInput
         label='Name'

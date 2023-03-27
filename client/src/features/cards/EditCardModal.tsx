@@ -37,6 +37,7 @@ export default function EditCardModal({ data: card }: Props) {
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
       text={'Edit card'}
+      isChanged={!form.isDirty()}
     >
       <TextInput
         label='Name'

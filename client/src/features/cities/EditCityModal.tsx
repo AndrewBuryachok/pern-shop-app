@@ -37,6 +37,7 @@ export default function EditCityModal({ data: city }: Props) {
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
       text={'Edit city'}
+      isChanged={!form.isDirty()}
     >
       <TextInput
         label='Name'
