@@ -27,7 +27,7 @@ export default function ViewLeaseModal({ data: lease }: Props) {
         disabled
       />
       <TextInput
-        label='Lessor'
+        label='Owner'
         icon={<CustomAvatar {...lease.cell.storage.card.user} />}
         iconWidth={48}
         value={parseCard(lease.cell.storage.card)}

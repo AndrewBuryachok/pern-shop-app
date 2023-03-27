@@ -20,7 +20,7 @@ export default function RentsTable({ actions = [], ...props }: Props) {
       minWidth={800}
       columns={[
         'Renter',
-        'Lessor',
+        'Owner',
         'Market',
         'Sum',
         'Created',

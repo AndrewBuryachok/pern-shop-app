@@ -12,7 +12,7 @@ export default function MyRents() {
     user: '',
     card: '',
     mode: 'false',
-    filters: ['Renter', 'Lessor'].map((label) => ({
+    filters: ['Renter', 'Owner'].map((label) => ({
       label,
       value: true,
     })),

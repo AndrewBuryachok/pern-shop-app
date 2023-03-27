@@ -20,7 +20,7 @@ export default function LeasesTable({ actions = [], ...props }: Props) {
       minWidth={800}
       columns={[
         'Renter',
-        'Lessor',
+        'Owner',
         'Storage',
         'Sum',
         'Created',

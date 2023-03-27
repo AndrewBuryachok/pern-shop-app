@@ -27,7 +27,7 @@ export default function ViewRentModal({ data: rent }: Props) {
         disabled
       />
       <TextInput
-        label='Lessor'
+        label='Owner'
         icon={<CustomAvatar {...rent.store.market.card.user} />}
         iconWidth={48}
         value={parseCard(rent.store.market.card)}

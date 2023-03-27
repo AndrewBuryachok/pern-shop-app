@@ -15,7 +15,7 @@ export class LeasesService {
     const [result, count] = await this.getLeasesQueryBuilder(req)
       .andWhere(
         new Brackets((qb) =>
-          qb.where('renterUser.id = :myId').orWhere('lessorUser.id = :myId'),
+          qb.where('renterUser.id = :myId').orWhere('ownerUser.id = :myId'),
         ),
         { myId },
       )
@@ -62,8 +62,8 @@ export class LeasesService {
       .createQueryBuilder('lease')
       .innerJoin('lease.cell', 'cell')
       .innerJoin('cell.storage', 'storage')
-      .innerJoin('storage.card', 'lessorCard')
-      .innerJoin('lessorCard.user', 'lessorUser')
+      .innerJoin('storage.card', 'ownerCard')
+      .innerJoin('ownerCard.user', 'ownerUser')
       .innerJoin('lease.card', 'renterCard')
       .innerJoin('renterCard.user', 'renterUser')
       .where(
@@ -80,8 +80,8 @@ export class LeasesService {
                     } :userId`,
                   )
                   .andWhere(
-                    `lessorUser.id ${
-                      req.filters.includes('lessor') ? '=' : '!='
+                    `ownerUser.id ${
+                      req.filters.includes('owner') ? '=' : '!='
                     } :userId`,
                   ),
               ),
@@ -103,8 +103,8 @@ export class LeasesService {
                         .orWhere(
                           new Brackets((qb) =>
                             qb
-                              .where(`${req.filters.includes('lessor')}`)
-                              .andWhere('lessorUser.id = :userId'),
+                              .where(`${req.filters.includes('owner')}`)
+                              .andWhere('ownerUser.id = :userId'),
                           ),
                         ),
                     ),
@@ -128,8 +128,8 @@ export class LeasesService {
                     } :cardId`,
                   )
                   .andWhere(
-                    `lessorCard.id ${
-                      req.filters.includes('lessor') ? '=' : '!='
+                    `ownerCard.id ${
+                      req.filters.includes('owner') ? '=' : '!='
                     } :cardId`,
                   ),
               ),
@@ -151,8 +151,8 @@ export class LeasesService {
                         .orWhere(
                           new Brackets((qb) =>
                             qb
-                              .where(`${req.filters.includes('lessor')}`)
-                              .andWhere('lessorCard.id = :cardId'),
+                              .where(`${req.filters.includes('owner')}`)
+                              .andWhere('ownerCard.id = :cardId'),
                           ),
                         ),
                     ),
@@ -183,12 +183,12 @@ export class LeasesService {
         'lease.id',
         'cell.id',
         'storage.id',
-        'lessorCard.id',
-        'lessorUser.id',
-        'lessorUser.name',
-        'lessorUser.status',
-        'lessorCard.name',
-        'lessorCard.color',
+        'ownerCard.id',
+        'ownerUser.id',
+        'ownerUser.name',
+        'ownerUser.status',
+        'ownerCard.name',
+        'ownerCard.color',
         'storage.name',
         'storage.x',
         'storage.y',
