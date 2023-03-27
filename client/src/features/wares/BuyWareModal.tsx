@@ -1,4 +1,10 @@
-import { NumberInput, Select, Textarea, TextInput } from '@mantine/core';
+import {
+  Loader,
+  NumberInput,
+  Select,
+  Textarea,
+  TextInput,
+} from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
@@ -31,7 +37,7 @@ export default function BuyWareModal({ data: ware }: Props) {
     transformValues: ({ card, ...rest }) => ({ ...rest, cardId: +card }),
   });
 
-  const { data: cards } = useSelectMyCardsQuery();
+  const { data: cards, isFetching: isCardsFetching } = useSelectMyCardsQuery();
 
   const card = cards?.find((card) => card.id === +form.values.card);
   const maxAmount = card && Math.floor(card.balance / ware.price);
@@ -76,10 +82,12 @@ export default function BuyWareModal({ data: ware }: Props) {
       <Select
         label='Card'
         placeholder='Card'
+        rightSection={isCardsFetching && <Loader size={16} />}
         itemComponent={CardsItem}
         data={selectCardsWithBalance(cards)}
         searchable
         required
+        disabled={isCardsFetching}
         {...form.getInputProps('card')}
       />
       <NumberInput

@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { NumberInput, Select, Textarea } from '@mantine/core';
+import { Loader, NumberInput, Select, Textarea } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { useCreateProductMutation } from './products.api';
@@ -49,8 +49,9 @@ export default function CreateProductModal() {
 
   useEffect(() => form.setFieldValue('item', ''), [form.values.category]);
 
-  const { data: storages } = useSelectFreeStoragesQuery();
-  const { data: cards } = useSelectMyCardsQuery();
+  const { data: storages, isFetching: isStoragesFetching } =
+    useSelectFreeStoragesQuery();
+  const { data: cards, isFetching: isCardsFetching } = useSelectMyCardsQuery();
 
   const [createProduct, { isLoading }] = useCreateProductMutation();
 
@@ -67,19 +68,23 @@ export default function CreateProductModal() {
       <Select
         label='Storage'
         placeholder='Storage'
+        rightSection={isStoragesFetching && <Loader size={16} />}
         itemComponent={PlacesItem}
         data={selectStoragesWithPrice(storages)}
         searchable
         required
+        disabled={isStoragesFetching}
         {...form.getInputProps('storage')}
       />
       <Select
         label='Card'
         placeholder='Card'
+        rightSection={isCardsFetching && <Loader size={16} />}
         itemComponent={CardsItem}
         data={selectCardsWithBalance(cards)}
         searchable
         required
+        disabled={isCardsFetching}
         {...form.getInputProps('card')}
       />
       <Select

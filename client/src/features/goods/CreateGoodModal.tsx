@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { NumberInput, Select, Textarea } from '@mantine/core';
+import { Loader, NumberInput, Select, Textarea } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { useCreateGoodMutation } from './goods.api';
@@ -44,7 +44,7 @@ export default function CreateGoodModal() {
 
   useEffect(() => form.setFieldValue('item', ''), [form.values.category]);
 
-  const { data: shops } = useSelectMyShopsQuery();
+  const { data: shops, isFetching: isShopsFetching } = useSelectMyShopsQuery();
 
   const [createGood, { isLoading }] = useCreateGoodMutation();
 
@@ -61,10 +61,12 @@ export default function CreateGoodModal() {
       <Select
         label='Shop'
         placeholder='Shop'
+        rightSection={isShopsFetching && <Loader size={16} />}
         itemComponent={PlacesItem}
         data={selectShops(shops)}
         searchable
         required
+        disabled={isShopsFetching}
         {...form.getInputProps('shop')}
       />
       <Select

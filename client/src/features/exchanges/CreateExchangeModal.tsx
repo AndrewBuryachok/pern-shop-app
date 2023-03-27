@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { NumberInput, Select } from '@mantine/core';
+import { Loader, NumberInput, Select } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { useCreateExchangeMutation } from './exchanges.api';
@@ -36,12 +36,13 @@ export default function CreateExchangeModal() {
 
   useEffect(() => form.setFieldValue('card', ''), [form.values.user]);
 
-  const { data: users } = useSelectAllUsersQuery();
-  const { data: cards } = useSelectUserCardsWithBalanceQuery(
-    +form.values.user,
-    { skip: !form.values.user },
-  );
+  const { data: users, isFetching: isUsersFetching } = useSelectAllUsersQuery();
+  const { data: cards, isFetching: isCardsFetching } =
+    useSelectUserCardsWithBalanceQuery(+form.values.user, {
+      skip: !form.values.user,
+    });
 
+  const user = users?.find((user) => user.id === +form.values.user);
   const card = cards?.find((card) => card.id === +form.values.card);
   const maxSum = !+form.values.type ? card?.balance : undefined;
 
@@ -60,27 +61,25 @@ export default function CreateExchangeModal() {
       <Select
         label='User'
         placeholder='User'
-        icon={
-          form.values.user && (
-            <CustomAvatar
-              {...users?.find((user) => user.id === +form.values.user)!}
-            />
-          )
-        }
+        icon={user && <CustomAvatar {...user} />}
         iconWidth={48}
+        rightSection={isUsersFetching && <Loader size={16} />}
         itemComponent={UsersItem}
         data={selectUsers(users)}
         searchable
         required
+        disabled={isUsersFetching}
         {...form.getInputProps('user')}
       />
       <Select
         label='Card'
         placeholder='Card'
+        rightSection={isCardsFetching && <Loader size={16} />}
         itemComponent={CardsItem}
         data={selectCardsWithBalance(cards)}
         searchable
         required
+        disabled={isCardsFetching}
         {...form.getInputProps('card')}
       />
       <Select

@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { NumberInput, Select, Textarea } from '@mantine/core';
+import { Loader, NumberInput, Select, Textarea } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { useCreateWareMutation } from './wares.api';
@@ -44,7 +44,7 @@ export default function CreateWareModal() {
 
   useEffect(() => form.setFieldValue('item', ''), [form.values.category]);
 
-  const { data: rents } = useSelectMyRentsQuery();
+  const { data: rents, isFetching: isRentsFetching } = useSelectMyRentsQuery();
 
   const [createWare, { isLoading }] = useCreateWareMutation();
 
@@ -61,10 +61,12 @@ export default function CreateWareModal() {
       <Select
         label='Rent'
         placeholder='Rent'
+        rightSection={isRentsFetching && <Loader size={16} />}
         itemComponent={PlacesItem}
         data={selectRents(rents)}
         searchable
         required
+        disabled={isRentsFetching}
         {...form.getInputProps('rent')}
       />
       <Select

@@ -1,4 +1,4 @@
-import { Select, TextInput } from '@mantine/core';
+import { Loader, Select, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
@@ -33,7 +33,7 @@ export default function ReserveStoreModal({ data: store }: Props) {
     },
   });
 
-  const { data: cards } = useSelectMyCardsQuery();
+  const { data: cards, isFetching: isCardsFetching } = useSelectMyCardsQuery();
 
   myCard.balance =
     cards?.find((card) => card.id === +form.values.card)?.balance || 0;
@@ -62,10 +62,12 @@ export default function ReserveStoreModal({ data: store }: Props) {
       <Select
         label='Card'
         placeholder='Card'
+        rightSection={isCardsFetching && <Loader size={16} />}
         itemComponent={CardsItem}
         data={selectCardsWithBalance(cards)}
         searchable
         required
+        disabled={isCardsFetching}
         {...form.getInputProps('card')}
       />
     </CustomForm>

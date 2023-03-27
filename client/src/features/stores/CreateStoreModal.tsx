@@ -1,4 +1,4 @@
-import { Select, TextInput } from '@mantine/core';
+import { Loader, Select, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { useCreateStoreMutation } from './stores.api';
@@ -20,7 +20,8 @@ export default function CreateStoreModal() {
     }),
   });
 
-  const { data: markets } = useSelectMyMarketsQuery();
+  const { data: markets, isFetching: isMarketsFetching } =
+    useSelectMyMarketsQuery();
 
   const market = markets?.find((market) => market.id === +form.values.market);
   form.values.name = market ? `#${market.stores + 1}` : '';
@@ -40,10 +41,12 @@ export default function CreateStoreModal() {
       <Select
         label='Market'
         placeholder='Market'
+        rightSection={isMarketsFetching && <Loader size={16} />}
         itemComponent={PlacesItem}
         data={selectMarkets(markets)}
         searchable
         required
+        disabled={isMarketsFetching}
         {...form.getInputProps('market')}
       />
       <TextInput label='Name' disabled {...form.getInputProps('name')} />

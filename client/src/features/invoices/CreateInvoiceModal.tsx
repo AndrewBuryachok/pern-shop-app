@@ -1,4 +1,4 @@
-import { NumberInput, Select, Textarea } from '@mantine/core';
+import { Loader, NumberInput, Select, Textarea } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { useCreateInvoiceMutation } from './invoices.api';
@@ -27,8 +27,10 @@ export default function CreateInvoiceModal() {
     }),
   });
 
-  const { data: myCards } = useSelectMyCardsQuery();
-  const { data: users } = useSelectAllUsersQuery();
+  const { data: cards, isFetching: isCardsFetching } = useSelectMyCardsQuery();
+  const { data: users, isFetching: isUsersFetching } = useSelectAllUsersQuery();
+
+  const user = users?.find((user) => user.id === +form.values.receiverUser);
 
   const [createInvoice, { isLoading }] = useCreateInvoiceMutation();
 
@@ -45,27 +47,25 @@ export default function CreateInvoiceModal() {
       <Select
         label='Sender Card'
         placeholder='Sender Card'
+        rightSection={isCardsFetching && <Loader size={16} />}
         itemComponent={CardsItem}
-        data={selectCardsWithBalance(myCards)}
+        data={selectCardsWithBalance(cards)}
         searchable
         required
+        disabled={isCardsFetching}
         {...form.getInputProps('senderCard')}
       />
       <Select
         label='Receiver User'
         placeholder='Receiver User'
-        icon={
-          form.values.receiverUser && (
-            <CustomAvatar
-              {...users?.find((user) => user.id === +form.values.receiverUser)!}
-            />
-          )
-        }
+        icon={user && <CustomAvatar {...user} />}
         iconWidth={48}
+        rightSection={isUsersFetching && <Loader size={16} />}
         itemComponent={UsersItem}
         data={selectUsers(users)}
         searchable
         required
+        disabled={isUsersFetching}
         {...form.getInputProps('receiverUser')}
       />
       <NumberInput

@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { NumberInput, Select, Textarea } from '@mantine/core';
+import { Loader, NumberInput, Select, Textarea } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { useCreatePaymentMutation } from './payments.api';
@@ -37,12 +37,15 @@ export default function CreatePaymentModal() {
 
   useEffect(() => form.setFieldValue('receiverCard', ''), [form.values.user]);
 
-  const { data: myCards } = useSelectMyCardsQuery();
-  const { data: users } = useSelectAllUsersQuery();
-  const { data: cards } = useSelectUserCardsQuery(+form.values.user, {
-    skip: !form.values.user,
-  });
+  const { data: myCards, isFetching: isMyCardsFetching } =
+    useSelectMyCardsQuery();
+  const { data: users, isFetching: isUsersFetching } = useSelectAllUsersQuery();
+  const { data: cards, isFetching: isCardsFetching } = useSelectUserCardsQuery(
+    +form.values.user,
+    { skip: !form.values.user },
+  );
 
+  const user = users?.find((user) => user.id === +form.values.user);
   const card = myCards?.find((card) => card.id === +form.values.senderCard);
   const maxSum = card?.balance;
 
@@ -61,36 +64,36 @@ export default function CreatePaymentModal() {
       <Select
         label='Sender Card'
         placeholder='Sender Card'
+        rightSection={isMyCardsFetching && <Loader size={16} />}
         itemComponent={CardsItem}
         data={selectCardsWithBalance(myCards)}
         searchable
         required
+        disabled={isMyCardsFetching}
         {...form.getInputProps('senderCard')}
       />
       <Select
         label='User'
         placeholder='User'
-        icon={
-          form.values.user && (
-            <CustomAvatar
-              {...users?.find((user) => user.id === +form.values.user)!}
-            />
-          )
-        }
+        icon={user && <CustomAvatar {...user} />}
         iconWidth={48}
+        rightSection={isUsersFetching && <Loader size={16} />}
         itemComponent={UsersItem}
         data={selectUsers(users)}
         searchable
         required
+        disabled={isUsersFetching}
         {...form.getInputProps('user')}
       />
       <Select
         label='Receiver Card'
         placeholder='Receiver Card'
+        rightSection={isCardsFetching && <Loader size={16} />}
         itemComponent={CardsItem}
         data={selectCards(cards)}
         searchable
         required
+        disabled={isCardsFetching}
         {...form.getInputProps('receiverCard')}
       />
       <NumberInput
