@@ -9,8 +9,8 @@ export default function MainShops() {
   const [page, setPage] = useState(1);
 
   const [search, setSearch] = useState<ISearch>({
-    user: '',
-    shop: '',
+    user: null,
+    shop: null,
     name: '',
   });
 

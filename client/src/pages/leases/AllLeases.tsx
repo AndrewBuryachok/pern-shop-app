@@ -7,15 +7,15 @@ export default function AllLeases() {
   const [page, setPage] = useState(1);
 
   const [search, setSearch] = useState<ISearch>({
-    user: '',
-    card: '',
+    user: null,
+    card: null,
     mode: 'false',
     filters: ['Renter', 'Owner'].map((label) => ({
       label,
       value: true,
     })),
-    storage: '',
-    cell: '',
+    storage: null,
+    cell: null,
   });
 
   const response = useGetAllLeasesQuery({ page, search });

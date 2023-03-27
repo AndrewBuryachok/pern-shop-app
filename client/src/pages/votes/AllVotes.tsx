@@ -7,14 +7,14 @@ export default function AllVotes() {
   const [page, setPage] = useState(1);
 
   const [search, setSearch] = useState<ISearch>({
-    user: '',
+    user: null,
     mode: 'false',
     filters: ['Voter', 'Poller'].map((label) => ({
       label,
       value: true,
     })),
     description: '',
-    type: '',
+    type: null,
   });
 
   const response = useGetAllVotesQuery({ page, search });

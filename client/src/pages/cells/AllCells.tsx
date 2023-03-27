@@ -7,10 +7,10 @@ export default function AllCells() {
   const [page, setPage] = useState(1);
 
   const [search, setSearch] = useState<ISearch>({
-    user: '',
-    card: '',
-    storage: '',
-    cell: '',
+    user: null,
+    card: null,
+    storage: null,
+    cell: null,
     name: '',
   });
 

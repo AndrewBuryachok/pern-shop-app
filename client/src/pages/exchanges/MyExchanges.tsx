@@ -9,14 +9,14 @@ export default function MyExchanges() {
   const [page, setPage] = useState(1);
 
   const [search, setSearch] = useState<ISearch>({
-    user: '',
-    card: '',
+    user: null,
+    card: null,
     mode: 'false',
     filters: ['Executor', 'Customer'].map((label) => ({
       label,
       value: true,
     })),
-    type: '',
+    type: null,
   });
 
   const response = useGetMyExchangesQuery({ page, search });

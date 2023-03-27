@@ -6,7 +6,10 @@ import PollsTable from '../../features/polls/PollsTable';
 export default function AllPolls() {
   const [page, setPage] = useState(1);
 
-  const [search, setSearch] = useState<ISearch>({ user: '', description: '' });
+  const [search, setSearch] = useState<ISearch>({
+    user: null,
+    description: '',
+  });
 
   const response = useGetAllPollsQuery({ page, search });
 

@@ -10,16 +10,16 @@ export default function MainProducts() {
   const [page, setPage] = useState(1);
 
   const [search, setSearch] = useState<ISearch>({
-    user: '',
-    card: '',
+    user: null,
+    card: null,
     mode: 'false',
     filters: ['Seller', 'Owner'].map((label) => ({
       label,
       value: true,
     })),
-    storage: '',
-    cell: '',
-    item: '',
+    storage: null,
+    cell: null,
+    item: null,
     description: '',
   });
 

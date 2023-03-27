@@ -12,9 +12,9 @@ export default function MyGoods() {
   const [page, setPage] = useState(1);
 
   const [search, setSearch] = useState<ISearch>({
-    user: '',
-    shop: '',
-    item: '',
+    user: null,
+    shop: null,
+    item: null,
     description: '',
   });
 

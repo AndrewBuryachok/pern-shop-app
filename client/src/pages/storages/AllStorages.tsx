@@ -7,9 +7,9 @@ export default function AllStorages() {
   const [page, setPage] = useState(1);
 
   const [search, setSearch] = useState<ISearch>({
-    user: '',
-    card: '',
-    storage: '',
+    user: null,
+    card: null,
+    storage: null,
     name: '',
   });
 

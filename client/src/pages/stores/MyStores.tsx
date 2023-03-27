@@ -10,10 +10,10 @@ export default function MyStores() {
   const [page, setPage] = useState(1);
 
   const [search, setSearch] = useState<ISearch>({
-    user: '',
-    card: '',
-    market: '',
-    store: '',
+    user: null,
+    card: null,
+    market: null,
+    store: null,
     name: '',
   });
 

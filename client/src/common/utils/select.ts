@@ -1,4 +1,4 @@
-import { SmUser } from '../../features/users/user.model';
+import { SmUserWithCity } from '../../features/users/user.model';
 import { SmCard, SmCardWithBalance } from '../../features/cards/card.model';
 import { SmCityWithUser } from '../../features/cities/city.model';
 import { SmShopWithUser } from '../../features/shops/shop.model';
@@ -11,10 +11,11 @@ import { Container } from '../../features/containers/container.model';
 import { SelectRent } from '../../features/rents/rent.model';
 import { categories, colors, items, kits, roles } from '../../common/constants';
 
-export const selectUsers = (users?: SmUser[]) =>
-  users?.map((user) => ({
+export const selectUsers = (users?: SmUserWithCity[]) =>
+  users?.map(({ cityId, ...user }) => ({
     ...user,
     status: +user.status,
+    city: cityId,
     value: `${user.id}`,
     label: user.name,
   })) || [];

@@ -11,8 +11,8 @@ export default function MyCards() {
   const [page, setPage] = useState(1);
 
   const [search, setSearch] = useState<ISearch>({
-    user: '',
-    card: '',
+    user: null,
+    card: null,
     name: '',
     cards: true,
   });

@@ -7,6 +7,10 @@ export interface SmUser {
   status: boolean;
 }
 
+export interface SmUserWithCity extends SmUser {
+  cityId?: number;
+}
+
 export interface MdUser extends SmUser {
   roles: number[];
 }

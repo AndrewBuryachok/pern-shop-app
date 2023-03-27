@@ -7,8 +7,8 @@ export default function AllCities() {
   const [page, setPage] = useState(1);
 
   const [search, setSearch] = useState<ISearch>({
-    user: '',
-    city: '',
+    user: null,
+    city: null,
     name: '',
   });
 

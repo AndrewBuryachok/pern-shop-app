@@ -9,16 +9,16 @@ export default function MyTrades() {
   const [page, setPage] = useState(1);
 
   const [search, setSearch] = useState<ISearch>({
-    user: '',
-    card: '',
+    user: null,
+    card: null,
     mode: 'false',
     filters: ['Buyer', 'Seller', 'Owner'].map((label) => ({
       label,
       value: true,
     })),
-    market: '',
-    store: '',
-    item: '',
+    market: null,
+    store: null,
+    item: null,
     description: '',
   });
 

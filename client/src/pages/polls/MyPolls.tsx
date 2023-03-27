@@ -11,7 +11,10 @@ import { Role } from '../../common/constants';
 export default function MyPolls() {
   const [page, setPage] = useState(1);
 
-  const [search, setSearch] = useState<ISearch>({ user: '', description: '' });
+  const [search, setSearch] = useState<ISearch>({
+    user: null,
+    description: '',
+  });
 
   const response = useGetMyPollsQuery({ page, search });
 

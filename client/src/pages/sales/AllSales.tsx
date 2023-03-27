@@ -7,16 +7,16 @@ export default function AllSales() {
   const [page, setPage] = useState(1);
 
   const [search, setSearch] = useState<ISearch>({
-    user: '',
-    card: '',
+    user: null,
+    card: null,
     mode: 'false',
     filters: ['Buyer', 'Seller', 'Owner'].map((label) => ({
       label,
       value: true,
     })),
-    storage: '',
-    cell: '',
-    item: '',
+    storage: null,
+    cell: null,
+    item: null,
     description: '',
   });
 

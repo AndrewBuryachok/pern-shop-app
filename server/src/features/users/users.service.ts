@@ -48,7 +48,7 @@ export class UsersService {
   }
 
   selectAllUsers(): Promise<User[]> {
-    return this.selectUsersQueryBuilder().getMany();
+    return this.selectUsersQueryBuilder().addSelect('user.cityId').getMany();
   }
 
   selectFreeUsers(): Promise<User[]> {

@@ -11,9 +11,9 @@ export default function MyMarkets() {
   const [page, setPage] = useState(1);
 
   const [search, setSearch] = useState<ISearch>({
-    user: '',
-    card: '',
-    market: '',
+    user: null,
+    card: null,
+    market: null,
     name: '',
   });
 

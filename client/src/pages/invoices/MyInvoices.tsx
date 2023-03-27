@@ -12,8 +12,8 @@ export default function MyInvoices() {
   const [page, setPage] = useState(1);
 
   const [search, setSearch] = useState<ISearch>({
-    user: '',
-    card: '',
+    user: null,
+    card: null,
     mode: 'false',
     filters: ['Sender', 'Receiver'].map((label) => ({
       label,

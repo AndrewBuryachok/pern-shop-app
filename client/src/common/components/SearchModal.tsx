@@ -25,10 +25,12 @@ import ThingImage from './ThingImage';
 import { ThingsItem } from './ThingItem';
 import { CardsItem } from './CardsItem';
 import { PlacesItem } from './PlacesItem';
+import { ColorsItem } from './ColorsItem';
 import {
   selectCards,
   selectCategories,
   selectCities,
+  selectColors,
   selectContainers,
   selectItems,
   selectMarkets,
@@ -54,94 +56,61 @@ export default function SearchModal(props: Props) {
           .map((filter) => filter.label.toLowerCase()) || [],
       category: props.search.item && items[+props.search.item - 1][0],
     },
-    transformValues: ({
-      user,
-      card,
-      filters,
-      city,
-      shop,
-      market,
-      storage,
-      store,
-      cell,
-      category,
-      item,
-      type,
-      ...other
-    }) => ({
+    transformValues: ({ filters, category, ...other }) => ({
       ...other,
-      user: user === null ? '' : user,
-      card: card === null ? '' : card,
       filters: props.search.filters?.map((filter) => ({
         ...filter,
         value: filters.includes(filter.label.toLowerCase()),
       })),
-      city: city === null ? '' : city,
-      shop: shop === null ? '' : shop,
-      market: market === null ? '' : market,
-      storage: storage === null ? '' : storage,
-      store: store === null ? '' : store,
-      cell: cell === null ? '' : cell,
-      item: item === null ? '' : item,
-      type: type === null ? '' : type,
     }),
   });
 
   useEffect(() => {
     if (form.values.card !== undefined) {
-      form.setFieldValue('card', '');
+      form.setFieldValue('card', null);
     }
-    if (form.values.city !== undefined) {
-      form.setFieldValue('city', '');
+    if (!props.search.users && form.values.city !== undefined) {
+      form.setFieldValue('city', null);
     }
     if (form.values.shop !== undefined) {
-      form.setFieldValue('shop', '');
-    }
-    if (form.values.market !== undefined) {
-      form.setFieldValue('market', '');
-    }
-    if (form.values.storage !== undefined) {
-      form.setFieldValue('storage', '');
+      form.setFieldValue('shop', null);
     }
   }, [form.values.user]);
 
   useEffect(() => {
+    if (props.search.users) {
+      form.setFieldValue('user', null);
+    }
+  }, [form.values.city]);
+
+  useEffect(() => {
     if (form.values.market !== undefined) {
-      form.setFieldValue('market', '');
+      form.setFieldValue('market', null);
     }
     if (form.values.storage !== undefined) {
-      form.setFieldValue('storage', '');
+      form.setFieldValue('storage', null);
     }
   }, [form.values.card]);
 
   useEffect(() => {
     if (form.values.store !== undefined) {
-      form.setFieldValue('store', '');
+      form.setFieldValue('store', null);
     }
   }, [form.values.market]);
 
   useEffect(() => {
     if (form.values.cell !== undefined) {
-      form.setFieldValue('cell', '');
+      form.setFieldValue('cell', null);
     }
   }, [form.values.storage]);
 
   useEffect(() => {
     if (form.values.item !== undefined) {
-      form.setFieldValue('item', '');
+      form.setFieldValue('item', null);
     }
   }, [form.values.category]);
 
-  useEffect(() => {
-    form.setFieldValue('card', props.search.card);
-    form.setFieldValue('city', props.search.city);
-    form.setFieldValue('shop', props.search.shop);
-    form.setFieldValue('market', props.search.market);
-    form.setFieldValue('storage', props.search.storage);
-    form.setFieldValue('store', props.search.store);
-    form.setFieldValue('cell', props.search.cell);
-    form.setFieldValue('item', props.search.item);
-  }, []);
+  useEffect(form.reset, []);
 
   const usersResponse = useSelectAllUsersQuery();
   const cardsResponse = useSelectUserCardsQuery(+(form.values.user || ''), {
@@ -168,7 +137,12 @@ export default function SearchModal(props: Props) {
     { skip: props.search.cell === undefined || !form.values.storage },
   );
 
-  const users = selectUsers(usersResponse.data);
+  const users = selectUsers(usersResponse.data).filter(
+    (user) =>
+      !props.search.users ||
+      !form.values.city ||
+      user.city === +form.values.city,
+  );
   const cards = selectCards(cardsResponse.data);
   const cities = selectCities(citiesResponse.data).filter(
     (city) =>
@@ -213,7 +187,7 @@ export default function SearchModal(props: Props) {
     ? users
     : [...cards, ...cities, ...shops, ...markets, ...storages];
 
-  const user = users?.find((user) => user.id === +form.values.user!);
+  const user = users.find((user) => user.id === +form.values.user!);
 
   const handleSubmit = (search: ISearch) => {
     props.setSearch(search);
@@ -224,7 +198,8 @@ export default function SearchModal(props: Props) {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={props.isFetching}
-      text={'Save parameters'}
+      text={'Save changes'}
+      isChanged={!form.isDirty()}
     >
       <Select
         label='User'
@@ -393,10 +368,13 @@ export default function SearchModal(props: Props) {
         <Select
           label='Type'
           placeholder='Type'
-          data={[
-            { label: 'Negative', value: '-1' },
-            { label: 'Positive', value: '1' },
-          ]}
+          itemComponent={ColorsItem}
+          data={selectColors()
+            .filter((element) => +element.value % 2)
+            .map((element, index) => ({
+              ...element,
+              value: `${index * 2 - 1}`,
+            }))}
           searchable
           allowDeselect
           {...form.getInputProps('type')}

@@ -9,8 +9,8 @@ export default function AllUsers() {
   const [page, setPage] = useState(1);
 
   const [search, setSearch] = useState<ISearch>({
-    user: '',
-    city: '',
+    user: null,
+    city: null,
     name: '',
     users: true,
   });
