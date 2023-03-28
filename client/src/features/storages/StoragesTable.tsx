@@ -14,7 +14,7 @@ type Props = ITableWithActions<Storage>;
 export default function StoragesTable({ actions = [], ...props }: Props) {
   return (
     <CustomTable
-      minWidth={600}
+      minWidth={700}
       columns={['Owner', 'Storage', 'X', 'Y', 'Price', 'Cells', 'Action']}
       {...props}
     >

@@ -19,7 +19,7 @@ export default function SalesTable({ actions = [], ...props }: Props) {
 
   return (
     <CustomTable
-      minWidth={1000}
+      minWidth={1100}
       columns={[
         'Buyer',
         'Seller',

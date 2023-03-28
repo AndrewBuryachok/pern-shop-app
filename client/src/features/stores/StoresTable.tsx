@@ -14,7 +14,7 @@ type Props = ITableWithActions<Store>;
 export default function StoresTable({ actions = [], ...props }: Props) {
   return (
     <CustomTable
-      minWidth={600}
+      minWidth={700}
       columns={['Owner', 'Market', 'Store', 'Price', 'Reserved', 'Action']}
       {...props}
     >

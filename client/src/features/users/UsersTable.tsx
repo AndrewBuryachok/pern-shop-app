@@ -14,7 +14,7 @@ type Props = ITableWithActions<User>;
 export default function UsersTable({ actions = [], ...props }: Props) {
   return (
     <CustomTable
-      minWidth={800}
+      minWidth={1000}
       columns={['User', 'Roles', 'Owner', 'City', 'Cards', 'Action']}
       {...props}
     >

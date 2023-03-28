@@ -16,7 +16,7 @@ export default function PaymentsTable({ actions = [], ...props }: Props) {
 
   return (
     <CustomTable
-      minWidth={1000}
+      minWidth={900}
       columns={[
         'Sender',
         'Receiver',

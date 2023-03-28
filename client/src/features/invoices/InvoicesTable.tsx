@@ -17,7 +17,7 @@ export default function InvoicesTable({ actions = [], ...props }: Props) {
 
   return (
     <CustomTable
-      minWidth={1000}
+      minWidth={900}
       columns={[
         'Sender',
         'Receiver',

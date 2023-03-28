@@ -14,7 +14,7 @@ type Props = ITableWithActions<Cell>;
 export default function CellsTable({ actions = [], ...props }: Props) {
   return (
     <CustomTable
-      minWidth={600}
+      minWidth={700}
       columns={['Owner', 'Storage', 'Cell', 'Price', 'Reserved', 'Action']}
       {...props}
     >
