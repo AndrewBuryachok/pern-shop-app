@@ -250,12 +250,54 @@ export class UsersService {
     return this.usersRepository
       .createQueryBuilder('user')
       .leftJoin('user.city', 'city')
+      .leftJoin('city.user', 'ownerUser')
       .where(
         new Brackets((qb) =>
           qb
             .where(`${!req.user}`)
-            .orWhere('user.id = :userId', { userId: req.user }),
+            .orWhere(
+              new Brackets((qb) =>
+                qb
+                  .where(`${req.mode}`)
+                  .andWhere(
+                    `user.id ${
+                      req.filters.includes('user') ? '=' : '!='
+                    } :userId`,
+                  )
+                  .andWhere(
+                    `ownerUser.id ${
+                      req.filters.includes('owner') ? '=' : '!='
+                    } :userId`,
+                  ),
+              ),
+            )
+            .orWhere(
+              new Brackets((qb) =>
+                qb
+                  .where(`${!req.mode}`)
+                  .andWhere(
+                    new Brackets((qb) =>
+                      qb
+                        .where(
+                          new Brackets((qb) =>
+                            qb
+                              .where(`${req.filters.includes('user')}`)
+                              .andWhere('user.id = :userId'),
+                          ),
+                        )
+                        .orWhere(
+                          new Brackets((qb) =>
+                            qb
+                              .where(`${req.filters.includes('owner')}`)
+                              .andWhere('ownerUser.id = :userId'),
+                          ),
+                        ),
+                    ),
+                  ),
+              ),
+            ),
         ),
+        { userId: req.user },
       )
       .andWhere(
         new Brackets((qb) =>
@@ -275,6 +317,10 @@ export class UsersService {
         'user.status',
         'user.roles',
         'city.id',
+        'ownerUser.id',
+        'ownerUser.name',
+        'ownerUser.status',
+        'ownerUser.roles',
         'city.name',
         'city.x',
         'city.y',

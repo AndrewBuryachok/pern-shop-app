@@ -30,5 +30,5 @@ export interface ExtPlace extends Place {
   owner: SmUser;
   card?: MdCard;
   price?: number;
-  data: (string | { value: string; label: string })[];
+  data: { value: string; label: string }[];
 }

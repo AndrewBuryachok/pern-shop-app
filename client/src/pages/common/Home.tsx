@@ -153,7 +153,7 @@ export default function Home() {
                 <Anchor
                   component={Link}
                   to={`/${feature.title.toLowerCase()}${
-                    feature.my ? '/my' : null
+                    feature.my ? '/my' : ''
                   }`}
                 >
                   {feature.title.toLowerCase()}

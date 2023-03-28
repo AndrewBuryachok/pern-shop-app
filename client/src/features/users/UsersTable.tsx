@@ -15,7 +15,7 @@ export default function UsersTable({ actions = [], ...props }: Props) {
   return (
     <CustomTable
       minWidth={800}
-      columns={['User', 'Roles', 'City', 'Cards', 'Action']}
+      columns={['User', 'Roles', 'Owner', 'City', 'Cards', 'Action']}
       {...props}
     >
       {props.data?.result.map((user) => (
@@ -25,6 +25,13 @@ export default function UsersTable({ actions = [], ...props }: Props) {
           </td>
           <td>
             <RolesBadge roles={user.roles} />
+          </td>
+          <td>
+            {user.city?.user ? (
+              <AvatarWithSingleText {...user.city.user} />
+            ) : (
+              <SingleText text={'-'} />
+            )}
           </td>
           <td>
             {user.city ? (

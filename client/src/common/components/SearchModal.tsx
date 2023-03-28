@@ -146,7 +146,7 @@ export default function SearchModal(props: Props) {
   const cards = selectCards(cardsResponse.data);
   const cities = selectCities(citiesResponse.data).filter(
     (city) =>
-      props.search.users ||
+      (form.values.mode && !form.values.filters.includes('owner')) ||
       !form.values.user ||
       city.user === +form.values.user,
   );
