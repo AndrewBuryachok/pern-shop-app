@@ -1,8 +1,10 @@
 import { Filter, Mode } from '../enums';
+import { Role } from '../constants';
 
 export interface ISearch {
   user?: string | null;
   card?: string | null;
+  roles?: Role[];
   filters?: { label: Filter; value: boolean }[];
   mode?: Mode;
   city?: string | null;

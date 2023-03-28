@@ -13,6 +13,9 @@ export const getQuery = ({ page, search }: IRequest) => {
   if (search?.card) {
     query.append('card', search.card);
   }
+  if (search?.roles?.length) {
+    query.append('roles', search.roles.join());
+  }
   const filters = search?.filters?.filter((filter) => filter.value);
   if (filters?.length) {
     query.append(

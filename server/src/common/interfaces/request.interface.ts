@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEnum, IsInt, IsOptional, IsString, Min } from 'class-validator';
 import { Transform, Type } from 'class-transformer';
+import { Role } from '../../features/users/role.enum';
 import { Filter, Mode } from '../enums';
 
 export class Request {
@@ -29,6 +30,12 @@ export class Request {
   @IsInt()
   @Type(() => Number)
   card?: number;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsEnum(Role, { each: true })
+  @Transform(({ value }) => value?.split(',').map((e) => +e))
+  roles?: Role[];
 
   @ApiProperty({ required: false })
   @IsOptional()

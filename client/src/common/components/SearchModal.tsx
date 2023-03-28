@@ -3,6 +3,7 @@ import {
   Autocomplete,
   Checkbox,
   Loader,
+  MultiSelect,
   Radio,
   Select,
   Textarea,
@@ -35,6 +36,7 @@ import {
   selectContainers,
   selectItems,
   selectMarkets,
+  selectRoles,
   selectShops,
   selectStorages,
   selectUsers,
@@ -65,6 +67,13 @@ export default function SearchModal(props: Props) {
       })),
     }),
   });
+
+  useEffect(() => {
+    const roles = form.values.roles?.slice(0).sort();
+    if (form.values.roles?.toString() !== roles?.toString()) {
+      form.setFieldValue('roles', roles);
+    }
+  }, [form.values.roles]);
 
   useEffect(() => {
     const filters =
@@ -239,6 +248,16 @@ export default function SearchModal(props: Props) {
           allowDeselect
           disabled={cardsResponse.isFetching}
           {...form.getInputProps('card')}
+        />
+      )}
+      {props.search.roles && (
+        <MultiSelect
+          label='Roles'
+          placeholder='Roles'
+          itemComponent={ColorsItem}
+          data={selectRoles()}
+          searchable
+          {...form.getInputProps('roles')}
         />
       )}
       {props.search.filters && (

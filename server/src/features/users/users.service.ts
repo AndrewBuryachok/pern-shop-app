@@ -13,6 +13,7 @@ import { Request, Response } from '../../common/interfaces';
 import { AppException } from '../../common/exceptions';
 import { UserError } from './user-error.enum';
 import { Role } from './role.enum';
+import { Mode } from '../../common/enums';
 
 @Injectable()
 export class UsersService {
@@ -257,6 +258,34 @@ export class UsersService {
             .where(`${!req.user}`)
             .orWhere(`user.id = :userId`, { userId: req.user }),
         ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.roles}`)
+            .orWhere(
+              new Brackets((qb) =>
+                qb
+                  .where(`${req.mode === Mode.SOME}`)
+                  .andWhere('user.roles && :roles'),
+              ),
+            )
+            .orWhere(
+              new Brackets((qb) =>
+                qb
+                  .where(`${req.mode === Mode.EACH}`)
+                  .andWhere('user.roles @> :roles'),
+              ),
+            )
+            .orWhere(
+              new Brackets((qb) =>
+                qb
+                  .where(`${req.mode === Mode.ONLY}`)
+                  .andWhere('user.roles = :roles'),
+              ),
+            ),
+        ),
+        { roles: req.roles },
       )
       .andWhere(
         new Brackets((qb) =>
