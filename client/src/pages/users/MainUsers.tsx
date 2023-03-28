@@ -10,11 +10,6 @@ export default function MainUsers() {
 
   const [search, setSearch] = useState<ISearch>({
     user: null,
-    mode: 'false',
-    filters: ['User', 'Owner'].map((label) => ({
-      label,
-      value: true,
-    })),
     city: null,
     name: '',
     users: true,

@@ -7,6 +7,7 @@ import { ExtCreatePaymentDto } from './payment.dto';
 import { Request, Response } from '../../common/interfaces';
 import { AppException } from '../../common/exceptions';
 import { PaymentError } from './payment-error.enum';
+import { Filter, Mode } from '../../common/enums';
 
 @Injectable()
 export class PaymentsService {
@@ -76,41 +77,61 @@ export class PaymentsService {
             .orWhere(
               new Brackets((qb) =>
                 qb
-                  .where(`${req.mode}`)
-                  .andWhere(
-                    `senderUser.id ${
-                      req.filters.includes('sender') ? '=' : '!='
-                    } :userId`,
-                  )
-                  .andWhere(
-                    `receiverUser.id ${
-                      req.filters.includes('receiver') ? '=' : '!='
-                    } :userId`,
-                  ),
-              ),
-            )
-            .orWhere(
-              new Brackets((qb) =>
-                qb
-                  .where(`${!req.mode}`)
+                  .where(`${req.mode === Mode.SOME}`)
                   .andWhere(
                     new Brackets((qb) =>
                       qb
                         .where(
                           new Brackets((qb) =>
                             qb
-                              .where(`${req.filters.includes('sender')}`)
+                              .where(`${req.filters.includes(Filter.SENDER)}`)
                               .andWhere('senderUser.id = :userId'),
                           ),
                         )
                         .orWhere(
                           new Brackets((qb) =>
                             qb
-                              .where(`${req.filters.includes('receiver')}`)
+                              .where(`${req.filters.includes(Filter.RECEIVER)}`)
                               .andWhere('receiverUser.id = :userId'),
                           ),
                         ),
                     ),
+                  ),
+              ),
+            )
+            .orWhere(
+              new Brackets((qb) =>
+                qb
+                  .where(`${req.mode === Mode.EACH}`)
+                  .andWhere(
+                    new Brackets((qb) =>
+                      qb
+                        .where(`${!req.filters.includes(Filter.SENDER)}`)
+                        .orWhere('senderUser.id = :userId'),
+                    ),
+                  )
+                  .andWhere(
+                    new Brackets((qb) =>
+                      qb
+                        .where(`${!req.filters.includes(Filter.RECEIVER)}`)
+                        .orWhere('receiverUser.id = :userId'),
+                    ),
+                  ),
+              ),
+            )
+            .orWhere(
+              new Brackets((qb) =>
+                qb
+                  .where(`${req.mode === Mode.ONLY}`)
+                  .andWhere(
+                    `senderUser.id ${
+                      req.filters.includes(Filter.SENDER) ? '=' : '!='
+                    } :userId`,
+                  )
+                  .andWhere(
+                    `receiverUser.id ${
+                      req.filters.includes(Filter.RECEIVER) ? '=' : '!='
+                    } :userId`,
                   ),
               ),
             ),
@@ -124,50 +145,76 @@ export class PaymentsService {
             .orWhere(
               new Brackets((qb) =>
                 qb
-                  .where(`${req.mode}`)
-                  .andWhere(
-                    `senderCard.id ${
-                      req.filters.includes('sender') ? '=' : '!='
-                    } :cardId`,
-                  )
-                  .andWhere(
-                    `receiverCard.id ${
-                      req.filters.includes('receiver') ? '=' : '!='
-                    } :cardId`,
-                  ),
-              ),
-            )
-            .orWhere(
-              new Brackets((qb) =>
-                qb
-                  .where(`${!req.mode}`)
+                  .where(`${req.mode === Mode.SOME}`)
                   .andWhere(
                     new Brackets((qb) =>
                       qb
                         .where(
                           new Brackets((qb) =>
                             qb
-                              .where(`${req.filters.includes('sender')}`)
+                              .where(`${req.filters.includes(Filter.SENDER)}`)
                               .andWhere('senderCard.id = :cardId'),
                           ),
                         )
                         .orWhere(
                           new Brackets((qb) =>
                             qb
-                              .where(`${req.filters.includes('receiver')}`)
+                              .where(`${req.filters.includes(Filter.RECEIVER)}`)
                               .andWhere('receiverCard.id = :cardId'),
                           ),
                         ),
                     ),
                   ),
               ),
+            )
+            .orWhere(
+              new Brackets((qb) =>
+                qb
+                  .where(`${req.mode === Mode.EACH}`)
+                  .andWhere(
+                    new Brackets((qb) =>
+                      qb
+                        .where(`${!req.filters.includes(Filter.SENDER)}`)
+                        .orWhere('senderCard.id = :cardId'),
+                    ),
+                  )
+                  .andWhere(
+                    new Brackets((qb) =>
+                      qb
+                        .where(`${!req.filters.includes(Filter.RECEIVER)}`)
+                        .orWhere('receiverCard.id = :cardId'),
+                    ),
+                  ),
+              ),
+            )
+            .orWhere(
+              new Brackets((qb) =>
+                qb
+                  .where(`${req.mode === Mode.ONLY}`)
+                  .andWhere(
+                    `senderCard.id ${
+                      req.filters.includes(Filter.SENDER) ? '=' : '!='
+                    } :cardId`,
+                  )
+                  .andWhere(
+                    `receiverCard.id ${
+                      req.filters.includes(Filter.RECEIVER) ? '=' : '!='
+                    } :cardId`,
+                  ),
+              ),
             ),
         ),
         { cardId: req.card },
       )
-      .andWhere('payment.description ILIKE :description', {
-        description: `%${req.description}%`,
-      })
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.description}`)
+            .orWhere('payment.description ILIKE :description', {
+              description: req.description,
+            }),
+        ),
+      )
       .orderBy('payment.id', 'DESC')
       .skip(req.skip)
       .take(req.take)

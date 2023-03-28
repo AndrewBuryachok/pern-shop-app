@@ -162,7 +162,13 @@ export class CellsService {
             .orWhere('cell.id = :cellId', { cellId: req.cell }),
         ),
       )
-      .andWhere('storage.name ILIKE :name', { name: `%${req.name}%` })
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.name}`)
+            .orWhere('storage.name ILIKE :name', { name: req.name }),
+        ),
+      )
       .orderBy('cell.id', 'DESC')
       .skip(req.skip)
       .take(req.take)

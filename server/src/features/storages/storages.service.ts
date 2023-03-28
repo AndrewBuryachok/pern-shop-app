@@ -207,7 +207,13 @@ export class StoragesService {
             .orWhere('storage.id = :storageId', { storageId: req.storage }),
         ),
       )
-      .andWhere('storage.name ILIKE :name', { name: `%${req.name}%` })
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.name}`)
+            .orWhere('storage.name ILIKE :name', { name: req.name }),
+        ),
+      )
       .orderBy('storage.id', 'DESC')
       .skip(req.skip)
       .take(req.take)

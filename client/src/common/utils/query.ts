@@ -13,15 +13,15 @@ export const getQuery = ({ page, search }: IRequest) => {
   if (search?.card) {
     query.append('card', search.card);
   }
-  if (search?.mode) {
-    query.append('mode', search.mode);
-  }
   const filters = search?.filters?.filter((filter) => filter.value);
   if (filters?.length) {
     query.append(
       'filters',
       filters.map((filter) => filter.label.toLowerCase()).join(),
     );
+  }
+  if (search?.mode) {
+    query.append('mode', search.mode.toLowerCase());
   }
   if (search?.city) {
     query.append('city', search.city);

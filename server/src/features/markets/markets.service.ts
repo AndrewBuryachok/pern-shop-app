@@ -183,7 +183,13 @@ export class MarketsService {
             .orWhere('market.id = :marketId', { marketId: req.market }),
         ),
       )
-      .andWhere('market.name ILIKE :name', { name: `%${req.name}%` })
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.name}`)
+            .orWhere('market.name ILIKE :name', { name: req.name }),
+        ),
+      )
       .orderBy('market.id', 'DESC')
       .skip(req.skip)
       .take(req.take)

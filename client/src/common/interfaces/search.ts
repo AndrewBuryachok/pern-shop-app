@@ -1,8 +1,10 @@
+import { Filter, Mode } from '../enums';
+
 export interface ISearch {
   user?: string | null;
   card?: string | null;
-  mode?: string;
-  filters?: { label: string; value: boolean }[];
+  filters?: { label: Filter; value: boolean }[];
+  mode?: Mode;
   city?: string | null;
   shop?: string | null;
   market?: string | null;

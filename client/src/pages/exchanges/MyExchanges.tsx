@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { ISearch } from '../../common/interfaces';
+import { Filter, Mode } from '../../common/enums';
 import { useGetMyExchangesQuery } from '../../features/exchanges/exchanges.api';
 import ExchangesTable from '../../features/exchanges/ExchangesTable';
 import { isUserNotHasRole } from '../../common/utils';
@@ -11,11 +12,11 @@ export default function MyExchanges() {
   const [search, setSearch] = useState<ISearch>({
     user: null,
     card: null,
-    mode: 'false',
-    filters: ['Executor', 'Customer'].map((label) => ({
+    filters: [Filter.EXECUTOR, Filter.CUSTOMER].map((label) => ({
       label,
       value: true,
     })),
+    mode: Mode.SOME,
     type: null,
   });
 

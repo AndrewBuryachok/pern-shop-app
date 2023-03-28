@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { ISearch } from '../../common/interfaces';
+import { Filter, Mode } from '../../common/enums';
 import { useGetMyInvoicesQuery } from '../../features/invoices/invoices.api';
 import InvoicesTable from '../../features/invoices/InvoicesTable';
 import { createInvoiceButton } from '../../features/invoices/CreateInvoiceModal';
@@ -14,11 +15,11 @@ export default function MyInvoices() {
   const [search, setSearch] = useState<ISearch>({
     user: null,
     card: null,
-    mode: 'false',
-    filters: ['Sender', 'Receiver'].map((label) => ({
+    filters: [Filter.SENDER, Filter.RECEIVER].map((label) => ({
       label,
       value: true,
     })),
+    mode: Mode.SOME,
     description: '',
   });
 

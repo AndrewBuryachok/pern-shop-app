@@ -149,9 +149,15 @@ export class GoodsService {
             .orWhere('good.item = :item', { item: req.item }),
         ),
       )
-      .andWhere('good.description ILIKE :description', {
-        description: `%${req.description}%`,
-      })
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.description}`)
+            .orWhere('good.description ILIKE :description', {
+              description: req.description,
+            }),
+        ),
+      )
       .orderBy('good.id', 'DESC')
       .skip(req.skip)
       .take(req.take)

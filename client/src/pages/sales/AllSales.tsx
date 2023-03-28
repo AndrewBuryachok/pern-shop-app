@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { ISearch } from '../../common/interfaces';
+import { Filter, Mode } from '../../common/enums';
 import { useGetAllSalesQuery } from '../../features/sales/sales.api';
 import SalesTable from '../../features/sales/SalesTable';
 
@@ -9,11 +10,11 @@ export default function AllSales() {
   const [search, setSearch] = useState<ISearch>({
     user: null,
     card: null,
-    mode: 'false',
-    filters: ['Buyer', 'Seller', 'Owner'].map((label) => ({
+    filters: [Filter.BUYER, Filter.SELLER, Filter.OWNER].map((label) => ({
       label,
       value: true,
     })),
+    mode: Mode.SOME,
     storage: null,
     cell: null,
     item: null,

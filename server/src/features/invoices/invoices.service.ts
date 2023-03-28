@@ -12,6 +12,7 @@ import {
 import { Request, Response } from '../../common/interfaces';
 import { AppException } from '../../common/exceptions';
 import { InvoiceError } from './invoice-error.enum';
+import { Filter, Mode } from '../../common/enums';
 
 @Injectable()
 export class InvoicesService {
@@ -26,7 +27,7 @@ export class InvoicesService {
     const [result, count] = await this.getInvoicesQueryBuilder(req)
       .andWhere(
         new Brackets((qb) =>
-          qb.where('senderUser.id = :myId').orWhere('recipientUser.id = :myId'),
+          qb.where('senderUser.id = :myId').orWhere('receiverUser.id = :myId'),
         ),
         { myId },
       )
@@ -132,9 +133,9 @@ export class InvoicesService {
       .createQueryBuilder('invoice')
       .innerJoin('invoice.senderCard', 'senderCard')
       .innerJoin('senderCard.user', 'senderUser')
-      .innerJoin('invoice.receiverUser', 'recipientUser')
+      .innerJoin('invoice.receiverUser', 'receiverUser')
       .leftJoin('invoice.receiverCard', 'receiverCard')
-      .leftJoin('receiverCard.user', 'receiverUser')
+      .leftJoin('receiverCard.user', 'user')
       .where(
         new Brackets((qb) =>
           qb
@@ -142,41 +143,61 @@ export class InvoicesService {
             .orWhere(
               new Brackets((qb) =>
                 qb
-                  .where(`${req.mode}`)
-                  .andWhere(
-                    `senderUser.id ${
-                      req.filters.includes('sender') ? '=' : '!='
-                    } :userId`,
-                  )
-                  .andWhere(
-                    `recipientUser.id ${
-                      req.filters.includes('receiver') ? '=' : '!='
-                    } :userId`,
-                  ),
-              ),
-            )
-            .orWhere(
-              new Brackets((qb) =>
-                qb
-                  .where(`${!req.mode}`)
+                  .where(`${req.mode === Mode.SOME}`)
                   .andWhere(
                     new Brackets((qb) =>
                       qb
                         .where(
                           new Brackets((qb) =>
                             qb
-                              .where(`${req.filters.includes('sender')}`)
+                              .where(`${req.filters.includes(Filter.SENDER)}`)
                               .andWhere('senderUser.id = :userId'),
                           ),
                         )
                         .orWhere(
                           new Brackets((qb) =>
                             qb
-                              .where(`${req.filters.includes('receiver')}`)
-                              .andWhere('recipientUser.id = :userId'),
+                              .where(`${req.filters.includes(Filter.RECEIVER)}`)
+                              .andWhere('receiverUser.id = :userId'),
                           ),
                         ),
                     ),
+                  ),
+              ),
+            )
+            .orWhere(
+              new Brackets((qb) =>
+                qb
+                  .where(`${req.mode === Mode.EACH}`)
+                  .andWhere(
+                    new Brackets((qb) =>
+                      qb
+                        .where(`${!req.filters.includes(Filter.SENDER)}`)
+                        .orWhere('senderUser.id = :userId'),
+                    ),
+                  )
+                  .andWhere(
+                    new Brackets((qb) =>
+                      qb
+                        .where(`${!req.filters.includes(Filter.RECEIVER)}`)
+                        .orWhere('receiverUser.id = :userId'),
+                    ),
+                  ),
+              ),
+            )
+            .orWhere(
+              new Brackets((qb) =>
+                qb
+                  .where(`${req.mode === Mode.ONLY}`)
+                  .andWhere(
+                    `senderUser.id ${
+                      req.filters.includes(Filter.SENDER) ? '=' : '!='
+                    } :userId`,
+                  )
+                  .andWhere(
+                    `receiverUser.id ${
+                      req.filters.includes(Filter.RECEIVER) ? '=' : '!='
+                    } :userId`,
                   ),
               ),
             ),
@@ -190,50 +211,76 @@ export class InvoicesService {
             .orWhere(
               new Brackets((qb) =>
                 qb
-                  .where(`${req.mode}`)
-                  .andWhere(
-                    `senderCard.id ${
-                      req.filters.includes('sender') ? '=' : '!='
-                    } :cardId`,
-                  )
-                  .andWhere(
-                    `receiverCard.id ${
-                      req.filters.includes('receiver') ? '=' : '!='
-                    } :cardId`,
-                  ),
-              ),
-            )
-            .orWhere(
-              new Brackets((qb) =>
-                qb
-                  .where(`${!req.mode}`)
+                  .where(`${req.mode === Mode.SOME}`)
                   .andWhere(
                     new Brackets((qb) =>
                       qb
                         .where(
                           new Brackets((qb) =>
                             qb
-                              .where(`${req.filters.includes('sender')}`)
+                              .where(`${req.filters.includes(Filter.SENDER)}`)
                               .andWhere('senderCard.id = :cardId'),
                           ),
                         )
                         .orWhere(
                           new Brackets((qb) =>
                             qb
-                              .where(`${req.filters.includes('receiver')}`)
+                              .where(`${req.filters.includes(Filter.RECEIVER)}`)
                               .andWhere('receiverCard.id = :cardId'),
                           ),
                         ),
                     ),
                   ),
               ),
+            )
+            .orWhere(
+              new Brackets((qb) =>
+                qb
+                  .where(`${req.mode === Mode.EACH}`)
+                  .andWhere(
+                    new Brackets((qb) =>
+                      qb
+                        .where(`${!req.filters.includes(Filter.SENDER)}`)
+                        .orWhere('senderCard.id = :cardId'),
+                    ),
+                  )
+                  .andWhere(
+                    new Brackets((qb) =>
+                      qb
+                        .where(`${!req.filters.includes(Filter.RECEIVER)}`)
+                        .orWhere('receiverCard.id = :cardId'),
+                    ),
+                  ),
+              ),
+            )
+            .orWhere(
+              new Brackets((qb) =>
+                qb
+                  .where(`${req.mode === Mode.ONLY}`)
+                  .andWhere(
+                    `senderCard.id ${
+                      req.filters.includes(Filter.SENDER) ? '=' : '!='
+                    } :cardId`,
+                  )
+                  .andWhere(
+                    `receiverCard.id ${
+                      req.filters.includes(Filter.RECEIVER) ? '=' : '!='
+                    } :cardId`,
+                  ),
+              ),
             ),
         ),
         { cardId: req.card },
       )
-      .andWhere('invoice.description ILIKE :description', {
-        description: `%${req.description}%`,
-      })
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.description}`)
+            .orWhere('invoice.description ILIKE :description', {
+              description: req.description,
+            }),
+        ),
+      )
       .orderBy('invoice.id', 'DESC')
       .skip(req.skip)
       .take(req.take)
@@ -245,13 +292,13 @@ export class InvoicesService {
         'senderUser.status',
         'senderCard.name',
         'senderCard.color',
-        'recipientUser.id',
-        'recipientUser.name',
-        'recipientUser.status',
-        'receiverCard.id',
         'receiverUser.id',
         'receiverUser.name',
         'receiverUser.status',
+        'receiverCard.id',
+        'user.id',
+        'user.name',
+        'user.status',
         'receiverCard.name',
         'receiverCard.color',
         'invoice.sum',

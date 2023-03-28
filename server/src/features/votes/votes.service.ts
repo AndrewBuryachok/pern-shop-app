@@ -7,6 +7,7 @@ import { ExtCreateVoteDto } from './vote.dto';
 import { Request, Response } from '../../common/interfaces';
 import { AppException } from '../../common/exceptions';
 import { VoteError } from './vote-error.enum';
+import { Filter, Mode } from '../../common/enums';
 
 @Injectable()
 export class VotesService {
@@ -93,50 +94,76 @@ export class VotesService {
             .orWhere(
               new Brackets((qb) =>
                 qb
-                  .where(`${req.mode}`)
-                  .andWhere(
-                    `voterUser.id ${
-                      req.filters.includes('voter') ? '=' : '!='
-                    } :userId`,
-                  )
-                  .andWhere(
-                    `pollerUser.id ${
-                      req.filters.includes('poller') ? '=' : '!='
-                    } :userId`,
-                  ),
-              ),
-            )
-            .orWhere(
-              new Brackets((qb) =>
-                qb
-                  .where(`${!req.mode}`)
+                  .where(`${req.mode === Mode.SOME}`)
                   .andWhere(
                     new Brackets((qb) =>
                       qb
                         .where(
                           new Brackets((qb) =>
                             qb
-                              .where(`${req.filters.includes('voter')}`)
+                              .where(`${req.filters.includes(Filter.VOTER)}`)
                               .andWhere('voterUser.id = :userId'),
                           ),
                         )
                         .orWhere(
                           new Brackets((qb) =>
                             qb
-                              .where(`${req.filters.includes('poller')}`)
+                              .where(`${req.filters.includes(Filter.POLLER)}`)
                               .andWhere('pollerUser.id = :userId'),
                           ),
                         ),
                     ),
                   ),
               ),
+            )
+            .orWhere(
+              new Brackets((qb) =>
+                qb
+                  .where(`${req.mode === Mode.EACH}`)
+                  .andWhere(
+                    new Brackets((qb) =>
+                      qb
+                        .where(`${!req.filters.includes(Filter.VOTER)}`)
+                        .orWhere('voterUser.id = :userId'),
+                    ),
+                  )
+                  .andWhere(
+                    new Brackets((qb) =>
+                      qb
+                        .where(`${!req.filters.includes(Filter.POLLER)}`)
+                        .orWhere('pollerUser.id = :userId'),
+                    ),
+                  ),
+              ),
+            )
+            .orWhere(
+              new Brackets((qb) =>
+                qb
+                  .where(`${req.mode === Mode.ONLY}`)
+                  .andWhere(
+                    `voterUser.id ${
+                      req.filters.includes(Filter.VOTER) ? '=' : '!='
+                    } :userId`,
+                  )
+                  .andWhere(
+                    `pollerUser.id ${
+                      req.filters.includes(Filter.POLLER) ? '=' : '!='
+                    } :userId`,
+                  ),
+              ),
             ),
         ),
         { userId: req.user },
       )
-      .andWhere('poll.description ILIKE :description', {
-        description: `%${req.description}%`,
-      })
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.description}`)
+            .orWhere('poll.description ILIKE :description', {
+              description: req.description,
+            }),
+        ),
+      )
       .andWhere(
         new Brackets((qb) =>
           qb

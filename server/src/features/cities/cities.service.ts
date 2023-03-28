@@ -173,7 +173,13 @@ export class CitiesService {
             .orWhere('city.id = :cityId', { cityId: req.city }),
         ),
       )
-      .andWhere('city.name ILIKE :name', { name: `%${req.name}%` })
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.name}`)
+            .orWhere('city.name ILIKE :name', { name: req.name }),
+        ),
+      )
       .orderBy('city.id', 'DESC')
       .skip(req.skip)
       .take(req.take)

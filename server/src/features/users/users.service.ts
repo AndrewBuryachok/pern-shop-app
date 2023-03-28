@@ -255,49 +255,8 @@ export class UsersService {
         new Brackets((qb) =>
           qb
             .where(`${!req.user}`)
-            .orWhere(
-              new Brackets((qb) =>
-                qb
-                  .where(`${req.mode}`)
-                  .andWhere(
-                    `user.id ${
-                      req.filters.includes('user') ? '=' : '!='
-                    } :userId`,
-                  )
-                  .andWhere(
-                    `ownerUser.id ${
-                      req.filters.includes('owner') ? '=' : '!='
-                    } :userId`,
-                  ),
-              ),
-            )
-            .orWhere(
-              new Brackets((qb) =>
-                qb
-                  .where(`${!req.mode}`)
-                  .andWhere(
-                    new Brackets((qb) =>
-                      qb
-                        .where(
-                          new Brackets((qb) =>
-                            qb
-                              .where(`${req.filters.includes('user')}`)
-                              .andWhere('user.id = :userId'),
-                          ),
-                        )
-                        .orWhere(
-                          new Brackets((qb) =>
-                            qb
-                              .where(`${req.filters.includes('owner')}`)
-                              .andWhere('ownerUser.id = :userId'),
-                          ),
-                        ),
-                    ),
-                  ),
-              ),
-            ),
+            .orWhere(`user.id = :userId`, { userId: req.user }),
         ),
-        { userId: req.user },
       )
       .andWhere(
         new Brackets((qb) =>
@@ -306,7 +265,13 @@ export class UsersService {
             .orWhere('city.id = :cityId', { cityId: req.city }),
         ),
       )
-      .andWhere('user.name ILIKE :name', { name: `%${req.name}%` })
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.name}`)
+            .orWhere('user.name ILIKE :name', { name: req.name }),
+        ),
+      )
       .orderBy('user.status', 'DESC')
       .addOrderBy('user.id', 'DESC')
       .skip(req.skip)

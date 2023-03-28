@@ -136,9 +136,15 @@ export class PollsService {
             .orWhere('pollerUser.id = :userId', { userId: req.user }),
         ),
       )
-      .andWhere('poll.description ILIKE :description', {
-        description: `%${req.description}%`,
-      })
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.description}`)
+            .orWhere('poll.description ILIKE :description', {
+              description: req.description,
+            }),
+        ),
+      )
       .orderBy('poll.id', 'DESC')
       .skip(req.skip)
       .take(req.take)

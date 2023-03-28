@@ -7,6 +7,7 @@ import { ExtCreateRentDto } from './rent.dto';
 import { Request, Response } from '../../common/interfaces';
 import { AppException } from '../../common/exceptions';
 import { RentError } from './rent-error.enum';
+import { Filter, Mode } from '../../common/enums';
 
 @Injectable()
 export class RentsService {
@@ -129,41 +130,61 @@ export class RentsService {
             .orWhere(
               new Brackets((qb) =>
                 qb
-                  .where(`${req.mode}`)
-                  .andWhere(
-                    `renterUser.id ${
-                      req.filters.includes('renter') ? '=' : '!='
-                    } :userId`,
-                  )
-                  .andWhere(
-                    `ownerUser.id ${
-                      req.filters.includes('owner') ? '=' : '!='
-                    } :userId`,
-                  ),
-              ),
-            )
-            .orWhere(
-              new Brackets((qb) =>
-                qb
-                  .where(`${!req.mode}`)
+                  .where(`${req.mode === Mode.SOME}`)
                   .andWhere(
                     new Brackets((qb) =>
                       qb
                         .where(
                           new Brackets((qb) =>
                             qb
-                              .where(`${req.filters.includes('renter')}`)
+                              .where(`${req.filters.includes(Filter.RENTER)}`)
                               .andWhere('renterUser.id = :userId'),
                           ),
                         )
                         .orWhere(
                           new Brackets((qb) =>
                             qb
-                              .where(`${req.filters.includes('owner')}`)
+                              .where(`${req.filters.includes(Filter.OWNER)}`)
                               .andWhere('ownerUser.id = :userId'),
                           ),
                         ),
                     ),
+                  ),
+              ),
+            )
+            .orWhere(
+              new Brackets((qb) =>
+                qb
+                  .where(`${req.mode === Mode.EACH}`)
+                  .andWhere(
+                    new Brackets((qb) =>
+                      qb
+                        .where(`${!req.filters.includes(Filter.RENTER)}`)
+                        .orWhere('renterUser.id = :userId'),
+                    ),
+                  )
+                  .andWhere(
+                    new Brackets((qb) =>
+                      qb
+                        .where(`${!req.filters.includes(Filter.OWNER)}`)
+                        .orWhere('ownerUser.id = :userId'),
+                    ),
+                  ),
+              ),
+            )
+            .orWhere(
+              new Brackets((qb) =>
+                qb
+                  .where(`${req.mode === Mode.ONLY}`)
+                  .andWhere(
+                    `renterUser.id ${
+                      req.filters.includes(Filter.RENTER) ? '=' : '!='
+                    } :userId`,
+                  )
+                  .andWhere(
+                    `ownerUser.id ${
+                      req.filters.includes(Filter.OWNER) ? '=' : '!='
+                    } :userId`,
                   ),
               ),
             ),
@@ -177,41 +198,61 @@ export class RentsService {
             .orWhere(
               new Brackets((qb) =>
                 qb
-                  .where(`${req.mode}`)
-                  .andWhere(
-                    `renterCard.id ${
-                      req.filters.includes('renter') ? '=' : '!='
-                    } :cardId`,
-                  )
-                  .andWhere(
-                    `ownerCard.id ${
-                      req.filters.includes('owner') ? '=' : '!='
-                    } :cardId`,
-                  ),
-              ),
-            )
-            .orWhere(
-              new Brackets((qb) =>
-                qb
-                  .where(`${!req.mode}`)
+                  .where(`${req.mode === Mode.SOME}`)
                   .andWhere(
                     new Brackets((qb) =>
                       qb
                         .where(
                           new Brackets((qb) =>
                             qb
-                              .where(`${req.filters.includes('renter')}`)
+                              .where(`${req.filters.includes(Filter.RENTER)}`)
                               .andWhere('renterCard.id = :cardId'),
                           ),
                         )
                         .orWhere(
                           new Brackets((qb) =>
                             qb
-                              .where(`${req.filters.includes('owner')}`)
+                              .where(`${req.filters.includes(Filter.OWNER)}`)
                               .andWhere('ownerCard.id = :cardId'),
                           ),
                         ),
                     ),
+                  ),
+              ),
+            )
+            .orWhere(
+              new Brackets((qb) =>
+                qb
+                  .where(`${req.mode === Mode.EACH}`)
+                  .andWhere(
+                    new Brackets((qb) =>
+                      qb
+                        .where(`${!req.filters.includes(Filter.RENTER)}`)
+                        .orWhere('renterCard.id = :cardId'),
+                    ),
+                  )
+                  .andWhere(
+                    new Brackets((qb) =>
+                      qb
+                        .where(`${!req.filters.includes(Filter.OWNER)}`)
+                        .orWhere('ownerCard.id = :cardId'),
+                    ),
+                  ),
+              ),
+            )
+            .orWhere(
+              new Brackets((qb) =>
+                qb
+                  .where(`${req.mode === Mode.ONLY}`)
+                  .andWhere(
+                    `renterCard.id ${
+                      req.filters.includes(Filter.RENTER) ? '=' : '!='
+                    } :cardId`,
+                  )
+                  .andWhere(
+                    `ownerCard.id ${
+                      req.filters.includes(Filter.OWNER) ? '=' : '!='
+                    } :cardId`,
                   ),
               ),
             ),
