@@ -76,7 +76,7 @@ export default function CustomStats() {
               %
             </Text>
             <Text size='xs' color='dimmed'>
-              Compared to previous month
+              Compared to previous month - {stat.previous}
             </Text>
           </Paper>
         </Skeleton>
