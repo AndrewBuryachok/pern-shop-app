@@ -30,6 +30,8 @@ import {
   IconReportMoney,
   IconShoppingBag,
   IconShoppingCart,
+  IconTrolley,
+  IconTruck,
 } from '@tabler/icons';
 
 export default function Home() {
@@ -79,6 +81,14 @@ export default function Home() {
       title: 'Sales',
       icon: IconGardenCart,
       my: true,
+    },
+    {
+      title: 'Orders',
+      icon: IconTrolley,
+    },
+    {
+      title: 'Deliveries',
+      icon: IconTruck,
     },
     {
       title: 'Map',

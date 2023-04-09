@@ -45,6 +45,16 @@ const AllWares = lazy(() => import('../pages/wares/AllWares'));
 const MainProducts = lazy(() => import('../pages/products/MainProducts'));
 const MyProducts = lazy(() => import('../pages/products/MyProducts'));
 const AllProducts = lazy(() => import('../pages/products/AllProducts'));
+const MainOrders = lazy(() => import('../pages/orders/MainOrders'));
+const MyOrders = lazy(() => import('../pages/orders/MyOrders'));
+const TakenOrders = lazy(() => import('../pages/orders/TakenOrders'));
+const AllOrders = lazy(() => import('../pages/orders/AllOrders'));
+const MainDeliveries = lazy(() => import('../pages/deliveries/MainDeliveries'));
+const MyDeliveries = lazy(() => import('../pages/deliveries/MyDeliveries'));
+const TakenDeliveries = lazy(
+  () => import('../pages/deliveries/TakenDeliveries'),
+);
+const AllDeliveries = lazy(() => import('../pages/deliveries/AllDeliveries'));
 const MyTrades = lazy(() => import('../pages/trades/MyTrades'));
 const AllTrades = lazy(() => import('../pages/trades/AllTrades'));
 const MySales = lazy(() => import('../pages/sales/MySales'));
@@ -180,6 +190,24 @@ export const pages = [
       { index: true, element: MainProducts },
       { path: 'my', element: MyProducts },
       { path: 'all', element: AllProducts, role: Role.MANAGER },
+    ],
+  },
+  {
+    path: 'orders',
+    nested: [
+      { index: true, element: MainOrders },
+      { path: 'my', element: MyOrders },
+      { path: 'taken', element: TakenOrders },
+      { path: 'all', element: AllOrders, role: Role.MANAGER },
+    ],
+  },
+  {
+    path: 'deliveries',
+    nested: [
+      { index: true, element: MainDeliveries },
+      { path: 'my', element: MyDeliveries },
+      { path: 'taken', element: TakenDeliveries },
+      { path: 'all', element: AllDeliveries, role: Role.MANAGER },
     ],
   },
   {

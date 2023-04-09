@@ -2,6 +2,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { Navbar, NavLink, ScrollArea } from '@mantine/core';
 import {
   IconBasket,
+  IconBoxSeam,
   IconBuildingCommunity,
   IconChartBar,
   IconContainer,
@@ -44,6 +45,11 @@ export default function CustomNavbar(props: Props) {
       icon: IconTags,
       nested: ['Trades', 'Sales'],
       my: true,
+    },
+    {
+      label: 'Transportations',
+      icon: IconBoxSeam,
+      nested: ['Orders', 'Deliveries'],
     },
     {
       label: 'Map',
