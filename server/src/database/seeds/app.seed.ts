@@ -14,10 +14,13 @@ import { Rent } from '../../features/rents/rent.entity';
 import { Good } from '../../features/goods/good.entity';
 import { Ware } from '../../features/wares/ware.entity';
 import { Product } from '../../features/products/product.entity';
+import { Order } from '../../features/orders/order.entity';
+import { Delivery } from '../../features/deliveries/delivery.entity';
 import { Trade } from '../../features/trades/trade.entity';
 import { Sale } from '../../features/sales/sale.entity';
 import { Poll } from '../../features/polls/poll.entity';
 import { Vote } from '../../features/votes/vote.entity';
+import { TransportationStatus } from '../../features/transportations/transportation-status.enum';
 import { hashData } from '../../common/utils';
 
 export default class AppSeed implements Seeder {
@@ -137,6 +140,35 @@ export default class AppSeed implements Seeder {
         return product;
       })
       .createMany(160);
+    const orders = await factory(Order)()
+      .map(async (order) => {
+        order.cell = cells[Math.floor(Math.random() * cells.length)];
+        order.customerCard = cards[Math.floor(Math.random() * cards.length)];
+        if (order.status !== TransportationStatus.CREATED) {
+          order.executorCard = cards[Math.floor(Math.random() * cards.length)];
+        }
+        if (order.status === TransportationStatus.COMPLETED) {
+          order.completedAt = new Date();
+        }
+        return order;
+      })
+      .createMany(80);
+    const deliveries = await factory(Delivery)()
+      .map(async (delivery) => {
+        delivery.fromCell = cells[Math.floor(Math.random() * cells.length)];
+        delivery.toCell = cells[Math.floor(Math.random() * cells.length)];
+        delivery.senderCard = cards[Math.floor(Math.random() * cards.length)];
+        delivery.receiverUser = users[Math.floor(Math.random() * users.length)];
+        if (delivery.status !== TransportationStatus.CREATED) {
+          delivery.executorCard =
+            cards[Math.floor(Math.random() * cards.length)];
+        }
+        if (delivery.status === TransportationStatus.COMPLETED) {
+          delivery.completedAt = new Date();
+        }
+        return delivery;
+      })
+      .createMany(80);
     const trades = await factory(Trade)()
       .map(async (trade) => {
         trade.ware = wares[Math.floor(Math.random() * wares.length)];

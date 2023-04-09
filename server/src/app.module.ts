@@ -18,6 +18,8 @@ import { LeasesModule } from './features/leases/leases.module';
 import { GoodsModule } from './features/goods/goods.module';
 import { WaresModule } from './features/wares/wares.module';
 import { ProductsModule } from './features/products/products.module';
+import { OrdersModule } from './features/orders/orders.module';
+import { DeliveriesModule } from './features/deliveries/deliveries.module';
 import { TradesModule } from './features/trades/trades.module';
 import { SalesModule } from './features/sales/sales.module';
 import { PollsModule } from './features/polls/polls.module';
@@ -58,6 +60,8 @@ import { VotesModule } from './features/votes/votes.module';
     GoodsModule,
     WaresModule,
     ProductsModule,
+    OrdersModule,
+    DeliveriesModule,
     TradesModule,
     SalesModule,
     PollsModule,

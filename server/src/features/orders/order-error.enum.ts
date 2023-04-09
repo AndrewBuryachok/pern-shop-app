@@ -1,0 +1,15 @@
+export enum OrderError {
+  ALREADY_TAKEN = '400: Order already taken',
+  NOT_TAKEN = '400: Order is not taken',
+  ALREADY_EXECUTED = '400: Order already executed',
+  NOT_EXECUTED = '400: Order is not executed',
+  ALREADY_COMPLETED = '400: Order already completed',
+  NOT_CUSTOMER = '403: You are not order customer',
+  NOT_EXECUTOR = '403: You are not order executor',
+  CREATE_FAILED = '500: Failed to create order',
+  TAKE_FAILED = '500: Failed to take order',
+  UNTAKE_FAILED = '500: Failed to untake order',
+  EXECUTE_FAILED = '500: Failed to execute order',
+  COMPLETE_FAILED = '500: Failed to complete order',
+  DELETE_FAILED = '500: Failed to delete order',
+}

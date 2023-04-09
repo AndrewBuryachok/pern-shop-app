@@ -15,6 +15,8 @@ import { RentsService } from '../../features/rents/rents.service';
 import { GoodsService } from '../../features/goods/goods.service';
 import { WaresService } from '../../features/wares/wares.service';
 import { ProductsService } from '../../features/products/products.service';
+import { OrdersService } from '../../features/orders/orders.service';
+import { DeliveriesService } from '../../features/deliveries/deliveries.service';
 import { PollsService } from '../../features/polls/polls.service';
 
 @Injectable()
@@ -242,6 +244,44 @@ export class IsProductExists implements ValidatorConstraintInterface {
 
   defaultMessage(): string {
     return 'Unknown product';
+  }
+}
+
+@Injectable()
+@ValidatorConstraint({ name: 'isOrderExists', async: true })
+export class IsOrderExists implements ValidatorConstraintInterface {
+  constructor(private ordersService: OrdersService) {}
+
+  async validate(value: number): Promise<boolean> {
+    try {
+      await this.ordersService.checkOrderExists(value);
+    } catch (error) {
+      return false;
+    }
+    return true;
+  }
+
+  defaultMessage(): string {
+    return 'Unknown order';
+  }
+}
+
+@Injectable()
+@ValidatorConstraint({ name: 'isDeliveryExists', async: true })
+export class IsDeliveryExists implements ValidatorConstraintInterface {
+  constructor(private deliveriesService: DeliveriesService) {}
+
+  async validate(value: number): Promise<boolean> {
+    try {
+      await this.deliveriesService.checkDeliveryExists(value);
+    } catch (error) {
+      return false;
+    }
+    return true;
+  }
+
+  defaultMessage(): string {
+    return 'Unknown delivery';
   }
 }
 
