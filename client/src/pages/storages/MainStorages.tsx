@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { ISearch } from '../../common/interfaces';
 import { useGetMainStoragesQuery } from '../../features/storages/storages.api';
 import StoragesTable from '../../features/storages/StoragesTable';
-import { isUserNotHasRole } from '../../common/utils';
 import { Role } from '../../common/constants';
 
 export default function MainStorages() {
@@ -19,7 +18,7 @@ export default function MainStorages() {
 
   const links = [
     { label: 'My', to: 'my' },
-    { label: 'All', to: 'all', disabled: isUserNotHasRole(Role.MANAGER) },
+    { label: 'All', to: 'all', role: Role.MANAGER },
   ];
 
   return (

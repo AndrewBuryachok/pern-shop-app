@@ -6,7 +6,6 @@ import OrdersTable from '../../features/orders/OrdersTable';
 import { createOrderButton } from '../../features/orders/CreateOrderModal';
 import { completeOrderAction } from '../../features/orders/CompleteOrderModal';
 import { deleteOrderAction } from '../../features/orders/DeleteOrderModal';
-import { isUserNotHasRole } from '../../common/utils';
 import { Role } from '../../common/constants';
 
 export default function MyOrders() {
@@ -31,7 +30,7 @@ export default function MyOrders() {
   const links = [
     { label: 'Main', to: '..' },
     { label: 'Taken', to: '../taken' },
-    { label: 'All', to: '../all', disabled: isUserNotHasRole(Role.MANAGER) },
+    { label: 'All', to: '../all', role: Role.MANAGER },
   ];
 
   const button = createOrderButton;

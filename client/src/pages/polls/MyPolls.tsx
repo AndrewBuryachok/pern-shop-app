@@ -5,7 +5,6 @@ import PollsTable from '../../features/polls/PollsTable';
 import { createPollButton } from '../../features/polls/CreatePollModal';
 import { completePollAction } from '../../features/polls/CompletePollModal';
 import { deletePollAction } from '../../features/polls/DeletePollModal';
-import { isUserNotHasRole } from '../../common/utils';
 import { Role } from '../../common/constants';
 
 export default function MyPolls() {
@@ -20,7 +19,7 @@ export default function MyPolls() {
 
   const links = [
     { label: 'Main', to: '..' },
-    { label: 'All', to: '../all', disabled: isUserNotHasRole(Role.ADMIN) },
+    { label: 'All', to: '../all', role: Role.ADMIN },
   ];
 
   const button = createPollButton;

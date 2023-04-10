@@ -4,7 +4,6 @@ import { useGetMyShopsQuery } from '../../features/shops/shops.api';
 import ShopsTable from '../../features/shops/ShopsTable';
 import { createShopButton } from '../../features/shops/CreateShopModal';
 import { editShopAction } from '../../features/shops/EditShopModal';
-import { isUserNotHasRole } from '../../common/utils';
 import { Role } from '../../common/constants';
 
 export default function MyShops() {
@@ -20,7 +19,7 @@ export default function MyShops() {
 
   const links = [
     { label: 'Main', to: '..' },
-    { label: 'All', to: '../all', disabled: isUserNotHasRole(Role.MANAGER) },
+    { label: 'All', to: '../all', role: Role.MANAGER },
   ];
 
   const button = createShopButton;

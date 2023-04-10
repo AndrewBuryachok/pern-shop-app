@@ -4,7 +4,6 @@ import { useGetMyMarketsQuery } from '../../features/markets/markets.api';
 import MarketsTable from '../../features/markets/MarketsTable';
 import { createMarketButton } from '../../features/markets/CreateMarketModal';
 import { editMarketAction } from '../../features/markets/EditMarketModal';
-import { isUserNotHasRole } from '../../common/utils';
 import { Role } from '../../common/constants';
 
 export default function MyMarkets() {
@@ -21,7 +20,7 @@ export default function MyMarkets() {
 
   const links = [
     { label: 'Main', to: '..' },
-    { label: 'All', to: '../all', disabled: isUserNotHasRole(Role.MANAGER) },
+    { label: 'All', to: '../all', role: Role.MANAGER },
   ];
 
   const button = createMarketButton;

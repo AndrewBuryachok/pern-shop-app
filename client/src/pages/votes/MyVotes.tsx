@@ -3,7 +3,6 @@ import { ISearch } from '../../common/interfaces';
 import { Filter, Mode } from '../../common/enums';
 import { useGetMyVotesQuery } from '../../features/votes/votes.api';
 import VotesTable from '../../features/votes/VotesTable';
-import { isUserNotHasRole } from '../../common/utils';
 import { Role } from '../../common/constants';
 
 export default function MyVotes() {
@@ -22,9 +21,7 @@ export default function MyVotes() {
 
   const response = useGetMyVotesQuery({ page, search });
 
-  const links = [
-    { label: 'All', to: '../all', disabled: isUserNotHasRole(Role.ADMIN) },
-  ];
+  const links = [{ label: 'All', to: '../all', role: Role.ADMIN }];
 
   return (
     <VotesTable

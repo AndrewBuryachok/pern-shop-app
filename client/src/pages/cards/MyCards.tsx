@@ -4,7 +4,6 @@ import { useGetMyCardsQuery } from '../../features/cards/cards.api';
 import CardsTable from '../../features/cards/CardsTable';
 import { createCardButton } from '../../features/cards/CreateCardModal';
 import { editCardAction } from '../../features/cards/EditCardModal';
-import { isUserNotHasRole } from '../../common/utils';
 import { Role } from '../../common/constants';
 
 export default function MyCards() {
@@ -19,9 +18,7 @@ export default function MyCards() {
 
   const response = useGetMyCardsQuery({ page, search });
 
-  const links = [
-    { label: 'All', to: '../all', disabled: isUserNotHasRole(Role.BANKER) },
-  ];
+  const links = [{ label: 'All', to: '../all', role: Role.BANKER }];
 
   const button = createCardButton;
 

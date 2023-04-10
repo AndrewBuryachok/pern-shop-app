@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { ISearch } from '../../common/interfaces';
 import { useGetMainCitiesQuery } from '../../features/cities/cities.api';
 import CitiesTable from '../../features/cities/CitiesTable';
-import { isUserNotHasRole } from '../../common/utils';
 import { Role } from '../../common/constants';
 
 export default function MainCities() {
@@ -18,7 +17,7 @@ export default function MainCities() {
 
   const links = [
     { label: 'My', to: 'my' },
-    { label: 'All', to: 'all', disabled: isUserNotHasRole(Role.ADMIN) },
+    { label: 'All', to: 'all', role: Role.ADMIN },
   ];
 
   return (

@@ -3,7 +3,6 @@ import { ISearch } from '../../common/interfaces';
 import { Mode } from '../../common/enums';
 import { useGetMainUsersQuery } from '../../features/users/users.api';
 import UsersTable from '../../features/users/UsersTable';
-import { isUserNotHasRole } from '../../common/utils';
 import { Role } from '../../common/constants';
 
 export default function MainUsers() {
@@ -22,7 +21,7 @@ export default function MainUsers() {
 
   const links = [
     { label: 'My', to: 'my' },
-    { label: 'All', to: 'all', disabled: isUserNotHasRole(Role.ADMIN) },
+    { label: 'All', to: 'all', role: Role.ADMIN },
   ];
 
   return (

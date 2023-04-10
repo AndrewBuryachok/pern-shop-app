@@ -5,7 +5,6 @@ import { useGetTakenDeliveriesQuery } from '../../features/deliveries/deliveries
 import DeliveriesTable from '../../features/deliveries/DeliveriesTable';
 import { untakeDeliveryAction } from '../../features/deliveries/UntakeDeliveryModal';
 import { executeDeliveryAction } from '../../features/deliveries/ExecuteDeliveryModal';
-import { isUserNotHasRole } from '../../common/utils';
 import { Role } from '../../common/constants';
 
 export default function TakenDeliveries() {
@@ -32,7 +31,7 @@ export default function TakenDeliveries() {
   const links = [
     { label: 'Main', to: '..' },
     { label: 'My', to: '../my' },
-    { label: 'All', to: '../all', disabled: isUserNotHasRole(Role.MANAGER) },
+    { label: 'All', to: '../all', role: Role.MANAGER },
   ];
 
   const actions = [untakeDeliveryAction, executeDeliveryAction];

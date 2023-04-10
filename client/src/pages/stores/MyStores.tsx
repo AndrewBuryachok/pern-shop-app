@@ -3,7 +3,6 @@ import { ISearch } from '../../common/interfaces';
 import { useGetMyStoresQuery } from '../../features/stores/stores.api';
 import StoresTable from '../../features/stores/StoresTable';
 import { createStoreButton } from '../../features/stores/CreateStoreModal';
-import { isUserNotHasRole } from '../../common/utils';
 import { Role } from '../../common/constants';
 
 export default function MyStores() {
@@ -21,7 +20,7 @@ export default function MyStores() {
 
   const links = [
     { label: 'Main', to: '..' },
-    { label: 'All', to: '../all', disabled: isUserNotHasRole(Role.MANAGER) },
+    { label: 'All', to: '../all', role: Role.MANAGER },
   ];
 
   const button = createStoreButton;

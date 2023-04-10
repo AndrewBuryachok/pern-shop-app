@@ -4,7 +4,6 @@ import { Filter, Mode } from '../../common/enums';
 import { useGetMainProductsQuery } from '../../features/products/products.api';
 import ProductsTable from '../../features/products/ProductsTable';
 import { buyProductAction } from '../../features/products/BuyProductModal';
-import { isUserNotHasRole } from '../../common/utils';
 import { Role } from '../../common/constants';
 
 export default function MainProducts() {
@@ -28,7 +27,7 @@ export default function MainProducts() {
 
   const links = [
     { label: 'My', to: 'my' },
-    { label: 'All', to: 'all', disabled: isUserNotHasRole(Role.MANAGER) },
+    { label: 'All', to: 'all', role: Role.MANAGER },
   ];
 
   const actions = [buyProductAction];

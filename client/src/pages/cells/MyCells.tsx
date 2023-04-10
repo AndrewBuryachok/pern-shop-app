@@ -3,7 +3,6 @@ import { ISearch } from '../../common/interfaces';
 import { useGetMyCellsQuery } from '../../features/cells/cells.api';
 import CellsTable from '../../features/cells/CellsTable';
 import { createCellButton } from '../../features/cells/CreateCellModal';
-import { isUserNotHasRole } from '../../common/utils';
 import { Role } from '../../common/constants';
 
 export default function MyCells() {
@@ -21,7 +20,7 @@ export default function MyCells() {
 
   const links = [
     { label: 'Main', to: '..' },
-    { label: 'All', to: '../all', disabled: isUserNotHasRole(Role.MANAGER) },
+    { label: 'All', to: '../all', role: Role.MANAGER },
   ];
 
   const button = createCellButton;

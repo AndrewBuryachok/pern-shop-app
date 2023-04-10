@@ -5,7 +5,6 @@ import GoodsTable from '../../features/goods/GoodsTable';
 import { createGoodButton } from '../../features/goods/CreateGoodModal';
 import { editGoodAction } from '../../features/goods/EditGoodModal';
 import { deleteGoodAction } from '../../features/goods/DeleteGoodModal';
-import { isUserNotHasRole } from '../../common/utils';
 import { Role } from '../../common/constants';
 
 export default function MyGoods() {
@@ -22,7 +21,7 @@ export default function MyGoods() {
 
   const links = [
     { label: 'Main', to: '..' },
-    { label: 'All', to: '../all', disabled: isUserNotHasRole(Role.MANAGER) },
+    { label: 'All', to: '../all', role: Role.MANAGER },
   ];
 
   const button = createGoodButton;

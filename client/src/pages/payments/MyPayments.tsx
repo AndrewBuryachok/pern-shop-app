@@ -4,7 +4,6 @@ import { Filter, Mode } from '../../common/enums';
 import { useGetMyPaymentsQuery } from '../../features/payments/payments.api';
 import PaymentsTable from '../../features/payments/PaymentsTable';
 import { createPaymentButton } from '../../features/payments/CreatePaymentModal';
-import { isUserNotHasRole } from '../../common/utils';
 import { Role } from '../../common/constants';
 
 export default function MyPayments() {
@@ -23,9 +22,7 @@ export default function MyPayments() {
 
   const response = useGetMyPaymentsQuery({ page, search });
 
-  const links = [
-    { label: 'All', to: '../all', disabled: isUserNotHasRole(Role.BANKER) },
-  ];
+  const links = [{ label: 'All', to: '../all', role: Role.BANKER }];
 
   const button = createPaymentButton;
 

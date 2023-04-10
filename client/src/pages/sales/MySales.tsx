@@ -3,7 +3,6 @@ import { ISearch } from '../../common/interfaces';
 import { Filter, Mode } from '../../common/enums';
 import { useGetMySalesQuery } from '../../features/sales/sales.api';
 import SalesTable from '../../features/sales/SalesTable';
-import { isUserNotHasRole } from '../../common/utils';
 import { Role } from '../../common/constants';
 
 export default function MySales() {
@@ -25,9 +24,7 @@ export default function MySales() {
 
   const response = useGetMySalesQuery({ page, search });
 
-  const links = [
-    { label: 'All', to: '../all', disabled: isUserNotHasRole(Role.MANAGER) },
-  ];
+  const links = [{ label: 'All', to: '../all', role: Role.MANAGER }];
 
   return (
     <SalesTable

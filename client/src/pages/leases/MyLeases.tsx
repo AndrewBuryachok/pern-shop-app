@@ -3,7 +3,6 @@ import { ISearch } from '../../common/interfaces';
 import { Filter, Mode } from '../../common/enums';
 import { useGetMyLeasesQuery } from '../../features/leases/leases.api';
 import LeasesTable from '../../features/leases/LeasesTable';
-import { isUserNotHasRole } from '../../common/utils';
 import { Role } from '../../common/constants';
 
 export default function MyLeases() {
@@ -23,9 +22,7 @@ export default function MyLeases() {
 
   const response = useGetMyLeasesQuery({ page, search });
 
-  const links = [
-    { label: 'All', to: '../all', disabled: isUserNotHasRole(Role.MANAGER) },
-  ];
+  const links = [{ label: 'All', to: '../all', role: Role.MANAGER }];
 
   return (
     <LeasesTable

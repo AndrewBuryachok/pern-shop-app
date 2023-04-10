@@ -4,7 +4,6 @@ import { useGetMyCitiesQuery } from '../../features/cities/cities.api';
 import CitiesTable from '../../features/cities/CitiesTable';
 import { createCityButton } from '../../features/cities/CreateCityModal';
 import { editCityAction } from '../../features/cities/EditCityModal';
-import { isUserNotHasRole } from '../../common/utils';
 import { Role } from '../../common/constants';
 
 export default function MyCities() {
@@ -20,7 +19,7 @@ export default function MyCities() {
 
   const links = [
     { label: 'Main', to: '..' },
-    { label: 'All', to: '../all', disabled: isUserNotHasRole(Role.ADMIN) },
+    { label: 'All', to: '../all', role: Role.ADMIN },
   ];
 
   const button = createCityButton;

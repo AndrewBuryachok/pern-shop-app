@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { ISearch } from '../../common/interfaces';
 import { useGetMainCellsQuery } from '../../features/cells/cells.api';
 import CellsTable from '../../features/cells/CellsTable';
-import { isUserNotHasRole } from '../../common/utils';
 import { Role } from '../../common/constants';
 
 export default function MainCells() {
@@ -20,7 +19,7 @@ export default function MainCells() {
 
   const links = [
     { label: 'My', to: 'my' },
-    { label: 'All', to: 'all', disabled: isUserNotHasRole(Role.MANAGER) },
+    { label: 'All', to: 'all', role: Role.MANAGER },
   ];
 
   return (

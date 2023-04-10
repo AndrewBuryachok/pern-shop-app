@@ -4,7 +4,6 @@ import { Filter, Mode } from '../../common/enums';
 import { useGetMainWaresQuery } from '../../features/wares/wares.api';
 import WaresTable from '../../features/wares/WaresTable';
 import { buyWareAction } from '../../features/wares/BuyWareModal';
-import { isUserNotHasRole } from '../../common/utils';
 import { Role } from '../../common/constants';
 
 export default function MainWares() {
@@ -28,7 +27,7 @@ export default function MainWares() {
 
   const links = [
     { label: 'My', to: 'my' },
-    { label: 'All', to: 'all', disabled: isUserNotHasRole(Role.MANAGER) },
+    { label: 'All', to: 'all', role: Role.MANAGER },
   ];
 
   const actions = [buyWareAction];

@@ -6,7 +6,6 @@ import {
   createDownVoteAction,
   createUpVoteAction,
 } from '../../features/polls/VotePollModal';
-import { isUserNotHasRole } from '../../common/utils';
 import { Role } from '../../common/constants';
 
 export default function MainPolls() {
@@ -21,7 +20,7 @@ export default function MainPolls() {
 
   const links = [
     { label: 'My', to: 'my' },
-    { label: 'All', to: 'all', disabled: isUserNotHasRole(Role.ADMIN) },
+    { label: 'All', to: 'all', role: Role.ADMIN },
   ];
 
   const actions = [createUpVoteAction, createDownVoteAction];

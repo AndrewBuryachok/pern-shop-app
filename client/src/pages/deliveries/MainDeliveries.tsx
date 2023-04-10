@@ -4,7 +4,6 @@ import { Filter, Mode } from '../../common/enums';
 import { useGetMainDeliveriesQuery } from '../../features/deliveries/deliveries.api';
 import DeliveriesTable from '../../features/deliveries/DeliveriesTable';
 import { takeDeliveryAction } from '../../features/deliveries/TakeDeliveryModal';
-import { isUserNotHasRole } from '../../common/utils';
 import { Role } from '../../common/constants';
 
 export default function MainDeliveries() {
@@ -31,7 +30,7 @@ export default function MainDeliveries() {
   const links = [
     { label: 'My', to: 'my' },
     { label: 'Taken', to: 'taken' },
-    { label: 'All', to: 'all', disabled: isUserNotHasRole(Role.MANAGER) },
+    { label: 'All', to: 'all', role: Role.MANAGER },
   ];
 
   const actions = [takeDeliveryAction];

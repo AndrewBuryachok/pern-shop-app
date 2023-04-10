@@ -3,7 +3,6 @@ import { ISearch } from '../../common/interfaces';
 import { useGetMainStoresQuery } from '../../features/stores/stores.api';
 import StoresTable from '../../features/stores/StoresTable';
 import { reserveStoreAction } from '../../features/stores/ReserveStoreModal';
-import { isUserNotHasRole } from '../../common/utils';
 import { Role } from '../../common/constants';
 
 export default function MainStores() {
@@ -21,7 +20,7 @@ export default function MainStores() {
 
   const links = [
     { label: 'My', to: 'my' },
-    { label: 'All', to: 'all', disabled: isUserNotHasRole(Role.MANAGER) },
+    { label: 'All', to: 'all', role: Role.MANAGER },
   ];
 
   const actions = [reserveStoreAction];

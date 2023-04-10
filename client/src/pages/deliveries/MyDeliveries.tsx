@@ -6,7 +6,6 @@ import DeliveriesTable from '../../features/deliveries/DeliveriesTable';
 import { createDeliveryButton } from '../../features/deliveries/CreateDeliveryModal';
 import { completeDeliveryAction } from '../../features/deliveries/CompleteDeliveryModal';
 import { deleteDeliveryAction } from '../../features/deliveries/DeleteDeliveryModal';
-import { isUserNotHasRole } from '../../common/utils';
 import { Role } from '../../common/constants';
 
 export default function MyDeliveries() {
@@ -33,7 +32,7 @@ export default function MyDeliveries() {
   const links = [
     { label: 'Main', to: '..' },
     { label: 'Taken', to: '../taken' },
-    { label: 'All', to: '../all', disabled: isUserNotHasRole(Role.MANAGER) },
+    { label: 'All', to: '../all', role: Role.MANAGER },
   ];
 
   const button = createDeliveryButton;

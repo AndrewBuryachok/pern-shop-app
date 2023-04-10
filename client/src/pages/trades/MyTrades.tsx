@@ -3,7 +3,6 @@ import { ISearch } from '../../common/interfaces';
 import { Filter, Mode } from '../../common/enums';
 import { useGetMyTradesQuery } from '../../features/trades/trades.api';
 import TradesTable from '../../features/trades/TradesTable';
-import { isUserNotHasRole } from '../../common/utils';
 import { Role } from '../../common/constants';
 
 export default function MyTrades() {
@@ -25,9 +24,7 @@ export default function MyTrades() {
 
   const response = useGetMyTradesQuery({ page, search });
 
-  const links = [
-    { label: 'All', to: '../all', disabled: isUserNotHasRole(Role.MANAGER) },
-  ];
+  const links = [{ label: 'All', to: '../all', role: Role.MANAGER }];
 
   return (
     <TradesTable

@@ -3,7 +3,6 @@ import { ISearch } from '../../common/interfaces';
 import { Filter, Mode } from '../../common/enums';
 import { useGetMyExchangesQuery } from '../../features/exchanges/exchanges.api';
 import ExchangesTable from '../../features/exchanges/ExchangesTable';
-import { isUserNotHasRole } from '../../common/utils';
 import { Role } from '../../common/constants';
 
 export default function MyExchanges() {
@@ -22,9 +21,7 @@ export default function MyExchanges() {
 
   const response = useGetMyExchangesQuery({ page, search });
 
-  const links = [
-    { label: 'All', to: '../all', disabled: isUserNotHasRole(Role.BANKER) },
-  ];
+  const links = [{ label: 'All', to: '../all', role: Role.BANKER }];
 
   return (
     <ExchangesTable

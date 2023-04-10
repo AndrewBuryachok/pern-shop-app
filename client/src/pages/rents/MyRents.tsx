@@ -3,7 +3,6 @@ import { ISearch } from '../../common/interfaces';
 import { Filter, Mode } from '../../common/enums';
 import { useGetMyRentsQuery } from '../../features/rents/rents.api';
 import RentsTable from '../../features/rents/RentsTable';
-import { isUserNotHasRole } from '../../common/utils';
 import { Role } from '../../common/constants';
 
 export default function MyRents() {
@@ -23,9 +22,7 @@ export default function MyRents() {
 
   const response = useGetMyRentsQuery({ page, search });
 
-  const links = [
-    { label: 'All', to: '../all', disabled: isUserNotHasRole(Role.MANAGER) },
-  ];
+  const links = [{ label: 'All', to: '../all', role: Role.MANAGER }];
 
   return (
     <RentsTable

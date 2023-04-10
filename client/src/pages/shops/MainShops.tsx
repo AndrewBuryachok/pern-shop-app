@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { ISearch } from '../../common/interfaces';
 import { useGetMainShopsQuery } from '../../features/shops/shops.api';
 import ShopsTable from '../../features/shops/ShopsTable';
-import { isUserNotHasRole } from '../../common/utils';
 import { Role } from '../../common/constants';
 
 export default function MainShops() {
@@ -18,7 +17,7 @@ export default function MainShops() {
 
   const links = [
     { label: 'My', to: 'my' },
-    { label: 'All', to: 'all', disabled: isUserNotHasRole(Role.MANAGER) },
+    { label: 'All', to: 'all', role: Role.MANAGER },
   ];
 
   return (

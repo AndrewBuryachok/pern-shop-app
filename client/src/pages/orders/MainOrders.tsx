@@ -4,7 +4,6 @@ import { Filter, Mode } from '../../common/enums';
 import { useGetMainOrdersQuery } from '../../features/orders/orders.api';
 import OrdersTable from '../../features/orders/OrdersTable';
 import { takeOrderAction } from '../../features/orders/TakeOrderModal';
-import { isUserNotHasRole } from '../../common/utils';
 import { Role } from '../../common/constants';
 
 export default function MainOrders() {
@@ -29,7 +28,7 @@ export default function MainOrders() {
   const links = [
     { label: 'My', to: 'my' },
     { label: 'Taken', to: 'taken' },
-    { label: 'All', to: 'all', disabled: isUserNotHasRole(Role.MANAGER) },
+    { label: 'All', to: 'all', role: Role.MANAGER },
   ];
 
   const actions = [takeOrderAction];

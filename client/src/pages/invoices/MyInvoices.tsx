@@ -6,7 +6,6 @@ import InvoicesTable from '../../features/invoices/InvoicesTable';
 import { createInvoiceButton } from '../../features/invoices/CreateInvoiceModal';
 import { completeInvoiceAction } from '../../features/invoices/CompleteInvoiceModal';
 import { deleteInvoiceAction } from '../../features/invoices/DeleteInvoiceModal';
-import { isUserNotHasRole } from '../../common/utils';
 import { Role } from '../../common/constants';
 
 export default function MyInvoices() {
@@ -25,9 +24,7 @@ export default function MyInvoices() {
 
   const response = useGetMyInvoicesQuery({ page, search });
 
-  const links = [
-    { label: 'All', to: '../all', disabled: isUserNotHasRole(Role.BANKER) },
-  ];
+  const links = [{ label: 'All', to: '../all', role: Role.BANKER }];
 
   const button = createInvoiceButton;
 

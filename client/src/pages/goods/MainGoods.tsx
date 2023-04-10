@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { ISearch } from '../../common/interfaces';
 import { useGetMainGoodsQuery } from '../../features/goods/goods.api';
 import GoodsTable from '../../features/goods/GoodsTable';
-import { isUserNotHasRole } from '../../common/utils';
 import { Role } from '../../common/constants';
 
 export default function MainGoods() {
@@ -19,7 +18,7 @@ export default function MainGoods() {
 
   const links = [
     { label: 'My', to: 'my' },
-    { label: 'All', to: 'all', disabled: isUserNotHasRole(Role.MANAGER) },
+    { label: 'All', to: 'all', role: Role.MANAGER },
   ];
 
   return (
