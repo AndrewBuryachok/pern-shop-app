@@ -10,31 +10,31 @@ export const productsApi = emptyApi.injectEndpoints({
       query: () => ({
         url: '/products/stats',
       }),
-      providesTags: ['Product'],
+      providesTags: ['Active', 'Product'],
     }),
     getMainProducts: build.query<IResponse<Product>, IRequest>({
       query: (req) => ({
         url: `/products?${getQuery(req)}`,
       }),
-      providesTags: ['Product'],
+      providesTags: ['Active', 'Product'],
     }),
     getMyProducts: build.query<IResponse<Product>, IRequest>({
       query: (req) => ({
         url: `/products/my?${getQuery(req)}`,
       }),
-      providesTags: ['Product'],
+      providesTags: ['Auth', 'Product'],
     }),
     getPlacedProducts: build.query<IResponse<Product>, IRequest>({
       query: (req) => ({
         url: `/products/placed?${getQuery(req)}`,
       }),
-      providesTags: ['Product'],
+      providesTags: ['Auth', 'Product'],
     }),
     getAllProducts: build.query<IResponse<Product>, IRequest>({
       query: (req) => ({
         url: `/products/all?${getQuery(req)}`,
       }),
-      providesTags: ['Product'],
+      providesTags: ['Auth', 'Product'],
     }),
     createProduct: build.mutation<void, CreateProductDto>({
       query: (dto) => ({
@@ -42,14 +42,7 @@ export const productsApi = emptyApi.injectEndpoints({
         method: 'POST',
         body: dto,
       }),
-      invalidatesTags: [
-        'Product',
-        'Lease',
-        'Cell',
-        'Storage',
-        'Payment',
-        'Card',
-      ],
+      invalidatesTags: ['Product', 'Cell', 'Payment', 'Card'],
     }),
   }),
 });

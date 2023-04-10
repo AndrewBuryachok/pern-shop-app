@@ -10,31 +10,31 @@ export const waresApi = emptyApi.injectEndpoints({
       query: () => ({
         url: '/wares/stats',
       }),
-      providesTags: ['Ware'],
+      providesTags: ['Active', 'Ware'],
     }),
     getMainWares: build.query<IResponse<Ware>, IRequest>({
       query: (req) => ({
         url: `/wares?${getQuery(req)}`,
       }),
-      providesTags: ['Ware'],
+      providesTags: ['Active', 'Ware'],
     }),
     getMyWares: build.query<IResponse<Ware>, IRequest>({
       query: (req) => ({
         url: `/wares/my?${getQuery(req)}`,
       }),
-      providesTags: ['Ware'],
+      providesTags: ['Auth', 'Ware'],
     }),
     getPlacedWares: build.query<IResponse<Ware>, IRequest>({
       query: (req) => ({
         url: `/wares/placed?${getQuery(req)}`,
       }),
-      providesTags: ['Ware'],
+      providesTags: ['Auth', 'Ware'],
     }),
     getAllWares: build.query<IResponse<Ware>, IRequest>({
       query: (req) => ({
         url: `/wares/all?${getQuery(req)}`,
       }),
-      providesTags: ['Ware'],
+      providesTags: ['Auth', 'Ware'],
     }),
     createWare: build.mutation<void, CreateWareDto>({
       query: (dto) => ({
@@ -42,7 +42,7 @@ export const waresApi = emptyApi.injectEndpoints({
         method: 'POST',
         body: dto,
       }),
-      invalidatesTags: ['Ware', 'Rent'],
+      invalidatesTags: ['Ware'],
     }),
   }),
 });

@@ -10,19 +10,19 @@ export const pollsApi = emptyApi.injectEndpoints({
       query: (req) => ({
         url: `/polls?${getQuery(req)}`,
       }),
-      providesTags: ['Poll'],
+      providesTags: ['Auth', 'Poll', 'Vote'],
     }),
     getMyPolls: build.query<IResponse<Poll>, IRequest>({
       query: (req) => ({
         url: `/polls/my?${getQuery(req)}`,
       }),
-      providesTags: ['Poll'],
+      providesTags: ['Auth', 'Poll', 'Vote'],
     }),
     getAllPolls: build.query<IResponse<Poll>, IRequest>({
       query: (req) => ({
         url: `/polls/all?${getQuery(req)}`,
       }),
-      providesTags: ['Poll'],
+      providesTags: ['Auth', 'Poll', 'Vote'],
     }),
     createPoll: build.mutation<void, CreatePollDto>({
       query: (dto) => ({

@@ -10,19 +10,19 @@ export const citiesApi = emptyApi.injectEndpoints({
       query: (req) => ({
         url: `/cities?${getQuery(req)}`,
       }),
-      providesTags: ['City'],
+      providesTags: ['Active', 'City', 'User'],
     }),
     getMyCities: build.query<IResponse<City>, IRequest>({
       query: (req) => ({
         url: `/cities/my?${getQuery(req)}`,
       }),
-      providesTags: ['City'],
+      providesTags: ['Auth', 'City', 'User'],
     }),
     getAllCities: build.query<IResponse<City>, IRequest>({
       query: (req) => ({
         url: `/cities/all?${getQuery(req)}`,
       }),
-      providesTags: ['City'],
+      providesTags: ['Auth', 'City', 'User'],
     }),
     selectAllCities: build.query<SmCityWithUser[], void>({
       query: () => ({
@@ -34,7 +34,7 @@ export const citiesApi = emptyApi.injectEndpoints({
       query: () => ({
         url: '/cities/my/select',
       }),
-      providesTags: ['City'],
+      providesTags: ['Auth', 'City'],
     }),
     createCity: build.mutation<void, CreateCityDto>({
       query: (dto) => ({
@@ -50,7 +50,7 @@ export const citiesApi = emptyApi.injectEndpoints({
         method: 'PATCH',
         body: dto,
       }),
-      invalidatesTags: ['City', 'User'],
+      invalidatesTags: ['City'],
     }),
   }),
 });

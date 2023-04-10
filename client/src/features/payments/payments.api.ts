@@ -10,13 +10,13 @@ export const paymentsApi = emptyApi.injectEndpoints({
       query: (req) => ({
         url: `/payments/my?${getQuery(req)}`,
       }),
-      providesTags: ['Payment'],
+      providesTags: ['Auth', 'Payment'],
     }),
     getAllPayments: build.query<IResponse<Payment>, IRequest>({
       query: (req) => ({
         url: `/payments/all?${getQuery(req)}`,
       }),
-      providesTags: ['Payment'],
+      providesTags: ['Auth', 'Payment'],
     }),
     createPayment: build.mutation<void, CreatePaymentDto>({
       query: (dto) => ({

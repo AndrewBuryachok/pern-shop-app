@@ -14,31 +14,31 @@ export const deliveriesApi = emptyApi.injectEndpoints({
       query: (req) => ({
         url: `/deliveries?${getQuery(req)}`,
       }),
-      providesTags: ['Delivery'],
+      providesTags: ['Active', 'Delivery'],
     }),
     getMyDeliveries: build.query<IResponse<Delivery>, IRequest>({
       query: (req) => ({
         url: `/deliveries/my?${getQuery(req)}`,
       }),
-      providesTags: ['Delivery'],
+      providesTags: ['Auth', 'Delivery'],
     }),
     getTakenDeliveries: build.query<IResponse<Delivery>, IRequest>({
       query: (req) => ({
         url: `/deliveries/taken?${getQuery(req)}`,
       }),
-      providesTags: ['Delivery'],
+      providesTags: ['Auth', 'Delivery'],
     }),
     getPlacedDeliveries: build.query<IResponse<Delivery>, IRequest>({
       query: (req) => ({
         url: `/deliveries/placed?${getQuery(req)}`,
       }),
-      providesTags: ['Delivery'],
+      providesTags: ['Auth', 'Delivery'],
     }),
     getAllDeliveries: build.query<IResponse<Delivery>, IRequest>({
       query: (req) => ({
         url: `/deliveries/all?${getQuery(req)}`,
       }),
-      providesTags: ['Delivery'],
+      providesTags: ['Auth', 'Delivery'],
     }),
     createDelivery: build.mutation<void, CreateDeliveryDto>({
       query: (dto) => ({
@@ -46,7 +46,7 @@ export const deliveriesApi = emptyApi.injectEndpoints({
         method: 'POST',
         body: dto,
       }),
-      invalidatesTags: ['Delivery', 'Cell', 'Storage', 'Card'],
+      invalidatesTags: ['Delivery', 'Cell', 'Card'],
     }),
     takeDelivery: build.mutation<void, TakeDeliveryDto>({
       query: ({ deliveryId, ...dto }) => ({

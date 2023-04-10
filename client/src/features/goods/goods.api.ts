@@ -10,25 +10,25 @@ export const goodsApi = emptyApi.injectEndpoints({
       query: () => ({
         url: '/goods/stats',
       }),
-      providesTags: ['Good'],
+      providesTags: ['Active', 'Good'],
     }),
     getMainGoods: build.query<IResponse<Good>, IRequest>({
       query: (req) => ({
         url: `/goods?${getQuery(req)}`,
       }),
-      providesTags: ['Good'],
+      providesTags: ['Active', 'Good'],
     }),
     getMyGoods: build.query<IResponse<Good>, IRequest>({
       query: (req) => ({
         url: `/goods/my?${getQuery(req)}`,
       }),
-      providesTags: ['Good'],
+      providesTags: ['Auth', 'Good'],
     }),
     getAllGoods: build.query<IResponse<Good>, IRequest>({
       query: (req) => ({
         url: `/goods/all?${getQuery(req)}`,
       }),
-      providesTags: ['Good'],
+      providesTags: ['Auth', 'Good'],
     }),
     createGood: build.mutation<void, CreateGoodDto>({
       query: (dto) => ({
@@ -36,7 +36,7 @@ export const goodsApi = emptyApi.injectEndpoints({
         method: 'POST',
         body: dto,
       }),
-      invalidatesTags: ['Good', 'Shop'],
+      invalidatesTags: ['Good'],
     }),
     editGood: build.mutation<void, EditGoodDto>({
       query: ({ goodId, ...dto }) => ({
@@ -44,14 +44,14 @@ export const goodsApi = emptyApi.injectEndpoints({
         method: 'PATCH',
         body: dto,
       }),
-      invalidatesTags: ['Good', 'Shop'],
+      invalidatesTags: ['Good'],
     }),
     deleteGood: build.mutation<void, DeleteGoodDto>({
       query: ({ goodId }) => ({
         url: `/goods/${goodId}`,
         method: 'DELETE',
       }),
-      invalidatesTags: ['Good', 'Shop'],
+      invalidatesTags: ['Good'],
     }),
   }),
 });

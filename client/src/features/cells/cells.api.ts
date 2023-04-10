@@ -10,19 +10,19 @@ export const cellsApi = emptyApi.injectEndpoints({
       query: (req) => ({
         url: `/cells?${getQuery(req)}`,
       }),
-      providesTags: ['Cell'],
+      providesTags: ['Active', 'Cell'],
     }),
     getMyCells: build.query<IResponse<Cell>, IRequest>({
       query: (req) => ({
         url: `/cells/my?${getQuery(req)}`,
       }),
-      providesTags: ['Cell'],
+      providesTags: ['Auth', 'Cell'],
     }),
     getAllCells: build.query<IResponse<Cell>, IRequest>({
       query: (req) => ({
         url: `/cells/all?${getQuery(req)}`,
       }),
-      providesTags: ['Cell'],
+      providesTags: ['Auth', 'Cell'],
     }),
     selectStorageCells: build.query<SmCell[], number>({
       query: (userId) => ({
@@ -36,7 +36,7 @@ export const cellsApi = emptyApi.injectEndpoints({
         method: 'POST',
         body: dto,
       }),
-      invalidatesTags: ['Cell', 'Storage'],
+      invalidatesTags: ['Cell'],
     }),
   }),
 });

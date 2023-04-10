@@ -10,19 +10,19 @@ export const storesApi = emptyApi.injectEndpoints({
       query: (req) => ({
         url: `/stores?${getQuery(req)}`,
       }),
-      providesTags: ['Store'],
+      providesTags: ['Active', 'Store'],
     }),
     getMyStores: build.query<IResponse<Store>, IRequest>({
       query: (req) => ({
         url: `/stores/my?${getQuery(req)}`,
       }),
-      providesTags: ['Store'],
+      providesTags: ['Auth', 'Store'],
     }),
     getAllStores: build.query<IResponse<Store>, IRequest>({
       query: (req) => ({
         url: `/stores/all?${getQuery(req)}`,
       }),
-      providesTags: ['Store'],
+      providesTags: ['Auth', 'Store'],
     }),
     selectMarketStores: build.query<SmStore[], number>({
       query: (userId) => ({
@@ -36,7 +36,7 @@ export const storesApi = emptyApi.injectEndpoints({
         method: 'POST',
         body: dto,
       }),
-      invalidatesTags: ['Store', 'Market'],
+      invalidatesTags: ['Store'],
     }),
   }),
 });

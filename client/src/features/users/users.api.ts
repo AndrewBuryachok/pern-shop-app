@@ -10,37 +10,46 @@ export const usersApi = emptyApi.injectEndpoints({
       query: (req) => ({
         url: `/users?${getQuery(req)}`,
       }),
-      providesTags: ['User'],
+      providesTags: ['Active', 'User', 'Card'],
     }),
     getMyUsers: build.query<IResponse<User>, IRequest>({
       query: (req) => ({
         url: `/users/my?${getQuery(req)}`,
       }),
-      providesTags: ['User'],
+      providesTags: ['Auth', 'User', 'Card'],
     }),
     getAllUsers: build.query<IResponse<User>, IRequest>({
       query: (req) => ({
         url: `/users/all?${getQuery(req)}`,
       }),
-      providesTags: ['User'],
+      providesTags: ['Auth', 'User', 'Card'],
     }),
     selectAllUsers: build.query<SmUserWithCity[], void>({
       query: () => ({
         url: '/users/all/select',
       }),
-      providesTags: ['User'],
+      providesTags: ['Active', 'User'],
     }),
     selectFreeUsers: build.query<SmUser[], void>({
       query: () => ({
         url: '/users/free/select',
       }),
-      providesTags: ['User'],
+      providesTags: ['Active', 'User'],
     }),
     getSingleUser: build.query<ExtUser, number>({
       query: (userId) => ({
         url: `/users/${userId}`,
       }),
-      providesTags: ['User'],
+      providesTags: [
+        'Active',
+        'User',
+        'Card',
+        'Good',
+        'Ware',
+        'Product',
+        'Trade',
+        'Sale',
+      ],
     }),
     addUserRole: build.mutation<void, UpdateUserRolesDto>({
       query: ({ userId, ...dto }) => ({
@@ -64,7 +73,7 @@ export const usersApi = emptyApi.injectEndpoints({
         method: 'POST',
         body: dto,
       }),
-      invalidatesTags: ['User', 'City'],
+      invalidatesTags: ['User'],
     }),
     removeUserCity: build.mutation<void, UpdateUserCityDto>({
       query: ({ userId, ...dto }) => ({
@@ -72,7 +81,7 @@ export const usersApi = emptyApi.injectEndpoints({
         method: 'DELETE',
         body: dto,
       }),
-      invalidatesTags: ['User', 'City'],
+      invalidatesTags: ['User'],
     }),
   }),
 });

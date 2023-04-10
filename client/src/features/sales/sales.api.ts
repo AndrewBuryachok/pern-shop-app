@@ -10,25 +10,25 @@ export const salesApi = emptyApi.injectEndpoints({
       query: () => ({
         url: '/sales/stats',
       }),
-      providesTags: ['Sale'],
+      providesTags: ['Active', 'Sale'],
     }),
     getMySales: build.query<IResponse<Sale>, IRequest>({
       query: (req) => ({
         url: `/sales/my?${getQuery(req)}`,
       }),
-      providesTags: ['Sale'],
+      providesTags: ['Auth', 'Sale'],
     }),
     getPlacedSales: build.query<IResponse<Sale>, IRequest>({
       query: (req) => ({
         url: `/sales/placed?${getQuery(req)}`,
       }),
-      providesTags: ['Sale'],
+      providesTags: ['Auth', 'Sale'],
     }),
     getAllSales: build.query<IResponse<Sale>, IRequest>({
       query: (req) => ({
         url: `/sales/all?${getQuery(req)}`,
       }),
-      providesTags: ['Sale'],
+      providesTags: ['Auth', 'Sale'],
     }),
     createSale: build.mutation<void, CreateSaleDto>({
       query: (dto) => ({

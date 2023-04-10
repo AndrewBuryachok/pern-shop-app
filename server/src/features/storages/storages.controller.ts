@@ -51,6 +51,7 @@ export class StoragesController {
     return this.storagesService.selectMyStorages(myId);
   }
 
+  @Public()
   @Get('free/select')
   selectFreeStorages(): Promise<Storage[]> {
     return this.storagesService.selectFreeStorages();

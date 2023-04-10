@@ -10,19 +10,19 @@ export const cardsApi = emptyApi.injectEndpoints({
       query: (req) => ({
         url: `/cards/my?${getQuery(req)}`,
       }),
-      providesTags: ['Card'],
+      providesTags: ['Auth', 'Card'],
     }),
     getAllCards: build.query<IResponse<Card>, IRequest>({
       query: (req) => ({
         url: `/cards/all?${getQuery(req)}`,
       }),
-      providesTags: ['Card'],
+      providesTags: ['Auth', 'Card'],
     }),
     selectMyCards: build.query<SmCardWithBalance[], void>({
       query: () => ({
         url: '/cards/my/select',
       }),
-      providesTags: ['Card'],
+      providesTags: ['Auth', 'Card'],
     }),
     selectUserCards: build.query<SmCard[], number>({
       query: (userId) => ({
@@ -42,7 +42,7 @@ export const cardsApi = emptyApi.injectEndpoints({
         method: 'POST',
         body: dto,
       }),
-      invalidatesTags: ['Card', 'User'],
+      invalidatesTags: ['Card'],
     }),
     editCard: build.mutation<void, EditCardDto>({
       query: ({ cardId, ...dto }) => ({
@@ -50,7 +50,7 @@ export const cardsApi = emptyApi.injectEndpoints({
         method: 'PATCH',
         body: dto,
       }),
-      invalidatesTags: ['Card', 'User'],
+      invalidatesTags: ['Card'],
     }),
   }),
 });

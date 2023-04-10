@@ -46,6 +46,7 @@ export class UsersController {
     return this.usersService.selectAllUsers();
   }
 
+  @Public()
   @Get('free/select')
   selectFreeUsers(): Promise<User[]> {
     return this.usersService.selectFreeUsers();

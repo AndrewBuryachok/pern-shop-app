@@ -10,19 +10,19 @@ export const votesApi = emptyApi.injectEndpoints({
       query: (req) => ({
         url: `/votes/my?${getQuery(req)}`,
       }),
-      providesTags: ['Vote'],
+      providesTags: ['Auth', 'Vote'],
     }),
     getPolledVotes: build.query<IResponse<Vote>, IRequest>({
       query: (req) => ({
         url: `/votes/polled?${getQuery(req)}`,
       }),
-      providesTags: ['Vote'],
+      providesTags: ['Auth', 'Vote'],
     }),
     getAllVotes: build.query<IResponse<Vote>, IRequest>({
       query: (req) => ({
         url: `/votes/all?${getQuery(req)}`,
       }),
-      providesTags: ['Vote'],
+      providesTags: ['Auth', 'Vote'],
     }),
     createVote: build.mutation<void, CreateVoteDto>({
       query: (dto) => ({
@@ -30,7 +30,7 @@ export const votesApi = emptyApi.injectEndpoints({
         method: 'POST',
         body: dto,
       }),
-      invalidatesTags: ['Vote', 'Poll'],
+      invalidatesTags: ['Vote'],
     }),
   }),
 });

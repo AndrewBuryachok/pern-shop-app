@@ -15,19 +15,19 @@ export const storagesApi = emptyApi.injectEndpoints({
       query: (req) => ({
         url: `/storages?${getQuery(req)}`,
       }),
-      providesTags: ['Storage'],
+      providesTags: ['Active', 'Storage', 'Cell'],
     }),
     getMyStorages: build.query<IResponse<Storage>, IRequest>({
       query: (req) => ({
         url: `/storages/my?${getQuery(req)}`,
       }),
-      providesTags: ['Storage'],
+      providesTags: ['Auth', 'Storage', 'Cell'],
     }),
     getAllStorages: build.query<IResponse<Storage>, IRequest>({
       query: (req) => ({
         url: `/storages/all?${getQuery(req)}`,
       }),
-      providesTags: ['Storage'],
+      providesTags: ['Auth', 'Storage', 'Cell'],
     }),
     selectAllStorages: build.query<SmStorageWithCard[], void>({
       query: () => ({
@@ -39,13 +39,13 @@ export const storagesApi = emptyApi.injectEndpoints({
       query: () => ({
         url: '/storages/my/select',
       }),
-      providesTags: ['Storage'],
+      providesTags: ['Auth', 'Storage', 'Cell'],
     }),
     selectFreeStorages: build.query<SmStorageWithPrice[], void>({
       query: () => ({
         url: '/storages/free/select',
       }),
-      providesTags: ['Storage'],
+      providesTags: ['Storage', 'Cell'],
     }),
     createStorage: build.mutation<void, CreateStorageDto>({
       query: (dto) => ({

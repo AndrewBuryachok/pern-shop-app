@@ -13,7 +13,7 @@ import { Card } from './card.entity';
 import { CardIdDto, CreateCardDto, EditCardDto } from './card.dto';
 import { UserIdDto } from '../users/user.dto';
 import { Request, Response } from '../../common/interfaces';
-import { MyId, Roles } from '../../common/decorators';
+import { MyId, Public, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
 
 @ApiTags('cards')
@@ -40,6 +40,7 @@ export class CardsController {
     return this.cardsService.selectUserCardsWithBalance(myId);
   }
 
+  @Public()
   @Get(':userId/select')
   selectUserCards(@Param() { userId }: UserIdDto): Promise<Card[]> {
     return this.cardsService.selectUserCards(userId);

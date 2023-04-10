@@ -10,13 +10,13 @@ export const exchangesApi = emptyApi.injectEndpoints({
       query: (req) => ({
         url: `/exchanges/my?${getQuery(req)}`,
       }),
-      providesTags: ['Exchange'],
+      providesTags: ['Auth', 'Exchange'],
     }),
     getAllExchanges: build.query<IResponse<Exchange>, IRequest>({
       query: (req) => ({
         url: `/exchanges/all?${getQuery(req)}`,
       }),
-      providesTags: ['Exchange'],
+      providesTags: ['Auth', 'Exchange'],
     }),
     createExchange: build.mutation<void, CreateExchangeDto>({
       query: (dto) => ({

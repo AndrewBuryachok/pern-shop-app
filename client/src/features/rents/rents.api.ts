@@ -10,19 +10,19 @@ export const rentsApi = emptyApi.injectEndpoints({
       query: (req) => ({
         url: `/rents/my?${getQuery(req)}`,
       }),
-      providesTags: ['Rent'],
+      providesTags: ['Auth', 'Rent', 'Ware'],
     }),
     getAllRents: build.query<IResponse<Rent>, IRequest>({
       query: (req) => ({
         url: `/rents/all?${getQuery(req)}`,
       }),
-      providesTags: ['Rent'],
+      providesTags: ['Auth', 'Rent', 'Ware'],
     }),
     selectMyRents: build.query<SelectRent[], void>({
       query: () => ({
         url: '/rents/my/select',
       }),
-      providesTags: ['Rent'],
+      providesTags: ['Auth', 'Rent'],
     }),
     createRent: build.mutation<void, CreateRentDto>({
       query: (dto) => ({
@@ -30,7 +30,7 @@ export const rentsApi = emptyApi.injectEndpoints({
         method: 'POST',
         body: dto,
       }),
-      invalidatesTags: ['Rent', 'Store', 'Market', 'Payment', 'Card'],
+      invalidatesTags: ['Rent', 'Store', 'Payment', 'Card'],
     }),
   }),
 });

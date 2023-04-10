@@ -10,19 +10,19 @@ export const marketsApi = emptyApi.injectEndpoints({
       query: (req) => ({
         url: `/markets?${getQuery(req)}`,
       }),
-      providesTags: ['Market'],
+      providesTags: ['Active', 'Market', 'Store'],
     }),
     getMyMarkets: build.query<IResponse<Market>, IRequest>({
       query: (req) => ({
         url: `/markets/my?${getQuery(req)}`,
       }),
-      providesTags: ['Market'],
+      providesTags: ['Auth', 'Market', 'Store'],
     }),
     getAllMarkets: build.query<IResponse<Market>, IRequest>({
       query: (req) => ({
         url: `/markets/all?${getQuery(req)}`,
       }),
-      providesTags: ['Market'],
+      providesTags: ['Auth', 'Market', 'Store'],
     }),
     selectAllMarkets: build.query<SmMarketWithCard[], void>({
       query: () => ({
@@ -34,7 +34,7 @@ export const marketsApi = emptyApi.injectEndpoints({
       query: () => ({
         url: '/markets/my/select',
       }),
-      providesTags: ['Market'],
+      providesTags: ['Auth', 'Market', 'Store'],
     }),
     createMarket: build.mutation<void, CreateMarketDto>({
       query: (dto) => ({

@@ -14,13 +14,13 @@ export const invoicesApi = emptyApi.injectEndpoints({
       query: (req) => ({
         url: `/invoices/my?${getQuery(req)}`,
       }),
-      providesTags: ['Invoice'],
+      providesTags: ['Auth', 'Invoice'],
     }),
     getAllInvoices: build.query<IResponse<Invoice>, IRequest>({
       query: (req) => ({
         url: `/invoices/all?${getQuery(req)}`,
       }),
-      providesTags: ['Invoice'],
+      providesTags: ['Auth', 'Invoice'],
     }),
     createInvoice: build.mutation<void, CreateInvoiceDto>({
       query: (dto) => ({

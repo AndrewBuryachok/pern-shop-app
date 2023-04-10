@@ -10,31 +10,31 @@ export const ordersApi = emptyApi.injectEndpoints({
       query: (req) => ({
         url: `/orders?${getQuery(req)}`,
       }),
-      providesTags: ['Order'],
+      providesTags: ['Active', 'Order'],
     }),
     getMyOrders: build.query<IResponse<Order>, IRequest>({
       query: (req) => ({
         url: `/orders/my?${getQuery(req)}`,
       }),
-      providesTags: ['Order'],
+      providesTags: ['Auth', 'Order'],
     }),
     getTakenOrders: build.query<IResponse<Order>, IRequest>({
       query: (req) => ({
         url: `/orders/taken?${getQuery(req)}`,
       }),
-      providesTags: ['Order'],
+      providesTags: ['Auth', 'Order'],
     }),
     getPlacedOrders: build.query<IResponse<Order>, IRequest>({
       query: (req) => ({
         url: `/orders/placed?${getQuery(req)}`,
       }),
-      providesTags: ['Order'],
+      providesTags: ['Auth', 'Order'],
     }),
     getAllOrders: build.query<IResponse<Order>, IRequest>({
       query: (req) => ({
         url: `/orders/all?${getQuery(req)}`,
       }),
-      providesTags: ['Order'],
+      providesTags: ['Auth', 'Order'],
     }),
     createOrder: build.mutation<void, CreateOrderDto>({
       query: (dto) => ({
@@ -42,7 +42,7 @@ export const ordersApi = emptyApi.injectEndpoints({
         method: 'POST',
         body: dto,
       }),
-      invalidatesTags: ['Order', 'Cell', 'Storage', 'Card'],
+      invalidatesTags: ['Order', 'Cell', 'Card'],
     }),
     takeOrder: build.mutation<void, TakeOrderDto>({
       query: ({ orderId, ...dto }) => ({
