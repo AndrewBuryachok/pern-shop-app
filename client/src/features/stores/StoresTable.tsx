@@ -24,7 +24,7 @@ export default function StoresTable({ actions = [], ...props }: Props) {
             <AvatarWithDoubleText {...store.market.card} />
           </td>
           <td>
-            <PlaceText {...store.market} />
+            <PlaceText {...store.market} withoutPrice />
           </td>
           <td>
             <SingleText text={`#${store.name}`} />

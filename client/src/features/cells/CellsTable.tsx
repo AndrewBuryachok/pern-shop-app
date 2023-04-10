@@ -24,7 +24,7 @@ export default function CellsTable({ actions = [], ...props }: Props) {
             <AvatarWithDoubleText {...cell.storage.card} />
           </td>
           <td>
-            <PlaceText {...cell.storage} />
+            <PlaceText {...cell.storage} withoutPrice />
           </td>
           <td>
             <SingleText text={`#${cell.name}`} />

@@ -7,14 +7,16 @@ type Props = {
   y: number;
   container?: number;
   price?: number;
-  withPrice?: boolean;
+  withoutPrice?: true;
 };
 
 export default function PlaceText(props: Props) {
   return (
     <DoubleText
       text={`${props.name}${props.container ? ` #${props.container}` : ''}${
-        props.withPrice && props.price ? ` ${props.price}$` : ''
+        !props.container && props.price && !props.withoutPrice
+          ? ` ${props.price}$`
+          : ''
       }`}
       subtext={`${props.x} ${props.y}`}
       color={parseCoordinates(props)}

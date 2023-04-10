@@ -24,7 +24,7 @@ export default function MarketsTable({ actions = [], ...props }: Props) {
             <AvatarWithDoubleText {...market.card} />
           </td>
           <td>
-            <PlaceText {...market} />
+            <PlaceText {...market} withoutPrice />
           </td>
           <td>
             <SingleText text={`${market.x}`} />

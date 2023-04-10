@@ -71,7 +71,6 @@ export const selectStorages = (storages?: SmStorageWithCard[]) =>
 export const selectStoragesWithPrice = (storages?: SmStorageWithPrice[]) =>
   storages?.map((storage) => ({
     ...storage,
-    withPrice: true,
     value: `${storage.id}`,
     label: `${storage.name} (${storage.x} ${storage.y}) ${storage.price}$`,
   })) || [];

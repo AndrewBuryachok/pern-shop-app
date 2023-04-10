@@ -24,7 +24,7 @@ export default function StoragesTable({ actions = [], ...props }: Props) {
             <AvatarWithDoubleText {...storage.card} />
           </td>
           <td>
-            <PlaceText {...storage} />
+            <PlaceText {...storage} withoutPrice />
           </td>
           <td>
             <SingleText text={`${storage.x}`} />
