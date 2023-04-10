@@ -41,28 +41,37 @@ const MyGoods = lazy(() => import('../pages/goods/MyGoods'));
 const AllGoods = lazy(() => import('../pages/goods/AllGoods'));
 const MainWares = lazy(() => import('../pages/wares/MainWares'));
 const MyWares = lazy(() => import('../pages/wares/MyWares'));
+const PlacedWares = lazy(() => import('../pages/wares/PlacedWares'));
 const AllWares = lazy(() => import('../pages/wares/AllWares'));
 const MainProducts = lazy(() => import('../pages/products/MainProducts'));
 const MyProducts = lazy(() => import('../pages/products/MyProducts'));
+const PlacedProducts = lazy(() => import('../pages/products/PlacedProducts'));
 const AllProducts = lazy(() => import('../pages/products/AllProducts'));
 const MainOrders = lazy(() => import('../pages/orders/MainOrders'));
 const MyOrders = lazy(() => import('../pages/orders/MyOrders'));
 const TakenOrders = lazy(() => import('../pages/orders/TakenOrders'));
+const PlacedOrders = lazy(() => import('../pages/orders/PlacedOrders'));
 const AllOrders = lazy(() => import('../pages/orders/AllOrders'));
 const MainDeliveries = lazy(() => import('../pages/deliveries/MainDeliveries'));
 const MyDeliveries = lazy(() => import('../pages/deliveries/MyDeliveries'));
 const TakenDeliveries = lazy(
   () => import('../pages/deliveries/TakenDeliveries'),
 );
+const PlacedDeliveries = lazy(
+  () => import('../pages/deliveries/PlacedDeliveries'),
+);
 const AllDeliveries = lazy(() => import('../pages/deliveries/AllDeliveries'));
 const MyTrades = lazy(() => import('../pages/trades/MyTrades'));
+const PlacedTrades = lazy(() => import('../pages/trades/PlacedTrades'));
 const AllTrades = lazy(() => import('../pages/trades/AllTrades'));
 const MySales = lazy(() => import('../pages/sales/MySales'));
+const PlacedSales = lazy(() => import('../pages/sales/PlacedSales'));
 const AllSales = lazy(() => import('../pages/sales/AllSales'));
 const MainPolls = lazy(() => import('../pages/polls/MainPolls'));
 const MyPolls = lazy(() => import('../pages/polls/MyPolls'));
 const AllPolls = lazy(() => import('../pages/polls/AllPolls'));
 const MyVotes = lazy(() => import('../pages/votes/MyVotes'));
+const PolledVotes = lazy(() => import('../pages/votes/PolledVotes'));
 const AllVotes = lazy(() => import('../pages/votes/AllVotes'));
 import { Role } from '../common/constants';
 
@@ -181,6 +190,7 @@ export const pages = [
     nested: [
       { index: true, element: MainWares },
       { path: 'my', element: MyWares },
+      { path: 'placed', element: PlacedWares },
       { path: 'all', element: AllWares, role: Role.MANAGER },
     ],
   },
@@ -189,6 +199,7 @@ export const pages = [
     nested: [
       { index: true, element: MainProducts },
       { path: 'my', element: MyProducts },
+      { path: 'placed', element: PlacedProducts },
       { path: 'all', element: AllProducts, role: Role.MANAGER },
     ],
   },
@@ -198,6 +209,7 @@ export const pages = [
       { index: true, element: MainOrders },
       { path: 'my', element: MyOrders },
       { path: 'taken', element: TakenOrders },
+      { path: 'placed', element: PlacedOrders },
       { path: 'all', element: AllOrders, role: Role.MANAGER },
     ],
   },
@@ -207,6 +219,7 @@ export const pages = [
       { index: true, element: MainDeliveries },
       { path: 'my', element: MyDeliveries },
       { path: 'taken', element: TakenDeliveries },
+      { path: 'placed', element: PlacedDeliveries },
       { path: 'all', element: AllDeliveries, role: Role.MANAGER },
     ],
   },
@@ -214,6 +227,7 @@ export const pages = [
     path: 'trades',
     nested: [
       { path: 'my', element: MyTrades },
+      { path: 'placed', element: PlacedTrades },
       { path: 'all', element: AllTrades, role: Role.MANAGER },
     ],
   },
@@ -221,6 +235,7 @@ export const pages = [
     path: 'sales',
     nested: [
       { path: 'my', element: MySales },
+      { path: 'placed', element: PlacedSales },
       { path: 'all', element: AllSales, role: Role.MANAGER },
     ],
   },
@@ -236,6 +251,7 @@ export const pages = [
     path: 'votes',
     nested: [
       { path: 'my', element: MyVotes },
+      { path: 'polled', element: PolledVotes },
       { path: 'all', element: AllVotes, role: Role.ADMIN },
     ],
   },

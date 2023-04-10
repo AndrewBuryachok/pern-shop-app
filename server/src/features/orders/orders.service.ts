@@ -33,12 +33,7 @@ export class OrdersService {
 
   async getMyOrders(myId: number, req: Request): Promise<Response<Order>> {
     const [result, count] = await this.getOrdersQueryBuilder(req)
-      .andWhere(
-        new Brackets((qb) =>
-          qb.where('customerUser.id = :myId').orWhere('ownerUser.id = :myId'),
-        ),
-        { myId },
-      )
+      .andWhere('customerUser.id = :myId', { myId })
       .getManyAndCount();
     return { result, count };
   }
@@ -46,6 +41,13 @@ export class OrdersService {
   async getTakenOrders(myId: number, req: Request): Promise<Response<Order>> {
     const [result, count] = await this.getOrdersQueryBuilder(req)
       .andWhere('executorUser.id = :myId', { myId })
+      .getManyAndCount();
+    return { result, count };
+  }
+
+  async getPlacedOrders(myId: number, req: Request): Promise<Response<Order>> {
+    const [result, count] = await this.getOrdersQueryBuilder(req)
+      .andWhere('ownerUser.id = :myId', { myId })
       .getManyAndCount();
     return { result, count };
   }

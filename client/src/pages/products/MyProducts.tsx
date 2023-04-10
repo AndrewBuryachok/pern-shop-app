@@ -27,6 +27,7 @@ export default function MyProducts() {
 
   const links = [
     { label: 'Main', to: '..' },
+    { label: 'Placed', to: '../placed' },
     { label: 'All', to: '../all', role: Role.MANAGER },
   ];
 

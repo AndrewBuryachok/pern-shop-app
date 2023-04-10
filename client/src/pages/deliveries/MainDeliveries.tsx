@@ -30,6 +30,7 @@ export default function MainDeliveries() {
   const links = [
     { label: 'My', to: 'my' },
     { label: 'Taken', to: 'taken' },
+    { label: 'Placed', to: 'placed' },
     { label: 'All', to: 'all', role: Role.MANAGER },
   ];
 

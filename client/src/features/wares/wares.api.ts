@@ -24,6 +24,12 @@ export const waresApi = emptyApi.injectEndpoints({
       }),
       providesTags: ['Ware'],
     }),
+    getPlacedWares: build.query<IResponse<Ware>, IRequest>({
+      query: (req) => ({
+        url: `/wares/placed?${getQuery(req)}`,
+      }),
+      providesTags: ['Ware'],
+    }),
     getAllWares: build.query<IResponse<Ware>, IRequest>({
       query: (req) => ({
         url: `/wares/all?${getQuery(req)}`,
@@ -45,6 +51,7 @@ export const {
   useGetWaresStatsQuery,
   useGetMainWaresQuery,
   useGetMyWaresQuery,
+  useGetPlacedWaresQuery,
   useGetAllWaresQuery,
   useCreateWareMutation,
 } = waresApi;

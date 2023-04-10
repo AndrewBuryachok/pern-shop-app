@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import { ISearch } from '../../common/interfaces';
 import { Filter, Mode } from '../../common/enums';
-import { useGetAllSalesQuery } from '../../features/sales/sales.api';
+import { useGetPlacedSalesQuery } from '../../features/sales/sales.api';
 import SalesTable from '../../features/sales/SalesTable';
+import { Role } from '../../common/constants';
 
-export default function AllSales() {
+export default function PlacedSales() {
   const [page, setPage] = useState(1);
 
   const [search, setSearch] = useState<ISearch>({
@@ -21,11 +22,11 @@ export default function AllSales() {
     description: '',
   });
 
-  const response = useGetAllSalesQuery({ page, search });
+  const response = useGetPlacedSalesQuery({ page, search });
 
   const links = [
     { label: 'My', to: '../my' },
-    { label: 'Placed', to: '../placed' },
+    { label: 'All', to: '../all', role: Role.MANAGER },
   ];
 
   return (
@@ -36,7 +37,7 @@ export default function AllSales() {
       search={search}
       setSearch={setSearch}
       links={links}
-      title='All Sales'
+      title='Placed Sales'
     />
   );
 }

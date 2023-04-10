@@ -18,6 +18,12 @@ export const salesApi = emptyApi.injectEndpoints({
       }),
       providesTags: ['Sale'],
     }),
+    getPlacedSales: build.query<IResponse<Sale>, IRequest>({
+      query: (req) => ({
+        url: `/sales/placed?${getQuery(req)}`,
+      }),
+      providesTags: ['Sale'],
+    }),
     getAllSales: build.query<IResponse<Sale>, IRequest>({
       query: (req) => ({
         url: `/sales/all?${getQuery(req)}`,
@@ -38,6 +44,7 @@ export const salesApi = emptyApi.injectEndpoints({
 export const {
   useGetSalesStatsQuery,
   useGetMySalesQuery,
+  useGetPlacedSalesQuery,
   useGetAllSalesQuery,
   useCreateSaleMutation,
 } = salesApi;

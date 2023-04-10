@@ -24,6 +24,12 @@ export const ordersApi = emptyApi.injectEndpoints({
       }),
       providesTags: ['Order'],
     }),
+    getPlacedOrders: build.query<IResponse<Order>, IRequest>({
+      query: (req) => ({
+        url: `/orders/placed?${getQuery(req)}`,
+      }),
+      providesTags: ['Order'],
+    }),
     getAllOrders: build.query<IResponse<Order>, IRequest>({
       query: (req) => ({
         url: `/orders/all?${getQuery(req)}`,
@@ -81,6 +87,7 @@ export const {
   useGetMainOrdersQuery,
   useGetMyOrdersQuery,
   useGetTakenOrdersQuery,
+  useGetPlacedOrdersQuery,
   useGetAllOrdersQuery,
   useCreateOrderMutation,
   useTakeOrderMutation,

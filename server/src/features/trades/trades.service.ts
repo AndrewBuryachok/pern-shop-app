@@ -38,13 +38,17 @@ export class TradesService {
     const [result, count] = await this.getTradesQueryBuilder(req)
       .andWhere(
         new Brackets((qb) =>
-          qb
-            .where('buyerUser.id = :myId')
-            .orWhere('sellerUser.id = :myId')
-            .orWhere('ownerUser.id = :myId'),
+          qb.where('buyerUser.id = :myId').orWhere('sellerUser.id = :myId'),
         ),
         { myId },
       )
+      .getManyAndCount();
+    return { result, count };
+  }
+
+  async getPlacedTrades(myId: number, req: Request): Promise<Response<Trade>> {
+    const [result, count] = await this.getTradesQueryBuilder(req)
+      .andWhere('ownerUser.id = :myId', { myId })
       .getManyAndCount();
     return { result, count };
   }

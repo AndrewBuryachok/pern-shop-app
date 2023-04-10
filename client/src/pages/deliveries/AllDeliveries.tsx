@@ -29,6 +29,7 @@ export default function AllDeliveries() {
     { label: 'Main', to: '..' },
     { label: 'My', to: '../my' },
     { label: 'Taken', to: '../taken' },
+    { label: 'Placed', to: '../placed' },
   ];
 
   return (

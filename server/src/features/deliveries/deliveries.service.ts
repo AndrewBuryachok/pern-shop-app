@@ -42,11 +42,7 @@ export class DeliveriesService {
     const [result, count] = await this.getDeliveriesQueryBuilder(req)
       .andWhere(
         new Brackets((qb) =>
-          qb
-            .where('senderUser.id = :myId')
-            .orWhere('receiverUser.id = :myId')
-            .orWhere('fromOwnerUser.id = :myId')
-            .orWhere('toOwnerUser.id = :myId'),
+          qb.where('senderUser.id = :myId').orWhere('receiverUser.id = :myId'),
         ),
         { myId },
       )
@@ -60,6 +56,23 @@ export class DeliveriesService {
   ): Promise<Response<Delivery>> {
     const [result, count] = await this.getDeliveriesQueryBuilder(req)
       .andWhere('executorUser.id = :myId', { myId })
+      .getManyAndCount();
+    return { result, count };
+  }
+
+  async getPlacedDeliveries(
+    myId: number,
+    req: Request,
+  ): Promise<Response<Delivery>> {
+    const [result, count] = await this.getDeliveriesQueryBuilder(req)
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where('fromOwnerUser.id = :myId')
+            .orWhere('toOwnerUser.id = :myId'),
+        ),
+        { myId },
+      )
       .getManyAndCount();
     return { result, count };
   }

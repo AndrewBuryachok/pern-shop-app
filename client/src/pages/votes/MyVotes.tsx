@@ -21,7 +21,10 @@ export default function MyVotes() {
 
   const response = useGetMyVotesQuery({ page, search });
 
-  const links = [{ label: 'All', to: '../all', role: Role.ADMIN }];
+  const links = [
+    { label: 'Polled', to: '../polled' },
+    { label: 'All', to: '../all', role: Role.ADMIN },
+  ];
 
   return (
     <VotesTable

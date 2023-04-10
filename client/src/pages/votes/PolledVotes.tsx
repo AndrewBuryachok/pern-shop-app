@@ -1,42 +1,40 @@
 import { useState } from 'react';
 import { ISearch } from '../../common/interfaces';
 import { Filter, Mode } from '../../common/enums';
-import { useGetAllSalesQuery } from '../../features/sales/sales.api';
-import SalesTable from '../../features/sales/SalesTable';
+import { useGetPolledVotesQuery } from '../../features/votes/votes.api';
+import VotesTable from '../../features/votes/VotesTable';
+import { Role } from '../../common/constants';
 
-export default function AllSales() {
+export default function PolledVotes() {
   const [page, setPage] = useState(1);
 
   const [search, setSearch] = useState<ISearch>({
     user: null,
-    card: null,
-    filters: [Filter.BUYER, Filter.SELLER, Filter.OWNER].map((label) => ({
+    filters: [Filter.VOTER, Filter.POLLER].map((label) => ({
       label,
       value: true,
     })),
     mode: Mode.SOME,
-    storage: null,
-    cell: null,
-    item: null,
     description: '',
+    type: null,
   });
 
-  const response = useGetAllSalesQuery({ page, search });
+  const response = useGetPolledVotesQuery({ page, search });
 
   const links = [
     { label: 'My', to: '../my' },
-    { label: 'Placed', to: '../placed' },
+    { label: 'All', to: '../all', role: Role.ADMIN },
   ];
 
   return (
-    <SalesTable
+    <VotesTable
       {...response}
       page={page}
       setPage={setPage}
       search={search}
       setSearch={setSearch}
       links={links}
-      title='All Sales'
+      title='Polled Votes'
     />
   );
 }

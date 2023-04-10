@@ -23,7 +23,10 @@ export default function AllTrades() {
 
   const response = useGetAllTradesQuery({ page, search });
 
-  const links = [{ label: 'My', to: '../my' }];
+  const links = [
+    { label: 'My', to: '../my' },
+    { label: 'Placed', to: '../placed' },
+  ];
 
   return (
     <TradesTable

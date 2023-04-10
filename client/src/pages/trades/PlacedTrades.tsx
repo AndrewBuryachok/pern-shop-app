@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import { ISearch } from '../../common/interfaces';
 import { Filter, Mode } from '../../common/enums';
-import { useGetAllSalesQuery } from '../../features/sales/sales.api';
-import SalesTable from '../../features/sales/SalesTable';
+import { useGetPlacedTradesQuery } from '../../features/trades/trades.api';
+import TradesTable from '../../features/trades/TradesTable';
+import { Role } from '../../common/constants';
 
-export default function AllSales() {
+export default function PlacedTrades() {
   const [page, setPage] = useState(1);
 
   const [search, setSearch] = useState<ISearch>({
@@ -15,28 +16,28 @@ export default function AllSales() {
       value: true,
     })),
     mode: Mode.SOME,
-    storage: null,
-    cell: null,
+    market: null,
+    store: null,
     item: null,
     description: '',
   });
 
-  const response = useGetAllSalesQuery({ page, search });
+  const response = useGetPlacedTradesQuery({ page, search });
 
   const links = [
     { label: 'My', to: '../my' },
-    { label: 'Placed', to: '../placed' },
+    { label: 'All', to: '../all', role: Role.MANAGER },
   ];
 
   return (
-    <SalesTable
+    <TradesTable
       {...response}
       page={page}
       setPage={setPage}
       search={search}
       setSearch={setSearch}
       links={links}
-      title='All Sales'
+      title='Placed Trades'
     />
   );
 }

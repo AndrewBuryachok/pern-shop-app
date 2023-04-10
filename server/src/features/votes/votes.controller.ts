@@ -20,6 +20,14 @@ export class VotesController {
     return this.votesService.getMyVotes(myId, req);
   }
 
+  @Get('polled')
+  getPolledVotes(
+    @MyId() myId: number,
+    @Query() req: Request,
+  ): Promise<Response<Vote>> {
+    return this.votesService.getPolledVotes(myId, req);
+  }
+
   @Roles(Role.ADMIN)
   @Get('all')
   getAllVotes(@Query() req: Request): Promise<Response<Vote>> {

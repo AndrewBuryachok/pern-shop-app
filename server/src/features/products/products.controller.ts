@@ -32,6 +32,14 @@ export class ProductsController {
     return this.productsService.getMyProducts(myId, req);
   }
 
+  @Get('placed')
+  getPlacedProducts(
+    @MyId() myId: number,
+    @Query() req: Request,
+  ): Promise<Response<Product>> {
+    return this.productsService.getPlacedProducts(myId, req);
+  }
+
   @Roles(Role.MANAGER)
   @Get('all')
   getAllProducts(@Query() req: Request): Promise<Response<Product>> {

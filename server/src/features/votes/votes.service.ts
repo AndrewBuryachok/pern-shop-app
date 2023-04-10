@@ -19,12 +19,14 @@ export class VotesService {
 
   async getMyVotes(myId: number, req: Request): Promise<Response<Vote>> {
     const [result, count] = await this.getVotesQueryBuilder(req)
-      .andWhere(
-        new Brackets((qb) =>
-          qb.where('voterUser.id = :myId').orWhere('pollerUser.id = :myId'),
-        ),
-        { myId },
-      )
+      .andWhere('voterUser.id = :myId', { myId })
+      .getManyAndCount();
+    return { result, count };
+  }
+
+  async getPolledVotes(myId: number, req: Request): Promise<Response<Vote>> {
+    const [result, count] = await this.getVotesQueryBuilder(req)
+      .andWhere('pollerUser.id = :myId', { myId })
       .getManyAndCount();
     return { result, count };
   }

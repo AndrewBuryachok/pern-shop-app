@@ -29,6 +29,7 @@ export default function TakenOrders() {
   const links = [
     { label: 'Main', to: '..' },
     { label: 'My', to: '../my' },
+    { label: 'Placed', to: '../placed' },
     { label: 'All', to: '../all', role: Role.MANAGER },
   ];
 

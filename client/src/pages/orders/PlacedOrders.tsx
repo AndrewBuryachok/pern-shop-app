@@ -1,14 +1,11 @@
 import { useState } from 'react';
 import { ISearch } from '../../common/interfaces';
 import { Filter, Mode } from '../../common/enums';
-import { useGetMyOrdersQuery } from '../../features/orders/orders.api';
+import { useGetPlacedOrdersQuery } from '../../features/orders/orders.api';
 import OrdersTable from '../../features/orders/OrdersTable';
-import { createOrderButton } from '../../features/orders/CreateOrderModal';
-import { completeOrderAction } from '../../features/orders/CompleteOrderModal';
-import { deleteOrderAction } from '../../features/orders/DeleteOrderModal';
 import { Role } from '../../common/constants';
 
-export default function MyOrders() {
+export default function PlacedOrders() {
   const [page, setPage] = useState(1);
 
   const [search, setSearch] = useState<ISearch>({
@@ -25,18 +22,14 @@ export default function MyOrders() {
     description: '',
   });
 
-  const response = useGetMyOrdersQuery({ page, search });
+  const response = useGetPlacedOrdersQuery({ page, search });
 
   const links = [
     { label: 'Main', to: '..' },
+    { label: 'My', to: '../my' },
     { label: 'Taken', to: '../taken' },
-    { label: 'Placed', to: '../placed' },
     { label: 'All', to: '../all', role: Role.MANAGER },
   ];
-
-  const button = createOrderButton;
-
-  const actions = [completeOrderAction, deleteOrderAction];
 
   return (
     <OrdersTable
@@ -46,9 +39,7 @@ export default function MyOrders() {
       search={search}
       setSearch={setSearch}
       links={links}
-      button={button}
-      actions={actions}
-      title='My Orders'
+      title='Placed Orders'
     />
   );
 }

@@ -27,6 +27,7 @@ export default function AllOrders() {
     { label: 'Main', to: '..' },
     { label: 'My', to: '../my' },
     { label: 'Taken', to: '../taken' },
+    { label: 'Placed', to: '../placed' },
   ];
 
   return (

@@ -38,13 +38,17 @@ export class SalesService {
     const [result, count] = await this.getSalesQueryBuilder(req)
       .andWhere(
         new Brackets((qb) =>
-          qb
-            .where('buyerUser.id = :myId')
-            .orWhere('sellerUser.id = :myId')
-            .orWhere('ownerUser.id = :myId'),
+          qb.where('buyerUser.id = :myId').orWhere('sellerUser.id = :myId'),
         ),
         { myId },
       )
+      .getManyAndCount();
+    return { result, count };
+  }
+
+  async getPlacedSales(myId: number, req: Request): Promise<Response<Sale>> {
+    const [result, count] = await this.getSalesQueryBuilder(req)
+      .andWhere('ownerUser.id = :myId', { myId })
       .getManyAndCount();
     return { result, count };
   }

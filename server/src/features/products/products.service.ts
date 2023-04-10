@@ -46,12 +46,17 @@ export class ProductsService {
 
   async getMyProducts(myId: number, req: Request): Promise<Response<Product>> {
     const [result, count] = await this.getProductsQueryBuilder(req)
-      .andWhere(
-        new Brackets((qb) =>
-          qb.where('sellerUser.id = :myId').orWhere('ownerUser.id = :myId'),
-        ),
-        { myId },
-      )
+      .andWhere('sellerUser.id = :myId', { myId })
+      .getManyAndCount();
+    return { result, count };
+  }
+
+  async getPlacedProducts(
+    myId: number,
+    req: Request,
+  ): Promise<Response<Product>> {
+    const [result, count] = await this.getProductsQueryBuilder(req)
+      .andWhere('ownerUser.id = :myId', { myId })
       .getManyAndCount();
     return { result, count };
   }
