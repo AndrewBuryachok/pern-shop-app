@@ -47,9 +47,9 @@ export class UsersController {
   }
 
   @Public()
-  @Get('free/select')
-  selectFreeUsers(): Promise<User[]> {
-    return this.usersService.selectFreeUsers();
+  @Get('not-citizens/select')
+  selectNotCitizensUsers(): Promise<User[]> {
+    return this.usersService.selectNotCitizensUsers();
   }
 
   @Public()

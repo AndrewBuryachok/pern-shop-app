@@ -30,9 +30,9 @@ export const usersApi = emptyApi.injectEndpoints({
       }),
       providesTags: ['Active', 'User'],
     }),
-    selectFreeUsers: build.query<SmUser[], void>({
+    selectNotCitizensUsers: build.query<SmUser[], void>({
       query: () => ({
-        url: '/users/free/select',
+        url: '/users/not-citizens/select',
       }),
       providesTags: ['Active', 'User'],
     }),
@@ -91,7 +91,7 @@ export const {
   useGetMyUsersQuery,
   useGetAllUsersQuery,
   useSelectAllUsersQuery,
-  useSelectFreeUsersQuery,
+  useSelectNotCitizensUsersQuery,
   useGetSingleUserQuery,
   useAddUserRoleMutation,
   useRemoveUserRoleMutation,

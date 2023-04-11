@@ -1,7 +1,10 @@
 import { Loader, Select } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
-import { useAddUserCityMutation, useSelectFreeUsersQuery } from './users.api';
+import {
+  useAddUserCityMutation,
+  useSelectNotCitizensUsersQuery,
+} from './users.api';
 import { useSelectMyCitiesQuery } from '../cities/cities.api';
 import { UpdateUserCityDto } from './user.dto';
 import CustomForm from '../../common/components/CustomForm';
@@ -23,7 +26,7 @@ export default function AddUserCityModal() {
   });
 
   const { data: users, isFetching: isUsersFetching } =
-    useSelectFreeUsersQuery();
+    useSelectNotCitizensUsersQuery();
   const { data: cities, isFetching: isCitiesFetching } =
     useSelectMyCitiesQuery();
 

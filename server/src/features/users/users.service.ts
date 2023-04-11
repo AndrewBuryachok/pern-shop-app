@@ -52,7 +52,7 @@ export class UsersService {
     return this.selectUsersQueryBuilder().addSelect('user.cityId').getMany();
   }
 
-  selectFreeUsers(): Promise<User[]> {
+  selectNotCitizensUsers(): Promise<User[]> {
     return this.selectUsersQueryBuilder().where('user.city IS NULL').getMany();
   }
 
