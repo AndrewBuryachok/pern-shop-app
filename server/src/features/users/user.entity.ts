@@ -33,5 +33,5 @@ export class User {
 
   @ManyToOne(() => City, { nullable: true })
   @JoinColumn({ name: 'city_id' })
-  city: City;
+  city?: City;
 }

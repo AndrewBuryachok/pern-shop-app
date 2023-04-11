@@ -189,10 +189,18 @@ export default class AppSeed implements Seeder {
         return poll;
       })
       .createMany(10);
+    const allVotes = polls.reduce(
+      (prev, poll) => [...prev, ...users.map((user) => ({ poll, user }))],
+      [],
+    );
+    const randomVotes = [...Array(allVotes.length).keys()];
+    randomVotes.sort(() => Math.random() - 0.5);
+    let voteId = 0;
     const votes = await factory(Vote)()
       .map(async (vote) => {
-        vote.poll = polls[Math.floor(Math.random() * polls.length)];
-        vote.user = users[Math.floor(Math.random() * users.length)];
+        vote.poll = allVotes[randomVotes[voteId]].poll;
+        vote.user = allVotes[randomVotes[voteId]].user;
+        voteId++;
         return vote;
       })
       .createMany(80);
