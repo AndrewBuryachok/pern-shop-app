@@ -28,7 +28,7 @@ export class UsersService {
     const [result, count] = await this.getUsersQueryBuilder(
       req,
     ).getManyAndCount();
-    await this.loadCards(result);
+    await this.loadCardsAndFriends(result);
     return { result, count };
   }
 
@@ -36,7 +36,7 @@ export class UsersService {
     const [result, count] = await this.getUsersQueryBuilder(req)
       .andWhere('city.userId = :myId', { myId })
       .getManyAndCount();
-    await this.loadCards(result);
+    await this.loadCardsAndFriends(result);
     return { result, count };
   }
 
@@ -44,7 +44,7 @@ export class UsersService {
     const [result, count] = await this.getUsersQueryBuilder(
       req,
     ).getManyAndCount();
-    await this.loadCards(result);
+    await this.loadCardsAndFriends(result);
     return { result, count };
   }
 
@@ -56,11 +56,33 @@ export class UsersService {
     return this.selectUsersQueryBuilder().where('user.city IS NULL').getMany();
   }
 
+  async selectNotFriendsUsers(myId: number): Promise<User[]> {
+    const allUsers = await this.selectUsersQueryBuilder().getMany();
+    const result = await this.usersRepository
+      .createQueryBuilder('user')
+      .leftJoinAndMapMany(
+        'user.friends',
+        'friends',
+        'friend',
+        'user.id = friend.senderUserId OR user.id = friend.receiverUserId',
+      )
+      .where('user.id = :myId', { myId })
+      .getOne();
+    const friends = result['friends']
+      .filter((friend) => friend.senderUserId === myId || friend.type)
+      .map((friend) =>
+        friend.senderUserId === myId
+          ? friend.receiverUserId
+          : friend.senderUserId,
+      );
+    return allUsers.filter((user) => !friends.includes(user.id));
+  }
+
   async getSingleUser(userId: number): Promise<User> {
     const user = await this.getUserQueryBuilder()
       .where('user.id = :userId', { userId })
       .getOne();
-    await this.loadCards([user]);
+    await this.loadCardsAndFriends([user]);
     ['goods', 'wares', 'products', 'trades', 'sales'].forEach(
       (stat) => (user[stat] = user[stat].length),
     );
@@ -227,22 +249,44 @@ export class UsersService {
       .select(['user.id', 'user.name', 'user.status']);
   }
 
-  private async loadCards(users: User[]): Promise<void> {
+  private async loadCardsAndFriends(users: User[]): Promise<void> {
+    const allUsers = await this.selectUsersQueryBuilder().getMany();
     const promises = users.map(async (user) => {
-      user['cards'] = (
-        await this.usersRepository
-          .createQueryBuilder('user')
-          .leftJoinAndMapMany(
-            'user.cards',
-            'cards',
-            'card',
-            'user.id = card.userId',
-          )
-          .where('user.id = :userId', { userId: user.id })
-          .orderBy('card.id', 'ASC')
-          .select(['user.id', 'card.id', 'card.name', 'card.color'])
-          .getOne()
-      )['cards'];
+      const result = await this.usersRepository
+        .createQueryBuilder('user')
+        .leftJoinAndMapMany(
+          'user.cards',
+          'cards',
+          'card',
+          'user.id = card.userId',
+        )
+        .leftJoinAndMapMany(
+          'user.friends',
+          'friends',
+          'friend',
+          'user.id = friend.senderUserId OR user.id = friend.receiverUserId',
+        )
+        .where('user.id = :userId', { userId: user.id })
+        .orderBy('card.id', 'ASC')
+        .select([
+          'user.id',
+          'card.id',
+          'card.name',
+          'card.color',
+          'friend.senderUserId',
+          'friend.receiverUserId',
+          'friend.type',
+        ])
+        .getOne();
+      user['cards'] = result['cards'];
+      const friends = result['friends']
+        .filter((friend) => friend.type)
+        .map((friend) =>
+          friend.senderUserId === user.id
+            ? friend.receiverUserId
+            : friend.senderUserId,
+        );
+      user['friends'] = allUsers.filter((user) => friends.includes(user.id));
     });
     await Promise.all(promises);
   }

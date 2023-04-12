@@ -52,6 +52,11 @@ export class UsersController {
     return this.usersService.selectNotCitizensUsers();
   }
 
+  @Get('not-friends/select')
+  selectNotFriendsUsers(@MyId() myId: number): Promise<User[]> {
+    return this.usersService.selectNotFriendsUsers(myId);
+  }
+
   @Public()
   @Get(':userId')
   getSingleUser(@Param() { userId }: UserIdDto): Promise<User> {
