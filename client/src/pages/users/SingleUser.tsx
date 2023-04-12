@@ -3,6 +3,7 @@ import { Group, Skeleton, Stack } from '@mantine/core';
 import { useDocumentTitle } from '@mantine/hooks';
 import { useGetSingleUserQuery } from '../../features/users/users.api';
 import UserProfile from '../../features/users/UserProfile';
+import FriendChip from '../../common/components/FriendChip';
 
 export default function SingleUser() {
   useDocumentTitle('Single User | Shop');
@@ -22,6 +23,7 @@ export default function SingleUser() {
           <Skeleton key={key} h={16} w={40} />
         ))}
       </Group>
+      <FriendChip />
       <Skeleton h={40} w={96} />
       <Group spacing={8}>
         {[...Array(3).keys()].map((key) => (

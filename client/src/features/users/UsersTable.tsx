@@ -3,6 +3,7 @@ import { User } from './user.model';
 import CustomTable from '../../common/components/CustomTable';
 import AvatarWithSingleText from '../../common/components/AvatarWithSingleText';
 import RolesBadge from '../../common/components/RolesBadge';
+import FriendChip from '../../common/components/FriendChip';
 import SingleText from '../../common/components/SingleText';
 import PlaceText from '../../common/components/PlaceText';
 import TotalText from '../../common/components/TotalText';
@@ -14,8 +15,17 @@ type Props = ITableWithActions<User>;
 export default function UsersTable({ actions = [], ...props }: Props) {
   return (
     <CustomTable
-      minWidth={1000}
-      columns={['User', 'Roles', 'Owner', 'City', 'Cards', 'Action']}
+      minWidth={1200}
+      columns={[
+        'User',
+        'Roles',
+        'Friend',
+        'Owner',
+        'City',
+        'Cards',
+        'Friends',
+        'Action',
+      ]}
       {...props}
     >
       {props.data?.result.map((user) => (
@@ -25,6 +35,9 @@ export default function UsersTable({ actions = [], ...props }: Props) {
           </td>
           <td>
             <RolesBadge roles={user.roles} />
+          </td>
+          <td>
+            <FriendChip data={user} small />
           </td>
           <td>
             {user.city?.user ? (
@@ -42,6 +55,9 @@ export default function UsersTable({ actions = [], ...props }: Props) {
           </td>
           <td>
             <TotalText data={user.cards.length} />
+          </td>
+          <td>
+            <TotalText data={user.friends.length} />
           </td>
           <td>
             <CustomActions data={user} actions={[viewUserAction, ...actions]} />

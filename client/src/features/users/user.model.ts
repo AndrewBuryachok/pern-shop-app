@@ -18,6 +18,7 @@ export interface MdUser extends SmUser {
 export interface User extends MdUser {
   city?: SmCity;
   cards: SmCard[];
+  friends: SmUser[];
 }
 
 export interface ExtUser extends User {

@@ -6,6 +6,7 @@ import {
   IconBuildingCommunity,
   IconChartBar,
   IconContainer,
+  IconFriends,
   IconHome,
   IconMap,
   IconNotes,
@@ -79,6 +80,10 @@ export default function CustomNavbar(props: Props) {
       label: 'Votes',
       icon: IconNotes,
       my: true,
+    },
+    {
+      label: 'Friends',
+      icon: IconFriends,
     },
   ];
 

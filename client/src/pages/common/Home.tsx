@@ -23,6 +23,7 @@ import {
   IconCreditCard,
   IconExchange,
   IconFileDollar,
+  IconFriends,
   IconGardenCart,
   IconMap,
   IconNotes,
@@ -136,6 +137,10 @@ export default function Home() {
       title: 'Votes',
       icon: IconNotes,
       my: true,
+    },
+    {
+      title: 'Friends',
+      icon: IconFriends,
     },
   ];
 

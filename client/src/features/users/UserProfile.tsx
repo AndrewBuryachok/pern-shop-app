@@ -3,6 +3,9 @@ import { IconBuildingSkyscraper } from '@tabler/icons';
 import { ExtUser } from './user.model';
 import CustomIndicator from '../../common/components/CustomIndicator';
 import RolesBadge from '../../common/components/RolesBadge';
+import CustomActions from '../../common/components/CustomActions';
+import FriendChip from '../../common/components/FriendChip';
+import { viewUserFriendsAction } from './ViewUserFriendsModal';
 import PlaceText from '../../common/components/PlaceText';
 import { colors } from '../../common/constants';
 
@@ -34,6 +37,10 @@ export default function UserProfile({ data: user }: Props) {
         {user.name}
       </Text>
       <RolesBadge roles={user.roles} />
+      <Group spacing={8}>
+        <FriendChip data={user} />
+        <CustomActions data={user} actions={[viewUserFriendsAction]} />
+      </Group>
       {user.city && (
         <Group spacing={8}>
           <IconBuildingSkyscraper size={32} />
