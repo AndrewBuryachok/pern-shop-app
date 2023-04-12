@@ -56,6 +56,7 @@ export const usersApi = emptyApi.injectEndpoints({
         'Trade',
         'Sale',
         'Friend',
+        'Rating',
       ],
     }),
     addUserRole: build.mutation<void, UpdateUserRolesDto>({

@@ -11,6 +11,7 @@ import {
   IconMap,
   IconNotes,
   IconReceipt,
+  IconStar,
   IconTags,
   IconUsers,
   IconWallet,
@@ -84,6 +85,11 @@ export default function CustomNavbar(props: Props) {
     {
       label: 'Friends',
       icon: IconFriends,
+    },
+    {
+      label: 'Ratings',
+      icon: IconStar,
+      my: true,
     },
   ];
 

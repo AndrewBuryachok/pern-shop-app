@@ -19,4 +19,5 @@ export interface ISearch {
   item?: string | null;
   description?: string;
   type?: string | null;
+  rate?: number | null;
 }

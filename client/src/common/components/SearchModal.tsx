@@ -2,9 +2,13 @@ import { useEffect } from 'react';
 import {
   Autocomplete,
   Checkbox,
+  CloseButton,
+  Group,
+  Input,
   Loader,
   MultiSelect,
   Radio,
+  Rating,
   Select,
   Textarea,
 } from '@mantine/core';
@@ -408,6 +412,14 @@ export default function SearchModal(props: Props) {
           allowDeselect
           {...form.getInputProps('type')}
         />
+      )}
+      {props.search.rate !== undefined && (
+        <Input.Wrapper label='Rate'>
+          <Group spacing={8}>
+            <Rating {...form.getInputProps('rate')} />
+            <CloseButton onClick={() => form.setFieldValue('rate', null)} />
+          </Group>
+        </Input.Wrapper>
       )}
     </CustomForm>
   );

@@ -56,5 +56,8 @@ export const getQuery = ({ page, search }: IRequest) => {
   if (search?.type) {
     query.append('type', search.type);
   }
+  if (search?.rate) {
+    query.append('rate', `${search.rate}`);
+  }
   return query.toString();
 };

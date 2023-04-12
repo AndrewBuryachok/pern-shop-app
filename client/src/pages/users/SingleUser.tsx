@@ -4,15 +4,16 @@ import { useDocumentTitle } from '@mantine/hooks';
 import { useGetSingleUserQuery } from '../../features/users/users.api';
 import UserProfile from '../../features/users/UserProfile';
 import FriendChip from '../../common/components/FriendChip';
+import CustomRating from '../../common/components/CustomRating';
 
 export default function SingleUser() {
   useDocumentTitle('Single User | Shop');
 
   const { userId } = useParams();
 
-  const { data: user } = useGetSingleUserQuery(+userId!);
+  const { data: user, isFetching } = useGetSingleUserQuery(+userId!);
 
-  return user ? (
+  return user && !isFetching ? (
     <UserProfile data={user} />
   ) : (
     <Stack align='center'>
@@ -24,6 +25,7 @@ export default function SingleUser() {
         ))}
       </Group>
       <FriendChip />
+      <CustomRating />
       <Skeleton h={40} w={96} />
       <Group spacing={8}>
         {[...Array(3).keys()].map((key) => (

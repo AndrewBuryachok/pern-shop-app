@@ -31,6 +31,7 @@ import {
   IconReportMoney,
   IconShoppingBag,
   IconShoppingCart,
+  IconStar,
   IconTrolley,
   IconTruck,
 } from '@tabler/icons';
@@ -141,6 +142,11 @@ export default function Home() {
     {
       title: 'Friends',
       icon: IconFriends,
+    },
+    {
+      title: 'Ratings',
+      icon: IconStar,
+      my: true,
     },
   ];
 

@@ -27,4 +27,5 @@ export interface ExtUser extends User {
   products: number;
   trades: number;
   sales: number;
+  rating: number;
 }
