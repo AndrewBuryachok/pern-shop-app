@@ -124,7 +124,7 @@ export class CellsService {
     return this.cellsRepository
       .createQueryBuilder('cell')
       .where('cell.storageId = :storageId', { storageId })
-      .orderBy('cell.id', 'ASC')
+      .orderBy('cell.name', 'ASC')
       .select(['cell.id', 'cell.name']);
   }
 

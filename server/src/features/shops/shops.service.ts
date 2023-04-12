@@ -141,7 +141,7 @@ export class ShopsService {
             'shop.id = good.shopId',
           )
           .where('shop.id = :shopId', { shopId: shop.id })
-          .orderBy('good.id', 'ASC')
+          .orderBy('good.id', 'DESC')
           .select(['shop.id', 'good.id', 'good.item', 'good.description'])
           .getOne()
       )['goods'];

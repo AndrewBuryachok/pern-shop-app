@@ -149,7 +149,7 @@ export class MarketsService {
             'market.id = store.marketId',
           )
           .where('market.id = :marketId', { marketId: market.id })
-          .orderBy('store.id', 'ASC')
+          .orderBy('store.id', 'DESC')
           .select(['market.id', 'store.id', 'store.name'])
           .getOne()
       )['stores'];

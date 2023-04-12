@@ -173,7 +173,7 @@ export class StoragesService {
             'storage.id = cell.storageId',
           )
           .where('storage.id = :storageId', { storageId: storage.id })
-          .orderBy('cell.id', 'ASC')
+          .orderBy('cell.id', 'DESC')
           .select(['storage.id', 'cell.id', 'cell.name'])
           .getOne()
       )['cells'];

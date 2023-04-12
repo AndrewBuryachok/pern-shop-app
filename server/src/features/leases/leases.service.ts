@@ -45,7 +45,7 @@ export class LeasesService {
             'lease.id = product.id',
           )
           .where('lease.id = :leaseId', { leaseId: lease.id })
-          .orderBy('product.id', 'ASC')
+          .orderBy('product.id', 'DESC')
           .select([
             'lease.id',
             'product.id',

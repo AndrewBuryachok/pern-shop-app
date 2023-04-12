@@ -271,7 +271,7 @@ export class UsersService {
           'user.id = friend.senderUserId OR user.id = friend.receiverUserId',
         )
         .where('user.id = :userId', { userId: user.id })
-        .orderBy('card.id', 'ASC')
+        .orderBy('card.name', 'ASC')
         .select([
           'user.id',
           'card.id',

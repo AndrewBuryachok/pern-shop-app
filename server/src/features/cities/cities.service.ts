@@ -147,7 +147,8 @@ export class CitiesService {
             'city.id = user.cityId',
           )
           .where('city.id = :cityId', { cityId: city.id })
-          .orderBy('user.id', 'ASC')
+          .orderBy('user.status', 'DESC')
+          .addOrderBy('user.name', 'ASC')
           .select(['city.id', 'user.id', 'user.name', 'user.status'])
           .getOne()
       )['users'];

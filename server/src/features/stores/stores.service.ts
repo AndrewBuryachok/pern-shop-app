@@ -129,7 +129,7 @@ export class StoresService {
     return this.storesRepository
       .createQueryBuilder('store')
       .where('store.marketId = :marketId', { marketId })
-      .orderBy('store.id', 'ASC')
+      .orderBy('store.name', 'ASC')
       .select(['store.id', 'store.name']);
   }
 
