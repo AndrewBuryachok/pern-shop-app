@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { Loader, NumberInput, Select, Textarea } from '@mantine/core';
+import { NumberInput, Select, Textarea } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { useCreateDeliveryMutation } from './deliveries.api';
@@ -8,6 +8,7 @@ import { useSelectMyCardsQuery } from '../cards/cards.api';
 import { useSelectAllUsersQuery } from '../users/users.api';
 import { CreateDeliveryDto } from './delivery.dto';
 import CustomForm from '../../common/components/CustomForm';
+import RefetchAction from '../../common/components/RefetchAction';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import { UsersItem } from '../../common/components/UsersItem';
 import ThingImage from '../../common/components/ThingImage';
@@ -65,10 +66,9 @@ export default function CreateDeliveryModal() {
 
   useEffect(() => form.setFieldValue('item', ''), [form.values.category]);
 
-  const { data: storages, isFetching: isStoragesFetching } =
-    useSelectFreeStoragesQuery();
-  const { data: cards, isFetching: isCardsFetching } = useSelectMyCardsQuery();
-  const { data: users, isFetching: isUsersFetching } = useSelectAllUsersQuery();
+  const { data: storages, ...storagesResponse } = useSelectFreeStoragesQuery();
+  const { data: cards, ...cardsResponse } = useSelectMyCardsQuery();
+  const { data: users, ...usersResponse } = useSelectAllUsersQuery();
 
   const user = users?.find((user) => user.id === +form.values.user);
 
@@ -87,34 +87,34 @@ export default function CreateDeliveryModal() {
       <Select
         label='From Storage'
         placeholder='From Storage'
-        rightSection={isStoragesFetching && <Loader size={16} />}
+        rightSection={<RefetchAction {...storagesResponse} />}
         itemComponent={PlacesItem}
         data={selectStoragesWithPrice(storages)}
         searchable
         required
-        disabled={isStoragesFetching}
+        disabled={storagesResponse.isFetching}
         {...form.getInputProps('fromStorage')}
       />
       <Select
         label='To Storage'
         placeholder='To Storage'
-        rightSection={isStoragesFetching && <Loader size={16} />}
+        rightSection={<RefetchAction {...storagesResponse} />}
         itemComponent={PlacesItem}
         data={selectStoragesWithPrice(storages)}
         searchable
         required
-        disabled={isStoragesFetching}
+        disabled={storagesResponse.isFetching}
         {...form.getInputProps('toStorage')}
       />
       <Select
         label='Card'
         placeholder='Card'
-        rightSection={isCardsFetching && <Loader size={16} />}
+        rightSection={<RefetchAction {...cardsResponse} />}
         itemComponent={CardsItem}
         data={selectCardsWithBalance(cards)}
         searchable
         required
-        disabled={isCardsFetching}
+        disabled={cardsResponse.isFetching}
         {...form.getInputProps('card')}
       />
       <Select
@@ -122,12 +122,12 @@ export default function CreateDeliveryModal() {
         placeholder='User'
         icon={user && <CustomAvatar {...user} />}
         iconWidth={48}
-        rightSection={isUsersFetching && <Loader size={16} />}
+        rightSection={<RefetchAction {...usersResponse} />}
         itemComponent={UsersItem}
         data={selectUsers(users)}
         searchable
         required
-        disabled={isUsersFetching}
+        disabled={usersResponse.isFetching}
         {...form.getInputProps('user')}
       />
       <Select

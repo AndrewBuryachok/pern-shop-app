@@ -5,7 +5,6 @@ import {
   CloseButton,
   Group,
   Input,
-  Loader,
   MultiSelect,
   Radio,
   Rating,
@@ -25,6 +24,7 @@ import { useSelectAllStoragesQuery } from '../../features/storages/storages.api'
 import { useSelectMarketStoresQuery } from '../../features/stores/stores.api';
 import { useSelectStorageCellsQuery } from '../../features/cells/cells.api';
 import CustomForm from './CustomForm';
+import RefetchAction from './RefetchAction';
 import CustomAvatar from './CustomAvatar';
 import { UsersItem } from './UsersItem';
 import ThingImage from './ThingImage';
@@ -233,7 +233,7 @@ export default function SearchModal(props: Props) {
         placeholder={`Total: ${users?.length}`}
         icon={user && <CustomAvatar {...user} status={!!user.status} />}
         iconWidth={48}
-        rightSection={usersResponse.isFetching && <Loader size={16} />}
+        rightSection={<RefetchAction {...usersResponse} />}
         itemComponent={UsersItem}
         data={users}
         searchable
@@ -245,7 +245,9 @@ export default function SearchModal(props: Props) {
         <Select
           label='Card'
           placeholder={`Total: ${cards.length}`}
-          rightSection={cardsResponse.isFetching && <Loader size={16} />}
+          rightSection={
+            <RefetchAction {...cardsResponse} skip={!form.values.user} />
+          }
           itemComponent={CardsItem}
           data={cards}
           searchable
@@ -286,7 +288,7 @@ export default function SearchModal(props: Props) {
         <Select
           label='City'
           placeholder={`Total: ${cities.length}`}
-          rightSection={citiesResponse.isFetching && <Loader size={16} />}
+          rightSection={<RefetchAction {...citiesResponse} />}
           itemComponent={PlacesItem}
           data={cities}
           searchable
@@ -310,7 +312,7 @@ export default function SearchModal(props: Props) {
         <Select
           label='Market'
           placeholder={`Total: ${markets.length}`}
-          rightSection={marketsResponse.isFetching && <Loader size={16} />}
+          rightSection={<RefetchAction {...marketsResponse} />}
           itemComponent={PlacesItem}
           data={markets}
           searchable
@@ -323,7 +325,7 @@ export default function SearchModal(props: Props) {
         <Select
           label='Storage'
           placeholder={`Total: ${storages.length}`}
-          rightSection={storagesResponse.isFetching && <Loader size={16} />}
+          rightSection={<RefetchAction {...storagesResponse} />}
           itemComponent={PlacesItem}
           data={storages}
           searchable
@@ -336,7 +338,9 @@ export default function SearchModal(props: Props) {
         <Select
           label='Store'
           placeholder={`Total: ${stores.length}`}
-          rightSection={storesResponse.isFetching && <Loader size={16} />}
+          rightSection={
+            <RefetchAction {...storesResponse} skip={!form.values.market} />
+          }
           data={stores}
           searchable
           allowDeselect
@@ -348,7 +352,9 @@ export default function SearchModal(props: Props) {
         <Select
           label='Cell'
           placeholder={`Total: ${cells.length}`}
-          rightSection={cellsResponse.isFetching && <Loader size={16} />}
+          rightSection={
+            <RefetchAction {...cellsResponse} skip={!form.values.storage} />
+          }
           data={cells}
           searchable
           allowDeselect
@@ -360,7 +366,6 @@ export default function SearchModal(props: Props) {
         <Autocomplete
           label='Name'
           placeholder={`Total: ${data.length}`}
-          rightSection={isFetching && <Loader size={16} />}
           itemComponent={component}
           data={data.map((element) => ({ ...element, value: element.name }))}
           disabled={isFetching}
@@ -417,7 +422,11 @@ export default function SearchModal(props: Props) {
         <Input.Wrapper label='Rate'>
           <Group spacing={8}>
             <Rating {...form.getInputProps('rate')} />
-            <CloseButton onClick={() => form.setFieldValue('rate', null)} />
+            <CloseButton
+              size={24}
+              iconSize={16}
+              onClick={() => form.setFieldValue('rate', null)}
+            />
           </Group>
         </Input.Wrapper>
       )}

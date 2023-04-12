@@ -1,10 +1,11 @@
-import { Loader, Select, TextInput } from '@mantine/core';
+import { Select, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { useCreateCellMutation } from './cells.api';
 import { useSelectMyStoragesQuery } from '../storages/storages.api';
 import { CreateCellDto } from './cell.dto';
 import CustomForm from '../../common/components/CustomForm';
+import RefetchAction from '../../common/components/RefetchAction';
 import { PlacesItem } from '../../common/components/PlacesItem';
 import { selectStorages } from '../../common/utils';
 
@@ -20,8 +21,7 @@ export default function CreateCellModal() {
     }),
   });
 
-  const { data: storages, isFetching: isStoragesFetching } =
-    useSelectMyStoragesQuery();
+  const { data: storages, ...storagesResponse } = useSelectMyStoragesQuery();
 
   const storage = storages?.find(
     (storage) => storage.id === +form.values.storage,
@@ -43,12 +43,12 @@ export default function CreateCellModal() {
       <Select
         label='Storage'
         placeholder='Storage'
-        rightSection={isStoragesFetching && <Loader size={16} />}
+        rightSection={<RefetchAction {...storagesResponse} />}
         itemComponent={PlacesItem}
         data={selectStorages(storages)}
         searchable
         required
-        disabled={isStoragesFetching}
+        disabled={storagesResponse.isFetching}
         {...form.getInputProps('storage')}
       />
       <TextInput label='Name' disabled {...form.getInputProps('name')} />

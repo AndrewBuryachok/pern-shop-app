@@ -1,4 +1,4 @@
-import { Loader, NumberInput, Select, Textarea } from '@mantine/core';
+import { NumberInput, Select, Textarea } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { useCreateInvoiceMutation } from './invoices.api';
@@ -6,6 +6,7 @@ import { useSelectMyCardsQuery } from '../cards/cards.api';
 import { useSelectAllUsersQuery } from '../users/users.api';
 import { CreateInvoiceDto } from './invoice.dto';
 import CustomForm from '../../common/components/CustomForm';
+import RefetchAction from '../../common/components/RefetchAction';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import { UsersItem } from '../../common/components/UsersItem';
 import { CardsItem } from '../../common/components/CardsItem';
@@ -27,8 +28,8 @@ export default function CreateInvoiceModal() {
     }),
   });
 
-  const { data: cards, isFetching: isCardsFetching } = useSelectMyCardsQuery();
-  const { data: users, isFetching: isUsersFetching } = useSelectAllUsersQuery();
+  const { data: cards, ...cardsResponse } = useSelectMyCardsQuery();
+  const { data: users, ...usersResponse } = useSelectAllUsersQuery();
 
   const user = users?.find((user) => user.id === +form.values.receiverUser);
 
@@ -47,12 +48,12 @@ export default function CreateInvoiceModal() {
       <Select
         label='Sender Card'
         placeholder='Sender Card'
-        rightSection={isCardsFetching && <Loader size={16} />}
+        rightSection={<RefetchAction {...cardsResponse} />}
         itemComponent={CardsItem}
         data={selectCardsWithBalance(cards)}
         searchable
         required
-        disabled={isCardsFetching}
+        disabled={cardsResponse.isFetching}
         {...form.getInputProps('senderCard')}
       />
       <Select
@@ -60,12 +61,12 @@ export default function CreateInvoiceModal() {
         placeholder='Receiver User'
         icon={user && <CustomAvatar {...user} />}
         iconWidth={48}
-        rightSection={isUsersFetching && <Loader size={16} />}
+        rightSection={<RefetchAction {...usersResponse} />}
         itemComponent={UsersItem}
         data={selectUsers(users)}
         searchable
         required
-        disabled={isUsersFetching}
+        disabled={usersResponse.isFetching}
         {...form.getInputProps('receiverUser')}
       />
       <NumberInput

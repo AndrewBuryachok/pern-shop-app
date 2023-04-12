@@ -1,4 +1,4 @@
-import { Loader, Select, TextInput } from '@mantine/core';
+import { Select, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
@@ -7,6 +7,7 @@ import { useCreateRentMutation } from '../rents/rents.api';
 import { useSelectMyCardsQuery } from '../cards/cards.api';
 import { CreateRentDto } from '../rents/rent.dto';
 import CustomForm from '../../common/components/CustomForm';
+import RefetchAction from '../../common/components/RefetchAction';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import { CardsItem } from '../../common/components/CardsItem';
 import {
@@ -33,7 +34,7 @@ export default function ReserveStoreModal({ data: store }: Props) {
     },
   });
 
-  const { data: cards, isFetching: isCardsFetching } = useSelectMyCardsQuery();
+  const { data: cards, ...cardsResponse } = useSelectMyCardsQuery();
 
   myCard.balance =
     cards?.find((card) => card.id === +form.values.card)?.balance || 0;
@@ -62,12 +63,12 @@ export default function ReserveStoreModal({ data: store }: Props) {
       <Select
         label='Card'
         placeholder='Card'
-        rightSection={isCardsFetching && <Loader size={16} />}
+        rightSection={<RefetchAction {...cardsResponse} />}
         itemComponent={CardsItem}
         data={selectCardsWithBalance(cards)}
         searchable
         required
-        disabled={isCardsFetching}
+        disabled={cardsResponse.isFetching}
         {...form.getInputProps('card')}
       />
     </CustomForm>

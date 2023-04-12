@@ -1,11 +1,12 @@
 import { useEffect } from 'react';
-import { Loader, NumberInput, Select, Textarea } from '@mantine/core';
+import { NumberInput, Select, Textarea } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { useCreateWareMutation } from './wares.api';
 import { useSelectMyRentsQuery } from '../rents/rents.api';
 import { CreateWareDto } from './ware.dto';
 import CustomForm from '../../common/components/CustomForm';
+import RefetchAction from '../../common/components/RefetchAction';
 import ThingImage from '../../common/components/ThingImage';
 import { ThingsItem } from '../../common/components/ThingItem';
 import { PlacesItem } from '../../common/components/PlacesItem';
@@ -44,7 +45,7 @@ export default function CreateWareModal() {
 
   useEffect(() => form.setFieldValue('item', ''), [form.values.category]);
 
-  const { data: rents, isFetching: isRentsFetching } = useSelectMyRentsQuery();
+  const { data: rents, ...rentsResponse } = useSelectMyRentsQuery();
 
   const [createWare, { isLoading }] = useCreateWareMutation();
 
@@ -61,12 +62,12 @@ export default function CreateWareModal() {
       <Select
         label='Rent'
         placeholder='Rent'
-        rightSection={isRentsFetching && <Loader size={16} />}
+        rightSection={<RefetchAction {...rentsResponse} />}
         itemComponent={PlacesItem}
         data={selectRents(rents)}
         searchable
         required
-        disabled={isRentsFetching}
+        disabled={rentsResponse.isFetching}
         {...form.getInputProps('rent')}
       />
       <Select

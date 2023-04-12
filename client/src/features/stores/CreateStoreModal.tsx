@@ -1,10 +1,11 @@
-import { Loader, Select, TextInput } from '@mantine/core';
+import { Select, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { useCreateStoreMutation } from './stores.api';
 import { useSelectMyMarketsQuery } from '../markets/markets.api';
 import { CreateStoreDto } from './store.dto';
 import CustomForm from '../../common/components/CustomForm';
+import RefetchAction from '../../common/components/RefetchAction';
 import { PlacesItem } from '../../common/components/PlacesItem';
 import { selectMarkets } from '../../common/utils';
 
@@ -20,8 +21,7 @@ export default function CreateStoreModal() {
     }),
   });
 
-  const { data: markets, isFetching: isMarketsFetching } =
-    useSelectMyMarketsQuery();
+  const { data: markets, ...marketsResponse } = useSelectMyMarketsQuery();
 
   const market = markets?.find((market) => market.id === +form.values.market);
   form.values.name = market ? `#${market.stores + 1}` : '';
@@ -41,12 +41,12 @@ export default function CreateStoreModal() {
       <Select
         label='Market'
         placeholder='Market'
-        rightSection={isMarketsFetching && <Loader size={16} />}
+        rightSection={<RefetchAction {...marketsResponse} />}
         itemComponent={PlacesItem}
         data={selectMarkets(markets)}
         searchable
         required
-        disabled={isMarketsFetching}
+        disabled={marketsResponse.isFetching}
         {...form.getInputProps('market')}
       />
       <TextInput label='Name' disabled {...form.getInputProps('name')} />

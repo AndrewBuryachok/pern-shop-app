@@ -1,4 +1,4 @@
-import { Loader, Select } from '@mantine/core';
+import { Select } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import {
@@ -8,6 +8,7 @@ import {
 import { useSelectMyCitiesQuery } from '../cities/cities.api';
 import { UpdateUserCityDto } from './user.dto';
 import CustomForm from '../../common/components/CustomForm';
+import RefetchAction from '../../common/components/RefetchAction';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import { UsersItem } from '../../common/components/UsersItem';
 import { PlacesItem } from '../../common/components/PlacesItem';
@@ -25,10 +26,8 @@ export default function AddUserCityModal() {
     }),
   });
 
-  const { data: users, isFetching: isUsersFetching } =
-    useSelectNotCitizensUsersQuery();
-  const { data: cities, isFetching: isCitiesFetching } =
-    useSelectMyCitiesQuery();
+  const { data: users, ...usersResponse } = useSelectNotCitizensUsersQuery();
+  const { data: cities, ...citiesResponse } = useSelectMyCitiesQuery();
 
   const user = users?.find((user) => user.id === +form.values.user);
 
@@ -49,23 +48,23 @@ export default function AddUserCityModal() {
         placeholder='User'
         icon={user && <CustomAvatar {...user} />}
         iconWidth={48}
-        rightSection={isUsersFetching && <Loader size={16} />}
+        rightSection={<RefetchAction {...usersResponse} />}
         itemComponent={UsersItem}
         data={selectUsers(users)}
         searchable
         required
-        disabled={isUsersFetching}
+        disabled={usersResponse.isFetching}
         {...form.getInputProps('user')}
       />
       <Select
         label='City'
         placeholder='City'
-        rightSection={isCitiesFetching && <Loader size={16} />}
+        rightSection={<RefetchAction {...citiesResponse} />}
         itemComponent={PlacesItem}
         data={selectCities(cities)}
         searchable
         required
-        disabled={isCitiesFetching}
+        disabled={citiesResponse.isFetching}
         {...form.getInputProps('city')}
       />
     </CustomForm>

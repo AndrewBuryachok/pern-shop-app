@@ -25,10 +25,10 @@ export default function CustomActions<T>(props: Props<T>) {
         .map((action) => (
           <ActionIcon
             key={action.color}
-            onClick={() => action.open(props.data)}
-            size='sm'
-            color={colors[action.color - 1]}
+            size={24}
             variant='filled'
+            color={colors[action.color - 1]}
+            onClick={() => action.open(props.data)}
             disabled={action.disable(props.data)}
           >
             {icons[action.color - 1]}

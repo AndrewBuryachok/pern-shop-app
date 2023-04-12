@@ -1,10 +1,11 @@
-import { Loader, NumberInput, Select, TextInput } from '@mantine/core';
+import { NumberInput, Select, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { useCreateStorageMutation } from './storages.api';
 import { useSelectMyCardsQuery } from '../cards/cards.api';
 import { CreateStorageDto } from './storage.dto';
 import CustomForm from '../../common/components/CustomForm';
+import RefetchAction from '../../common/components/RefetchAction';
 import { CardsItem } from '../../common/components/CardsItem';
 import { selectCardsWithBalance } from '../../common/utils';
 import {
@@ -26,7 +27,7 @@ export default function CreateStorageModal() {
     transformValues: ({ card, ...rest }) => ({ ...rest, cardId: +card }),
   });
 
-  const { data: cards, isFetching: isCardsFetching } = useSelectMyCardsQuery();
+  const { data: cards, ...cardsResponse } = useSelectMyCardsQuery();
 
   const [createStorage, { isLoading }] = useCreateStorageMutation();
 
@@ -43,12 +44,12 @@ export default function CreateStorageModal() {
       <Select
         label='Card'
         placeholder='Card'
-        rightSection={isCardsFetching && <Loader size={16} />}
+        rightSection={<RefetchAction {...cardsResponse} />}
         itemComponent={CardsItem}
         data={selectCardsWithBalance(cards)}
         searchable
         required
-        disabled={isCardsFetching}
+        disabled={cardsResponse.isFetching}
         {...form.getInputProps('card')}
       />
       <TextInput

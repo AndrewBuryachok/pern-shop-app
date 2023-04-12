@@ -1,4 +1,4 @@
-import { Input, Loader, Rating, Select } from '@mantine/core';
+import { Input, Rating, Select } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { ExtUser } from '../users/user.model';
@@ -6,6 +6,7 @@ import { useCreateRatingMutation } from './ratings.api';
 import { useSelectAllUsersQuery } from '../users/users.api';
 import { CreateRatingDto } from './rating.dto';
 import CustomForm from '../../common/components/CustomForm';
+import RefetchAction from '../../common/components/RefetchAction';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import { UsersItem } from '../../common/components/UsersItem';
 import { selectUsers } from '../../common/utils';
@@ -24,7 +25,7 @@ export default function CreateRatingModal({ data }: Props) {
     transformValues: ({ user, ...rest }) => ({ ...rest, userId: +user }),
   });
 
-  const { data: users, isFetching: isUsersFetching } = useSelectAllUsersQuery();
+  const { data: users, ...usersResponse } = useSelectAllUsersQuery();
 
   const user = users?.find((user) => user.id === +form.values.user);
 
@@ -45,12 +46,12 @@ export default function CreateRatingModal({ data }: Props) {
         placeholder='User'
         icon={user && <CustomAvatar {...user} />}
         iconWidth={48}
-        rightSection={isUsersFetching && <Loader size={16} />}
+        rightSection={<RefetchAction {...usersResponse} />}
         itemComponent={UsersItem}
         data={selectUsers(users)}
         searchable
         required
-        disabled={isUsersFetching}
+        disabled={usersResponse.isFetching}
         {...form.getInputProps('user')}
       />
       <Input.Wrapper label='Rate' required>

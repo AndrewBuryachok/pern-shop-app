@@ -22,7 +22,7 @@ export default function CustomProgress(props: Props) {
           </Text>
         ))}
       </Group>
-      <Progress aria-label='Results' sections={sections} />
+      <Progress sections={sections} />
     </>
   );
 }

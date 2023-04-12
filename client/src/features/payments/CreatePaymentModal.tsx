@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { Loader, NumberInput, Select, Textarea } from '@mantine/core';
+import { NumberInput, Select, Textarea } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { useCreatePaymentMutation } from './payments.api';
@@ -8,6 +8,7 @@ import { useSelectAllUsersQuery } from '../users/users.api';
 import { useSelectUserCardsQuery } from '../cards/cards.api';
 import { CreatePaymentDto } from './payment.dto';
 import CustomForm from '../../common/components/CustomForm';
+import RefetchAction from '../../common/components/RefetchAction';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import { UsersItem } from '../../common/components/UsersItem';
 import { CardsItem } from '../../common/components/CardsItem';
@@ -37,10 +38,9 @@ export default function CreatePaymentModal() {
 
   useEffect(() => form.setFieldValue('receiverCard', ''), [form.values.user]);
 
-  const { data: myCards, isFetching: isMyCardsFetching } =
-    useSelectMyCardsQuery();
-  const { data: users, isFetching: isUsersFetching } = useSelectAllUsersQuery();
-  const { data: cards, isFetching: isCardsFetching } = useSelectUserCardsQuery(
+  const { data: myCards, ...myCardsResponse } = useSelectMyCardsQuery();
+  const { data: users, ...usersResponse } = useSelectAllUsersQuery();
+  const { data: cards, ...cardsResponse } = useSelectUserCardsQuery(
     +form.values.user,
     { skip: !form.values.user },
   );
@@ -64,12 +64,12 @@ export default function CreatePaymentModal() {
       <Select
         label='Sender Card'
         placeholder='Sender Card'
-        rightSection={isMyCardsFetching && <Loader size={16} />}
+        rightSection={<RefetchAction {...myCardsResponse} />}
         itemComponent={CardsItem}
         data={selectCardsWithBalance(myCards)}
         searchable
         required
-        disabled={isMyCardsFetching}
+        disabled={myCardsResponse.isFetching}
         {...form.getInputProps('senderCard')}
       />
       <Select
@@ -77,23 +77,25 @@ export default function CreatePaymentModal() {
         placeholder='User'
         icon={user && <CustomAvatar {...user} />}
         iconWidth={48}
-        rightSection={isUsersFetching && <Loader size={16} />}
+        rightSection={<RefetchAction {...usersResponse} />}
         itemComponent={UsersItem}
         data={selectUsers(users)}
         searchable
         required
-        disabled={isUsersFetching}
+        disabled={usersResponse.isFetching}
         {...form.getInputProps('user')}
       />
       <Select
         label='Receiver Card'
         placeholder='Receiver Card'
-        rightSection={isCardsFetching && <Loader size={16} />}
+        rightSection={
+          <RefetchAction {...cardsResponse} skip={!form.values.user} />
+        }
         itemComponent={CardsItem}
         data={selectCards(cards)}
         searchable
         required
-        disabled={isCardsFetching}
+        disabled={cardsResponse.isFetching}
         {...form.getInputProps('receiverCard')}
       />
       <NumberInput

@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { Loader, NumberInput, Select, Textarea } from '@mantine/core';
+import { NumberInput, Select, Textarea } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { useCreateProductMutation } from './products.api';
@@ -7,6 +7,7 @@ import { useSelectFreeStoragesQuery } from '../storages/storages.api';
 import { useSelectMyCardsQuery } from '../cards/cards.api';
 import { CreateProductDto } from './product.dto';
 import CustomForm from '../../common/components/CustomForm';
+import RefetchAction from '../../common/components/RefetchAction';
 import ThingImage from '../../common/components/ThingImage';
 import { ThingsItem } from '../../common/components/ThingItem';
 import { CardsItem } from '../../common/components/CardsItem';
@@ -49,9 +50,8 @@ export default function CreateProductModal() {
 
   useEffect(() => form.setFieldValue('item', ''), [form.values.category]);
 
-  const { data: storages, isFetching: isStoragesFetching } =
-    useSelectFreeStoragesQuery();
-  const { data: cards, isFetching: isCardsFetching } = useSelectMyCardsQuery();
+  const { data: storages, ...storagesResponse } = useSelectFreeStoragesQuery();
+  const { data: cards, ...cardsResponse } = useSelectMyCardsQuery();
 
   const [createProduct, { isLoading }] = useCreateProductMutation();
 
@@ -68,23 +68,23 @@ export default function CreateProductModal() {
       <Select
         label='Storage'
         placeholder='Storage'
-        rightSection={isStoragesFetching && <Loader size={16} />}
+        rightSection={<RefetchAction {...storagesResponse} />}
         itemComponent={PlacesItem}
         data={selectStoragesWithPrice(storages)}
         searchable
         required
-        disabled={isStoragesFetching}
+        disabled={storagesResponse.isFetching}
         {...form.getInputProps('storage')}
       />
       <Select
         label='Card'
         placeholder='Card'
-        rightSection={isCardsFetching && <Loader size={16} />}
+        rightSection={<RefetchAction {...cardsResponse} />}
         itemComponent={CardsItem}
         data={selectCardsWithBalance(cards)}
         searchable
         required
-        disabled={isCardsFetching}
+        disabled={cardsResponse.isFetching}
         {...form.getInputProps('card')}
       />
       <Select

@@ -1,4 +1,4 @@
-import { Loader, Select, Textarea, TextInput } from '@mantine/core';
+import { Select, Textarea, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
@@ -7,6 +7,7 @@ import { useTakeDeliveryMutation } from '../deliveries/deliveries.api';
 import { useSelectMyCardsQuery } from '../cards/cards.api';
 import { TakeDeliveryDto } from '../deliveries/delivery.dto';
 import CustomForm from '../../common/components/CustomForm';
+import RefetchAction from '../../common/components/RefetchAction';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import ThingImage from '../../common/components/ThingImage';
 import { CardsItem } from '../../common/components/CardsItem';
@@ -29,7 +30,7 @@ export default function TakeDeliveryModal({ data: delivery }: Props) {
     transformValues: ({ card, ...rest }) => ({ ...rest, cardId: +card }),
   });
 
-  const { data: cards, isFetching: isCardsFetching } = useSelectMyCardsQuery();
+  const { data: cards, ...cardsResponse } = useSelectMyCardsQuery();
 
   const [takeDelivery, { isLoading }] = useTakeDeliveryMutation();
 
@@ -94,12 +95,12 @@ export default function TakeDeliveryModal({ data: delivery }: Props) {
       <Select
         label='Card'
         placeholder='Card'
-        rightSection={isCardsFetching && <Loader size={16} />}
+        rightSection={<RefetchAction {...cardsResponse} />}
         itemComponent={CardsItem}
         data={selectCardsWithBalance(cards)}
         searchable
         required
-        disabled={isCardsFetching}
+        disabled={cardsResponse.isFetching}
         {...form.getInputProps('card')}
       />
     </CustomForm>

@@ -1,4 +1,4 @@
-import { Loader, Select } from '@mantine/core';
+import { Select } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { User } from '../users/user.model';
@@ -6,6 +6,7 @@ import { useCreateFriendMutation } from './friends.api';
 import { useSelectNotFriendsUsersQuery } from '../users/users.api';
 import { CreateFriendDto } from './friend.dto';
 import CustomForm from '../../common/components/CustomForm';
+import RefetchAction from '../../common/components/RefetchAction';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import { UsersItem } from '../../common/components/UsersItem';
 import { selectUsers } from '../../common/utils';
@@ -24,8 +25,7 @@ export default function CreateFriendModal({ data }: Props) {
     }),
   });
 
-  const { data: users, isFetching: isUsersFetching } =
-    useSelectNotFriendsUsersQuery();
+  const { data: users, ...usersResponse } = useSelectNotFriendsUsersQuery();
 
   const user = users?.find((user) => user.id === +form.values.user);
 
@@ -46,12 +46,12 @@ export default function CreateFriendModal({ data }: Props) {
         placeholder='User'
         icon={user && <CustomAvatar {...user} />}
         iconWidth={48}
-        rightSection={isUsersFetching && <Loader size={16} />}
+        rightSection={<RefetchAction {...usersResponse} />}
         itemComponent={UsersItem}
         data={selectUsers(users)}
         searchable
         required
-        disabled={isUsersFetching}
+        disabled={usersResponse.isFetching}
         {...form.getInputProps('user')}
       />
     </CustomForm>

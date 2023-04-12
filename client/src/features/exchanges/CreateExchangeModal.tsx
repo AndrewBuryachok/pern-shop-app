@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { Loader, NumberInput, Select } from '@mantine/core';
+import { NumberInput, Select } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { useCreateExchangeMutation } from './exchanges.api';
@@ -7,6 +7,7 @@ import { useSelectAllUsersQuery } from '../users/users.api';
 import { useSelectUserCardsWithBalanceQuery } from '../cards/cards.api';
 import { CreateExchangeDto } from './exchange.dto';
 import CustomForm from '../../common/components/CustomForm';
+import RefetchAction from '../../common/components/RefetchAction';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import { UsersItem } from '../../common/components/UsersItem';
 import { CardsItem } from '../../common/components/CardsItem';
@@ -36,11 +37,11 @@ export default function CreateExchangeModal() {
 
   useEffect(() => form.setFieldValue('card', ''), [form.values.user]);
 
-  const { data: users, isFetching: isUsersFetching } = useSelectAllUsersQuery();
-  const { data: cards, isFetching: isCardsFetching } =
-    useSelectUserCardsWithBalanceQuery(+form.values.user, {
-      skip: !form.values.user,
-    });
+  const { data: users, ...usersResponse } = useSelectAllUsersQuery();
+  const { data: cards, ...cardsResponse } = useSelectUserCardsWithBalanceQuery(
+    +form.values.user,
+    { skip: !form.values.user },
+  );
 
   const user = users?.find((user) => user.id === +form.values.user);
   const card = cards?.find((card) => card.id === +form.values.card);
@@ -63,23 +64,25 @@ export default function CreateExchangeModal() {
         placeholder='User'
         icon={user && <CustomAvatar {...user} />}
         iconWidth={48}
-        rightSection={isUsersFetching && <Loader size={16} />}
+        rightSection={<RefetchAction {...usersResponse} />}
         itemComponent={UsersItem}
         data={selectUsers(users)}
         searchable
         required
-        disabled={isUsersFetching}
+        disabled={usersResponse.isFetching}
         {...form.getInputProps('user')}
       />
       <Select
         label='Card'
         placeholder='Card'
-        rightSection={isCardsFetching && <Loader size={16} />}
+        rightSection={
+          <RefetchAction {...cardsResponse} skip={!form.values.user} />
+        }
         itemComponent={CardsItem}
         data={selectCardsWithBalance(cards)}
         searchable
         required
-        disabled={isCardsFetching}
+        disabled={cardsResponse.isFetching}
         {...form.getInputProps('card')}
       />
       <Select

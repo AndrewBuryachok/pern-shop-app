@@ -1,11 +1,12 @@
 import { useEffect } from 'react';
-import { Loader, NumberInput, Select, Textarea } from '@mantine/core';
+import { NumberInput, Select, Textarea } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { useCreateGoodMutation } from './goods.api';
 import { useSelectMyShopsQuery } from '../shops/shops.api';
 import { CreateGoodDto } from './good.dto';
 import CustomForm from '../../common/components/CustomForm';
+import RefetchAction from '../../common/components/RefetchAction';
 import ThingImage from '../../common/components/ThingImage';
 import { ThingsItem } from '../../common/components/ThingItem';
 import { PlacesItem } from '../../common/components/PlacesItem';
@@ -44,7 +45,7 @@ export default function CreateGoodModal() {
 
   useEffect(() => form.setFieldValue('item', ''), [form.values.category]);
 
-  const { data: shops, isFetching: isShopsFetching } = useSelectMyShopsQuery();
+  const { data: shops, ...shopsResponse } = useSelectMyShopsQuery();
 
   const [createGood, { isLoading }] = useCreateGoodMutation();
 
@@ -61,12 +62,12 @@ export default function CreateGoodModal() {
       <Select
         label='Shop'
         placeholder='Shop'
-        rightSection={isShopsFetching && <Loader size={16} />}
+        rightSection={<RefetchAction {...shopsResponse} />}
         itemComponent={PlacesItem}
         data={selectShops(shops)}
         searchable
         required
-        disabled={isShopsFetching}
+        disabled={shopsResponse.isFetching}
         {...form.getInputProps('shop')}
       />
       <Select

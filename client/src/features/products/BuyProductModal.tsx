@@ -1,10 +1,4 @@
-import {
-  Loader,
-  NumberInput,
-  Select,
-  Textarea,
-  TextInput,
-} from '@mantine/core';
+import { NumberInput, Select, Textarea, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
@@ -13,6 +7,7 @@ import { useCreateSaleMutation } from '../sales/sales.api';
 import { useSelectMyCardsQuery } from '../cards/cards.api';
 import { CreateSaleDto } from '../sales/sale.dto';
 import CustomForm from '../../common/components/CustomForm';
+import RefetchAction from '../../common/components/RefetchAction';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import ThingImage from '../../common/components/ThingImage';
 import { CardsItem } from '../../common/components/CardsItem';
@@ -37,7 +32,7 @@ export default function BuyProductModal({ data: product }: Props) {
     transformValues: ({ card, ...rest }) => ({ ...rest, cardId: +card }),
   });
 
-  const { data: cards, isFetching: isCardsFetching } = useSelectMyCardsQuery();
+  const { data: cards, ...cardsResponse } = useSelectMyCardsQuery();
 
   const card = cards?.find((card) => card.id === +form.values.card);
   const maxAmount = card && Math.floor(card.balance / product.price);
@@ -82,12 +77,12 @@ export default function BuyProductModal({ data: product }: Props) {
       <Select
         label='Card'
         placeholder='Card'
-        rightSection={isCardsFetching && <Loader size={16} />}
+        rightSection={<RefetchAction {...cardsResponse} />}
         itemComponent={CardsItem}
         data={selectCardsWithBalance(cards)}
         searchable
         required
-        disabled={isCardsFetching}
+        disabled={cardsResponse.isFetching}
         {...form.getInputProps('card')}
       />
       <NumberInput
