@@ -24,6 +24,7 @@ import {
   MAX_ITEM_VALUE,
   MIN_COORDINATE_VALUE,
   MIN_NAME_LENGTH,
+  MAX_RATE_VALUE,
 } from '../constants';
 
 export const IsName = () => (target: object, key: string) => {
@@ -119,4 +120,11 @@ export const IsKit = () => (target: object, key: string) => {
 export const IsType = () => (target: object, key: string) => {
   IsNotEmpty()(target, key);
   IsBoolean()(target, key);
+};
+
+export const IsRate = () => (target: object, key: string) => {
+  IsNotEmpty()(target, key);
+  IsInt()(target, key);
+  IsPositive()(target, key);
+  Max(MAX_RATE_VALUE)(target, key);
 };

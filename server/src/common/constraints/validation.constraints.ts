@@ -19,6 +19,7 @@ import { OrdersService } from '../../features/orders/orders.service';
 import { DeliveriesService } from '../../features/deliveries/deliveries.service';
 import { PollsService } from '../../features/polls/polls.service';
 import { FriendsService } from '../../features/friends/friends.service';
+import { RatingsService } from '../../features/ratings/ratings.service';
 
 @Injectable()
 @ValidatorConstraint({ name: 'isUserExists', async: true })
@@ -321,5 +322,24 @@ export class IsFriendExists implements ValidatorConstraintInterface {
 
   defaultMessage(): string {
     return 'Unknown friend';
+  }
+}
+
+@Injectable()
+@ValidatorConstraint({ name: 'isRatingExists', async: true })
+export class IsRatingExists implements ValidatorConstraintInterface {
+  constructor(private ratingsService: RatingsService) {}
+
+  async validate(value: number): Promise<boolean> {
+    try {
+      await this.ratingsService.checkRatingExists(value);
+    } catch (error) {
+      return false;
+    }
+    return true;
+  }
+
+  defaultMessage(): string {
+    return 'Unknown rating';
   }
 }

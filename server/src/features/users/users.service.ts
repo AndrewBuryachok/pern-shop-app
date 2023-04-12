@@ -86,8 +86,12 @@ export class UsersService {
     ['goods', 'wares', 'products', 'trades', 'sales'].forEach(
       (stat) => (user[stat] = user[stat].length),
     );
+    user['rating'] =
+      user['ratings'].map((rating) => rating.rate).reduce((a, b) => a + b, 0) /
+        user['ratings'].length || 0;
     delete user['shops'];
     delete user['rents'];
+    delete user['ratings'];
     return user;
   }
 
@@ -415,6 +419,11 @@ export class UsersService {
         'sale',
         'card.id = sale.cardId',
       )
-      .addSelect(['good.id', 'ware.id', 'product.id', 'trade.id', 'sale.id']);
+      .leftJoinAndMapMany(
+        'user.ratings',
+        'ratings',
+        'rating',
+        'user.id = rating.receiverUserId',
+      );
   }
 }

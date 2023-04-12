@@ -21,6 +21,7 @@ import { Sale } from '../../features/sales/sale.entity';
 import { Poll } from '../../features/polls/poll.entity';
 import { Vote } from '../../features/votes/vote.entity';
 import { Friend } from '../../features/friends/friend.entity';
+import { Rating } from '../../features/ratings/rating.entity';
 import { TransportationStatus } from '../../features/transportations/transportation-status.enum';
 import { hashData } from '../../common/utils';
 
@@ -223,6 +224,24 @@ export default class AppSeed implements Seeder {
           friend.type || friend.senderUser.id === friend.receiverUser.id;
         friendId++;
         return friend;
+      })
+      .createMany(80);
+    const allRatings = users.reduce(
+      (prev, senderUser) => [
+        ...prev,
+        ...users.map((receiverUser) => ({ senderUser, receiverUser })),
+      ],
+      [],
+    );
+    const randomRatings = [...Array(allRatings.length).keys()];
+    randomRatings.sort(() => Math.random() - 0.5);
+    let ratingId = 0;
+    const ratings = await factory(Rating)()
+      .map(async (rating) => {
+        rating.senderUser = allRatings[randomRatings[ratingId]].senderUser;
+        rating.receiverUser = allRatings[randomRatings[ratingId]].receiverUser;
+        ratingId++;
+        return rating;
       })
       .createMany(80);
   }

@@ -25,6 +25,7 @@ import { SalesModule } from './features/sales/sales.module';
 import { PollsModule } from './features/polls/polls.module';
 import { VotesModule } from './features/votes/votes.module';
 import { FriendsModule } from './features/friends/friends.module';
+import { RatingsModule } from './features/ratings/ratings.module';
 
 @Module({
   imports: [
@@ -68,6 +69,7 @@ import { FriendsModule } from './features/friends/friends.module';
     PollsModule,
     VotesModule,
     FriendsModule,
+    RatingsModule,
   ],
 })
 export class AppModule {}

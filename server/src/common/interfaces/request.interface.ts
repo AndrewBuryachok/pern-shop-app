@@ -107,4 +107,10 @@ export class Request {
   @IsInt()
   @Type(() => Number)
   type?: number;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsInt()
+  @Type(() => Number)
+  rate?: number;
 }
