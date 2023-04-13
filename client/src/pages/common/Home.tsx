@@ -155,6 +155,7 @@ export default function Home() {
       <Title order={1}>Online shop app</Title>
       <SimpleGrid
         cols={5}
+        spacing={8}
         breakpoints={[
           { maxWidth: 'xl', cols: 4 },
           { maxWidth: 'lg', cols: 3 },

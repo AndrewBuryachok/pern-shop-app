@@ -10,19 +10,19 @@ export const usersApi = emptyApi.injectEndpoints({
       query: (req) => ({
         url: `/users?${getQuery(req)}`,
       }),
-      providesTags: ['Active', 'User', 'Card', 'Friend'],
+      providesTags: ['Active', 'User', 'Card'],
     }),
     getMyUsers: build.query<IResponse<User>, IRequest>({
       query: (req) => ({
         url: `/users/my?${getQuery(req)}`,
       }),
-      providesTags: ['Auth', 'User', 'Card', 'Friend'],
+      providesTags: ['Auth', 'User', 'Card'],
     }),
     getAllUsers: build.query<IResponse<User>, IRequest>({
       query: (req) => ({
         url: `/users/all?${getQuery(req)}`,
       }),
-      providesTags: ['Auth', 'User', 'Card', 'Friend'],
+      providesTags: ['Auth', 'User', 'Card'],
     }),
     selectAllUsers: build.query<SmUserWithCity[], void>({
       query: () => ({

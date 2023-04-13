@@ -1,11 +1,10 @@
 import { Chip } from '@mantine/core';
 import { getCurrentUser } from '../../features/auth/auth.slice';
-import { User } from '../../features/users/user.model';
+import { ExtUser } from '../../features/users/user.model';
 import { createFriendButton } from '../../features/friends/CreateFriendModal';
 
 type Props = {
-  data?: User;
-  small?: boolean;
+  data?: ExtUser;
 };
 
 export default function FriendChip(props: Props) {
@@ -16,7 +15,6 @@ export default function FriendChip(props: Props) {
 
   return (
     <Chip
-      size={props.small ? 'xs' : 'sm'}
       checked={checked}
       onClick={() => !checked && createFriendButton.open(props.data)}
       disabled={!user || !props.data}

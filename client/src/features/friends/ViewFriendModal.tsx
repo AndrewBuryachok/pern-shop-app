@@ -1,4 +1,4 @@
-import { Stack, Textarea, TextInput } from '@mantine/core';
+import { Stack, TextInput } from '@mantine/core';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { Friend } from './friend.model';

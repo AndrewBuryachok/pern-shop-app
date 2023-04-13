@@ -1,12 +1,12 @@
 import { Select, Stack } from '@mantine/core';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
-import { User } from './user.model';
+import { ExtUser } from './user.model';
 import { UsersItem } from '../../common/components/UsersItem';
 import { viewUsers } from '../../common/utils';
 import { Color } from '../../common/constants';
 
-type Props = IModal<User>;
+type Props = IModal<ExtUser>;
 
 export default function ViewUserFriendsModal({ data: user }: Props) {
   return (
@@ -23,7 +23,7 @@ export default function ViewUserFriendsModal({ data: user }: Props) {
 }
 
 export const viewUserFriendsAction = {
-  open: (user: User) =>
+  open: (user: ExtUser) =>
     openModal({
       title: 'View User Friends',
       children: <ViewUserFriendsModal data={user} />,

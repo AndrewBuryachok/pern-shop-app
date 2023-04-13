@@ -1,5 +1,5 @@
 import { useParams } from 'react-router-dom';
-import { Group, Skeleton, Stack } from '@mantine/core';
+import { Group, SimpleGrid, Skeleton, Stack } from '@mantine/core';
 import { useDocumentTitle } from '@mantine/hooks';
 import { useGetSingleUserQuery } from '../../features/users/users.api';
 import UserProfile from '../../features/users/UserProfile';
@@ -32,11 +32,15 @@ export default function SingleUser() {
           <Skeleton key={key} h={32} w={64} />
         ))}
       </Group>
-      <Group spacing={8}>
+      <SimpleGrid
+        cols={5}
+        spacing={8}
+        breakpoints={[{ maxWidth: 'xs', cols: 3 }]}
+      >
         {[...Array(5).keys()].map((key) => (
           <Skeleton key={key} h={64} w={72} />
         ))}
-      </Group>
+      </SimpleGrid>
     </Stack>
   );
 }

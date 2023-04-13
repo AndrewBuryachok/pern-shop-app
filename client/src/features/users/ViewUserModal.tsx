@@ -5,13 +5,7 @@ import { User } from './user.model';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import { ColorsItem } from '../../common/components/ColorsItem';
 import { CardsItem } from '../../common/components/CardsItem';
-import { UsersItem } from '../../common/components/UsersItem';
-import {
-  parsePlace,
-  viewCards,
-  viewRoles,
-  viewUsers,
-} from '../../common/utils';
+import { parsePlace, viewCards, viewRoles } from '../../common/utils';
 import { Color } from '../../common/constants';
 
 type Props = IModal<User>;
@@ -43,13 +37,6 @@ export default function ViewUserModal({ data: user }: Props) {
         placeholder={`Total: ${user.cards.length}`}
         itemComponent={CardsItem}
         data={viewCards(user.cards)}
-        searchable
-      />
-      <Select
-        label='Friends'
-        placeholder={`Total: ${user.friends.length}`}
-        itemComponent={UsersItem}
-        data={viewUsers(user.friends)}
         searchable
       />
     </Stack>
