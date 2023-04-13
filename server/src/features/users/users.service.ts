@@ -28,7 +28,7 @@ export class UsersService {
     const [result, count] = await this.getUsersQueryBuilder(
       req,
     ).getManyAndCount();
-    await this.loadCardsAndFriends(result);
+    await this.loadCards(result);
     return { result, count };
   }
 
@@ -36,7 +36,7 @@ export class UsersService {
     const [result, count] = await this.getUsersQueryBuilder(req)
       .andWhere('city.userId = :myId', { myId })
       .getManyAndCount();
-    await this.loadCardsAndFriends(result);
+    await this.loadCards(result);
     return { result, count };
   }
 
@@ -44,7 +44,7 @@ export class UsersService {
     const [result, count] = await this.getUsersQueryBuilder(
       req,
     ).getManyAndCount();
-    await this.loadCardsAndFriends(result);
+    await this.loadCards(result);
     return { result, count };
   }
 
@@ -57,8 +57,7 @@ export class UsersService {
   }
 
   async selectNotFriendsUsers(myId: number): Promise<User[]> {
-    const allUsers = await this.selectUsersQueryBuilder().getMany();
-    const result = await this.usersRepository
+    const user = await this.usersRepository
       .createQueryBuilder('user')
       .leftJoinAndMapMany(
         'user.friends',
@@ -68,24 +67,34 @@ export class UsersService {
       )
       .where('user.id = :myId', { myId })
       .getOne();
-    const friends = result['friends']
+    const friends = user['friends']
       .filter((friend) => friend.senderUserId === myId || friend.type)
       .map((friend) =>
         friend.senderUserId === myId
           ? friend.receiverUserId
           : friend.senderUserId,
       );
-    return allUsers.filter((user) => !friends.includes(user.id));
+    const users = await this.selectUsersQueryBuilder().getMany();
+    return users.filter((user) => !friends.includes(user.id));
   }
 
   async getSingleUser(userId: number): Promise<User> {
     const user = await this.getUserQueryBuilder()
       .where('user.id = :userId', { userId })
       .getOne();
-    await this.loadCardsAndFriends([user]);
+    await this.loadCards([user]);
     ['goods', 'wares', 'products', 'trades', 'sales'].forEach(
       (stat) => (user[stat] = user[stat].length),
     );
+    const friends = user['friends']
+      .filter((friend) => friend.type)
+      .map((friend) =>
+        friend.senderUserId === user.id
+          ? friend.receiverUserId
+          : friend.senderUserId,
+      );
+    const users = await this.selectUsersQueryBuilder().getMany();
+    user['friends'] = users.filter((user) => friends.includes(user.id));
     user['rating'] =
       user['ratings'].map((rating) => rating.rate).reduce((a, b) => a + b, 0) /
         user['ratings'].length || 0;
@@ -253,44 +262,22 @@ export class UsersService {
       .select(['user.id', 'user.name', 'user.status']);
   }
 
-  private async loadCardsAndFriends(users: User[]): Promise<void> {
-    const allUsers = await this.selectUsersQueryBuilder().getMany();
+  private async loadCards(users: User[]): Promise<void> {
     const promises = users.map(async (user) => {
-      const result = await this.usersRepository
-        .createQueryBuilder('user')
-        .leftJoinAndMapMany(
-          'user.cards',
-          'cards',
-          'card',
-          'user.id = card.userId',
-        )
-        .leftJoinAndMapMany(
-          'user.friends',
-          'friends',
-          'friend',
-          'user.id = friend.senderUserId OR user.id = friend.receiverUserId',
-        )
-        .where('user.id = :userId', { userId: user.id })
-        .orderBy('card.name', 'ASC')
-        .select([
-          'user.id',
-          'card.id',
-          'card.name',
-          'card.color',
-          'friend.senderUserId',
-          'friend.receiverUserId',
-          'friend.type',
-        ])
-        .getOne();
-      user['cards'] = result['cards'];
-      const friends = result['friends']
-        .filter((friend) => friend.type)
-        .map((friend) =>
-          friend.senderUserId === user.id
-            ? friend.receiverUserId
-            : friend.senderUserId,
-        );
-      user['friends'] = allUsers.filter((user) => friends.includes(user.id));
+      user['cards'] = (
+        await this.usersRepository
+          .createQueryBuilder('user')
+          .leftJoinAndMapMany(
+            'user.cards',
+            'cards',
+            'card',
+            'user.id = card.userId',
+          )
+          .where('user.id = :userId', { userId: user.id })
+          .orderBy('card.name', 'ASC')
+          .select(['user.id', 'card.id', 'card.name', 'card.color'])
+          .getOne()
+      )['cards'];
     });
     await Promise.all(promises);
   }
@@ -418,6 +405,12 @@ export class UsersService {
         'sales',
         'sale',
         'card.id = sale.cardId',
+      )
+      .leftJoinAndMapMany(
+        'user.friends',
+        'friends',
+        'friend',
+        'user.id = friend.senderUserId OR user.id = friend.receiverUserId',
       )
       .leftJoinAndMapMany(
         'user.ratings',
