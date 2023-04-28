@@ -1,31 +1,23 @@
-import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToOne } from 'typeorm';
 import { Transportation } from '../transportations/transportation.entity';
-import { Cell } from '../cells/cell.entity';
-import { Card } from '../cards/card.entity';
+import { Lease } from '../leases/lease.entity';
 import { User } from '../users/user.entity';
 
 @Entity('deliveries')
 export class Delivery extends Transportation {
-  @Column({ name: 'from_cell_id' })
-  fromCellId: number;
+  @Column({ name: 'from_lease_id' })
+  fromLeaseId: number;
 
-  @ManyToOne(() => Cell, { nullable: false })
-  @JoinColumn({ name: 'from_cell_id' })
-  fromCell: Cell;
+  @OneToOne(() => Lease, { nullable: false })
+  @JoinColumn({ name: 'from_lease_id' })
+  fromLease: Lease;
 
-  @Column({ name: 'to_cell_id' })
-  toCellId: number;
+  @Column({ name: 'to_lease_id' })
+  toLeaseId: number;
 
-  @ManyToOne(() => Cell, { nullable: false })
-  @JoinColumn({ name: 'to_cell_id' })
-  toCell: Cell;
-
-  @Column({ name: 'sender_card_id' })
-  senderCardId: number;
-
-  @ManyToOne(() => Card, { nullable: false })
-  @JoinColumn({ name: 'sender_card_id' })
-  senderCard: Card;
+  @OneToOne(() => Lease, { nullable: false })
+  @JoinColumn({ name: 'to_lease_id' })
+  toLease: Lease;
 
   @Column({ name: 'receiver_user_id' })
   receiverUserId: number;

@@ -28,9 +28,9 @@ export default function ViewSaleModal({ data: sale }: Props) {
       />
       <TextInput
         label='Seller'
-        icon={<CustomAvatar {...sale.product.card.user} />}
+        icon={<CustomAvatar {...sale.product.lease.card.user} />}
         iconWidth={48}
-        value={parseCard(sale.product.card)}
+        value={parseCard(sale.product.lease.card)}
         disabled
       />
       <TextInput
@@ -49,14 +49,14 @@ export default function ViewSaleModal({ data: sale }: Props) {
       />
       <TextInput
         label='Storage'
-        value={parseCell(sale.product.cell)}
+        value={parseCell(sale.product.lease.cell)}
         disabled
       />
       <TextInput
         label='Owner'
-        icon={<CustomAvatar {...sale.product.cell.storage.card.user} />}
+        icon={<CustomAvatar {...sale.product.lease.cell.storage.card.user} />}
         iconWidth={48}
-        value={parseCard(sale.product.cell.storage.card)}
+        value={parseCard(sale.product.lease.cell.storage.card)}
         disabled
       />
       <TextInput

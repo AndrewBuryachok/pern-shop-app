@@ -11,6 +11,7 @@ import { Storage } from '../../features/storages/storage.entity';
 import { Store } from '../../features/stores/store.entity';
 import { Cell } from '../../features/cells/cell.entity';
 import { Rent } from '../../features/rents/rent.entity';
+import { Lease } from '../../features/leases/lease.entity';
 import { Good } from '../../features/goods/good.entity';
 import { Ware } from '../../features/wares/ware.entity';
 import { Product } from '../../features/products/product.entity';
@@ -123,6 +124,13 @@ export default class AppSeed implements Seeder {
         return rent;
       })
       .createMany(80);
+    const leases = await factory(Lease)()
+      .map(async (lease) => {
+        lease.cell = cells[Math.floor(Math.random() * cells.length)];
+        lease.card = cards[Math.floor(Math.random() * cards.length)];
+        return lease;
+      })
+      .createMany(400);
     const goods = await factory(Good)()
       .map(async (good) => {
         good.shop = shops[Math.floor(Math.random() * shops.length)];
@@ -135,17 +143,18 @@ export default class AppSeed implements Seeder {
         return ware;
       })
       .createMany(160);
+    let leaseId = 0;
     const products = await factory(Product)()
       .map(async (product) => {
-        product.cell = cells[Math.floor(Math.random() * cells.length)];
-        product.card = cards[Math.floor(Math.random() * cards.length)];
+        product.lease = leases[leaseId];
+        leaseId++;
         return product;
       })
       .createMany(160);
     const orders = await factory(Order)()
       .map(async (order) => {
-        order.cell = cells[Math.floor(Math.random() * cells.length)];
-        order.customerCard = cards[Math.floor(Math.random() * cards.length)];
+        order.lease = leases[leaseId];
+        leaseId++;
         if (order.status !== TransportationStatus.CREATED) {
           order.executorCard = cards[Math.floor(Math.random() * cards.length)];
         }
@@ -157,9 +166,10 @@ export default class AppSeed implements Seeder {
       .createMany(80);
     const deliveries = await factory(Delivery)()
       .map(async (delivery) => {
-        delivery.fromCell = cells[Math.floor(Math.random() * cells.length)];
-        delivery.toCell = cells[Math.floor(Math.random() * cells.length)];
-        delivery.senderCard = cards[Math.floor(Math.random() * cards.length)];
+        delivery.fromLease = leases[leaseId];
+        leaseId++;
+        delivery.toLease = leases[leaseId];
+        leaseId++;
         delivery.receiverUser = users[Math.floor(Math.random() * users.length)];
         if (delivery.status !== TransportationStatus.CREATED) {
           delivery.executorCard =

@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { Order } from './order.entity';
-import { CellsService } from '../cells/cells.service';
+import { LeasesService } from '../leases/leases.service';
 import { CardsService } from '../cards/cards.service';
 import { PaymentsService } from '../payments/payments.service';
 import { ExtCreateOrderDto, ExtOrderIdDto, ExtTakeOrderDto } from './order.dto';
@@ -18,7 +18,7 @@ export class OrdersService {
   constructor(
     @InjectRepository(Order)
     private ordersRepository: Repository<Order>,
-    private cellsService: CellsService,
+    private leasesService: LeasesService,
     private cardsService: CardsService,
     private paymentsService: PaymentsService,
   ) {}
@@ -60,9 +60,9 @@ export class OrdersService {
   }
 
   async createOrder(dto: ExtCreateOrderDto): Promise<void> {
-    const cellId = await this.cellsService.reserveCell(dto);
+    const leaseId = await this.leasesService.createLease(dto);
     await this.cardsService.decreaseCardBalance({ ...dto, sum: dto.price });
-    await this.create({ ...dto, storageId: cellId });
+    await this.create({ ...dto, storageId: leaseId });
   }
 
   async takeOrder(dto: ExtTakeOrderDto): Promise<void> {
@@ -104,12 +104,12 @@ export class OrdersService {
       throw new AppException(OrderError.NOT_EXECUTED);
     }
     await this.cardsService.increaseCardBalance({
-      cardId: order.customerCardId,
+      cardId: order.lease.cardId,
       sum: order.price,
     });
     await this.paymentsService.createPayment({
       myId: dto.myId,
-      senderCardId: order.customerCardId,
+      senderCardId: order.lease.cardId,
       receiverCardId: order.executorCardId,
       sum: order.price,
       description: 'complete order',
@@ -123,7 +123,7 @@ export class OrdersService {
       throw new AppException(OrderError.ALREADY_TAKEN);
     }
     await this.cardsService.increaseCardBalance({
-      cardId: order.customerCardId,
+      cardId: order.lease.cardId,
       sum: order.price,
     });
     await this.delete(order);
@@ -136,7 +136,7 @@ export class OrdersService {
   private async checkOrderCustomer(id: number, userId: number): Promise<Order> {
     const order = await this.ordersRepository.findOneBy({
       id,
-      customerCard: { userId },
+      lease: { card: { userId } },
     });
     if (!order) {
       throw new AppException(OrderError.NOT_CUSTOMER);
@@ -158,8 +158,7 @@ export class OrdersService {
   private async create(dto: ExtCreateOrderDto): Promise<void> {
     try {
       const order = this.ordersRepository.create({
-        cellId: dto.storageId,
-        customerCardId: dto.cardId,
+        leaseId: dto.storageId,
         item: dto.item,
         description: dto.description,
         amount: dto.amount,
@@ -223,11 +222,12 @@ export class OrdersService {
   private getOrdersQueryBuilder(req: Request): SelectQueryBuilder<Order> {
     return this.ordersRepository
       .createQueryBuilder('order')
-      .innerJoin('order.cell', 'cell')
+      .innerJoin('order.lease', 'lease')
+      .innerJoin('lease.cell', 'cell')
       .innerJoin('cell.storage', 'storage')
       .innerJoin('storage.card', 'ownerCard')
       .innerJoin('ownerCard.user', 'ownerUser')
-      .innerJoin('order.customerCard', 'customerCard')
+      .innerJoin('lease.card', 'customerCard')
       .innerJoin('customerCard.user', 'customerUser')
       .leftJoin('order.executorCard', 'executorCard')
       .leftJoin('executorCard.user', 'executorUser')
@@ -436,6 +436,7 @@ export class OrdersService {
       .take(req.take)
       .select([
         'order.id',
+        'lease.id',
         'cell.id',
         'storage.id',
         'ownerCard.id',

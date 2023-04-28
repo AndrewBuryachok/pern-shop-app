@@ -46,9 +46,9 @@ export default function TakeOrderModal({ data: order }: Props) {
     >
       <TextInput
         label='Customer'
-        icon={<CustomAvatar {...order.customerCard.user} />}
+        icon={<CustomAvatar {...order.lease.card.user} />}
         iconWidth={48}
-        value={parseCard(order.customerCard)}
+        value={parseCard(order.lease.card)}
         disabled
       />
       <TextInput
@@ -61,12 +61,12 @@ export default function TakeOrderModal({ data: order }: Props) {
       <Textarea label='Description' value={order.description} disabled />
       <TextInput label='Amount' value={parseThingAmount(order)} disabled />
       <TextInput label='Price' value={`${order.price}$`} disabled />
-      <TextInput label='Storage' value={parseCell(order.cell)} disabled />
+      <TextInput label='Storage' value={parseCell(order.lease.cell)} disabled />
       <TextInput
         label='Owner'
-        icon={<CustomAvatar {...order.cell.storage.card.user} />}
+        icon={<CustomAvatar {...order.lease.cell.storage.card.user} />}
         iconWidth={48}
-        value={parseCard(order.cell.storage.card)}
+        value={parseCard(order.lease.cell.storage.card)}
         disabled
       />
       <Select

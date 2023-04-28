@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { Product } from './product.entity';
-import { CellsService } from '../cells/cells.service';
+import { LeasesService } from '../leases/leases.service';
 import { PaymentsService } from '../payments/payments.service';
 import { BuyProductDto, ExtCreateProductDto } from './product.dto';
 import { Request, Response, Stats } from '../../common/interfaces';
@@ -16,7 +16,7 @@ export class ProductsService {
   constructor(
     @InjectRepository(Product)
     private productsRepository: Repository<Product>,
-    private cellsService: CellsService,
+    private leasesService: LeasesService,
     private paymentsService: PaymentsService,
   ) {}
 
@@ -69,13 +69,14 @@ export class ProductsService {
   }
 
   async createProduct(dto: ExtCreateProductDto): Promise<void> {
-    const cellId = await this.cellsService.reserveCell(dto);
-    await this.create({ ...dto, storageId: cellId });
+    const leaseId = await this.leasesService.createLease(dto);
+    await this.create({ ...dto, storageId: leaseId });
   }
 
   async buyProduct(dto: BuyProductDto): Promise<void> {
-    const product = await this.productsRepository.findOneBy({
-      id: dto.productId,
+    const product = await this.productsRepository.findOne({
+      relations: ['lease'],
+      where: { id: dto.productId },
     });
     if (product.createdAt < getDateWeekAgo()) {
       throw new AppException(ProductError.ALREADY_EXPIRED);
@@ -86,7 +87,7 @@ export class ProductsService {
     await this.paymentsService.createPayment({
       myId: dto.myId,
       senderCardId: dto.cardId,
-      receiverCardId: product.cardId,
+      receiverCardId: product.lease.cardId,
       sum: dto.amount * product.price,
       description: 'buy product',
     });
@@ -100,8 +101,7 @@ export class ProductsService {
   private async create(dto: ExtCreateProductDto): Promise<void> {
     try {
       const product = this.productsRepository.create({
-        cellId: dto.storageId,
-        cardId: dto.cardId,
+        leaseId: dto.storageId,
         item: dto.item,
         description: dto.description,
         amount: dto.amount,
@@ -127,11 +127,12 @@ export class ProductsService {
   private getProductsQueryBuilder(req: Request): SelectQueryBuilder<Product> {
     return this.productsRepository
       .createQueryBuilder('product')
-      .innerJoin('product.cell', 'cell')
+      .innerJoin('product.lease', 'lease')
+      .innerJoin('lease.cell', 'cell')
       .innerJoin('cell.storage', 'storage')
       .innerJoin('storage.card', 'ownerCard')
       .innerJoin('ownerCard.user', 'ownerUser')
-      .innerJoin('product.card', 'sellerCard')
+      .innerJoin('lease.card', 'sellerCard')
       .innerJoin('sellerCard.user', 'sellerUser')
       .where(
         new Brackets((qb) =>
@@ -304,6 +305,7 @@ export class ProductsService {
       .take(req.take)
       .select([
         'product.id',
+        'lease.id',
         'cell.id',
         'storage.id',
         'ownerCard.id',

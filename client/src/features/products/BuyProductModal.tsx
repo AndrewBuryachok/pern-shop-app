@@ -51,9 +51,9 @@ export default function BuyProductModal({ data: product }: Props) {
     >
       <TextInput
         label='Seller'
-        icon={<CustomAvatar {...product.card.user} />}
+        icon={<CustomAvatar {...product.lease.card.user} />}
         iconWidth={48}
-        value={parseCard(product.card)}
+        value={parseCard(product.lease.card)}
         disabled
       />
       <TextInput
@@ -66,12 +66,16 @@ export default function BuyProductModal({ data: product }: Props) {
       <Textarea label='Description' value={product.description} disabled />
       <TextInput label='Amount' value={parseThingAmount(product)} disabled />
       <TextInput label='Price' value={`${product.price}$`} disabled />
-      <TextInput label='Storage' value={parseCell(product.cell)} disabled />
+      <TextInput
+        label='Storage'
+        value={parseCell(product.lease.cell)}
+        disabled
+      />
       <TextInput
         label='Owner'
-        icon={<CustomAvatar {...product.cell.storage.card.user} />}
+        icon={<CustomAvatar {...product.lease.cell.storage.card.user} />}
         iconWidth={48}
-        value={parseCard(product.cell.storage.card)}
+        value={parseCard(product.lease.cell.storage.card)}
         disabled
       />
       <Select

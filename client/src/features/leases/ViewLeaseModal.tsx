@@ -40,11 +40,12 @@ export default function ViewLeaseModal({ data: lease }: Props) {
         value={`${created.date} ${created.time}`}
         disabled
       />
+      <TextInput label='Type' value={lease.type} disabled />
       <Select
-        label='Products'
-        placeholder={`Total: ${lease.products.length}`}
+        label='Things'
+        placeholder={`Total: ${[lease.thing].length}`}
         itemComponent={ThingsItem}
-        data={viewThings(lease.products)}
+        data={viewThings([lease.thing])}
         searchable
       />
     </Stack>

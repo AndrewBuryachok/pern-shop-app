@@ -31,7 +31,7 @@ export default function ProductsTable({ actions = [], ...props }: Props) {
       {props.data?.result.map((product) => (
         <tr key={product.id}>
           <td>
-            <AvatarWithDoubleText {...product.card} />
+            <AvatarWithDoubleText {...product.lease.card} />
           </td>
           <td>
             <ThingImageWithText {...product} />
@@ -44,8 +44,8 @@ export default function ProductsTable({ actions = [], ...props }: Props) {
           </td>
           <td>
             <CustomPlaceWithAvatar
-              {...product.cell.storage}
-              container={product.cell.name}
+              {...product.lease.cell.storage}
+              container={product.lease.cell.name}
             />
           </td>
           <td>

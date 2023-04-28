@@ -31,7 +31,7 @@ export default function OrdersTable({ actions = [], ...props }: Props) {
       {props.data?.result.map((order) => (
         <tr key={order.id}>
           <td>
-            <AvatarWithDoubleText {...order.customerCard} />
+            <AvatarWithDoubleText {...order.lease.card} />
           </td>
           <td>
             <ThingImageWithText {...order} />
@@ -47,8 +47,8 @@ export default function OrdersTable({ actions = [], ...props }: Props) {
           </td>
           <td>
             <CustomPlaceWithAvatar
-              {...order.cell.storage}
-              container={order.cell.name}
+              {...order.lease.cell.storage}
+              container={order.lease.cell.name}
             />
           </td>
           <td>

@@ -100,6 +100,7 @@ export class UsersService {
         user['ratings'].length || 0;
     delete user['shops'];
     delete user['rents'];
+    delete user['leases'];
     delete user['ratings'];
     return user;
   }
@@ -383,6 +384,12 @@ export class UsersService {
         'card.id = rent.cardId',
       )
       .leftJoinAndMapMany(
+        'user.leases',
+        'leases',
+        'lease',
+        'card.id = lease.cardId',
+      )
+      .leftJoinAndMapMany(
         'user.wares',
         'wares',
         'ware',
@@ -392,7 +399,7 @@ export class UsersService {
         'user.products',
         'products',
         'product',
-        'card.id = product.cardId',
+        'lease.id = product.leaseId',
       )
       .leftJoinAndMapMany(
         'user.trades',

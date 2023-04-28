@@ -1,21 +1,13 @@
-import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
+import { Column, Entity, JoinColumn, OneToOne } from 'typeorm';
 import { Thing } from '../things/thing.entity';
-import { Cell } from '../cells/cell.entity';
-import { Card } from '../cards/card.entity';
+import { Lease } from '../leases/lease.entity';
 
 @Entity('products')
 export class Product extends Thing {
-  @Column({ name: 'cell_id' })
-  cellId: number;
+  @Column({ name: 'lease_id' })
+  leaseId: number;
 
-  @ManyToOne(() => Cell, { nullable: false })
-  @JoinColumn({ name: 'cell_id' })
-  cell: Cell;
-
-  @Column({ name: 'card_id' })
-  cardId: number;
-
-  @ManyToOne(() => Card, { nullable: false })
-  @JoinColumn({ name: 'card_id' })
-  card: Card;
+  @OneToOne(() => Lease, { nullable: false })
+  @JoinColumn({ name: 'lease_id' })
+  lease: Lease;
 }

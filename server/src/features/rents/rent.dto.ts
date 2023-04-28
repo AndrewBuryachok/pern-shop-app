@@ -2,11 +2,8 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Validate } from 'class-validator';
 import { Type } from 'class-transformer';
 import { IsId } from '../../common/decorators';
-import {
-  IsCardExists,
-  IsRentExists,
-  IsStoreExists,
-} from '../../common/constraints';
+import { IsRentExists, IsStoreExists } from '../../common/constraints';
+import { CreateReceiptDto } from '../receipts/receipt.dto';
 
 export class RentIdDto {
   @ApiProperty()
@@ -16,16 +13,11 @@ export class RentIdDto {
   rentId: number;
 }
 
-export class CreateRentDto {
+export class CreateRentDto extends CreateReceiptDto {
   @ApiProperty()
   @IsId()
   @Validate(IsStoreExists)
   storeId: number;
-
-  @ApiProperty()
-  @IsId()
-  @Validate(IsCardExists)
-  cardId: number;
 }
 
 export class ExtCreateRentDto extends CreateRentDto {

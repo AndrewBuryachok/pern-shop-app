@@ -1,21 +1,13 @@
-import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
+import { Column, Entity, JoinColumn, OneToOne } from 'typeorm';
 import { Transportation } from '../transportations/transportation.entity';
-import { Cell } from '../cells/cell.entity';
-import { Card } from '../cards/card.entity';
+import { Lease } from '../leases/lease.entity';
 
 @Entity('orders')
 export class Order extends Transportation {
-  @Column({ name: 'cell_id' })
-  cellId: number;
+  @Column({ name: 'lease_id' })
+  leaseId: number;
 
-  @ManyToOne(() => Cell, { nullable: false })
-  @JoinColumn({ name: 'cell_id' })
-  cell: Cell;
-
-  @Column({ name: 'customer_card_id' })
-  customerCardId: number;
-
-  @ManyToOne(() => Card, { nullable: false })
-  @JoinColumn({ name: 'customer_card_id' })
-  customerCard: Card;
+  @OneToOne(() => Lease, { nullable: false })
+  @JoinColumn({ name: 'lease_id' })
+  lease: Lease;
 }

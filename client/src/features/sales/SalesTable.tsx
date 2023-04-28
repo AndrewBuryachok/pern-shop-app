@@ -38,7 +38,7 @@ export default function SalesTable({ actions = [], ...props }: Props) {
             <AvatarWithDoubleText {...sale.card} />
           </td>
           <td>
-            <AvatarWithDoubleText {...sale.product.card} />
+            <AvatarWithDoubleText {...sale.product.lease.card} />
           </td>
           <td>
             <ThingImageWithText {...sale.product} />
@@ -50,14 +50,14 @@ export default function SalesTable({ actions = [], ...props }: Props) {
             <SumText
               myId={user.id}
               fromId={sale.card.user.id}
-              toId={sale.product.card.user.id}
+              toId={sale.product.lease.card.user.id}
               sum={sale.amount * sale.product.price}
             />
           </td>
           <td>
             <CustomPlaceWithAvatar
-              {...sale.product.cell.storage}
-              container={sale.product.cell.name}
+              {...sale.product.lease.cell.storage}
+              container={sale.product.lease.cell.name}
             />
           </td>
           <td>

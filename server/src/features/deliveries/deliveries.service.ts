@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { Delivery } from './delivery.entity';
-import { CellsService } from '../cells/cells.service';
+import { LeasesService } from '../leases/leases.service';
 import { CardsService } from '../cards/cards.service';
 import { PaymentsService } from '../payments/payments.service';
 import {
@@ -22,7 +22,7 @@ export class DeliveriesService {
   constructor(
     @InjectRepository(Delivery)
     private deliveriesRepository: Repository<Delivery>,
-    private cellsService: CellsService,
+    private leasesService: LeasesService,
     private cardsService: CardsService,
     private paymentsService: PaymentsService,
   ) {}
@@ -85,19 +85,19 @@ export class DeliveriesService {
   }
 
   async createDelivery(dto: ExtCreateDeliveryDto): Promise<void> {
-    const fromCellId = await this.cellsService.reserveCell({
+    const fromLeaseId = await this.leasesService.createLease({
       ...dto,
       storageId: dto.fromStorageId,
     });
-    const toCellId = await this.cellsService.reserveCell({
+    const toLeaseId = await this.leasesService.createLease({
       ...dto,
       storageId: dto.toStorageId,
     });
     await this.cardsService.decreaseCardBalance({ ...dto, sum: dto.price });
     await this.create({
       ...dto,
-      fromStorageId: fromCellId,
-      toStorageId: toCellId,
+      fromStorageId: fromLeaseId,
+      toStorageId: toLeaseId,
     });
   }
 
@@ -140,12 +140,12 @@ export class DeliveriesService {
       throw new AppException(DeliveryError.NOT_EXECUTED);
     }
     await this.cardsService.increaseCardBalance({
-      cardId: delivery.senderCardId,
+      cardId: delivery.fromLease.cardId,
       sum: delivery.price,
     });
     await this.paymentsService.createPayment({
-      myId: delivery.senderCard.userId,
-      senderCardId: delivery.senderCardId,
+      myId: dto.myId,
+      senderCardId: delivery.fromLease.cardId,
       receiverCardId: delivery.executorCardId,
       sum: delivery.price,
       description: 'complete delivery',
@@ -159,7 +159,7 @@ export class DeliveriesService {
       throw new AppException(DeliveryError.ALREADY_TAKEN);
     }
     await this.cardsService.increaseCardBalance({
-      cardId: delivery.senderCardId,
+      cardId: delivery.fromLease.cardId,
       sum: delivery.price,
     });
     await this.delete(delivery);
@@ -173,9 +173,9 @@ export class DeliveriesService {
     id: number,
     userId: number,
   ): Promise<Delivery> {
-    const delivery = await this.deliveriesRepository.findOneBy({
-      id,
-      senderCard: { userId },
+    const delivery = await this.deliveriesRepository.findOne({
+      relations: ['fromLease'],
+      where: { id, fromLease: { card: { userId } } },
     });
     if (!delivery) {
       throw new AppException(DeliveryError.NOT_SENDER);
@@ -188,7 +188,7 @@ export class DeliveriesService {
     userId: number,
   ): Promise<Delivery> {
     const delivery = await this.deliveriesRepository.findOne({
-      relations: ['senderCard'],
+      relations: ['fromLease'],
       where: { id, receiverUserId: userId },
     });
     if (!delivery) {
@@ -214,9 +214,8 @@ export class DeliveriesService {
   private async create(dto: ExtCreateDeliveryDto): Promise<void> {
     try {
       const delivery = this.deliveriesRepository.create({
-        fromCellId: dto.fromStorageId,
-        toCellId: dto.toStorageId,
-        senderCardId: dto.cardId,
+        fromLeaseId: dto.fromStorageId,
+        toLeaseId: dto.toStorageId,
         receiverUserId: dto.userId,
         item: dto.item,
         description: dto.description,
@@ -283,15 +282,17 @@ export class DeliveriesService {
   ): SelectQueryBuilder<Delivery> {
     return this.deliveriesRepository
       .createQueryBuilder('delivery')
-      .innerJoin('delivery.fromCell', 'fromCell')
+      .innerJoin('delivery.fromLease', 'fromLease')
+      .innerJoin('fromLease.cell', 'fromCell')
       .innerJoin('fromCell.storage', 'fromStorage')
       .innerJoin('fromStorage.card', 'fromOwnerCard')
       .innerJoin('fromOwnerCard.user', 'fromOwnerUser')
-      .innerJoin('delivery.toCell', 'toCell')
+      .innerJoin('delivery.toLease', 'toLease')
+      .innerJoin('toLease.cell', 'toCell')
       .innerJoin('toCell.storage', 'toStorage')
       .innerJoin('toStorage.card', 'toOwnerCard')
       .innerJoin('toOwnerCard.user', 'toOwnerUser')
-      .innerJoin('delivery.senderCard', 'senderCard')
+      .innerJoin('fromLease.card', 'senderCard')
       .innerJoin('senderCard.user', 'senderUser')
       .innerJoin('delivery.receiverUser', 'receiverUser')
       .leftJoin('delivery.executorCard', 'executorCard')
@@ -560,6 +561,7 @@ export class DeliveriesService {
       .take(req.take)
       .select([
         'delivery.id',
+        'fromLease.id',
         'fromCell.id',
         'fromStorage.id',
         'fromOwnerCard.id',
@@ -572,6 +574,7 @@ export class DeliveriesService {
         'fromStorage.x',
         'fromStorage.y',
         'fromCell.name',
+        'toLease.id',
         'toCell.id',
         'toStorage.id',
         'toOwnerCard.id',

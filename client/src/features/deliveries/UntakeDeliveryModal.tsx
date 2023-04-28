@@ -34,9 +34,9 @@ export default function UntakeDeliveryModal({ data: delivery }: Props) {
     >
       <TextInput
         label='Sender'
-        icon={<CustomAvatar {...delivery.senderCard.user} />}
+        icon={<CustomAvatar {...delivery.fromLease.card.user} />}
         iconWidth={48}
-        value={parseCard(delivery.senderCard)}
+        value={parseCard(delivery.fromLease.card)}
         disabled
       />
       <TextInput
@@ -65,26 +65,26 @@ export default function UntakeDeliveryModal({ data: delivery }: Props) {
       />
       <TextInput
         label='From Storage'
-        value={parseCell(delivery.fromCell)}
+        value={parseCell(delivery.fromLease.cell)}
         disabled
       />
       <TextInput
         label='From Owner'
-        icon={<CustomAvatar {...delivery.fromCell.storage.card.user} />}
+        icon={<CustomAvatar {...delivery.fromLease.cell.storage.card.user} />}
         iconWidth={48}
-        value={parseCard(delivery.fromCell.storage.card)}
+        value={parseCard(delivery.fromLease.cell.storage.card)}
         disabled
       />
       <TextInput
         label='To Storage'
-        value={parseCell(delivery.toCell)}
+        value={parseCell(delivery.toLease.cell)}
         disabled
       />
       <TextInput
         label='To Owner'
-        icon={<CustomAvatar {...delivery.toCell.storage.card.user} />}
+        icon={<CustomAvatar {...delivery.toLease.cell.storage.card.user} />}
         iconWidth={48}
-        value={parseCard(delivery.toCell.storage.card)}
+        value={parseCard(delivery.toLease.cell.storage.card)}
         disabled
       />
     </CustomForm>

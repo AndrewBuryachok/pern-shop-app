@@ -82,11 +82,12 @@ export class SalesService {
     return this.salesRepository
       .createQueryBuilder('sale')
       .innerJoin('sale.product', 'product')
-      .innerJoin('product.cell', 'cell')
+      .innerJoin('product.lease', 'lease')
+      .innerJoin('lease.cell', 'cell')
       .innerJoin('cell.storage', 'storage')
       .innerJoin('storage.card', 'ownerCard')
       .innerJoin('ownerCard.user', 'ownerUser')
-      .innerJoin('product.card', 'sellerCard')
+      .innerJoin('lease.card', 'sellerCard')
       .innerJoin('sellerCard.user', 'sellerUser')
       .innerJoin('sale.card', 'buyerCard')
       .innerJoin('buyerCard.user', 'buyerUser')
@@ -296,6 +297,7 @@ export class SalesService {
       .select([
         'sale.id',
         'product.id',
+        'lease.id',
         'cell.id',
         'storage.id',
         'ownerCard.id',

@@ -1,18 +1,23 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
-import { Product } from '../products/product.entity';
+import { Lease } from './lease.entity';
+import { CellsService } from '../cells/cells.service';
+import { ExtCreateLeaseDto } from './lease.dto';
 import { Request, Response } from '../../common/interfaces';
+import { AppException } from '../../common/exceptions';
+import { LeaseError } from './lease-error.enum';
 import { Filter, Mode } from '../../common/enums';
 
 @Injectable()
 export class LeasesService {
   constructor(
-    @InjectRepository(Product)
-    private leasesRepository: Repository<Product>,
+    @InjectRepository(Lease)
+    private leasesRepository: Repository<Lease>,
+    private cellsService: CellsService,
   ) {}
 
-  async getMyLeases(myId: number, req: Request): Promise<Response<Product>> {
+  async getMyLeases(myId: number, req: Request): Promise<Response<Lease>> {
     const [result, count] = await this.getLeasesQueryBuilder(req)
       .andWhere(
         new Brackets((qb) =>
@@ -21,44 +26,85 @@ export class LeasesService {
         { myId },
       )
       .getManyAndCount();
-    await this.loadProducts(result);
+    await this.loadThing(result);
     return { result, count };
   }
 
-  async getAllLeases(req: Request): Promise<Response<Product>> {
+  async getAllLeases(req: Request): Promise<Response<Lease>> {
     const [result, count] = await this.getLeasesQueryBuilder(
       req,
     ).getManyAndCount();
-    await this.loadProducts(result);
+    await this.loadThing(result);
     return { result, count };
   }
 
-  private async loadProducts(leases: Product[]): Promise<void> {
+  async createLease(dto: ExtCreateLeaseDto): Promise<number> {
+    const cellId = await this.cellsService.reserveCell(dto);
+    const lease = await this.create({ ...dto, storageId: cellId });
+    return lease.id;
+  }
+
+  private async create(dto: ExtCreateLeaseDto): Promise<Lease> {
+    try {
+      const lease = this.leasesRepository.create({
+        cellId: dto.storageId,
+        cardId: dto.cardId,
+      });
+      await this.leasesRepository.save(lease);
+      return lease;
+    } catch (error) {
+      throw new AppException(LeaseError.CREATE_FAILED);
+    }
+  }
+
+  private async loadThing(leases: Lease[]): Promise<void> {
     const promises = leases.map(async (lease) => {
-      lease['products'] = (
-        await this.leasesRepository
-          .createQueryBuilder('lease')
-          .leftJoinAndMapMany(
-            'lease.products',
-            'products',
-            'product',
-            'lease.id = product.id',
-          )
-          .where('lease.id = :leaseId', { leaseId: lease.id })
-          .orderBy('product.id', 'DESC')
-          .select([
-            'lease.id',
-            'product.id',
-            'product.item',
-            'product.description',
-          ])
-          .getOne()
-      )['products'];
+      const result = await this.leasesRepository
+        .createQueryBuilder('lease')
+        .leftJoinAndMapOne(
+          'lease.product',
+          'products',
+          'product',
+          'lease.id = product.leaseId',
+        )
+        .leftJoinAndMapOne(
+          'lease.order',
+          'orders',
+          'order',
+          'lease.id = order.leaseId',
+        )
+        .leftJoinAndMapOne(
+          'lease.delivery',
+          'deliveries',
+          'delivery',
+          'lease.id = delivery.fromLeaseId OR lease.id = delivery.toLeaseId',
+        )
+        .where('lease.id = :leaseId', { leaseId: lease.id })
+        .select([
+          'lease.id',
+          'product.id',
+          'product.item',
+          'product.description',
+          'order.id',
+          'order.item',
+          'order.description',
+          'delivery.id',
+          'delivery.item',
+          'delivery.description',
+        ])
+        .getOne();
+      lease['type'] = result['delivery']
+        ? 'delivery'
+        : result['order']
+        ? 'order'
+        : 'product';
+      lease['thing'] =
+        result['product'] || result['order'] || result['delivery'];
     });
     await Promise.all(promises);
   }
 
-  private getLeasesQueryBuilder(req: Request): SelectQueryBuilder<Product> {
+  private getLeasesQueryBuilder(req: Request): SelectQueryBuilder<Lease> {
     return this.leasesRepository
       .createQueryBuilder('lease')
       .innerJoin('lease.cell', 'cell')

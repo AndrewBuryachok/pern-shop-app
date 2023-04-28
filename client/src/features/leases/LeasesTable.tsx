@@ -6,7 +6,7 @@ import AvatarWithDoubleText from '../../common/components/AvatarWithDoubleText';
 import PlaceText from '../../common/components/PlaceText';
 import SumText from '../../common/components/SumText';
 import DateText from '../../common/components/DateText';
-import TotalText from '../../common/components/TotalText';
+import SingleText from '../../common/components/SingleText';
 import CustomActions from '../../common/components/CustomActions';
 import { viewLeaseAction } from './ViewLeaseModal';
 
@@ -24,7 +24,7 @@ export default function LeasesTable({ actions = [], ...props }: Props) {
         'Storage',
         'Sum',
         'Created',
-        'Products',
+        'Type',
         'Action',
       ]}
       {...props}
@@ -52,7 +52,7 @@ export default function LeasesTable({ actions = [], ...props }: Props) {
             <DateText date={lease.createdAt} />
           </td>
           <td>
-            <TotalText data={lease.products.length} />
+            <SingleText text={lease.type} />
           </td>
           <td>
             <CustomActions
