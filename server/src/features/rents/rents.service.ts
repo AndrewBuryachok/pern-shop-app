@@ -5,6 +5,7 @@ import { Rent } from './rent.entity';
 import { StoresService } from '../stores/stores.service';
 import { ExtCreateRentDto } from './rent.dto';
 import { Request, Response } from '../../common/interfaces';
+import { getDateWeekAgo } from '../../common/utils';
 import { AppException } from '../../common/exceptions';
 import { RentError } from './rent-error.enum';
 import { Filter, Mode } from '../../common/enums';
@@ -42,6 +43,7 @@ export class RentsService {
     return this.selectRentsQueryBuilder()
       .innerJoin('rent.card', 'renterCard')
       .where('renterCard.userId = :myId', { myId })
+      .andWhere('rent.createdAt > :date', { date: getDateWeekAgo() })
       .getMany();
   }
 
@@ -61,6 +63,9 @@ export class RentsService {
     });
     if (!rent) {
       throw new AppException(RentError.NOT_OWNER);
+    }
+    if (rent.createdAt < getDateWeekAgo()) {
+      throw new AppException(RentError.ALREADY_EXPIRED);
     }
     return rent;
   }

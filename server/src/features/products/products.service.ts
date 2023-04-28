@@ -77,6 +77,9 @@ export class ProductsService {
     const product = await this.productsRepository.findOneBy({
       id: dto.productId,
     });
+    if (product.createdAt < getDateWeekAgo()) {
+      throw new AppException(ProductError.ALREADY_EXPIRED);
+    }
     if (product.amount < dto.amount) {
       throw new AppException(ProductError.NOT_ENOUGH_AMOUNT);
     }

@@ -70,6 +70,9 @@ export class OrdersService {
     const order = await this.ordersRepository.findOneBy({
       id: dto.orderId,
     });
+    if (order.createdAt < getDateWeekAgo()) {
+      throw new AppException(OrderError.ALREADY_EXPIRED);
+    }
     if (order.executorCardId) {
       throw new AppException(OrderError.ALREADY_TAKEN);
     }

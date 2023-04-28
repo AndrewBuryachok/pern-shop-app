@@ -75,6 +75,9 @@ export class WaresService {
       relations: ['rent'],
       where: { id: dto.wareId },
     });
+    if (ware.createdAt < getDateWeekAgo()) {
+      throw new AppException(WareError.ALREADY_EXPIRED);
+    }
     if (ware.amount < dto.amount) {
       throw new AppException(WareError.NOT_ENOUGH_AMOUNT);
     }

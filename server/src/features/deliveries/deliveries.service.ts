@@ -106,6 +106,9 @@ export class DeliveriesService {
     const delivery = await this.deliveriesRepository.findOneBy({
       id: dto.deliveryId,
     });
+    if (delivery.createdAt < getDateWeekAgo()) {
+      throw new AppException(DeliveryError.ALREADY_EXPIRED);
+    }
     if (delivery.executorCardId) {
       throw new AppException(DeliveryError.ALREADY_TAKEN);
     }
