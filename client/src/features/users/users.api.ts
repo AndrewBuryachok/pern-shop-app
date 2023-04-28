@@ -1,7 +1,7 @@
 import { emptyApi } from '../../app/empty.api';
 import { IRequest, IResponse } from '../../common/interfaces';
 import { ExtUser, SmUser, SmUserWithCity, User } from './user.model';
-import { UpdateUserRolesDto } from './user.dto';
+import { UpdateUserRoleDto } from './user.dto';
 import { getQuery } from '../../common/utils';
 
 export const usersApi = emptyApi.injectEndpoints({
@@ -59,7 +59,7 @@ export const usersApi = emptyApi.injectEndpoints({
         'Rating',
       ],
     }),
-    addUserRole: build.mutation<void, UpdateUserRolesDto>({
+    addUserRole: build.mutation<void, UpdateUserRoleDto>({
       query: ({ userId, ...dto }) => ({
         url: `/users/${userId}/roles`,
         method: 'POST',
@@ -67,7 +67,7 @@ export const usersApi = emptyApi.injectEndpoints({
       }),
       invalidatesTags: ['User'],
     }),
-    removeUserRole: build.mutation<void, UpdateUserRolesDto>({
+    removeUserRole: build.mutation<void, UpdateUserRoleDto>({
       query: ({ userId, ...dto }) => ({
         url: `/users/${userId}/roles`,
         method: 'DELETE',

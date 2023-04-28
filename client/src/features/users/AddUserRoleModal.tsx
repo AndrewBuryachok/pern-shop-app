@@ -4,7 +4,7 @@ import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { User } from './user.model';
 import { useAddUserRoleMutation } from './users.api';
-import { UpdateUserRolesDto } from './user.dto';
+import { UpdateUserRoleDto } from './user.dto';
 import CustomForm from '../../common/components/CustomForm';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import { ColorsItem } from '../../common/components/ColorsItem';
@@ -24,7 +24,7 @@ export default function AddUserRoleModal({ data: user }: Props) {
 
   const [addUserRole, { isLoading }] = useAddUserRoleMutation();
 
-  const handleSubmit = async (dto: UpdateUserRolesDto) => {
+  const handleSubmit = async (dto: UpdateUserRoleDto) => {
     await addUserRole(dto);
   };
 

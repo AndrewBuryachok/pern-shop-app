@@ -4,7 +4,7 @@ import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { User } from './user.entity';
 import {
   CreateUserDto,
-  ExtUpdateUserRolesDto,
+  ExtUpdateUserRoleDto,
   UpdateUserTokenDto,
 } from './user.dto';
 import { Request, Response } from '../../common/interfaces';
@@ -106,7 +106,7 @@ export class UsersService {
     await this.updatePassword(user, password);
   }
 
-  async addUserRole(dto: ExtUpdateUserRolesDto): Promise<void> {
+  async addUserRole(dto: ExtUpdateUserRoleDto): Promise<void> {
     const user = await this.usersRepository.findOneBy({ id: dto.userId });
     if (user.roles.includes(dto.role)) {
       throw new AppException(UserError.ALREADY_HAS_ROLE);
@@ -114,7 +114,7 @@ export class UsersService {
     await this.addRole(user, dto.role);
   }
 
-  async removeUserRole(dto: ExtUpdateUserRolesDto): Promise<void> {
+  async removeUserRole(dto: ExtUpdateUserRoleDto): Promise<void> {
     const user = await this.usersRepository.findOneBy({ id: dto.userId });
     if (!user.roles.includes(dto.role)) {
       throw new AppException(UserError.NOT_HAS_ROLE);

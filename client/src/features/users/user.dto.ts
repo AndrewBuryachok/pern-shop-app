@@ -1,4 +1,4 @@
-export interface UpdateUserRolesDto {
+export interface UpdateUserRoleDto {
   userId: number;
   role: number;
 }

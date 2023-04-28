@@ -26,12 +26,12 @@ export class UpdateUserTokenDto extends UserIdDto {
   token?: string;
 }
 
-export class UpdateUserRolesDto {
+export class UpdateUserRoleDto {
   @ApiProperty()
   @IsRole()
   role: number;
 }
 
-export class ExtUpdateUserRolesDto extends UpdateUserRolesDto {
+export class ExtUpdateUserRoleDto extends UpdateUserRoleDto {
   userId: number;
 }
