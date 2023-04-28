@@ -17,7 +17,10 @@ export default function SingleUser() {
     <UserProfile data={user} />
   ) : (
     <Stack align='center'>
-      <Skeleton h={128} w={128} />
+      <Stack align='center' spacing={0}>
+        <Skeleton h={64} w={64} />
+        <Skeleton h={64} w={128} />
+      </Stack>
       <Skeleton h={24} w={64} />
       <Group spacing={4}>
         {[...Array(3).keys()].map((key) => (
