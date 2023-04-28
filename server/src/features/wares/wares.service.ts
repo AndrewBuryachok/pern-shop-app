@@ -2,9 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { Ware } from './ware.entity';
+import { WareState } from './ware-state.entity';
 import { RentsService } from '../rents/rents.service';
 import { PaymentsService } from '../payments/payments.service';
-import { BuyWareDto, ExtCreateWareDto } from './ware.dto';
+import { BuyWareDto, ExtCreateWareDto, ExtEditWareDto } from './ware.dto';
 import { Request, Response, Stats } from '../../common/interfaces';
 import { getDateMonthAgo, getDateWeekAgo } from '../../common/utils';
 import { AppException } from '../../common/exceptions';
@@ -16,6 +17,8 @@ export class WaresService {
   constructor(
     @InjectRepository(Ware)
     private waresRepository: Repository<Ware>,
+    @InjectRepository(WareState)
+    private waresStatesRepository: Repository<WareState>,
     private rentsService: RentsService,
     private paymentsService: PaymentsService,
   ) {}
@@ -41,6 +44,7 @@ export class WaresService {
       .andWhere('ware.amount > 0')
       .andWhere('rent.createdAt > :date', { date: getDateWeekAgo() })
       .getManyAndCount();
+    await this.loadStates(result);
     return { result, count };
   }
 
@@ -48,6 +52,7 @@ export class WaresService {
     const [result, count] = await this.getWaresQueryBuilder(req)
       .andWhere('sellerUser.id = :myId', { myId })
       .getManyAndCount();
+    await this.loadStates(result);
     return { result, count };
   }
 
@@ -55,6 +60,7 @@ export class WaresService {
     const [result, count] = await this.getWaresQueryBuilder(req)
       .andWhere('ownerUser.id = :myId', { myId })
       .getManyAndCount();
+    await this.loadStates(result);
     return { result, count };
   }
 
@@ -62,12 +68,18 @@ export class WaresService {
     const [result, count] = await this.getWaresQueryBuilder(
       req,
     ).getManyAndCount();
+    await this.loadStates(result);
     return { result, count };
   }
 
   async createWare(dto: ExtCreateWareDto): Promise<void> {
     await this.rentsService.checkRentOwner(dto.rentId, dto.myId);
     await this.create(dto);
+  }
+
+  async editWare(dto: ExtEditWareDto): Promise<void> {
+    const ware = await this.checkWareOwner(dto.wareId, dto.myId);
+    await this.edit(ware, dto.price);
   }
 
   async buyWare(dto: BuyWareDto): Promise<void> {
@@ -95,6 +107,17 @@ export class WaresService {
     await this.waresRepository.findOneByOrFail({ id });
   }
 
+  async checkWareOwner(id: number, userId: number): Promise<Ware> {
+    const ware = await this.waresRepository.findOneBy({
+      id,
+      rent: { card: { userId } },
+    });
+    if (!ware) {
+      throw new AppException(WareError.NOT_OWNER);
+    }
+    return ware;
+  }
+
   private async create(dto: ExtCreateWareDto): Promise<void> {
     try {
       const ware = this.waresRepository.create({
@@ -107,8 +130,27 @@ export class WaresService {
         price: dto.price,
       });
       await this.waresRepository.save(ware);
+      const wareState = this.waresStatesRepository.create({
+        wareId: ware.id,
+        price: dto.price,
+      });
+      await this.waresStatesRepository.save(wareState);
     } catch (error) {
       throw new AppException(WareError.CREATE_FAILED);
+    }
+  }
+
+  private async edit(ware: Ware, price: number): Promise<void> {
+    try {
+      ware.price = price;
+      await this.waresRepository.save(ware);
+      const wareState = this.waresStatesRepository.create({
+        wareId: ware.id,
+        price,
+      });
+      await this.waresStatesRepository.save(wareState);
+    } catch (error) {
+      throw new AppException(WareError.EDIT_FAILED);
     }
   }
 
@@ -119,6 +161,27 @@ export class WaresService {
     } catch (error) {
       throw new AppException(WareError.BUY_FAILED);
     }
+  }
+
+  private async loadStates(wares: Ware[]): Promise<void> {
+    const promises = wares.map(async (ware) => {
+      ware['states'] = (
+        await this.waresRepository
+          .createQueryBuilder('ware')
+          .leftJoin('ware.states', 'state')
+          .where('ware.id = :wareId', { wareId: ware.id })
+          .orderBy('state.id', 'DESC')
+          .select([
+            'ware.id',
+            'ware.price',
+            'state.id',
+            'state.price',
+            'state.createdAt',
+          ])
+          .getOne()
+      )['states'];
+    });
+    await Promise.all(promises);
   }
 
   private getWaresQueryBuilder(req: Request): SelectQueryBuilder<Ware> {

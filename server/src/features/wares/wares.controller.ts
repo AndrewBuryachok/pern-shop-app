@@ -1,8 +1,16 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
+} from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { WaresService } from './wares.service';
 import { Ware } from './ware.entity';
-import { CreateWareDto } from './ware.dto';
+import { CreateWareDto, EditWareDto, WareIdDto } from './ware.dto';
 import { Request, Response, Stats } from '../../common/interfaces';
 import { MyId, Public, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
@@ -49,5 +57,14 @@ export class WaresController {
   @Post()
   createWare(@MyId() myId: number, @Body() dto: CreateWareDto): Promise<void> {
     return this.waresService.createWare({ ...dto, myId });
+  }
+
+  @Patch(':wareId')
+  editWare(
+    @MyId() myId: number,
+    @Param() { wareId }: WareIdDto,
+    @Body() dto: EditWareDto,
+  ): Promise<void> {
+    return this.waresService.editWare({ ...dto, wareId, myId });
   }
 }

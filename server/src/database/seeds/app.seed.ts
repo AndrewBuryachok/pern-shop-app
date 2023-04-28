@@ -7,14 +7,18 @@ import { Invoice } from '../../features/invoices/invoice.entity';
 import { City } from '../../features/cities/city.entity';
 import { Shop } from '../../features/shops/shop.entity';
 import { Market } from '../../features/markets/market.entity';
+import { MarketState } from '../../features/markets/market-state.entity';
 import { Storage } from '../../features/storages/storage.entity';
+import { StorageState } from '../../features/storages/storage-state.entity';
 import { Store } from '../../features/stores/store.entity';
 import { Cell } from '../../features/cells/cell.entity';
 import { Rent } from '../../features/rents/rent.entity';
 import { Lease } from '../../features/leases/lease.entity';
 import { Good } from '../../features/goods/good.entity';
 import { Ware } from '../../features/wares/ware.entity';
+import { WareState } from '../../features/wares/ware-state.entity';
 import { Product } from '../../features/products/product.entity';
+import { ProductState } from '../../features/products/product-state.entity';
 import { Order } from '../../features/orders/order.entity';
 import { Delivery } from '../../features/deliveries/delivery.entity';
 import { Trade } from '../../features/trades/trade.entity';
@@ -94,6 +98,17 @@ export default class AppSeed implements Seeder {
         return market;
       })
       .createMany(10);
+    let marketId = 0;
+    const marketsStates = await factory(MarketState)()
+      .map(async (marketState) => {
+        marketState.market = markets[Math.floor(marketId / 2)];
+        if (marketId % 2) {
+          marketState.price = marketState.market.price;
+        }
+        marketId++;
+        return marketState;
+      })
+      .createMany(20);
     const storages = await factory(Storage)()
       .map(async (storage) => {
         storage.card = cards[Math.floor(Math.random() * cards.length)];
@@ -101,6 +116,17 @@ export default class AppSeed implements Seeder {
         return storage;
       })
       .createMany(10);
+    let storageId = 0;
+    const storagesStates = await factory(StorageState)()
+      .map(async (storageState) => {
+        storageState.storage = storages[Math.floor(storageId / 2)];
+        if (storageId % 2) {
+          storageState.price = storageState.storage.price;
+        }
+        storageId++;
+        return storageState;
+      })
+      .createMany(20);
     const stores = await factory(Store)()
       .map(async (store) => {
         store.market = markets[Math.floor(Math.random() * markets.length)];
@@ -143,6 +169,17 @@ export default class AppSeed implements Seeder {
         return ware;
       })
       .createMany(160);
+    let wareId = 1;
+    const waresStates = await factory(WareState)()
+      .map(async (wareState) => {
+        wareState.ware = wares[wareId - Math.floor(wareId / 5) - 1];
+        if (wareId % 5 !== 4) {
+          wareState.price = wareState.ware.price;
+        }
+        wareId++;
+        return wareState;
+      })
+      .createMany(200);
     let leaseId = 0;
     const products = await factory(Product)()
       .map(async (product) => {
@@ -151,6 +188,18 @@ export default class AppSeed implements Seeder {
         return product;
       })
       .createMany(160);
+    let productId = 1;
+    const productsStates = await factory(ProductState)()
+      .map(async (productState) => {
+        productState.product =
+          products[productId - Math.floor(productId / 5) - 1];
+        if (productId % 5 !== 4) {
+          productState.price = productState.product.price;
+        }
+        productId++;
+        return productState;
+      })
+      .createMany(200);
     const orders = await factory(Order)()
       .map(async (order) => {
         order.lease = leases[leaseId];

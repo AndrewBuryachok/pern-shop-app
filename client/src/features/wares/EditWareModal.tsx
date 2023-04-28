@@ -1,7 +1,11 @@
-import { Select, Stack, Textarea, TextInput } from '@mantine/core';
+import { NumberInput, Select, TextInput, Textarea } from '@mantine/core';
+import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { Ware } from './ware.model';
+import { useEditWareMutation } from './wares.api';
+import { EditWareDto } from './ware.dto';
+import CustomForm from '../../common/components/CustomForm';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import ThingImage from '../../common/components/ThingImage';
 import { StatesItem } from '../../common/components/StatesItem';
@@ -12,15 +16,33 @@ import {
   parseThingAmount,
   viewStates,
 } from '../../common/utils';
-import { Color, items } from '../../common/constants';
+import { Color, MAX_PRICE_VALUE, items } from '../../common/constants';
 
 type Props = IModal<Ware>;
 
-export default function ViewWareModal({ data: ware }: Props) {
+export default function EditWareModal({ data: ware }: Props) {
   const created = parseDate(ware.createdAt);
 
+  const form = useForm({
+    initialValues: {
+      wareId: ware.id,
+      price: ware.price,
+    },
+  });
+
+  const [editWare, { isLoading }] = useEditWareMutation();
+
+  const handleSubmit = async (dto: EditWareDto) => {
+    await editWare(dto);
+  };
+
   return (
-    <Stack spacing={8}>
+    <CustomForm
+      onSubmit={form.onSubmit(handleSubmit)}
+      isLoading={isLoading}
+      text={'Edit ware'}
+      isChanged={!form.isDirty()}
+    >
       <TextInput
         label='Seller'
         icon={<CustomAvatar {...ware.rent.card.user} />}
@@ -37,7 +59,14 @@ export default function ViewWareModal({ data: ware }: Props) {
       />
       <Textarea label='Description' value={ware.description} disabled />
       <TextInput label='Amount' value={parseThingAmount(ware)} disabled />
-      <TextInput label='Price' value={`${ware.price}$`} disabled />
+      <NumberInput
+        label='Price'
+        placeholder='Price'
+        required
+        min={1}
+        max={MAX_PRICE_VALUE}
+        {...form.getInputProps('price')}
+      />
       <Select
         label='Prices'
         placeholder={`Total: ${ware.states.length}`}
@@ -58,16 +87,16 @@ export default function ViewWareModal({ data: ware }: Props) {
         value={`${created.date} ${created.time}`}
         disabled
       />
-    </Stack>
+    </CustomForm>
   );
 }
 
-export const viewWareAction = {
+export const editWareAction = {
   open: (ware: Ware) =>
     openModal({
-      title: 'View Ware',
-      children: <ViewWareModal data={ware} />,
+      title: 'Edit Ware',
+      children: <EditWareModal data={ware} />,
     }),
-  disable: () => false,
-  color: Color.BLUE,
+  disable: (ware: Ware) => !ware.amount,
+  color: Color.YELLOW,
 };

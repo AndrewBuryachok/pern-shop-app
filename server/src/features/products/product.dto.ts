@@ -8,6 +8,7 @@ import {
   IsStorageExists,
 } from '../../common/constraints';
 import { CreateThingDto } from '../things/thing.dto';
+import { EditStateDto } from '../states/state.dto';
 import { ExtCreateSaleDto } from '../sales/sale.dto';
 
 export class ProductIdDto {
@@ -31,6 +32,13 @@ export class CreateProductDto extends CreateThingDto {
 }
 
 export class ExtCreateProductDto extends CreateProductDto {
+  myId: number;
+}
+
+export class EditProductDto extends EditStateDto {}
+
+export class ExtEditProductDto extends EditProductDto {
+  productId: number;
   myId: number;
 }
 

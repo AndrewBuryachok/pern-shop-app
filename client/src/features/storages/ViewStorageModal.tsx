@@ -3,7 +3,8 @@ import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { Storage } from './storage.model';
 import CustomAvatar from '../../common/components/CustomAvatar';
-import { parseCard, viewContainers } from '../../common/utils';
+import { StatesItem } from '../../common/components/StatesItem';
+import { parseCard, viewContainers, viewStates } from '../../common/utils';
 import { Color } from '../../common/constants';
 
 type Props = IModal<Storage>;
@@ -22,6 +23,13 @@ export default function ViewStorageModal({ data: storage }: Props) {
       <TextInput label='X' value={storage.x} disabled />
       <TextInput label='Y' value={storage.y} disabled />
       <TextInput label='Price' value={`${storage.price}$`} disabled />
+      <Select
+        label='Prices'
+        placeholder={`Total: ${storage.states.length}`}
+        itemComponent={StatesItem}
+        data={viewStates(storage.states)}
+        searchable
+      />
       <Select
         label='Cells'
         placeholder={`Total: ${storage.cells.length}`}

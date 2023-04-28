@@ -91,7 +91,14 @@ export class SalesService {
       .innerJoin('sellerCard.user', 'sellerUser')
       .innerJoin('sale.card', 'buyerCard')
       .innerJoin('buyerCard.user', 'buyerUser')
-      .where(
+      .leftJoin('product.states', 'state', 'state.createdAt < trade.createdAt')
+      .leftJoin(
+        'product.states',
+        'next',
+        'state.createdAt < next.createdAt AND next.createdAt < trade.createdAt',
+      )
+      .where('next.id IS NULL')
+      .andWhere(
         new Brackets((qb) =>
           qb
             .where(`${!req.user}`)
@@ -320,7 +327,7 @@ export class SalesService {
         'product.description',
         'product.intake',
         'product.kit',
-        'product.price',
+        'state.price',
         'buyerCard.id',
         'buyerUser.id',
         'buyerUser.name',

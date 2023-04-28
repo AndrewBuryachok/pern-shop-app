@@ -128,7 +128,14 @@ export class RentsService {
       .innerJoin('ownerCard.user', 'ownerUser')
       .innerJoin('rent.card', 'renterCard')
       .innerJoin('renterCard.user', 'renterUser')
-      .where(
+      .leftJoin('market.states', 'state', 'state.createdAt < rent.createdAt')
+      .leftJoin(
+        'market.states',
+        'next',
+        'state.createdAt < next.createdAt AND next.createdAt < rent.createdAt',
+      )
+      .where('next.id IS NULL')
+      .andWhere(
         new Brackets((qb) =>
           qb
             .where(`${!req.user}`)
@@ -294,7 +301,7 @@ export class RentsService {
         'market.name',
         'market.x',
         'market.y',
-        'market.price',
+        'state.price',
         'store.name',
         'renterCard.id',
         'renterUser.id',

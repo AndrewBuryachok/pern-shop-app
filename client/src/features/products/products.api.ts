@@ -1,7 +1,7 @@
 import { emptyApi } from '../../app/empty.api';
 import { IRequest, IResponse, IStats } from '../../common/interfaces';
 import { Product } from './product.model';
-import { CreateProductDto } from './product.dto';
+import { CreateProductDto, EditProductDto } from './product.dto';
 import { getQuery } from '../../common/utils';
 
 export const productsApi = emptyApi.injectEndpoints({
@@ -44,6 +44,14 @@ export const productsApi = emptyApi.injectEndpoints({
       }),
       invalidatesTags: ['Product', 'Cell', 'Payment', 'Card'],
     }),
+    editProduct: build.mutation<void, EditProductDto>({
+      query: ({ productId, ...dto }) => ({
+        url: `/products/${productId}`,
+        method: 'PATCH',
+        body: dto,
+      }),
+      invalidatesTags: ['Product'],
+    }),
   }),
 });
 
@@ -54,4 +62,5 @@ export const {
   useGetPlacedProductsQuery,
   useGetAllProductsQuery,
   useCreateProductMutation,
+  useEditProductMutation,
 } = productsApi;

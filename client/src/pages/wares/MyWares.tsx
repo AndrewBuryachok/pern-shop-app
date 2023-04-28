@@ -4,6 +4,7 @@ import { Filter, Mode } from '../../common/enums';
 import { useGetMyWaresQuery } from '../../features/wares/wares.api';
 import WaresTable from '../../features/wares/WaresTable';
 import { createWareButton } from '../../features/wares/CreateWareModal';
+import { editWareAction } from '../../features/wares/EditWareModal';
 import { Role } from '../../common/constants';
 
 export default function MyWares() {
@@ -33,6 +34,8 @@ export default function MyWares() {
 
   const button = createWareButton;
 
+  const actions = [editWareAction];
+
   return (
     <WaresTable
       {...response}
@@ -42,6 +45,7 @@ export default function MyWares() {
       setSearch={setSearch}
       links={links}
       button={button}
+      actions={actions}
       title='My Wares'
     />
   );

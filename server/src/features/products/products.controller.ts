@@ -1,8 +1,16 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
+} from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { ProductsService } from './products.service';
 import { Product } from './product.entity';
-import { CreateProductDto } from './product.dto';
+import { CreateProductDto, EditProductDto, ProductIdDto } from './product.dto';
 import { Request, Response, Stats } from '../../common/interfaces';
 import { MyId, Public, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
@@ -52,5 +60,14 @@ export class ProductsController {
     @Body() dto: CreateProductDto,
   ): Promise<void> {
     return this.productsService.createProduct({ ...dto, myId });
+  }
+
+  @Patch(':productId')
+  editProduct(
+    @MyId() myId: number,
+    @Param() { productId }: ProductIdDto,
+    @Body() dto: EditProductDto,
+  ): Promise<void> {
+    return this.productsService.editProduct({ ...dto, productId, myId });
   }
 }

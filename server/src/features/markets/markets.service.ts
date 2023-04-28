@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { Market } from './market.entity';
+import { MarketState } from './market-state.entity';
 import { CardsService } from '../cards/cards.service';
 import { ExtCreateMarketDto, ExtEditMarketDto } from './market.dto';
 import { Request, Response } from '../../common/interfaces';
@@ -14,6 +15,8 @@ export class MarketsService {
   constructor(
     @InjectRepository(Market)
     private marketsRepository: Repository<Market>,
+    @InjectRepository(MarketState)
+    private marketsStatesRepository: Repository<MarketState>,
     private cardsService: CardsService,
   ) {}
 
@@ -21,7 +24,7 @@ export class MarketsService {
     const [result, count] = await this.getMarketsQueryBuilder(
       req,
     ).getManyAndCount();
-    await this.loadStores(result);
+    await this.loadStatesAndStores(result);
     return { result, count };
   }
 
@@ -29,7 +32,7 @@ export class MarketsService {
     const [result, count] = await this.getMarketsQueryBuilder(req)
       .andWhere('ownerUser.id = :myId', { myId })
       .getManyAndCount();
-    await this.loadStores(result);
+    await this.loadStatesAndStores(result);
     return { result, count };
   }
 
@@ -37,7 +40,7 @@ export class MarketsService {
     const [result, count] = await this.getMarketsQueryBuilder(
       req,
     ).getManyAndCount();
-    await this.loadStores(result);
+    await this.loadStatesAndStores(result);
     return { result, count };
   }
 
@@ -114,6 +117,11 @@ export class MarketsService {
         price: dto.price,
       });
       await this.marketsRepository.save(market);
+      const marketState = this.marketsStatesRepository.create({
+        marketId: market.id,
+        price: market.price,
+      });
+      await this.marketsStatesRepository.save(marketState);
     } catch (error) {
       throw new AppException(MarketError.CREATE_FAILED);
     }
@@ -121,10 +129,19 @@ export class MarketsService {
 
   private async edit(market: Market, dto: ExtEditMarketDto): Promise<void> {
     try {
+      const equal = market.price === dto.price;
       market.name = dto.name;
       market.x = dto.x;
       market.y = dto.y;
+      market.price = dto.price;
       await this.marketsRepository.save(market);
+      if (!equal) {
+        const marketState = this.marketsStatesRepository.create({
+          marketId: market.id,
+          price: market.price,
+        });
+        await this.marketsStatesRepository.save(marketState);
+      }
     } catch (error) {
       throw new AppException(MarketError.EDIT_FAILED);
     }
@@ -137,22 +154,32 @@ export class MarketsService {
       .select(['market.id', 'market.name', 'market.x', 'market.y']);
   }
 
-  private async loadStores(markets: Market[]): Promise<void> {
+  private async loadStatesAndStores(markets: Market[]): Promise<void> {
     const promises = markets.map(async (market) => {
-      market['stores'] = (
-        await this.marketsRepository
-          .createQueryBuilder('market')
-          .leftJoinAndMapMany(
-            'market.stores',
-            'stores',
-            'store',
-            'market.id = store.marketId',
-          )
-          .where('market.id = :marketId', { marketId: market.id })
-          .orderBy('store.id', 'DESC')
-          .select(['market.id', 'store.id', 'store.name'])
-          .getOne()
-      )['stores'];
+      const result = await this.marketsRepository
+        .createQueryBuilder('market')
+        .leftJoin('market.states', 'state')
+        .leftJoinAndMapMany(
+          'market.stores',
+          'stores',
+          'store',
+          'market.id = store.marketId',
+        )
+        .where('market.id = :marketId', { marketId: market.id })
+        .orderBy('state.id', 'DESC')
+        .addOrderBy('store.id', 'DESC')
+        .select([
+          'market.id',
+          'market.price',
+          'state.id',
+          'state.price',
+          'state.createdAt',
+          'store.id',
+          'store.name',
+        ])
+        .getOne();
+      market['states'] = result['states'];
+      market['stores'] = result['stores'];
     });
     await Promise.all(promises);
   }

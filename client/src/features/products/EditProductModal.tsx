@@ -1,9 +1,14 @@
-import { Select, Stack, Textarea, TextInput } from '@mantine/core';
+import { NumberInput, Select, TextInput, Textarea } from '@mantine/core';
+import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { Product } from './product.model';
+import { useEditProductMutation } from './products.api';
+import { EditProductDto } from './product.dto';
+import CustomForm from '../../common/components/CustomForm';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import ThingImage from '../../common/components/ThingImage';
+import { StatesItem } from '../../common/components/StatesItem';
 import {
   parseCard,
   parseCell,
@@ -11,16 +16,33 @@ import {
   parseThingAmount,
   viewStates,
 } from '../../common/utils';
-import { Color, items } from '../../common/constants';
-import { StatesItem } from '../../common/components/StatesItem';
+import { Color, MAX_PRICE_VALUE, items } from '../../common/constants';
 
 type Props = IModal<Product>;
 
-export default function ViewProductModal({ data: product }: Props) {
+export default function EditProductModal({ data: product }: Props) {
   const created = parseDate(product.createdAt);
 
+  const form = useForm({
+    initialValues: {
+      productId: product.id,
+      price: product.price,
+    },
+  });
+
+  const [editProduct, { isLoading }] = useEditProductMutation();
+
+  const handleSubmit = async (dto: EditProductDto) => {
+    await editProduct(dto);
+  };
+
   return (
-    <Stack spacing={8}>
+    <CustomForm
+      onSubmit={form.onSubmit(handleSubmit)}
+      isLoading={isLoading}
+      text={'Edit product'}
+      isChanged={!form.isDirty()}
+    >
       <TextInput
         label='Seller'
         icon={<CustomAvatar {...product.lease.card.user} />}
@@ -37,7 +59,14 @@ export default function ViewProductModal({ data: product }: Props) {
       />
       <Textarea label='Description' value={product.description} disabled />
       <TextInput label='Amount' value={parseThingAmount(product)} disabled />
-      <TextInput label='Price' value={`${product.price}$`} disabled />
+      <NumberInput
+        label='Price'
+        placeholder='Price'
+        required
+        min={1}
+        max={MAX_PRICE_VALUE}
+        {...form.getInputProps('price')}
+      />
       <Select
         label='Prices'
         placeholder={`Total: ${product.states.length}`}
@@ -46,7 +75,7 @@ export default function ViewProductModal({ data: product }: Props) {
         searchable
       />
       <TextInput
-        label='Storage'
+        label='Market'
         value={parseCell(product.lease.cell)}
         disabled
       />
@@ -62,16 +91,16 @@ export default function ViewProductModal({ data: product }: Props) {
         value={`${created.date} ${created.time}`}
         disabled
       />
-    </Stack>
+    </CustomForm>
   );
 }
 
-export const viewProductAction = {
+export const editProductAction = {
   open: (product: Product) =>
     openModal({
-      title: 'View Product',
-      children: <ViewProductModal data={product} />,
+      title: 'Edit Product',
+      children: <EditProductModal data={product} />,
     }),
-  disable: () => false,
-  color: Color.BLUE,
+  disable: (product: Product) => !product.amount,
+  color: Color.YELLOW,
 };

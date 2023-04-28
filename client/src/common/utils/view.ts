@@ -2,6 +2,7 @@ import { SmUser } from '../../features/users/user.model';
 import { SmCard } from '../../features/cards/card.model';
 import { Container } from '../../features/containers/container.model';
 import { SmThing } from '../../features/things/thing.model';
+import { State } from '../../features/states/state.model';
 import { items, Role, roles as allRoles } from '../constants';
 
 export const viewRoles = (roles: Role[]) =>
@@ -43,5 +44,14 @@ export const viewThings = (things: SmThing[]) =>
     ...thing,
     value: `${thing.id}`,
     label: items[thing.item - 1].substring(3),
+    disabled: true,
+  }));
+
+export const viewStates = (states: State[]) =>
+  states.map((state) => ({
+    value: `${state.id}`,
+    label: `${state.price}$`,
+    price: state.price,
+    date: state.createdAt,
     disabled: true,
   }));

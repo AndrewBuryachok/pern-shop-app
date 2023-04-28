@@ -2,9 +2,14 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { Product } from './product.entity';
+import { ProductState } from './product-state.entity';
 import { LeasesService } from '../leases/leases.service';
 import { PaymentsService } from '../payments/payments.service';
-import { BuyProductDto, ExtCreateProductDto } from './product.dto';
+import {
+  BuyProductDto,
+  ExtCreateProductDto,
+  ExtEditProductDto,
+} from './product.dto';
 import { Request, Response, Stats } from '../../common/interfaces';
 import { getDateMonthAgo, getDateWeekAgo } from '../../common/utils';
 import { AppException } from '../../common/exceptions';
@@ -16,6 +21,8 @@ export class ProductsService {
   constructor(
     @InjectRepository(Product)
     private productsRepository: Repository<Product>,
+    @InjectRepository(ProductState)
+    private productsStatesRepository: Repository<ProductState>,
     private leasesService: LeasesService,
     private paymentsService: PaymentsService,
   ) {}
@@ -41,6 +48,7 @@ export class ProductsService {
       .andWhere('product.amount > 0')
       .andWhere('product.createdAt > :date', { date: getDateWeekAgo() })
       .getManyAndCount();
+    await this.loadStates(result);
     return { result, count };
   }
 
@@ -48,6 +56,7 @@ export class ProductsService {
     const [result, count] = await this.getProductsQueryBuilder(req)
       .andWhere('sellerUser.id = :myId', { myId })
       .getManyAndCount();
+    await this.loadStates(result);
     return { result, count };
   }
 
@@ -58,6 +67,7 @@ export class ProductsService {
     const [result, count] = await this.getProductsQueryBuilder(req)
       .andWhere('ownerUser.id = :myId', { myId })
       .getManyAndCount();
+    await this.loadStates(result);
     return { result, count };
   }
 
@@ -65,12 +75,18 @@ export class ProductsService {
     const [result, count] = await this.getProductsQueryBuilder(
       req,
     ).getManyAndCount();
+    await this.loadStates(result);
     return { result, count };
   }
 
   async createProduct(dto: ExtCreateProductDto): Promise<void> {
     const leaseId = await this.leasesService.createLease(dto);
     await this.create({ ...dto, storageId: leaseId });
+  }
+
+  async editProduct(dto: ExtEditProductDto): Promise<void> {
+    const product = await this.checkProductOwner(dto.productId, dto.myId);
+    await this.edit(product, dto.price);
   }
 
   async buyProduct(dto: BuyProductDto): Promise<void> {
@@ -98,6 +114,17 @@ export class ProductsService {
     await this.productsRepository.findOneByOrFail({ id });
   }
 
+  async checkProductOwner(id: number, userId: number): Promise<Product> {
+    const product = await this.productsRepository.findOneBy({
+      id,
+      lease: { card: { userId } },
+    });
+    if (!product) {
+      throw new AppException(ProductError.NOT_OWNER);
+    }
+    return product;
+  }
+
   private async create(dto: ExtCreateProductDto): Promise<void> {
     try {
       const product = this.productsRepository.create({
@@ -110,8 +137,27 @@ export class ProductsService {
         price: dto.price,
       });
       await this.productsRepository.save(product);
+      const productState = this.productsStatesRepository.create({
+        productId: product.id,
+        price: dto.price,
+      });
+      await this.productsStatesRepository.save(productState);
     } catch (error) {
       throw new AppException(ProductError.CREATE_FAILED);
+    }
+  }
+
+  private async edit(product: Product, price: number): Promise<void> {
+    try {
+      product.price = price;
+      await this.productsRepository.save(product);
+      const productState = this.productsStatesRepository.create({
+        productId: product.id,
+        price,
+      });
+      await this.productsStatesRepository.save(productState);
+    } catch (error) {
+      throw new AppException(ProductError.EDIT_FAILED);
     }
   }
 
@@ -122,6 +168,27 @@ export class ProductsService {
     } catch (error) {
       throw new AppException(ProductError.BUY_FAILED);
     }
+  }
+
+  private async loadStates(products: Product[]): Promise<void> {
+    const promises = products.map(async (product) => {
+      product['states'] = (
+        await this.productsRepository
+          .createQueryBuilder('product')
+          .leftJoin('product.states', 'state')
+          .where('product.id = :productId', { productId: product.id })
+          .orderBy('state.id', 'DESC')
+          .select([
+            'product.id',
+            'product.price',
+            'state.id',
+            'state.price',
+            'state.createdAt',
+          ])
+          .getOne()
+      )['states'];
+    });
+    await Promise.all(promises);
   }
 
   private getProductsQueryBuilder(req: Request): SelectQueryBuilder<Product> {

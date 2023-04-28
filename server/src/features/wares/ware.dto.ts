@@ -4,6 +4,7 @@ import { Type } from 'class-transformer';
 import { IsId } from '../../common/decorators';
 import { IsRentExists, IsWareExists } from '../../common/constraints';
 import { CreateThingDto } from '../things/thing.dto';
+import { EditStateDto } from '../states/state.dto';
 import { ExtCreateTradeDto } from '../trades/trade.dto';
 
 export class WareIdDto {
@@ -11,7 +12,7 @@ export class WareIdDto {
   @IsId()
   @Validate(IsWareExists)
   @Type(() => Number)
-  productId: number;
+  wareId: number;
 }
 
 export class CreateWareDto extends CreateThingDto {
@@ -22,6 +23,13 @@ export class CreateWareDto extends CreateThingDto {
 }
 
 export class ExtCreateWareDto extends CreateWareDto {
+  myId: number;
+}
+
+export class EditWareDto extends EditStateDto {}
+
+export class ExtEditWareDto extends EditWareDto {
+  wareId: number;
   myId: number;
 }
 

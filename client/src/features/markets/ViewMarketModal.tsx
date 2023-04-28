@@ -3,7 +3,8 @@ import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { Market } from './market.model';
 import CustomAvatar from '../../common/components/CustomAvatar';
-import { parseCard, viewContainers } from '../../common/utils';
+import { StatesItem } from '../../common/components/StatesItem';
+import { parseCard, viewContainers, viewStates } from '../../common/utils';
 import { Color } from '../../common/constants';
 
 type Props = IModal<Market>;
@@ -22,6 +23,13 @@ export default function ViewMarketModal({ data: market }: Props) {
       <TextInput label='X' value={market.x} disabled />
       <TextInput label='Y' value={market.y} disabled />
       <TextInput label='Price' value={`${market.price}$`} disabled />
+      <Select
+        label='Prices'
+        placeholder={`Total: ${market.states.length}`}
+        itemComponent={StatesItem}
+        data={viewStates(market.states)}
+        searchable
+      />
       <Select
         label='Stores'
         placeholder={`Total: ${market.stores.length}`}

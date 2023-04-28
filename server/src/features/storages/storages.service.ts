@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { Storage } from './storage.entity';
+import { StorageState } from './storage-state.entity';
 import { CardsService } from '../cards/cards.service';
 import { ExtCreateStorageDto, ExtEditStorageDto } from './storage.dto';
 import { Request, Response } from '../../common/interfaces';
@@ -15,6 +16,8 @@ export class StoragesService {
   constructor(
     @InjectRepository(Storage)
     private storagesRepository: Repository<Storage>,
+    @InjectRepository(StorageState)
+    private storagesStatesRepository: Repository<StorageState>,
     private cardsService: CardsService,
   ) {}
 
@@ -22,7 +25,7 @@ export class StoragesService {
     const [result, count] = await this.getStoragesQueryBuilder(
       req,
     ).getManyAndCount();
-    await this.loadCells(result);
+    await this.loadStatesAndCells(result);
     return { result, count };
   }
 
@@ -30,7 +33,7 @@ export class StoragesService {
     const [result, count] = await this.getStoragesQueryBuilder(req)
       .andWhere('ownerUser.id = :myId', { myId })
       .getManyAndCount();
-    await this.loadCells(result);
+    await this.loadStatesAndCells(result);
     return { result, count };
   }
 
@@ -38,7 +41,7 @@ export class StoragesService {
     const [result, count] = await this.getStoragesQueryBuilder(
       req,
     ).getManyAndCount();
-    await this.loadCells(result);
+    await this.loadStatesAndCells(result);
     return { result, count };
   }
 
@@ -138,6 +141,11 @@ export class StoragesService {
         price: dto.price,
       });
       await this.storagesRepository.save(storage);
+      const storageState = this.storagesStatesRepository.create({
+        storageId: storage.id,
+        price: storage.price,
+      });
+      await this.storagesStatesRepository.save(storageState);
     } catch (error) {
       throw new AppException(StorageError.CREATE_FAILED);
     }
@@ -145,10 +153,19 @@ export class StoragesService {
 
   private async edit(storage: Storage, dto: ExtEditStorageDto): Promise<void> {
     try {
+      const equal = storage.price === dto.price;
       storage.name = dto.name;
       storage.x = dto.x;
       storage.y = dto.y;
+      storage.price = dto.price;
       await this.storagesRepository.save(storage);
+      if (!equal) {
+        const storageState = this.storagesStatesRepository.create({
+          storageId: storage.id,
+          price: storage.price,
+        });
+        await this.storagesStatesRepository.save(storageState);
+      }
     } catch (error) {
       throw new AppException(StorageError.EDIT_FAILED);
     }
@@ -161,22 +178,32 @@ export class StoragesService {
       .select(['storage.id', 'storage.name', 'storage.x', 'storage.y']);
   }
 
-  private async loadCells(storages: Storage[]): Promise<void> {
+  private async loadStatesAndCells(storages: Storage[]): Promise<void> {
     const promises = storages.map(async (storage) => {
-      storage['cells'] = (
-        await this.storagesRepository
-          .createQueryBuilder('storage')
-          .leftJoinAndMapMany(
-            'storage.cells',
-            'cells',
-            'cell',
-            'storage.id = cell.storageId',
-          )
-          .where('storage.id = :storageId', { storageId: storage.id })
-          .orderBy('cell.id', 'DESC')
-          .select(['storage.id', 'cell.id', 'cell.name'])
-          .getOne()
-      )['cells'];
+      const result = await this.storagesRepository
+        .createQueryBuilder('storage')
+        .leftJoin('storage.states', 'state')
+        .leftJoinAndMapMany(
+          'storage.cells',
+          'cells',
+          'cell',
+          'storage.id = cell.storageId',
+        )
+        .where('storage.id = :storageId', { storageId: storage.id })
+        .orderBy('state.id', 'DESC')
+        .addOrderBy('cell.id', 'DESC')
+        .select([
+          'storage.id',
+          'storage.price',
+          'state.id',
+          'state.price',
+          'state.createdAt',
+          'cell.id',
+          'cell.name',
+        ])
+        .getOne();
+      storage['states'] = result['states'];
+      storage['cells'] = result['cells'];
     });
     await Promise.all(promises);
   }
