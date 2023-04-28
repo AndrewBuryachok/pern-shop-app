@@ -131,20 +131,15 @@ export class ShopsService {
 
   private async loadGoods(shops: Shop[]): Promise<void> {
     const promises = shops.map(async (shop) => {
-      shop['goods'] = (
+      shop.goods = (
         await this.shopsRepository
           .createQueryBuilder('shop')
-          .leftJoinAndMapMany(
-            'shop.goods',
-            'goods',
-            'good',
-            'shop.id = good.shopId',
-          )
+          .leftJoin('shop.goods', 'good')
           .where('shop.id = :shopId', { shopId: shop.id })
           .orderBy('good.id', 'DESC')
           .select(['shop.id', 'good.id', 'good.item', 'good.description'])
           .getOne()
-      )['goods'];
+      ).goods;
     });
     await Promise.all(promises);
   }

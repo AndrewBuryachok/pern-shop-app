@@ -174,7 +174,7 @@ export class ProductsService {
 
   private async loadStates(products: Product[]): Promise<void> {
     const promises = products.map(async (product) => {
-      product['states'] = (
+      product.states = (
         await this.productsRepository
           .createQueryBuilder('product')
           .leftJoin('product.states', 'state')
@@ -188,7 +188,7 @@ export class ProductsService {
             'state.createdAt',
           ])
           .getOne()
-      )['states'];
+      ).states;
     });
     await Promise.all(promises);
   }

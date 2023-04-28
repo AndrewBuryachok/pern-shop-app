@@ -1,9 +1,13 @@
-import { forwardRef, Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { City } from './city.entity';
-import { UsersService } from '../users/users.service';
-import { ExtCreateCityDto, ExtEditCityDto } from './city.dto';
+import { User } from '../users/user.entity';
+import {
+  ExtCreateCityDto,
+  ExtEditCityDto,
+  ExtUpdateCityUserDto,
+} from './city.dto';
 import { Request, Response } from '../../common/interfaces';
 import { MAX_CITIES_NUMBER } from '../../common/constants';
 import { AppException } from '../../common/exceptions';
@@ -14,8 +18,6 @@ export class CitiesService {
   constructor(
     @InjectRepository(City)
     private citiesRepository: Repository<City>,
-    @Inject(forwardRef(() => UsersService))
-    private usersService: UsersService,
   ) {}
 
   async getMainCities(req: Request): Promise<Response<City>> {
@@ -56,12 +58,7 @@ export class CitiesService {
     await this.checkHasNotEnough(dto.myId);
     await this.checkNameNotUsed(dto.name);
     await this.checkCoordinatesNotUsed(dto.x, dto.y);
-    const city = await this.create(dto);
-    await this.usersService.addUserCity({
-      myId: dto.myId,
-      userId: dto.myId,
-      cityId: city.id,
-    });
+    await this.create(dto);
   }
 
   async editCity(dto: ExtEditCityDto): Promise<void> {
@@ -69,12 +66,34 @@ export class CitiesService {
     await this.edit(city, dto);
   }
 
+  async addCityUser(dto: ExtUpdateCityUserDto): Promise<void> {
+    const city = await this.checkCityOwner(dto.cityId, dto.myId);
+    if (city.users.map((user) => user.id).includes(dto.userId)) {
+      throw new AppException(CityError.ALREADY_IN_CITY);
+    }
+    await this.addUser(city, dto.userId);
+  }
+
+  async removeCityUser(dto: ExtUpdateCityUserDto): Promise<void> {
+    const city = await this.checkCityOwner(dto.cityId, dto.myId);
+    if (dto.userId === dto.myId) {
+      throw new AppException(CityError.OWNER);
+    }
+    if (!city.users.map((user) => user.id).includes(dto.userId)) {
+      throw new AppException(CityError.NOT_IN_CITY);
+    }
+    await this.removeUser(city, dto.userId);
+  }
+
   async checkCityExists(id: number): Promise<void> {
     await this.citiesRepository.findOneByOrFail({ id });
   }
 
   async checkCityOwner(id: number, userId: number): Promise<City> {
-    const city = await this.citiesRepository.findOneBy({ id, userId });
+    const city = await this.citiesRepository.findOne({
+      relations: ['users'],
+      where: { id, userId },
+    });
     if (!city) {
       throw new AppException(CityError.NOT_OWNER);
     }
@@ -102,16 +121,16 @@ export class CitiesService {
     }
   }
 
-  private async create(dto: ExtCreateCityDto): Promise<City> {
+  private async create(dto: ExtCreateCityDto): Promise<void> {
     try {
       const city = this.citiesRepository.create({
         userId: dto.myId,
         name: dto.name,
         x: dto.x,
         y: dto.y,
+        users: [{ id: dto.myId }],
       });
       await this.citiesRepository.save(city);
-      return city;
     } catch (error) {
       throw new AppException(CityError.CREATE_FAILED);
     }
@@ -128,6 +147,26 @@ export class CitiesService {
     }
   }
 
+  private async addUser(city: City, userId: number): Promise<void> {
+    try {
+      const user = new User();
+      user.id = userId;
+      city.users.push(user);
+      await this.citiesRepository.save(city);
+    } catch (error) {
+      throw new AppException(CityError.ADD_USER_FAILED);
+    }
+  }
+
+  private async removeUser(city: City, userId: number): Promise<void> {
+    try {
+      city.users = city.users.filter((user) => user.id !== userId);
+      await this.citiesRepository.save(city);
+    } catch (error) {
+      throw new AppException(CityError.REMOVE_USER_FAILED);
+    }
+  }
+
   private selectCitiesQueryBuilder(): SelectQueryBuilder<City> {
     return this.citiesRepository
       .createQueryBuilder('city')
@@ -137,21 +176,16 @@ export class CitiesService {
 
   private async loadUsers(cities: City[]): Promise<void> {
     const promises = cities.map(async (city) => {
-      city['users'] = (
+      city.users = (
         await this.citiesRepository
           .createQueryBuilder('city')
-          .leftJoinAndMapMany(
-            'city.users',
-            'users',
-            'user',
-            'city.id = user.cityId',
-          )
+          .leftJoin('city.users', 'user')
           .where('city.id = :cityId', { cityId: city.id })
           .orderBy('user.status', 'DESC')
           .addOrderBy('user.name', 'ASC')
           .select(['city.id', 'user.id', 'user.name', 'user.status'])
           .getOne()
-      )['users'];
+      ).users;
     });
     await Promise.all(promises);
   }

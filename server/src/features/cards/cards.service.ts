@@ -48,7 +48,7 @@ export class CardsService {
 
   selectUserCardsWithBalance(userId: number): Promise<Card[]> {
     return this.selectCardsQueryBuilder(userId)
-      .addSelect(['card.balance'])
+      .addSelect('card.balance')
       .getMany();
   }
 
@@ -211,7 +211,7 @@ export class CardsService {
 
   private async loadUsers(cards: Card[]): Promise<void> {
     const promises = cards.map(async (card) => {
-      card['users'] = (
+      card.users = (
         await this.cardsRepository
           .createQueryBuilder('card')
           .leftJoin('card.users', 'user')
@@ -220,7 +220,7 @@ export class CardsService {
           .addOrderBy('user.name', 'ASC')
           .select(['card.id', 'user.id', 'user.name', 'user.status'])
           .getOne()
-      )['users'];
+      ).users;
     });
     await Promise.all(promises);
   }

@@ -37,17 +37,17 @@ export default class AppSeed implements Seeder {
         user.password = await hashData(user.name);
         return user;
       })
-      .createMany(10);
+      .createMany(40);
+    let citizens = [...users];
     const cities = await factory(City)()
       .map(async (city) => {
-        city.users = await factory(User)()
-          .map(async (user) => {
-            user.password = await hashData(user.name);
-            return user;
-          })
-          .createMany(Math.floor(Math.random() * 4) + 1);
+        const count = Math.floor(Math.random() * 4) + 1;
+        const shuffled = citizens.sort(() => 0.5 - Math.random());
+        city.users = shuffled.slice(0, count);
         city.user = city.users[0];
-        users.push(...city.users);
+        citizens = citizens.filter(
+          (user) => !city.users.map((user) => user.id).includes(user.id),
+        );
         return city;
       })
       .createMany(10);

@@ -3,10 +3,12 @@ import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { User } from './user.model';
-import { useRemoveUserCityMutation } from './users.api';
-import { UpdateUserCityDto } from './user.dto';
+import { getCurrentUser } from '../auth/auth.slice';
+import { useRemoveCityUserMutation } from '../cities/cities.api';
+import { UpdateCityUserDto } from '../cities/city.dto';
 import CustomForm from '../../common/components/CustomForm';
 import CustomAvatar from '../../common/components/CustomAvatar';
+import { parsePlace } from '../../common/utils';
 import { Color } from '../../common/constants';
 
 type Props = IModal<User>;
@@ -14,14 +16,14 @@ type Props = IModal<User>;
 export default function RemoveUserCityModal({ data: user }: Props) {
   const form = useForm({
     initialValues: {
-      userId: user.id,
       cityId: user.city!.id,
+      userId: user.id,
     },
   });
 
-  const [removeUserCity, { isLoading }] = useRemoveUserCityMutation();
+  const [removeUserCity, { isLoading }] = useRemoveCityUserMutation();
 
-  const handleSubmit = async (dto: UpdateUserCityDto) => {
+  const handleSubmit = async (dto: UpdateCityUserDto) => {
     await removeUserCity(dto);
   };
 
@@ -31,6 +33,7 @@ export default function RemoveUserCityModal({ data: user }: Props) {
       isLoading={isLoading}
       text={'Remove user city'}
     >
+      <TextInput label='City' value={parsePlace(user.city!)} disabled />
       <TextInput
         label='User'
         icon={<CustomAvatar {...user} />}
@@ -38,7 +41,6 @@ export default function RemoveUserCityModal({ data: user }: Props) {
         value={user.name}
         disabled
       />
-      <TextInput label='City' value={user.city!.name} disabled />
     </CustomForm>
   );
 }
@@ -49,6 +51,9 @@ export const removeUserCityAction = {
       title: 'Remove User City',
       children: <RemoveUserCityModal data={user} />,
     }),
-  disable: () => false,
+  disable: (user: User) => {
+    const me = getCurrentUser()!;
+    return user.city!.user.id !== me.id || user.id === me.id;
+  },
   color: Color.RED,
 };

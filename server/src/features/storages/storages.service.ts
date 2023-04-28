@@ -48,7 +48,7 @@ export class StoragesService {
 
   selectAllStorages(): Promise<Storage[]> {
     return this.selectStoragesQueryBuilder()
-      .addSelect(['storage.cardId'])
+      .addSelect('storage.cardId')
       .getMany();
   }
 
@@ -74,7 +74,7 @@ export class StoragesService {
               date: getDateWeekAgo(),
             }),
       )
-      .addSelect(['storage.price'])
+      .addSelect('storage.price')
       .getMany();
     return storages
       .filter((storage) => storage['cellsCount'] > 0)
@@ -185,12 +185,7 @@ export class StoragesService {
       const result = await this.storagesRepository
         .createQueryBuilder('storage')
         .leftJoin('storage.states', 'state')
-        .leftJoinAndMapMany(
-          'storage.cells',
-          'cells',
-          'cell',
-          'storage.id = cell.storageId',
-        )
+        .leftJoin('storage.cells', 'cell')
         .where('storage.id = :storageId', { storageId: storage.id })
         .orderBy('state.id', 'DESC')
         .addOrderBy('cell.id', 'DESC')
@@ -204,8 +199,8 @@ export class StoragesService {
           'cell.name',
         ])
         .getOne();
-      storage['states'] = result['states'];
-      storage['cells'] = result['cells'];
+      storage.states = result.states;
+      storage.cells = result.cells;
     });
     await Promise.all(promises);
   }

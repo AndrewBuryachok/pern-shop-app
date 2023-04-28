@@ -10,7 +10,7 @@ import {
 import { ApiTags } from '@nestjs/swagger';
 import { UsersService } from './users.service';
 import { User } from './user.entity';
-import { UpdateUserCityDto, UpdateUserRolesDto, UserIdDto } from './user.dto';
+import { UpdateUserRolesDto, UserIdDto } from './user.dto';
 import { Request, Response } from '../../common/interfaces';
 import { MyId, Public, Roles } from '../../common/decorators';
 import { Role } from './role.enum';
@@ -79,23 +79,5 @@ export class UsersController {
     @Body() dto: UpdateUserRolesDto,
   ): Promise<void> {
     return this.usersService.removeUserRole({ ...dto, userId });
-  }
-
-  @Post(':userId/city')
-  addUserCity(
-    @MyId() myId: number,
-    @Param() { userId }: UserIdDto,
-    @Body() dto: UpdateUserCityDto,
-  ): Promise<void> {
-    return this.usersService.addUserCity({ ...dto, userId, myId });
-  }
-
-  @Delete(':userId/city')
-  removeUserCity(
-    @MyId() myId: number,
-    @Param() { userId }: UserIdDto,
-    @Body() dto: UpdateUserCityDto,
-  ): Promise<void> {
-    return this.usersService.removeUserCity({ ...dto, userId, myId });
   }
 }

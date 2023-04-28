@@ -4,6 +4,8 @@ import { useGetMyCitiesQuery } from '../../features/cities/cities.api';
 import CitiesTable from '../../features/cities/CitiesTable';
 import { createCityButton } from '../../features/cities/CreateCityModal';
 import { editCityAction } from '../../features/cities/EditCityModal';
+import { addCityUserAction } from '../../features/cities/AddCityUserModal';
+import { removeCityUserAction } from '../../features/cities/RemoveCityUserModal';
 import { Role } from '../../common/constants';
 
 export default function MyCities() {
@@ -24,7 +26,7 @@ export default function MyCities() {
 
   const button = createCityButton;
 
-  const actions = [editCityAction];
+  const actions = [editCityAction, addCityUserAction, removeCityUserAction];
 
   return (
     <CitiesTable

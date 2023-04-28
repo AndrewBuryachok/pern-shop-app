@@ -1,7 +1,7 @@
 import { emptyApi } from '../../app/empty.api';
 import { IRequest, IResponse } from '../../common/interfaces';
 import { City, SmCity, SmCityWithUser } from './city.model';
-import { CreateCityDto, EditCityDto } from './city.dto';
+import { CreateCityDto, EditCityDto, UpdateCityUserDto } from './city.dto';
 import { getQuery } from '../../common/utils';
 
 export const citiesApi = emptyApi.injectEndpoints({
@@ -52,6 +52,22 @@ export const citiesApi = emptyApi.injectEndpoints({
       }),
       invalidatesTags: ['City'],
     }),
+    addCityUser: build.mutation<void, UpdateCityUserDto>({
+      query: ({ cityId, ...dto }) => ({
+        url: `/cities/${cityId}/users`,
+        method: 'POST',
+        body: dto,
+      }),
+      invalidatesTags: ['City', 'User'],
+    }),
+    removeCityUser: build.mutation<void, UpdateCityUserDto>({
+      query: ({ cityId, ...dto }) => ({
+        url: `/cities/${cityId}/users`,
+        method: 'DELETE',
+        body: dto,
+      }),
+      invalidatesTags: ['City', 'User'],
+    }),
   }),
 });
 
@@ -63,4 +79,6 @@ export const {
   useSelectMyCitiesQuery,
   useCreateCityMutation,
   useEditCityMutation,
+  useAddCityUserMutation,
+  useRemoveCityUserMutation,
 } = citiesApi;

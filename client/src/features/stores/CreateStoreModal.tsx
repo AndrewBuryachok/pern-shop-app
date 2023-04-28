@@ -1,6 +1,7 @@
 import { Select, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
+import { Market } from '../markets/market.model';
 import { useCreateStoreMutation } from './stores.api';
 import { useSelectMyMarketsQuery } from '../markets/markets.api';
 import { CreateStoreDto } from './store.dto';
@@ -8,11 +9,16 @@ import CustomForm from '../../common/components/CustomForm';
 import RefetchAction from '../../common/components/RefetchAction';
 import { PlacesItem } from '../../common/components/PlacesItem';
 import { selectMarkets } from '../../common/utils';
+import { Color } from '../../common/constants';
 
-export default function CreateStoreModal() {
+type Props = {
+  data?: Market;
+};
+
+export default function CreateStoreModal({ data }: Props) {
   const form = useForm({
     initialValues: {
-      market: '',
+      market: data?.id ? `${data.id}` : '',
       name: '',
     },
     transformValues: ({ market, ...rest }) => ({
@@ -61,4 +67,14 @@ export const createStoreButton = {
       title: 'Create Store',
       children: <CreateStoreModal />,
     }),
+};
+
+export const createStoreAction = {
+  open: (market: Market) =>
+    openModal({
+      title: 'Create Store',
+      children: <CreateStoreModal data={market} />,
+    }),
+  disable: () => false,
+  color: Color.GREEN,
 };

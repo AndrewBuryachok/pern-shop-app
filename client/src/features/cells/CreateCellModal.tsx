@@ -1,6 +1,7 @@
 import { Select, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
+import { Storage } from '../storages/storage.model';
 import { useCreateCellMutation } from './cells.api';
 import { useSelectMyStoragesQuery } from '../storages/storages.api';
 import { CreateCellDto } from './cell.dto';
@@ -8,11 +9,16 @@ import CustomForm from '../../common/components/CustomForm';
 import RefetchAction from '../../common/components/RefetchAction';
 import { PlacesItem } from '../../common/components/PlacesItem';
 import { selectStorages } from '../../common/utils';
+import { Color } from '../../common/constants';
 
-export default function CreateCellModal() {
+type Props = {
+  data?: Storage;
+};
+
+export default function CreateCellModal({ data }: Props) {
   const form = useForm({
     initialValues: {
-      storage: '',
+      storage: data?.id ? `${data.id}` : '',
       name: '',
     },
     transformValues: ({ storage, ...rest }) => ({
@@ -63,4 +69,14 @@ export const createCellButton = {
       title: 'Create Cell',
       children: <CreateCellModal />,
     }),
+};
+
+export const createCellAction = {
+  open: (storage: Storage) =>
+    openModal({
+      title: 'Create Cell',
+      children: <CreateCellModal data={storage} />,
+    }),
+  disable: () => false,
+  color: Color.GREEN,
 };

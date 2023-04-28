@@ -161,12 +161,7 @@ export class MarketsService {
       const result = await this.marketsRepository
         .createQueryBuilder('market')
         .leftJoin('market.states', 'state')
-        .leftJoinAndMapMany(
-          'market.stores',
-          'stores',
-          'store',
-          'market.id = store.marketId',
-        )
+        .leftJoin('market.stores', 'store')
         .where('market.id = :marketId', { marketId: market.id })
         .orderBy('state.id', 'DESC')
         .addOrderBy('store.id', 'DESC')
@@ -180,8 +175,8 @@ export class MarketsService {
           'store.name',
         ])
         .getOne();
-      market['states'] = result['states'];
-      market['stores'] = result['stores'];
+      market.states = result.states;
+      market.stores = result.stores;
     });
     await Promise.all(promises);
   }

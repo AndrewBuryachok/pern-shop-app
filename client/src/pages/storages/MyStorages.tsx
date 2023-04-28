@@ -4,6 +4,7 @@ import { useGetMyStoragesQuery } from '../../features/storages/storages.api';
 import StoragesTable from '../../features/storages/StoragesTable';
 import { createStorageButton } from '../../features/storages/CreateStorageModal';
 import { editStorageAction } from '../../features/storages/EditStorageModal';
+import { createCellAction } from '../../features/cells/CreateCellModal';
 import { Role } from '../../common/constants';
 
 export default function MyStorages() {
@@ -25,7 +26,7 @@ export default function MyStorages() {
 
   const button = createStorageButton;
 
-  const actions = [editStorageAction];
+  const actions = [editStorageAction, createCellAction];
 
   return (
     <StoragesTable

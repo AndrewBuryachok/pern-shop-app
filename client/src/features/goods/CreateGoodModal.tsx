@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { NumberInput, Select, Textarea } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
+import { Shop } from '../shops/shop.model';
 import { useCreateGoodMutation } from './goods.api';
 import { useSelectMyShopsQuery } from '../shops/shops.api';
 import { CreateGoodDto } from './good.dto';
@@ -17,16 +18,21 @@ import {
   selectShops,
 } from '../../common/utils';
 import {
+  Color,
   MAX_AMOUNT_VALUE,
   MAX_DESCRIPTION_LENGTH,
   MAX_INTAKE_VALUE,
   MAX_PRICE_VALUE,
 } from '../../common/constants';
 
-export default function CreateGoodModal() {
+type Props = {
+  data?: Shop;
+};
+
+export default function CreateGoodModal({ data }: Props) {
   const form = useForm({
     initialValues: {
-      shop: '',
+      shop: data?.id ? `${data.id}` : '',
       category: '',
       item: '',
       description: '-',
@@ -139,4 +145,14 @@ export const createGoodButton = {
       title: 'Create Good',
       children: <CreateGoodModal />,
     }),
+};
+
+export const createGoodAction = {
+  open: (shop: Shop) =>
+    openModal({
+      title: 'Create Good',
+      children: <CreateGoodModal data={shop} />,
+    }),
+  disable: () => false,
+  color: Color.GREEN,
 };

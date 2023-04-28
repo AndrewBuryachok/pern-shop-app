@@ -1,11 +1,9 @@
-import { forwardRef, Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { User } from './user.entity';
-import { CitiesService } from '../cities/cities.service';
 import {
   CreateUserDto,
-  ExtUpdateUserCityDto,
   ExtUpdateUserRolesDto,
   UpdateUserTokenDto,
 } from './user.dto';
@@ -20,8 +18,6 @@ export class UsersService {
   constructor(
     @InjectRepository(User)
     private usersRepository: Repository<User>,
-    @Inject(forwardRef(() => CitiesService))
-    private citiesService: CitiesService,
   ) {}
 
   async getMainUsers(req: Request): Promise<Response<User>> {
@@ -34,7 +30,8 @@ export class UsersService {
 
   async getMyUsers(myId: number, req: Request): Promise<Response<User>> {
     const [result, count] = await this.getUsersQueryBuilder(req)
-      .andWhere('city.userId = :myId', { myId })
+      .leftJoin('city.users', 'cityUsers')
+      .andWhere('cityUsers.id = :myId', { myId })
       .getManyAndCount();
     await this.loadCards(result);
     return { result, count };
@@ -66,6 +63,12 @@ export class UsersService {
         'user.id = friend.senderUserId OR user.id = friend.receiverUserId',
       )
       .where('user.id = :myId', { myId })
+      .select([
+        'user.id',
+        'friend.senderUserId',
+        'friend.receiverUserId',
+        'friend.type',
+      ])
       .getOne();
     const friends = user['friends']
       .filter((friend) => friend.senderUserId === myId || friend.type)
@@ -79,30 +82,9 @@ export class UsersService {
   }
 
   async getSingleUser(userId: number): Promise<User> {
-    const user = await this.getUserQueryBuilder()
-      .where('user.id = :userId', { userId })
-      .getOne();
-    await this.loadCards([user]);
-    ['goods', 'wares', 'products', 'trades', 'sales'].forEach(
-      (stat) => (user[stat] = user[stat].length),
-    );
-    const friends = user['friends']
-      .filter((friend) => friend.type)
-      .map((friend) =>
-        friend.senderUserId === user.id
-          ? friend.receiverUserId
-          : friend.senderUserId,
-      );
-    const users = await this.selectUsersQueryBuilder().getMany();
-    user['friends'] = users.filter((user) => friends.includes(user.id));
-    user['rating'] =
-      user['ratings'].map((rating) => rating.rate).reduce((a, b) => a + b, 0) /
-        user['ratings'].length || 0;
-    delete user['shops'];
-    delete user['rents'];
-    delete user['leases'];
-    delete user['ratings'];
-    return user;
+    const profile = await this.getUserProfile(userId);
+    const stats = await this.getUserStats(userId);
+    return { ...profile, ...stats };
   }
 
   async createUser(dto: CreateUserDto): Promise<User> {
@@ -138,24 +120,6 @@ export class UsersService {
       throw new AppException(UserError.NOT_HAS_ROLE);
     }
     await this.removeRole(user, dto.role);
-  }
-
-  async addUserCity(dto: ExtUpdateUserCityDto): Promise<void> {
-    await this.citiesService.checkCityOwner(dto.cityId, dto.myId);
-    const user = await this.usersRepository.findOneBy({ id: dto.userId });
-    if (user.cityId) {
-      throw new AppException(UserError.ALREADY_IN_CITY);
-    }
-    await this.addCity(user, dto.cityId);
-  }
-
-  async removeUserCity(dto: ExtUpdateUserCityDto): Promise<void> {
-    await this.citiesService.checkCityOwner(dto.cityId, dto.myId);
-    const user = await this.usersRepository.findOneBy({ id: dto.userId });
-    if (user.cityId !== dto.cityId) {
-      throw new AppException(UserError.NOT_IN_CITY);
-    }
-    await this.removeCity(user);
   }
 
   async checkUserExists(id: number): Promise<void> {
@@ -237,24 +201,6 @@ export class UsersService {
     }
   }
 
-  private async addCity(user: User, cityId: number): Promise<void> {
-    try {
-      user.cityId = cityId;
-      await this.usersRepository.save(user);
-    } catch (error) {
-      throw new AppException(UserError.ADD_CITY_FAILED);
-    }
-  }
-
-  private async removeCity(user: User): Promise<void> {
-    try {
-      user.cityId = null;
-      await this.usersRepository.save(user);
-    } catch (error) {
-      throw new AppException(UserError.REMOVE_CITY_FAILED);
-    }
-  }
-
   private selectUsersQueryBuilder(): SelectQueryBuilder<User> {
     return this.usersRepository
       .createQueryBuilder('user')
@@ -265,20 +211,15 @@ export class UsersService {
 
   private async loadCards(users: User[]): Promise<void> {
     const promises = users.map(async (user) => {
-      user['cards'] = (
+      user.cards = (
         await this.usersRepository
           .createQueryBuilder('user')
-          .leftJoinAndMapMany(
-            'user.cards',
-            'cards',
-            'card',
-            'user.id = card.userId',
-          )
+          .leftJoin('user.cards', 'card')
           .where('user.id = :userId', { userId: user.id })
           .orderBy('card.name', 'ASC')
           .select(['user.id', 'card.id', 'card.name', 'card.color'])
           .getOne()
-      )['cards'];
+      ).cards;
     });
     await Promise.all(promises);
   }
@@ -350,80 +291,133 @@ export class UsersService {
         'ownerUser.id',
         'ownerUser.name',
         'ownerUser.status',
-        'ownerUser.roles',
         'city.name',
         'city.x',
         'city.y',
       ]);
   }
 
-  private getUserQueryBuilder(): SelectQueryBuilder<User> {
-    return this.getUsersQueryBuilder({})
-      .leftJoinAndMapMany(
-        'user.cards',
-        'cards',
-        'card',
-        'user.id = card.userId',
-      )
-      .leftJoinAndMapMany(
-        'user.shops',
-        'shops',
-        'shop',
-        'user.id = shop.userId',
-      )
-      .leftJoinAndMapMany(
-        'user.goods',
-        'goods',
-        'good',
-        'shop.id = good.shopId',
-      )
-      .leftJoinAndMapMany(
-        'user.rents',
-        'rents',
-        'rent',
-        'card.id = rent.cardId',
-      )
-      .leftJoinAndMapMany(
-        'user.leases',
-        'leases',
-        'lease',
-        'card.id = lease.cardId',
-      )
-      .leftJoinAndMapMany(
-        'user.wares',
-        'wares',
-        'ware',
-        'rent.id = ware.rentId',
-      )
-      .leftJoinAndMapMany(
-        'user.products',
-        'products',
-        'product',
-        'lease.id = product.leaseId',
-      )
-      .leftJoinAndMapMany(
-        'user.trades',
-        'trades',
-        'trade',
-        'card.id = trade.cardId',
-      )
-      .leftJoinAndMapMany(
-        'user.sales',
-        'sales',
-        'sale',
-        'card.id = sale.cardId',
-      )
+  private async getUserProfile(userId: number): Promise<User> {
+    const user = await this.usersRepository
+      .createQueryBuilder('user')
+      .leftJoin('user.city', 'city')
       .leftJoinAndMapMany(
         'user.friends',
         'friends',
         'friend',
         'user.id = friend.senderUserId OR user.id = friend.receiverUserId',
       )
-      .leftJoinAndMapMany(
-        'user.ratings',
-        'ratings',
-        'rating',
-        'user.id = rating.receiverUserId',
+      .where('user.id = :userId', { userId })
+      .select([
+        'user.id',
+        'user.name',
+        'user.status',
+        'user.roles',
+        'city.id',
+        'city.name',
+        'city.x',
+        'city.y',
+        'friend.senderUserId',
+        'friend.receiverUserId',
+        'friend.type',
+      ])
+      .getOne();
+    await this.loadCards([user]);
+    const friends = user['friends']
+      .filter((friend) => friend.type)
+      .map((friend) =>
+        friend.senderUserId === userId
+          ? friend.receiverUserId
+          : friend.senderUserId,
       );
+    const users = await this.selectUsersQueryBuilder().getMany();
+    user['friends'] = users.filter((user) => friends.includes(user.id));
+    return user;
+  }
+
+  private async getUserStats(userId: number): Promise<User> {
+    const goods = await this.usersRepository
+      .createQueryBuilder('user')
+      .leftJoin('user.shops', 'shop')
+      .leftJoin('shop.goods', 'good')
+      .where('user.id = :userId', { userId })
+      .select('COUNT(good.id)', 'goods')
+      .getRawOne();
+    const wares = await this.usersRepository
+      .createQueryBuilder('user')
+      .leftJoin('user.cards', 'card')
+      .leftJoinAndMapMany(
+        'card.rents',
+        'rents',
+        'rent',
+        'card.id = rent.cardId',
+      )
+      .leftJoinAndMapMany(
+        'rent.wares',
+        'wares',
+        'ware',
+        'rent.id = ware.rentId',
+      )
+      .where('user.id = :userId', { userId })
+      .select('COUNT(ware.id)', 'wares')
+      .getRawOne();
+    const products = await this.usersRepository
+      .createQueryBuilder('user')
+      .leftJoin('user.cards', 'card')
+      .leftJoinAndMapMany(
+        'card.leases',
+        'leases',
+        'lease',
+        'card.id = lease.cardId',
+      )
+      .leftJoinAndMapMany(
+        'lease.products',
+        'products',
+        'product',
+        'lease.id = product.leaseId',
+      )
+      .where('user.id = :userId', { userId })
+      .select('COUNT(product.id)', 'products')
+      .getRawOne();
+    const trades = await this.usersRepository
+      .createQueryBuilder('user')
+      .leftJoin('user.cards', 'card')
+      .leftJoinAndMapMany(
+        'card.trades',
+        'trades',
+        'trade',
+        'card.id = trade.cardId',
+      )
+      .where('user.id = :userId', { userId })
+      .select('COUNT(trade.id)', 'trades')
+      .getRawOne();
+    const sales = await this.usersRepository
+      .createQueryBuilder('user')
+      .leftJoin('user.cards', 'card')
+      .leftJoinAndMapMany(
+        'card.sales',
+        'sales',
+        'sale',
+        'card.id = sale.cardId',
+      )
+      .where('user.id = :userId', { userId })
+      .select('COUNT(sale.id)', 'sales')
+      .getRawOne();
+    const ratings = await this.usersRepository
+      .createQueryBuilder('user')
+      .leftJoin('user.ratings', 'rating')
+      .where('user.id = :userId', { userId })
+      .select('AVG(rating.rate)', 'rating')
+      .getRawOne();
+    const user = {
+      ...goods,
+      ...wares,
+      ...products,
+      ...trades,
+      ...sales,
+      ...ratings,
+    };
+    Object.keys(user).forEach((key) => (user[key] = +user[key]));
+    return user;
   }
 }

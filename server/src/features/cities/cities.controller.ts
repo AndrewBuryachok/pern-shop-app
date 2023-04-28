@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Patch,
@@ -10,7 +11,12 @@ import {
 import { ApiTags } from '@nestjs/swagger';
 import { CitiesService } from './cities.service';
 import { City } from './city.entity';
-import { CityIdDto, CreateCityDto, EditCityDto } from './city.dto';
+import {
+  CityIdDto,
+  CreateCityDto,
+  EditCityDto,
+  UpdateCityUserDto,
+} from './city.dto';
 import { Request, Response } from '../../common/interfaces';
 import { MyId, Public, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
@@ -63,5 +69,23 @@ export class CitiesController {
     @Body() dto: EditCityDto,
   ): Promise<void> {
     return this.citiesService.editCity({ ...dto, cityId, myId });
+  }
+
+  @Post(':cityId/users')
+  addCityUser(
+    @MyId() myId: number,
+    @Param() { cityId }: CityIdDto,
+    @Body() dto: UpdateCityUserDto,
+  ): Promise<void> {
+    return this.citiesService.addCityUser({ ...dto, cityId, myId });
+  }
+
+  @Delete(':cityId/users')
+  removeCityUser(
+    @MyId() myId: number,
+    @Param() { cityId }: CityIdDto,
+    @Body() dto: UpdateCityUserDto,
+  ): Promise<void> {
+    return this.citiesService.removeCityUser({ ...dto, cityId, myId });
   }
 }

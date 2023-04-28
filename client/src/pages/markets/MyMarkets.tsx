@@ -4,6 +4,7 @@ import { useGetMyMarketsQuery } from '../../features/markets/markets.api';
 import MarketsTable from '../../features/markets/MarketsTable';
 import { createMarketButton } from '../../features/markets/CreateMarketModal';
 import { editMarketAction } from '../../features/markets/EditMarketModal';
+import { createStoreAction } from '../../features/stores/CreateStoreModal';
 import { Role } from '../../common/constants';
 
 export default function MyMarkets() {
@@ -25,7 +26,7 @@ export default function MyMarkets() {
 
   const button = createMarketButton;
 
-  const actions = [editMarketAction];
+  const actions = [editMarketAction, createStoreAction];
 
   return (
     <MarketsTable
