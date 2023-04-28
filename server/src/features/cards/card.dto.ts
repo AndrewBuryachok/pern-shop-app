@@ -3,6 +3,7 @@ import { Validate } from 'class-validator';
 import { Type } from 'class-transformer';
 import { IsColor, IsId, IsName } from '../../common/decorators';
 import { IsCardExists } from '../../common/constraints';
+import { UserIdDto } from '../users/user.dto';
 
 export class CardIdDto {
   @ApiProperty()
@@ -29,6 +30,13 @@ export class ExtCreateCardDto extends CreateCardDto {
 export class EditCardDto extends CreateCardDto {}
 
 export class ExtEditCardDto extends EditCardDto {
+  cardId: number;
+  myId: number;
+}
+
+export class UpdateCardUserDto extends UserIdDto {}
+
+export class ExtUpdateCardUserDto extends UpdateCardUserDto {
   cardId: number;
   myId: number;
 }

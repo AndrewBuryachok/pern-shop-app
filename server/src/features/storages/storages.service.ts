@@ -31,7 +31,8 @@ export class StoragesService {
 
   async getMyStorages(myId: number, req: Request): Promise<Response<Storage>> {
     const [result, count] = await this.getStoragesQueryBuilder(req)
-      .andWhere('ownerUser.id = :myId', { myId })
+      .innerJoin('ownerCard.users', 'ownerUsers')
+      .andWhere('ownerUsers.id = :myId', { myId })
       .getManyAndCount();
     await this.loadStatesAndCells(result);
     return { result, count };
@@ -54,8 +55,9 @@ export class StoragesService {
   selectMyStorages(myId: number): Promise<Storage[]> {
     return this.selectStoragesQueryBuilder()
       .innerJoin('storage.card', 'ownerCard')
+      .innerJoin('ownerCard.users', 'ownerUsers')
       .loadRelationCountAndMap('storage.cells', 'storage.cells')
-      .where('ownerCard.userId = :myId', { myId })
+      .where('ownerUsers.id = :myId', { myId })
       .getMany();
   }
 
@@ -83,7 +85,7 @@ export class StoragesService {
   }
 
   async createStorage(dto: ExtCreateStorageDto): Promise<void> {
-    await this.cardsService.checkCardOwner(dto.cardId, dto.myId);
+    await this.cardsService.checkCardUser(dto.cardId, dto.myId);
     await this.checkHasNotEnough(dto.myId);
     await this.checkNameNotUsed(dto.name);
     await this.checkCoordinatesNotUsed(dto.x, dto.y);

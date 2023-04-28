@@ -37,7 +37,8 @@ export class StoresService {
 
   async getMyStores(myId: number, req: Request): Promise<Response<Store>> {
     const [result, count] = await this.getStoresQueryBuilder(req)
-      .andWhere('ownerUser.id = :myId', { myId })
+      .innerJoin('ownerCard.users', 'ownerUsers')
+      .andWhere('ownerUsers.id = :myId', { myId })
       .getManyAndCount();
     return { result, count };
   }

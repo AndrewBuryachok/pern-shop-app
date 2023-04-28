@@ -37,7 +37,8 @@ export class CellsService {
 
   async getMyCells(myId: number, req: Request): Promise<Response<Cell>> {
     const [result, count] = await this.getCellsQueryBuilder(req)
-      .andWhere('ownerUser.id = :myId', { myId })
+      .innerJoin('ownerCard.users', 'ownerUsers')
+      .andWhere('ownerUsers.id = :myId', { myId })
       .getManyAndCount();
     return { result, count };
   }

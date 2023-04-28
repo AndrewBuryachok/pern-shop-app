@@ -53,7 +53,10 @@ export default class AppSeed implements Seeder {
       .createMany(10);
     const cards = await factory(Card)()
       .map(async (card) => {
-        card.user = users[Math.floor(Math.random() * users.length)];
+        const count = Math.floor(Math.random() * 2) + 1;
+        const shuffled = users.sort(() => 0.5 - Math.random());
+        card.users = shuffled.slice(0, count);
+        card.user = card.users[0];
         return card;
       })
       .createMany(40);

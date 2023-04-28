@@ -1,7 +1,7 @@
 import { emptyApi } from '../../app/empty.api';
 import { IRequest, IResponse } from '../../common/interfaces';
 import { Card, SmCard, SmCardWithBalance } from './card.model';
-import { CreateCardDto, EditCardDto } from './card.dto';
+import { CreateCardDto, EditCardDto, UpdateCardUserDto } from './card.dto';
 import { getQuery } from '../../common/utils';
 
 export const cardsApi = emptyApi.injectEndpoints({
@@ -52,6 +52,22 @@ export const cardsApi = emptyApi.injectEndpoints({
       }),
       invalidatesTags: ['Card'],
     }),
+    addCardUser: build.mutation<void, UpdateCardUserDto>({
+      query: ({ cardId, ...dto }) => ({
+        url: `/cards/${cardId}/users`,
+        method: 'POST',
+        body: dto,
+      }),
+      invalidatesTags: ['Card'],
+    }),
+    removeCardUser: build.mutation<void, UpdateCardUserDto>({
+      query: ({ cardId, ...dto }) => ({
+        url: `/cards/${cardId}/users`,
+        method: 'DELETE',
+        body: dto,
+      }),
+      invalidatesTags: ['Card'],
+    }),
   }),
 });
 
@@ -63,4 +79,6 @@ export const {
   useSelectUserCardsWithBalanceQuery,
   useCreateCardMutation,
   useEditCardMutation,
+  useAddCardUserMutation,
+  useRemoveCardUserMutation,
 } = cardsApi;

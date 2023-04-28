@@ -19,9 +19,11 @@ export class LeasesService {
 
   async getMyLeases(myId: number, req: Request): Promise<Response<Lease>> {
     const [result, count] = await this.getLeasesQueryBuilder(req)
+      .innerJoin('ownerCard.users', 'ownerUsers')
+      .innerJoin('renterCard.users', 'renterUsers')
       .andWhere(
         new Brackets((qb) =>
-          qb.where('renterUser.id = :myId').orWhere('ownerUser.id = :myId'),
+          qb.where('renterUsers.id = :myId').orWhere('ownerUsers.id = :myId'),
         ),
         { myId },
       )

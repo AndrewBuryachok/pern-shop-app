@@ -50,7 +50,8 @@ export class WaresService {
 
   async getMyWares(myId: number, req: Request): Promise<Response<Ware>> {
     const [result, count] = await this.getWaresQueryBuilder(req)
-      .andWhere('sellerUser.id = :myId', { myId })
+      .innerJoin('sellerCard.users', 'sellerUsers')
+      .andWhere('sellerUsers.id = :myId', { myId })
       .getManyAndCount();
     await this.loadStates(result);
     return { result, count };
@@ -58,7 +59,8 @@ export class WaresService {
 
   async getPlacedWares(myId: number, req: Request): Promise<Response<Ware>> {
     const [result, count] = await this.getWaresQueryBuilder(req)
-      .andWhere('ownerUser.id = :myId', { myId })
+      .innerJoin('ownerCard.users', 'ownerUsers')
+      .andWhere('ownerUsers.id = :myId', { myId })
       .getManyAndCount();
     await this.loadStates(result);
     return { result, count };

@@ -12,6 +12,7 @@ export interface MdCard extends SmCard {
 
 export interface Card extends MdCard {
   balance: number;
+  users: SmUser[];
 }
 
 export interface SmCardWithBalance extends SmCard {

@@ -2,6 +2,8 @@ import {
   Column,
   Entity,
   JoinColumn,
+  JoinTable,
+  ManyToMany,
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -27,4 +29,12 @@ export class Card {
 
   @Column({ default: 0 })
   balance: number;
+
+  @ManyToMany(() => User)
+  @JoinTable({
+    name: 'cards_users',
+    joinColumn: { name: 'card_id' },
+    inverseJoinColumn: { name: 'user_id' },
+  })
+  users: User[];
 }

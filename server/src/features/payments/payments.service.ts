@@ -19,9 +19,13 @@ export class PaymentsService {
 
   async getMyPayments(myId: number, req: Request): Promise<Response<Payment>> {
     const [result, count] = await this.getPaymentsQueryBuilder(req)
+      .innerJoin('senderCard.users', 'senderUsers')
+      .innerJoin('receiverCard.users', 'receiverUsers')
       .andWhere(
         new Brackets((qb) =>
-          qb.where('senderUser.id = :myId').orWhere('receiverUser.id = :myId'),
+          qb
+            .where('senderUsers.id = :myId')
+            .orWhere('receiverUsers.id = :myId'),
         ),
         { myId },
       )
@@ -37,7 +41,7 @@ export class PaymentsService {
   }
 
   async createPayment(dto: ExtCreatePaymentDto): Promise<void> {
-    await this.cardsService.checkCardOwner(dto.senderCardId, dto.myId);
+    await this.cardsService.checkCardUser(dto.senderCardId, dto.myId);
     await this.cardsService.decreaseCardBalance({
       ...dto,
       cardId: dto.senderCardId,

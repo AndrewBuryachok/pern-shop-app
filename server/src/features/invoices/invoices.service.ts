@@ -25,9 +25,14 @@ export class InvoicesService {
 
   async getMyInvoices(myId: number, req: Request): Promise<Response<Invoice>> {
     const [result, count] = await this.getInvoicesQueryBuilder(req)
+      .innerJoin('senderCard.users', 'senderUsers')
+      .leftJoin('receiverCard.users', 'receiverUsers')
       .andWhere(
         new Brackets((qb) =>
-          qb.where('senderUser.id = :myId').orWhere('receiverUser.id = :myId'),
+          qb
+            .where('senderUsers.id = :myId')
+            .orWhere('receiverUser.id = :myId')
+            .orWhere('receiverUsers.id = :myId'),
         ),
         { myId },
       )
@@ -43,7 +48,7 @@ export class InvoicesService {
   }
 
   async createInvoice(dto: ExtCreateInvoiceDto): Promise<void> {
-    await this.cardsService.checkCardOwner(dto.senderCardId, dto.myId);
+    await this.cardsService.checkCardUser(dto.senderCardId, dto.myId);
     await this.create(dto);
   }
 

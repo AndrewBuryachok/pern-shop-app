@@ -41,12 +41,12 @@ export class Request {
   @IsOptional()
   @IsEnum(Filter, { each: true })
   @Transform(({ value }) => value?.split(','))
-  filters?: Filter[] = Object.values(Filter);
+  filters?: Filter[] = [];
 
   @ApiProperty({ required: false })
   @IsOptional()
   @IsEnum(Mode)
-  mode?: Mode = Mode.SOME;
+  mode?: Mode;
 
   @ApiProperty({ required: false })
   @IsOptional()

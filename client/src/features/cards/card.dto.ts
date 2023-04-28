@@ -6,3 +6,8 @@ export interface CreateCardDto {
 export interface EditCardDto extends CreateCardDto {
   cardId: number;
 }
+
+export interface UpdateCardUserDto {
+  cardId: number;
+  userId: number;
+}

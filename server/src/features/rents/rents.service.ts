@@ -20,9 +20,11 @@ export class RentsService {
 
   async getMyRents(myId: number, req: Request): Promise<Response<Rent>> {
     const [result, count] = await this.getRentsQueryBuilder(req)
+      .innerJoin('ownerCard.users', 'ownerUsers')
+      .innerJoin('renterCard.users', 'renterUsers')
       .andWhere(
         new Brackets((qb) =>
-          qb.where('renterUser.id = :myId').orWhere('ownerUser.id = :myId'),
+          qb.where('renterUsers.id = :myId').orWhere('ownerUsers.id = :myId'),
         ),
         { myId },
       )
@@ -42,7 +44,8 @@ export class RentsService {
   selectMyRents(myId: number): Promise<Rent[]> {
     return this.selectRentsQueryBuilder()
       .innerJoin('rent.card', 'renterCard')
-      .where('renterCard.userId = :myId', { myId })
+      .innerJoin('renterCard.users', 'renterUsers')
+      .where('renterUsers.id = :myId', { myId })
       .andWhere('rent.createdAt > :date', { date: getDateWeekAgo() })
       .getMany();
   }

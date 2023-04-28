@@ -22,11 +22,12 @@ export class ExchangesService {
     req: Request,
   ): Promise<Response<Exchange>> {
     const [result, count] = await this.getExchangesQueryBuilder(req)
+      .innerJoin('customerCard.users', 'customerUsers')
       .andWhere(
         new Brackets((qb) =>
           qb
             .where('executorUser.id = :myId')
-            .orWhere('customerUser.id = :myId'),
+            .orWhere('customerUsers.id = :myId'),
         ),
         { myId },
       )

@@ -4,6 +4,8 @@ import { useGetMyCardsQuery } from '../../features/cards/cards.api';
 import CardsTable from '../../features/cards/CardsTable';
 import { createCardButton } from '../../features/cards/CreateCardModal';
 import { editCardAction } from '../../features/cards/EditCardModal';
+import { addCardUserAction } from '../../features/cards/AddCardUserModal';
+import { removeCardUserAction } from '../../features/cards/RemoveCardUserModal';
 import { Role } from '../../common/constants';
 
 export default function MyCards() {
@@ -22,7 +24,7 @@ export default function MyCards() {
 
   const button = createCardButton;
 
-  const actions = [editCardAction];
+  const actions = [editCardAction, addCardUserAction, removeCardUserAction];
 
   return (
     <CardsTable

@@ -2,9 +2,11 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { Card } from './card.entity';
+import { User } from '../users/user.entity';
 import {
   ExtCreateCardDto,
   ExtEditCardDto,
+  ExtUpdateCardUserDto,
   UpdateCardBalanceDto,
 } from './card.dto';
 import { Request, Response } from '../../common/interfaces';
@@ -25,8 +27,10 @@ export class CardsService {
 
   async getMyCards(myId: number, req: Request): Promise<Response<Card>> {
     const [result, count] = await this.getCardsQueryBuilder(req)
-      .andWhere('ownerUser.id = :myId', { myId })
+      .innerJoin('card.users', 'ownerUsers')
+      .andWhere('ownerUsers.id = :myId', { myId })
       .getManyAndCount();
+    await this.loadUsers(result);
     return { result, count };
   }
 
@@ -34,6 +38,7 @@ export class CardsService {
     const [result, count] = await this.getCardsQueryBuilder(
       req,
     ).getManyAndCount();
+    await this.loadUsers(result);
     return { result, count };
   }
 
@@ -58,6 +63,25 @@ export class CardsService {
     await this.edit(card, dto);
   }
 
+  async addCardUser(dto: ExtUpdateCardUserDto): Promise<void> {
+    const card = await this.checkCardOwner(dto.cardId, dto.myId);
+    if (card.users.map((user) => user.id).includes(dto.userId)) {
+      throw new AppException(CardError.ALREADY_IN_CARD);
+    }
+    await this.addUser(card, dto.userId);
+  }
+
+  async removeCardUser(dto: ExtUpdateCardUserDto): Promise<void> {
+    const card = await this.checkCardOwner(dto.cardId, dto.myId);
+    if (dto.userId === dto.myId) {
+      throw new AppException(CardError.OWNER);
+    }
+    if (!card.users.map((user) => user.id).includes(dto.userId)) {
+      throw new AppException(CardError.NOT_IN_CARD);
+    }
+    await this.removeUser(card, dto.userId);
+  }
+
   async increaseCardBalance(dto: UpdateCardBalanceDto): Promise<void> {
     const card = await this.cardsRepository.findOneBy({ id: dto.cardId });
     if (card.balance + dto.sum > MAX_CARD_BALANCE) {
@@ -79,9 +103,23 @@ export class CardsService {
   }
 
   async checkCardOwner(id: number, userId: number): Promise<Card> {
-    const card = await this.cardsRepository.findOneBy({ id, userId });
+    const card = await this.cardsRepository.findOne({
+      relations: ['users'],
+      where: { id, userId },
+    });
     if (!card) {
       throw new AppException(CardError.NOT_OWNER);
+    }
+    return card;
+  }
+
+  async checkCardUser(id: number, userId: number): Promise<Card> {
+    const card = await this.cardsRepository.findOne({
+      relations: ['users'],
+      where: { id },
+    });
+    if (!card.users.map((user) => user.id).includes(userId)) {
+      throw new AppException(CardError.NOT_USER);
     }
     return card;
   }
@@ -106,6 +144,7 @@ export class CardsService {
         userId: dto.myId,
         name: dto.name,
         color: dto.color,
+        users: [{ id: dto.myId }],
       });
       await this.cardsRepository.save(card);
     } catch (error) {
@@ -120,6 +159,26 @@ export class CardsService {
       await this.cardsRepository.save(card);
     } catch (error) {
       throw new AppException(CardError.EDIT_FAILED);
+    }
+  }
+
+  private async addUser(card: Card, userId: number): Promise<void> {
+    try {
+      const user = new User();
+      user.id = userId;
+      card.users.push(user);
+      await this.cardsRepository.save(card);
+    } catch (error) {
+      throw new AppException(CardError.ADD_USER_FAILED);
+    }
+  }
+
+  private async removeUser(card: Card, userId: number): Promise<void> {
+    try {
+      card.users = card.users.filter((user) => user.id !== userId);
+      await this.cardsRepository.save(card);
+    } catch (error) {
+      throw new AppException(CardError.REMOVE_USER_FAILED);
     }
   }
 
@@ -144,9 +203,26 @@ export class CardsService {
   private selectCardsQueryBuilder(userId: number): SelectQueryBuilder<Card> {
     return this.cardsRepository
       .createQueryBuilder('card')
-      .where('card.userId = :userId', { userId })
+      .innerJoin('card.users', 'ownerUsers')
+      .where('ownerUsers.id = :userId', { userId })
       .orderBy('card.name', 'ASC')
       .select(['card.id', 'card.name', 'card.color']);
+  }
+
+  private async loadUsers(cards: Card[]): Promise<void> {
+    const promises = cards.map(async (card) => {
+      card['users'] = (
+        await this.cardsRepository
+          .createQueryBuilder('card')
+          .leftJoin('card.users', 'user')
+          .where('card.id = :cardId', { cardId: card.id })
+          .orderBy('user.status', 'DESC')
+          .addOrderBy('user.name', 'ASC')
+          .select(['card.id', 'user.id', 'user.name', 'user.status'])
+          .getOne()
+      )['users'];
+    });
+    await Promise.all(promises);
   }
 
   private getCardsQueryBuilder(req: Request): SelectQueryBuilder<Card> {

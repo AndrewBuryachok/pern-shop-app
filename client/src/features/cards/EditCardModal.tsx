@@ -3,6 +3,7 @@ import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { Card } from './card.model';
+import { getCurrentUser } from '../auth/auth.slice';
 import { useEditCardMutation } from './cards.api';
 import { EditCardDto } from './card.dto';
 import CustomForm from '../../common/components/CustomForm';
@@ -66,6 +67,9 @@ export const editCardAction = {
       title: 'Edit Card',
       children: <EditCardModal data={card} />,
     }),
-  disable: () => false,
+  disable: (card: Card) => {
+    const user = getCurrentUser()!;
+    return card.user.id !== user.id;
+  },
   color: Color.YELLOW,
 };

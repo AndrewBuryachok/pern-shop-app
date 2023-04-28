@@ -40,9 +40,10 @@ export class DeliveriesService {
     req: Request,
   ): Promise<Response<Delivery>> {
     const [result, count] = await this.getDeliveriesQueryBuilder(req)
+      .innerJoin('senderCard.users', 'senderUsers')
       .andWhere(
         new Brackets((qb) =>
-          qb.where('senderUser.id = :myId').orWhere('receiverUser.id = :myId'),
+          qb.where('senderUsers.id = :myId').orWhere('receiverUser.id = :myId'),
         ),
         { myId },
       )
@@ -55,7 +56,8 @@ export class DeliveriesService {
     req: Request,
   ): Promise<Response<Delivery>> {
     const [result, count] = await this.getDeliveriesQueryBuilder(req)
-      .andWhere('executorUser.id = :myId', { myId })
+      .leftJoin('executorCard.users', 'executorUsers')
+      .andWhere('executorUsers.id = :myId', { myId })
       .getManyAndCount();
     return { result, count };
   }
@@ -65,11 +67,13 @@ export class DeliveriesService {
     req: Request,
   ): Promise<Response<Delivery>> {
     const [result, count] = await this.getDeliveriesQueryBuilder(req)
+      .innerJoin('fromOwnerCard.users', 'fromOwnerUsers')
+      .innerJoin('toOwnerCard.users', 'toOwnerUsers')
       .andWhere(
         new Brackets((qb) =>
           qb
-            .where('fromOwnerUser.id = :myId')
-            .orWhere('toOwnerUser.id = :myId'),
+            .where('fromOwnerUsers.id = :myId')
+            .orWhere('toOwnerUsers.id = :myId'),
         ),
         { myId },
       )
@@ -102,7 +106,7 @@ export class DeliveriesService {
   }
 
   async takeDelivery(dto: ExtTakeDeliveryDto): Promise<void> {
-    await this.cardsService.checkCardOwner(dto.cardId, dto.myId);
+    await this.cardsService.checkCardUser(dto.cardId, dto.myId);
     const delivery = await this.deliveriesRepository.findOneBy({
       id: dto.deliveryId,
     });

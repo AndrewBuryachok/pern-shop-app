@@ -33,21 +33,24 @@ export class OrdersService {
 
   async getMyOrders(myId: number, req: Request): Promise<Response<Order>> {
     const [result, count] = await this.getOrdersQueryBuilder(req)
-      .andWhere('customerUser.id = :myId', { myId })
+      .innerJoin('customerCard.users', 'customerUsers')
+      .andWhere('customerUsers.id = :myId', { myId })
       .getManyAndCount();
     return { result, count };
   }
 
   async getTakenOrders(myId: number, req: Request): Promise<Response<Order>> {
     const [result, count] = await this.getOrdersQueryBuilder(req)
-      .andWhere('executorUser.id = :myId', { myId })
+      .leftJoin('executorCard.users', 'executorUsers')
+      .andWhere('executorUsers.id = :myId', { myId })
       .getManyAndCount();
     return { result, count };
   }
 
   async getPlacedOrders(myId: number, req: Request): Promise<Response<Order>> {
     const [result, count] = await this.getOrdersQueryBuilder(req)
-      .andWhere('ownerUser.id = :myId', { myId })
+      .innerJoin('ownerCard.users', 'ownerUsers')
+      .andWhere('ownerUsers.id = :myId', { myId })
       .getManyAndCount();
     return { result, count };
   }
@@ -66,7 +69,7 @@ export class OrdersService {
   }
 
   async takeOrder(dto: ExtTakeOrderDto): Promise<void> {
-    await this.cardsService.checkCardOwner(dto.cardId, dto.myId);
+    await this.cardsService.checkCardUser(dto.cardId, dto.myId);
     const order = await this.ordersRepository.findOneBy({
       id: dto.orderId,
     });

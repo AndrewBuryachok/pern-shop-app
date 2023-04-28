@@ -36,9 +36,11 @@ export class SalesService {
 
   async getMySales(myId: number, req: Request): Promise<Response<Sale>> {
     const [result, count] = await this.getSalesQueryBuilder(req)
+      .innerJoin('buyerCard.users', 'buyerUsers')
+      .innerJoin('sellerCard.users', 'sellerUsers')
       .andWhere(
         new Brackets((qb) =>
-          qb.where('buyerUser.id = :myId').orWhere('sellerUser.id = :myId'),
+          qb.where('buyerUsers.id = :myId').orWhere('sellerUsers.id = :myId'),
         ),
         { myId },
       )
@@ -48,7 +50,8 @@ export class SalesService {
 
   async getPlacedSales(myId: number, req: Request): Promise<Response<Sale>> {
     const [result, count] = await this.getSalesQueryBuilder(req)
-      .andWhere('ownerUser.id = :myId', { myId })
+      .innerJoin('ownerCard.users', 'ownerUsers')
+      .andWhere('ownerUsers.id = :myId', { myId })
       .getManyAndCount();
     return { result, count };
   }

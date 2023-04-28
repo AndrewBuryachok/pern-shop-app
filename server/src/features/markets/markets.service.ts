@@ -30,7 +30,8 @@ export class MarketsService {
 
   async getMyMarkets(myId: number, req: Request): Promise<Response<Market>> {
     const [result, count] = await this.getMarketsQueryBuilder(req)
-      .andWhere('ownerUser.id = :myId', { myId })
+      .innerJoin('ownerCard.users', 'ownerUsers')
+      .andWhere('ownerUsers.id = :myId', { myId })
       .getManyAndCount();
     await this.loadStatesAndStores(result);
     return { result, count };
@@ -53,13 +54,14 @@ export class MarketsService {
   selectMyMarkets(myId: number): Promise<Market[]> {
     return this.selectMarketsQueryBuilder()
       .innerJoin('market.card', 'ownerCard')
+      .innerJoin('ownerCard.users', 'ownerUsers')
       .loadRelationCountAndMap('market.stores', 'market.stores')
-      .where('ownerCard.userId = :myId', { myId })
+      .where('ownerUsers.id = :myId', { myId })
       .getMany();
   }
 
   async createMarket(dto: ExtCreateMarketDto): Promise<void> {
-    await this.cardsService.checkCardOwner(dto.cardId, dto.myId);
+    await this.cardsService.checkCardUser(dto.cardId, dto.myId);
     await this.checkHasNotEnough(dto.myId);
     await this.checkNameNotUsed(dto.name);
     await this.checkCoordinatesNotUsed(dto.x, dto.y);

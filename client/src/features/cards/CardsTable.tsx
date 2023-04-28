@@ -4,6 +4,7 @@ import CustomTable from '../../common/components/CustomTable';
 import AvatarWithSingleText from '../../common/components/AvatarWithSingleText';
 import SingleText from '../../common/components/SingleText';
 import ColorBadge from '../../common/components/ColorBadge';
+import TotalText from '../../common/components/TotalText';
 import CustomActions from '../../common/components/CustomActions';
 import { viewCardAction } from './ViewCardModal';
 
@@ -12,8 +13,8 @@ type Props = ITableWithActions<Card>;
 export default function CardsTable({ actions = [], ...props }: Props) {
   return (
     <CustomTable
-      minWidth={600}
-      columns={['Owner', 'Card', 'Color', 'Balance', 'Action']}
+      minWidth={700}
+      columns={['Owner', 'Card', 'Color', 'Balance', 'Users', 'Action']}
       {...props}
     >
       {props.data?.result.map((card) => (
@@ -29,6 +30,9 @@ export default function CardsTable({ actions = [], ...props }: Props) {
           </td>
           <td>
             <SingleText text={`${card.balance}$`} />
+          </td>
+          <td>
+            <TotalText data={card.users.length} />
           </td>
           <td>
             <CustomActions data={card} actions={[viewCardAction, ...actions]} />

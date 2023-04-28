@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Patch,
@@ -10,7 +11,12 @@ import {
 import { ApiTags } from '@nestjs/swagger';
 import { CardsService } from './cards.service';
 import { Card } from './card.entity';
-import { CardIdDto, CreateCardDto, EditCardDto } from './card.dto';
+import {
+  CardIdDto,
+  CreateCardDto,
+  EditCardDto,
+  UpdateCardUserDto,
+} from './card.dto';
 import { UserIdDto } from '../users/user.dto';
 import { Request, Response } from '../../common/interfaces';
 import { MyId, Public, Roles } from '../../common/decorators';
@@ -64,5 +70,23 @@ export class CardsController {
     @Body() dto: EditCardDto,
   ): Promise<void> {
     return this.cardsService.editCard({ ...dto, cardId, myId });
+  }
+
+  @Post(':cardId/users')
+  addCardUser(
+    @MyId() myId: number,
+    @Param() { cardId }: CardIdDto,
+    @Body() dto: UpdateCardUserDto,
+  ): Promise<void> {
+    return this.cardsService.addCardUser({ ...dto, cardId, myId });
+  }
+
+  @Delete(':cardId/users')
+  removeCardUser(
+    @MyId() myId: number,
+    @Param() { cardId }: CardIdDto,
+    @Body() dto: UpdateCardUserDto,
+  ): Promise<void> {
+    return this.cardsService.removeCardUser({ ...dto, cardId, myId });
   }
 }
