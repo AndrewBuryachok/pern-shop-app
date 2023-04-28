@@ -42,6 +42,7 @@ import {
   selectMarkets,
   selectRoles,
   selectShops,
+  selectStatuses,
   selectStorages,
   selectUsers,
 } from '../../common/utils';
@@ -362,16 +363,6 @@ export default function SearchModal(props: Props) {
           {...form.getInputProps('cell')}
         />
       )}
-      {props.search.name !== undefined && (
-        <Autocomplete
-          label='Name'
-          placeholder={`Total: ${data.length}`}
-          itemComponent={component}
-          data={data.map((element) => ({ ...element, value: element.name }))}
-          disabled={isFetching}
-          {...form.getInputProps('name')}
-        />
-      )}
       {props.search.item !== undefined && (
         <>
           <Select
@@ -418,6 +409,17 @@ export default function SearchModal(props: Props) {
           {...form.getInputProps('type')}
         />
       )}
+      {props.search.status !== undefined && (
+        <Select
+          label='Status'
+          placeholder='Status'
+          itemComponent={ColorsItem}
+          data={selectStatuses()}
+          searchable
+          allowDeselect
+          {...form.getInputProps('status')}
+        />
+      )}
       {props.search.rate !== undefined && (
         <Input.Wrapper label='Rate'>
           <Group spacing={8}>
@@ -429,6 +431,16 @@ export default function SearchModal(props: Props) {
             />
           </Group>
         </Input.Wrapper>
+      )}
+      {props.search.name !== undefined && (
+        <Autocomplete
+          label='Name'
+          placeholder={`Total: ${data.length}`}
+          itemComponent={component}
+          data={data.map((element) => ({ ...element, value: element.name }))}
+          disabled={isFetching}
+          {...form.getInputProps('name')}
+        />
       )}
     </CustomForm>
   );

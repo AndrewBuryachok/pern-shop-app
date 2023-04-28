@@ -1,5 +1,5 @@
 import { Filter, Mode } from '../enums';
-import { Role } from '../constants';
+import { Role, Status } from '../constants';
 
 export interface ISearch {
   user?: string | null;
@@ -13,11 +13,12 @@ export interface ISearch {
   storage?: string | null;
   store?: string | null;
   cell?: string | null;
-  name?: string;
   users?: boolean;
   cards?: boolean;
   item?: string | null;
   description?: string;
   type?: string | null;
+  status?: Status | null;
   rate?: number | null;
+  name?: string;
 }

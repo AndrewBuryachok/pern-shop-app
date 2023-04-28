@@ -25,6 +25,7 @@ export default function MyDeliveries() {
     cell: null,
     item: null,
     description: '',
+    status: null,
   });
 
   const response = useGetMyDeliveriesQuery({ page, search });

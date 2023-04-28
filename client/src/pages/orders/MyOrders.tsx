@@ -23,6 +23,7 @@ export default function MyOrders() {
     cell: null,
     item: null,
     description: '',
+    status: null,
   });
 
   const response = useGetMyOrdersQuery({ page, search });

@@ -14,6 +14,7 @@ export default function AllUsers() {
     roles: [],
     mode: Mode.SOME,
     city: null,
+    type: null,
     name: '',
     users: true,
   });

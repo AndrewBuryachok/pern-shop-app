@@ -560,6 +560,13 @@ export class DeliveriesService {
             }),
         ),
       )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.status}`)
+            .orWhere('delivery.status = :status', { status: req.status }),
+        ),
+      )
       .orderBy('delivery.id', 'DESC')
       .skip(req.skip)
       .take(req.take)

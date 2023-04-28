@@ -22,6 +22,7 @@ export default function TakenOrders() {
     cell: null,
     item: null,
     description: '',
+    status: null,
   });
 
   const response = useGetTakenOrdersQuery({ page, search });

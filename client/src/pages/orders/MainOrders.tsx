@@ -21,6 +21,7 @@ export default function MainOrders() {
     cell: null,
     item: null,
     description: '',
+    status: null,
   });
 
   const response = useGetMainOrdersQuery({ page, search });

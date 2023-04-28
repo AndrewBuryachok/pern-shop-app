@@ -23,6 +23,7 @@ export default function MainDeliveries() {
     cell: null,
     item: null,
     description: '',
+    status: null,
   });
 
   const response = useGetMainDeliveriesQuery({ page, search });

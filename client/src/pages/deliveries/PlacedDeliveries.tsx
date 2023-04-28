@@ -22,6 +22,7 @@ export default function PlacedDeliveries() {
     cell: null,
     item: null,
     description: '',
+    status: null,
   });
 
   const response = useGetPlacedDeliveriesQuery({ page, search });

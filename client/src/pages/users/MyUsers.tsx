@@ -15,6 +15,7 @@ export default function MyUsers() {
     roles: [],
     mode: Mode.SOME,
     city: null,
+    type: null,
     name: '',
     users: true,
   });

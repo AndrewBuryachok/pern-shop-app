@@ -9,7 +9,14 @@ import {
 } from '../../features/storages/storage.model';
 import { Container } from '../../features/containers/container.model';
 import { SelectRent } from '../../features/rents/rent.model';
-import { categories, colors, items, kits, roles } from '../../common/constants';
+import {
+  categories,
+  colors,
+  items,
+  kits,
+  roles,
+  statuses,
+} from '../../common/constants';
 
 export const selectUsers = (users?: SmUserWithCity[]) =>
   users?.map(({ cityId, ...user }) => ({
@@ -129,3 +136,11 @@ export const selectItems = (category: string) =>
 
 export const selectKits = () =>
   kits.map((kit, index) => ({ value: `${index + 1}`, label: kit }));
+
+export const selectStatuses = () =>
+  statuses.map((status, index) => ({
+    text: status,
+    color: `${index + 1}`,
+    value: `${index + 1}`,
+    label: status,
+  }));

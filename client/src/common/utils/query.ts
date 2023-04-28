@@ -44,9 +44,6 @@ export const getQuery = ({ page, search }: IRequest) => {
   if (search?.cell) {
     query.append('cell', search.cell);
   }
-  if (search?.name) {
-    query.append('name', search.name);
-  }
   if (search?.item) {
     query.append('item', search.item);
   }
@@ -56,8 +53,14 @@ export const getQuery = ({ page, search }: IRequest) => {
   if (search?.type) {
     query.append('type', search.type);
   }
+  if (search?.status) {
+    query.append('status', `${search.status}`);
+  }
   if (search?.rate) {
     query.append('rate', `${search.rate}`);
+  }
+  if (search?.name) {
+    query.append('name', search.name);
   }
   return query.toString();
 };

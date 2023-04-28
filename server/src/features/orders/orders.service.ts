@@ -434,6 +434,13 @@ export class OrdersService {
             }),
         ),
       )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.status}`)
+            .orWhere('order.status = :status', { status: req.status }),
+        ),
+      )
       .orderBy('order.id', 'DESC')
       .skip(req.skip)
       .take(req.take)

@@ -19,6 +19,7 @@ export default function AllOrders() {
     cell: null,
     item: null,
     description: '',
+    status: null,
   });
 
   const response = useGetAllOrdersQuery({ page, search });

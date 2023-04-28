@@ -20,6 +20,7 @@ export default function PlacedOrders() {
     cell: null,
     item: null,
     description: '',
+    status: null,
   });
 
   const response = useGetPlacedOrdersQuery({ page, search });

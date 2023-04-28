@@ -21,6 +21,7 @@ export default function AllDeliveries() {
     cell: null,
     item: null,
     description: '',
+    status: null,
   });
 
   const response = useGetAllDeliveriesQuery({ page, search });

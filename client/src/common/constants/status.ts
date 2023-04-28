@@ -4,3 +4,5 @@ export enum Status {
   EXECUTED = 3,
   COMPLETED = 4,
 }
+
+export const statuses = ['Created', 'Taken', 'Executed', 'Completed'];

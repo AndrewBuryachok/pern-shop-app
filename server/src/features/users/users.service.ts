@@ -274,6 +274,13 @@ export class UsersService {
       .andWhere(
         new Brackets((qb) =>
           qb
+            .where(`${!req.type}`)
+            .orWhere('user.status = :type', { type: req.type === 1 }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
             .where(`${!req.name}`)
             .orWhere('user.name ILIKE :name', { name: req.name }),
         ),
