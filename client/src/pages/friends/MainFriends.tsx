@@ -3,7 +3,6 @@ import { ISearch } from '../../common/interfaces';
 import { Filter, Mode } from '../../common/enums';
 import { useGetMainFriendsQuery } from '../../features/friends/friends.api';
 import FriendsTable from '../../features/friends/FriendsTable';
-import { isUserNotHasRole } from '../../common/utils';
 import { Role } from '../../common/constants';
 
 export default function MainFriends() {
@@ -23,7 +22,7 @@ export default function MainFriends() {
 
   const links = [
     { label: 'My', to: 'my' },
-    { label: 'All', to: 'all', disabled: isUserNotHasRole(Role.ADMIN) },
+    { label: 'All', to: 'all', role: Role.ADMIN },
   ];
 
   return (
