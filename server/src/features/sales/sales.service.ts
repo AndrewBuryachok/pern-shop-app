@@ -94,11 +94,11 @@ export class SalesService {
       .innerJoin('sellerCard.user', 'sellerUser')
       .innerJoin('sale.card', 'buyerCard')
       .innerJoin('buyerCard.user', 'buyerUser')
-      .leftJoin('product.states', 'state', 'state.createdAt < trade.createdAt')
+      .leftJoin('product.states', 'state', 'state.createdAt < sale.createdAt')
       .leftJoin(
         'product.states',
         'next',
-        'state.createdAt < next.createdAt AND next.createdAt < trade.createdAt',
+        'state.createdAt < next.createdAt AND next.createdAt < sale.createdAt',
       )
       .where('next.id IS NULL')
       .andWhere(
