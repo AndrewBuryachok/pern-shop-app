@@ -30,6 +30,8 @@ import { Rating } from '../../features/ratings/rating.entity';
 import { TransportationStatus } from '../../features/transportations/transportation-status.enum';
 import { hashData } from '../../common/utils';
 
+const getRandom = (list) => list[Math.floor(Math.random() * list.length)];
+
 export default class AppSeed implements Seeder {
   public async run(factory: Factory) {
     const users = await factory(User)()
@@ -37,17 +39,14 @@ export default class AppSeed implements Seeder {
         user.password = await hashData(user.name);
         return user;
       })
-      .createMany(40);
-    let citizens = [...users];
+      .createMany(20);
+    let citizens = users.sort(() => 0.5 - Math.random());
     const cities = await factory(City)()
       .map(async (city) => {
-        const count = Math.floor(Math.random() * 4) + 1;
-        const shuffled = citizens.sort(() => 0.5 - Math.random());
-        city.users = shuffled.slice(0, count);
+        const count = Math.floor(Math.random() * 2) + 1;
+        city.users = citizens.slice(0, count);
         city.user = city.users[0];
-        citizens = citizens.filter(
-          (user) => !city.users.map((user) => user.id).includes(user.id),
-        );
+        citizens = citizens.slice(count);
         return city;
       })
       .createMany(10);
@@ -59,197 +58,282 @@ export default class AppSeed implements Seeder {
         card.user = card.users[0];
         return card;
       })
-      .createMany(40);
+      .makeMany(40);
     const exchanges = await factory(Exchange)()
       .map(async (exchange) => {
-        exchange.executorUser = users[Math.floor(Math.random() * users.length)];
-        exchange.customerCard = cards[Math.floor(Math.random() * cards.length)];
+        exchange.executorUser = getRandom(users);
+        exchange.customerCard = getRandom(
+          cards.filter((card) => exchange.type || card.balance >= exchange.sum),
+        );
+        if (exchange.type) {
+          exchange.customerCard.balance += exchange.sum;
+        } else {
+          exchange.customerCard.balance -= exchange.sum;
+        }
         return exchange;
       })
-      .createMany(80);
+      .makeMany(40);
     const payments = await factory(Payment)()
       .map(async (payment) => {
-        payment.senderCard = cards[Math.floor(Math.random() * cards.length)];
-        payment.receiverCard = cards[Math.floor(Math.random() * cards.length)];
+        payment.senderCard = getRandom(
+          cards.filter((card) => card.balance >= payment.sum),
+        );
+        payment.receiverCard = getRandom(cards);
+        payment.senderCard.balance -= payment.sum;
+        payment.receiverCard.balance += payment.sum;
         return payment;
       })
-      .createMany(240);
+      .makeMany(40);
     const invoices = await factory(Invoice)()
       .map(async (invoice) => {
         const completed = !!Math.floor(Math.random() * 2);
-        invoice.senderCard = cards[Math.floor(Math.random() * cards.length)];
-        invoice.receiverUser = users[Math.floor(Math.random() * users.length)];
+        invoice.senderCard = getRandom(cards);
+        invoice.receiverUser = getRandom(users);
         if (completed) {
-          invoice.receiverCard =
-            cards[Math.floor(Math.random() * cards.length)];
+          invoice.receiverCard = getRandom(
+            cards.filter((card) => card.balance >= invoice.sum),
+          );
           invoice.receiverUser = invoice.receiverCard.user;
           invoice.completedAt = new Date();
+          const payment = await factory(Payment)().make({
+            senderCard: invoice.receiverCard,
+            receiverCard: invoice.senderCard,
+            sum: invoice.sum,
+            description: 'complete invoice',
+          });
+          payments.push(payment);
+          invoice.receiverCard.balance -= invoice.sum;
+          invoice.senderCard.balance += invoice.sum;
         }
         return invoice;
       })
-      .createMany(40);
+      .makeMany(20);
     const shops = await factory(Shop)()
       .map(async (shop) => {
-        shop.user = users[Math.floor(Math.random() * users.length)];
+        shop.user = getRandom(users);
         return shop;
       })
       .createMany(10);
     const markets = await factory(Market)()
       .map(async (market) => {
-        market.card = cards[Math.floor(Math.random() * cards.length)];
+        market.card = getRandom(cards);
         market.stores = [];
         return market;
       })
-      .createMany(10);
+      .makeMany(10);
     let marketId = 0;
     const marketsStates = await factory(MarketState)()
       .map(async (marketState) => {
-        marketState.market = markets[Math.floor(marketId / 2)];
-        if (marketId % 2) {
-          marketState.price = marketState.market.price;
-        }
-        marketId++;
+        marketState.market = markets[marketId++];
+        marketState.price = marketState.market.price;
         return marketState;
       })
-      .createMany(20);
+      .makeMany(markets.length);
     const storages = await factory(Storage)()
       .map(async (storage) => {
-        storage.card = cards[Math.floor(Math.random() * cards.length)];
+        storage.card = getRandom(cards);
         storage.cells = [];
         return storage;
       })
-      .createMany(10);
+      .makeMany(10);
     let storageId = 0;
     const storagesStates = await factory(StorageState)()
       .map(async (storageState) => {
-        storageState.storage = storages[Math.floor(storageId / 2)];
-        if (storageId % 2) {
-          storageState.price = storageState.storage.price;
-        }
-        storageId++;
+        storageState.storage = storages[storageId++];
+        storageState.price = storageState.storage.price;
         return storageState;
       })
-      .createMany(20);
+      .makeMany(storages.length);
     const stores = await factory(Store)()
       .map(async (store) => {
-        store.market = markets[Math.floor(Math.random() * markets.length)];
+        store.market = getRandom(markets);
         store.market.stores.push(store);
         store.name = store.market.stores.length;
         return store;
       })
-      .createMany(40);
+      .makeMany(40);
     const cells = await factory(Cell)()
       .map(async (cell) => {
-        cell.storage = storages[Math.floor(Math.random() * storages.length)];
+        cell.storage = getRandom(storages);
         cell.storage.cells.push(cell);
         cell.name = cell.storage.cells.length;
         return cell;
       })
-      .createMany(40);
+      .makeMany(40);
     const rents = await factory(Rent)()
       .map(async (rent) => {
-        rent.store = stores[Math.floor(Math.random() * stores.length)];
-        rent.card = cards[Math.floor(Math.random() * cards.length)];
+        rent.store = getRandom(stores.filter((store) => !store.reservedAt));
+        rent.store.reservedAt = new Date();
+        rent.card = getRandom(
+          cards.filter((card) => card.balance >= rent.store.market.price),
+        );
+        const payment = await factory(Payment)().make({
+          senderCard: rent.card,
+          receiverCard: rent.store.market.card,
+          sum: rent.store.market.price,
+          description: 'reserve store',
+        });
+        payments.push(payment);
+        rent.card.balance -= rent.store.market.price;
+        rent.store.market.card.balance += rent.store.market.price;
         return rent;
       })
-      .createMany(80);
+      .makeMany(10);
     const leases = await factory(Lease)()
       .map(async (lease) => {
-        lease.cell = cells[Math.floor(Math.random() * cells.length)];
-        lease.card = cards[Math.floor(Math.random() * cards.length)];
+        lease.cell = getRandom(cells.filter((cell) => !cell.reservedAt));
+        lease.cell.reservedAt = new Date();
+        lease.card = getRandom(
+          cards.filter((card) => card.balance >= lease.cell.storage.price),
+        );
+        const payment = await factory(Payment)().make({
+          senderCard: lease.card,
+          receiverCard: lease.cell.storage.card,
+          sum: lease.cell.storage.price,
+          description: 'reserve cell',
+        });
+        payments.push(payment);
+        lease.card.balance -= lease.cell.storage.price;
+        lease.cell.storage.card.balance += lease.cell.storage.price;
         return lease;
       })
-      .createMany(400);
+      .makeMany(40);
     const goods = await factory(Good)()
       .map(async (good) => {
-        good.shop = shops[Math.floor(Math.random() * shops.length)];
+        good.shop = getRandom(shops);
         return good;
       })
-      .createMany(160);
+      .createMany(20);
     const wares = await factory(Ware)()
       .map(async (ware) => {
-        ware.rent = rents[Math.floor(Math.random() * rents.length)];
+        ware.rent = getRandom(rents);
         return ware;
       })
-      .createMany(160);
-    let wareId = 1;
+      .makeMany(20);
+    let wareId = 0;
     const waresStates = await factory(WareState)()
       .map(async (wareState) => {
-        wareState.ware = wares[wareId - Math.floor(wareId / 5) - 1];
-        if (wareId % 5 !== 4) {
-          wareState.price = wareState.ware.price;
-        }
-        wareId++;
+        wareState.ware = wares[wareId++];
+        wareState.price = wareState.ware.price;
         return wareState;
       })
-      .createMany(200);
+      .makeMany(wares.length);
     let leaseId = 0;
     const products = await factory(Product)()
       .map(async (product) => {
-        product.lease = leases[leaseId];
-        leaseId++;
+        product.lease = leases[leaseId++];
         return product;
       })
-      .createMany(160);
-    let productId = 1;
+      .makeMany(10);
+    let productId = 0;
     const productsStates = await factory(ProductState)()
       .map(async (productState) => {
-        productState.product =
-          products[productId - Math.floor(productId / 5) - 1];
-        if (productId % 5 !== 4) {
-          productState.price = productState.product.price;
-        }
-        productId++;
+        productState.product = products[productId++];
+        productState.price = productState.product.price;
         return productState;
       })
-      .createMany(200);
+      .makeMany(products.length);
     const orders = await factory(Order)()
       .map(async (order) => {
-        order.lease = leases[leaseId];
-        leaseId++;
+        order.lease = leases[leaseId++];
+        order.lease.card.balance -= order.price;
         if (order.status !== TransportationStatus.CREATED) {
-          order.executorCard = cards[Math.floor(Math.random() * cards.length)];
+          order.executorCard = getRandom(cards);
         }
         if (order.status === TransportationStatus.COMPLETED) {
           order.completedAt = new Date();
+          const payment = await factory(Payment)().make({
+            senderCard: order.lease.card,
+            receiverCard: order.executorCard,
+            sum: order.price,
+            description: 'complete order',
+          });
+          payments.push(payment);
+          order.executorCard.balance += order.price;
         }
         return order;
       })
-      .createMany(80);
+      .makeMany(10);
     const deliveries = await factory(Delivery)()
       .map(async (delivery) => {
-        delivery.fromLease = leases[leaseId];
-        leaseId++;
-        delivery.toLease = leases[leaseId];
-        leaseId++;
-        delivery.receiverUser = users[Math.floor(Math.random() * users.length)];
+        delivery.fromLease = leases[leaseId++];
+        delivery.toLease = leases[leaseId++];
+        delivery.fromLease.card.balance -= delivery.price;
+        delivery.receiverUser = getRandom(users);
         if (delivery.status !== TransportationStatus.CREATED) {
-          delivery.executorCard =
-            cards[Math.floor(Math.random() * cards.length)];
+          delivery.executorCard = getRandom(cards);
         }
         if (delivery.status === TransportationStatus.COMPLETED) {
           delivery.completedAt = new Date();
+          const payment = await factory(Payment)().make({
+            senderCard: delivery.fromLease.card,
+            receiverCard: delivery.executorCard,
+            sum: delivery.price,
+            description: 'complete delivery',
+          });
+          payments.push(payment);
+          delivery.executorCard.balance += delivery.price;
         }
         return delivery;
       })
-      .createMany(80);
+      .makeMany(10);
     const trades = await factory(Trade)()
       .map(async (trade) => {
-        trade.ware = wares[Math.floor(Math.random() * wares.length)];
-        trade.card = cards[Math.floor(Math.random() * cards.length)];
+        trade.ware = getRandom(wares.filter((ware) => ware.amount));
+        trade.card = getRandom(
+          cards.filter((card) => card.balance >= trade.ware.price),
+        );
+        trade.amount =
+          Math.floor(
+            Math.random() *
+              Math.min(
+                trade.ware.amount,
+                Math.floor(trade.card.balance / trade.ware.price),
+              ),
+          ) + 1;
+        trade.ware.amount -= trade.amount;
+        const payment = await factory(Payment)().make({
+          senderCard: trade.card,
+          receiverCard: trade.ware.rent.card,
+          sum: trade.amount * trade.ware.price,
+          description: 'buy ware',
+        });
+        payments.push(payment);
+        trade.card.balance -= trade.amount * trade.ware.price;
+        trade.ware.rent.card.balance += trade.amount * trade.ware.price;
         return trade;
       })
-      .createMany(240);
+      .makeMany(20);
     const sales = await factory(Sale)()
       .map(async (sale) => {
-        sale.product = products[Math.floor(Math.random() * products.length)];
-        sale.card = cards[Math.floor(Math.random() * cards.length)];
+        sale.product = getRandom(products.filter((product) => product.amount));
+        sale.card = getRandom(
+          cards.filter((card) => card.balance >= sale.product.price),
+        );
+        sale.amount =
+          Math.floor(
+            Math.random() *
+              Math.min(
+                sale.product.amount,
+                Math.floor(sale.card.balance / sale.product.price),
+              ),
+          ) + 1;
+        sale.product.amount -= sale.amount;
+        const payment = await factory(Payment)().make({
+          senderCard: sale.card,
+          receiverCard: sale.product.lease.card,
+          sum: sale.amount * sale.product.price,
+          description: 'buy product',
+        });
+        payments.push(payment);
+        sale.card.balance -= sale.amount * sale.product.price;
+        sale.product.lease.card.balance += sale.amount * sale.product.price;
         return sale;
       })
-      .createMany(240);
+      .makeMany(20);
     const polls = await factory(Poll)()
       .map(async (poll) => {
-        poll.user = users[Math.floor(Math.random() * users.length)];
+        poll.user = getRandom(users);
         return poll;
       })
       .createMany(10);
@@ -282,8 +366,7 @@ export default class AppSeed implements Seeder {
       .map(async (friend) => {
         friend.senderUser = allFriends[randomFriends[friendId]].senderUser;
         friend.receiverUser = allFriends[randomFriends[friendId]].receiverUser;
-        friend.type =
-          friend.type || friend.senderUser.id === friend.receiverUser.id;
+        friend.type = friend.type || friend.senderUser === friend.receiverUser;
         friendId++;
         return friend;
       })
@@ -306,5 +389,85 @@ export default class AppSeed implements Seeder {
         return rating;
       })
       .createMany(80);
+    let id = 0;
+    await factory(Card)()
+      .map(async () => cards[id++])
+      .createMany(cards.length);
+    id = 0;
+    await factory(Exchange)()
+      .map(async () => exchanges[id++])
+      .createMany(exchanges.length);
+    id = 0;
+    await factory(Payment)()
+      .map(async () => payments[id++])
+      .createMany(payments.length);
+    id = 0;
+    await factory(Invoice)()
+      .map(async () => invoices[id++])
+      .createMany(invoices.length);
+    id = 0;
+    await factory(Market)()
+      .map(async () => markets[id++])
+      .createMany(markets.length);
+    id = 0;
+    await factory(MarketState)()
+      .map(async () => marketsStates[id++])
+      .createMany(marketsStates.length);
+    id = 0;
+    await factory(Storage)()
+      .map(async () => storages[id++])
+      .createMany(storages.length);
+    id = 0;
+    await factory(StorageState)()
+      .map(async () => storagesStates[id++])
+      .createMany(storagesStates.length);
+    id = 0;
+    await factory(Store)()
+      .map(async () => stores[id++])
+      .createMany(stores.length);
+    id = 0;
+    await factory(Cell)()
+      .map(async () => cells[id++])
+      .createMany(cells.length);
+    id = 0;
+    await factory(Rent)()
+      .map(async () => rents[id++])
+      .createMany(rents.length);
+    id = 0;
+    await factory(Lease)()
+      .map(async () => leases[id++])
+      .createMany(leases.length);
+    id = 0;
+    await factory(Ware)()
+      .map(async () => wares[id++])
+      .createMany(wares.length);
+    id = 0;
+    await factory(WareState)()
+      .map(async () => waresStates[id++])
+      .createMany(waresStates.length);
+    id = 0;
+    await factory(Product)()
+      .map(async () => products[id++])
+      .createMany(products.length);
+    id = 0;
+    await factory(ProductState)()
+      .map(async () => productsStates[id++])
+      .createMany(productsStates.length);
+    id = 0;
+    await factory(Order)()
+      .map(async () => orders[id++])
+      .createMany(orders.length);
+    id = 0;
+    await factory(Delivery)()
+      .map(async () => deliveries[id++])
+      .createMany(deliveries.length);
+    id = 0;
+    await factory(Trade)()
+      .map(async () => trades[id++])
+      .createMany(trades.length);
+    id = 0;
+    await factory(Sale)()
+      .map(async () => sales[id++])
+      .createMany(sales.length);
   }
 }

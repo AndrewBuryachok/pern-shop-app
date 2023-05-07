@@ -4,7 +4,7 @@ import { Exchange } from '../../features/exchanges/exchange.entity';
 
 define(Exchange, (faker: Faker) => {
   const exchange = new Exchange();
-  exchange.sum = Math.floor(Math.random() * 400) + 1;
-  exchange.type = !!Math.floor(Math.random() * 2);
+  exchange.sum = Math.floor(Math.random() * 1000) + 1;
+  exchange.type = Math.floor(Math.random() * 6) !== 0;
   return exchange;
 });
