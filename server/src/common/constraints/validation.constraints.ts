@@ -15,6 +15,8 @@ import { RentsService } from '../../features/rents/rents.service';
 import { GoodsService } from '../../features/goods/goods.service';
 import { WaresService } from '../../features/wares/wares.service';
 import { ProductsService } from '../../features/products/products.service';
+import { TradesService } from '../../features/trades/trades.service';
+import { SalesService } from '../../features/sales/sales.service';
 import { OrdersService } from '../../features/orders/orders.service';
 import { DeliveriesService } from '../../features/deliveries/deliveries.service';
 import { PollsService } from '../../features/polls/polls.service';
@@ -246,6 +248,44 @@ export class IsProductExists implements ValidatorConstraintInterface {
 
   defaultMessage(): string {
     return 'Unknown product';
+  }
+}
+
+@Injectable()
+@ValidatorConstraint({ name: 'isTradeExists', async: true })
+export class IsTradeExists implements ValidatorConstraintInterface {
+  constructor(private tradesService: TradesService) {}
+
+  async validate(value: number): Promise<boolean> {
+    try {
+      await this.tradesService.checkTradeExists(value);
+    } catch (error) {
+      return false;
+    }
+    return true;
+  }
+
+  defaultMessage(): string {
+    return 'Unknown trade';
+  }
+}
+
+@Injectable()
+@ValidatorConstraint({ name: 'isSaleExists', async: true })
+export class IsSaleExists implements ValidatorConstraintInterface {
+  constructor(private salesService: SalesService) {}
+
+  async validate(value: number): Promise<boolean> {
+    try {
+      await this.salesService.checkSaleExists(value);
+    } catch (error) {
+      return false;
+    }
+    return true;
+  }
+
+  defaultMessage(): string {
+    return 'Unknown sale';
   }
 }
 

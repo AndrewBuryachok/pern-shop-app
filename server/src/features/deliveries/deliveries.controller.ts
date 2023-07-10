@@ -13,6 +13,7 @@ import { Delivery } from './delivery.entity';
 import {
   CreateDeliveryDto,
   DeliveryIdDto,
+  RateDeliveryDto,
   TakeDeliveryDto,
 } from './delivery.dto';
 import { Request, Response } from '../../common/interfaces';
@@ -107,5 +108,14 @@ export class DeliveriesController {
     @Param() { deliveryId }: DeliveryIdDto,
   ): Promise<void> {
     return this.deliveriesService.deleteDelivery({ deliveryId, myId });
+  }
+
+  @Post(':deliveryId/rate')
+  rateDelivery(
+    @MyId() myId: number,
+    @Param() { deliveryId }: DeliveryIdDto,
+    @Body() dto: RateDeliveryDto,
+  ): Promise<void> {
+    return this.deliveriesService.rateDelivery({ ...dto, deliveryId, myId });
   }
 }

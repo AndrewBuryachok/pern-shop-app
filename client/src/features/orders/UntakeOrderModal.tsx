@@ -10,6 +10,7 @@ import CustomAvatar from '../../common/components/CustomAvatar';
 import ThingImage from '../../common/components/ThingImage';
 import { parseCard, parseCell, parseThingAmount } from '../../common/utils';
 import { Color, items, Status } from '../../common/constants';
+import { getCurrentUser } from '../auth/auth.slice';
 
 type Props = IModal<Order>;
 
@@ -74,6 +75,11 @@ export const untakeOrderAction = {
       title: 'Untake Order',
       children: <UntakeOrderModal data={order} />,
     }),
-  disable: (order: Order) => order.status !== Status.TAKEN,
+  disable: (order: Order) => {
+    const user = getCurrentUser()!;
+    return (
+      order.status !== Status.TAKEN || order.executorCard?.user.id !== user.id
+    );
+  },
   color: Color.RED,
 };

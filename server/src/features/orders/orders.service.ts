@@ -5,7 +5,12 @@ import { Order } from './order.entity';
 import { LeasesService } from '../leases/leases.service';
 import { CardsService } from '../cards/cards.service';
 import { PaymentsService } from '../payments/payments.service';
-import { ExtCreateOrderDto, ExtOrderIdDto, ExtTakeOrderDto } from './order.dto';
+import {
+  ExtCreateOrderDto,
+  ExtOrderIdDto,
+  ExtRateOrderDto,
+  ExtTakeOrderDto,
+} from './order.dto';
 import { Request, Response } from '../../common/interfaces';
 import { getDateWeekAgo } from '../../common/utils';
 import { AppException } from '../../common/exceptions';
@@ -132,6 +137,14 @@ export class OrdersService {
     await this.delete(order);
   }
 
+  async rateOrder(dto: ExtRateOrderDto): Promise<void> {
+    const order = await this.checkOrderCustomer(dto.orderId, dto.myId);
+    if (!order.completedAt) {
+      throw new AppException(OrderError.NOT_COMPLETED);
+    }
+    await this.rate(order, dto.rate);
+  }
+
   async checkOrderExists(id: number): Promise<void> {
     await this.ordersRepository.findOneByOrFail({ id });
   }
@@ -219,6 +232,15 @@ export class OrdersService {
       await this.ordersRepository.remove(order);
     } catch (error) {
       throw new AppException(OrderError.DELETE_FAILED);
+    }
+  }
+
+  private async rate(order: Order, rate: number): Promise<void> {
+    try {
+      order.rate = rate || null;
+      await this.ordersRepository.save(order);
+    } catch (error) {
+      throw new AppException(OrderError.RATE_FAILED);
     }
   }
 
@@ -441,6 +463,13 @@ export class OrdersService {
             .orWhere('order.status = :status', { status: req.status }),
         ),
       )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.rate}`)
+            .orWhere('order.rate = :rate', { rate: req.rate }),
+        ),
+      )
       .orderBy('order.id', 'DESC')
       .skip(req.skip)
       .take(req.take)
@@ -480,6 +509,7 @@ export class OrdersService {
         'executorCard.color',
         'order.completedAt',
         'order.status',
+        'order.rate',
       ]);
   }
 }

@@ -24,6 +24,7 @@ export default function MainDeliveries() {
     item: null,
     description: '',
     status: null,
+    rate: null,
   });
 
   const response = useGetMainDeliveriesQuery({ page, search });

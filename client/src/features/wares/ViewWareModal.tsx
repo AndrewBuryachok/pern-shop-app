@@ -1,4 +1,11 @@
-import { Select, Stack, Textarea, TextInput } from '@mantine/core';
+import {
+  Input,
+  Rating,
+  Select,
+  Stack,
+  Textarea,
+  TextInput,
+} from '@mantine/core';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { Ware } from './ware.model';
@@ -58,6 +65,9 @@ export default function ViewWareModal({ data: ware }: Props) {
         value={`${created.date} ${created.time}`}
         disabled
       />
+      <Input.Wrapper label='Rate'>
+        <Rating value={ware.rate} readOnly />
+      </Input.Wrapper>
     </Stack>
   );
 }

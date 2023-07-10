@@ -44,6 +44,15 @@ export default function SingleUser() {
           <Skeleton key={key} h={64} w={72} />
         ))}
       </SimpleGrid>
+      <SimpleGrid
+        cols={4}
+        spacing={8}
+        breakpoints={[{ maxWidth: 'xs', cols: 2 }]}
+      >
+        {[...Array(4).keys()].map((key) => (
+          <Skeleton key={key} h={64} w={72} />
+        ))}
+      </SimpleGrid>
     </Stack>
   );
 }

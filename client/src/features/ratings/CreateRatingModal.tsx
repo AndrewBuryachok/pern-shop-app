@@ -1,4 +1,4 @@
-import { Input, Rating, Select } from '@mantine/core';
+import { CloseButton, Group, Input, Rating, Select } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { ExtUser } from '../users/user.model';
@@ -20,7 +20,7 @@ export default function CreateRatingModal({ data }: Props) {
   const form = useForm({
     initialValues: {
       user: data?.id ? `${data.id}` : '',
-      rate: data?.rating ? Math.round(data.rating) : 3,
+      rate: data?.rating ? Math.round(data.rating) : 0,
     },
     transformValues: ({ user, ...rest }) => ({ ...rest, userId: +user }),
   });
@@ -55,7 +55,14 @@ export default function CreateRatingModal({ data }: Props) {
         {...form.getInputProps('user')}
       />
       <Input.Wrapper label='Rate' required>
-        <Rating {...form.getInputProps('rate')} />
+        <Group spacing={8}>
+          <Rating {...form.getInputProps('rate')} />
+          <CloseButton
+            size={24}
+            iconSize={16}
+            onClick={() => form.setFieldValue('rate', 0)}
+          />
+        </Group>
       </Input.Wrapper>
     </CustomForm>
   );

@@ -20,6 +20,7 @@ export default function AllOrders() {
     item: null,
     description: '',
     status: null,
+    rate: null,
   });
 
   const response = useGetAllOrdersQuery({ page, search });

@@ -1,8 +1,8 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { TradesService } from './trades.service';
 import { Trade } from './trade.entity';
-import { CreateTradeDto } from './trade.dto';
+import { CreateTradeDto, RateTradeDto, TradeIdDto } from './trade.dto';
 import { Request, Response, Stats } from '../../common/interfaces';
 import { MyId, Public, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
@@ -46,5 +46,14 @@ export class TradesController {
     @Body() dto: CreateTradeDto,
   ): Promise<void> {
     return this.tradesService.createTrade({ ...dto, myId });
+  }
+
+  @Post(':tradeId/rate')
+  rateTrade(
+    @MyId() myId: number,
+    @Param() { tradeId }: TradeIdDto,
+    @Body() dto: RateTradeDto,
+  ): Promise<void> {
+    return this.tradesService.rateTrade({ ...dto, tradeId, myId });
   }
 }

@@ -7,3 +7,7 @@ export interface CreateTransportationDto extends CreateThingDto {
 export interface TakeTransportationDto {
   cardId: number;
 }
+
+export interface RateTransportationDto {
+  rate: number;
+}

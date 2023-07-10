@@ -4,6 +4,7 @@ import { Delivery } from './delivery.model';
 import {
   CreateDeliveryDto,
   DeliveryIdDto,
+  RateDeliveryDto,
   TakeDeliveryDto,
 } from './delivery.dto';
 import { getQuery } from '../../common/utils';
@@ -84,6 +85,14 @@ export const deliveriesApi = emptyApi.injectEndpoints({
       }),
       invalidatesTags: ['Delivery', 'Card'],
     }),
+    rateDelivery: build.mutation<void, RateDeliveryDto>({
+      query: ({ deliveryId, ...dto }) => ({
+        url: `/deliveries/${deliveryId}/rate`,
+        method: 'POST',
+        body: dto,
+      }),
+      invalidatesTags: ['Delivery'],
+    }),
   }),
 });
 
@@ -99,4 +108,5 @@ export const {
   useExecuteDeliveryMutation,
   useCompleteDeliveryMutation,
   useDeleteDeliveryMutation,
+  useRateDeliveryMutation,
 } = deliveriesApi;

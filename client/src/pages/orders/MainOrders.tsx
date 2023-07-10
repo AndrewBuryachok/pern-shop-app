@@ -22,6 +22,7 @@ export default function MainOrders() {
     item: null,
     description: '',
     status: null,
+    rate: null,
   });
 
   const response = useGetMainOrdersQuery({ page, search });

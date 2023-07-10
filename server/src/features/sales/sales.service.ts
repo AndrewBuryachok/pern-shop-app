@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { Sale } from './sale.entity';
 import { ProductsService } from '../products/products.service';
-import { ExtCreateSaleDto } from './sale.dto';
+import { ExtCreateSaleDto, ExtRateSaleDto } from './sale.dto';
 import { Request, Response, Stats } from '../../common/interfaces';
 import { getDateMonthAgo } from '../../common/utils';
 import { AppException } from '../../common/exceptions';
@@ -68,6 +68,26 @@ export class SalesService {
     await this.create(dto);
   }
 
+  async rateSale(dto: ExtRateSaleDto): Promise<void> {
+    const sale = await this.checkSaleOwner(dto.saleId, dto.myId);
+    await this.rate(sale, dto.rate);
+  }
+
+  async checkSaleExists(id: number): Promise<void> {
+    await this.salesRepository.findOneByOrFail({ id });
+  }
+
+  private async checkSaleOwner(id: number, userId: number): Promise<Sale> {
+    const sale = await this.salesRepository.findOneBy({
+      id,
+      card: { userId },
+    });
+    if (!sale) {
+      throw new AppException(SaleError.NOT_OWNER);
+    }
+    return sale;
+  }
+
   private async create(dto: ExtCreateSaleDto): Promise<void> {
     try {
       const sale = this.salesRepository.create({
@@ -78,6 +98,15 @@ export class SalesService {
       await this.salesRepository.save(sale);
     } catch (error) {
       throw new AppException(SaleError.CREATE_FAILED);
+    }
+  }
+
+  private async rate(sale: Sale, rate: number): Promise<void> {
+    try {
+      sale.rate = rate || null;
+      await this.salesRepository.save(sale);
+    } catch (error) {
+      throw new AppException(SaleError.RATE_FAILED);
     }
   }
 
@@ -301,6 +330,13 @@ export class SalesService {
             }),
         ),
       )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.rate}`)
+            .orWhere('sale.rate = :rate', { rate: req.rate }),
+        ),
+      )
       .orderBy('sale.id', 'DESC')
       .skip(req.skip)
       .take(req.take)
@@ -339,6 +375,7 @@ export class SalesService {
         'buyerCard.color',
         'sale.amount',
         'sale.createdAt',
+        'sale.rate',
       ]);
   }
 }

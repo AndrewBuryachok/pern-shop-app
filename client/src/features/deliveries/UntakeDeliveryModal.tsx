@@ -10,6 +10,7 @@ import CustomAvatar from '../../common/components/CustomAvatar';
 import ThingImage from '../../common/components/ThingImage';
 import { parseCard, parseCell, parseThingAmount } from '../../common/utils';
 import { Color, items, Status } from '../../common/constants';
+import { getCurrentUser } from '../auth/auth.slice';
 
 type Props = IModal<Delivery>;
 
@@ -97,6 +98,12 @@ export const untakeDeliveryAction = {
       title: 'Untake Delivery',
       children: <UntakeDeliveryModal data={delivery} />,
     }),
-  disable: (delivery: Delivery) => delivery.status !== Status.TAKEN,
+  disable: (delivery: Delivery) => {
+    const user = getCurrentUser()!;
+    return (
+      delivery.status !== Status.TAKEN ||
+      delivery.executorCard?.user.id !== user.id
+    );
+  },
   color: Color.RED,
 };

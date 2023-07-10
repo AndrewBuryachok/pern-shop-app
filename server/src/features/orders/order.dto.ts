@@ -5,6 +5,7 @@ import { IsId } from '../../common/decorators';
 import { IsOrderExists, IsStorageExists } from '../../common/constraints';
 import {
   CreateTransportationDto,
+  RateTransportationDto,
   TakeTransportationDto,
 } from '../transportations/transportation.dto';
 
@@ -14,6 +15,10 @@ export class OrderIdDto {
   @Validate(IsOrderExists)
   @Type(() => Number)
   orderId: number;
+}
+
+export class ExtOrderIdDto extends OrderIdDto {
+  myId: number;
 }
 
 export class CreateOrderDto extends CreateTransportationDto {
@@ -34,6 +39,9 @@ export class ExtTakeOrderDto extends TakeOrderDto {
   myId: number;
 }
 
-export class ExtOrderIdDto extends OrderIdDto {
+export class RateOrderDto extends RateTransportationDto {}
+
+export class ExtRateOrderDto extends RateOrderDto {
+  orderId: number;
   myId: number;
 }

@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { Trade } from './trade.entity';
 import { WaresService } from '../wares/wares.service';
-import { ExtCreateTradeDto } from './trade.dto';
+import { ExtCreateTradeDto, ExtRateTradeDto } from './trade.dto';
 import { Request, Response, Stats } from '../../common/interfaces';
 import { getDateMonthAgo } from '../../common/utils';
 import { AppException } from '../../common/exceptions';
@@ -68,6 +68,26 @@ export class TradesService {
     await this.create(dto);
   }
 
+  async rateTrade(dto: ExtRateTradeDto): Promise<void> {
+    const trade = await this.checkTradeOwner(dto.tradeId, dto.myId);
+    await this.rate(trade, dto.rate);
+  }
+
+  async checkTradeExists(id: number): Promise<void> {
+    await this.tradesRepository.findOneByOrFail({ id });
+  }
+
+  private async checkTradeOwner(id: number, userId: number): Promise<Trade> {
+    const trade = await this.tradesRepository.findOneBy({
+      id,
+      card: { userId },
+    });
+    if (!trade) {
+      throw new AppException(TradeError.NOT_OWNER);
+    }
+    return trade;
+  }
+
   private async create(dto: ExtCreateTradeDto): Promise<void> {
     try {
       const trade = this.tradesRepository.create({
@@ -78,6 +98,15 @@ export class TradesService {
       await this.tradesRepository.save(trade);
     } catch (error) {
       throw new AppException(TradeError.CREATE_FAILED);
+    }
+  }
+
+  private async rate(trade: Trade, rate: number): Promise<void> {
+    try {
+      trade.rate = rate || null;
+      await this.tradesRepository.save(trade);
+    } catch (error) {
+      throw new AppException(TradeError.RATE_FAILED);
     }
   }
 
@@ -301,6 +330,13 @@ export class TradesService {
             }),
         ),
       )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.rate}`)
+            .orWhere('trade.rate = :rate', { rate: req.rate }),
+        ),
+      )
       .orderBy('trade.id', 'DESC')
       .skip(req.skip)
       .take(req.take)
@@ -339,6 +375,7 @@ export class TradesService {
         'buyerCard.color',
         'trade.amount',
         'trade.createdAt',
+        'trade.rate',
       ]);
   }
 }

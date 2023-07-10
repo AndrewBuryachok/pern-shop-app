@@ -10,7 +10,12 @@ import {
 import { ApiTags } from '@nestjs/swagger';
 import { OrdersService } from './orders.service';
 import { Order } from './order.entity';
-import { CreateOrderDto, OrderIdDto, TakeOrderDto } from './order.dto';
+import {
+  CreateOrderDto,
+  OrderIdDto,
+  RateOrderDto,
+  TakeOrderDto,
+} from './order.dto';
 import { Request, Response } from '../../common/interfaces';
 import { MyId, Public, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
@@ -103,5 +108,14 @@ export class OrdersController {
     @Param() { orderId }: OrderIdDto,
   ): Promise<void> {
     return this.ordersService.deleteOrder({ orderId, myId });
+  }
+
+  @Post(':orderId/rate')
+  rateOrder(
+    @MyId() myId: number,
+    @Param() { orderId }: OrderIdDto,
+    @Body() dto: RateOrderDto,
+  ): Promise<void> {
+    return this.ordersService.rateOrder({ ...dto, orderId, myId });
   }
 }

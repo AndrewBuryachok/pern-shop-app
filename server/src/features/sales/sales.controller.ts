@@ -1,8 +1,8 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { SalesService } from './sales.service';
 import { Sale } from './sale.entity';
-import { CreateSaleDto } from './sale.dto';
+import { CreateSaleDto, RateSaleDto, SaleIdDto } from './sale.dto';
 import { Request, Response, Stats } from '../../common/interfaces';
 import { MyId, Public, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
@@ -43,5 +43,14 @@ export class SalesController {
   @Post()
   createSale(@MyId() myId: number, @Body() dto: CreateSaleDto): Promise<void> {
     return this.salesService.createSale({ ...dto, myId });
+  }
+
+  @Post(':saleId/rate')
+  rateSale(
+    @MyId() myId: number,
+    @Param() { saleId }: SaleIdDto,
+    @Body() dto: RateSaleDto,
+  ): Promise<void> {
+    return this.salesService.rateSale({ ...dto, saleId, myId });
   }
 }

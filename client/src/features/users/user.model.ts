@@ -24,8 +24,12 @@ export interface ExtUser extends User {
   goods: number;
   wares: number;
   products: number;
-  trades: number;
-  sales: number;
+  orders: number;
+  deliveries: number;
+  tradesRate: number;
+  salesRate: number;
+  ordersRate: number;
+  deliveriesRate: number;
   friends: SmUser[];
   rating: number;
 }

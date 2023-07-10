@@ -19,6 +19,7 @@ export default function AllSales() {
     cell: null,
     item: null,
     description: '',
+    rate: null,
   });
 
   const response = useGetAllSalesQuery({ page, search });

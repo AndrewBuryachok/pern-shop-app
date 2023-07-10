@@ -20,11 +20,18 @@ export default function UserProfile({ data: user }: Props) {
   const me = getCurrentUser();
 
   const stats = [
-    { label: 'Goods', value: user.goods, color: 'red' },
-    { label: 'Wares', value: user.wares, color: 'yellow' },
-    { label: 'Products', value: user.products, color: 'green' },
-    { label: 'Trades', value: user.trades, color: 'blue' },
-    { label: 'Sales', value: user.sales, color: 'violet' },
+    { label: 'Wares', value: user.wares, color: 'red' },
+    { label: 'Products', value: user.products, color: 'yellow' },
+    { label: 'Orders', value: user.orders, color: 'green' },
+    { label: 'Deliveries', value: user.deliveries, color: 'blue' },
+    { label: 'Goods', value: user.goods, color: 'violet' },
+  ];
+
+  const rates = [
+    { label: 'Trades', value: user.tradesRate, color: 'red' },
+    { label: 'Sales', value: user.salesRate, color: 'yellow' },
+    { label: 'Orders', value: user.ordersRate, color: 'green' },
+    { label: 'Deliveries', value: user.deliveriesRate, color: 'blue' },
   ];
 
   return (
@@ -81,6 +88,22 @@ export default function UserProfile({ data: user }: Props) {
             </Text>
             <Text align='center' size='sm' color={stat.color}>
               {stat.label}
+            </Text>
+          </Paper>
+        ))}
+      </SimpleGrid>
+      <SimpleGrid
+        cols={4}
+        spacing={8}
+        breakpoints={[{ maxWidth: 'xs', cols: 2 }]}
+      >
+        {rates.map((rate) => (
+          <Paper key={rate.label} p={8} withBorder>
+            <Text align='center' size='lg' weight='bold'>
+              {rate.value.toFixed(1)}
+            </Text>
+            <Text align='center' size='sm' color={rate.color}>
+              {rate.label}
             </Text>
           </Paper>
         ))}

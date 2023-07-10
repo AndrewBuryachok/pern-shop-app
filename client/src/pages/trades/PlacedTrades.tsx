@@ -20,6 +20,7 @@ export default function PlacedTrades() {
     store: null,
     item: null,
     description: '',
+    rate: null,
   });
 
   const response = useGetPlacedTradesQuery({ page, search });

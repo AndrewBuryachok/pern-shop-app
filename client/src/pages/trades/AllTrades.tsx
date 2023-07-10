@@ -19,6 +19,7 @@ export default function AllTrades() {
     store: null,
     item: null,
     description: '',
+    rate: null,
   });
 
   const response = useGetAllTradesQuery({ page, search });

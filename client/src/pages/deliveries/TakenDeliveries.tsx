@@ -25,6 +25,7 @@ export default function TakenDeliveries() {
     item: null,
     description: '',
     status: null,
+    rate: null,
   });
 
   const response = useGetTakenDeliveriesQuery({ page, search });

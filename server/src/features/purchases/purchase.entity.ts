@@ -23,4 +23,7 @@ export abstract class Purchase {
 
   @CreateDateColumn({ type: 'timestamptz', name: 'created_at' })
   createdAt: Date;
+
+  @Column({ nullable: true })
+  rate?: number;
 }

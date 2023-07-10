@@ -20,4 +20,7 @@ export abstract class Transportation extends Thing {
     default: TransportationStatus.CREATED,
   })
   status: TransportationStatus;
+
+  @Column({ nullable: true })
+  rate?: number;
 }

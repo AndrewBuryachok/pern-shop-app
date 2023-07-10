@@ -3,6 +3,7 @@ import { ISearch } from '../../common/interfaces';
 import { Filter, Mode } from '../../common/enums';
 import { useGetMyTradesQuery } from '../../features/trades/trades.api';
 import TradesTable from '../../features/trades/TradesTable';
+import { rateTradeAction } from '../../features/trades/RateTradeModal';
 import { Role } from '../../common/constants';
 
 export default function MyTrades() {
@@ -20,6 +21,7 @@ export default function MyTrades() {
     store: null,
     item: null,
     description: '',
+    rate: null,
   });
 
   const response = useGetMyTradesQuery({ page, search });
@@ -28,6 +30,8 @@ export default function MyTrades() {
     { label: 'Placed', to: '../placed' },
     { label: 'All', to: '../all', role: Role.MANAGER },
   ];
+
+  const actions = [rateTradeAction];
 
   return (
     <TradesTable
@@ -38,6 +42,7 @@ export default function MyTrades() {
       setSearch={setSearch}
       links={links}
       title='My Trades'
+      actions={actions}
     />
   );
 }

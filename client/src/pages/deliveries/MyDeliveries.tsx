@@ -5,6 +5,7 @@ import { useGetMyDeliveriesQuery } from '../../features/deliveries/deliveries.ap
 import DeliveriesTable from '../../features/deliveries/DeliveriesTable';
 import { createDeliveryButton } from '../../features/deliveries/CreateDeliveryModal';
 import { completeDeliveryAction } from '../../features/deliveries/CompleteDeliveryModal';
+import { rateDeliveryAction } from '../../features/deliveries/RateDeliveryModal';
 import { deleteDeliveryAction } from '../../features/deliveries/DeleteDeliveryModal';
 import { Role } from '../../common/constants';
 
@@ -26,6 +27,7 @@ export default function MyDeliveries() {
     item: null,
     description: '',
     status: null,
+    rate: null,
   });
 
   const response = useGetMyDeliveriesQuery({ page, search });
@@ -39,7 +41,11 @@ export default function MyDeliveries() {
 
   const button = createDeliveryButton;
 
-  const actions = [completeDeliveryAction, deleteDeliveryAction];
+  const actions = [
+    completeDeliveryAction,
+    rateDeliveryAction,
+    deleteDeliveryAction,
+  ];
 
   return (
     <DeliveriesTable

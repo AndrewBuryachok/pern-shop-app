@@ -125,6 +125,6 @@ export const IsType = () => (target: object, key: string) => {
 export const IsRate = () => (target: object, key: string) => {
   IsNotEmpty()(target, key);
   IsInt()(target, key);
-  IsPositive()(target, key);
+  Min(0)(target, key);
   Max(MAX_RATE_VALUE)(target, key);
 };

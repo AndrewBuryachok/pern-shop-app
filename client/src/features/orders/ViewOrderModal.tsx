@@ -1,4 +1,4 @@
-import { Stack, Textarea, TextInput } from '@mantine/core';
+import { Input, Rating, Stack, Textarea, TextInput } from '@mantine/core';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { Order } from './order.model';
@@ -64,6 +64,9 @@ export default function ViewOrderModal({ data: order }: Props) {
         value={completed ? `${completed.date} ${completed.time}` : '-'}
         disabled
       />
+      <Input.Wrapper label='Rate'>
+        <Rating value={order.rate} readOnly />
+      </Input.Wrapper>
     </Stack>
   );
 }

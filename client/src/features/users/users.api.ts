@@ -55,6 +55,8 @@ export const usersApi = emptyApi.injectEndpoints({
         'Product',
         'Trade',
         'Sale',
+        'Order',
+        'Delivery',
         'Friend',
         'Rating',
       ],

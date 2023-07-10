@@ -83,7 +83,7 @@ export class UsersService {
 
   async getSingleUser(userId: number): Promise<User> {
     const profile = await this.getUserProfile(userId);
-    const stats = await this.getUserStats(userId);
+    const stats = await this.getUserStatsAndRates(userId);
     return { ...profile, ...stats };
   }
 
@@ -342,7 +342,7 @@ export class UsersService {
     return user;
   }
 
-  private async getUserStats(userId: number): Promise<User> {
+  private async getUserStatsAndRates(userId: number): Promise<User> {
     const goods = await this.usersRepository
       .createQueryBuilder('user')
       .leftJoin('user.shops', 'shop')
@@ -386,29 +386,101 @@ export class UsersService {
       .where('user.id = :userId', { userId })
       .select('COUNT(product.id)', 'products')
       .getRawOne();
-    const trades = await this.usersRepository
+    const orders = await this.usersRepository
       .createQueryBuilder('user')
       .leftJoin('user.cards', 'card')
       .leftJoinAndMapMany(
-        'card.trades',
+        'card.orders',
+        'orders',
+        'order',
+        'card.id = order.executorCardId',
+      )
+      .where('user.id = :userId', { userId })
+      .select('COUNT(order.id)', 'orders')
+      .getRawOne();
+    const deliveries = await this.usersRepository
+      .createQueryBuilder('user')
+      .leftJoin('user.cards', 'card')
+      .leftJoinAndMapMany(
+        'card.deliveries',
+        'deliveries',
+        'delivery',
+        'card.id = delivery.executorCardId',
+      )
+      .where('user.id = :userId', { userId })
+      .select('COUNT(delivery.id)', 'deliveries')
+      .getRawOne();
+    const tradesRate = await this.usersRepository
+      .createQueryBuilder('user')
+      .leftJoin('user.cards', 'card')
+      .leftJoinAndMapMany(
+        'card.rents',
+        'rents',
+        'rent',
+        'card.id = rent.cardId',
+      )
+      .leftJoinAndMapMany(
+        'rent.wares',
+        'wares',
+        'ware',
+        'rent.id = ware.rentId',
+      )
+      .leftJoinAndMapMany(
+        'ware.trades',
         'trades',
         'trade',
-        'card.id = trade.cardId',
+        'ware.id = trade.wareId',
       )
       .where('user.id = :userId', { userId })
-      .select('COUNT(trade.id)', 'trades')
+      .select('AVG(trade.rate)', 'tradesRate')
       .getRawOne();
-    const sales = await this.usersRepository
+    const salesRate = await this.usersRepository
       .createQueryBuilder('user')
       .leftJoin('user.cards', 'card')
       .leftJoinAndMapMany(
-        'card.sales',
+        'card.leases',
+        'leases',
+        'lease',
+        'card.id = lease.cardId',
+      )
+      .leftJoinAndMapMany(
+        'lease.products',
+        'products',
+        'product',
+        'lease.id = product.leaseId',
+      )
+      .leftJoinAndMapMany(
+        'product.sales',
         'sales',
         'sale',
-        'card.id = sale.cardId',
+        'product.id = sale.productId',
       )
       .where('user.id = :userId', { userId })
-      .select('COUNT(sale.id)', 'sales')
+      .select('AVG(sale.rate)', 'salesRate')
+      .getRawOne();
+    const ordersRate = await this.usersRepository
+      .createQueryBuilder('user')
+      .leftJoin('user.cards', 'card')
+      .leftJoinAndMapMany(
+        'card.orders',
+        'orders',
+        'order',
+        'card.id = order.executorCardId',
+      )
+      .where('user.id = :userId', { userId })
+      .select('AVG(order.rate)', 'ordersRate')
+      .getRawOne();
+    const deliveriesRate = await this.usersRepository
+      .createQueryBuilder('user')
+      .leftJoin('user.cards', 'card')
+      .leftJoinAndMapMany(
+        'card.deliveries',
+        'deliveries',
+        'delivery',
+        'card.id = delivery.executorCardId',
+      )
+      .where('user.id = :userId', { userId })
+      .select('AVG(delivery.rate)', 'deliveriesRate')
       .getRawOne();
     const ratings = await this.usersRepository
       .createQueryBuilder('user')
@@ -420,8 +492,12 @@ export class UsersService {
       ...goods,
       ...wares,
       ...products,
-      ...trades,
-      ...sales,
+      ...orders,
+      ...deliveries,
+      ...tradesRate,
+      ...salesRate,
+      ...ordersRate,
+      ...deliveriesRate,
       ...ratings,
     };
     Object.keys(user).forEach((key) => (user[key] = +user[key]));

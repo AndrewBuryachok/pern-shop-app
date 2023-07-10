@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Validate } from 'class-validator';
-import { IsAmount, IsId } from '../../common/decorators';
+import { IsAmount, IsId, IsRate } from '../../common/decorators';
 import { IsCardExists } from '../../common/constraints';
 
 export class CreatePurchaseDto {
@@ -12,4 +12,10 @@ export class CreatePurchaseDto {
   @ApiProperty()
   @IsAmount()
   amount: number;
+}
+
+export class RatePurchaseDto {
+  @ApiProperty()
+  @IsRate()
+  rate: number;
 }

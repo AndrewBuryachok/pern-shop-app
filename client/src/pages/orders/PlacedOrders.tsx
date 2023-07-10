@@ -21,6 +21,7 @@ export default function PlacedOrders() {
     item: null,
     description: '',
     status: null,
+    rate: null,
   });
 
   const response = useGetPlacedOrdersQuery({ page, search });

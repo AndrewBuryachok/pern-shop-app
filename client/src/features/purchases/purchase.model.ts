@@ -5,4 +5,5 @@ export interface Purchase {
   card: MdCard;
   amount: number;
   createdAt: Date;
+  rate?: number;
 }

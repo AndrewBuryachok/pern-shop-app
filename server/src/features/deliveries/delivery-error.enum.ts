@@ -5,6 +5,7 @@ export enum DeliveryError {
   ALREADY_EXECUTED = '400: Delivery already executed',
   NOT_EXECUTED = '400: Delivery is not executed',
   ALREADY_COMPLETED = '400: Delivery already completed',
+  NOT_COMPLETED = '400: Delivery is not completed',
   NOT_SENDER = '403: You are not delivery sender',
   NOT_RECEIVER = '403: You are not delivery receiver',
   NOT_EXECUTOR = '403: You are not delivery executor',
@@ -14,4 +15,5 @@ export enum DeliveryError {
   EXECUTE_FAILED = '500: Failed to execute delivery',
   COMPLETE_FAILED = '500: Failed to complete delivery',
   DELETE_FAILED = '500: Failed to delete delivery',
+  RATE_FAILED = '500: Failed to rate delivery',
 }

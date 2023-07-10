@@ -1,7 +1,7 @@
 import { emptyApi } from '../../app/empty.api';
 import { IRequest, IResponse, IStats } from '../../common/interfaces';
 import { Trade } from './trade.model';
-import { CreateTradeDto } from './trade.dto';
+import { CreateTradeDto, RateTradeDto } from './trade.dto';
 import { getQuery } from '../../common/utils';
 
 export const tradesApi = emptyApi.injectEndpoints({
@@ -38,6 +38,14 @@ export const tradesApi = emptyApi.injectEndpoints({
       }),
       invalidatesTags: ['Trade', 'Ware', 'Payment', 'Card'],
     }),
+    rateTrade: build.mutation<void, RateTradeDto>({
+      query: ({ tradeId, ...dto }) => ({
+        url: `/trades/${tradeId}/rate`,
+        method: 'POST',
+        body: dto,
+      }),
+      invalidatesTags: ['Trade'],
+    }),
   }),
 });
 
@@ -47,4 +55,5 @@ export const {
   useGetPlacedTradesQuery,
   useGetAllTradesQuery,
   useCreateTradeMutation,
+  useRateTradeMutation,
 } = tradesApi;

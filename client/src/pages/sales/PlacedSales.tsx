@@ -20,6 +20,7 @@ export default function PlacedSales() {
     cell: null,
     item: null,
     description: '',
+    rate: null,
   });
 
   const response = useGetPlacedSalesQuery({ page, search });

@@ -3,6 +3,7 @@ import { ISearch } from '../../common/interfaces';
 import { Filter, Mode } from '../../common/enums';
 import { useGetMySalesQuery } from '../../features/sales/sales.api';
 import SalesTable from '../../features/sales/SalesTable';
+import { rateSaleAction } from '../../features/sales/RateSaleModal';
 import { Role } from '../../common/constants';
 
 export default function MySales() {
@@ -20,6 +21,7 @@ export default function MySales() {
     cell: null,
     item: null,
     description: '',
+    rate: null,
   });
 
   const response = useGetMySalesQuery({ page, search });
@@ -28,6 +30,8 @@ export default function MySales() {
     { label: 'Placed', to: '../placed' },
     { label: 'All', to: '../all', role: Role.MANAGER },
   ];
+
+  const actions = [rateSaleAction];
 
   return (
     <SalesTable
@@ -38,6 +42,7 @@ export default function MySales() {
       setSearch={setSearch}
       links={links}
       title='My Sales'
+      actions={actions}
     />
   );
 }

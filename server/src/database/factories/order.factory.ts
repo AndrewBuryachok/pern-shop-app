@@ -11,5 +11,8 @@ define(Order, (faker: Faker) => {
   order.kit = Math.floor(Math.random() * 3) + 1;
   order.price = Math.floor(Math.random() * 200) + 1;
   order.status = Math.floor(Math.random() * 4) + 1;
+  if (order.status === 4 && Math.random() > 0.5) {
+    order.rate = Math.floor(Math.random() * 5) + 1;
+  }
   return order;
 });

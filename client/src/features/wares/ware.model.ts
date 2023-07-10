@@ -11,4 +11,5 @@ export interface MdWare extends MdThing {
 export interface Ware extends LgThing {
   rent: SmRent;
   states: State[];
+  rate?: number;
 }

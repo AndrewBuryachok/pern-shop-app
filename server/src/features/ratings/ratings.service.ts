@@ -50,14 +50,20 @@ export class RatingsService {
     });
     if (!rating) {
       await this.create(dto);
-    } else {
+    } else if (rating.rate) {
       await this.edit(rating, dto.rate);
+    } else {
+      await this.delete(rating);
     }
   }
 
   async editRating(dto: ExtEditRatingDto): Promise<void> {
     const rating = await this.checkRatingSender(dto.ratingId, dto.myId);
-    await this.edit(rating, dto.rate);
+    if (dto.rate) {
+      await this.edit(rating, dto.rate);
+    } else {
+      await this.delete(rating);
+    }
   }
 
   async deleteRating(dto: DeleteRatingDto): Promise<void> {

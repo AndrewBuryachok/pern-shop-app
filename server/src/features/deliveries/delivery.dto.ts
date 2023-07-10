@@ -9,6 +9,7 @@ import {
 } from '../../common/constraints';
 import {
   CreateTransportationDto,
+  RateTransportationDto,
   TakeTransportationDto,
 } from '../transportations/transportation.dto';
 
@@ -18,6 +19,10 @@ export class DeliveryIdDto {
   @Validate(IsDeliveryExists)
   @Type(() => Number)
   deliveryId: number;
+}
+
+export class ExtDeliveryIdDto extends DeliveryIdDto {
+  myId: number;
 }
 
 export class CreateDeliveryDto extends CreateTransportationDto {
@@ -48,6 +53,9 @@ export class ExtTakeDeliveryDto extends TakeDeliveryDto {
   myId: number;
 }
 
-export class ExtDeliveryIdDto extends DeliveryIdDto {
+export class RateDeliveryDto extends RateTransportationDto {}
+
+export class ExtRateDeliveryDto extends RateDeliveryDto {
+  deliveryId: number;
   myId: number;
 }

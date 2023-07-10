@@ -48,7 +48,7 @@ export class ProductsService {
       .andWhere('product.amount > 0')
       .andWhere('product.createdAt > :date', { date: getDateWeekAgo() })
       .getManyAndCount();
-    await this.loadStates(result);
+    await this.loadStatesAndRates(result);
     return { result, count };
   }
 
@@ -57,7 +57,7 @@ export class ProductsService {
       .innerJoin('sellerCard.users', 'sellerUsers')
       .andWhere('sellerUsers.id = :myId', { myId })
       .getManyAndCount();
-    await this.loadStates(result);
+    await this.loadStatesAndRates(result);
     return { result, count };
   }
 
@@ -69,7 +69,7 @@ export class ProductsService {
       .innerJoin('ownerCard.users', 'ownerUsers')
       .andWhere('ownerUsers.id = :myId', { myId })
       .getManyAndCount();
-    await this.loadStates(result);
+    await this.loadStatesAndRates(result);
     return { result, count };
   }
 
@@ -77,7 +77,7 @@ export class ProductsService {
     const [result, count] = await this.getProductsQueryBuilder(
       req,
     ).getManyAndCount();
-    await this.loadStates(result);
+    await this.loadStatesAndRates(result);
     return { result, count };
   }
 
@@ -172,7 +172,7 @@ export class ProductsService {
     }
   }
 
-  private async loadStates(products: Product[]): Promise<void> {
+  private async loadStatesAndRates(products: Product[]): Promise<void> {
     const promises = products.map(async (product) => {
       product.states = (
         await this.productsRepository
@@ -189,6 +189,19 @@ export class ProductsService {
           ])
           .getOne()
       ).states;
+      product['rate'] = +(
+        await this.productsRepository
+          .createQueryBuilder('product')
+          .leftJoinAndMapMany(
+            'product.sales',
+            'sales',
+            'sale',
+            'product.id = sale.productId',
+          )
+          .where('product.id = :productId', { productId: product.id })
+          .select('AVG(sale.rate)', 'rate')
+          .getRawOne()
+      ).rate;
     });
     await Promise.all(promises);
   }

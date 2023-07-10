@@ -5,6 +5,7 @@ import { useGetMyOrdersQuery } from '../../features/orders/orders.api';
 import OrdersTable from '../../features/orders/OrdersTable';
 import { createOrderButton } from '../../features/orders/CreateOrderModal';
 import { completeOrderAction } from '../../features/orders/CompleteOrderModal';
+import { rateOrderAction } from '../../features/orders/RateOrderModal';
 import { deleteOrderAction } from '../../features/orders/DeleteOrderModal';
 import { Role } from '../../common/constants';
 
@@ -24,6 +25,7 @@ export default function MyOrders() {
     item: null,
     description: '',
     status: null,
+    rate: null,
   });
 
   const response = useGetMyOrdersQuery({ page, search });
@@ -37,7 +39,7 @@ export default function MyOrders() {
 
   const button = createOrderButton;
 
-  const actions = [completeOrderAction, deleteOrderAction];
+  const actions = [completeOrderAction, rateOrderAction, deleteOrderAction];
 
   return (
     <OrdersTable

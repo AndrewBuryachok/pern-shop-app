@@ -22,6 +22,7 @@ export default function AllDeliveries() {
     item: null,
     description: '',
     status: null,
+    rate: null,
   });
 
   const response = useGetAllDeliveriesQuery({ page, search });

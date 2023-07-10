@@ -1,7 +1,12 @@
 import { emptyApi } from '../../app/empty.api';
 import { IRequest, IResponse } from '../../common/interfaces';
 import { Order } from './order.model';
-import { CreateOrderDto, OrderIdDto, TakeOrderDto } from './order.dto';
+import {
+  CreateOrderDto,
+  OrderIdDto,
+  RateOrderDto,
+  TakeOrderDto,
+} from './order.dto';
 import { getQuery } from '../../common/utils';
 
 export const ordersApi = emptyApi.injectEndpoints({
@@ -80,6 +85,14 @@ export const ordersApi = emptyApi.injectEndpoints({
       }),
       invalidatesTags: ['Order', 'Card'],
     }),
+    rateOrder: build.mutation<void, RateOrderDto>({
+      query: ({ orderId, ...dto }) => ({
+        url: `/orders/${orderId}/rate`,
+        method: 'POST',
+        body: dto,
+      }),
+      invalidatesTags: ['Order'],
+    }),
   }),
 });
 
@@ -95,4 +108,5 @@ export const {
   useExecuteOrderMutation,
   useCompleteOrderMutation,
   useDeleteOrderMutation,
+  useRateOrderMutation,
 } = ordersApi;

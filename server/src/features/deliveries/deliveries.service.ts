@@ -8,6 +8,7 @@ import { PaymentsService } from '../payments/payments.service';
 import {
   ExtCreateDeliveryDto,
   ExtDeliveryIdDto,
+  ExtRateDeliveryDto,
   ExtTakeDeliveryDto,
 } from './delivery.dto';
 import { Request, Response } from '../../common/interfaces';
@@ -169,6 +170,14 @@ export class DeliveriesService {
     await this.delete(delivery);
   }
 
+  async rateDelivery(dto: ExtRateDeliveryDto): Promise<void> {
+    const delivery = await this.checkDeliveryReceiver(dto.deliveryId, dto.myId);
+    if (!delivery.completedAt) {
+      throw new AppException(DeliveryError.NOT_COMPLETED);
+    }
+    await this.rate(delivery, dto.rate);
+  }
+
   async checkDeliveryExists(id: number): Promise<void> {
     await this.deliveriesRepository.findOneByOrFail({ id });
   }
@@ -278,6 +287,15 @@ export class DeliveriesService {
       await this.deliveriesRepository.remove(delivery);
     } catch (error) {
       throw new AppException(DeliveryError.DELETE_FAILED);
+    }
+  }
+
+  private async rate(delivery: Delivery, rate: number): Promise<void> {
+    try {
+      delivery.rate = rate || null;
+      await this.deliveriesRepository.save(delivery);
+    } catch (error) {
+      throw new AppException(DeliveryError.RATE_FAILED);
     }
   }
 
@@ -567,6 +585,13 @@ export class DeliveriesService {
             .orWhere('delivery.status = :status', { status: req.status }),
         ),
       )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.rate}`)
+            .orWhere('delivery.rate = :rate', { rate: req.rate }),
+        ),
+      )
       .orderBy('delivery.id', 'DESC')
       .skip(req.skip)
       .take(req.take)
@@ -622,6 +647,7 @@ export class DeliveriesService {
         'executorCard.color',
         'delivery.completedAt',
         'delivery.status',
+        'delivery.rate',
       ]);
   }
 }

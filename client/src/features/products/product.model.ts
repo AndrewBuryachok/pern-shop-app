@@ -11,4 +11,5 @@ export interface MdProduct extends MdThing {
 export interface Product extends LgThing {
   lease: SmLease;
   states: State[];
+  rate?: number;
 }
