@@ -5,6 +5,7 @@ import {
   IconBoxSeam,
   IconBuildingCommunity,
   IconChartBar,
+  IconChecklist,
   IconContainer,
   IconFriends,
   IconHome,
@@ -90,6 +91,10 @@ export default function CustomNavbar(props: Props) {
       label: 'Ratings',
       icon: IconStar,
       my: true,
+    },
+    {
+      label: 'Tasks',
+      icon: IconChecklist,
     },
   ];
 

@@ -27,6 +27,7 @@ import { Poll } from '../../features/polls/poll.entity';
 import { Vote } from '../../features/votes/vote.entity';
 import { Friend } from '../../features/friends/friend.entity';
 import { Rating } from '../../features/ratings/rating.entity';
+import { Task } from '../../features/tasks/task.entity';
 import { TransportationStatus } from '../../features/transportations/transportation-status.enum';
 import { hashData } from '../../common/utils';
 
@@ -389,6 +390,18 @@ export default class AppSeed implements Seeder {
         return rating;
       })
       .createMany(80);
+    const tasks = await factory(Task)()
+      .map(async (task) => {
+        task.customerUser = getRandom(users);
+        if (task.status !== TransportationStatus.CREATED) {
+          task.executorUser = getRandom(users);
+        }
+        if (task.status === TransportationStatus.COMPLETED) {
+          task.completedAt = new Date();
+        }
+        return task;
+      })
+      .createMany(40);
     let id = 0;
     await factory(Card)()
       .map(async () => cards[id++])

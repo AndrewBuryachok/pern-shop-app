@@ -14,6 +14,7 @@ import {
   colors,
   items,
   kits,
+  priorities,
   roles,
   statuses,
 } from '../../common/constants';
@@ -143,4 +144,11 @@ export const selectStatuses = () =>
     color: `${index + 1}`,
     value: `${index + 1}`,
     label: status,
+  }));
+
+export const selectPriorities = () =>
+  priorities.map((priority, index) => ({
+    priority: index + 1,
+    value: `${index + 1}`,
+    label: priority,
   }));

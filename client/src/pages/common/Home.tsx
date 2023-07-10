@@ -20,6 +20,7 @@ import {
   IconBusinessplan,
   IconCashBanknote,
   IconChartBar,
+  IconChecklist,
   IconCreditCard,
   IconExchange,
   IconFileDollar,
@@ -147,6 +148,10 @@ export default function Home() {
       title: 'Ratings',
       icon: IconStar,
       my: true,
+    },
+    {
+      title: 'Tasks',
+      icon: IconChecklist,
     },
   ];
 

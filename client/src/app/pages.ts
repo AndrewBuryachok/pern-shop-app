@@ -79,6 +79,11 @@ const AllFriends = lazy(() => import('../pages/friends/AllFriends'));
 const MyRatings = lazy(() => import('../pages/ratings/MyRatings'));
 const PolledRatings = lazy(() => import('../pages/ratings/PolledRatings'));
 const AllRatings = lazy(() => import('../pages/ratings/AllRatings'));
+const MainTasks = lazy(() => import('../pages/tasks/MainTasks'));
+const MyTasks = lazy(() => import('../pages/tasks/MyTasks'));
+const TakenTasks = lazy(() => import('../pages/tasks/TakenTasks'));
+const PlacedTasks = lazy(() => import('../pages/tasks/PlacedTasks'));
+const AllTasks = lazy(() => import('../pages/tasks/AllTasks'));
 import { Role } from '../common/constants';
 
 export const pages = [
@@ -275,6 +280,16 @@ export const pages = [
       { path: 'my', element: MyRatings },
       { path: 'polled', element: PolledRatings },
       { path: 'all', element: AllRatings, role: Role.ADMIN },
+    ],
+  },
+  {
+    path: 'tasks',
+    nested: [
+      { index: true, element: MainTasks },
+      { path: 'my', element: MyTasks },
+      { path: 'taken', element: TakenTasks },
+      { path: 'placed', element: PlacedTasks },
+      { path: 'all', element: AllTasks, role: Role.ADMIN },
     ],
   },
   { path: '*', element: NotFound },

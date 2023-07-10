@@ -53,6 +53,9 @@ export const getQuery = ({ page, search }: IRequest) => {
   if (search?.type) {
     query.append('type', search.type);
   }
+  if (search?.priority) {
+    query.append('priority', `${search.priority}`);
+  }
   if (search?.status) {
     query.append('status', `${search.status}`);
   }

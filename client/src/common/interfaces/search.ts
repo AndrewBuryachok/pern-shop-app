@@ -1,5 +1,5 @@
 import { Filter, Mode } from '../enums';
-import { Role, Status } from '../constants';
+import { Priority, Role, Status } from '../constants';
 
 export interface ISearch {
   user?: string | null;
@@ -18,6 +18,7 @@ export interface ISearch {
   item?: string | null;
   description?: string;
   type?: string | null;
+  priority?: Priority | null;
   status?: Status | null;
   rate?: number | null;
   name?: string;

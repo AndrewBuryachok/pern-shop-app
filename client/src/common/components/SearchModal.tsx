@@ -32,6 +32,7 @@ import { ThingsItem } from './ThingItem';
 import { CardsItem } from './CardsItem';
 import { PlacesItem } from './PlacesItem';
 import { ColorsItem } from './ColorsItem';
+import { PrioritiesItem } from './PrioritiesItem';
 import {
   selectCards,
   selectCategories,
@@ -40,6 +41,7 @@ import {
   selectContainers,
   selectItems,
   selectMarkets,
+  selectPriorities,
   selectRoles,
   selectShops,
   selectStatuses,
@@ -407,6 +409,17 @@ export default function SearchModal(props: Props) {
           searchable
           allowDeselect
           {...form.getInputProps('type')}
+        />
+      )}
+      {props.search.priority !== undefined && (
+        <Select
+          label='Priority'
+          placeholder='Priority'
+          itemComponent={PrioritiesItem}
+          data={selectPriorities()}
+          searchable
+          allowDeselect
+          {...form.getInputProps('priority')}
         />
       )}
       {props.search.status !== undefined && (

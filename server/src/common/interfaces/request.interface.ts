@@ -3,6 +3,7 @@ import { IsEnum, IsInt, IsOptional, IsString, Min } from 'class-validator';
 import { Transform, Type } from 'class-transformer';
 import { Role } from '../../features/users/role.enum';
 import { TransportationStatus } from '../../features/transportations/transportation-status.enum';
+import { Priority } from '../../features/tasks/priority.enum';
 import { Filter, Mode } from '../enums';
 
 export class Request {
@@ -108,6 +109,12 @@ export class Request {
   @IsEnum(TransportationStatus)
   @Type(() => Number)
   status?: TransportationStatus;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsEnum(Priority)
+  @Type(() => Number)
+  priority?: Priority;
 
   @ApiProperty({ required: false })
   @IsOptional()

@@ -26,6 +26,7 @@ import { PollsModule } from './features/polls/polls.module';
 import { VotesModule } from './features/votes/votes.module';
 import { FriendsModule } from './features/friends/friends.module';
 import { RatingsModule } from './features/ratings/ratings.module';
+import { TasksModule } from './features/tasks/tasks.module';
 
 @Module({
   imports: [
@@ -70,6 +71,7 @@ import { RatingsModule } from './features/ratings/ratings.module';
     VotesModule,
     FriendsModule,
     RatingsModule,
+    TasksModule,
   ],
 })
 export class AppModule {}
