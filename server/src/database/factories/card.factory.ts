@@ -4,7 +4,7 @@ import { Card } from '../../features/cards/card.entity';
 
 define(Card, (faker: Faker) => {
   const card = new Card();
-  card.name = faker.lorem.word();
+  card.name = faker.finance.account(4);
   card.color = Math.floor(Math.random() * 4) + 1;
   card.balance = 0;
   return card;

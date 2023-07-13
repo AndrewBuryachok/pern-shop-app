@@ -5,7 +5,7 @@ import { Product } from '../../features/products/product.entity';
 define(Product, (faker: Faker) => {
   const product = new Product();
   product.item = Math.floor(Math.random() * 1050) + 1;
-  product.description = faker.lorem.sentence(3);
+  product.description = '-';
   product.amount = Math.floor(Math.random() * 27) + 1;
   product.intake = Math.floor(Math.random() * 64) + 1;
   product.kit = Math.floor(Math.random() * 3) + 1;
