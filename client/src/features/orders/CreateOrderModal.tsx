@@ -27,6 +27,9 @@ import {
 } from '../../common/constants';
 
 export default function CreateOrderModal() {
+  const storage = { price: 0 };
+  const myCard = { balance: 0 };
+
   const form = useForm({
     initialValues: {
       storage: '',
@@ -46,12 +49,22 @@ export default function CreateOrderModal() {
       item: +item,
       kit: +kit,
     }),
+    validate: {
+      card: () =>
+        myCard.balance < storage.price ? 'Not enough balance' : null,
+    },
   });
 
   useEffect(() => form.setFieldValue('item', ''), [form.values.category]);
 
   const { data: storages, ...storagesResponse } = useSelectFreeStoragesQuery();
   const { data: cards, ...cardsResponse } = useSelectMyCardsQuery();
+
+  storage.price =
+    storages?.find((storage) => storage.id === +form.values.storage)?.price ||
+    0;
+  myCard.balance =
+    cards?.find((card) => card.id === +form.values.card)?.balance || 0;
 
   const [createOrder, { isLoading }] = useCreateOrderMutation();
 

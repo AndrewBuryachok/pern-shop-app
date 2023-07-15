@@ -31,6 +31,10 @@ import {
 } from '../../common/constants';
 
 export default function CreateDeliveryModal() {
+  const myCard = { balance: 0 };
+  const fromStorage = { price: 0 };
+  const toStorage = { price: 0 };
+
   const form = useForm({
     initialValues: {
       fromStorage: '',
@@ -62,6 +66,12 @@ export default function CreateDeliveryModal() {
       item: +item,
       kit: +kit,
     }),
+    validate: {
+      card: () =>
+        myCard.balance < fromStorage.price + toStorage.price
+          ? 'Not enough balance'
+          : null,
+    },
   });
 
   useEffect(() => form.setFieldValue('item', ''), [form.values.category]);
@@ -70,6 +80,14 @@ export default function CreateDeliveryModal() {
   const { data: cards, ...cardsResponse } = useSelectMyCardsQuery();
   const { data: users, ...usersResponse } = useSelectAllUsersQuery();
 
+  fromStorage.price =
+    storages?.find((storage) => storage.id === +form.values.fromStorage)
+      ?.price || 0;
+  toStorage.price =
+    storages?.find((storage) => storage.id === +form.values.toStorage)?.price ||
+    0;
+  myCard.balance =
+    cards?.find((card) => card.id === +form.values.card)?.balance || 0;
   const user = users?.find((user) => user.id === +form.values.user);
 
   const [createDelivery, { isLoading }] = useCreateDeliveryMutation();
