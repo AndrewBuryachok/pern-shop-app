@@ -10,7 +10,7 @@ type Props = {
 };
 
 export default function ThingImageWithText(props: Props) {
-  const text = items[props.item - 1].substring(3);
+  const text = items[props.item - 1].split(': ')[1];
 
   return (
     <Group spacing={8}>

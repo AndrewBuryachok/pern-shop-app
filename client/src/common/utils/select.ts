@@ -121,7 +121,7 @@ export const selectTypes = () =>
 
 export const selectCategories = () =>
   categories.map((category, index) => ({
-    value: `${index + 1}`,
+    value: `${index}`,
     label: category,
   }));
 
@@ -129,11 +129,11 @@ export const selectItems = (category: string) =>
   items
     .map((item, index) => ({
       item: index + 1,
-      category: item[0],
+      category: item.split(': ')[0],
       value: `${index + 1}`,
-      label: item.substring(3),
+      label: item.split(': ')[1],
     }))
-    .filter((item) => item.category === category);
+    .filter((item) => item.category.includes(category));
 
 export const selectKits = () =>
   kits.map((kit, index) => ({ value: `${index + 1}`, label: kit }));

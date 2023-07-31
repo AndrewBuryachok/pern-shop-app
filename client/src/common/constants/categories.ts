@@ -1,11 +1,11 @@
 export const categories = [
   'Building',
-  'Decoration',
+  'Colored',
+  'Natural',
+  'Functional',
   'Redstone',
-  'Transportation',
-  'Miscellaneous',
-  'Foodstuffs',
   'Tools',
   'Combat',
-  'Brewing',
+  'Foodstuffs',
+  'Ingredients',
 ];
