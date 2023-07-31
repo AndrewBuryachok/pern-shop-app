@@ -4,7 +4,7 @@ import { Order } from '../../features/orders/order.entity';
 
 define(Order, (faker: Faker) => {
   const order = new Order();
-  order.item = Math.floor(Math.random() * 1050) + 1;
+  order.item = Math.floor(Math.random() * 1418) + 1;
   order.description = '-';
   order.amount = Math.floor(Math.random() * 27) + 1;
   order.intake = Math.floor(Math.random() * 64) + 1;
