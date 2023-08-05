@@ -216,7 +216,7 @@ export class DeliveriesService {
   ): Promise<Delivery> {
     const delivery = await this.deliveriesRepository.findOneBy({
       id,
-      executorCard: { userId },
+      executorCard: { users: { id: userId } },
     });
     if (!delivery) {
       throw new AppException(DeliveryError.NOT_EXECUTOR);

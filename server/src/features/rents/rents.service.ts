@@ -62,7 +62,7 @@ export class RentsService {
   async checkRentOwner(id: number, userId: number): Promise<Rent> {
     const rent = await this.rentsRepository.findOneBy({
       id,
-      card: { userId },
+      card: { users: { id: userId } },
     });
     if (!rent) {
       throw new AppException(RentError.NOT_OWNER);

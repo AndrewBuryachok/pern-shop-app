@@ -80,7 +80,7 @@ export class MarketsService {
   async checkMarketOwner(id: number, userId: number): Promise<Market> {
     const market = await this.marketsRepository.findOneBy({
       id,
-      card: { userId },
+      card: { users: { id: userId } },
     });
     if (!market) {
       throw new AppException(MarketError.NOT_OWNER);

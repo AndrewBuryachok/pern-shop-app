@@ -163,7 +163,7 @@ export class OrdersService {
   private async checkOrderExecutor(id: number, userId: number): Promise<Order> {
     const order = await this.ordersRepository.findOneBy({
       id,
-      executorCard: { userId },
+      executorCard: { users: { id: userId } },
     });
     if (!order) {
       throw new AppException(OrderError.NOT_EXECUTOR);

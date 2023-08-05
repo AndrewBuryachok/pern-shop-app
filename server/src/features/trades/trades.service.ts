@@ -80,7 +80,7 @@ export class TradesService {
   private async checkTradeOwner(id: number, userId: number): Promise<Trade> {
     const trade = await this.tradesRepository.findOneBy({
       id,
-      card: { userId },
+      card: { users: { id: userId } },
     });
     if (!trade) {
       throw new AppException(TradeError.NOT_OWNER);

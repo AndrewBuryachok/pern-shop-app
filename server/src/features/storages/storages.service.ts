@@ -104,7 +104,7 @@ export class StoragesService {
   async checkStorageOwner(id: number, userId: number): Promise<Storage> {
     const storage = await this.storagesRepository.findOneBy({
       id,
-      card: { userId },
+      card: { users: { id: userId } },
     });
     if (!storage) {
       throw new AppException(StorageError.NOT_OWNER);

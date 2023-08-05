@@ -80,7 +80,7 @@ export class SalesService {
   private async checkSaleOwner(id: number, userId: number): Promise<Sale> {
     const sale = await this.salesRepository.findOneBy({
       id,
-      card: { userId },
+      card: { users: { id: userId } },
     });
     if (!sale) {
       throw new AppException(SaleError.NOT_OWNER);

@@ -112,7 +112,7 @@ export class WaresService {
   async checkWareOwner(id: number, userId: number): Promise<Ware> {
     const ware = await this.waresRepository.findOneBy({
       id,
-      rent: { card: { userId } },
+      rent: { card: { users: { id: userId } } },
     });
     if (!ware) {
       throw new AppException(WareError.NOT_OWNER);
