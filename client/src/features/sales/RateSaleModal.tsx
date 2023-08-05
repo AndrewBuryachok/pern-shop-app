@@ -17,7 +17,6 @@ import CustomAvatar from '../../common/components/CustomAvatar';
 import ThingImage from '../../common/components/ThingImage';
 import { parseCard, parseSaleAmount } from '../../common/utils';
 import { Color, items } from '../../common/constants';
-import { getCurrentUser } from '../auth/auth.slice';
 
 type Props = IModal<Sale>;
 
@@ -83,9 +82,6 @@ export const rateSaleAction = {
       title: 'Rate Sale',
       children: <RateSaleModal data={sale} />,
     }),
-  disable: (sale: Sale) => {
-    const user = getCurrentUser()!;
-    return sale.card.user.id !== user.id;
-  },
+  disable: () => false,
   color: Color.YELLOW,
 };

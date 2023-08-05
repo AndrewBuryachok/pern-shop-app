@@ -17,7 +17,6 @@ import CustomAvatar from '../../common/components/CustomAvatar';
 import ThingImage from '../../common/components/ThingImage';
 import { parseCard, parseTradeAmount } from '../../common/utils';
 import { Color, items } from '../../common/constants';
-import { getCurrentUser } from '../auth/auth.slice';
 
 type Props = IModal<Trade>;
 
@@ -83,9 +82,6 @@ export const rateTradeAction = {
       title: 'Rate Trade',
       children: <RateTradeModal data={trade} />,
     }),
-  disable: (trade: Trade) => {
-    const user = getCurrentUser()!;
-    return trade.card.user.id !== user.id;
-  },
+  disable: () => false,
   color: Color.YELLOW,
 };
