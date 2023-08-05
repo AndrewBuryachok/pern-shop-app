@@ -10,6 +10,7 @@ import { CardsItem } from '../../common/components/CardsItem';
 import { selectCardsWithBalance } from '../../common/utils';
 import {
   MAX_COORDINATE_VALUE,
+  MAX_PRICE_VALUE,
   MAX_TEXT_LENGTH,
   MIN_COORDINATE_VALUE,
   MIN_TEXT_LENGTH,
@@ -80,6 +81,8 @@ export default function CreateStorageModal() {
         label='Price'
         placeholder='Price'
         required
+        min={1}
+        max={MAX_PRICE_VALUE}
         {...form.getInputProps('price')}
       />
     </CustomForm>

@@ -9,6 +9,7 @@ import CustomForm from '../../common/components/CustomForm';
 import {
   Color,
   MAX_COORDINATE_VALUE,
+  MAX_PRICE_VALUE,
   MAX_TEXT_LENGTH,
   MIN_COORDINATE_VALUE,
   MIN_TEXT_LENGTH,
@@ -63,6 +64,14 @@ export default function EditStorageModal({ data: storage }: Props) {
         min={MIN_COORDINATE_VALUE}
         max={MAX_COORDINATE_VALUE}
         {...form.getInputProps('y')}
+      />
+      <NumberInput
+        label='Price'
+        placeholder='Price'
+        required
+        min={1}
+        max={MAX_PRICE_VALUE}
+        {...form.getInputProps('price')}
       />
     </CustomForm>
   );
