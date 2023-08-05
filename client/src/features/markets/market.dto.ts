@@ -1,7 +1,10 @@
-import { CreatePlaceDto, CreatePlaceWithCardDto } from '../places/place.dto';
+import {
+  CreatePlaceWithCardDto,
+  CreatePlaceWithPriceDto,
+} from '../places/place.dto';
 
 export interface CreateMarketDto extends CreatePlaceWithCardDto {}
 
-export interface EditMarketDto extends CreatePlaceDto {
+export interface EditMarketDto extends CreatePlaceWithPriceDto {
   marketId: number;
 }

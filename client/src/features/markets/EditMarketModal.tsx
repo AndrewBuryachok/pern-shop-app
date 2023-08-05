@@ -23,6 +23,7 @@ export default function EditMarketModal({ data: market }: Props) {
       name: market.name,
       x: market.x,
       y: market.y,
+      price: market.price,
     },
   });
 

@@ -23,6 +23,7 @@ export default function EditStorageModal({ data: storage }: Props) {
       name: storage.name,
       x: storage.x,
       y: storage.y,
+      price: storage.price,
     },
   });
 
