@@ -23,12 +23,12 @@ export default function MainCities() {
   return (
     <CitiesTable
       {...response}
+      title='Main Cities'
       page={page}
       setPage={setPage}
       search={search}
       setSearch={setSearch}
       links={links}
-      title='Main Cities'
     />
   );
 }

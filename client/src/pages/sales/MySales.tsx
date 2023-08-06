@@ -36,12 +36,12 @@ export default function MySales() {
   return (
     <SalesTable
       {...response}
+      title='My Sales'
       page={page}
       setPage={setPage}
       search={search}
       setSearch={setSearch}
       links={links}
-      title='My Sales'
       actions={actions}
     />
   );

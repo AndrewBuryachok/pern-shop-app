@@ -39,12 +39,12 @@ export default function MainOrders() {
   return (
     <OrdersTable
       {...response}
+      title='Main Orders'
       page={page}
       setPage={setPage}
       search={search}
       setSearch={setSearch}
       links={links}
-      title='Main Orders'
       actions={actions}
     />
   );

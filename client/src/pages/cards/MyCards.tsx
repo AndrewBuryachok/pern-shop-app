@@ -29,13 +29,13 @@ export default function MyCards() {
   return (
     <CardsTable
       {...response}
+      title='My Cards'
       page={page}
       setPage={setPage}
       search={search}
       setSearch={setSearch}
       links={links}
       button={button}
-      title='My Cards'
       actions={actions}
     />
   );

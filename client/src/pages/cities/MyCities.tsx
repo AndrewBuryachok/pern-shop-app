@@ -31,13 +31,13 @@ export default function MyCities() {
   return (
     <CitiesTable
       {...response}
+      title='My Cities'
       page={page}
       setPage={setPage}
       search={search}
       setSearch={setSearch}
       links={links}
       button={button}
-      title='My Cities'
       actions={actions}
     />
   );

@@ -31,13 +31,13 @@ export default function MyMarkets() {
   return (
     <MarketsTable
       {...response}
+      title='My Markets'
       page={page}
       setPage={setPage}
       search={search}
       setSearch={setSearch}
       links={links}
       button={button}
-      title='My Markets'
       actions={actions}
     />
   );

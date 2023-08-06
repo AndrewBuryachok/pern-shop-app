@@ -36,12 +36,12 @@ export default function PlacedOrders() {
   return (
     <OrdersTable
       {...response}
+      title='Placed Orders'
       page={page}
       setPage={setPage}
       search={search}
       setSearch={setSearch}
       links={links}
-      title='Placed Orders'
     />
   );
 }

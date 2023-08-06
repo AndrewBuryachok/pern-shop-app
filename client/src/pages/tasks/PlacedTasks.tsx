@@ -33,12 +33,12 @@ export default function PlacedTasks() {
   return (
     <TasksTable
       {...response}
+      title='Placed Tasks'
       page={page}
       setPage={setPage}
       search={search}
       setSearch={setSearch}
       links={links}
-      title='Placed Tasks'
     />
   );
 }

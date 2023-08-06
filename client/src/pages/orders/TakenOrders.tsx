@@ -40,13 +40,13 @@ export default function TakenOrders() {
   return (
     <OrdersTable
       {...response}
+      title='Taken Orders'
       page={page}
       setPage={setPage}
       search={search}
       setSearch={setSearch}
       links={links}
       actions={actions}
-      title='Taken Orders'
     />
   );
 }

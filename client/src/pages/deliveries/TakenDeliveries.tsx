@@ -42,13 +42,13 @@ export default function TakenDeliveries() {
   return (
     <DeliveriesTable
       {...response}
+      title='Taken Deliveries'
       page={page}
       setPage={setPage}
       search={search}
       setSearch={setSearch}
       links={links}
       actions={actions}
-      title='Taken Deliveries'
     />
   );
 }

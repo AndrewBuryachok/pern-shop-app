@@ -22,12 +22,12 @@ export default function AllCities() {
   return (
     <CitiesTable
       {...response}
+      title='All Cities'
       page={page}
       setPage={setPage}
       search={search}
       setSearch={setSearch}
       links={links}
-      title='All Cities'
     />
   );
 }

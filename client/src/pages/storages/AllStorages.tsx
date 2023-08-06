@@ -23,12 +23,12 @@ export default function AllStorages() {
   return (
     <StoragesTable
       {...response}
+      title='All Storages'
       page={page}
       setPage={setPage}
       search={search}
       setSearch={setSearch}
       links={links}
-      title='All Storages'
     />
   );
 }

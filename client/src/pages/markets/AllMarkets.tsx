@@ -23,12 +23,12 @@ export default function AllMarkets() {
   return (
     <MarketsTable
       {...response}
+      title='All Markets'
       page={page}
       setPage={setPage}
       search={search}
       setSearch={setSearch}
       links={links}
-      title='All Markets'
     />
   );
 }

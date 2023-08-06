@@ -33,12 +33,12 @@ export default function PlacedSales() {
   return (
     <SalesTable
       {...response}
+      title='Placed Sales'
       page={page}
       setPage={setPage}
       search={search}
       setSearch={setSearch}
       links={links}
-      title='Placed Sales'
     />
   );
 }

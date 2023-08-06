@@ -33,6 +33,7 @@ export default function MyInvoices() {
   return (
     <InvoicesTable
       {...response}
+      title='My Invoices'
       page={page}
       setPage={setPage}
       search={search}
@@ -40,7 +41,6 @@ export default function MyInvoices() {
       links={links}
       button={button}
       actions={actions}
-      title='My Invoices'
     />
   );
 }

@@ -24,12 +24,12 @@ export default function MainMarkets() {
   return (
     <MarketsTable
       {...response}
+      title='Main Markets'
       page={page}
       setPage={setPage}
       search={search}
       setSearch={setSearch}
       links={links}
-      title='Main Markets'
     />
   );
 }

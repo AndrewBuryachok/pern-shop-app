@@ -34,13 +34,13 @@ export default function MyUsers() {
   return (
     <UsersTable
       {...response}
+      title='My Users'
       page={page}
       setPage={setPage}
       search={search}
       setSearch={setSearch}
       links={links}
       button={button}
-      title='My Users'
       actions={actions}
     />
   );

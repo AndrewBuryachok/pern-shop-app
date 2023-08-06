@@ -44,6 +44,7 @@ export default function MyOrders() {
   return (
     <OrdersTable
       {...response}
+      title='My Orders'
       page={page}
       setPage={setPage}
       search={search}
@@ -51,7 +52,6 @@ export default function MyOrders() {
       links={links}
       button={button}
       actions={actions}
-      title='My Orders'
     />
   );
 }

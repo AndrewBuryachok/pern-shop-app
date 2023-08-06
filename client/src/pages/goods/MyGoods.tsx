@@ -31,13 +31,13 @@ export default function MyGoods() {
   return (
     <GoodsTable
       {...response}
+      title='My Goods'
       page={page}
       setPage={setPage}
       search={search}
       setSearch={setSearch}
       links={links}
       button={button}
-      title='My Goods'
       actions={actions}
     />
   );

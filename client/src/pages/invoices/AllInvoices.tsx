@@ -25,12 +25,12 @@ export default function AllInvoices() {
   return (
     <InvoicesTable
       {...response}
+      title='All Invoices'
       page={page}
       setPage={setPage}
       search={search}
       setSearch={setSearch}
       links={links}
-      title='All Invoices'
     />
   );
 }

@@ -24,12 +24,12 @@ export default function MainGoods() {
   return (
     <GoodsTable
       {...response}
+      title='Main Goods'
       page={page}
       setPage={setPage}
       search={search}
       setSearch={setSearch}
       links={links}
-      title='Main Goods'
     />
   );
 }

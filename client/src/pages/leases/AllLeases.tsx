@@ -26,12 +26,12 @@ export default function AllLeases() {
   return (
     <LeasesTable
       {...response}
+      title='All Leases'
       page={page}
       setPage={setPage}
       search={search}
       setSearch={setSearch}
       links={links}
-      title='All Leases'
     />
   );
 }

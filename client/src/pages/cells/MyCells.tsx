@@ -28,13 +28,13 @@ export default function MyCells() {
   return (
     <CellsTable
       {...response}
+      title='My Cells'
       page={page}
       setPage={setPage}
       search={search}
       setSearch={setSearch}
       links={links}
       button={button}
-      title='My Cells'
     />
   );
 }

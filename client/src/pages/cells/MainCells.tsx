@@ -25,12 +25,12 @@ export default function MainCells() {
   return (
     <CellsTable
       {...response}
+      title='Main Cells'
       page={page}
       setPage={setPage}
       search={search}
       setSearch={setSearch}
       links={links}
-      title='Main Cells'
     />
   );
 }

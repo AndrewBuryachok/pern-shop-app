@@ -28,13 +28,13 @@ export default function AllExchanges() {
   return (
     <ExchangesTable
       {...response}
+      title='All Exchanges'
       page={page}
       setPage={setPage}
       search={search}
       setSearch={setSearch}
       links={links}
       button={button}
-      title='All Exchanges'
     />
   );
 }

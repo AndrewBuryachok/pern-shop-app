@@ -28,12 +28,12 @@ export default function MainPolls() {
   return (
     <PollsTable
       {...response}
+      title='Main Polls'
       page={page}
       setPage={setPage}
       search={search}
       setSearch={setSearch}
       links={links}
-      title='Main Polls'
       actions={actions}
     />
   );

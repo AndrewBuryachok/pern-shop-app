@@ -36,12 +36,12 @@ export default function MainTasks() {
   return (
     <TasksTable
       {...response}
+      title='Main Tasks'
       page={page}
       setPage={setPage}
       search={search}
       setSearch={setSearch}
       links={links}
-      title='Main Tasks'
       actions={actions}
     />
   );

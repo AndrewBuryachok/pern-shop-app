@@ -32,12 +32,12 @@ export default function AllTasks() {
   return (
     <TasksTable
       {...response}
+      title='All Tasks'
       page={page}
       setPage={setPage}
       search={search}
       setSearch={setSearch}
       links={links}
-      title='All Tasks'
     />
   );
 }

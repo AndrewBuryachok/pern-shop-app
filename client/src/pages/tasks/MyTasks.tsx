@@ -40,6 +40,7 @@ export default function MyTasks() {
   return (
     <TasksTable
       {...response}
+      title='My Tasks'
       page={page}
       setPage={setPage}
       search={search}
@@ -47,7 +48,6 @@ export default function MyTasks() {
       links={links}
       button={button}
       actions={actions}
-      title='My Tasks'
     />
   );
 }

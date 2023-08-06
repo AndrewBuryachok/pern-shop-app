@@ -33,12 +33,12 @@ export default function PlacedTrades() {
   return (
     <TradesTable
       {...response}
+      title='Placed Trades'
       page={page}
       setPage={setPage}
       search={search}
       setSearch={setSearch}
       links={links}
-      title='Placed Trades'
     />
   );
 }

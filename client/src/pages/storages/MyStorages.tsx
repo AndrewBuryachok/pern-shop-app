@@ -31,13 +31,13 @@ export default function MyStorages() {
   return (
     <StoragesTable
       {...response}
+      title='My Storages'
       page={page}
       setPage={setPage}
       search={search}
       setSearch={setSearch}
       links={links}
       button={button}
-      title='My Storages'
       actions={actions}
     />
   );

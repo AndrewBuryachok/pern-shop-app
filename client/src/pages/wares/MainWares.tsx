@@ -36,12 +36,12 @@ export default function MainWares() {
   return (
     <WaresTable
       {...response}
+      title='Main Wares'
       page={page}
       setPage={setPage}
       search={search}
       setSearch={setSearch}
       links={links}
-      title='Main Wares'
       actions={actions}
     />
   );

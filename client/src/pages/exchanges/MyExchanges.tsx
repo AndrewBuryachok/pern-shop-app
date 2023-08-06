@@ -26,12 +26,12 @@ export default function MyExchanges() {
   return (
     <ExchangesTable
       {...response}
+      title='My Exchanges'
       page={page}
       setPage={setPage}
       search={search}
       setSearch={setSearch}
       links={links}
-      title='My Exchanges'
     />
   );
 }

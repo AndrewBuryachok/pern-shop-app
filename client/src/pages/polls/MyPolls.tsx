@@ -29,6 +29,7 @@ export default function MyPolls() {
   return (
     <PollsTable
       {...response}
+      title='My Polls'
       page={page}
       setPage={setPage}
       search={search}
@@ -36,7 +37,6 @@ export default function MyPolls() {
       links={links}
       button={button}
       actions={actions}
-      title='My Polls'
     />
   );
 }

@@ -35,6 +35,7 @@ export default function MyRatings() {
   return (
     <RatingsTable
       {...response}
+      title='My Ratings'
       page={page}
       setPage={setPage}
       search={search}
@@ -42,7 +43,6 @@ export default function MyRatings() {
       links={links}
       button={button}
       actions={actions}
-      title='My Ratings'
     />
   );
 }

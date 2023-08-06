@@ -25,12 +25,12 @@ export default function AllPayments() {
   return (
     <PaymentsTable
       {...response}
+      title='All Payments'
       page={page}
       setPage={setPage}
       search={search}
       setSearch={setSearch}
       links={links}
-      title='All Payments'
     />
   );
 }

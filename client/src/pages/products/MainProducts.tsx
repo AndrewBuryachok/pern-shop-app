@@ -36,12 +36,12 @@ export default function MainProducts() {
   return (
     <ProductsTable
       {...response}
+      title='Main Products'
       page={page}
       setPage={setPage}
       search={search}
       setSearch={setSearch}
       links={links}
-      title='Main Products'
       actions={actions}
     />
   );

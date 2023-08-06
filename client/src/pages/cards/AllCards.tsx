@@ -20,12 +20,12 @@ export default function AllCards() {
   return (
     <CardsTable
       {...response}
+      title='All Cards'
       page={page}
       setPage={setPage}
       search={search}
       setSearch={setSearch}
       links={links}
-      title='All Cards'
     />
   );
 }

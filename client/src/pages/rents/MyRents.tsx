@@ -27,12 +27,12 @@ export default function MyRents() {
   return (
     <RentsTable
       {...response}
+      title='My Rents'
       page={page}
       setPage={setPage}
       search={search}
       setSearch={setSearch}
       links={links}
-      title='My Rents'
     />
   );
 }

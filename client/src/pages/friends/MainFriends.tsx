@@ -28,12 +28,12 @@ export default function MainFriends() {
   return (
     <FriendsTable
       {...response}
+      title='Main Friends'
       page={page}
       setPage={setPage}
       search={search}
       setSearch={setSearch}
       links={links}
-      title='Main Friends'
     />
   );
 }

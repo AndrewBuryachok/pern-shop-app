@@ -28,12 +28,12 @@ export default function AllVotes() {
   return (
     <VotesTable
       {...response}
+      title='All Votes'
       page={page}
       setPage={setPage}
       search={search}
       setSearch={setSearch}
       links={links}
-      title='All Votes'
     />
   );
 }

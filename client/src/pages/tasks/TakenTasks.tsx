@@ -37,13 +37,13 @@ export default function TakenTasks() {
   return (
     <TasksTable
       {...response}
+      title='Taken Tasks'
       page={page}
       setPage={setPage}
       search={search}
       setSearch={setSearch}
       links={links}
       actions={actions}
-      title='Taken Tasks'
     />
   );
 }

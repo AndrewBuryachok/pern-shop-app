@@ -24,12 +24,12 @@ export default function AllCells() {
   return (
     <CellsTable
       {...response}
+      title='All Cells'
       page={page}
       setPage={setPage}
       search={search}
       setSearch={setSearch}
       links={links}
-      title='All Cells'
     />
   );
 }

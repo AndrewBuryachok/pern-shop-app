@@ -39,6 +39,7 @@ export default function MyProducts() {
   return (
     <ProductsTable
       {...response}
+      title='My Products'
       page={page}
       setPage={setPage}
       search={search}
@@ -46,7 +47,6 @@ export default function MyProducts() {
       links={links}
       button={button}
       actions={actions}
-      title='My Products'
     />
   );
 }

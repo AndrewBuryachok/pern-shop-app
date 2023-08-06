@@ -35,12 +35,12 @@ export default function AllOrders() {
   return (
     <OrdersTable
       {...response}
+      title='All Orders'
       page={page}
       setPage={setPage}
       search={search}
       setSearch={setSearch}
       links={links}
-      title='All Orders'
     />
   );
 }

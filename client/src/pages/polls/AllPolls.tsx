@@ -21,12 +21,12 @@ export default function AllPolls() {
   return (
     <PollsTable
       {...response}
+      title='All Polls'
       page={page}
       setPage={setPage}
       search={search}
       setSearch={setSearch}
       links={links}
-      title='All Polls'
     />
   );
 }

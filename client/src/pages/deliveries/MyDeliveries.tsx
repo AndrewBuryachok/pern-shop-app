@@ -50,6 +50,7 @@ export default function MyDeliveries() {
   return (
     <DeliveriesTable
       {...response}
+      title='My Deliveries'
       page={page}
       setPage={setPage}
       search={search}
@@ -57,7 +58,6 @@ export default function MyDeliveries() {
       links={links}
       button={button}
       actions={actions}
-      title='My Deliveries'
     />
   );
 }

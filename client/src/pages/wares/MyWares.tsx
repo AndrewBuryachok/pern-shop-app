@@ -39,6 +39,7 @@ export default function MyWares() {
   return (
     <WaresTable
       {...response}
+      title='My Wares'
       page={page}
       setPage={setPage}
       search={search}
@@ -46,7 +47,6 @@ export default function MyWares() {
       links={links}
       button={button}
       actions={actions}
-      title='My Wares'
     />
   );
 }

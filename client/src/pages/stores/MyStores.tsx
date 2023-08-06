@@ -28,13 +28,13 @@ export default function MyStores() {
   return (
     <StoresTable
       {...response}
+      title='My Stores'
       page={page}
       setPage={setPage}
       search={search}
       setSearch={setSearch}
       links={links}
       button={button}
-      title='My Stores'
     />
   );
 }

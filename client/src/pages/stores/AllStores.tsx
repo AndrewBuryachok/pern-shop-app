@@ -24,12 +24,12 @@ export default function AllStores() {
   return (
     <StoresTable
       {...response}
+      title='All Stores'
       page={page}
       setPage={setPage}
       search={search}
       setSearch={setSearch}
       links={links}
-      title='All Stores'
     />
   );
 }

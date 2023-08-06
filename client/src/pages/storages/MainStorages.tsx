@@ -24,12 +24,12 @@ export default function MainStorages() {
   return (
     <StoragesTable
       {...response}
+      title='Main Storages'
       page={page}
       setPage={setPage}
       search={search}
       setSearch={setSearch}
       links={links}
-      title='Main Storages'
     />
   );
 }

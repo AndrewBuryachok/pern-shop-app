@@ -32,12 +32,12 @@ export default function AllWares() {
   return (
     <WaresTable
       {...response}
+      title='All Wares'
       page={page}
       setPage={setPage}
       search={search}
       setSearch={setSearch}
       links={links}
-      title='All Wares'
     />
   );
 }

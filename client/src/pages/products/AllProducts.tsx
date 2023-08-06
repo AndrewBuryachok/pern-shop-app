@@ -32,12 +32,12 @@ export default function AllProducts() {
   return (
     <ProductsTable
       {...response}
+      title='All Products'
       page={page}
       setPage={setPage}
       search={search}
       setSearch={setSearch}
       links={links}
-      title='All Products'
     />
   );
 }

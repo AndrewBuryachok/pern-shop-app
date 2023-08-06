@@ -29,12 +29,12 @@ export default function MyVotes() {
   return (
     <VotesTable
       {...response}
+      title='My Votes'
       page={page}
       setPage={setPage}
       search={search}
       setSearch={setSearch}
       links={links}
-      title='My Votes'
     />
   );
 }

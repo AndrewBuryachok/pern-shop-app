@@ -28,12 +28,12 @@ export default function MainUsers() {
   return (
     <UsersTable
       {...response}
+      title='Main Users'
       page={page}
       setPage={setPage}
       search={search}
       setSearch={setSearch}
       links={links}
-      title='Main Users'
     />
   );
 }

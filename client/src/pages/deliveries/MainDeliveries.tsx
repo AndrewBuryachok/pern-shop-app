@@ -41,12 +41,12 @@ export default function MainDeliveries() {
   return (
     <DeliveriesTable
       {...response}
+      title='Main Deliveries'
       page={page}
       setPage={setPage}
       search={search}
       setSearch={setSearch}
       links={links}
-      title='Main Deliveries'
       actions={actions}
     />
   );

@@ -31,12 +31,12 @@ export default function AllUsers() {
   return (
     <UsersTable
       {...response}
+      title='All Users'
       page={page}
       setPage={setPage}
       search={search}
       setSearch={setSearch}
       links={links}
-      title='All Users'
       actions={actions}
     />
   );

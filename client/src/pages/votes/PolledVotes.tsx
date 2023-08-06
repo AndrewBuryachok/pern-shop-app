@@ -29,12 +29,12 @@ export default function PolledVotes() {
   return (
     <VotesTable
       {...response}
+      title='Polled Votes'
       page={page}
       setPage={setPage}
       search={search}
       setSearch={setSearch}
       links={links}
-      title='Polled Votes'
     />
   );
 }

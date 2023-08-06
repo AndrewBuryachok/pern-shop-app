@@ -29,13 +29,13 @@ export default function MyPayments() {
   return (
     <PaymentsTable
       {...response}
+      title='My Payments'
       page={page}
       setPage={setPage}
       search={search}
       setSearch={setSearch}
       links={links}
       button={button}
-      title='My Payments'
     />
   );
 }

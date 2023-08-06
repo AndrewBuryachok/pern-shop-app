@@ -28,12 +28,12 @@ export default function PolledRatings() {
   return (
     <RatingsTable
       {...response}
+      title='Polled Ratings'
       page={page}
       setPage={setPage}
       search={search}
       setSearch={setSearch}
       links={links}
-      title='Polled Ratings'
     />
   );
 }

@@ -37,12 +37,12 @@ export default function AllDeliveries() {
   return (
     <DeliveriesTable
       {...response}
+      title='All Deliveries'
       page={page}
       setPage={setPage}
       search={search}
       setSearch={setSearch}
       links={links}
-      title='All Deliveries'
     />
   );
 }

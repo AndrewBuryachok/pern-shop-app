@@ -35,6 +35,7 @@ export default function MyFriends() {
   return (
     <FriendsTable
       {...response}
+      title='My Friends'
       page={page}
       setPage={setPage}
       search={search}
@@ -42,7 +43,6 @@ export default function MyFriends() {
       links={links}
       button={button}
       actions={actions}
-      title='My Friends'
     />
   );
 }

@@ -23,12 +23,12 @@ export default function MainShops() {
   return (
     <ShopsTable
       {...response}
+      title='Main Shops'
       page={page}
       setPage={setPage}
       search={search}
       setSearch={setSearch}
       links={links}
-      title='Main Shops'
     />
   );
 }

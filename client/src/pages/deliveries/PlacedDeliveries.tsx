@@ -38,12 +38,12 @@ export default function PlacedDeliveries() {
   return (
     <DeliveriesTable
       {...response}
+      title='Placed Deliveries'
       page={page}
       setPage={setPage}
       search={search}
       setSearch={setSearch}
       links={links}
-      title='Placed Deliveries'
     />
   );
 }

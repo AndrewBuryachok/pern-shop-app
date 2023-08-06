@@ -32,12 +32,12 @@ export default function AllTrades() {
   return (
     <TradesTable
       {...response}
+      title='All Trades'
       page={page}
       setPage={setPage}
       search={search}
       setSearch={setSearch}
       links={links}
-      title='All Trades'
     />
   );
 }

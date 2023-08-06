@@ -26,12 +26,12 @@ export default function AllRents() {
   return (
     <RentsTable
       {...response}
+      title='All Rents'
       page={page}
       setPage={setPage}
       search={search}
       setSearch={setSearch}
       links={links}
-      title='All Rents'
     />
   );
 }
