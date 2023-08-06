@@ -3,6 +3,7 @@ import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { City } from './city.model';
+import { getCurrentUser } from '../auth/auth.slice';
 import { useRemoveCityUserMutation } from './cities.api';
 import { UpdateCityUserDto } from './city.dto';
 import CustomForm from '../../common/components/CustomForm';
@@ -60,6 +61,9 @@ export const removeCityUserAction = {
       title: 'Remove City User',
       children: <RemoveCityUserModal data={city} />,
     }),
-  disable: () => false,
+  disable: (city: City) => {
+    const user = getCurrentUser()!;
+    return city.user.id !== user.id || city.users.length === 1;
+  },
   color: Color.RED,
 };

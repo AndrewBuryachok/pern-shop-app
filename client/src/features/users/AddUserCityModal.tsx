@@ -1,46 +1,48 @@
-import { Select, TextInput } from '@mantine/core';
+import { Select } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
-import { IModal } from '../../common/interfaces';
-import { City } from './city.model';
-import { useAddCityUserMutation } from './cities.api';
-import { useSelectNotCitizensUsersQuery } from '../users/users.api';
-import { UpdateCityUserDto } from './city.dto';
+import {
+  useAddCityUserMutation,
+  useSelectMyCitiesQuery,
+} from '../cities/cities.api';
+import { useSelectNotCitizensUsersQuery } from './users.api';
+import { UpdateCityUserDto } from '../cities/city.dto';
 import CustomForm from '../../common/components/CustomForm';
 import RefetchAction from '../../common/components/RefetchAction';
+import { PlacesItem } from '../../common/components/PlacesItem';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import { UsersItem } from '../../common/components/UsersItem';
-import { parsePlace, selectUsers } from '../../common/utils';
-import { Color } from '../../common/constants';
+import { selectCities, selectUsers } from '../../common/utils';
 
-type Props = IModal<City>;
-
-export default function AddCityUserModal({ data: city }: Props) {
+export default function AddUserCityModal() {
   const form = useForm({
     initialValues: {
-      cityId: city.id,
       user: '',
+      city: '',
     },
-    transformValues: ({ user, ...rest }) => ({ ...rest, userId: +user }),
+    transformValues: ({ user, city }) => ({
+      userId: +user,
+      cityId: +city,
+    }),
   });
 
   const { data: users, ...usersResponse } = useSelectNotCitizensUsersQuery();
+  const { data: cities, ...citiesResponse } = useSelectMyCitiesQuery();
 
   const user = users?.find((user) => user.id === +form.values.user);
 
-  const [addCityUser, { isLoading }] = useAddCityUserMutation();
+  const [addUserCity, { isLoading }] = useAddCityUserMutation();
 
   const handleSubmit = async (dto: UpdateCityUserDto) => {
-    await addCityUser(dto);
+    await addUserCity(dto);
   };
 
   return (
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={'Add city user'}
+      text={'Add user city'}
     >
-      <TextInput label='City' value={parsePlace(city)} disabled />
       <Select
         label='User'
         placeholder='User'
@@ -54,16 +56,26 @@ export default function AddCityUserModal({ data: city }: Props) {
         disabled={usersResponse.isFetching}
         {...form.getInputProps('user')}
       />
+      <Select
+        label='City'
+        placeholder='City'
+        rightSection={<RefetchAction {...citiesResponse} />}
+        itemComponent={PlacesItem}
+        data={selectCities(cities)}
+        searchable
+        required
+        disabled={citiesResponse.isFetching}
+        {...form.getInputProps('city')}
+      />
     </CustomForm>
   );
 }
 
-export const addCityUserAction = {
-  open: (city: City) =>
+export const addUserCityButton = {
+  label: 'Add',
+  open: () =>
     openModal({
-      title: 'Add City User',
-      children: <AddCityUserModal data={city} />,
+      title: 'Add User City',
+      children: <AddUserCityModal />,
     }),
-  disable: () => false,
-  color: Color.GREEN,
 };

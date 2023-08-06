@@ -16,8 +16,8 @@ type Props = IModal<User>;
 export default function RemoveUserCityModal({ data: user }: Props) {
   const form = useForm({
     initialValues: {
-      cityId: user.city!.id,
       userId: user.id,
+      cityId: user.city!.id,
     },
   });
 
@@ -33,7 +33,6 @@ export default function RemoveUserCityModal({ data: user }: Props) {
       isLoading={isLoading}
       text={'Remove user city'}
     >
-      <TextInput label='City' value={parsePlace(user.city!)} disabled />
       <TextInput
         label='User'
         icon={<CustomAvatar {...user} />}
@@ -41,6 +40,7 @@ export default function RemoveUserCityModal({ data: user }: Props) {
         value={user.name}
         disabled
       />
+      <TextInput label='City' value={parsePlace(user.city!)} disabled />
     </CustomForm>
   );
 }
