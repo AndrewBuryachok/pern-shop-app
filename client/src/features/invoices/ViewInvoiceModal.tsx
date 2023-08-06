@@ -3,15 +3,12 @@ import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { Invoice } from './invoice.model';
 import CustomAvatar from '../../common/components/CustomAvatar';
-import { parseCard, parseDate } from '../../common/utils';
+import { parseCard, parseTime } from '../../common/utils';
 import { Color } from '../../common/constants';
 
 type Props = IModal<Invoice>;
 
 export default function ViewInvoiceModal({ data: invoice }: Props) {
-  const created = parseDate(invoice.createdAt);
-  const completed = invoice.completedAt && parseDate(invoice.completedAt);
-
   return (
     <Stack spacing={8}>
       <TextInput
@@ -36,12 +33,12 @@ export default function ViewInvoiceModal({ data: invoice }: Props) {
       <Textarea label='Description' value={invoice.description} disabled />
       <TextInput
         label='Created'
-        value={`${created.date} ${created.time}`}
+        value={parseTime(invoice.createdAt)}
         disabled
       />
       <TextInput
         label='Completed'
-        value={completed ? `${completed.date} ${completed.time}` : '-'}
+        value={parseTime(invoice.completedAt)}
         disabled
       />
     </Stack>

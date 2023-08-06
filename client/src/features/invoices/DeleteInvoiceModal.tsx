@@ -7,15 +7,13 @@ import { useDeleteInvoiceMutation } from './invoices.api';
 import { DeleteInvoiceDto } from './invoice.dto';
 import CustomForm from '../../common/components/CustomForm';
 import CustomAvatar from '../../common/components/CustomAvatar';
-import { parseCard, parseDate } from '../../common/utils';
+import { parseCard, parseTime } from '../../common/utils';
 import { Color } from '../../common/constants';
 import { getCurrentUser } from '../auth/auth.slice';
 
 type Props = IModal<Invoice>;
 
 export default function DeleteInvoiceModal({ data: invoice }: Props) {
-  const created = parseDate(invoice.createdAt);
-
   const form = useForm({
     initialValues: {
       invoiceId: invoice.id,
@@ -56,7 +54,7 @@ export default function DeleteInvoiceModal({ data: invoice }: Props) {
       <Textarea label='Description' value={invoice.description} disabled />
       <TextInput
         label='Created'
-        value={`${created.date} ${created.time}`}
+        value={parseTime(invoice.createdAt)}
         disabled
       />
     </CustomForm>

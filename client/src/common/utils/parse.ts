@@ -23,7 +23,8 @@ export const parseDate = (date: Date) => ({
   time: new Date(date).toLocaleTimeString('en-us'),
 });
 
-export const parseTime = (date: Date) => {
+export const parseTime = (date?: Date) => {
+  if (!date) return '-';
   const result = parseDate(date);
   return `${result.date} ${result.time}`;
 };

@@ -7,7 +7,7 @@ import { useDeletePollMutation } from './polls.api';
 import { DeletePollDto } from './poll.dto';
 import CustomForm from '../../common/components/CustomForm';
 import CustomAvatar from '../../common/components/CustomAvatar';
-import { parseDate } from '../../common/utils';
+import { parseTime } from '../../common/utils';
 import { Color } from '../../common/constants';
 
 type Props = IModal<Poll>;
@@ -17,7 +17,6 @@ export default function DeletePollModal({ data: poll }: Props) {
   const votes = [poll.upVotes, poll.downVotes].map(
     (value) => `${value} (${Math.round((value * 100) / total)}%)`,
   );
-  const created = parseDate(poll.createdAt);
 
   const form = useForm({
     initialValues: {
@@ -52,11 +51,7 @@ export default function DeletePollModal({ data: poll }: Props) {
         value={poll.myVote ? (poll.myVote.type ? 'up' : 'down') : '-'}
         disabled
       />
-      <TextInput
-        label='Created'
-        value={`${created.date} ${created.time}`}
-        disabled
-      />
+      <TextInput label='Created' value={parseTime(poll.createdAt)} disabled />
     </CustomForm>
   );
 }

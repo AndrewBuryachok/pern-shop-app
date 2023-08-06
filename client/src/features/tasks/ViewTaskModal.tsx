@@ -4,15 +4,12 @@ import { IModal } from '../../common/interfaces';
 import { Task } from './task.model';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import PriorityIcon from '../../common/components/PriorityIcon';
-import { parseDate } from '../../common/utils';
+import { parseTime } from '../../common/utils';
 import { Color, priorities } from '../../common/constants';
 
 type Props = IModal<Task>;
 
 export default function ViewTaskModal({ data: task }: Props) {
-  const created = parseDate(task.createdAt);
-  const completed = task.completedAt && parseDate(task.completedAt);
-
   return (
     <Stack spacing={8}>
       <TextInput
@@ -37,14 +34,10 @@ export default function ViewTaskModal({ data: task }: Props) {
         value={task.executorUser ? task.executorUser.name : '-'}
         disabled
       />
-      <TextInput
-        label='Created'
-        value={`${created.date} ${created.time}`}
-        disabled
-      />
+      <TextInput label='Created' value={parseTime(task.createdAt)} disabled />
       <TextInput
         label='Completed'
-        value={completed ? `${completed.date} ${completed.time}` : '-'}
+        value={parseTime(task.completedAt)}
         disabled
       />
     </Stack>

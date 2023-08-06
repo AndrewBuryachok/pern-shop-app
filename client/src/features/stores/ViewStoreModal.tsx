@@ -3,14 +3,12 @@ import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { Store } from './store.model';
 import CustomAvatar from '../../common/components/CustomAvatar';
-import { parseCard, parseDate, parsePlace } from '../../common/utils';
+import { parseCard, parsePlace, parseTime } from '../../common/utils';
 import { Color } from '../../common/constants';
 
 type Props = IModal<Store>;
 
 export default function ViewStoreModal({ data: store }: Props) {
-  const reserved = store.reservedAt && parseDate(store.reservedAt);
-
   return (
     <Stack spacing={8}>
       <TextInput
@@ -25,7 +23,7 @@ export default function ViewStoreModal({ data: store }: Props) {
       <TextInput label='Price' value={`${store.market.price}$`} disabled />
       <TextInput
         label='Reserved'
-        value={reserved ? `${reserved.date} ${reserved.time}` : '-'}
+        value={parseTime(store.reservedAt)}
         disabled
       />
     </Stack>

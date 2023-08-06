@@ -3,14 +3,12 @@ import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { Friend } from './friend.model';
 import CustomAvatar from '../../common/components/CustomAvatar';
-import { parseDate } from '../../common/utils';
+import { parseTime } from '../../common/utils';
 import { Color } from '../../common/constants';
 
 type Props = IModal<Friend>;
 
 export default function ViewFriendModal({ data: friend }: Props) {
-  const created = parseDate(friend.createdAt);
-
   return (
     <Stack spacing={8}>
       <TextInput
@@ -32,11 +30,7 @@ export default function ViewFriendModal({ data: friend }: Props) {
         value={friend.type ? 'confirmed' : 'unconfirmed'}
         disabled
       />
-      <TextInput
-        label='Created'
-        value={`${created.date} ${created.time}`}
-        disabled
-      />
+      <TextInput label='Created' value={parseTime(friend.createdAt)} disabled />
     </Stack>
   );
 }

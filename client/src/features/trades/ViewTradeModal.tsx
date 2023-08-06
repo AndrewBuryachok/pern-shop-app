@@ -6,8 +6,8 @@ import CustomAvatar from '../../common/components/CustomAvatar';
 import ThingImage from '../../common/components/ThingImage';
 import {
   parseCard,
-  parseDate,
   parseStore,
+  parseTime,
   parseTradeAmount,
 } from '../../common/utils';
 import { Color, items } from '../../common/constants';
@@ -15,8 +15,6 @@ import { Color, items } from '../../common/constants';
 type Props = IModal<Trade>;
 
 export default function ViewTradeModal({ data: trade }: Props) {
-  const created = parseDate(trade.createdAt);
-
   return (
     <Stack spacing={8}>
       <TextInput
@@ -59,11 +57,7 @@ export default function ViewTradeModal({ data: trade }: Props) {
         value={parseCard(trade.ware.rent.store.market.card)}
         disabled
       />
-      <TextInput
-        label='Created'
-        value={`${created.date} ${created.time}`}
-        disabled
-      />
+      <TextInput label='Created' value={parseTime(trade.createdAt)} disabled />
       <Input.Wrapper label='Rate'>
         <Rating value={trade.rate} readOnly />
       </Input.Wrapper>

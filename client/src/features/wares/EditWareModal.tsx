@@ -11,9 +11,9 @@ import ThingImage from '../../common/components/ThingImage';
 import { StatesItem } from '../../common/components/StatesItem';
 import {
   parseCard,
-  parseDate,
   parseStore,
   parseThingAmount,
+  parseTime,
   viewStates,
 } from '../../common/utils';
 import { Color, MAX_PRICE_VALUE, items } from '../../common/constants';
@@ -21,8 +21,6 @@ import { Color, MAX_PRICE_VALUE, items } from '../../common/constants';
 type Props = IModal<Ware>;
 
 export default function EditWareModal({ data: ware }: Props) {
-  const created = parseDate(ware.createdAt);
-
   const form = useForm({
     initialValues: {
       wareId: ware.id,
@@ -82,11 +80,7 @@ export default function EditWareModal({ data: ware }: Props) {
         value={parseCard(ware.rent.store.market.card)}
         disabled
       />
-      <TextInput
-        label='Created'
-        value={`${created.date} ${created.time}`}
-        disabled
-      />
+      <TextInput label='Created' value={parseTime(ware.createdAt)} disabled />
     </CustomForm>
   );
 }

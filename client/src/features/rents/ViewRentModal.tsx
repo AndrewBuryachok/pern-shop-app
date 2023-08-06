@@ -6,8 +6,8 @@ import CustomAvatar from '../../common/components/CustomAvatar';
 import { ThingsItem } from '../../common/components/ThingItem';
 import {
   parseCard,
-  parseDate,
   parseStore,
+  parseTime,
   viewThings,
 } from '../../common/utils';
 import { Color } from '../../common/constants';
@@ -15,8 +15,6 @@ import { Color } from '../../common/constants';
 type Props = IModal<Rent>;
 
 export default function ViewRentModal({ data: rent }: Props) {
-  const created = parseDate(rent.createdAt);
-
   return (
     <Stack spacing={8}>
       <TextInput
@@ -35,11 +33,7 @@ export default function ViewRentModal({ data: rent }: Props) {
       />
       <TextInput label='Storage' value={parseStore(rent.store)} disabled />
       <TextInput label='Sum' value={`${rent.store.market.price}$`} disabled />
-      <TextInput
-        label='Created'
-        value={`${created.date} ${created.time}`}
-        disabled
-      />
+      <TextInput label='Created' value={parseTime(rent.createdAt)} disabled />
       <Select
         label='Wares'
         placeholder={`Total: ${rent.wares.length}`}

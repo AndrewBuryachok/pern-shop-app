@@ -12,8 +12,8 @@ import { StatesItem } from '../../common/components/StatesItem';
 import {
   parseCard,
   parseCell,
-  parseDate,
   parseThingAmount,
+  parseTime,
   viewStates,
 } from '../../common/utils';
 import { Color, MAX_PRICE_VALUE, items } from '../../common/constants';
@@ -21,8 +21,6 @@ import { Color, MAX_PRICE_VALUE, items } from '../../common/constants';
 type Props = IModal<Product>;
 
 export default function EditProductModal({ data: product }: Props) {
-  const created = parseDate(product.createdAt);
-
   const form = useForm({
     initialValues: {
       productId: product.id,
@@ -88,7 +86,7 @@ export default function EditProductModal({ data: product }: Props) {
       />
       <TextInput
         label='Created'
-        value={`${created.date} ${created.time}`}
+        value={parseTime(product.createdAt)}
         disabled
       />
     </CustomForm>

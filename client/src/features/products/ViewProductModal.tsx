@@ -14,8 +14,8 @@ import ThingImage from '../../common/components/ThingImage';
 import {
   parseCard,
   parseCell,
-  parseDate,
   parseThingAmount,
+  parseTime,
   viewStates,
 } from '../../common/utils';
 import { Color, items } from '../../common/constants';
@@ -24,8 +24,6 @@ import { StatesItem } from '../../common/components/StatesItem';
 type Props = IModal<Product>;
 
 export default function ViewProductModal({ data: product }: Props) {
-  const created = parseDate(product.createdAt);
-
   return (
     <Stack spacing={8}>
       <TextInput
@@ -66,7 +64,7 @@ export default function ViewProductModal({ data: product }: Props) {
       />
       <TextInput
         label='Created'
-        value={`${created.date} ${created.time}`}
+        value={parseTime(product.createdAt)}
         disabled
       />
       <Input.Wrapper label='Rate'>

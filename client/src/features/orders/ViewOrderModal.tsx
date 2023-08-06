@@ -7,17 +7,14 @@ import ThingImage from '../../common/components/ThingImage';
 import {
   parseCard,
   parseCell,
-  parseDate,
   parseThingAmount,
+  parseTime,
 } from '../../common/utils';
 import { Color, items } from '../../common/constants';
 
 type Props = IModal<Order>;
 
 export default function ViewOrderModal({ data: order }: Props) {
-  const created = parseDate(order.createdAt);
-  const completed = order.completedAt && parseDate(order.completedAt);
-
   return (
     <Stack spacing={8}>
       <TextInput
@@ -54,14 +51,10 @@ export default function ViewOrderModal({ data: order }: Props) {
         value={parseCard(order.lease.cell.storage.card)}
         disabled
       />
-      <TextInput
-        label='Created'
-        value={`${created.date} ${created.time}`}
-        disabled
-      />
+      <TextInput label='Created' value={parseTime(order.createdAt)} disabled />
       <TextInput
         label='Completed'
-        value={completed ? `${completed.date} ${completed.time}` : '-'}
+        value={parseTime(order.completedAt)}
         disabled
       />
       <Input.Wrapper label='Rate'>

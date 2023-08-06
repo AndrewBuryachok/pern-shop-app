@@ -12,7 +12,7 @@ import CustomAvatar from '../../common/components/CustomAvatar';
 import { CardsItem } from '../../common/components/CardsItem';
 import {
   parseCard,
-  parseDate,
+  parseTime,
   selectCardsWithBalance,
 } from '../../common/utils';
 import { Color } from '../../common/constants';
@@ -21,8 +21,6 @@ import { getCurrentUser } from '../auth/auth.slice';
 type Props = IModal<Invoice>;
 
 export default function CompleteInvoiceModal({ data: invoice }: Props) {
-  const created = parseDate(invoice.createdAt);
-
   const myCard = { balance: 0 };
 
   const form = useForm({
@@ -74,7 +72,7 @@ export default function CompleteInvoiceModal({ data: invoice }: Props) {
       <Textarea label='Description' value={invoice.description} disabled />
       <TextInput
         label='Created'
-        value={`${created.date} ${created.time}`}
+        value={parseTime(invoice.createdAt)}
         disabled
       />
       <Select

@@ -7,7 +7,7 @@ import { ThingsItem } from '../../common/components/ThingItem';
 import {
   parseCard,
   parseCell,
-  parseDate,
+  parseTime,
   viewThings,
 } from '../../common/utils';
 import { Color } from '../../common/constants';
@@ -15,8 +15,6 @@ import { Color } from '../../common/constants';
 type Props = IModal<Lease>;
 
 export default function ViewLeaseModal({ data: lease }: Props) {
-  const created = parseDate(lease.createdAt);
-
   return (
     <Stack spacing={8}>
       <TextInput
@@ -35,11 +33,7 @@ export default function ViewLeaseModal({ data: lease }: Props) {
       />
       <TextInput label='Storage' value={parseCell(lease.cell)} disabled />
       <TextInput label='Sum' value={`${lease.cell.storage.price}$`} disabled />
-      <TextInput
-        label='Created'
-        value={`${created.date} ${created.time}`}
-        disabled
-      />
+      <TextInput label='Created' value={parseTime(lease.createdAt)} disabled />
       <TextInput label='Type' value={lease.type} disabled />
       <Select
         label='Things'

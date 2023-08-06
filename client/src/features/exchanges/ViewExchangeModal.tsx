@@ -3,14 +3,12 @@ import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { Exchange } from './exchange.model';
 import CustomAvatar from '../../common/components/CustomAvatar';
-import { parseCard, parseDate } from '../../common/utils';
+import { parseCard, parseTime } from '../../common/utils';
 import { Color } from '../../common/constants';
 
 type Props = IModal<Exchange>;
 
 export default function ViewExchangeModal({ data: exchange }: Props) {
-  const created = parseDate(exchange.createdAt);
-
   return (
     <Stack spacing={8}>
       <TextInput
@@ -35,7 +33,7 @@ export default function ViewExchangeModal({ data: exchange }: Props) {
       <TextInput label='Sum' value={`${exchange.sum}$`} disabled />
       <TextInput
         label='Created'
-        value={`${created.date} ${created.time}`}
+        value={parseTime(exchange.createdAt)}
         disabled
       />
     </Stack>

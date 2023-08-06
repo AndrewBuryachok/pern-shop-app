@@ -3,14 +3,12 @@ import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { Rating } from './rating.model';
 import CustomAvatar from '../../common/components/CustomAvatar';
-import { parseDate } from '../../common/utils';
+import { parseTime } from '../../common/utils';
 import { Color } from '../../common/constants';
 
 type Props = IModal<Rating>;
 
 export default function ViewRatingModal({ data: rating }: Props) {
-  const created = parseDate(rating.createdAt);
-
   return (
     <Stack spacing={8}>
       <TextInput
@@ -30,11 +28,7 @@ export default function ViewRatingModal({ data: rating }: Props) {
       <Input.Wrapper label='Rate'>
         <CustomRating value={rating.rate} readOnly />
       </Input.Wrapper>
-      <TextInput
-        label='Created'
-        value={`${created.date} ${created.time}`}
-        disabled
-      />
+      <TextInput label='Created' value={parseTime(rating.createdAt)} disabled />
     </Stack>
   );
 }

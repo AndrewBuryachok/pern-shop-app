@@ -4,14 +4,12 @@ import { IModal } from '../../common/interfaces';
 import { Good } from './good.model';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import ThingImage from '../../common/components/ThingImage';
-import { parseDate, parsePlace, parseThingAmount } from '../../common/utils';
+import { parsePlace, parseThingAmount, parseTime } from '../../common/utils';
 import { Color, items } from '../../common/constants';
 
 type Props = IModal<Good>;
 
 export default function ViewGoodModal({ data: good }: Props) {
-  const created = parseDate(good.createdAt);
-
   return (
     <Stack spacing={8}>
       <TextInput
@@ -32,11 +30,7 @@ export default function ViewGoodModal({ data: good }: Props) {
       <TextInput label='Shop' value={parsePlace(good.shop)} disabled />
       <TextInput label='Amount' value={parseThingAmount(good)} disabled />
       <TextInput label='Price' value={`${good.price}$`} disabled />
-      <TextInput
-        label='Created'
-        value={`${created.date} ${created.time}`}
-        disabled
-      />
+      <TextInput label='Created' value={parseTime(good.createdAt)} disabled />
     </Stack>
   );
 }

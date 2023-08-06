@@ -7,17 +7,14 @@ import ThingImage from '../../common/components/ThingImage';
 import {
   parseCard,
   parseCell,
-  parseDate,
   parseThingAmount,
+  parseTime,
 } from '../../common/utils';
 import { Color, items } from '../../common/constants';
 
 type Props = IModal<Delivery>;
 
 export default function ViewDeliveryModal({ data: delivery }: Props) {
-  const created = parseDate(delivery.createdAt);
-  const completed = delivery.completedAt && parseDate(delivery.completedAt);
-
   return (
     <Stack spacing={8}>
       <TextInput
@@ -81,12 +78,12 @@ export default function ViewDeliveryModal({ data: delivery }: Props) {
       />
       <TextInput
         label='Created'
-        value={`${created.date} ${created.time}`}
+        value={parseTime(delivery.createdAt)}
         disabled
       />
       <TextInput
         label='Completed'
-        value={completed ? `${completed.date} ${completed.time}` : '-'}
+        value={parseTime(delivery.completedAt)}
         disabled
       />
       <Input.Wrapper label='Rate'>

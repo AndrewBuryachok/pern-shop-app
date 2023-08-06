@@ -3,7 +3,7 @@ import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { Poll } from './poll.model';
 import CustomAvatar from '../../common/components/CustomAvatar';
-import { parseDate } from '../../common/utils';
+import { parseTime } from '../../common/utils';
 import { Color } from '../../common/constants';
 
 type Props = IModal<Poll>;
@@ -13,8 +13,6 @@ export default function ViewPollModal({ data: poll }: Props) {
   const votes = [poll.upVotes, poll.downVotes].map(
     (value) => `${value} (${total && Math.round((value * 100) / total)}%)`,
   );
-  const created = parseDate(poll.createdAt);
-  const completed = poll.completedAt && parseDate(poll.completedAt);
 
   return (
     <Stack spacing={8}>
@@ -33,14 +31,10 @@ export default function ViewPollModal({ data: poll }: Props) {
         value={poll.myVote ? (poll.myVote.type ? 'up' : 'down') : '-'}
         disabled
       />
-      <TextInput
-        label='Created'
-        value={`${created.date} ${created.time}`}
-        disabled
-      />
+      <TextInput label='Created' value={parseTime(poll.createdAt)} disabled />
       <TextInput
         label='Completed'
-        value={completed ? `${completed.date} ${completed.time}` : '-'}
+        value={parseTime(poll.completedAt)}
         disabled
       />
     </Stack>
