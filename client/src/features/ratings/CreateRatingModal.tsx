@@ -1,7 +1,6 @@
 import { CloseButton, Group, Input, Rating, Select } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
-import { ExtUser } from '../users/user.model';
 import { useCreateRatingMutation } from './ratings.api';
 import { useSelectAllUsersQuery } from '../users/users.api';
 import { CreateRatingDto } from './rating.dto';
@@ -10,17 +9,12 @@ import RefetchAction from '../../common/components/RefetchAction';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import { UsersItem } from '../../common/components/UsersItem';
 import { selectUsers } from '../../common/utils';
-import { Color } from '../../common/constants';
 
-type Props = {
-  data?: ExtUser;
-};
-
-export default function CreateRatingModal({ data }: Props) {
+export default function CreateRatingModal() {
   const form = useForm({
     initialValues: {
-      user: data?.id ? `${data.id}` : '',
-      rate: data?.rating ? Math.round(data.rating) : 0,
+      user: '',
+      rate: 0,
     },
     transformValues: ({ user, ...rest }) => ({ ...rest, userId: +user }),
   });
@@ -70,19 +64,9 @@ export default function CreateRatingModal({ data }: Props) {
 
 export const createRatingButton = {
   label: 'Create',
-  open: (user?: ExtUser) =>
+  open: () =>
     openModal({
       title: 'Create Rating',
-      children: <CreateRatingModal data={user} />,
+      children: <CreateRatingModal />,
     }),
-};
-
-export const createRatingAction = {
-  open: (user?: ExtUser) =>
-    openModal({
-      title: 'Create Rating',
-      children: <CreateRatingModal data={user} />,
-    }),
-  disable: () => false,
-  color: Color.YELLOW,
 };

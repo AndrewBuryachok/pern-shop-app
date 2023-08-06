@@ -1,9 +1,8 @@
 import { useParams } from 'react-router-dom';
-import { Group, SimpleGrid, Skeleton, Stack } from '@mantine/core';
+import { Chip, Group, SimpleGrid, Skeleton, Stack } from '@mantine/core';
 import { useDocumentTitle } from '@mantine/hooks';
 import { useGetSingleUserQuery } from '../../features/users/users.api';
 import UserProfile from '../../features/users/UserProfile';
-import FriendChip from '../../common/components/FriendChip';
 import CustomRating from '../../common/components/CustomRating';
 
 export default function SingleUser() {
@@ -27,7 +26,7 @@ export default function SingleUser() {
           <Skeleton key={key} h={16} w={40} />
         ))}
       </Group>
-      <FriendChip />
+      <Chip disabled>Friend</Chip>
       <CustomRating />
       <Skeleton h={40} w={96} />
       <Group spacing={8}>

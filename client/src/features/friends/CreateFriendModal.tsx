@@ -1,7 +1,6 @@
 import { Select } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
-import { User } from '../users/user.model';
 import { useCreateFriendMutation } from './friends.api';
 import { useSelectNotFriendsUsersQuery } from '../users/users.api';
 import { CreateFriendDto } from './friend.dto';
@@ -11,14 +10,10 @@ import CustomAvatar from '../../common/components/CustomAvatar';
 import { UsersItem } from '../../common/components/UsersItem';
 import { selectUsers } from '../../common/utils';
 
-type Props = {
-  data?: User;
-};
-
-export default function CreateFriendModal({ data }: Props) {
+export default function CreateFriendModal() {
   const form = useForm({
     initialValues: {
-      user: data?.id ? `${data.id}` : '',
+      user: '',
     },
     transformValues: ({ user }) => ({
       userId: +user,
@@ -60,9 +55,9 @@ export default function CreateFriendModal({ data }: Props) {
 
 export const createFriendButton = {
   label: 'Create',
-  open: (user?: User) =>
+  open: () =>
     openModal({
       title: 'Create Friend',
-      children: <CreateFriendModal data={user} />,
+      children: <CreateFriendModal />,
     }),
 };

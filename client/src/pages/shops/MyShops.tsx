@@ -4,7 +4,6 @@ import { useGetMyShopsQuery } from '../../features/shops/shops.api';
 import ShopsTable from '../../features/shops/ShopsTable';
 import { createShopButton } from '../../features/shops/CreateShopModal';
 import { editShopAction } from '../../features/shops/EditShopModal';
-import { createGoodAction } from '../../features/goods/CreateGoodModal';
 import { Role } from '../../common/constants';
 
 export default function MyShops() {
@@ -25,7 +24,7 @@ export default function MyShops() {
 
   const button = createShopButton;
 
-  const actions = [editShopAction, createGoodAction];
+  const actions = [editShopAction];
 
   return (
     <ShopsTable

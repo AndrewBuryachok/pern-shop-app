@@ -4,11 +4,8 @@ import { ExtUser } from './user.model';
 import { getCurrentUser } from '../auth/auth.slice';
 import CustomIndicator from '../../common/components/CustomIndicator';
 import RolesBadge from '../../common/components/RolesBadge';
-import CustomActions from '../../common/components/CustomActions';
 import FriendChip from '../../common/components/FriendChip';
-import { viewUserFriendsAction } from './ViewUserFriendsModal';
 import CustomRating from '../../common/components/CustomRating';
-import { createRatingAction } from '../ratings/CreateRatingModal';
 import PlaceText from '../../common/components/PlaceText';
 import { colors } from '../../common/constants';
 
@@ -49,14 +46,8 @@ export default function UserProfile({ data: user }: Props) {
         {user.name}
       </Text>
       <RolesBadge roles={user.roles} />
-      <Group spacing={8}>
-        <FriendChip data={user} />
-        <CustomActions data={user} actions={[viewUserFriendsAction]} />
-      </Group>
-      <Group spacing={me ? 8 : 0}>
-        <CustomRating value={user.rating} />
-        <CustomActions data={user} actions={[createRatingAction]} />
-      </Group>
+      <FriendChip data={user} />
+      <CustomRating value={user.rating} />
       {user.city && (
         <Group spacing={8}>
           <IconBuildingSkyscraper size={32} />

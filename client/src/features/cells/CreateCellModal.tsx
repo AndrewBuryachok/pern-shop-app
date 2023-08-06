@@ -1,7 +1,7 @@
+import { useEffect } from 'react';
 import { Select, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
-import { Storage } from '../storages/storage.model';
 import { useCreateCellMutation } from './cells.api';
 import { useSelectMyStoragesQuery } from '../storages/storages.api';
 import { CreateCellDto } from './cell.dto';
@@ -9,16 +9,11 @@ import CustomForm from '../../common/components/CustomForm';
 import RefetchAction from '../../common/components/RefetchAction';
 import { PlacesItem } from '../../common/components/PlacesItem';
 import { selectStorages } from '../../common/utils';
-import { Color } from '../../common/constants';
 
-type Props = {
-  data?: Storage;
-};
-
-export default function CreateCellModal({ data }: Props) {
+export default function CreateCellModal() {
   const form = useForm({
     initialValues: {
-      storage: data?.id ? `${data.id}` : '',
+      storage: '',
       name: '',
     },
     transformValues: ({ storage, ...rest }) => ({
@@ -32,7 +27,11 @@ export default function CreateCellModal({ data }: Props) {
   const storage = storages?.find(
     (storage) => storage.id === +form.values.storage,
   );
-  form.values.name = storage ? `#${storage.cells + 1}` : '';
+
+  useEffect(
+    () => form.setFieldValue('name', storage ? `#${storage.cells + 1}` : ''),
+    [form.values.storage],
+  );
 
   const [createCell, { isLoading }] = useCreateCellMutation();
 
@@ -69,14 +68,4 @@ export const createCellButton = {
       title: 'Create Cell',
       children: <CreateCellModal />,
     }),
-};
-
-export const createCellAction = {
-  open: (storage: Storage) =>
-    openModal({
-      title: 'Create Cell',
-      children: <CreateCellModal data={storage} />,
-    }),
-  disable: () => false,
-  color: Color.GREEN,
 };
