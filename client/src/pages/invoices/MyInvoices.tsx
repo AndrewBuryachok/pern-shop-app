@@ -3,9 +3,9 @@ import { ISearch } from '../../common/interfaces';
 import { Filter, Mode } from '../../common/enums';
 import { useGetMyInvoicesQuery } from '../../features/invoices/invoices.api';
 import InvoicesTable from '../../features/invoices/InvoicesTable';
-import { createInvoiceButton } from '../../features/invoices/CreateInvoiceModal';
-import { completeInvoiceAction } from '../../features/invoices/CompleteInvoiceModal';
-import { deleteInvoiceAction } from '../../features/invoices/DeleteInvoiceModal';
+import { createMyInvoiceButton } from '../../features/invoices/CreateInvoiceModal';
+import { completeMyInvoiceAction } from '../../features/invoices/CompleteInvoiceModal';
+import { deleteMyInvoiceAction } from '../../features/invoices/DeleteInvoiceModal';
 import { Role } from '../../common/constants';
 
 export default function MyInvoices() {
@@ -26,9 +26,9 @@ export default function MyInvoices() {
 
   const links = [{ label: 'All', to: '../all', role: Role.BANKER }];
 
-  const button = createInvoiceButton;
+  const button = createMyInvoiceButton;
 
-  const actions = [completeInvoiceAction, deleteInvoiceAction];
+  const actions = [completeMyInvoiceAction, deleteMyInvoiceAction];
 
   return (
     <InvoicesTable

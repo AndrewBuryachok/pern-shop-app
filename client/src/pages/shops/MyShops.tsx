@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { ISearch } from '../../common/interfaces';
 import { useGetMyShopsQuery } from '../../features/shops/shops.api';
 import ShopsTable from '../../features/shops/ShopsTable';
-import { createShopButton } from '../../features/shops/CreateShopModal';
+import { createMyShopButton } from '../../features/shops/CreateShopModal';
 import { editShopAction } from '../../features/shops/EditShopModal';
 import { Role } from '../../common/constants';
 
@@ -22,7 +22,7 @@ export default function MyShops() {
     { label: 'All', to: '../all', role: Role.MANAGER },
   ];
 
-  const button = createShopButton;
+  const button = createMyShopButton;
 
   const actions = [editShopAction];
 

@@ -18,6 +18,12 @@ export const rentsApi = emptyApi.injectEndpoints({
       }),
       providesTags: ['Auth', 'Rent', 'Ware'],
     }),
+    selectAllRents: build.query<SelectRent[], void>({
+      query: () => ({
+        url: '/rents/all/select',
+      }),
+      providesTags: ['Rent'],
+    }),
     selectMyRents: build.query<SelectRent[], void>({
       query: () => ({
         url: '/rents/my/select',
@@ -38,6 +44,7 @@ export const rentsApi = emptyApi.injectEndpoints({
 export const {
   useGetMyRentsQuery,
   useGetAllRentsQuery,
+  useSelectAllRentsQuery,
   useSelectMyRentsQuery,
   useCreateRentMutation,
 } = rentsApi;

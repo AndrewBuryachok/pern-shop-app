@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { ISearch } from '../../common/interfaces';
 import { useGetMyMarketsQuery } from '../../features/markets/markets.api';
 import MarketsTable from '../../features/markets/MarketsTable';
-import { createMarketButton } from '../../features/markets/CreateMarketModal';
+import { createMyMarketButton } from '../../features/markets/CreateMarketModal';
 import { editMarketAction } from '../../features/markets/EditMarketModal';
 import { Role } from '../../common/constants';
 
@@ -23,7 +23,7 @@ export default function MyMarkets() {
     { label: 'All', to: '../all', role: Role.MANAGER },
   ];
 
-  const button = createMarketButton;
+  const button = createMyMarketButton;
 
   const actions = [editMarketAction];
 

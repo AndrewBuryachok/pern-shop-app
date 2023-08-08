@@ -2,6 +2,10 @@ import { useState } from 'react';
 import { ISearch } from '../../common/interfaces';
 import { useGetAllCitiesQuery } from '../../features/cities/cities.api';
 import CitiesTable from '../../features/cities/CitiesTable';
+import { createUserCityButton } from '../../features/cities/CreateCityModal';
+import { editCityAction } from '../../features/cities/EditCityModal';
+import { addCityUserAction } from '../../features/cities/AddCityUserModal';
+import { removeCityUserAction } from '../../features/cities/RemoveCityUserModal';
 
 export default function AllCities() {
   const [page, setPage] = useState(1);
@@ -19,6 +23,10 @@ export default function AllCities() {
     { label: 'My', to: '../my' },
   ];
 
+  const button = createUserCityButton;
+
+  const actions = [editCityAction, addCityUserAction, removeCityUserAction];
+
   return (
     <CitiesTable
       {...response}
@@ -28,6 +36,8 @@ export default function AllCities() {
       search={search}
       setSearch={setSearch}
       links={links}
+      button={button}
+      actions={actions}
     />
   );
 }

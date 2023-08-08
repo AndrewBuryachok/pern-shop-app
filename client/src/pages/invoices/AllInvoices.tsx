@@ -3,6 +3,9 @@ import { ISearch } from '../../common/interfaces';
 import { Filter, Mode } from '../../common/enums';
 import { useGetAllInvoicesQuery } from '../../features/invoices/invoices.api';
 import InvoicesTable from '../../features/invoices/InvoicesTable';
+import { createUserInvoiceButton } from '../../features/invoices/CreateInvoiceModal';
+import { completeUserInvoiceAction } from '../../features/invoices/CompleteInvoiceModal';
+import { deleteUserInvoiceAction } from '../../features/invoices/DeleteInvoiceModal';
 
 export default function AllInvoices() {
   const [page, setPage] = useState(1);
@@ -22,6 +25,10 @@ export default function AllInvoices() {
 
   const links = [{ label: 'My', to: '../my' }];
 
+  const button = createUserInvoiceButton;
+
+  const actions = [completeUserInvoiceAction, deleteUserInvoiceAction];
+
   return (
     <InvoicesTable
       {...response}
@@ -31,6 +38,8 @@ export default function AllInvoices() {
       search={search}
       setSearch={setSearch}
       links={links}
+      button={button}
+      actions={actions}
     />
   );
 }

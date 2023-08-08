@@ -4,33 +4,49 @@ import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { Delivery } from './delivery.model';
 import { useTakeDeliveryMutation } from '../deliveries/deliveries.api';
-import { useSelectMyCardsQuery } from '../cards/cards.api';
+import { useSelectAllUsersQuery } from '../users/users.api';
+import {
+  useSelectMyCardsQuery,
+  useSelectUserCardsWithBalanceQuery,
+} from '../cards/cards.api';
 import { TakeDeliveryDto } from '../deliveries/delivery.dto';
 import CustomForm from '../../common/components/CustomForm';
 import RefetchAction from '../../common/components/RefetchAction';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import ThingImage from '../../common/components/ThingImage';
+import { UsersItem } from '../../common/components/UsersItem';
 import { CardsItem } from '../../common/components/CardsItem';
 import {
   parseCard,
   parseCell,
   parseThingAmount,
   selectCardsWithBalance,
+  selectUsers,
 } from '../../common/utils';
-import { Color, items } from '../../common/constants';
+import { Color, items, Status } from '../../common/constants';
 
-type Props = IModal<Delivery>;
+type Props = IModal<Delivery> & { hasRole: boolean };
 
-export default function TakeDeliveryModal({ data: delivery }: Props) {
+export default function TakeDeliveryModal({ data: delivery, hasRole }: Props) {
   const form = useForm({
     initialValues: {
       deliveryId: delivery.id,
+      user: '',
       card: '',
     },
     transformValues: ({ card, ...rest }) => ({ ...rest, cardId: +card }),
   });
 
-  const { data: cards, ...cardsResponse } = useSelectMyCardsQuery();
+  const { data: users, ...usersResponse } = useSelectAllUsersQuery(undefined, {
+    skip: !hasRole,
+  });
+  const { data: cards, ...cardsResponse } = hasRole
+    ? useSelectUserCardsWithBalanceQuery(+form.values.user, {
+        skip: !form.values.user,
+      })
+    : useSelectMyCardsQuery();
+
+  const user = users?.find((user) => user.id === +form.values.user);
 
   const [takeDelivery, { isLoading }] = useTakeDeliveryMutation();
 
@@ -92,10 +108,30 @@ export default function TakeDeliveryModal({ data: delivery }: Props) {
         value={parseCard(delivery.toLease.cell.storage.card)}
         disabled
       />
+      {hasRole && (
+        <Select
+          label='User'
+          placeholder='User'
+          icon={user && <CustomAvatar {...user} />}
+          iconWidth={48}
+          rightSection={<RefetchAction {...usersResponse} />}
+          itemComponent={UsersItem}
+          data={selectUsers(users)}
+          searchable
+          required
+          disabled={usersResponse.isFetching}
+          {...form.getInputProps('user')}
+        />
+      )}
       <Select
         label='Card'
         placeholder='Card'
-        rightSection={<RefetchAction {...cardsResponse} />}
+        rightSection={
+          <RefetchAction
+            {...cardsResponse}
+            skip={!form.values.user && hasRole}
+          />
+        }
         itemComponent={CardsItem}
         data={selectCardsWithBalance(cards)}
         searchable
@@ -107,12 +143,16 @@ export default function TakeDeliveryModal({ data: delivery }: Props) {
   );
 }
 
-export const takeDeliveryAction = {
+export const takeDeliveryFactory = (hasRole: boolean) => ({
   open: (delivery: Delivery) =>
     openModal({
       title: 'Take Delivery',
-      children: <TakeDeliveryModal data={delivery} />,
+      children: <TakeDeliveryModal data={delivery} hasRole={hasRole} />,
     }),
-  disable: () => false,
+  disable: (delivery: Delivery) => delivery.status !== Status.CREATED,
   color: Color.GREEN,
-};
+});
+
+export const takeMyDeliveryAction = takeDeliveryFactory(false);
+
+export const takeUserDeliveryAction = takeDeliveryFactory(true);

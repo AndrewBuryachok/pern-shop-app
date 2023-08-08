@@ -3,7 +3,10 @@ import { NumberInput, Select, Textarea } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { useCreateGoodMutation } from './goods.api';
-import { useSelectMyShopsQuery } from '../shops/shops.api';
+import {
+  useSelectAllShopsQuery,
+  useSelectMyShopsQuery,
+} from '../shops/shops.api';
 import { CreateGoodDto } from './good.dto';
 import CustomForm from '../../common/components/CustomForm';
 import RefetchAction from '../../common/components/RefetchAction';
@@ -23,7 +26,9 @@ import {
   MAX_PRICE_VALUE,
 } from '../../common/constants';
 
-export default function CreateGoodModal() {
+type Props = { hasRole: boolean };
+
+export default function CreateGoodModal({ hasRole }: Props) {
   const form = useForm({
     initialValues: {
       shop: '',
@@ -45,7 +50,9 @@ export default function CreateGoodModal() {
 
   useEffect(() => form.setFieldValue('item', ''), [form.values.category]);
 
-  const { data: shops, ...shopsResponse } = useSelectMyShopsQuery();
+  const { data: shops, ...shopsResponse } = hasRole
+    ? useSelectAllShopsQuery()
+    : useSelectMyShopsQuery();
 
   const [createGood, { isLoading }] = useCreateGoodMutation();
 
@@ -132,11 +139,15 @@ export default function CreateGoodModal() {
   );
 }
 
-export const createGoodButton = {
+export const createGoodFactory = (hasRole: boolean) => ({
   label: 'Create',
   open: () =>
     openModal({
       title: 'Create Good',
-      children: <CreateGoodModal />,
+      children: <CreateGoodModal hasRole={hasRole} />,
     }),
-};
+});
+
+export const createMyGoodButton = createGoodFactory(false);
+
+export const createUserGoodButton = createGoodFactory(true);

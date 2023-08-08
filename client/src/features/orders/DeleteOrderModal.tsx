@@ -62,7 +62,7 @@ export default function DeleteOrderModal({ data: order }: Props) {
   );
 }
 
-export const deleteOrderAction = {
+export const deleteOrderFactory = (hasRole: boolean) => ({
   open: (order: Order) =>
     openModal({
       title: 'Delete Order',
@@ -71,8 +71,13 @@ export const deleteOrderAction = {
   disable: (order: Order) => {
     const user = getCurrentUser()!;
     return (
-      order.status !== Status.CREATED || order.lease.card.user.id !== user.id
+      order.status !== Status.CREATED ||
+      (order.lease.card.user.id !== user.id && !hasRole)
     );
   },
   color: Color.RED,
-};
+});
+
+export const deleteMyOrderAction = deleteOrderFactory(false);
+
+export const deleteUserOrderAction = deleteOrderFactory(true);

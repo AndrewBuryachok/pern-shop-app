@@ -3,7 +3,7 @@ import { ISearch } from '../../common/interfaces';
 import { Filter, Mode } from '../../common/enums';
 import { useGetMyProductsQuery } from '../../features/products/products.api';
 import ProductsTable from '../../features/products/ProductsTable';
-import { createProductButton } from '../../features/products/CreateProductModal';
+import { createMyProductButton } from '../../features/products/CreateProductModal';
 import { editProductAction } from '../../features/products/EditProductModal';
 import { Role } from '../../common/constants';
 
@@ -32,7 +32,7 @@ export default function MyProducts() {
     { label: 'All', to: '../all', role: Role.MANAGER },
   ];
 
-  const button = createProductButton;
+  const button = createMyProductButton;
 
   const actions = [editProductAction];
 

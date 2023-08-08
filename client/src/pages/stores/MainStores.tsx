@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { ISearch } from '../../common/interfaces';
 import { useGetMainStoresQuery } from '../../features/stores/stores.api';
 import StoresTable from '../../features/stores/StoresTable';
-import { reserveStoreAction } from '../../features/stores/ReserveStoreModal';
+import { reserveMyStoreAction } from '../../features/stores/ReserveStoreModal';
 import { Role } from '../../common/constants';
 
 export default function MainStores() {
@@ -23,7 +23,7 @@ export default function MainStores() {
     { label: 'All', to: 'all', role: Role.MANAGER },
   ];
 
-  const actions = [reserveStoreAction];
+  const actions = [reserveMyStoreAction];
 
   return (
     <StoresTable

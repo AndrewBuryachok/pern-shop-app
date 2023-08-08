@@ -3,7 +3,7 @@ import { ISearch } from '../../common/interfaces';
 import { Filter, Mode } from '../../common/enums';
 import { useGetMyPaymentsQuery } from '../../features/payments/payments.api';
 import PaymentsTable from '../../features/payments/PaymentsTable';
-import { createPaymentButton } from '../../features/payments/CreatePaymentModal';
+import { createMyPaymentButton } from '../../features/payments/CreatePaymentModal';
 import { Role } from '../../common/constants';
 
 export default function MyPayments() {
@@ -24,7 +24,7 @@ export default function MyPayments() {
 
   const links = [{ label: 'All', to: '../all', role: Role.BANKER }];
 
-  const button = createPaymentButton;
+  const button = createMyPaymentButton;
 
   return (
     <PaymentsTable

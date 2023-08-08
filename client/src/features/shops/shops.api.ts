@@ -1,7 +1,7 @@
 import { emptyApi } from '../../app/empty.api';
 import { IRequest, IResponse } from '../../common/interfaces';
 import { Shop, SmShop, SmShopWithUser } from './shop.model';
-import { CreateShopDto, EditShopDto } from './shop.dto';
+import { CreateShopDto, EditShopDto, ExtCreateShopDto } from './shop.dto';
 import { getQuery } from '../../common/utils';
 
 export const shopsApi = emptyApi.injectEndpoints({
@@ -36,9 +36,17 @@ export const shopsApi = emptyApi.injectEndpoints({
       }),
       providesTags: ['Auth', 'Shop'],
     }),
-    createShop: build.mutation<void, CreateShopDto>({
+    createMyShop: build.mutation<void, CreateShopDto>({
       query: (dto) => ({
         url: '/shops',
+        method: 'POST',
+        body: dto,
+      }),
+      invalidatesTags: ['Shop'],
+    }),
+    createUserShop: build.mutation<void, ExtCreateShopDto>({
+      query: (dto) => ({
+        url: '/shops/all',
         method: 'POST',
         body: dto,
       }),
@@ -61,6 +69,7 @@ export const {
   useGetAllShopsQuery,
   useSelectAllShopsQuery,
   useSelectMyShopsQuery,
-  useCreateShopMutation,
+  useCreateMyShopMutation,
+  useCreateUserShopMutation,
   useEditShopMutation,
 } = shopsApi;

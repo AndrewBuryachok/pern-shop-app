@@ -61,7 +61,7 @@ export default function EditCardModal({ data: card }: Props) {
   );
 }
 
-export const editCardAction = {
+export const editCardFactory = (hasRole: boolean) => ({
   open: (card: Card) =>
     openModal({
       title: 'Edit Card',
@@ -69,7 +69,11 @@ export const editCardAction = {
     }),
   disable: (card: Card) => {
     const user = getCurrentUser()!;
-    return card.user.id !== user.id;
+    return card.user.id !== user.id && !hasRole;
   },
   color: Color.YELLOW,
-};
+});
+
+export const editMyCardAction = editCardFactory(false);
+
+export const editUserCardAction = editCardFactory(true);

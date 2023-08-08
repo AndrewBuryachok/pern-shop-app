@@ -29,9 +29,9 @@ export const storagesApi = emptyApi.injectEndpoints({
       }),
       providesTags: ['Auth', 'Storage', 'Cell'],
     }),
-    selectAllStorages: build.query<SmStorageWithCard[], void>({
+    selectMainStorages: build.query<SmStorageWithCard[], void>({
       query: () => ({
-        url: '/storages/all/select',
+        url: '/storages/main/select',
       }),
       providesTags: ['Storage'],
     }),
@@ -40,6 +40,12 @@ export const storagesApi = emptyApi.injectEndpoints({
         url: '/storages/my/select',
       }),
       providesTags: ['Auth', 'Storage', 'Cell'],
+    }),
+    selectAllStorages: build.query<MyStorage[], void>({
+      query: () => ({
+        url: '/storages/all/select',
+      }),
+      providesTags: ['Storage', 'Cell'],
     }),
     selectFreeStorages: build.query<SmStorageWithPrice[], void>({
       query: () => ({
@@ -70,8 +76,9 @@ export const {
   useGetMainStoragesQuery,
   useGetMyStoragesQuery,
   useGetAllStoragesQuery,
-  useSelectAllStoragesQuery,
+  useSelectMainStoragesQuery,
   useSelectMyStoragesQuery,
+  useSelectAllStoragesQuery,
   useSelectFreeStoragesQuery,
   useCreateStorageMutation,
   useEditStorageMutation,

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { ISearch } from '../../common/interfaces';
 import { useGetAllCellsQuery } from '../../features/cells/cells.api';
 import CellsTable from '../../features/cells/CellsTable';
+import { createUserCellButton } from '../../features/cells/CreateCellModal';
 
 export default function AllCells() {
   const [page, setPage] = useState(1);
@@ -21,6 +22,8 @@ export default function AllCells() {
     { label: 'My', to: '../my' },
   ];
 
+  const button = createUserCellButton;
+
   return (
     <CellsTable
       {...response}
@@ -30,6 +33,7 @@ export default function AllCells() {
       search={search}
       setSearch={setSearch}
       links={links}
+      button={button}
     />
   );
 }

@@ -19,8 +19,8 @@ import { useSelectAllUsersQuery } from '../../features/users/users.api';
 import { useSelectUserCardsQuery } from '../../features/cards/cards.api';
 import { useSelectAllCitiesQuery } from '../../features/cities/cities.api';
 import { useSelectAllShopsQuery } from '../../features/shops/shops.api';
-import { useSelectAllMarketsQuery } from '../../features/markets/markets.api';
-import { useSelectAllStoragesQuery } from '../../features/storages/storages.api';
+import { useSelectMainMarketsQuery } from '../../features/markets/markets.api';
+import { useSelectMainStoragesQuery } from '../../features/storages/storages.api';
 import { useSelectMarketStoresQuery } from '../../features/stores/stores.api';
 import { useSelectStorageCellsQuery } from '../../features/cells/cells.api';
 import CustomForm from './CustomForm';
@@ -149,10 +149,10 @@ export default function SearchModal(props: Props) {
   const shopsResponse = useSelectAllShopsQuery(undefined, {
     skip: props.search.shop === undefined,
   });
-  const marketsResponse = useSelectAllMarketsQuery(undefined, {
+  const marketsResponse = useSelectMainMarketsQuery(undefined, {
     skip: props.search.market === undefined,
   });
-  const storagesResponse = useSelectAllStoragesQuery(undefined, {
+  const storagesResponse = useSelectMainStoragesQuery(undefined, {
     skip: props.search.storage === undefined,
   });
   const storesResponse = useSelectMarketStoresQuery(

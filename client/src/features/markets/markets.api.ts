@@ -24,9 +24,9 @@ export const marketsApi = emptyApi.injectEndpoints({
       }),
       providesTags: ['Auth', 'Market', 'Store'],
     }),
-    selectAllMarkets: build.query<SmMarketWithCard[], void>({
+    selectMainMarkets: build.query<SmMarketWithCard[], void>({
       query: () => ({
-        url: '/markets/all/select',
+        url: '/markets/main/select',
       }),
       providesTags: ['Market'],
     }),
@@ -35,6 +35,12 @@ export const marketsApi = emptyApi.injectEndpoints({
         url: '/markets/my/select',
       }),
       providesTags: ['Auth', 'Market', 'Store'],
+    }),
+    selectAllMarkets: build.query<MyMarket[], void>({
+      query: () => ({
+        url: '/markets/all/select',
+      }),
+      providesTags: ['Market', 'Store'],
     }),
     createMarket: build.mutation<void, CreateMarketDto>({
       query: (dto) => ({
@@ -59,8 +65,9 @@ export const {
   useGetMainMarketsQuery,
   useGetMyMarketsQuery,
   useGetAllMarketsQuery,
-  useSelectAllMarketsQuery,
+  useSelectMainMarketsQuery,
   useSelectMyMarketsQuery,
+  useSelectAllMarketsQuery,
   useCreateMarketMutation,
   useEditMarketMutation,
 } = marketsApi;

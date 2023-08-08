@@ -3,6 +3,7 @@ import { ISearch } from '../../common/interfaces';
 import { Filter, Mode } from '../../common/enums';
 import { useGetAllSalesQuery } from '../../features/sales/sales.api';
 import SalesTable from '../../features/sales/SalesTable';
+import { rateSaleAction } from '../../features/sales/RateSaleModal';
 
 export default function AllSales() {
   const [page, setPage] = useState(1);
@@ -29,6 +30,8 @@ export default function AllSales() {
     { label: 'Placed', to: '../placed' },
   ];
 
+  const actions = [rateSaleAction];
+
   return (
     <SalesTable
       {...response}
@@ -38,6 +41,7 @@ export default function AllSales() {
       search={search}
       setSearch={setSearch}
       links={links}
+      actions={actions}
     />
   );
 }

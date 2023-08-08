@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { ISearch } from '../../common/interfaces';
 import { useGetAllMarketsQuery } from '../../features/markets/markets.api';
 import MarketsTable from '../../features/markets/MarketsTable';
+import { createUserMarketButton } from '../../features/markets/CreateMarketModal';
+import { editMarketAction } from '../../features/markets/EditMarketModal';
 
 export default function AllMarkets() {
   const [page, setPage] = useState(1);
@@ -20,6 +22,10 @@ export default function AllMarkets() {
     { label: 'My', to: '../my' },
   ];
 
+  const button = createUserMarketButton;
+
+  const actions = [editMarketAction];
+
   return (
     <MarketsTable
       {...response}
@@ -29,6 +35,8 @@ export default function AllMarkets() {
       search={search}
       setSearch={setSearch}
       links={links}
+      button={button}
+      actions={actions}
     />
   );
 }

@@ -69,7 +69,7 @@ export default function UntakeOrderModal({ data: order }: Props) {
   );
 }
 
-export const untakeOrderAction = {
+export const untakeOrderFactory = (hasRole: boolean) => ({
   open: (order: Order) =>
     openModal({
       title: 'Untake Order',
@@ -78,8 +78,13 @@ export const untakeOrderAction = {
   disable: (order: Order) => {
     const user = getCurrentUser()!;
     return (
-      order.status !== Status.TAKEN || order.executorCard?.user.id !== user.id
+      order.status !== Status.TAKEN ||
+      (order.executorCard?.user.id !== user.id && !hasRole)
     );
   },
   color: Color.RED,
-};
+});
+
+export const untakeMyOrderAction = untakeOrderFactory(false);
+
+export const untakeUserOrderAction = untakeOrderFactory(true);

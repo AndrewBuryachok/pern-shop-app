@@ -92,7 +92,7 @@ export default function ExecuteDeliveryModal({ data: delivery }: Props) {
   );
 }
 
-export const executeDeliveryAction = {
+export const executeDeliveryFactory = (hasRole: boolean) => ({
   open: (delivery: Delivery) =>
     openModal({
       title: 'Execute Delivery',
@@ -102,8 +102,12 @@ export const executeDeliveryAction = {
     const user = getCurrentUser()!;
     return (
       delivery.status !== Status.TAKEN ||
-      delivery.executorCard?.user.id !== user.id
+      (delivery.executorCard?.user.id !== user.id && !hasRole)
     );
   },
   color: Color.GREEN,
-};
+});
+
+export const executeMyDeliveryAction = executeDeliveryFactory(false);
+
+export const executeUserDeliveryAction = executeDeliveryFactory(true);

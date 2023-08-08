@@ -3,6 +3,12 @@ import { ISearch } from '../../common/interfaces';
 import { Filter, Mode } from '../../common/enums';
 import { useGetAllOrdersQuery } from '../../features/orders/orders.api';
 import OrdersTable from '../../features/orders/OrdersTable';
+import { takeUserOrderAction } from '../../features/orders/TakeOrderModal';
+import { executeUserOrderAction } from '../../features/orders/ExecuteOrderModal';
+import { completeUserOrderAction } from '../../features/orders/CompleteOrderModal';
+import { rateUserOrderAction } from '../../features/orders/RateOrderModal';
+import { untakeUserOrderAction } from '../../features/orders/UntakeOrderModal';
+import { deleteUserOrderAction } from '../../features/orders/DeleteOrderModal';
 
 export default function AllOrders() {
   const [page, setPage] = useState(1);
@@ -32,6 +38,15 @@ export default function AllOrders() {
     { label: 'Placed', to: '../placed' },
   ];
 
+  const actions = [
+    takeUserOrderAction,
+    executeUserOrderAction,
+    completeUserOrderAction,
+    untakeUserOrderAction,
+    deleteUserOrderAction,
+    rateUserOrderAction,
+  ];
+
   return (
     <OrdersTable
       {...response}
@@ -41,6 +56,7 @@ export default function AllOrders() {
       search={search}
       setSearch={setSearch}
       links={links}
+      actions={actions}
     />
   );
 }

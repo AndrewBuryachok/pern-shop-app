@@ -77,7 +77,7 @@ export default function RateOrderModal({ data: order }: Props) {
   );
 }
 
-export const rateOrderAction = {
+export const rateOrderFactory = (hasRole: boolean) => ({
   open: (order: Order) =>
     openModal({
       title: 'Rate Order',
@@ -85,7 +85,13 @@ export const rateOrderAction = {
     }),
   disable: (order: Order) => {
     const user = getCurrentUser()!;
-    return !order.completedAt || order.lease.card.user.id !== user.id;
+    return (
+      !order.completedAt || (order.lease.card.user.id !== user.id && !hasRole)
+    );
   },
   color: Color.YELLOW,
-};
+});
+
+export const rateMyOrderAction = rateOrderFactory(false);
+
+export const rateUserOrderAction = rateOrderFactory(true);

@@ -69,7 +69,7 @@ export default function ExecuteOrderModal({ data: order }: Props) {
   );
 }
 
-export const executeOrderAction = {
+export const executeOrderFactory = (hasRole: boolean) => ({
   open: (order: Order) =>
     openModal({
       title: 'Execute Order',
@@ -78,8 +78,13 @@ export const executeOrderAction = {
   disable: (order: Order) => {
     const user = getCurrentUser()!;
     return (
-      order.status !== Status.TAKEN || order.executorCard?.user.id !== user.id
+      order.status !== Status.TAKEN ||
+      (order.executorCard?.user.id !== user.id && !hasRole)
     );
   },
   color: Color.GREEN,
-};
+});
+
+export const executeMyOrderAction = executeOrderFactory(false);
+
+export const executeUserOrderAction = executeOrderFactory(true);

@@ -3,6 +3,10 @@ export interface CreateCardDto {
   color: number;
 }
 
+export interface ExtCreateCardDto extends CreateCardDto {
+  userId: number;
+}
+
 export interface EditCardDto extends CreateCardDto {
   cardId: number;
 }

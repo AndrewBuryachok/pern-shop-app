@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { ISearch } from '../../common/interfaces';
 import { useGetAllShopsQuery } from '../../features/shops/shops.api';
 import ShopsTable from '../../features/shops/ShopsTable';
+import { createUserShopButton } from '../../features/shops/CreateShopModal';
+import { editShopAction } from '../../features/shops/EditShopModal';
 
 export default function AllShops() {
   const [page, setPage] = useState(1);
@@ -19,6 +21,10 @@ export default function AllShops() {
     { label: 'My', to: '../my' },
   ];
 
+  const button = createUserShopButton;
+
+  const actions = [editShopAction];
+
   return (
     <ShopsTable
       {...response}
@@ -28,6 +34,8 @@ export default function AllShops() {
       search={search}
       setSearch={setSearch}
       links={links}
+      button={button}
+      actions={actions}
     />
   );
 }

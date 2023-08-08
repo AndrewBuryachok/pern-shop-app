@@ -61,7 +61,7 @@ export default function DeleteInvoiceModal({ data: invoice }: Props) {
   );
 }
 
-export const deleteInvoiceAction = {
+export const deleteInvoiceFactory = (hasRole: boolean) => ({
   open: (invoice: Invoice) =>
     openModal({
       title: 'Delete Invoice',
@@ -69,7 +69,14 @@ export const deleteInvoiceAction = {
     }),
   disable: (invoice: Invoice) => {
     const user = getCurrentUser()!;
-    return !!invoice.completedAt || invoice.senderCard.user.id !== user.id;
+    return (
+      !!invoice.completedAt ||
+      (invoice.senderCard.user.id !== user.id && !hasRole)
+    );
   },
   color: Color.RED,
-};
+});
+
+export const deleteMyInvoiceAction = deleteInvoiceFactory(false);
+
+export const deleteUserInvoiceAction = deleteInvoiceFactory(true);

@@ -3,7 +3,7 @@ import { ISearch } from '../../common/interfaces';
 import { Filter, Mode } from '../../common/enums';
 import { useGetMainDeliveriesQuery } from '../../features/deliveries/deliveries.api';
 import DeliveriesTable from '../../features/deliveries/DeliveriesTable';
-import { takeDeliveryAction } from '../../features/deliveries/TakeDeliveryModal';
+import { takeMyDeliveryAction } from '../../features/deliveries/TakeDeliveryModal';
 import { Role } from '../../common/constants';
 
 export default function MainDeliveries() {
@@ -36,7 +36,7 @@ export default function MainDeliveries() {
     { label: 'All', to: 'all', role: Role.MANAGER },
   ];
 
-  const actions = [takeDeliveryAction];
+  const actions = [takeMyDeliveryAction];
 
   return (
     <DeliveriesTable

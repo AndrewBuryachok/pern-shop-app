@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { ISearch } from '../../common/interfaces';
 import { useGetAllStoragesQuery } from '../../features/storages/storages.api';
 import StoragesTable from '../../features/storages/StoragesTable';
+import { createUserStorageButton } from '../../features/storages/CreateStorageModal';
+import { editStorageAction } from '../../features/storages/EditStorageModal';
 
 export default function AllStorages() {
   const [page, setPage] = useState(1);
@@ -20,6 +22,10 @@ export default function AllStorages() {
     { label: 'My', to: '../my' },
   ];
 
+  const button = createUserStorageButton;
+
+  const actions = [editStorageAction];
+
   return (
     <StoragesTable
       {...response}
@@ -29,6 +35,8 @@ export default function AllStorages() {
       search={search}
       setSearch={setSearch}
       links={links}
+      button={button}
+      actions={actions}
     />
   );
 }

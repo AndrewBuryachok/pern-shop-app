@@ -69,7 +69,7 @@ export default function CompleteOrderModal({ data: order }: Props) {
   );
 }
 
-export const completeOrderAction = {
+export const completeOrderFactory = (hasRole: boolean) => ({
   open: (order: Order) =>
     openModal({
       title: 'Complete Order',
@@ -78,8 +78,13 @@ export const completeOrderAction = {
   disable: (order: Order) => {
     const user = getCurrentUser()!;
     return (
-      order.status !== Status.EXECUTED || order.lease.card.user.id !== user.id
+      order.status !== Status.EXECUTED ||
+      (order.lease.card.user.id !== user.id && !hasRole)
     );
   },
   color: Color.GREEN,
-};
+});
+
+export const completeMyOrderAction = completeOrderFactory(false);
+
+export const completeUserOrderAction = completeOrderFactory(true);

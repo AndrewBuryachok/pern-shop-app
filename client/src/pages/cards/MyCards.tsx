@@ -2,10 +2,10 @@ import { useState } from 'react';
 import { ISearch } from '../../common/interfaces';
 import { useGetMyCardsQuery } from '../../features/cards/cards.api';
 import CardsTable from '../../features/cards/CardsTable';
-import { createCardButton } from '../../features/cards/CreateCardModal';
-import { editCardAction } from '../../features/cards/EditCardModal';
-import { addCardUserAction } from '../../features/cards/AddCardUserModal';
-import { removeCardUserAction } from '../../features/cards/RemoveCardUserModal';
+import { createMyCardButton } from '../../features/cards/CreateCardModal';
+import { editMyCardAction } from '../../features/cards/EditCardModal';
+import { addMyCardUserAction } from '../../features/cards/AddCardUserModal';
+import { removeMyCardUserAction } from '../../features/cards/RemoveCardUserModal';
 import { Role } from '../../common/constants';
 
 export default function MyCards() {
@@ -22,9 +22,13 @@ export default function MyCards() {
 
   const links = [{ label: 'All', to: '../all', role: Role.BANKER }];
 
-  const button = createCardButton;
+  const button = createMyCardButton;
 
-  const actions = [editCardAction, addCardUserAction, removeCardUserAction];
+  const actions = [
+    editMyCardAction,
+    addMyCardUserAction,
+    removeMyCardUserAction,
+  ];
 
   return (
     <CardsTable

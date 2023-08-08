@@ -77,7 +77,7 @@ export default function RateDeliveryModal({ data: delivery }: Props) {
   );
 }
 
-export const rateDeliveryAction = {
+export const rateDeliveryFactory = (hasRole: boolean) => ({
   open: (delivery: Delivery) =>
     openModal({
       title: 'Rate Delivery',
@@ -85,7 +85,14 @@ export const rateDeliveryAction = {
     }),
   disable: (delivery: Delivery) => {
     const user = getCurrentUser()!;
-    return !delivery.completedAt || delivery.fromLease.card.user.id !== user.id;
+    return (
+      !delivery.completedAt ||
+      (delivery.receiverUser.id !== user.id && !hasRole)
+    );
   },
   color: Color.YELLOW,
-};
+});
+
+export const rateMyDeliveryAction = rateDeliveryFactory(false);
+
+export const rateUserDeliveryAction = rateDeliveryFactory(true);

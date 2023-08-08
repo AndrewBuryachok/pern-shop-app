@@ -3,8 +3,8 @@ import { ISearch } from '../../common/interfaces';
 import { Filter, Mode } from '../../common/enums';
 import { useGetTakenDeliveriesQuery } from '../../features/deliveries/deliveries.api';
 import DeliveriesTable from '../../features/deliveries/DeliveriesTable';
-import { untakeDeliveryAction } from '../../features/deliveries/UntakeDeliveryModal';
-import { executeDeliveryAction } from '../../features/deliveries/ExecuteDeliveryModal';
+import { untakeMyDeliveryAction } from '../../features/deliveries/UntakeDeliveryModal';
+import { executeMyDeliveryAction } from '../../features/deliveries/ExecuteDeliveryModal';
 import { Role } from '../../common/constants';
 
 export default function TakenDeliveries() {
@@ -37,7 +37,7 @@ export default function TakenDeliveries() {
     { label: 'All', to: '../all', role: Role.MANAGER },
   ];
 
-  const actions = [untakeDeliveryAction, executeDeliveryAction];
+  const actions = [untakeMyDeliveryAction, executeMyDeliveryAction];
 
   return (
     <DeliveriesTable

@@ -3,7 +3,7 @@ import { ISearch } from '../../common/interfaces';
 import { Filter, Mode } from '../../common/enums';
 import { useGetMainOrdersQuery } from '../../features/orders/orders.api';
 import OrdersTable from '../../features/orders/OrdersTable';
-import { takeOrderAction } from '../../features/orders/TakeOrderModal';
+import { takeMyOrderAction } from '../../features/orders/TakeOrderModal';
 import { Role } from '../../common/constants';
 
 export default function MainOrders() {
@@ -34,7 +34,7 @@ export default function MainOrders() {
     { label: 'All', to: 'all', role: Role.MANAGER },
   ];
 
-  const actions = [takeOrderAction];
+  const actions = [takeMyOrderAction];
 
   return (
     <OrdersTable

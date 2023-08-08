@@ -1,25 +1,48 @@
 import { Select, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
-import { useCreateCardMutation } from './cards.api';
-import { CreateCardDto } from './card.dto';
+import {
+  useCreateMyCardMutation,
+  useCreateUserCardMutation,
+} from './cards.api';
+import { useSelectAllUsersQuery } from '../users/users.api';
+import { ExtCreateCardDto } from './card.dto';
 import CustomForm from '../../common/components/CustomForm';
+import RefetchAction from '../../common/components/RefetchAction';
+import CustomAvatar from '../../common/components/CustomAvatar';
+import { UsersItem } from '../../common/components/UsersItem';
 import { ColorsItem } from '../../common/components/ColorsItem';
-import { selectColors } from '../../common/utils';
+import { selectColors, selectUsers } from '../../common/utils';
 import { MAX_TEXT_LENGTH, MIN_TEXT_LENGTH } from '../../common/constants';
 
-export default function CreateCardModal() {
+type Props = { hasRole: boolean };
+
+export default function CreateCardModal({ hasRole }: Props) {
   const form = useForm({
     initialValues: {
+      user: '',
       name: '',
       color: '',
     },
-    transformValues: ({ color, ...rest }) => ({ ...rest, color: +color }),
+    transformValues: ({ user, color, ...rest }) => ({
+      ...rest,
+      userId: +user,
+      color: +color,
+    }),
   });
 
-  const [createCard, { isLoading }] = useCreateCardMutation();
+  const { data: users, ...usersResponse } = useSelectAllUsersQuery(undefined, {
+    skip: !hasRole,
+  });
 
-  const handleSubmit = async (dto: CreateCardDto) => {
+  const user = users?.find((user) => user.id === +form.values.user);
+
+  const [createCard, { isLoading }] = hasRole
+    ? useCreateUserCardMutation()
+    : useCreateMyCardMutation();
+
+  const handleSubmit = async (dto: ExtCreateCardDto) => {
+    console.log(hasRole);
     await createCard(dto);
   };
 
@@ -29,6 +52,21 @@ export default function CreateCardModal() {
       isLoading={isLoading}
       text={'Create card'}
     >
+      {hasRole && (
+        <Select
+          label='User'
+          placeholder='User'
+          icon={user && <CustomAvatar {...user} />}
+          iconWidth={48}
+          rightSection={<RefetchAction {...usersResponse} />}
+          itemComponent={UsersItem}
+          data={selectUsers(users)}
+          searchable
+          required
+          disabled={usersResponse.isFetching}
+          {...form.getInputProps('user')}
+        />
+      )}
       <TextInput
         label='Name'
         placeholder='Name'
@@ -50,11 +88,15 @@ export default function CreateCardModal() {
   );
 }
 
-export const createCardButton = {
+export const createCardFactory = (hasRole: boolean) => ({
   label: 'Create',
   open: () =>
     openModal({
       title: 'Create Card',
-      children: <CreateCardModal />,
+      children: <CreateCardModal hasRole={hasRole} />,
     }),
-};
+});
+
+export const createMyCardButton = createCardFactory(false);
+
+export const createUserCardButton = createCardFactory(true);

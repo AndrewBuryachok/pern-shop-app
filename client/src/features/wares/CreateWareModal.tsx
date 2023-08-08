@@ -3,7 +3,10 @@ import { NumberInput, Select, Textarea } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { useCreateWareMutation } from './wares.api';
-import { useSelectMyRentsQuery } from '../rents/rents.api';
+import {
+  useSelectAllRentsQuery,
+  useSelectMyRentsQuery,
+} from '../rents/rents.api';
 import { CreateWareDto } from './ware.dto';
 import CustomForm from '../../common/components/CustomForm';
 import RefetchAction from '../../common/components/RefetchAction';
@@ -23,7 +26,9 @@ import {
   MAX_PRICE_VALUE,
 } from '../../common/constants';
 
-export default function CreateWareModal() {
+type Props = { hasRole: boolean };
+
+export default function CreateWareModal({ hasRole }: Props) {
   const form = useForm({
     initialValues: {
       rent: '',
@@ -45,7 +50,9 @@ export default function CreateWareModal() {
 
   useEffect(() => form.setFieldValue('item', ''), [form.values.category]);
 
-  const { data: rents, ...rentsResponse } = useSelectMyRentsQuery();
+  const { data: rents, ...rentsResponse } = hasRole
+    ? useSelectAllRentsQuery()
+    : useSelectMyRentsQuery();
 
   const [createWare, { isLoading }] = useCreateWareMutation();
 
@@ -132,11 +139,15 @@ export default function CreateWareModal() {
   );
 }
 
-export const createWareButton = {
+export const createWareFactory = (hasRole: boolean) => ({
   label: 'Create',
   open: () =>
     openModal({
       title: 'Create Ware',
-      children: <CreateWareModal />,
+      children: <CreateWareModal hasRole={hasRole} />,
     }),
-};
+});
+
+export const createMyWareButton = createWareFactory(false);
+
+export const createUserWareButton = createWareFactory(true);

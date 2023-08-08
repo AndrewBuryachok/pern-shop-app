@@ -85,7 +85,7 @@ export default function DeleteDeliveryModal({ data: delivery }: Props) {
   );
 }
 
-export const deleteDeliveryAction = {
+export const deleteDeliveryFactory = (hasRole: boolean) => ({
   open: (delivery: Delivery) =>
     openModal({
       title: 'Delete Delivery',
@@ -95,8 +95,12 @@ export const deleteDeliveryAction = {
     const user = getCurrentUser()!;
     return (
       delivery.status !== Status.CREATED ||
-      delivery.fromLease.card.user.id !== user.id
+      (delivery.fromLease.card.user.id !== user.id && !hasRole)
     );
   },
   color: Color.RED,
-};
+});
+
+export const deleteMyDeliveryAction = deleteDeliveryFactory(false);
+
+export const deleteUserDeliveryAction = deleteDeliveryFactory(true);

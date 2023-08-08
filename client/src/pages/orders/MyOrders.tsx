@@ -4,9 +4,9 @@ import { Filter, Mode } from '../../common/enums';
 import { useGetMyOrdersQuery } from '../../features/orders/orders.api';
 import OrdersTable from '../../features/orders/OrdersTable';
 import { createOrderButton } from '../../features/orders/CreateOrderModal';
-import { completeOrderAction } from '../../features/orders/CompleteOrderModal';
-import { rateOrderAction } from '../../features/orders/RateOrderModal';
-import { deleteOrderAction } from '../../features/orders/DeleteOrderModal';
+import { completeMyOrderAction } from '../../features/orders/CompleteOrderModal';
+import { rateMyOrderAction } from '../../features/orders/RateOrderModal';
+import { deleteMyOrderAction } from '../../features/orders/DeleteOrderModal';
 import { Role } from '../../common/constants';
 
 export default function MyOrders() {
@@ -39,7 +39,11 @@ export default function MyOrders() {
 
   const button = createOrderButton;
 
-  const actions = [completeOrderAction, rateOrderAction, deleteOrderAction];
+  const actions = [
+    completeMyOrderAction,
+    rateMyOrderAction,
+    deleteMyOrderAction,
+  ];
 
   return (
     <OrdersTable

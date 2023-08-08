@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { ISearch } from '../../common/interfaces';
 import { useGetMyCitiesQuery } from '../../features/cities/cities.api';
 import CitiesTable from '../../features/cities/CitiesTable';
-import { createCityButton } from '../../features/cities/CreateCityModal';
+import { createMyCityButton } from '../../features/cities/CreateCityModal';
 import { editCityAction } from '../../features/cities/EditCityModal';
 import { addCityUserAction } from '../../features/cities/AddCityUserModal';
 import { removeCityUserAction } from '../../features/cities/RemoveCityUserModal';
@@ -24,7 +24,7 @@ export default function MyCities() {
     { label: 'All', to: '../all', role: Role.ADMIN },
   ];
 
-  const button = createCityButton;
+  const button = createMyCityButton;
 
   const actions = [editCityAction, addCityUserAction, removeCityUserAction];
 

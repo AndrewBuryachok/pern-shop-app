@@ -4,7 +4,10 @@ import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { Invoice } from './invoice.model';
 import { useCompleteInvoiceMutation } from './invoices.api';
-import { useSelectMyCardsQuery } from '../cards/cards.api';
+import {
+  useSelectMyCardsQuery,
+  useSelectUserCardsWithBalanceQuery,
+} from '../cards/cards.api';
 import { CompleteInvoiceDto } from './invoice.dto';
 import CustomForm from '../../common/components/CustomForm';
 import RefetchAction from '../../common/components/RefetchAction';
@@ -18,9 +21,12 @@ import {
 import { Color } from '../../common/constants';
 import { getCurrentUser } from '../auth/auth.slice';
 
-type Props = IModal<Invoice>;
+type Props = IModal<Invoice> & { hasRole: boolean };
 
-export default function CompleteInvoiceModal({ data: invoice }: Props) {
+export default function CompleteInvoiceModal({
+  data: invoice,
+  hasRole,
+}: Props) {
   const myCard = { balance: 0 };
 
   const form = useForm({
@@ -37,7 +43,9 @@ export default function CompleteInvoiceModal({ data: invoice }: Props) {
     },
   });
 
-  const { data: cards, ...cardsResponse } = useSelectMyCardsQuery();
+  const { data: cards, ...cardsResponse } = hasRole
+    ? useSelectUserCardsWithBalanceQuery(invoice.receiverUser.id)
+    : useSelectMyCardsQuery();
 
   myCard.balance =
     cards?.find((card) => card.id === +form.values.card)?.balance || 0;
@@ -90,15 +98,21 @@ export default function CompleteInvoiceModal({ data: invoice }: Props) {
   );
 }
 
-export const completeInvoiceAction = {
+export const completeInvoiceFactory = (hasRole: boolean) => ({
   open: (invoice: Invoice) =>
     openModal({
       title: 'Complete Invoice',
-      children: <CompleteInvoiceModal data={invoice} />,
+      children: <CompleteInvoiceModal data={invoice} hasRole={hasRole} />,
     }),
   disable: (invoice: Invoice) => {
     const user = getCurrentUser()!;
-    return !!invoice.completedAt || invoice.receiverUser.id !== user.id;
+    return (
+      !!invoice.completedAt || (invoice.receiverUser.id !== user.id && !hasRole)
+    );
   },
   color: Color.GREEN,
-};
+});
+
+export const completeMyInvoiceAction = completeInvoiceFactory(false);
+
+export const completeUserInvoiceAction = completeInvoiceFactory(true);

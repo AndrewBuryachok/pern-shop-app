@@ -55,7 +55,7 @@ export default function RemoveCardUserModal({ data: card }: Props) {
   );
 }
 
-export const removeCardUserAction = {
+export const removeCardUserFactory = (hasRole: boolean) => ({
   open: (card: Card) =>
     openModal({
       title: 'Remove Card User',
@@ -63,7 +63,11 @@ export const removeCardUserAction = {
     }),
   disable: (card: Card) => {
     const user = getCurrentUser()!;
-    return card.user.id !== user.id || card.users.length === 1;
+    return (card.user.id !== user.id && !hasRole) || card.users.length === 1;
   },
   color: Color.RED,
-};
+});
+
+export const removeMyCardUserAction = removeCardUserFactory(false);
+
+export const removeUserCardUserAction = removeCardUserFactory(true);

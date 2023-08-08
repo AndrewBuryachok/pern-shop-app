@@ -3,7 +3,7 @@ import { ISearch } from '../../common/interfaces';
 import { Filter, Mode } from '../../common/enums';
 import { useGetMyWaresQuery } from '../../features/wares/wares.api';
 import WaresTable from '../../features/wares/WaresTable';
-import { createWareButton } from '../../features/wares/CreateWareModal';
+import { createMyWareButton } from '../../features/wares/CreateWareModal';
 import { editWareAction } from '../../features/wares/EditWareModal';
 import { Role } from '../../common/constants';
 
@@ -32,7 +32,7 @@ export default function MyWares() {
     { label: 'All', to: '../all', role: Role.MANAGER },
   ];
 
-  const button = createWareButton;
+  const button = createMyWareButton;
 
   const actions = [editWareAction];
 

@@ -4,9 +4,9 @@ import { Filter, Mode } from '../../common/enums';
 import { useGetMyDeliveriesQuery } from '../../features/deliveries/deliveries.api';
 import DeliveriesTable from '../../features/deliveries/DeliveriesTable';
 import { createDeliveryButton } from '../../features/deliveries/CreateDeliveryModal';
-import { completeDeliveryAction } from '../../features/deliveries/CompleteDeliveryModal';
-import { rateDeliveryAction } from '../../features/deliveries/RateDeliveryModal';
-import { deleteDeliveryAction } from '../../features/deliveries/DeleteDeliveryModal';
+import { completeMyDeliveryAction } from '../../features/deliveries/CompleteDeliveryModal';
+import { rateMyDeliveryAction } from '../../features/deliveries/RateDeliveryModal';
+import { deleteMyDeliveryAction } from '../../features/deliveries/DeleteDeliveryModal';
 import { Role } from '../../common/constants';
 
 export default function MyDeliveries() {
@@ -42,9 +42,9 @@ export default function MyDeliveries() {
   const button = createDeliveryButton;
 
   const actions = [
-    completeDeliveryAction,
-    rateDeliveryAction,
-    deleteDeliveryAction,
+    completeMyDeliveryAction,
+    rateMyDeliveryAction,
+    deleteMyDeliveryAction,
   ];
 
   return (

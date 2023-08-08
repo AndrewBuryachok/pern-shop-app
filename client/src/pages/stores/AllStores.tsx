@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { ISearch } from '../../common/interfaces';
 import { useGetAllStoresQuery } from '../../features/stores/stores.api';
 import StoresTable from '../../features/stores/StoresTable';
+import { createUserStoreButton } from '../../features/stores/CreateStoreModal';
+import { reserveUserStoreAction } from '../../features/stores/ReserveStoreModal';
 
 export default function AllStores() {
   const [page, setPage] = useState(1);
@@ -21,6 +23,10 @@ export default function AllStores() {
     { label: 'My', to: '../my' },
   ];
 
+  const button = createUserStoreButton;
+
+  const actions = [reserveUserStoreAction];
+
   return (
     <StoresTable
       {...response}
@@ -30,6 +36,8 @@ export default function AllStores() {
       search={search}
       setSearch={setSearch}
       links={links}
+      button={button}
+      actions={actions}
     />
   );
 }

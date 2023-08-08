@@ -3,6 +3,8 @@ import { ISearch } from '../../common/interfaces';
 import { Filter, Mode } from '../../common/enums';
 import { useGetAllWaresQuery } from '../../features/wares/wares.api';
 import WaresTable from '../../features/wares/WaresTable';
+import { createUserWareButton } from '../../features/wares/CreateWareModal';
+import { editWareAction } from '../../features/wares/EditWareModal';
 
 export default function AllWares() {
   const [page, setPage] = useState(1);
@@ -29,6 +31,10 @@ export default function AllWares() {
     { label: 'Placed', to: '../placed' },
   ];
 
+  const button = createUserWareButton;
+
+  const actions = [editWareAction];
+
   return (
     <WaresTable
       {...response}
@@ -38,6 +44,8 @@ export default function AllWares() {
       search={search}
       setSearch={setSearch}
       links={links}
+      button={button}
+      actions={actions}
     />
   );
 }

@@ -92,7 +92,7 @@ export default function CompleteDeliveryModal({ data: delivery }: Props) {
   );
 }
 
-export const completeDeliveryAction = {
+export const completeDeliveryFactory = (hasRole: boolean) => ({
   open: (delivery: Delivery) =>
     openModal({
       title: 'Complete Delivery',
@@ -102,8 +102,12 @@ export const completeDeliveryAction = {
     const user = getCurrentUser()!;
     return (
       delivery.status !== Status.EXECUTED ||
-      delivery.receiverUser.id !== user.id
+      (delivery.receiverUser.id !== user.id && !hasRole)
     );
   },
   color: Color.GREEN,
-};
+});
+
+export const completeMyDeliveryAction = completeDeliveryFactory(false);
+
+export const completeUserDeliveryAction = completeDeliveryFactory(true);

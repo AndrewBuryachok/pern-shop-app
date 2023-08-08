@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { ISearch } from '../../common/interfaces';
 import { useGetMyStoragesQuery } from '../../features/storages/storages.api';
 import StoragesTable from '../../features/storages/StoragesTable';
-import { createStorageButton } from '../../features/storages/CreateStorageModal';
+import { createMyStorageButton } from '../../features/storages/CreateStorageModal';
 import { editStorageAction } from '../../features/storages/EditStorageModal';
 import { Role } from '../../common/constants';
 
@@ -23,7 +23,7 @@ export default function MyStorages() {
     { label: 'All', to: '../all', role: Role.MANAGER },
   ];
 
-  const button = createStorageButton;
+  const button = createMyStorageButton;
 
   const actions = [editStorageAction];
 

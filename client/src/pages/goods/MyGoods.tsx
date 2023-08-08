@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { ISearch } from '../../common/interfaces';
 import { useGetMyGoodsQuery } from '../../features/goods/goods.api';
 import GoodsTable from '../../features/goods/GoodsTable';
-import { createGoodButton } from '../../features/goods/CreateGoodModal';
+import { createMyGoodButton } from '../../features/goods/CreateGoodModal';
 import { editGoodAction } from '../../features/goods/EditGoodModal';
 import { deleteGoodAction } from '../../features/goods/DeleteGoodModal';
 import { Role } from '../../common/constants';
@@ -24,7 +24,7 @@ export default function MyGoods() {
     { label: 'All', to: '../all', role: Role.MANAGER },
   ];
 
-  const button = createGoodButton;
+  const button = createMyGoodButton;
 
   const actions = [editGoodAction, deleteGoodAction];
 

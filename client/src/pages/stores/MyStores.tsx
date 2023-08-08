@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { ISearch } from '../../common/interfaces';
 import { useGetMyStoresQuery } from '../../features/stores/stores.api';
 import StoresTable from '../../features/stores/StoresTable';
-import { createStoreButton } from '../../features/stores/CreateStoreModal';
+import { createMyStoreButton } from '../../features/stores/CreateStoreModal';
 import { Role } from '../../common/constants';
 
 export default function MyStores() {
@@ -23,7 +23,7 @@ export default function MyStores() {
     { label: 'All', to: '../all', role: Role.MANAGER },
   ];
 
-  const button = createStoreButton;
+  const button = createMyStoreButton;
 
   return (
     <StoresTable

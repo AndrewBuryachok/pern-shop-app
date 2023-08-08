@@ -3,9 +3,12 @@ import { NumberInput, Select, Textarea } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { useCreatePaymentMutation } from './payments.api';
-import { useSelectMyCardsQuery } from '../cards/cards.api';
 import { useSelectAllUsersQuery } from '../users/users.api';
-import { useSelectUserCardsQuery } from '../cards/cards.api';
+import {
+  useSelectMyCardsQuery,
+  useSelectUserCardsQuery,
+  useSelectUserCardsWithBalanceQuery,
+} from '../cards/cards.api';
 import { CreatePaymentDto } from './payment.dto';
 import CustomForm from '../../common/components/CustomForm';
 import RefetchAction from '../../common/components/RefetchAction';
@@ -20,11 +23,14 @@ import {
 } from '../../common/utils';
 import { MAX_DESCRIPTION_LENGTH, MAX_SUM_VALUE } from '../../common/constants';
 
-export default function CreatePaymentModal() {
+type Props = { hasRole: boolean };
+
+export default function CreatePaymentModal({ hasRole }: Props) {
   const form = useForm({
     initialValues: {
+      senderUser: '',
       senderCard: '',
-      user: '',
+      receiverUser: '',
       receiverCard: '',
       sum: 1,
       description: '-',
@@ -36,17 +42,35 @@ export default function CreatePaymentModal() {
     }),
   });
 
-  useEffect(() => form.setFieldValue('receiverCard', ''), [form.values.user]);
-
-  const { data: myCards, ...myCardsResponse } = useSelectMyCardsQuery();
-  const { data: users, ...usersResponse } = useSelectAllUsersQuery();
-  const { data: cards, ...cardsResponse } = useSelectUserCardsQuery(
-    +form.values.user,
-    { skip: !form.values.user },
+  useEffect(
+    () => form.setFieldValue('senderCard', ''),
+    [form.values.senderUser],
   );
 
-  const user = users?.find((user) => user.id === +form.values.user);
-  const card = myCards?.find((card) => card.id === +form.values.senderCard);
+  useEffect(
+    () => form.setFieldValue('receiverCard', ''),
+    [form.values.receiverUser],
+  );
+
+  const { data: users, ...usersResponse } = useSelectAllUsersQuery();
+  const { data: senderCards, ...senderCardsResponse } = hasRole
+    ? useSelectUserCardsWithBalanceQuery(+form.values.senderUser, {
+        skip: !form.values.senderUser,
+      })
+    : useSelectMyCardsQuery();
+  const { data: receiverCards, ...receiverCardsResponse } = hasRole
+    ? useSelectUserCardsWithBalanceQuery(+form.values.receiverUser, {
+        skip: !form.values.receiverUser,
+      })
+    : useSelectUserCardsQuery(+form.values.receiverUser, {
+        skip: !form.values.receiverUser,
+      });
+
+  const senderUser = users?.find((user) => user.id === +form.values.senderUser);
+  const receiverUser = users?.find(
+    (user) => user.id === +form.values.receiverUser,
+  );
+  const card = senderCards?.find((card) => card.id === +form.values.senderCard);
   const maxSum = card?.balance;
 
   const [createPayment, { isLoading }] = useCreatePaymentMutation();
@@ -61,21 +85,41 @@ export default function CreatePaymentModal() {
       isLoading={isLoading}
       text={'Create payment'}
     >
+      {hasRole && (
+        <Select
+          label='Sender User'
+          placeholder='Sender User'
+          icon={senderUser && <CustomAvatar {...senderUser} />}
+          iconWidth={48}
+          rightSection={<RefetchAction {...usersResponse} />}
+          itemComponent={UsersItem}
+          data={selectUsers(users)}
+          searchable
+          required
+          disabled={usersResponse.isFetching}
+          {...form.getInputProps('senderUser')}
+        />
+      )}
       <Select
         label='Sender Card'
         placeholder='Sender Card'
-        rightSection={<RefetchAction {...myCardsResponse} />}
+        rightSection={
+          <RefetchAction
+            {...senderCardsResponse}
+            skip={!form.values.senderUser && hasRole}
+          />
+        }
         itemComponent={CardsItem}
-        data={selectCardsWithBalance(myCards)}
+        data={selectCardsWithBalance(senderCards)}
         searchable
         required
-        disabled={myCardsResponse.isFetching}
+        disabled={senderCardsResponse.isFetching}
         {...form.getInputProps('senderCard')}
       />
       <Select
-        label='User'
-        placeholder='User'
-        icon={user && <CustomAvatar {...user} />}
+        label='Receiver User'
+        placeholder='Receiver User'
+        icon={receiverUser && <CustomAvatar {...receiverUser} />}
         iconWidth={48}
         rightSection={<RefetchAction {...usersResponse} />}
         itemComponent={UsersItem}
@@ -83,19 +127,22 @@ export default function CreatePaymentModal() {
         searchable
         required
         disabled={usersResponse.isFetching}
-        {...form.getInputProps('user')}
+        {...form.getInputProps('receiverUser')}
       />
       <Select
         label='Receiver Card'
         placeholder='Receiver Card'
         rightSection={
-          <RefetchAction {...cardsResponse} skip={!form.values.user} />
+          <RefetchAction
+            {...receiverCardsResponse}
+            skip={!form.values.receiverUser}
+          />
         }
         itemComponent={CardsItem}
-        data={selectCards(cards)}
+        data={selectCards(receiverCards)}
         searchable
         required
-        disabled={cardsResponse.isFetching}
+        disabled={receiverCardsResponse.isFetching}
         {...form.getInputProps('receiverCard')}
       />
       <NumberInput
@@ -117,11 +164,15 @@ export default function CreatePaymentModal() {
   );
 }
 
-export const createPaymentButton = {
+export const createPaymentFactory = (hasRole: boolean) => ({
   label: 'Create',
   open: () =>
     openModal({
       title: 'Create Payment',
-      children: <CreatePaymentModal />,
+      children: <CreatePaymentModal hasRole={hasRole} />,
     }),
-};
+});
+
+export const createMyPaymentButton = createPaymentFactory(false);
+
+export const createUserPaymentButton = createPaymentFactory(true);

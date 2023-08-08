@@ -3,14 +3,19 @@ import { Select, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { useCreateCellMutation } from './cells.api';
-import { useSelectMyStoragesQuery } from '../storages/storages.api';
+import {
+  useSelectAllStoragesQuery,
+  useSelectMyStoragesQuery,
+} from '../storages/storages.api';
 import { CreateCellDto } from './cell.dto';
 import CustomForm from '../../common/components/CustomForm';
 import RefetchAction from '../../common/components/RefetchAction';
 import { PlacesItem } from '../../common/components/PlacesItem';
 import { selectStorages } from '../../common/utils';
 
-export default function CreateCellModal() {
+type Props = { hasRole: boolean };
+
+export default function CreateCellModal({ hasRole }: Props) {
   const form = useForm({
     initialValues: {
       storage: '',
@@ -22,7 +27,9 @@ export default function CreateCellModal() {
     }),
   });
 
-  const { data: storages, ...storagesResponse } = useSelectMyStoragesQuery();
+  const { data: storages, ...storagesResponse } = hasRole
+    ? useSelectAllStoragesQuery()
+    : useSelectMyStoragesQuery();
 
   const storage = storages?.find(
     (storage) => storage.id === +form.values.storage,
@@ -61,11 +68,15 @@ export default function CreateCellModal() {
   );
 }
 
-export const createCellButton = {
+export const createCellFactory = (hasRole: boolean) => ({
   label: 'Create',
   open: () =>
     openModal({
       title: 'Create Cell',
-      children: <CreateCellModal />,
+      children: <CreateCellModal hasRole={hasRole} />,
     }),
-};
+});
+
+export const createMyCellButton = createCellFactory(false);
+
+export const createUserCellButton = createCellFactory(false);

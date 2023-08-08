@@ -1,13 +1,20 @@
+import { useEffect } from 'react';
 import { NumberInput, Select, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { useCreateStorageMutation } from './storages.api';
-import { useSelectMyCardsQuery } from '../cards/cards.api';
+import { useSelectAllUsersQuery } from '../users/users.api';
+import {
+  useSelectMyCardsQuery,
+  useSelectUserCardsWithBalanceQuery,
+} from '../cards/cards.api';
 import { CreateStorageDto } from './storage.dto';
 import CustomForm from '../../common/components/CustomForm';
 import RefetchAction from '../../common/components/RefetchAction';
+import CustomAvatar from '../../common/components/CustomAvatar';
+import { UsersItem } from '../../common/components/UsersItem';
 import { CardsItem } from '../../common/components/CardsItem';
-import { selectCardsWithBalance } from '../../common/utils';
+import { selectCardsWithBalance, selectUsers } from '../../common/utils';
 import {
   MAX_COORDINATE_VALUE,
   MAX_PRICE_VALUE,
@@ -16,9 +23,12 @@ import {
   MIN_TEXT_LENGTH,
 } from '../../common/constants';
 
-export default function CreateStorageModal() {
+type Props = { hasRole: boolean };
+
+export default function CreateStorageModal({ hasRole }: Props) {
   const form = useForm({
     initialValues: {
+      user: '',
       card: '',
       name: '',
       x: 0,
@@ -28,7 +38,15 @@ export default function CreateStorageModal() {
     transformValues: ({ card, ...rest }) => ({ ...rest, cardId: +card }),
   });
 
-  const { data: cards, ...cardsResponse } = useSelectMyCardsQuery();
+  useEffect(() => form.setFieldValue('card', ''), [form.values.user]);
+
+  const { data: users, ...usersResponse } = useSelectAllUsersQuery();
+  const { data: cards, ...cardsResponse } = hasRole
+    ? useSelectUserCardsWithBalanceQuery(+form.values.user, {
+        skip: !form.values.user,
+      })
+    : useSelectMyCardsQuery();
+  const user = users?.find((user) => user.id === +form.values.user);
 
   const [createStorage, { isLoading }] = useCreateStorageMutation();
 
@@ -42,10 +60,30 @@ export default function CreateStorageModal() {
       isLoading={isLoading}
       text={'Create storage'}
     >
+      {hasRole && (
+        <Select
+          label='User'
+          placeholder='User'
+          icon={user && <CustomAvatar {...user} />}
+          iconWidth={48}
+          rightSection={<RefetchAction {...usersResponse} />}
+          itemComponent={UsersItem}
+          data={selectUsers(users)}
+          searchable
+          required
+          disabled={usersResponse.isFetching}
+          {...form.getInputProps('user')}
+        />
+      )}
       <Select
         label='Card'
         placeholder='Card'
-        rightSection={<RefetchAction {...cardsResponse} />}
+        rightSection={
+          <RefetchAction
+            {...cardsResponse}
+            skip={!form.values.user && hasRole}
+          />
+        }
         itemComponent={CardsItem}
         data={selectCardsWithBalance(cards)}
         searchable
@@ -89,11 +127,15 @@ export default function CreateStorageModal() {
   );
 }
 
-export const createStorageButton = {
+export const createStorageFactory = (hasRole: boolean) => ({
   label: 'Create',
   open: () =>
     openModal({
       title: 'Create Storage',
-      children: <CreateStorageModal />,
+      children: <CreateStorageModal hasRole={hasRole} />,
     }),
-};
+});
+
+export const createMyStorageButton = createStorageFactory(false);
+
+export const createUserStorageButton = createStorageFactory(true);

@@ -61,7 +61,7 @@ export default function AddCardUserModal({ data: card }: Props) {
   );
 }
 
-export const addCardUserAction = {
+export const addCardUserFactory = (hasRole: boolean) => ({
   open: (card: Card) =>
     openModal({
       title: 'Add Card User',
@@ -69,7 +69,11 @@ export const addCardUserAction = {
     }),
   disable: (card: Card) => {
     const user = getCurrentUser()!;
-    return card.user.id !== user.id;
+    return card.user.id !== user.id && !hasRole;
   },
   color: Color.GREEN,
-};
+});
+
+export const addMyCardUserAction = addCardUserFactory(false);
+
+export const addUserCardUserAction = addCardUserFactory(true);

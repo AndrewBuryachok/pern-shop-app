@@ -3,6 +3,7 @@ import { ISearch } from '../../common/interfaces';
 import { Filter, Mode } from '../../common/enums';
 import { useGetAllPaymentsQuery } from '../../features/payments/payments.api';
 import PaymentsTable from '../../features/payments/PaymentsTable';
+import { createUserPaymentButton } from '../../features/payments/CreatePaymentModal';
 
 export default function AllPayments() {
   const [page, setPage] = useState(1);
@@ -22,6 +23,8 @@ export default function AllPayments() {
 
   const links = [{ label: 'My', to: '../my' }];
 
+  const button = createUserPaymentButton;
+
   return (
     <PaymentsTable
       {...response}
@@ -31,6 +34,7 @@ export default function AllPayments() {
       search={search}
       setSearch={setSearch}
       links={links}
+      button={button}
     />
   );
 }

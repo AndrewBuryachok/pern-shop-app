@@ -92,7 +92,7 @@ export default function UntakeDeliveryModal({ data: delivery }: Props) {
   );
 }
 
-export const untakeDeliveryAction = {
+export const untakeDeliveryFactory = (hasRole: boolean) => ({
   open: (delivery: Delivery) =>
     openModal({
       title: 'Untake Delivery',
@@ -102,8 +102,12 @@ export const untakeDeliveryAction = {
     const user = getCurrentUser()!;
     return (
       delivery.status !== Status.TAKEN ||
-      delivery.executorCard?.user.id !== user.id
+      (delivery.executorCard?.user.id !== user.id && !hasRole)
     );
   },
   color: Color.RED,
-};
+});
+
+export const untakeMyDeliveryAction = untakeDeliveryFactory(false);
+
+export const untakeUserDeliveryAction = untakeDeliveryFactory(true);

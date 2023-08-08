@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { ISearch } from '../../common/interfaces';
 import { useGetMyCellsQuery } from '../../features/cells/cells.api';
 import CellsTable from '../../features/cells/CellsTable';
-import { createCellButton } from '../../features/cells/CreateCellModal';
+import { createMyCellButton } from '../../features/cells/CreateCellModal';
 import { Role } from '../../common/constants';
 
 export default function MyCells() {
@@ -23,7 +23,7 @@ export default function MyCells() {
     { label: 'All', to: '../all', role: Role.MANAGER },
   ];
 
-  const button = createCellButton;
+  const button = createMyCellButton;
 
   return (
     <CellsTable
