@@ -21,6 +21,7 @@ export class CreateStoreDto {
 
 export class ExtCreateStoreDto extends CreateStoreDto {
   myId: number;
+  hasRole: boolean;
   name?: number;
 }
 
@@ -28,4 +29,5 @@ export class ReserveStoreDto {
   storeId: number;
   cardId: number;
   myId: number;
+  hasRole: boolean;
 }

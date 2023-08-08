@@ -5,7 +5,7 @@ import { Cell } from './cell.entity';
 import { CreateCellDto } from './cell.dto';
 import { StorageIdDto } from '../storages/storage.dto';
 import { Request, Response } from '../../common/interfaces';
-import { MyId, Public, Roles } from '../../common/decorators';
+import { HasRole, MyId, Public, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
 
 @ApiTags('cells')
@@ -40,7 +40,11 @@ export class CellsController {
   }
 
   @Post()
-  createCell(@MyId() myId: number, @Body() dto: CreateCellDto): Promise<void> {
-    return this.cellsService.createCell({ ...dto, myId });
+  createCell(
+    @MyId() myId: number,
+    @HasRole(Role.MANAGER) hasRole: boolean,
+    @Body() dto: CreateCellDto,
+  ): Promise<void> {
+    return this.cellsService.createCell({ ...dto, myId, hasRole });
   }
 }

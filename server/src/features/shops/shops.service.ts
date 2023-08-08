@@ -50,14 +50,14 @@ export class ShopsService {
   }
 
   async createShop(dto: ExtCreateShopDto): Promise<void> {
-    await this.checkHasNotEnough(dto.myId);
+    await this.checkHasNotEnough(dto.userId);
     await this.checkNameNotUsed(dto.name);
     await this.checkCoordinatesNotUsed(dto.x, dto.y);
     await this.create(dto);
   }
 
   async editShop(dto: ExtEditShopDto): Promise<void> {
-    const shop = await this.checkShopOwner(dto.shopId, dto.myId);
+    const shop = await this.checkShopOwner(dto.shopId, dto.myId, dto.hasRole);
     await this.edit(shop, dto);
   }
 
@@ -65,12 +65,13 @@ export class ShopsService {
     await this.shopsRepository.findOneByOrFail({ id });
   }
 
-  async checkShopOwner(id: number, userId: number): Promise<Shop> {
-    const shop = await this.shopsRepository.findOneBy({
-      id,
-      userId,
-    });
-    if (!shop) {
+  async checkShopOwner(
+    id: number,
+    userId: number,
+    hasRole: boolean,
+  ): Promise<Shop> {
+    const shop = await this.shopsRepository.findOneBy({ id });
+    if (shop.userId !== userId && !hasRole) {
       throw new AppException(ShopError.NOT_OWNER);
     }
     return shop;
@@ -100,7 +101,7 @@ export class ShopsService {
   private async create(dto: ExtCreateShopDto): Promise<void> {
     try {
       const shop = this.shopsRepository.create({
-        userId: dto.myId,
+        userId: dto.userId,
         name: dto.name,
         x: dto.x,
         y: dto.y,

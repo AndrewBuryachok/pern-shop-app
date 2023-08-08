@@ -55,19 +55,19 @@ export class CitiesService {
   }
 
   async createCity(dto: ExtCreateCityDto): Promise<void> {
-    await this.checkHasNotEnough(dto.myId);
+    await this.checkHasNotEnough(dto.userId);
     await this.checkNameNotUsed(dto.name);
     await this.checkCoordinatesNotUsed(dto.x, dto.y);
     await this.create(dto);
   }
 
   async editCity(dto: ExtEditCityDto): Promise<void> {
-    const city = await this.checkCityOwner(dto.cityId, dto.myId);
+    const city = await this.checkCityOwner(dto.cityId, dto.myId, dto.hasRole);
     await this.edit(city, dto);
   }
 
   async addCityUser(dto: ExtUpdateCityUserDto): Promise<void> {
-    const city = await this.checkCityOwner(dto.cityId, dto.myId);
+    const city = await this.checkCityOwner(dto.cityId, dto.myId, dto.hasRole);
     if (city.users.map((user) => user.id).includes(dto.userId)) {
       throw new AppException(CityError.ALREADY_IN_CITY);
     }
@@ -75,7 +75,7 @@ export class CitiesService {
   }
 
   async removeCityUser(dto: ExtUpdateCityUserDto): Promise<void> {
-    const city = await this.checkCityOwner(dto.cityId, dto.myId);
+    const city = await this.checkCityOwner(dto.cityId, dto.myId, dto.hasRole);
     if (dto.userId === dto.myId) {
       throw new AppException(CityError.OWNER);
     }
@@ -89,12 +89,16 @@ export class CitiesService {
     await this.citiesRepository.findOneByOrFail({ id });
   }
 
-  async checkCityOwner(id: number, userId: number): Promise<City> {
+  async checkCityOwner(
+    id: number,
+    userId: number,
+    hasRole: boolean,
+  ): Promise<City> {
     const city = await this.citiesRepository.findOne({
       relations: ['users'],
-      where: { id, userId },
+      where: { id },
     });
-    if (!city) {
+    if (city.userId !== userId && !hasRole) {
       throw new AppException(CityError.NOT_OWNER);
     }
     return city;
@@ -124,11 +128,11 @@ export class CitiesService {
   private async create(dto: ExtCreateCityDto): Promise<void> {
     try {
       const city = this.citiesRepository.create({
-        userId: dto.myId,
+        userId: dto.userId,
         name: dto.name,
         x: dto.x,
         y: dto.y,
-        users: [{ id: dto.myId }],
+        users: [{ id: dto.userId }],
       });
       await this.citiesRepository.save(city);
     } catch (error) {

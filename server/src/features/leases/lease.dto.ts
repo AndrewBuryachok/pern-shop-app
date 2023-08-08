@@ -13,4 +13,5 @@ export class CreateLeaseDto extends CreateReceiptDto {
 
 export class ExtCreateLeaseDto extends CreateLeaseDto {
   myId: number;
+  hasRole: boolean;
 }

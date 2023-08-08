@@ -17,7 +17,7 @@ import {
   TakeDeliveryDto,
 } from './delivery.dto';
 import { Request, Response } from '../../common/interfaces';
-import { MyId, Public, Roles } from '../../common/decorators';
+import { HasRole, MyId, Public, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
 
 @ApiTags('deliveries')
@@ -34,6 +34,7 @@ export class DeliveriesController {
   @Get('my')
   getMyDeliveries(
     @MyId() myId: number,
+    @HasRole(Role.MANAGER) hasRole: boolean,
     @Query() req: Request,
   ): Promise<Response<Delivery>> {
     return this.deliveriesService.getMyDeliveries(myId, req);
@@ -42,6 +43,7 @@ export class DeliveriesController {
   @Get('taken')
   getTakenDeliveries(
     @MyId() myId: number,
+    @HasRole(Role.MANAGER) hasRole: boolean,
     @Query() req: Request,
   ): Promise<Response<Delivery>> {
     return this.deliveriesService.getTakenDeliveries(myId, req);
@@ -50,6 +52,7 @@ export class DeliveriesController {
   @Get('placed')
   getPlacedDeliveries(
     @MyId() myId: number,
+    @HasRole(Role.MANAGER) hasRole: boolean,
     @Query() req: Request,
   ): Promise<Response<Delivery>> {
     return this.deliveriesService.getPlacedDeliveries(myId, req);
@@ -64,58 +67,83 @@ export class DeliveriesController {
   @Post()
   createDelivery(
     @MyId() myId: number,
+    @HasRole(Role.MANAGER) hasRole: boolean,
     @Body() dto: CreateDeliveryDto,
   ): Promise<void> {
-    return this.deliveriesService.createDelivery({ ...dto, myId });
+    return this.deliveriesService.createDelivery({ ...dto, myId, hasRole });
   }
 
   @Post(':deliveryId/take')
   takeDelivery(
     @MyId() myId: number,
+    @HasRole(Role.MANAGER) hasRole: boolean,
     @Param() { deliveryId }: DeliveryIdDto,
     @Body() dto: TakeDeliveryDto,
   ): Promise<void> {
-    return this.deliveriesService.takeDelivery({ ...dto, deliveryId, myId });
+    return this.deliveriesService.takeDelivery({
+      ...dto,
+      deliveryId,
+      myId,
+      hasRole,
+    });
   }
 
   @Delete(':deliveryId/take')
   untakeDelivery(
     @MyId() myId: number,
+    @HasRole(Role.MANAGER) hasRole: boolean,
     @Param() { deliveryId }: DeliveryIdDto,
   ): Promise<void> {
-    return this.deliveriesService.untakeDelivery({ deliveryId, myId });
+    return this.deliveriesService.untakeDelivery({ deliveryId, myId, hasRole });
   }
 
   @Post(':deliveryId/execute')
   executeDelivery(
     @MyId() myId: number,
+    @HasRole(Role.MANAGER) hasRole: boolean,
     @Param() { deliveryId }: DeliveryIdDto,
   ): Promise<void> {
-    return this.deliveriesService.executeDelivery({ deliveryId, myId });
+    return this.deliveriesService.executeDelivery({
+      deliveryId,
+      myId,
+      hasRole,
+    });
   }
 
   @Post(':deliveryId')
   completeDelivery(
     @MyId() myId: number,
+    @HasRole(Role.MANAGER) hasRole: boolean,
     @Param() { deliveryId }: DeliveryIdDto,
   ): Promise<void> {
-    return this.deliveriesService.completeDelivery({ deliveryId, myId });
+    return this.deliveriesService.completeDelivery({
+      deliveryId,
+      myId,
+      hasRole,
+    });
   }
 
   @Delete(':deliveryId')
   deleteDelivery(
     @MyId() myId: number,
+    @HasRole(Role.MANAGER) hasRole: boolean,
     @Param() { deliveryId }: DeliveryIdDto,
   ): Promise<void> {
-    return this.deliveriesService.deleteDelivery({ deliveryId, myId });
+    return this.deliveriesService.deleteDelivery({ deliveryId, myId, hasRole });
   }
 
   @Post(':deliveryId/rate')
   rateDelivery(
     @MyId() myId: number,
+    @HasRole(Role.MANAGER) hasRole: boolean,
     @Param() { deliveryId }: DeliveryIdDto,
     @Body() dto: RateDeliveryDto,
   ): Promise<void> {
-    return this.deliveriesService.rateDelivery({ ...dto, deliveryId, myId });
+    return this.deliveriesService.rateDelivery({
+      ...dto,
+      deliveryId,
+      myId,
+      hasRole,
+    });
   }
 }

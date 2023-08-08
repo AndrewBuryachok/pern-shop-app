@@ -20,6 +20,7 @@ export class CreateStorageDto extends CreatePlaceWithCardDto {}
 
 export class ExtCreateStorageDto extends CreateStorageDto {
   myId: number;
+  hasRole: boolean;
 }
 
 export class EditStorageDto extends EditPlaceWithPriceDto {}
@@ -27,4 +28,5 @@ export class EditStorageDto extends EditPlaceWithPriceDto {}
 export class ExtEditStorageDto extends EditStorageDto {
   storageId: number;
   myId: number;
+  hasRole: boolean;
 }

@@ -41,6 +41,12 @@ export class RentsService {
     return { result, count };
   }
 
+  selectAllRents(): Promise<Rent[]> {
+    return this.selectRentsQueryBuilder()
+      .where('rent.createdAt > :date', { date: getDateWeekAgo() })
+      .getMany();
+  }
+
   selectMyRents(myId: number): Promise<Rent[]> {
     return this.selectRentsQueryBuilder()
       .innerJoin('rent.card', 'renterCard')
@@ -59,12 +65,16 @@ export class RentsService {
     await this.rentsRepository.findOneByOrFail({ id });
   }
 
-  async checkRentOwner(id: number, userId: number): Promise<Rent> {
-    const rent = await this.rentsRepository.findOneBy({
-      id,
-      card: { users: { id: userId } },
+  async checkRentOwner(
+    id: number,
+    userId: number,
+    hasRole: boolean,
+  ): Promise<Rent> {
+    const rent = await this.rentsRepository.findOne({
+      relations: ['card', 'card.users'],
+      where: { id },
     });
-    if (!rent) {
+    if (!rent.card.users.map((user) => user.id).includes(userId) && !hasRole) {
       throw new AppException(RentError.NOT_OWNER);
     }
     if (rent.createdAt < getDateWeekAgo()) {

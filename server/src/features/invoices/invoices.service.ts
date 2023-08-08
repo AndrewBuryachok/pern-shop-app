@@ -48,17 +48,26 @@ export class InvoicesService {
   }
 
   async createInvoice(dto: ExtCreateInvoiceDto): Promise<void> {
-    await this.cardsService.checkCardUser(dto.senderCardId, dto.myId);
+    await this.cardsService.checkCardUser(
+      dto.senderCardId,
+      dto.myId,
+      dto.hasRole,
+    );
     await this.create(dto);
   }
 
   async completeInvoice(dto: ExtCompleteInvoiceDto): Promise<void> {
-    const invoice = await this.checkInvoiceReceiver(dto.invoiceId, dto.myId);
+    const invoice = await this.checkInvoiceReceiver(
+      dto.invoiceId,
+      dto.myId,
+      dto.hasRole,
+    );
     if (invoice.completedAt) {
       throw new AppException(InvoiceError.ALREADY_COMPLETED);
     }
     await this.paymentsService.createPayment({
       myId: dto.myId,
+      hasRole: dto.hasRole,
       senderCardId: dto.cardId,
       receiverCardId: invoice.senderCardId,
       sum: invoice.sum,
@@ -68,7 +77,11 @@ export class InvoicesService {
   }
 
   async deleteInvoice(dto: DeleteInvoiceDto): Promise<void> {
-    const invoice = await this.checkInvoiceSender(dto.invoiceId, dto.myId);
+    const invoice = await this.checkInvoiceSender(
+      dto.invoiceId,
+      dto.myId,
+      dto.hasRole,
+    );
     if (invoice.completedAt) {
       throw new AppException(InvoiceError.ALREADY_COMPLETED);
     }
@@ -79,23 +92,28 @@ export class InvoicesService {
     await this.invoicesRepository.findOneByOrFail({ id });
   }
 
-  async checkInvoiceSender(id: number, userId: number): Promise<Invoice> {
-    const invoice = await this.invoicesRepository.findOneBy({
-      id,
-      senderCard: { userId },
+  async checkInvoiceSender(
+    id: number,
+    userId: number,
+    hasRole: boolean,
+  ): Promise<Invoice> {
+    const invoice = await this.invoicesRepository.findOne({
+      relations: ['senderCard'],
+      where: { id },
     });
-    if (!invoice) {
+    if (invoice.senderCard.userId !== userId && !hasRole) {
       throw new AppException(InvoiceError.NOT_SENDER);
     }
     return invoice;
   }
 
-  async checkInvoiceReceiver(id: number, userId: number): Promise<Invoice> {
-    const invoice = await this.invoicesRepository.findOneBy({
-      id,
-      receiverUserId: userId,
-    });
-    if (!invoice) {
+  async checkInvoiceReceiver(
+    id: number,
+    userId: number,
+    hasRole: boolean,
+  ): Promise<Invoice> {
+    const invoice = await this.invoicesRepository.findOneBy({ id });
+    if (invoice.receiverUserId !== userId && !hasRole) {
       throw new AppException(InvoiceError.NOT_RECEIVER);
     }
     return invoice;

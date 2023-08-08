@@ -24,6 +24,7 @@ export class CreateWareDto extends CreateThingDto {
 
 export class ExtCreateWareDto extends CreateWareDto {
   myId: number;
+  hasRole: boolean;
 }
 
 export class EditWareDto extends EditStateDto {}
@@ -31,6 +32,7 @@ export class EditWareDto extends EditStateDto {}
 export class ExtEditWareDto extends EditWareDto {
   wareId: number;
   myId: number;
+  hasRole: boolean;
 }
 
 export class BuyWareDto extends ExtCreateTradeDto {}

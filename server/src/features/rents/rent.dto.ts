@@ -22,4 +22,5 @@ export class CreateRentDto extends CreateReceiptDto {
 
 export class ExtCreateRentDto extends CreateRentDto {
   myId: number;
+  hasRole: boolean;
 }

@@ -4,7 +4,7 @@ import { PaymentsService } from './payments.service';
 import { Payment } from './payment.entity';
 import { CreatePaymentDto } from './payment.dto';
 import { Request, Response } from '../../common/interfaces';
-import { MyId, Roles } from '../../common/decorators';
+import { HasRole, MyId, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
 
 @ApiTags('payments')
@@ -29,8 +29,9 @@ export class PaymentsController {
   @Post()
   createPayment(
     @MyId() myId: number,
+    @HasRole(Role.BANKER) hasRole: boolean,
     @Body() dto: CreatePaymentDto,
   ): Promise<void> {
-    return this.paymentsService.createPayment({ ...dto, myId });
+    return this.paymentsService.createPayment({ ...dto, myId, hasRole });
   }
 }

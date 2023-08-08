@@ -12,7 +12,7 @@ import { StoragesService } from './storages.service';
 import { Storage } from './storage.entity';
 import { CreateStorageDto, EditStorageDto, StorageIdDto } from './storage.dto';
 import { Request, Response } from '../../common/interfaces';
-import { MyId, Public, Roles } from '../../common/decorators';
+import { HasRole, MyId, Public, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
 
 @ApiTags('storages')
@@ -41,14 +41,20 @@ export class StoragesController {
   }
 
   @Public()
-  @Get('all/select')
-  selectAllStorages(): Promise<Storage[]> {
-    return this.storagesService.selectAllStorages();
+  @Get('main/select')
+  selectMainStorages(): Promise<Storage[]> {
+    return this.storagesService.selectMainStorages();
   }
 
   @Get('my/select')
   selectMyStorages(@MyId() myId: number): Promise<Storage[]> {
     return this.storagesService.selectMyStorages(myId);
+  }
+
+  @Roles(Role.MANAGER)
+  @Get('all/select')
+  selectAllStorages(): Promise<Storage[]> {
+    return this.storagesService.selectAllStorages();
   }
 
   @Public()
@@ -60,17 +66,24 @@ export class StoragesController {
   @Post()
   createStorage(
     @MyId() myId: number,
+    @HasRole(Role.MANAGER) hasRole: boolean,
     @Body() dto: CreateStorageDto,
   ): Promise<void> {
-    return this.storagesService.createStorage({ ...dto, myId });
+    return this.storagesService.createStorage({ ...dto, myId, hasRole });
   }
 
   @Patch(':storageId')
   editStorage(
     @MyId() myId: number,
+    @HasRole(Role.MANAGER) hasRole: boolean,
     @Param() { storageId }: StorageIdDto,
     @Body() dto: EditStorageDto,
   ): Promise<void> {
-    return this.storagesService.editStorage({ ...dto, storageId, myId });
+    return this.storagesService.editStorage({
+      ...dto,
+      storageId,
+      myId,
+      hasRole,
+    });
   }
 }

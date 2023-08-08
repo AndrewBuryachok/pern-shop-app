@@ -12,7 +12,7 @@ import { ProductsService } from './products.service';
 import { Product } from './product.entity';
 import { CreateProductDto, EditProductDto, ProductIdDto } from './product.dto';
 import { Request, Response, Stats } from '../../common/interfaces';
-import { MyId, Public, Roles } from '../../common/decorators';
+import { HasRole, MyId, Public, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
 
 @ApiTags('products')
@@ -57,17 +57,24 @@ export class ProductsController {
   @Post()
   createProduct(
     @MyId() myId: number,
+    @HasRole(Role.MANAGER) hasRole: boolean,
     @Body() dto: CreateProductDto,
   ): Promise<void> {
-    return this.productsService.createProduct({ ...dto, myId });
+    return this.productsService.createProduct({ ...dto, myId, hasRole });
   }
 
   @Patch(':productId')
   editProduct(
     @MyId() myId: number,
+    @HasRole(Role.MANAGER) hasRole: boolean,
     @Param() { productId }: ProductIdDto,
     @Body() dto: EditProductDto,
   ): Promise<void> {
-    return this.productsService.editProduct({ ...dto, productId, myId });
+    return this.productsService.editProduct({
+      ...dto,
+      productId,
+      myId,
+      hasRole,
+    });
   }
 }

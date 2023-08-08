@@ -33,6 +33,7 @@ export class CreateProductDto extends CreateThingDto {
 
 export class ExtCreateProductDto extends CreateProductDto {
   myId: number;
+  hasRole: boolean;
 }
 
 export class EditProductDto extends EditStateDto {}
@@ -40,6 +41,7 @@ export class EditProductDto extends EditStateDto {}
 export class ExtEditProductDto extends EditProductDto {
   productId: number;
   myId: number;
+  hasRole: boolean;
 }
 
 export class BuyProductDto extends ExtCreateSaleDto {}

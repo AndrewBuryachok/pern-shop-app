@@ -69,7 +69,11 @@ export class TradesService {
   }
 
   async rateTrade(dto: ExtRateTradeDto): Promise<void> {
-    const trade = await this.checkTradeOwner(dto.tradeId, dto.myId);
+    const trade = await this.checkTradeOwner(
+      dto.tradeId,
+      dto.myId,
+      dto.hasRole,
+    );
     await this.rate(trade, dto.rate);
   }
 
@@ -77,12 +81,16 @@ export class TradesService {
     await this.tradesRepository.findOneByOrFail({ id });
   }
 
-  private async checkTradeOwner(id: number, userId: number): Promise<Trade> {
-    const trade = await this.tradesRepository.findOneBy({
-      id,
-      card: { users: { id: userId } },
+  private async checkTradeOwner(
+    id: number,
+    userId: number,
+    hasRole: boolean,
+  ): Promise<Trade> {
+    const trade = await this.tradesRepository.findOne({
+      relations: ['card', 'card.users'],
+      where: { id },
     });
-    if (!trade) {
+    if (!trade.card.users.map((user) => user.id).includes(userId) && !hasRole) {
       throw new AppException(TradeError.NOT_OWNER);
     }
     return trade;

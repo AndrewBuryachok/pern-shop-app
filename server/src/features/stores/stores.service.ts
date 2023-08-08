@@ -55,7 +55,11 @@ export class StoresService {
   }
 
   async createStore(dto: ExtCreateStoreDto): Promise<void> {
-    await this.marketsService.checkMarketOwner(dto.marketId, dto.myId);
+    await this.marketsService.checkMarketOwner(
+      dto.marketId,
+      dto.myId,
+      dto.hasRole,
+    );
     const name = await this.checkHasNotEnough(dto.marketId);
     await this.create({ ...dto, name });
   }
@@ -64,6 +68,7 @@ export class StoresService {
     const store = await this.findFreeStore(dto.storeId);
     await this.paymentsService.createPayment({
       myId: dto.myId,
+      hasRole: dto.hasRole,
       senderCardId: dto.cardId,
       receiverCardId: store.market.cardId,
       sum: store.market.price,

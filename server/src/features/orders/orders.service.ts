@@ -74,7 +74,7 @@ export class OrdersService {
   }
 
   async takeOrder(dto: ExtTakeOrderDto): Promise<void> {
-    await this.cardsService.checkCardUser(dto.cardId, dto.myId);
+    await this.cardsService.checkCardUser(dto.cardId, dto.myId, dto.hasRole);
     const order = await this.ordersRepository.findOneBy({
       id: dto.orderId,
     });
@@ -88,7 +88,11 @@ export class OrdersService {
   }
 
   async untakeOrder(dto: ExtOrderIdDto): Promise<void> {
-    const order = await this.checkOrderExecutor(dto.orderId, dto.myId);
+    const order = await this.checkOrderExecutor(
+      dto.orderId,
+      dto.myId,
+      dto.hasRole,
+    );
     if (order.status !== TransportationStatus.TAKEN) {
       throw new AppException(OrderError.NOT_TAKEN);
     }
@@ -96,7 +100,11 @@ export class OrdersService {
   }
 
   async executeOrder(dto: ExtOrderIdDto): Promise<void> {
-    const order = await this.checkOrderExecutor(dto.orderId, dto.myId);
+    const order = await this.checkOrderExecutor(
+      dto.orderId,
+      dto.myId,
+      dto.hasRole,
+    );
     if (order.status !== TransportationStatus.TAKEN) {
       throw new AppException(OrderError.ALREADY_EXECUTED);
     }
@@ -104,7 +112,11 @@ export class OrdersService {
   }
 
   async completeOrder(dto: ExtOrderIdDto): Promise<void> {
-    const order = await this.checkOrderCustomer(dto.orderId, dto.myId);
+    const order = await this.checkOrderCustomer(
+      dto.orderId,
+      dto.myId,
+      dto.hasRole,
+    );
     if (order.completedAt) {
       throw new AppException(OrderError.ALREADY_COMPLETED);
     }
@@ -117,6 +129,7 @@ export class OrdersService {
     });
     await this.paymentsService.createPayment({
       myId: dto.myId,
+      hasRole: dto.hasRole,
       senderCardId: order.lease.cardId,
       receiverCardId: order.executorCardId,
       sum: order.price,
@@ -126,7 +139,11 @@ export class OrdersService {
   }
 
   async deleteOrder(dto: ExtOrderIdDto): Promise<void> {
-    const order = await this.checkOrderCustomer(dto.orderId, dto.myId);
+    const order = await this.checkOrderCustomer(
+      dto.orderId,
+      dto.myId,
+      dto.hasRole,
+    );
     if (order.executorCardId) {
       throw new AppException(OrderError.ALREADY_TAKEN);
     }
@@ -138,7 +155,11 @@ export class OrdersService {
   }
 
   async rateOrder(dto: ExtRateOrderDto): Promise<void> {
-    const order = await this.checkOrderCustomer(dto.orderId, dto.myId);
+    const order = await this.checkOrderCustomer(
+      dto.orderId,
+      dto.myId,
+      dto.hasRole,
+    );
     if (!order.completedAt) {
       throw new AppException(OrderError.NOT_COMPLETED);
     }
@@ -149,23 +170,34 @@ export class OrdersService {
     await this.ordersRepository.findOneByOrFail({ id });
   }
 
-  private async checkOrderCustomer(id: number, userId: number): Promise<Order> {
-    const order = await this.ordersRepository.findOneBy({
-      id,
-      lease: { card: { userId } },
+  private async checkOrderCustomer(
+    id: number,
+    userId: number,
+    hasRole: boolean,
+  ): Promise<Order> {
+    const order = await this.ordersRepository.findOne({
+      relations: ['lease', 'lease.card'],
+      where: { id },
     });
-    if (!order) {
+    if (order.lease.card.userId !== userId && !hasRole) {
       throw new AppException(OrderError.NOT_CUSTOMER);
     }
     return order;
   }
 
-  private async checkOrderExecutor(id: number, userId: number): Promise<Order> {
-    const order = await this.ordersRepository.findOneBy({
-      id,
-      executorCard: { users: { id: userId } },
+  private async checkOrderExecutor(
+    id: number,
+    userId: number,
+    hasRole: boolean,
+  ): Promise<Order> {
+    const order = await this.ordersRepository.findOne({
+      relations: ['executorCard', 'executorCard.users'],
+      where: { id },
     });
-    if (!order) {
+    if (
+      !order.executorCard.users.map((user) => user.id).includes(userId) &&
+      !hasRole
+    ) {
       throw new AppException(OrderError.NOT_EXECUTOR);
     }
     return order;

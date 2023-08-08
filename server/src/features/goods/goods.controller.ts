@@ -13,7 +13,7 @@ import { GoodsService } from './goods.service';
 import { Good } from './good.entity';
 import { CreateGoodDto, EditGoodDto, GoodIdDto } from './good.dto';
 import { Request, Response, Stats } from '../../common/interfaces';
-import { MyId, Public, Roles } from '../../common/decorators';
+import { HasRole, MyId, Public, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
 
 @ApiTags('goods')
@@ -48,24 +48,30 @@ export class GoodsController {
   }
 
   @Post()
-  createGood(@MyId() myId: number, @Body() dto: CreateGoodDto): Promise<void> {
-    return this.goodsService.createGood({ ...dto, myId });
+  createGood(
+    @MyId() myId: number,
+    @HasRole(Role.MANAGER) hasRole: boolean,
+    @Body() dto: CreateGoodDto,
+  ): Promise<void> {
+    return this.goodsService.createGood({ ...dto, myId, hasRole });
   }
 
   @Patch(':goodId')
   editGood(
     @MyId() myId: number,
+    @HasRole(Role.MANAGER) hasRole: boolean,
     @Param() { goodId }: GoodIdDto,
     @Body() dto: EditGoodDto,
   ): Promise<void> {
-    return this.goodsService.editGood({ ...dto, goodId, myId });
+    return this.goodsService.editGood({ ...dto, goodId, myId, hasRole });
   }
 
   @Delete(':goodId')
   deleteGood(
     @MyId() myId: number,
+    @HasRole(Role.MANAGER) hasRole: boolean,
     @Param() { goodId }: GoodIdDto,
   ): Promise<void> {
-    return this.goodsService.deleteGood({ goodId, myId });
+    return this.goodsService.deleteGood({ goodId, myId, hasRole });
   }
 }

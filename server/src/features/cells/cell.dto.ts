@@ -12,6 +12,7 @@ export class CreateCellDto {
 
 export class ExtCreateCellDto extends CreateCellDto {
   myId: number;
+  hasRole: boolean;
   name?: number;
 }
 
@@ -19,4 +20,5 @@ export class ReserveCellDto {
   storageId: number;
   cardId: number;
   myId: number;
+  hasRole: boolean;
 }

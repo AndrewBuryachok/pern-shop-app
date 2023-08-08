@@ -55,7 +55,11 @@ export class CellsService {
   }
 
   async createCell(dto: ExtCreateCellDto): Promise<void> {
-    await this.storagesService.checkStorageOwner(dto.storageId, dto.myId);
+    await this.storagesService.checkStorageOwner(
+      dto.storageId,
+      dto.myId,
+      dto.hasRole,
+    );
     const name = await this.checkHasNotEnough(dto.storageId);
     await this.create({ ...dto, name });
   }
@@ -64,6 +68,7 @@ export class CellsService {
     const cell = await this.findFreeCell(dto.storageId);
     await this.paymentsService.createPayment({
       myId: dto.myId,
+      hasRole: dto.hasRole,
       senderCardId: dto.cardId,
       receiverCardId: cell.storage.cardId,
       sum: cell.storage.price,

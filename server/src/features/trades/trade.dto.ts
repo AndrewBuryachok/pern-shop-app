@@ -22,6 +22,7 @@ export class CreateTradeDto extends CreatePurchaseDto {
 
 export class ExtCreateTradeDto extends CreateTradeDto {
   myId: number;
+  hasRole: boolean;
 }
 
 export class RateTradeDto extends RatePurchaseDto {}
@@ -29,4 +30,5 @@ export class RateTradeDto extends RatePurchaseDto {}
 export class ExtRateTradeDto extends RateTradeDto {
   tradeId: number;
   myId: number;
+  hasRole: boolean;
 }

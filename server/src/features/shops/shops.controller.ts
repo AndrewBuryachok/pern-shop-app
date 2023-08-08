@@ -10,9 +10,14 @@ import {
 import { ApiTags } from '@nestjs/swagger';
 import { ShopsService } from './shops.service';
 import { Shop } from './shop.entity';
-import { CreateShopDto, EditShopDto, ShopIdDto } from './shop.dto';
+import {
+  CreateShopDto,
+  EditShopDto,
+  ExtCreateShopDto,
+  ShopIdDto,
+} from './shop.dto';
 import { Request, Response } from '../../common/interfaces';
-import { MyId, Public, Roles } from '../../common/decorators';
+import { HasRole, MyId, Public, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
 
 @ApiTags('shops')
@@ -52,16 +57,26 @@ export class ShopsController {
   }
 
   @Post()
-  createShop(@MyId() myId: number, @Body() dto: CreateShopDto): Promise<void> {
-    return this.shopsService.createShop({ ...dto, myId });
+  createMyShop(
+    @MyId() myId: number,
+    @Body() dto: CreateShopDto,
+  ): Promise<void> {
+    return this.shopsService.createShop({ ...dto, userId: myId });
+  }
+
+  @Roles(Role.MANAGER)
+  @Post('all')
+  createUserShop(@Body() dto: ExtCreateShopDto): Promise<void> {
+    return this.shopsService.createShop(dto);
   }
 
   @Patch(':shopId')
   editShop(
     @MyId() myId: number,
+    @HasRole(Role.MANAGER) hasRole: boolean,
     @Param() { shopId }: ShopIdDto,
     @Body() dto: EditShopDto,
   ): Promise<void> {
-    return this.shopsService.editShop({ ...dto, shopId, myId });
+    return this.shopsService.editShop({ ...dto, shopId, myId, hasRole });
   }
 }

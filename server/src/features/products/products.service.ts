@@ -87,7 +87,11 @@ export class ProductsService {
   }
 
   async editProduct(dto: ExtEditProductDto): Promise<void> {
-    const product = await this.checkProductOwner(dto.productId, dto.myId);
+    const product = await this.checkProductOwner(
+      dto.productId,
+      dto.myId,
+      dto.hasRole,
+    );
     await this.edit(product, dto.price);
   }
 
@@ -104,6 +108,7 @@ export class ProductsService {
     }
     await this.paymentsService.createPayment({
       myId: dto.myId,
+      hasRole: dto.hasRole,
       senderCardId: dto.cardId,
       receiverCardId: product.lease.cardId,
       sum: dto.amount * product.price,
@@ -116,12 +121,19 @@ export class ProductsService {
     await this.productsRepository.findOneByOrFail({ id });
   }
 
-  async checkProductOwner(id: number, userId: number): Promise<Product> {
-    const product = await this.productsRepository.findOneBy({
-      id,
-      lease: { card: { users: { id: userId } } },
+  async checkProductOwner(
+    id: number,
+    userId: number,
+    hasRole: boolean,
+  ): Promise<Product> {
+    const product = await this.productsRepository.findOne({
+      relations: ['lease', 'lease.card', 'lease.card.users'],
+      where: { id },
     });
-    if (!product) {
+    if (
+      !product.lease.card.users.map((user) => user.id).includes(userId) &&
+      !hasRole
+    ) {
       throw new AppException(ProductError.NOT_OWNER);
     }
     return product;

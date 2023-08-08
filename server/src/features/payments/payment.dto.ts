@@ -25,4 +25,5 @@ export class CreatePaymentDto {
 
 export class ExtCreatePaymentDto extends CreatePaymentDto {
   myId: number;
+  hasRole: boolean;
 }

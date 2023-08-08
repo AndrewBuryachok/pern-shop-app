@@ -15,11 +15,12 @@ import {
   CardIdDto,
   CreateCardDto,
   EditCardDto,
+  ExtCreateCardDto,
   UpdateCardUserDto,
 } from './card.dto';
 import { UserIdDto } from '../users/user.dto';
 import { Request, Response } from '../../common/interfaces';
-import { MyId, Public, Roles } from '../../common/decorators';
+import { HasRole, MyId, Public, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
 
 @ApiTags('cards')
@@ -52,41 +53,53 @@ export class CardsController {
     return this.cardsService.selectUserCards(userId);
   }
 
-  @Roles(Role.BANKER)
+  @Roles(Role.ADMIN, Role.BANKER, Role.MANAGER)
   @Get(':userId/ext-select')
   selectUserCardsWithBalance(@Param() { userId }: UserIdDto): Promise<Card[]> {
     return this.cardsService.selectUserCardsWithBalance(userId);
   }
 
   @Post()
-  createCard(@MyId() myId: number, @Body() dto: CreateCardDto): Promise<void> {
-    return this.cardsService.createCard({ ...dto, myId });
+  createMyCard(
+    @MyId() myId: number,
+    @Body() dto: CreateCardDto,
+  ): Promise<void> {
+    return this.cardsService.createCard({ ...dto, userId: myId });
+  }
+
+  @Roles(Role.BANKER)
+  @Post('all')
+  createUserCard(@Body() dto: ExtCreateCardDto): Promise<void> {
+    return this.cardsService.createCard(dto);
   }
 
   @Patch(':cardId')
   editCard(
     @MyId() myId: number,
+    @HasRole(Role.BANKER) hasRole: boolean,
     @Param() { cardId }: CardIdDto,
     @Body() dto: EditCardDto,
   ): Promise<void> {
-    return this.cardsService.editCard({ ...dto, cardId, myId });
+    return this.cardsService.editCard({ ...dto, cardId, myId, hasRole });
   }
 
   @Post(':cardId/users')
   addCardUser(
     @MyId() myId: number,
+    @HasRole(Role.BANKER) hasRole: boolean,
     @Param() { cardId }: CardIdDto,
     @Body() dto: UpdateCardUserDto,
   ): Promise<void> {
-    return this.cardsService.addCardUser({ ...dto, cardId, myId });
+    return this.cardsService.addCardUser({ ...dto, cardId, myId, hasRole });
   }
 
   @Delete(':cardId/users')
   removeCardUser(
     @MyId() myId: number,
+    @HasRole(Role.BANKER) hasRole: boolean,
     @Param() { cardId }: CardIdDto,
     @Body() dto: UpdateCardUserDto,
   ): Promise<void> {
-    return this.cardsService.removeCardUser({ ...dto, cardId, myId });
+    return this.cardsService.removeCardUser({ ...dto, cardId, myId, hasRole });
   }
 }

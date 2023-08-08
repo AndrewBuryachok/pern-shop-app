@@ -19,6 +19,7 @@ export class OrderIdDto {
 
 export class ExtOrderIdDto extends OrderIdDto {
   myId: number;
+  hasRole: boolean;
 }
 
 export class CreateOrderDto extends CreateTransportationDto {
@@ -30,6 +31,7 @@ export class CreateOrderDto extends CreateTransportationDto {
 
 export class ExtCreateOrderDto extends CreateOrderDto {
   myId: number;
+  hasRole: boolean;
 }
 
 export class TakeOrderDto extends TakeTransportationDto {}
@@ -37,6 +39,7 @@ export class TakeOrderDto extends TakeTransportationDto {}
 export class ExtTakeOrderDto extends TakeOrderDto {
   orderId: number;
   myId: number;
+  hasRole: boolean;
 }
 
 export class RateOrderDto extends RateTransportationDto {}
@@ -44,4 +47,5 @@ export class RateOrderDto extends RateTransportationDto {}
 export class ExtRateOrderDto extends RateOrderDto {
   orderId: number;
   myId: number;
+  hasRole: boolean;
 }

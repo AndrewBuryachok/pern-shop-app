@@ -46,7 +46,7 @@ export class StoragesService {
     return { result, count };
   }
 
-  selectAllStorages(): Promise<Storage[]> {
+  selectMainStorages(): Promise<Storage[]> {
     return this.selectStoragesQueryBuilder()
       .addSelect('storage.cardId')
       .getMany();
@@ -58,6 +58,12 @@ export class StoragesService {
       .innerJoin('ownerCard.users', 'ownerUsers')
       .loadRelationCountAndMap('storage.cells', 'storage.cells')
       .where('ownerUsers.id = :myId', { myId })
+      .getMany();
+  }
+
+  selectAllStorages(): Promise<Storage[]> {
+    return this.selectStoragesQueryBuilder()
+      .loadRelationCountAndMap('storage.cells', 'storage.cells')
       .getMany();
   }
 
@@ -85,7 +91,7 @@ export class StoragesService {
   }
 
   async createStorage(dto: ExtCreateStorageDto): Promise<void> {
-    await this.cardsService.checkCardUser(dto.cardId, dto.myId);
+    await this.cardsService.checkCardUser(dto.cardId, dto.myId, dto.hasRole);
     await this.checkHasNotEnough(dto.myId);
     await this.checkNameNotUsed(dto.name);
     await this.checkCoordinatesNotUsed(dto.x, dto.y);
@@ -93,7 +99,11 @@ export class StoragesService {
   }
 
   async editStorage(dto: ExtEditStorageDto): Promise<void> {
-    const storage = await this.checkStorageOwner(dto.storageId, dto.myId);
+    const storage = await this.checkStorageOwner(
+      dto.storageId,
+      dto.myId,
+      dto.hasRole,
+    );
     await this.edit(storage, dto);
   }
 
@@ -101,12 +111,19 @@ export class StoragesService {
     await this.storagesRepository.findOneByOrFail({ id });
   }
 
-  async checkStorageOwner(id: number, userId: number): Promise<Storage> {
-    const storage = await this.storagesRepository.findOneBy({
-      id,
-      card: { users: { id: userId } },
+  async checkStorageOwner(
+    id: number,
+    userId: number,
+    hasRole: boolean,
+  ): Promise<Storage> {
+    const storage = await this.storagesRepository.findOne({
+      relations: ['card', 'card.users'],
+      where: { id },
     });
-    if (!storage) {
+    if (
+      !storage.card.users.map((user) => user.id).includes(userId) &&
+      !hasRole
+    ) {
       throw new AppException(StorageError.NOT_OWNER);
     }
     return storage;

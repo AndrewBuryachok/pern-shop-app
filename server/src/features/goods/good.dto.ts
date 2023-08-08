@@ -22,6 +22,7 @@ export class CreateGoodDto extends CreateThingDto {
 
 export class ExtCreateGoodDto extends CreateGoodDto {
   myId: number;
+  hasRole: boolean;
 }
 
 export class EditGoodDto extends CreateThingDto {}
@@ -29,8 +30,10 @@ export class EditGoodDto extends CreateThingDto {}
 export class ExtEditGoodDto extends EditGoodDto {
   goodId: number;
   myId: number;
+  hasRole: boolean;
 }
 
 export class DeleteGoodDto extends GoodIdDto {
   myId: number;
+  hasRole: boolean;
 }

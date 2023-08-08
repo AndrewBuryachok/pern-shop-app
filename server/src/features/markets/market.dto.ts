@@ -20,6 +20,7 @@ export class CreateMarketDto extends CreatePlaceWithCardDto {}
 
 export class ExtCreateMarketDto extends CreateMarketDto {
   myId: number;
+  hasRole: boolean;
 }
 
 export class EditMarketDto extends EditPlaceWithPriceDto {}
@@ -27,4 +28,5 @@ export class EditMarketDto extends EditPlaceWithPriceDto {}
 export class ExtEditMarketDto extends EditMarketDto {
   marketId: number;
   myId: number;
+  hasRole: boolean;
 }

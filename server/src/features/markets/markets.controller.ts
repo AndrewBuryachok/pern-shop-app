@@ -12,7 +12,7 @@ import { MarketsService } from './markets.service';
 import { Market } from './market.entity';
 import { CreateMarketDto, EditMarketDto, MarketIdDto } from './market.dto';
 import { Request, Response } from '../../common/interfaces';
-import { MyId, Public, Roles } from '../../common/decorators';
+import { HasRole, MyId, Public, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
 
 @ApiTags('markets')
@@ -41,9 +41,9 @@ export class MarketsController {
   }
 
   @Public()
-  @Get('all/select')
-  selectAllMarkets(): Promise<Market[]> {
-    return this.marketsService.selectAllMarkets();
+  @Get('main/select')
+  selectMainMarkets(): Promise<Market[]> {
+    return this.marketsService.selectMainMarkets();
   }
 
   @Get('my/select')
@@ -51,20 +51,28 @@ export class MarketsController {
     return this.marketsService.selectMyMarkets(myId);
   }
 
+  @Roles(Role.MANAGER)
+  @Get('all/select')
+  selectAllMarkets(): Promise<Market[]> {
+    return this.marketsService.selectAllMarkets();
+  }
+
   @Post()
   createMarket(
     @MyId() myId: number,
+    @HasRole(Role.MANAGER) hasRole: boolean,
     @Body() dto: CreateMarketDto,
   ): Promise<void> {
-    return this.marketsService.createMarket({ ...dto, myId });
+    return this.marketsService.createMarket({ ...dto, myId, hasRole });
   }
 
   @Patch(':marketId')
   editMarket(
     @MyId() myId: number,
+    @HasRole(Role.MANAGER) hasRole: boolean,
     @Param() { marketId }: MarketIdDto,
     @Body() dto: EditMarketDto,
   ): Promise<void> {
-    return this.marketsService.editMarket({ ...dto, marketId, myId });
+    return this.marketsService.editMarket({ ...dto, marketId, myId, hasRole });
   }
 }

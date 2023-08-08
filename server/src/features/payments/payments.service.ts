@@ -41,7 +41,11 @@ export class PaymentsService {
   }
 
   async createPayment(dto: ExtCreatePaymentDto): Promise<void> {
-    await this.cardsService.checkCardUser(dto.senderCardId, dto.myId);
+    await this.cardsService.checkCardUser(
+      dto.senderCardId,
+      dto.myId,
+      dto.hasRole,
+    );
     await this.cardsService.decreaseCardBalance({
       ...dto,
       cardId: dto.senderCardId,

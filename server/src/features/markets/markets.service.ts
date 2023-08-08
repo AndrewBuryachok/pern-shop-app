@@ -45,7 +45,7 @@ export class MarketsService {
     return { result, count };
   }
 
-  selectAllMarkets(): Promise<Market[]> {
+  selectMainMarkets(): Promise<Market[]> {
     return this.selectMarketsQueryBuilder()
       .addSelect('market.cardId')
       .getMany();
@@ -60,8 +60,14 @@ export class MarketsService {
       .getMany();
   }
 
+  selectAllMarkets(): Promise<Market[]> {
+    return this.selectMarketsQueryBuilder()
+      .loadRelationCountAndMap('market.stores', 'market.stores')
+      .getMany();
+  }
+
   async createMarket(dto: ExtCreateMarketDto): Promise<void> {
-    await this.cardsService.checkCardUser(dto.cardId, dto.myId);
+    await this.cardsService.checkCardUser(dto.cardId, dto.myId, dto.hasRole);
     await this.checkHasNotEnough(dto.myId);
     await this.checkNameNotUsed(dto.name);
     await this.checkCoordinatesNotUsed(dto.x, dto.y);
@@ -69,7 +75,11 @@ export class MarketsService {
   }
 
   async editMarket(dto: ExtEditMarketDto): Promise<void> {
-    const market = await this.checkMarketOwner(dto.marketId, dto.myId);
+    const market = await this.checkMarketOwner(
+      dto.marketId,
+      dto.myId,
+      dto.hasRole,
+    );
     await this.edit(market, dto);
   }
 
@@ -77,12 +87,19 @@ export class MarketsService {
     await this.marketsRepository.findOneByOrFail({ id });
   }
 
-  async checkMarketOwner(id: number, userId: number): Promise<Market> {
-    const market = await this.marketsRepository.findOneBy({
-      id,
-      card: { users: { id: userId } },
+  async checkMarketOwner(
+    id: number,
+    userId: number,
+    hasRole: boolean,
+  ): Promise<Market> {
+    const market = await this.marketsRepository.findOne({
+      relations: ['card', 'card.users'],
+      where: { id },
     });
-    if (!market) {
+    if (
+      !market.card.users.map((user) => user.id).includes(userId) &&
+      !hasRole
+    ) {
       throw new AppException(MarketError.NOT_OWNER);
     }
     return market;

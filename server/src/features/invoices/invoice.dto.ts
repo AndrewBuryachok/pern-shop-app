@@ -38,6 +38,7 @@ export class CreateInvoiceDto {
 
 export class ExtCreateInvoiceDto extends CreateInvoiceDto {
   myId: number;
+  hasRole: boolean;
 }
 
 export class CompleteInvoiceDto {
@@ -50,8 +51,10 @@ export class CompleteInvoiceDto {
 export class ExtCompleteInvoiceDto extends CompleteInvoiceDto {
   invoiceId: number;
   myId: number;
+  hasRole: boolean;
 }
 
 export class DeleteInvoiceDto extends InvoiceIdDto {
   myId: number;
+  hasRole: boolean;
 }

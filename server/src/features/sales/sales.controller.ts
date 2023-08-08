@@ -4,7 +4,7 @@ import { SalesService } from './sales.service';
 import { Sale } from './sale.entity';
 import { CreateSaleDto, RateSaleDto, SaleIdDto } from './sale.dto';
 import { Request, Response, Stats } from '../../common/interfaces';
-import { MyId, Public, Roles } from '../../common/decorators';
+import { HasRole, MyId, Public, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
 
 @ApiTags('sales')
@@ -41,16 +41,21 @@ export class SalesController {
   }
 
   @Post()
-  createSale(@MyId() myId: number, @Body() dto: CreateSaleDto): Promise<void> {
-    return this.salesService.createSale({ ...dto, myId });
+  createSale(
+    @MyId() myId: number,
+    @HasRole(Role.MANAGER) hasRole: boolean,
+    @Body() dto: CreateSaleDto,
+  ): Promise<void> {
+    return this.salesService.createSale({ ...dto, myId, hasRole });
   }
 
   @Post(':saleId/rate')
   rateSale(
     @MyId() myId: number,
+    @HasRole(Role.MANAGER) hasRole: boolean,
     @Param() { saleId }: SaleIdDto,
     @Body() dto: RateSaleDto,
   ): Promise<void> {
-    return this.salesService.rateSale({ ...dto, saleId, myId });
+    return this.salesService.rateSale({ ...dto, saleId, myId, hasRole });
   }
 }

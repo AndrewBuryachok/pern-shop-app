@@ -12,7 +12,7 @@ import { WaresService } from './wares.service';
 import { Ware } from './ware.entity';
 import { CreateWareDto, EditWareDto, WareIdDto } from './ware.dto';
 import { Request, Response, Stats } from '../../common/interfaces';
-import { MyId, Public, Roles } from '../../common/decorators';
+import { HasRole, MyId, Public, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
 
 @ApiTags('wares')
@@ -55,16 +55,21 @@ export class WaresController {
   }
 
   @Post()
-  createWare(@MyId() myId: number, @Body() dto: CreateWareDto): Promise<void> {
-    return this.waresService.createWare({ ...dto, myId });
+  createWare(
+    @MyId() myId: number,
+    @HasRole(Role.MANAGER) hasRole: boolean,
+    @Body() dto: CreateWareDto,
+  ): Promise<void> {
+    return this.waresService.createWare({ ...dto, myId, hasRole });
   }
 
   @Patch(':wareId')
   editWare(
     @MyId() myId: number,
+    @HasRole(Role.MANAGER) hasRole: boolean,
     @Param() { wareId }: WareIdDto,
     @Body() dto: EditWareDto,
   ): Promise<void> {
-    return this.waresService.editWare({ ...dto, wareId, myId });
+    return this.waresService.editWare({ ...dto, wareId, myId, hasRole });
   }
 }

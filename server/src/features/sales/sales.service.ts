@@ -69,7 +69,7 @@ export class SalesService {
   }
 
   async rateSale(dto: ExtRateSaleDto): Promise<void> {
-    const sale = await this.checkSaleOwner(dto.saleId, dto.myId);
+    const sale = await this.checkSaleOwner(dto.saleId, dto.myId, dto.hasRole);
     await this.rate(sale, dto.rate);
   }
 
@@ -77,12 +77,16 @@ export class SalesService {
     await this.salesRepository.findOneByOrFail({ id });
   }
 
-  private async checkSaleOwner(id: number, userId: number): Promise<Sale> {
-    const sale = await this.salesRepository.findOneBy({
-      id,
-      card: { users: { id: userId } },
+  private async checkSaleOwner(
+    id: number,
+    userId: number,
+    hasRole: boolean,
+  ): Promise<Sale> {
+    const sale = await this.salesRepository.findOne({
+      relations: ['card', 'card.users'],
+      where: { id },
     });
-    if (!sale) {
+    if (!sale.card.users.map((user) => user.id).includes(userId) && !hasRole) {
       throw new AppException(SaleError.NOT_OWNER);
     }
     return sale;

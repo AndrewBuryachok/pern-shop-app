@@ -55,17 +55,17 @@ export class GoodsService {
   }
 
   async createGood(dto: ExtCreateGoodDto): Promise<void> {
-    await this.shopsService.checkShopOwner(dto.shopId, dto.myId);
+    await this.shopsService.checkShopOwner(dto.shopId, dto.myId, dto.hasRole);
     await this.create(dto);
   }
 
   async editGood(dto: ExtEditGoodDto): Promise<void> {
-    const good = await this.checkGoodOwner(dto.goodId, dto.myId);
+    const good = await this.checkGoodOwner(dto.goodId, dto.myId, dto.hasRole);
     await this.edit(good, dto);
   }
 
   async deleteGood(dto: DeleteGoodDto): Promise<void> {
-    const good = await this.checkGoodOwner(dto.goodId, dto.myId);
+    const good = await this.checkGoodOwner(dto.goodId, dto.myId, dto.hasRole);
     await this.delete(good);
   }
 
@@ -73,12 +73,16 @@ export class GoodsService {
     await this.goodsRepository.findOneByOrFail({ id });
   }
 
-  async checkGoodOwner(id: number, userId: number): Promise<Good> {
-    const good = await this.goodsRepository.findOneBy({
-      id,
-      shop: { userId },
+  async checkGoodOwner(
+    id: number,
+    userId: number,
+    hasRole: boolean,
+  ): Promise<Good> {
+    const good = await this.goodsRepository.findOne({
+      relations: ['shop'],
+      where: { id },
     });
-    if (!good) {
+    if (good.shop.userId !== userId && !hasRole) {
       throw new AppException(GoodError.NOT_OWNER);
     }
     return good;

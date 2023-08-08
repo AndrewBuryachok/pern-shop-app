@@ -53,18 +53,18 @@ export class CardsService {
   }
 
   async createCard(dto: ExtCreateCardDto): Promise<void> {
-    await this.checkHasNotEnough(dto.myId);
-    await this.checkNameNotUsed(dto.myId, dto.name);
+    await this.checkHasNotEnough(dto.userId);
+    await this.checkNameNotUsed(dto.userId, dto.name);
     await this.create(dto);
   }
 
   async editCard(dto: ExtEditCardDto): Promise<void> {
-    const card = await this.checkCardOwner(dto.cardId, dto.myId);
+    const card = await this.checkCardOwner(dto.cardId, dto.myId, dto.hasRole);
     await this.edit(card, dto);
   }
 
   async addCardUser(dto: ExtUpdateCardUserDto): Promise<void> {
-    const card = await this.checkCardOwner(dto.cardId, dto.myId);
+    const card = await this.checkCardOwner(dto.cardId, dto.myId, dto.hasRole);
     if (card.users.map((user) => user.id).includes(dto.userId)) {
       throw new AppException(CardError.ALREADY_IN_CARD);
     }
@@ -72,7 +72,7 @@ export class CardsService {
   }
 
   async removeCardUser(dto: ExtUpdateCardUserDto): Promise<void> {
-    const card = await this.checkCardOwner(dto.cardId, dto.myId);
+    const card = await this.checkCardOwner(dto.cardId, dto.myId, dto.hasRole);
     if (dto.userId === dto.myId) {
       throw new AppException(CardError.OWNER);
     }
@@ -102,23 +102,31 @@ export class CardsService {
     await this.cardsRepository.findOneByOrFail({ id });
   }
 
-  async checkCardOwner(id: number, userId: number): Promise<Card> {
+  async checkCardOwner(
+    id: number,
+    userId: number,
+    hasRole: boolean,
+  ): Promise<Card> {
     const card = await this.cardsRepository.findOne({
       relations: ['users'],
-      where: { id, userId },
+      where: { id },
     });
-    if (!card) {
+    if (card.userId !== userId && !hasRole) {
       throw new AppException(CardError.NOT_OWNER);
     }
     return card;
   }
 
-  async checkCardUser(id: number, userId: number): Promise<Card> {
+  async checkCardUser(
+    id: number,
+    userId: number,
+    hasRole: boolean,
+  ): Promise<Card> {
     const card = await this.cardsRepository.findOne({
       relations: ['users'],
       where: { id },
     });
-    if (!card.users.map((user) => user.id).includes(userId)) {
+    if (!card.users.map((user) => user.id).includes(userId) && !hasRole) {
       throw new AppException(CardError.NOT_USER);
     }
     return card;
@@ -141,10 +149,10 @@ export class CardsService {
   private async create(dto: ExtCreateCardDto): Promise<void> {
     try {
       const card = this.cardsRepository.create({
-        userId: dto.myId,
+        userId: dto.userId,
         name: dto.name,
         color: dto.color,
-        users: [{ id: dto.myId }],
+        users: [{ id: dto.userId }],
       });
       await this.cardsRepository.save(card);
     } catch (error) {

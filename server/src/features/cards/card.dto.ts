@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Validate } from 'class-validator';
 import { Type } from 'class-transformer';
 import { IsColor, IsId, IsName } from '../../common/decorators';
-import { IsCardExists } from '../../common/constraints';
+import { IsCardExists, IsUserExists } from '../../common/constraints';
 import { UserIdDto } from '../users/user.dto';
 
 export class CardIdDto {
@@ -24,7 +24,10 @@ export class CreateCardDto {
 }
 
 export class ExtCreateCardDto extends CreateCardDto {
-  myId: number;
+  @ApiProperty()
+  @IsId()
+  @Validate(IsUserExists)
+  userId: number;
 }
 
 export class EditCardDto extends CreateCardDto {}
@@ -32,6 +35,7 @@ export class EditCardDto extends CreateCardDto {}
 export class ExtEditCardDto extends EditCardDto {
   cardId: number;
   myId: number;
+  hasRole: boolean;
 }
 
 export class UpdateCardUserDto extends UserIdDto {}
@@ -39,6 +43,7 @@ export class UpdateCardUserDto extends UserIdDto {}
 export class ExtUpdateCardUserDto extends UpdateCardUserDto {
   cardId: number;
   myId: number;
+  hasRole: boolean;
 }
 
 export class UpdateCardBalanceDto extends CardIdDto {

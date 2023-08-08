@@ -4,7 +4,7 @@ import { RentsService } from './rents.service';
 import { Rent } from './rent.entity';
 import { CreateRentDto } from './rent.dto';
 import { Request, Response } from '../../common/interfaces';
-import { MyId, Roles } from '../../common/decorators';
+import { HasRole, MyId, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
 
 @ApiTags('rents')
@@ -26,13 +26,23 @@ export class RentsController {
     return this.rentsService.getAllRents(req);
   }
 
+  @Roles(Role.MANAGER)
+  @Get('all/select')
+  selectAllRents(): Promise<Rent[]> {
+    return this.rentsService.selectAllRents();
+  }
+
   @Get('my/select')
   selectMyRents(@MyId() myId: number): Promise<Rent[]> {
     return this.rentsService.selectMyRents(myId);
   }
 
   @Post()
-  createRent(@MyId() myId: number, @Body() dto: CreateRentDto): Promise<void> {
-    return this.rentsService.createRent({ ...dto, myId });
+  createRent(
+    @MyId() myId: number,
+    @HasRole(Role.MANAGER) hasRole: boolean,
+    @Body() dto: CreateRentDto,
+  ): Promise<void> {
+    return this.rentsService.createRent({ ...dto, myId, hasRole });
   }
 }

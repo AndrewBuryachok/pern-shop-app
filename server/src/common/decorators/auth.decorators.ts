@@ -3,7 +3,7 @@ import {
   ExecutionContext,
   SetMetadata,
 } from '@nestjs/common';
-import { JwtPayload } from '../../features/auth/auth.interface';
+import { ExtJwtPayload, JwtPayload } from '../../features/auth/auth.interface';
 import { Role } from '../../features/users/role.enum';
 
 export const Public = () => SetMetadata('isPublic', true);
@@ -13,6 +13,14 @@ export const MyId = createParamDecorator(
     const request = context.switchToHttp().getRequest();
     const user = request.user as JwtPayload;
     return user.sub;
+  },
+);
+
+export const HasRole = createParamDecorator(
+  (role: Role, context: ExecutionContext) => {
+    const request = context.switchToHttp().getRequest();
+    const user = request.user as ExtJwtPayload;
+    return user.roles.includes(role);
   },
 );
 

@@ -107,7 +107,7 @@ export class DeliveriesService {
   }
 
   async takeDelivery(dto: ExtTakeDeliveryDto): Promise<void> {
-    await this.cardsService.checkCardUser(dto.cardId, dto.myId);
+    await this.cardsService.checkCardUser(dto.cardId, dto.myId, dto.hasRole);
     const delivery = await this.deliveriesRepository.findOneBy({
       id: dto.deliveryId,
     });
@@ -121,7 +121,11 @@ export class DeliveriesService {
   }
 
   async untakeDelivery(dto: ExtDeliveryIdDto): Promise<void> {
-    const delivery = await this.checkDeliveryExecutor(dto.deliveryId, dto.myId);
+    const delivery = await this.checkDeliveryExecutor(
+      dto.deliveryId,
+      dto.myId,
+      dto.hasRole,
+    );
     if (delivery.status !== TransportationStatus.TAKEN) {
       throw new AppException(DeliveryError.ALREADY_EXECUTED);
     }
@@ -129,7 +133,11 @@ export class DeliveriesService {
   }
 
   async executeDelivery(dto: ExtDeliveryIdDto): Promise<void> {
-    const delivery = await this.checkDeliveryExecutor(dto.deliveryId, dto.myId);
+    const delivery = await this.checkDeliveryExecutor(
+      dto.deliveryId,
+      dto.myId,
+      dto.hasRole,
+    );
     if (delivery.status !== TransportationStatus.TAKEN) {
       throw new AppException(DeliveryError.ALREADY_EXECUTED);
     }
@@ -137,7 +145,11 @@ export class DeliveriesService {
   }
 
   async completeDelivery(dto: ExtDeliveryIdDto): Promise<void> {
-    const delivery = await this.checkDeliveryReceiver(dto.deliveryId, dto.myId);
+    const delivery = await this.checkDeliveryReceiver(
+      dto.deliveryId,
+      dto.myId,
+      dto.hasRole,
+    );
     if (delivery.completedAt) {
       throw new AppException(DeliveryError.ALREADY_COMPLETED);
     }
@@ -150,6 +162,7 @@ export class DeliveriesService {
     });
     await this.paymentsService.createPayment({
       myId: dto.myId,
+      hasRole: dto.hasRole,
       senderCardId: delivery.fromLease.cardId,
       receiverCardId: delivery.executorCardId,
       sum: delivery.price,
@@ -159,7 +172,11 @@ export class DeliveriesService {
   }
 
   async deleteDelivery(dto: ExtDeliveryIdDto): Promise<void> {
-    const delivery = await this.checkDeliverySender(dto.deliveryId, dto.myId);
+    const delivery = await this.checkDeliverySender(
+      dto.deliveryId,
+      dto.myId,
+      dto.hasRole,
+    );
     if (delivery.executorCardId) {
       throw new AppException(DeliveryError.ALREADY_TAKEN);
     }
@@ -171,7 +188,11 @@ export class DeliveriesService {
   }
 
   async rateDelivery(dto: ExtRateDeliveryDto): Promise<void> {
-    const delivery = await this.checkDeliveryReceiver(dto.deliveryId, dto.myId);
+    const delivery = await this.checkDeliveryReceiver(
+      dto.deliveryId,
+      dto.myId,
+      dto.hasRole,
+    );
     if (!delivery.completedAt) {
       throw new AppException(DeliveryError.NOT_COMPLETED);
     }
@@ -185,12 +206,13 @@ export class DeliveriesService {
   private async checkDeliverySender(
     id: number,
     userId: number,
+    hasRole: boolean,
   ): Promise<Delivery> {
     const delivery = await this.deliveriesRepository.findOne({
-      relations: ['fromLease'],
-      where: { id, fromLease: { card: { userId } } },
+      relations: ['fromLease', 'fromLease.card'],
+      where: { id },
     });
-    if (!delivery) {
+    if (delivery.fromLease.card.userId !== userId && !hasRole) {
       throw new AppException(DeliveryError.NOT_SENDER);
     }
     return delivery;
@@ -199,12 +221,13 @@ export class DeliveriesService {
   private async checkDeliveryReceiver(
     id: number,
     userId: number,
+    hasRole: boolean,
   ): Promise<Delivery> {
     const delivery = await this.deliveriesRepository.findOne({
       relations: ['fromLease'],
-      where: { id, receiverUserId: userId },
+      where: { id },
     });
-    if (!delivery) {
+    if (delivery.receiverUserId !== userId && !hasRole) {
       throw new AppException(DeliveryError.NOT_RECEIVER);
     }
     return delivery;
@@ -213,12 +236,16 @@ export class DeliveriesService {
   private async checkDeliveryExecutor(
     id: number,
     userId: number,
+    hasRole: boolean,
   ): Promise<Delivery> {
-    const delivery = await this.deliveriesRepository.findOneBy({
-      id,
-      executorCard: { users: { id: userId } },
+    const delivery = await this.deliveriesRepository.findOne({
+      relations: ['executorCard', 'executorCard.users'],
+      where: { id },
     });
-    if (!delivery) {
+    if (
+      !delivery.executorCard.users.map((user) => user.id).includes(userId) &&
+      !hasRole
+    ) {
       throw new AppException(DeliveryError.NOT_EXECUTOR);
     }
     return delivery;

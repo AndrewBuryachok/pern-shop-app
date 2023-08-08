@@ -4,7 +4,7 @@ import { TradesService } from './trades.service';
 import { Trade } from './trade.entity';
 import { CreateTradeDto, RateTradeDto, TradeIdDto } from './trade.dto';
 import { Request, Response, Stats } from '../../common/interfaces';
-import { MyId, Public, Roles } from '../../common/decorators';
+import { HasRole, MyId, Public, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
 
 @ApiTags('trades')
@@ -43,17 +43,19 @@ export class TradesController {
   @Post()
   createTrade(
     @MyId() myId: number,
+    @HasRole(Role.MANAGER) hasRole: boolean,
     @Body() dto: CreateTradeDto,
   ): Promise<void> {
-    return this.tradesService.createTrade({ ...dto, myId });
+    return this.tradesService.createTrade({ ...dto, myId, hasRole });
   }
 
   @Post(':tradeId/rate')
   rateTrade(
     @MyId() myId: number,
+    @HasRole(Role.MANAGER) hasRole: boolean,
     @Param() { tradeId }: TradeIdDto,
     @Body() dto: RateTradeDto,
   ): Promise<void> {
-    return this.tradesService.rateTrade({ ...dto, tradeId, myId });
+    return this.tradesService.rateTrade({ ...dto, tradeId, myId, hasRole });
   }
 }

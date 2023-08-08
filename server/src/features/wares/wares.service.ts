@@ -75,12 +75,12 @@ export class WaresService {
   }
 
   async createWare(dto: ExtCreateWareDto): Promise<void> {
-    await this.rentsService.checkRentOwner(dto.rentId, dto.myId);
+    await this.rentsService.checkRentOwner(dto.rentId, dto.myId, dto.hasRole);
     await this.create(dto);
   }
 
   async editWare(dto: ExtEditWareDto): Promise<void> {
-    const ware = await this.checkWareOwner(dto.wareId, dto.myId);
+    const ware = await this.checkWareOwner(dto.wareId, dto.myId, dto.hasRole);
     await this.edit(ware, dto.price);
   }
 
@@ -97,6 +97,7 @@ export class WaresService {
     }
     await this.paymentsService.createPayment({
       myId: dto.myId,
+      hasRole: dto.hasRole,
       senderCardId: dto.cardId,
       receiverCardId: ware.rent.cardId,
       sum: dto.amount * ware.price,
@@ -109,12 +110,19 @@ export class WaresService {
     await this.waresRepository.findOneByOrFail({ id });
   }
 
-  async checkWareOwner(id: number, userId: number): Promise<Ware> {
-    const ware = await this.waresRepository.findOneBy({
-      id,
-      rent: { card: { users: { id: userId } } },
+  async checkWareOwner(
+    id: number,
+    userId: number,
+    hasRole: boolean,
+  ): Promise<Ware> {
+    const ware = await this.waresRepository.findOne({
+      relations: ['rent', 'rent.card', 'rent.card.users'],
+      where: { id },
     });
-    if (!ware) {
+    if (
+      !ware.rent.card.users.map((user) => user.id).includes(userId) &&
+      !hasRole
+    ) {
       throw new AppException(WareError.NOT_OWNER);
     }
     return ware;
