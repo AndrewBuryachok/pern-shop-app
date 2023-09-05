@@ -47,6 +47,10 @@ const MainProducts = lazy(() => import('../pages/products/MainProducts'));
 const MyProducts = lazy(() => import('../pages/products/MyProducts'));
 const PlacedProducts = lazy(() => import('../pages/products/PlacedProducts'));
 const AllProducts = lazy(() => import('../pages/products/AllProducts'));
+const MainLots = lazy(() => import('../pages/lots/MainLots'));
+const MyLots = lazy(() => import('../pages/lots/MyLots'));
+const PlacedLots = lazy(() => import('../pages/lots/PlacedLots'));
+const AllLots = lazy(() => import('../pages/lots/AllLots'));
 const MainOrders = lazy(() => import('../pages/orders/MainOrders'));
 const MyOrders = lazy(() => import('../pages/orders/MyOrders'));
 const TakenOrders = lazy(() => import('../pages/orders/TakenOrders'));
@@ -67,6 +71,9 @@ const AllTrades = lazy(() => import('../pages/trades/AllTrades'));
 const MySales = lazy(() => import('../pages/sales/MySales'));
 const PlacedSales = lazy(() => import('../pages/sales/PlacedSales'));
 const AllSales = lazy(() => import('../pages/sales/AllSales'));
+const MyBids = lazy(() => import('../pages/bids/MyBids'));
+const PlacedBids = lazy(() => import('../pages/bids/PlacedBids'));
+const AllBids = lazy(() => import('../pages/bids/AllBids'));
 const MainPolls = lazy(() => import('../pages/polls/MainPolls'));
 const MyPolls = lazy(() => import('../pages/polls/MyPolls'));
 const AllPolls = lazy(() => import('../pages/polls/AllPolls'));
@@ -215,6 +222,15 @@ export const pages = [
     ],
   },
   {
+    path: 'lots',
+    nested: [
+      { index: true, element: MainLots },
+      { path: 'my', element: MyLots },
+      { path: 'placed', element: PlacedLots },
+      { path: 'all', element: AllLots, role: Role.MANAGER },
+    ],
+  },
+  {
     path: 'orders',
     nested: [
       { index: true, element: MainOrders },
@@ -248,6 +264,14 @@ export const pages = [
       { path: 'my', element: MySales },
       { path: 'placed', element: PlacedSales },
       { path: 'all', element: AllSales, role: Role.MANAGER },
+    ],
+  },
+  {
+    path: 'bids',
+    nested: [
+      { path: 'my', element: MyBids },
+      { path: 'placed', element: PlacedBids },
+      { path: 'all', element: AllBids, role: Role.MANAGER },
     ],
   },
   {

@@ -41,12 +41,12 @@ export default function CustomNavbar(props: Props) {
     {
       label: 'Things',
       icon: IconBasket,
-      nested: ['Goods', 'Wares', 'Products'],
+      nested: ['Goods', 'Wares', 'Products', 'Lots'],
     },
     {
       label: 'Purchases',
       icon: IconTags,
-      nested: ['Trades', 'Sales'],
+      nested: ['Trades', 'Sales', 'Bids'],
       my: true,
     },
     {

@@ -1,6 +1,9 @@
-import { CreatePurchaseDto, RatePurchaseDto } from '../purchases/purchase.dto';
+import {
+  CreatePurchaseWithAmountDto,
+  RatePurchaseDto,
+} from '../purchases/purchase.dto';
 
-export interface CreateSaleDto extends CreatePurchaseDto {
+export interface CreateSaleDto extends CreatePurchaseWithAmountDto {
   productId: number;
 }
 
