@@ -19,10 +19,12 @@ import { Ware } from '../../features/wares/ware.entity';
 import { WareState } from '../../features/wares/ware-state.entity';
 import { Product } from '../../features/products/product.entity';
 import { ProductState } from '../../features/products/product-state.entity';
+import { Lot } from '../../features/lots/lot.entity';
 import { Order } from '../../features/orders/order.entity';
 import { Delivery } from '../../features/deliveries/delivery.entity';
 import { Trade } from '../../features/trades/trade.entity';
 import { Sale } from '../../features/sales/sale.entity';
+import { Bid } from '../../features/bids/bid.entity';
 import { Poll } from '../../features/polls/poll.entity';
 import { Vote } from '../../features/votes/vote.entity';
 import { Friend } from '../../features/friends/friend.entity';
@@ -160,7 +162,7 @@ export default class AppSeed implements Seeder {
         cell.name = cell.storage.cells.length;
         return cell;
       })
-      .makeMany(40);
+      .makeMany(60);
     const rents = await factory(Rent)()
       .map(async (rent) => {
         rent.store = getRandom(stores.filter((store) => !store.reservedAt));
@@ -198,7 +200,7 @@ export default class AppSeed implements Seeder {
         lease.cell.storage.card.balance += lease.cell.storage.price;
         return lease;
       })
-      .makeMany(40);
+      .makeMany(50);
     const goods = await factory(Good)()
       .map(async (good) => {
         good.shop = getRandom(shops);
@@ -234,6 +236,12 @@ export default class AppSeed implements Seeder {
         return productState;
       })
       .makeMany(products.length);
+    const lots = await factory(Lot)()
+      .map(async (lot) => {
+        lot.lease = leases[leaseId++];
+        return lot;
+      })
+      .makeMany(10);
     const orders = await factory(Order)()
       .map(async (order) => {
         order.lease = leases[leaseId++];
@@ -330,6 +338,18 @@ export default class AppSeed implements Seeder {
         sale.card.balance -= sale.amount * sale.product.price;
         sale.product.lease.card.balance += sale.amount * sale.product.price;
         return sale;
+      })
+      .makeMany(20);
+    const bids = await factory(Bid)()
+      .map(async (bid) => {
+        bid.lot = getRandom(lots);
+        bid.price = Math.floor(Math.random() * 200) + bid.lot.price;
+        bid.lot.price = bid.price;
+        bid.card = getRandom(
+          cards.filter((card) => card.balance >= bid.lot.price),
+        );
+        bid.card.balance -= bid.lot.price;
+        return bid;
       })
       .makeMany(20);
     const polls = await factory(Poll)()
@@ -467,6 +487,10 @@ export default class AppSeed implements Seeder {
       .map(async () => productsStates[id++])
       .createMany(productsStates.length);
     id = 0;
+    await factory(Lot)()
+      .map(async () => lots[id++])
+      .createMany(lots.length);
+    id = 0;
     await factory(Order)()
       .map(async () => orders[id++])
       .createMany(orders.length);
@@ -482,5 +506,9 @@ export default class AppSeed implements Seeder {
     await factory(Sale)()
       .map(async () => sales[id++])
       .createMany(sales.length);
+    id = 0;
+    await factory(Bid)()
+      .map(async () => bids[id++])
+      .createMany(bids.length);
   }
 }

@@ -1,9 +1,9 @@
 import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
-import { Purchase } from '../purchases/purchase.entity';
+import { PurchaseWithAmount } from '../purchases/purchase.entity';
 import { Product } from '../products/product.entity';
 
 @Entity('sales')
-export class Sale extends Purchase {
+export class Sale extends PurchaseWithAmount {
   @Column({ name: 'product_id' })
   productId: number;
 

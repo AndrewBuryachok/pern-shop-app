@@ -5,6 +5,6 @@ import { Exchange } from '../../features/exchanges/exchange.entity';
 define(Exchange, (faker: Faker) => {
   const exchange = new Exchange();
   exchange.sum = Math.floor(Math.random() * 1000) + 1;
-  exchange.type = Math.floor(Math.random() * 6) !== 0;
+  exchange.type = Math.floor(Math.random() * 8) !== 0;
   return exchange;
 });

@@ -7,7 +7,7 @@ import {
 } from 'typeorm';
 import { Card } from '../cards/card.entity';
 
-export abstract class Purchase {
+export abstract class PurchaseWithoutAmount {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -18,11 +18,13 @@ export abstract class Purchase {
   @JoinColumn({ name: 'card_id' })
   card: Card;
 
-  @Column()
-  amount: number;
-
   @CreateDateColumn({ type: 'timestamptz', name: 'created_at' })
   createdAt: Date;
+}
+
+export abstract class PurchaseWithAmount extends PurchaseWithoutAmount {
+  @Column()
+  amount: number;
 
   @Column({ nullable: true })
   rate?: number;

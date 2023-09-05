@@ -15,6 +15,7 @@ import { RentsService } from '../../features/rents/rents.service';
 import { GoodsService } from '../../features/goods/goods.service';
 import { WaresService } from '../../features/wares/wares.service';
 import { ProductsService } from '../../features/products/products.service';
+import { LotsService } from '../../features/lots/lots.service';
 import { TradesService } from '../../features/trades/trades.service';
 import { SalesService } from '../../features/sales/sales.service';
 import { OrdersService } from '../../features/orders/orders.service';
@@ -249,6 +250,25 @@ export class IsProductExists implements ValidatorConstraintInterface {
 
   defaultMessage(): string {
     return 'Unknown product';
+  }
+}
+
+@Injectable()
+@ValidatorConstraint({ name: 'isLotExists', async: true })
+export class IsLotExists implements ValidatorConstraintInterface {
+  constructor(private lotsService: LotsService) {}
+
+  async validate(value: number): Promise<boolean> {
+    try {
+      await this.lotsService.checkLotExists(value);
+    } catch (error) {
+      return false;
+    }
+    return true;
+  }
+
+  defaultMessage(): string {
+    return 'Unknown lot';
   }
 }
 
