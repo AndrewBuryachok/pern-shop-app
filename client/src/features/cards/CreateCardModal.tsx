@@ -42,7 +42,6 @@ export default function CreateCardModal({ hasRole }: Props) {
     : useCreateMyCardMutation();
 
   const handleSubmit = async (dto: ExtCreateCardDto) => {
-    console.log(hasRole);
     await createCard(dto);
   };
 
