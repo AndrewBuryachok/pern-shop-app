@@ -16,15 +16,8 @@ export const getQuery = ({ page, search }: IRequest) => {
   if (search?.roles?.length) {
     query.append('roles', search.roles.join());
   }
-  const filters = search?.filters?.filter((filter) => filter.value);
-  if (filters?.length) {
-    query.append(
-      'filters',
-      filters.map((filter) => filter.label.toLowerCase()).join(),
-    );
-  }
   if (search?.mode) {
-    query.append('mode', search.mode.toLowerCase());
+    query.append('mode', search.mode);
   }
   if (search?.city) {
     query.append('city', search.city);

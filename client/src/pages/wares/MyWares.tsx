@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { ISearch } from '../../common/interfaces';
-import { Filter, Mode } from '../../common/enums';
+import { Mode } from '../../common/enums';
 import { useGetMyWaresQuery } from '../../features/wares/wares.api';
 import WaresTable from '../../features/wares/WaresTable';
 import { createMyWareButton } from '../../features/wares/CreateWareModal';
@@ -13,11 +13,8 @@ export default function MyWares() {
   const [search, setSearch] = useState<ISearch>({
     user: null,
     card: null,
-    filters: [Filter.SELLER, Filter.OWNER].map((label) => ({
-      label,
-      value: true,
-    })),
-    mode: Mode.SOME,
+    modes: [Mode.SELLER, Mode.OWNER],
+    mode: null,
     market: null,
     store: null,
     item: null,

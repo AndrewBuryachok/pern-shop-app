@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { ISearch } from '../../common/interfaces';
-import { Filter, Mode } from '../../common/enums';
+import { Mode } from '../../common/enums';
 import { useGetAllOrdersQuery } from '../../features/orders/orders.api';
 import OrdersTable from '../../features/orders/OrdersTable';
 import { takeUserOrderAction } from '../../features/orders/TakeOrderModal';
@@ -16,11 +16,8 @@ export default function AllOrders() {
   const [search, setSearch] = useState<ISearch>({
     user: null,
     card: null,
-    filters: [Filter.CUSTOMER, Filter.EXECUTOR, Filter.OWNER].map((label) => ({
-      label,
-      value: true,
-    })),
-    mode: Mode.SOME,
+    modes: [Mode.CUSTOMER, Mode.EXECUTOR, Mode.OWNER],
+    mode: null,
     storage: null,
     cell: null,
     item: null,

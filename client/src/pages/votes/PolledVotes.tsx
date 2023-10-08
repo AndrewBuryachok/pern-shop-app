@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { ISearch } from '../../common/interfaces';
-import { Filter, Mode } from '../../common/enums';
+import { Mode } from '../../common/enums';
 import { useGetPolledVotesQuery } from '../../features/votes/votes.api';
 import VotesTable from '../../features/votes/VotesTable';
 import { Role } from '../../common/constants';
@@ -10,11 +10,8 @@ export default function PolledVotes() {
 
   const [search, setSearch] = useState<ISearch>({
     user: null,
-    filters: [Filter.VOTER, Filter.POLLER].map((label) => ({
-      label,
-      value: true,
-    })),
-    mode: Mode.SOME,
+    modes: [Mode.VOTER, Mode.POLLER],
+    mode: null,
     description: '',
     type: null,
   });

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { ISearch } from '../../common/interfaces';
-import { Filter, Mode } from '../../common/enums';
+import { Mode } from '../../common/enums';
 import { useGetPlacedLotsQuery } from '../../features/lots/lots.api';
 import LotsTable from '../../features/lots/LotsTable';
 import { Role } from '../../common/constants';
@@ -11,11 +11,8 @@ export default function PlacedLots() {
   const [search, setSearch] = useState<ISearch>({
     user: null,
     card: null,
-    filters: [Filter.SELLER, Filter.OWNER].map((label) => ({
-      label,
-      value: true,
-    })),
-    mode: Mode.SOME,
+    modes: [Mode.SELLER, Mode.OWNER],
+    mode: null,
     storage: null,
     cell: null,
     item: null,

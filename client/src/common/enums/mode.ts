@@ -1,7 +1,12 @@
 export enum Mode {
-  SOME = 'Some',
-  EACH = 'Each',
-  ONLY = 'Only',
+  OWNER = 'Owner',
+  EXECUTOR = 'Executor',
+  CUSTOMER = 'Customer',
+  SENDER = 'Sender',
+  RECEIVER = 'Receiver',
+  RENTER = 'Renter',
+  SELLER = 'Seller',
+  BUYER = 'Buyer',
+  VOTER = 'Voter',
+  POLLER = 'Poller',
 }
-
-export const modes = Object.values(Mode);

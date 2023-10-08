@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { ISearch } from '../../common/interfaces';
-import { Filter, Mode } from '../../common/enums';
+import { Mode } from '../../common/enums';
 import { useGetMyFriendsQuery } from '../../features/friends/friends.api';
 import FriendsTable from '../../features/friends/FriendsTable';
 import { createFriendButton } from '../../features/friends/CreateFriendModal';
@@ -13,11 +13,8 @@ export default function MyFriends() {
 
   const [search, setSearch] = useState<ISearch>({
     user: null,
-    filters: [Filter.SENDER, Filter.RECEIVER].map((label) => ({
-      label,
-      value: true,
-    })),
-    mode: Mode.SOME,
+    modes: [Mode.SENDER, Mode.RECEIVER],
+    mode: null,
     type: null,
   });
 

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { ISearch } from '../../common/interfaces';
-import { Filter, Mode } from '../../common/enums';
+import { Mode } from '../../common/enums';
 import { useGetTakenDeliveriesQuery } from '../../features/deliveries/deliveries.api';
 import DeliveriesTable from '../../features/deliveries/DeliveriesTable';
 import { untakeMyDeliveryAction } from '../../features/deliveries/UntakeDeliveryModal';
@@ -13,13 +13,8 @@ export default function TakenDeliveries() {
   const [search, setSearch] = useState<ISearch>({
     user: null,
     card: null,
-    filters: [
-      Filter.SENDER,
-      Filter.RECEIVER,
-      Filter.EXECUTOR,
-      Filter.OWNER,
-    ].map((label) => ({ label, value: true })),
-    mode: Mode.SOME,
+    modes: [Mode.SENDER, Mode.RECEIVER, Mode.EXECUTOR, Mode.OWNER],
+    mode: null,
     storage: null,
     cell: null,
     item: null,

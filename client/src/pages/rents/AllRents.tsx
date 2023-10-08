@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { ISearch } from '../../common/interfaces';
-import { Filter, Mode } from '../../common/enums';
+import { Mode } from '../../common/enums';
 import { useGetAllRentsQuery } from '../../features/rents/rents.api';
 import RentsTable from '../../features/rents/RentsTable';
 
@@ -10,11 +10,8 @@ export default function AllRents() {
   const [search, setSearch] = useState<ISearch>({
     user: null,
     card: null,
-    filters: [Filter.RENTER, Filter.OWNER].map((label) => ({
-      label,
-      value: true,
-    })),
-    mode: Mode.SOME,
+    modes: [Mode.RENTER, Mode.OWNER],
+    mode: null,
     market: null,
     store: null,
   });

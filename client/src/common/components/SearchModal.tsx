@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
 import {
   Autocomplete,
-  Checkbox,
   CloseButton,
   Group,
   Input,
@@ -14,7 +13,7 @@ import {
 import { useForm } from '@mantine/form';
 import { closeAllModals, openModal } from '@mantine/modals';
 import { ISearch } from '../interfaces';
-import { Filter, modes } from '../enums';
+import { Mode } from '../enums';
 import { useSelectAllUsersQuery } from '../../features/users/users.api';
 import { useSelectUserCardsQuery } from '../../features/cards/cards.api';
 import { useSelectAllCitiesQuery } from '../../features/cities/cities.api';
@@ -60,19 +59,9 @@ export default function SearchModal(props: Props) {
   const form = useForm({
     initialValues: {
       ...props.search,
-      filters:
-        props.search.filters
-          ?.filter((filter) => filter.value)
-          .map((filter) => filter.label) || [],
       category: props.search.item && items[+props.search.item - 1][0],
     },
-    transformValues: ({ filters, category, ...other }) => ({
-      ...other,
-      filters: props.search.filters?.map((filter) => ({
-        ...filter,
-        value: filters.includes(filter.label),
-      })),
-    }),
+    transformValues: ({ category, ...other }) => ({ ...other }),
   });
 
   useEffect(() => {
@@ -81,16 +70,6 @@ export default function SearchModal(props: Props) {
       form.setFieldValue('roles', roles);
     }
   }, [form.values.roles]);
-
-  useEffect(() => {
-    const filters =
-      props.search.filters
-        ?.filter((filter) => form.values.filters.includes(filter.label))
-        .map((filter) => filter.label) || [];
-    if (form.values.filters.toString() !== filters.toString()) {
-      form.setFieldValue('filters', filters);
-    }
-  }, [form.values.filters]);
 
   useEffect(() => {
     if (form.values.card !== undefined) {
@@ -179,22 +158,19 @@ export default function SearchModal(props: Props) {
   );
   const shops = selectShops(shopsResponse.data).filter(
     (shop) =>
-      (props.search.filters?.length &&
-        !form.values.filters.includes(Filter.OWNER)) ||
+      form.values.mode !== Mode.OWNER ||
       !form.values.user ||
       shop.user === +form.values.user,
   );
   const markets = selectMarkets(marketsResponse.data).filter(
     (market) =>
-      (props.search.filters?.length &&
-        !form.values.filters.includes(Filter.OWNER)) ||
+      form.values.mode !== Mode.OWNER ||
       ((!form.values.card || market.card === +form.values.card) &&
         (!form.values.user || cards.find((card) => card.id === market.card))),
   );
   const storages = selectStorages(storagesResponse.data).filter(
     (storage) =>
-      (props.search.filters?.length &&
-        !form.values.filters.includes(Filter.OWNER)) ||
+      form.values.mode !== Mode.OWNER ||
       ((!form.values.card || storage.card === +form.values.card) &&
         (!form.values.user || cards.find((card) => card.id === storage.card))),
   );
@@ -269,22 +245,16 @@ export default function SearchModal(props: Props) {
           {...form.getInputProps('roles')}
         />
       )}
-      {props.search.filters && (
-        <Checkbox.Group
-          label='Filters'
-          spacing='md'
-          {...form.getInputProps('filters')}
-        >
-          {props.search.filters.map(({ label }) => (
-            <Checkbox key={label} label={label} value={label} />
-          ))}
-        </Checkbox.Group>
-      )}
-      {props.search.mode && (
+      {props.search.modes && (
         <Radio.Group label='Mode' spacing='md' {...form.getInputProps('mode')}>
-          {modes.map((label) => (
-            <Radio key={label} label={label} value={label} />
+          {props.search.modes.map((mode) => (
+            <Radio key={mode} label={mode} value={mode.toLowerCase()} />
           ))}
+          <CloseButton
+            size={24}
+            iconSize={16}
+            onClick={() => form.setFieldValue('mode', null)}
+          />
         </Radio.Group>
       )}
       {props.search.city !== undefined && (

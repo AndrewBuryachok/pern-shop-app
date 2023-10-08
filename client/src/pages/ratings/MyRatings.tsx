@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { ISearch } from '../../common/interfaces';
-import { Filter, Mode } from '../../common/enums';
+import { Mode } from '../../common/enums';
 import { useGetMyRatingsQuery } from '../../features/ratings/ratings.api';
 import RatingsTable from '../../features/ratings/RatingsTable';
 import { createRatingButton } from '../../features/ratings/CreateRatingModal';
@@ -13,11 +13,8 @@ export default function MyRatings() {
 
   const [search, setSearch] = useState<ISearch>({
     user: null,
-    filters: [Filter.SENDER, Filter.RECEIVER].map((label) => ({
-      label,
-      value: true,
-    })),
-    mode: Mode.SOME,
+    modes: [Mode.SENDER, Mode.RECEIVER],
+    mode: null,
     rate: null,
   });
 

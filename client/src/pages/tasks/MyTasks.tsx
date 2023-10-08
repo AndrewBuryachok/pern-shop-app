@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { ISearch } from '../../common/interfaces';
-import { Filter, Mode } from '../../common/enums';
+import { Mode } from '../../common/enums';
 import { useGetMyTasksQuery } from '../../features/tasks/tasks.api';
 import TasksTable from '../../features/tasks/TasksTable';
 import { createTaskButton } from '../../features/tasks/CreateTaskModal';
@@ -13,11 +13,8 @@ export default function MyTasks() {
 
   const [search, setSearch] = useState<ISearch>({
     user: null,
-    filters: [Filter.CUSTOMER, Filter.EXECUTOR, Filter.OWNER].map((label) => ({
-      label,
-      value: true,
-    })),
-    mode: Mode.SOME,
+    modes: [Mode.CUSTOMER, Mode.EXECUTOR, Mode.OWNER],
+    mode: null,
     city: null,
     description: '',
     priority: null,

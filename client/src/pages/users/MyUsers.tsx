@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { ISearch } from '../../common/interfaces';
-import { Mode } from '../../common/enums';
 import { useGetMyUsersQuery } from '../../features/users/users.api';
 import UsersTable from '../../features/users/UsersTable';
 import { addUserCityButton } from '../../features/users/AddUserCityModal';
@@ -13,7 +12,6 @@ export default function MyUsers() {
   const [search, setSearch] = useState<ISearch>({
     user: null,
     roles: [],
-    mode: Mode.SOME,
     city: null,
     type: null,
     name: '',
