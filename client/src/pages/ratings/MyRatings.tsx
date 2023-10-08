@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { ISearch } from '../../common/interfaces';
 import { Mode } from '../../common/enums';
 import { useGetMyRatingsQuery } from '../../features/ratings/ratings.api';
@@ -9,13 +10,15 @@ import { deleteRatingAction } from '../../features/ratings/DeleteRatingModal';
 import { Role } from '../../common/constants';
 
 export default function MyRatings() {
-  const [page, setPage] = useState(1);
+  const [searchParams] = useSearchParams();
+
+  const [page, setPage] = useState(+(searchParams.get('page') || 1));
 
   const [search, setSearch] = useState<ISearch>({
-    user: null,
+    user: searchParams.get('user'),
     modes: [Mode.SENDER, Mode.RECEIVER],
-    mode: null,
-    rate: null,
+    mode: searchParams.get('mode') as Mode,
+    rate: +(searchParams.get('rate') || 0) || null,
   });
 
   const response = useGetMyRatingsQuery({ page, search });

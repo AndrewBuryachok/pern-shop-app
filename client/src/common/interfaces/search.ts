@@ -1,12 +1,12 @@
 import { Mode } from '../enums';
-import { Priority, Role, Status } from '../constants';
+import { Priority, Status } from '../constants';
 
 export interface ISearch {
   user?: string | null;
   card?: string | null;
   modes?: Mode[];
   mode?: Mode | null;
-  roles?: Role[];
+  roles?: string[];
   city?: string | null;
   shop?: string | null;
   market?: string | null;

@@ -1,5 +1,7 @@
 import { Pagination } from '@mantine/core';
 import { IPagination } from '../interfaces/pagination';
+import { useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 
 type Props = IPagination & {
   total?: number;
@@ -7,6 +9,18 @@ type Props = IPagination & {
 };
 
 export default function CustomHead(props: Props) {
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  useEffect(() => {
+    const newSearchParams = new URLSearchParams(searchParams);
+    if (props.page === 1) {
+      newSearchParams.delete('page');
+    } else {
+      newSearchParams.set('page', `${props.page}`);
+    }
+    setSearchParams(newSearchParams);
+  }, [props.page]);
+
   return (
     <Pagination
       total={props.total || 1}

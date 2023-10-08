@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { ISearch } from '../../common/interfaces';
 import { useGetMyPollsQuery } from '../../features/polls/polls.api';
 import PollsTable from '../../features/polls/PollsTable';
@@ -8,10 +9,12 @@ import { deletePollAction } from '../../features/polls/DeletePollModal';
 import { Role } from '../../common/constants';
 
 export default function MyPolls() {
-  const [page, setPage] = useState(1);
+  const [searchParams] = useSearchParams();
+
+  const [page, setPage] = useState(+(searchParams.get('page') || 1));
 
   const [search, setSearch] = useState<ISearch>({
-    user: null,
+    user: searchParams.get('user'),
     description: '',
   });
 

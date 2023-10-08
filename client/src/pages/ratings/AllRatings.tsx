@@ -1,17 +1,20 @@
 import { useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { ISearch } from '../../common/interfaces';
 import { Mode } from '../../common/enums';
 import { useGetAllRatingsQuery } from '../../features/ratings/ratings.api';
 import RatingsTable from '../../features/ratings/RatingsTable';
 
 export default function AllRatings() {
-  const [page, setPage] = useState(1);
+  const [searchParams] = useSearchParams();
+
+  const [page, setPage] = useState(+(searchParams.get('page') || 1));
 
   const [search, setSearch] = useState<ISearch>({
-    user: null,
+    user: searchParams.get('user'),
     modes: [Mode.SENDER, Mode.RECEIVER],
-    mode: null,
-    rate: null,
+    mode: searchParams.get('mode') as Mode,
+    rate: +(searchParams.get('rate') || 0) || null,
   });
 
   const response = useGetAllRatingsQuery({ page, search });

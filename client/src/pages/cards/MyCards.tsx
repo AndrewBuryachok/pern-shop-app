@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { ISearch } from '../../common/interfaces';
 import { useGetMyCardsQuery } from '../../features/cards/cards.api';
 import CardsTable from '../../features/cards/CardsTable';
@@ -9,12 +10,14 @@ import { removeMyCardUserAction } from '../../features/cards/RemoveCardUserModal
 import { Role } from '../../common/constants';
 
 export default function MyCards() {
-  const [page, setPage] = useState(1);
+  const [searchParams] = useSearchParams();
+
+  const [page, setPage] = useState(+(searchParams.get('page') || 1));
 
   const [search, setSearch] = useState<ISearch>({
-    user: null,
-    card: null,
-    name: '',
+    user: searchParams.get('user'),
+    card: searchParams.get('card'),
+    name: searchParams.get('name') || '',
     cards: true,
   });
 

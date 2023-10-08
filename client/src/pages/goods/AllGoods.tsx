@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { ISearch } from '../../common/interfaces';
 import { useGetAllGoodsQuery } from '../../features/goods/goods.api';
 import GoodsTable from '../../features/goods/GoodsTable';
@@ -7,12 +8,14 @@ import { editGoodAction } from '../../features/goods/EditGoodModal';
 import { deleteGoodAction } from '../../features/goods/DeleteGoodModal';
 
 export default function AllGoods() {
-  const [page, setPage] = useState(1);
+  const [searchParams] = useSearchParams();
+
+  const [page, setPage] = useState(+(searchParams.get('page') || 1));
 
   const [search, setSearch] = useState<ISearch>({
-    user: null,
-    shop: null,
-    item: null,
+    user: searchParams.get('user'),
+    shop: searchParams.get('shop'),
+    item: searchParams.get('item'),
     description: '',
   });
 

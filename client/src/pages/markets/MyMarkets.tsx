@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { ISearch } from '../../common/interfaces';
 import { useGetMyMarketsQuery } from '../../features/markets/markets.api';
 import MarketsTable from '../../features/markets/MarketsTable';
@@ -7,13 +8,15 @@ import { editMarketAction } from '../../features/markets/EditMarketModal';
 import { Role } from '../../common/constants';
 
 export default function MyMarkets() {
-  const [page, setPage] = useState(1);
+  const [searchParams] = useSearchParams();
+
+  const [page, setPage] = useState(+(searchParams.get('page') || 1));
 
   const [search, setSearch] = useState<ISearch>({
-    user: null,
-    card: null,
-    market: null,
-    name: '',
+    user: searchParams.get('user'),
+    card: searchParams.get('card'),
+    market: searchParams.get('market'),
+    name: searchParams.get('name') || '',
   });
 
   const response = useGetMyMarketsQuery({ page, search });

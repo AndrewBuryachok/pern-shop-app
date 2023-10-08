@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { ISearch } from '../../common/interfaces';
 import { useGetMyShopsQuery } from '../../features/shops/shops.api';
 import ShopsTable from '../../features/shops/ShopsTable';
@@ -7,12 +8,14 @@ import { editShopAction } from '../../features/shops/EditShopModal';
 import { Role } from '../../common/constants';
 
 export default function MyShops() {
-  const [page, setPage] = useState(1);
+  const [searchParams] = useSearchParams();
+
+  const [page, setPage] = useState(+(searchParams.get('page') || 1));
 
   const [search, setSearch] = useState<ISearch>({
-    user: null,
-    shop: null,
-    name: '',
+    user: searchParams.get('user'),
+    shop: searchParams.get('shop'),
+    name: searchParams.get('name') || '',
   });
 
   const response = useGetMyShopsQuery({ page, search });

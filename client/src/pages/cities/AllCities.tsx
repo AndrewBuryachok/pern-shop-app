@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { ISearch } from '../../common/interfaces';
 import { useGetAllCitiesQuery } from '../../features/cities/cities.api';
 import CitiesTable from '../../features/cities/CitiesTable';
@@ -8,12 +9,14 @@ import { addCityUserAction } from '../../features/cities/AddCityUserModal';
 import { removeCityUserAction } from '../../features/cities/RemoveCityUserModal';
 
 export default function AllCities() {
-  const [page, setPage] = useState(1);
+  const [searchParams] = useSearchParams();
+
+  const [page, setPage] = useState(+(searchParams.get('page') || 1));
 
   const [search, setSearch] = useState<ISearch>({
-    user: null,
-    city: null,
-    name: '',
+    user: searchParams.get('user'),
+    city: searchParams.get('city'),
+    name: searchParams.get('name') || '',
   });
 
   const response = useGetAllCitiesQuery({ page, search });

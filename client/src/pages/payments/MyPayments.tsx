@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { ISearch } from '../../common/interfaces';
 import { Mode } from '../../common/enums';
 import { useGetMyPaymentsQuery } from '../../features/payments/payments.api';
@@ -7,13 +8,15 @@ import { createMyPaymentButton } from '../../features/payments/CreatePaymentModa
 import { Role } from '../../common/constants';
 
 export default function MyPayments() {
-  const [page, setPage] = useState(1);
+  const [searchParams] = useSearchParams();
+
+  const [page, setPage] = useState(+(searchParams.get('page') || 1));
 
   const [search, setSearch] = useState<ISearch>({
-    user: null,
-    card: null,
+    user: searchParams.get('user'),
+    card: searchParams.get('card'),
     modes: [Mode.SENDER, Mode.RECEIVER],
-    mode: null,
+    mode: searchParams.get('mode') as Mode,
     description: '',
   });
 

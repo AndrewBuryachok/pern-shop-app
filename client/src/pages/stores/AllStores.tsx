@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { ISearch } from '../../common/interfaces';
 import { useGetAllStoresQuery } from '../../features/stores/stores.api';
 import StoresTable from '../../features/stores/StoresTable';
@@ -6,14 +7,16 @@ import { createUserStoreButton } from '../../features/stores/CreateStoreModal';
 import { reserveUserStoreAction } from '../../features/stores/ReserveStoreModal';
 
 export default function AllStores() {
-  const [page, setPage] = useState(1);
+  const [searchParams] = useSearchParams();
+
+  const [page, setPage] = useState(+(searchParams.get('page') || 1));
 
   const [search, setSearch] = useState<ISearch>({
-    user: null,
-    card: null,
-    market: null,
-    store: null,
-    name: '',
+    user: searchParams.get('user'),
+    card: searchParams.get('card'),
+    market: searchParams.get('market'),
+    store: searchParams.get('store'),
+    name: searchParams.get('name') || '',
   });
 
   const response = useGetAllStoresQuery({ page, search });

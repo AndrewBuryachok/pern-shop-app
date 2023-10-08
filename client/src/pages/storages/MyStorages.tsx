@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { ISearch } from '../../common/interfaces';
 import { useGetMyStoragesQuery } from '../../features/storages/storages.api';
 import StoragesTable from '../../features/storages/StoragesTable';
@@ -7,13 +8,15 @@ import { editStorageAction } from '../../features/storages/EditStorageModal';
 import { Role } from '../../common/constants';
 
 export default function MyStorages() {
-  const [page, setPage] = useState(1);
+  const [searchParams] = useSearchParams();
+
+  const [page, setPage] = useState(+(searchParams.get('page') || 1));
 
   const [search, setSearch] = useState<ISearch>({
-    user: null,
-    card: null,
-    storage: null,
-    name: '',
+    user: searchParams.get('user'),
+    card: searchParams.get('card'),
+    storage: searchParams.get('storage'),
+    name: searchParams.get('name') || '',
   });
 
   const response = useGetMyStoragesQuery({ page, search });

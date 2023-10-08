@@ -1,18 +1,21 @@
 import { useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { ISearch } from '../../common/interfaces';
 import { Mode } from '../../common/enums';
 import { useGetAllVotesQuery } from '../../features/votes/votes.api';
 import VotesTable from '../../features/votes/VotesTable';
 
 export default function AllVotes() {
-  const [page, setPage] = useState(1);
+  const [searchParams] = useSearchParams();
+
+  const [page, setPage] = useState(+(searchParams.get('page') || 1));
 
   const [search, setSearch] = useState<ISearch>({
-    user: null,
+    user: searchParams.get('user'),
     modes: [Mode.VOTER, Mode.POLLER],
-    mode: null,
+    mode: searchParams.get('mode') as Mode,
     description: '',
-    type: null,
+    type: searchParams.get('type'),
   });
 
   const response = useGetAllVotesQuery({ page, search });

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { ISearch } from '../../common/interfaces';
 import { Mode } from '../../common/enums';
 import { useGetAllInvoicesQuery } from '../../features/invoices/invoices.api';
@@ -8,13 +9,15 @@ import { completeUserInvoiceAction } from '../../features/invoices/CompleteInvoi
 import { deleteUserInvoiceAction } from '../../features/invoices/DeleteInvoiceModal';
 
 export default function AllInvoices() {
-  const [page, setPage] = useState(1);
+  const [searchParams] = useSearchParams();
+
+  const [page, setPage] = useState(+(searchParams.get('page') || 1));
 
   const [search, setSearch] = useState<ISearch>({
-    user: null,
-    card: null,
+    user: searchParams.get('user'),
+    card: searchParams.get('card'),
     modes: [Mode.SENDER, Mode.RECEIVER],
-    mode: null,
+    mode: searchParams.get('mode') as Mode,
     description: '',
   });
 

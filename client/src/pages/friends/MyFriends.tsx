@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { ISearch } from '../../common/interfaces';
 import { Mode } from '../../common/enums';
 import { useGetMyFriendsQuery } from '../../features/friends/friends.api';
@@ -9,13 +10,15 @@ import { removeFriendAction } from '../../features/friends/RemoveFriendModal';
 import { Role } from '../../common/constants';
 
 export default function MyFriends() {
-  const [page, setPage] = useState(1);
+  const [searchParams] = useSearchParams();
+
+  const [page, setPage] = useState(+(searchParams.get('page') || 1));
 
   const [search, setSearch] = useState<ISearch>({
-    user: null,
+    user: searchParams.get('user'),
     modes: [Mode.SENDER, Mode.RECEIVER],
-    mode: null,
-    type: null,
+    mode: searchParams.get('mode') as Mode,
+    type: searchParams.get('type'),
   });
 
   const response = useGetMyFriendsQuery({ page, search });

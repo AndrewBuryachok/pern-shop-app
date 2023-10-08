@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import {
   Autocomplete,
   CloseButton,
@@ -56,12 +57,16 @@ type Props = {
 };
 
 export default function SearchModal(props: Props) {
+  const [searchParams, setSearchParams] = useSearchParams();
+
   const form = useForm({
     initialValues: {
       ...props.search,
       category: props.search.item && items[+props.search.item - 1][0],
     },
-    transformValues: ({ category, ...other }) => ({ ...other }),
+    transformValues: ({ category, modes, users, cards, ...rest }) => ({
+      ...rest,
+    }),
   });
 
   useEffect(() => {
@@ -196,7 +201,16 @@ export default function SearchModal(props: Props) {
     : [...cards, ...cities, ...shops, ...markets, ...storages];
 
   const handleSubmit = (search: ISearch) => {
-    props.setSearch(search);
+    const updatedSearchParams = new URLSearchParams(searchParams);
+    for (const [key, value] of Object.entries(search)) {
+      if (value && (!Array.isArray(value) || value.length)) {
+        updatedSearchParams.set(key, value);
+      } else {
+        updatedSearchParams.delete(key);
+      }
+    }
+    setSearchParams(updatedSearchParams);
+    props.setSearch({ ...props.search, ...search });
     closeAllModals();
   };
 

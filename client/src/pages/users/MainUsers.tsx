@@ -1,18 +1,21 @@
 import { useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { ISearch } from '../../common/interfaces';
 import { useGetMainUsersQuery } from '../../features/users/users.api';
 import UsersTable from '../../features/users/UsersTable';
 import { Role } from '../../common/constants';
 
 export default function MainUsers() {
-  const [page, setPage] = useState(1);
+  const [searchParams] = useSearchParams();
+
+  const [page, setPage] = useState(+(searchParams.get('page') || 1));
 
   const [search, setSearch] = useState<ISearch>({
-    user: null,
-    roles: [],
-    city: null,
-    type: null,
-    name: '',
+    user: searchParams.get('user'),
+    roles: searchParams.get('roles')?.split(',') || [],
+    city: searchParams.get('city'),
+    type: searchParams.get('type'),
+    name: searchParams.get('name') || '',
     users: true,
   });
 
