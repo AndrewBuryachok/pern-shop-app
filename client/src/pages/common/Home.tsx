@@ -26,6 +26,7 @@ import {
   IconFileDollar,
   IconFriends,
   IconGardenCart,
+  IconGavel,
   IconMap,
   IconNotes,
   IconPaperBag,
@@ -33,6 +34,7 @@ import {
   IconShoppingBag,
   IconShoppingCart,
   IconStar,
+  IconTags,
   IconTrolley,
   IconTruck,
 } from '@tabler/icons';
@@ -76,6 +78,10 @@ export default function Home() {
       icon: IconShoppingCart,
     },
     {
+      title: 'Lots',
+      icon: IconGavel,
+    },
+    {
       title: 'Trades',
       icon: IconPaperBag,
       my: true,
@@ -83,6 +89,11 @@ export default function Home() {
     {
       title: 'Sales',
       icon: IconGardenCart,
+      my: true,
+    },
+    {
+      title: 'Bids',
+      icon: IconTags,
       my: true,
     },
     {
