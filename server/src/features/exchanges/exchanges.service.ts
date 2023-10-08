@@ -7,7 +7,7 @@ import { ExtCreateExchangeDto } from './exchange.dto';
 import { Request, Response } from '../../common/interfaces';
 import { AppException } from '../../common/exceptions';
 import { ExchangeError } from './exchange-error.enum';
-import { Filter, Mode } from '../../common/enums';
+import { Mode } from '../../common/enums';
 
 @Injectable()
 export class ExchangesService {
@@ -76,62 +76,15 @@ export class ExchangesService {
             .orWhere(
               new Brackets((qb) =>
                 qb
-                  .where(`${req.mode === Mode.SOME}`)
-                  .andWhere(
-                    new Brackets((qb) =>
-                      qb
-                        .where(
-                          new Brackets((qb) =>
-                            qb
-                              .where(`${req.filters.includes(Filter.EXECUTOR)}`)
-                              .andWhere('executorUser.id = :userId'),
-                          ),
-                        )
-                        .orWhere(
-                          new Brackets((qb) =>
-                            qb
-                              .where(`${req.filters.includes(Filter.CUSTOMER)}`)
-                              .andWhere('customerUser.id = :userId'),
-                          ),
-                        ),
-                    ),
-                  ),
+                  .where(`${!req.mode || req.mode == Mode.EXECUTOR}`)
+                  .andWhere('executorUser.id = :userId'),
               ),
             )
             .orWhere(
               new Brackets((qb) =>
                 qb
-                  .where(`${req.mode === Mode.EACH}`)
-                  .andWhere(
-                    new Brackets((qb) =>
-                      qb
-                        .where(`${!req.filters.includes(Filter.EXECUTOR)}`)
-                        .orWhere('executorUser.id = :userId'),
-                    ),
-                  )
-                  .andWhere(
-                    new Brackets((qb) =>
-                      qb
-                        .where(`${!req.filters.includes(Filter.CUSTOMER)}`)
-                        .orWhere('customerUser.id = :userId'),
-                    ),
-                  ),
-              ),
-            )
-            .orWhere(
-              new Brackets((qb) =>
-                qb
-                  .where(`${req.mode === Mode.ONLY}`)
-                  .andWhere(
-                    `executorUser.id ${
-                      req.filters.includes(Filter.EXECUTOR) ? '=' : '!='
-                    } :userId`,
-                  )
-                  .andWhere(
-                    `customerUser.id ${
-                      req.filters.includes(Filter.CUSTOMER) ? '=' : '!='
-                    } :userId`,
-                  ),
+                  .where(`${!req.mode || req.mode == Mode.CUSTOMER}`)
+                  .andWhere('customerUser.id = :userId'),
               ),
             ),
         ),

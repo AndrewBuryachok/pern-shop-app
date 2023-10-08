@@ -16,7 +16,7 @@ import { getDateWeekAgo } from '../../common/utils';
 import { AppException } from '../../common/exceptions';
 import { DeliveryError } from './delivery-error.enum';
 import { TransportationStatus } from '../transportations/transportation-status.enum';
-import { Filter, Mode } from '../../common/enums';
+import { Mode } from '../../common/enums';
 
 @Injectable()
 export class DeliveriesService {
@@ -352,117 +352,31 @@ export class DeliveriesService {
             .where(`${!req.user}`)
             .orWhere(
               new Brackets((qb) =>
-                qb.where(`${req.mode === Mode.SOME}`).andWhere(
-                  new Brackets((qb) =>
-                    qb
-                      .where(
-                        new Brackets((qb) =>
-                          qb
-                            .where(`${req.filters.includes(Filter.SENDER)}`)
-                            .andWhere('senderUser.id = :userId'),
-                        ),
-                      )
-                      .orWhere(
-                        new Brackets((qb) =>
-                          qb
-                            .where(`${req.filters.includes(Filter.RECEIVER)}`)
-                            .andWhere('receiverUser.id = :userId'),
-                        ),
-                      )
-                      .orWhere(
-                        new Brackets((qb) =>
-                          qb
-                            .where(`${req.filters.includes(Filter.EXECUTOR)}`)
-                            .andWhere('executorUser.id = :userId'),
-                        ),
-                      )
-                      .orWhere(
-                        new Brackets((qb) =>
-                          qb
-                            .where(`${req.filters.includes(Filter.OWNER)}`)
-                            .andWhere('fromOwnerUser.id = :userId'),
-                        ),
-                      )
-                      .orWhere(
-                        new Brackets((qb) =>
-                          qb
-                            .where(`${req.filters.includes(Filter.OWNER)}`)
-                            .andWhere('toOwnerUser.id = :userId'),
-                        ),
-                      ),
-                  ),
-                ),
+                qb
+                  .where(`${!req.mode || req.mode == Mode.SENDER}`)
+                  .andWhere('senderUser.id = :userId'),
               ),
             )
             .orWhere(
               new Brackets((qb) =>
                 qb
-                  .where(`${req.mode === Mode.EACH}`)
-                  .andWhere(
-                    new Brackets((qb) =>
-                      qb
-                        .where(`${!req.filters.includes(Filter.SENDER)}`)
-                        .orWhere('senderUser.id = :userId'),
-                    ),
-                  )
-                  .andWhere(
-                    new Brackets((qb) =>
-                      qb
-                        .where(`${!req.filters.includes(Filter.RECEIVER)}`)
-                        .orWhere('receiverUser.id = :userId'),
-                    ),
-                  )
-                  .andWhere(
-                    new Brackets((qb) =>
-                      qb
-                        .where(`${!req.filters.includes(Filter.EXECUTOR)}`)
-                        .orWhere('executorUser.id = :userId'),
-                    ),
-                  )
-                  .andWhere(
-                    new Brackets((qb) =>
-                      qb
-                        .where(`${!req.filters.includes(Filter.OWNER)}`)
-                        .orWhere('fromOwnerUser.id = :userId'),
-                    ),
-                  )
-                  .andWhere(
-                    new Brackets((qb) =>
-                      qb
-                        .where(`${!req.filters.includes(Filter.OWNER)}`)
-                        .orWhere('toOwnerUser.id = :userId'),
-                    ),
-                  ),
+                  .where(`${!req.mode || req.mode == Mode.RECEIVER}`)
+                  .andWhere('receiverUser.id = :userId'),
               ),
             )
             .orWhere(
               new Brackets((qb) =>
                 qb
-                  .where(`${req.mode === Mode.ONLY}`)
+                  .where(`${!req.mode || req.mode == Mode.EXECUTOR}`)
+                  .andWhere('executorUser.id = :userId'),
+              ),
+            )
+            .orWhere(
+              new Brackets((qb) =>
+                qb
+                  .where(`${!req.mode || req.mode == Mode.OWNER}`)
                   .andWhere(
-                    `senderUser.id ${
-                      req.filters.includes(Filter.SENDER) ? '=' : '!='
-                    } :userId`,
-                  )
-                  .andWhere(
-                    `receiverUser.id ${
-                      req.filters.includes(Filter.RECEIVER) ? '=' : '!='
-                    } :userId`,
-                  )
-                  .andWhere(
-                    `executorUser.id ${
-                      req.filters.includes(Filter.EXECUTOR) ? '=' : '!='
-                    } :userId`,
-                  )
-                  .andWhere(
-                    `fromOwnerUser.id ${
-                      req.filters.includes(Filter.OWNER) ? '=' : '!='
-                    } :userId`,
-                  )
-                  .andWhere(
-                    `toOwnerUser.id ${
-                      req.filters.includes(Filter.OWNER) ? '=' : '!='
-                    } :userId`,
+                    'fromOwnerUser.id = :userId OR toOwnerUser.id = :userId',
                   ),
               ),
             ),
@@ -475,98 +389,24 @@ export class DeliveriesService {
             .where(`${!req.card}`)
             .orWhere(
               new Brackets((qb) =>
-                qb.where(`${req.mode === Mode.SOME}`).andWhere(
-                  new Brackets((qb) =>
-                    qb
-                      .where(
-                        new Brackets((qb) =>
-                          qb
-                            .where(`${req.filters.includes(Filter.SENDER)}`)
-                            .andWhere('senderCard.id = :cardId'),
-                        ),
-                      )
-                      .orWhere(
-                        new Brackets((qb) =>
-                          qb
-                            .where(`${req.filters.includes(Filter.EXECUTOR)}`)
-                            .andWhere('executorCard.id = :cardId'),
-                        ),
-                      )
-                      .orWhere(
-                        new Brackets((qb) =>
-                          qb
-                            .where(`${req.filters.includes(Filter.OWNER)}`)
-                            .andWhere('fromOwnerCard.id = :cardId'),
-                        ),
-                      )
-                      .orWhere(
-                        new Brackets((qb) =>
-                          qb
-                            .where(`${req.filters.includes(Filter.OWNER)}`)
-                            .andWhere('toOwnerCard.id = :cardId'),
-                        ),
-                      ),
-                  ),
-                ),
+                qb
+                  .where(`${!req.mode || req.mode == Mode.SENDER}`)
+                  .andWhere('senderCard.id = :cardId'),
               ),
             )
             .orWhere(
               new Brackets((qb) =>
                 qb
-                  .where(`${req.mode === Mode.EACH}`)
-                  .andWhere(
-                    new Brackets((qb) =>
-                      qb
-                        .where(`${!req.filters.includes(Filter.SENDER)}`)
-                        .orWhere('senderCard.id = :cardId'),
-                    ),
-                  )
-                  .andWhere(
-                    new Brackets((qb) =>
-                      qb
-                        .where(`${!req.filters.includes(Filter.EXECUTOR)}`)
-                        .orWhere('executorCard.id = :cardId'),
-                    ),
-                  )
-                  .andWhere(
-                    new Brackets((qb) =>
-                      qb
-                        .where(`${!req.filters.includes(Filter.OWNER)}`)
-                        .orWhere('fromOwnerCard.id = :cardId'),
-                    ),
-                  )
-                  .andWhere(
-                    new Brackets((qb) =>
-                      qb
-                        .where(`${!req.filters.includes(Filter.OWNER)}`)
-                        .orWhere('toOwnerCard.id = :cardId'),
-                    ),
-                  ),
+                  .where(`${!req.mode || req.mode == Mode.EXECUTOR}`)
+                  .andWhere('executorCard.id = :cardId'),
               ),
             )
             .orWhere(
               new Brackets((qb) =>
                 qb
-                  .where(`${req.mode === Mode.ONLY}`)
+                  .where(`${!req.mode || req.mode == Mode.OWNER}`)
                   .andWhere(
-                    `senderCard.id ${
-                      req.filters.includes(Filter.SENDER) ? '=' : '!='
-                    } :cardId`,
-                  )
-                  .andWhere(
-                    `executorCard.id ${
-                      req.filters.includes(Filter.EXECUTOR) ? '=' : '!='
-                    } :cardId`,
-                  )
-                  .andWhere(
-                    `fromOwnerCard.id ${
-                      req.filters.includes(Filter.OWNER) ? '=' : '!='
-                    } :cardId`,
-                  )
-                  .andWhere(
-                    `toOwnerCard.id ${
-                      req.filters.includes(Filter.OWNER) ? '=' : '!='
-                    } :cardId`,
+                    'fromOwnerCard.id = :cardId OR toOwnerCard.id = :cardId',
                   ),
               ),
             ),

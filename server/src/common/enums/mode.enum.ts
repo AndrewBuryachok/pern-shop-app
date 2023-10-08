@@ -1,5 +1,12 @@
 export enum Mode {
-  SOME = 'some',
-  EACH = 'each',
-  ONLY = 'only',
+  OWNER = 'owner',
+  EXECUTOR = 'executor',
+  CUSTOMER = 'customer',
+  SENDER = 'sender',
+  RECEIVER = 'receiver',
+  RENTER = 'renter',
+  SELLER = 'seller',
+  BUYER = 'buyer',
+  VOTER = 'voter',
+  POLLER = 'poller',
 }

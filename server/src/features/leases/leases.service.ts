@@ -7,7 +7,7 @@ import { ExtCreateLeaseDto } from './lease.dto';
 import { Request, Response } from '../../common/interfaces';
 import { AppException } from '../../common/exceptions';
 import { LeaseError } from './lease-error.enum';
-import { Filter, Mode } from '../../common/enums';
+import { Mode } from '../../common/enums';
 
 @Injectable()
 export class LeasesService {
@@ -129,62 +129,15 @@ export class LeasesService {
             .orWhere(
               new Brackets((qb) =>
                 qb
-                  .where(`${req.mode === Mode.SOME}`)
-                  .andWhere(
-                    new Brackets((qb) =>
-                      qb
-                        .where(
-                          new Brackets((qb) =>
-                            qb
-                              .where(`${req.filters.includes(Filter.RENTER)}`)
-                              .andWhere('renterUser.id = :userId'),
-                          ),
-                        )
-                        .orWhere(
-                          new Brackets((qb) =>
-                            qb
-                              .where(`${req.filters.includes(Filter.OWNER)}`)
-                              .andWhere('ownerUser.id = :userId'),
-                          ),
-                        ),
-                    ),
-                  ),
+                  .where(`${!req.mode || req.mode == Mode.RENTER}`)
+                  .andWhere('renterUser.id = :userId'),
               ),
             )
             .orWhere(
               new Brackets((qb) =>
                 qb
-                  .where(`${req.mode === Mode.EACH}`)
-                  .andWhere(
-                    new Brackets((qb) =>
-                      qb
-                        .where(`${!req.filters.includes(Filter.RENTER)}`)
-                        .orWhere('renterUser.id = :userId'),
-                    ),
-                  )
-                  .andWhere(
-                    new Brackets((qb) =>
-                      qb
-                        .where(`${!req.filters.includes(Filter.OWNER)}`)
-                        .orWhere('ownerUser.id = :userId'),
-                    ),
-                  ),
-              ),
-            )
-            .orWhere(
-              new Brackets((qb) =>
-                qb
-                  .where(`${req.mode === Mode.ONLY}`)
-                  .andWhere(
-                    `renterUser.id ${
-                      req.filters.includes(Filter.RENTER) ? '=' : '!='
-                    } :userId`,
-                  )
-                  .andWhere(
-                    `ownerUser.id ${
-                      req.filters.includes(Filter.OWNER) ? '=' : '!='
-                    } :userId`,
-                  ),
+                  .where(`${!req.mode || req.mode == Mode.OWNER}`)
+                  .andWhere('ownerUser.id = :userId'),
               ),
             ),
         ),
@@ -197,62 +150,15 @@ export class LeasesService {
             .orWhere(
               new Brackets((qb) =>
                 qb
-                  .where(`${req.mode === Mode.SOME}`)
-                  .andWhere(
-                    new Brackets((qb) =>
-                      qb
-                        .where(
-                          new Brackets((qb) =>
-                            qb
-                              .where(`${req.filters.includes(Filter.RENTER)}`)
-                              .andWhere('renterCard.id = :cardId'),
-                          ),
-                        )
-                        .orWhere(
-                          new Brackets((qb) =>
-                            qb
-                              .where(`${req.filters.includes(Filter.OWNER)}`)
-                              .andWhere('ownerCard.id = :cardId'),
-                          ),
-                        ),
-                    ),
-                  ),
+                  .where(`${!req.mode || req.mode == Mode.RENTER}`)
+                  .andWhere('renterCard.id = :cardId'),
               ),
             )
             .orWhere(
               new Brackets((qb) =>
                 qb
-                  .where(`${req.mode === Mode.EACH}`)
-                  .andWhere(
-                    new Brackets((qb) =>
-                      qb
-                        .where(`${!req.filters.includes(Filter.RENTER)}`)
-                        .orWhere('renterCard.id = :cardId'),
-                    ),
-                  )
-                  .andWhere(
-                    new Brackets((qb) =>
-                      qb
-                        .where(`${!req.filters.includes(Filter.OWNER)}`)
-                        .orWhere('ownerCard.id = :cardId'),
-                    ),
-                  ),
-              ),
-            )
-            .orWhere(
-              new Brackets((qb) =>
-                qb
-                  .where(`${req.mode === Mode.ONLY}`)
-                  .andWhere(
-                    `renterCard.id ${
-                      req.filters.includes(Filter.RENTER) ? '=' : '!='
-                    } :cardId`,
-                  )
-                  .andWhere(
-                    `ownerCard.id ${
-                      req.filters.includes(Filter.OWNER) ? '=' : '!='
-                    } :cardId`,
-                  ),
+                  .where(`${!req.mode || req.mode == Mode.OWNER}`)
+                  .andWhere('ownerCard.id = :cardId'),
               ),
             ),
         ),

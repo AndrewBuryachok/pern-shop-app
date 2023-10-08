@@ -4,7 +4,7 @@ import { Transform, Type } from 'class-transformer';
 import { Role } from '../../features/users/role.enum';
 import { TransportationStatus } from '../../features/transportations/transportation-status.enum';
 import { Priority } from '../../features/tasks/priority.enum';
-import { Filter, Mode } from '../enums';
+import { Mode } from '../enums';
 
 export class Request {
   @ApiProperty({ required: false })
@@ -35,20 +35,14 @@ export class Request {
 
   @ApiProperty({ required: false })
   @IsOptional()
+  @IsEnum(Mode)
+  mode?: Mode;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
   @IsEnum(Role, { each: true })
   @Transform(({ value }) => value?.split(',').map((e) => +e))
   roles?: Role[];
-
-  @ApiProperty({ required: false })
-  @IsOptional()
-  @IsEnum(Filter, { each: true })
-  @Transform(({ value }) => value?.split(','))
-  filters?: Filter[] = [];
-
-  @ApiProperty({ required: false })
-  @IsOptional()
-  @IsEnum(Mode)
-  mode?: Mode;
 
   @ApiProperty({ required: false })
   @IsOptional()

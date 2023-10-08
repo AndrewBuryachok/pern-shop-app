@@ -10,7 +10,7 @@ import {
 import { Request, Response } from '../../common/interfaces';
 import { AppException } from '../../common/exceptions';
 import { RatingError } from './rating-error.enum';
-import { Filter, Mode } from '../../common/enums';
+import { Mode } from '../../common/enums';
 
 @Injectable()
 export class RatingsService {
@@ -128,62 +128,15 @@ export class RatingsService {
             .orWhere(
               new Brackets((qb) =>
                 qb
-                  .where(`${req.mode === Mode.SOME}`)
-                  .andWhere(
-                    new Brackets((qb) =>
-                      qb
-                        .where(
-                          new Brackets((qb) =>
-                            qb
-                              .where(`${req.filters.includes(Filter.SENDER)}`)
-                              .andWhere('senderUser.id = :userId'),
-                          ),
-                        )
-                        .orWhere(
-                          new Brackets((qb) =>
-                            qb
-                              .where(`${req.filters.includes(Filter.RECEIVER)}`)
-                              .andWhere('receiverUser.id = :userId'),
-                          ),
-                        ),
-                    ),
-                  ),
+                  .where(`${!req.mode || req.mode == Mode.SENDER}`)
+                  .andWhere('senderUser.id = :userId'),
               ),
             )
             .orWhere(
               new Brackets((qb) =>
                 qb
-                  .where(`${req.mode === Mode.EACH}`)
-                  .andWhere(
-                    new Brackets((qb) =>
-                      qb
-                        .where(`${!req.filters.includes(Filter.SENDER)}`)
-                        .orWhere('senderUser.id = :userId'),
-                    ),
-                  )
-                  .andWhere(
-                    new Brackets((qb) =>
-                      qb
-                        .where(`${!req.filters.includes(Filter.RECEIVER)}`)
-                        .orWhere('receiverUser.id = :userId'),
-                    ),
-                  ),
-              ),
-            )
-            .orWhere(
-              new Brackets((qb) =>
-                qb
-                  .where(`${req.mode === Mode.ONLY}`)
-                  .andWhere(
-                    `senderUser.id ${
-                      req.filters.includes(Filter.SENDER) ? '=' : '!='
-                    } :userId`,
-                  )
-                  .andWhere(
-                    `receiverUser.id ${
-                      req.filters.includes(Filter.RECEIVER) ? '=' : '!='
-                    } :userId`,
-                  ),
+                  .where(`${!req.mode || req.mode == Mode.RECEIVER}`)
+                  .andWhere('receiverUser.id = :userId'),
               ),
             ),
         ),

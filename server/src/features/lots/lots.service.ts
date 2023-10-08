@@ -10,7 +10,7 @@ import { Request, Response } from '../../common/interfaces';
 import { getDateWeekAgo } from '../../common/utils';
 import { AppException } from '../../common/exceptions';
 import { LotError } from './lot-error.enum';
-import { Filter, Mode } from '../../common/enums';
+import { Mode } from '../../common/enums';
 
 @Injectable()
 export class LotsService {
@@ -193,62 +193,15 @@ export class LotsService {
             .orWhere(
               new Brackets((qb) =>
                 qb
-                  .where(`${req.mode === Mode.SOME}`)
-                  .andWhere(
-                    new Brackets((qb) =>
-                      qb
-                        .where(
-                          new Brackets((qb) =>
-                            qb
-                              .where(`${req.filters.includes(Filter.SELLER)}`)
-                              .andWhere('sellerUser.id = :userId'),
-                          ),
-                        )
-                        .orWhere(
-                          new Brackets((qb) =>
-                            qb
-                              .where(`${req.filters.includes(Filter.OWNER)}`)
-                              .andWhere('ownerUser.id = :userId'),
-                          ),
-                        ),
-                    ),
-                  ),
+                  .where(`${!req.mode || req.mode == Mode.SELLER}`)
+                  .andWhere('sellerUser.id = :userId'),
               ),
             )
             .orWhere(
               new Brackets((qb) =>
                 qb
-                  .where(`${req.mode === Mode.EACH}`)
-                  .andWhere(
-                    new Brackets((qb) =>
-                      qb
-                        .where(`${!req.filters.includes(Filter.SELLER)}`)
-                        .orWhere('sellerUser.id = :userId'),
-                    ),
-                  )
-                  .andWhere(
-                    new Brackets((qb) =>
-                      qb
-                        .where(`${!req.filters.includes(Filter.OWNER)}`)
-                        .orWhere('ownerUser.id = :userId'),
-                    ),
-                  ),
-              ),
-            )
-            .orWhere(
-              new Brackets((qb) =>
-                qb
-                  .where(`${req.mode === Mode.ONLY}`)
-                  .andWhere(
-                    `sellerUser.id ${
-                      req.filters.includes(Filter.SELLER) ? '=' : '!='
-                    } :userId`,
-                  )
-                  .andWhere(
-                    `ownerUser.id ${
-                      req.filters.includes(Filter.OWNER) ? '=' : '!='
-                    } :userId`,
-                  ),
+                  .where(`${!req.mode || req.mode == Mode.OWNER}`)
+                  .andWhere('ownerUser.id = :userId'),
               ),
             ),
         ),
@@ -261,62 +214,15 @@ export class LotsService {
             .orWhere(
               new Brackets((qb) =>
                 qb
-                  .where(`${req.mode === Mode.SOME}`)
-                  .andWhere(
-                    new Brackets((qb) =>
-                      qb
-                        .where(
-                          new Brackets((qb) =>
-                            qb
-                              .where(`${req.filters.includes(Filter.SELLER)}`)
-                              .andWhere('sellerCard.id = :cardId'),
-                          ),
-                        )
-                        .orWhere(
-                          new Brackets((qb) =>
-                            qb
-                              .where(`${req.filters.includes(Filter.OWNER)}`)
-                              .andWhere('ownerCard.id = :cardId'),
-                          ),
-                        ),
-                    ),
-                  ),
+                  .where(`${!req.mode || req.mode == Mode.SELLER}`)
+                  .andWhere('sellerCard.id = :cardId'),
               ),
             )
             .orWhere(
               new Brackets((qb) =>
                 qb
-                  .where(`${req.mode === Mode.EACH}`)
-                  .andWhere(
-                    new Brackets((qb) =>
-                      qb
-                        .where(`${!req.filters.includes(Filter.SELLER)}`)
-                        .orWhere('sellerCard.id = :cardId'),
-                    ),
-                  )
-                  .andWhere(
-                    new Brackets((qb) =>
-                      qb
-                        .where(`${!req.filters.includes(Filter.OWNER)}`)
-                        .orWhere('ownerCard.id = :cardId'),
-                    ),
-                  ),
-              ),
-            )
-            .orWhere(
-              new Brackets((qb) =>
-                qb
-                  .where(`${req.mode === Mode.ONLY}`)
-                  .andWhere(
-                    `sellerCard.id ${
-                      req.filters.includes(Filter.SELLER) ? '=' : '!='
-                    } :cardId`,
-                  )
-                  .andWhere(
-                    `ownerCard.id ${
-                      req.filters.includes(Filter.OWNER) ? '=' : '!='
-                    } :cardId`,
-                  ),
+                  .where(`${!req.mode || req.mode == Mode.OWNER}`)
+                  .andWhere('ownerCard.id = :cardId'),
               ),
             ),
         ),
