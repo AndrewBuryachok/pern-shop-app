@@ -37,13 +37,15 @@ export class TradesService {
   async getMyTrades(myId: number, req: Request): Promise<Response<Trade>> {
     const [result, count] = await this.getTradesQueryBuilder(req)
       .innerJoin('buyerCard.users', 'buyerUsers')
+      .andWhere('buyerUsers.id = :myId', { myId })
+      .getManyAndCount();
+    return { result, count };
+  }
+
+  async getSelledTrades(myId: number, req: Request): Promise<Response<Trade>> {
+    const [result, count] = await this.getTradesQueryBuilder(req)
       .innerJoin('sellerCard.users', 'sellerUsers')
-      .andWhere(
-        new Brackets((qb) =>
-          qb.where('buyerUsers.id = :myId').orWhere('sellerUsers.id = :myId'),
-        ),
-        { myId },
-      )
+      .andWhere('sellerUsers.id = :myId', { myId })
       .getManyAndCount();
     return { result, count };
   }

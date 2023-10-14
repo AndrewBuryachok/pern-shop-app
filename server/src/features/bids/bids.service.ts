@@ -20,13 +20,15 @@ export class BidsService {
   async getMyBids(myId: number, req: Request): Promise<Response<Bid>> {
     const [result, count] = await this.getBidsQueryBuilder(req)
       .innerJoin('buyerCard.users', 'buyerUsers')
+      .andWhere('buyerUsers.id = :myId', { myId })
+      .getManyAndCount();
+    return { result, count };
+  }
+
+  async getSelledBids(myId: number, req: Request): Promise<Response<Bid>> {
+    const [result, count] = await this.getBidsQueryBuilder(req)
       .innerJoin('sellerCard.users', 'sellerUsers')
-      .andWhere(
-        new Brackets((qb) =>
-          qb.where('buyerUsers.id = :myId').orWhere('sellerUsers.id = :myId'),
-        ),
-        { myId },
-      )
+      .andWhere('sellerUsers.id = :myId', { myId })
       .getManyAndCount();
     return { result, count };
   }

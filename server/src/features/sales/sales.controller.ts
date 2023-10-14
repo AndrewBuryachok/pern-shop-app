@@ -26,6 +26,14 @@ export class SalesController {
     return this.salesService.getMySales(myId, req);
   }
 
+  @Get('selled')
+  getSelledSales(
+    @MyId() myId: number,
+    @Query() req: Request,
+  ): Promise<Response<Sale>> {
+    return this.salesService.getSelledSales(myId, req);
+  }
+
   @Get('placed')
   getPlacedSales(
     @MyId() myId: number,
