@@ -1,5 +1,5 @@
 import { SmUserWithCity } from '../../features/users/user.model';
-import { SmCard, SmCardWithBalance } from '../../features/cards/card.model';
+import { MdCard, MdCardWithBalance } from '../../features/cards/card.model';
 import { SmCityWithUser } from '../../features/cities/city.model';
 import { SmShopWithUser } from '../../features/shops/shop.model';
 import { SmMarketWithCard } from '../../features/markets/market.model';
@@ -28,17 +28,21 @@ export const selectUsers = (users?: SmUserWithCity[]) =>
     label: user.name,
   })) || [];
 
-export const selectCards = (cards?: SmCard[]) =>
-  cards?.map((card) => ({
+export const selectCards = (cards?: MdCard[]) =>
+  cards?.map(({ user, ...card }) => ({
     ...card,
+    user: user.name,
+    status: +user.status,
     color: `${card.color}`,
     value: `${card.id}`,
     label: card.name,
   })) || [];
 
-export const selectCardsWithBalance = (cards?: SmCardWithBalance[]) =>
-  cards?.map((card) => ({
+export const selectCardsWithBalance = (cards?: MdCardWithBalance[]) =>
+  cards?.map(({ user, ...card }) => ({
     ...card,
+    user: user.name,
+    status: +user.status,
     color: `${card.color}`,
     value: `${card.id}`,
     label: `${card.name} ${card.balance}$`,

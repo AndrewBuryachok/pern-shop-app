@@ -10,11 +10,11 @@ export interface MdCard extends SmCard {
   user: SmUser;
 }
 
+export interface MdCardWithBalance extends MdCard {
+  balance: number;
+}
+
 export interface Card extends MdCard {
   balance: number;
   users: SmUser[];
-}
-
-export interface SmCardWithBalance extends SmCard {
-  balance: number;
 }
