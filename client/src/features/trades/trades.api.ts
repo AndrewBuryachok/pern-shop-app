@@ -18,6 +18,12 @@ export const tradesApi = emptyApi.injectEndpoints({
       }),
       providesTags: ['Auth', 'Trade'],
     }),
+    getSelledTrades: build.query<IResponse<Trade>, IRequest>({
+      query: (req) => ({
+        url: `/trades/selled?${getQuery(req)}`,
+      }),
+      providesTags: ['Auth', 'Trade'],
+    }),
     getPlacedTrades: build.query<IResponse<Trade>, IRequest>({
       query: (req) => ({
         url: `/trades/placed?${getQuery(req)}`,
@@ -52,6 +58,7 @@ export const tradesApi = emptyApi.injectEndpoints({
 export const {
   useGetTradesStatsQuery,
   useGetMyTradesQuery,
+  useGetSelledTradesQuery,
   useGetPlacedTradesQuery,
   useGetAllTradesQuery,
   useCreateTradeMutation,

@@ -12,6 +12,12 @@ export const bidsApi = emptyApi.injectEndpoints({
       }),
       providesTags: ['Auth', 'Bid'],
     }),
+    getSelledBids: build.query<IResponse<Bid>, IRequest>({
+      query: (req) => ({
+        url: `/bids/selled?${getQuery(req)}`,
+      }),
+      providesTags: ['Auth', 'Bid'],
+    }),
     getPlacedBids: build.query<IResponse<Bid>, IRequest>({
       query: (req) => ({
         url: `/bids/placed?${getQuery(req)}`,
@@ -37,6 +43,7 @@ export const bidsApi = emptyApi.injectEndpoints({
 
 export const {
   useGetMyBidsQuery,
+  useGetSelledBidsQuery,
   useGetPlacedBidsQuery,
   useGetAllBidsQuery,
   useCreateBidMutation,

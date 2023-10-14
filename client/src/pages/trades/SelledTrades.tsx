@@ -2,11 +2,11 @@ import { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { ISearch } from '../../common/interfaces';
 import { Mode } from '../../common/enums';
-import { useGetAllTradesQuery } from '../../features/trades/trades.api';
+import { useGetSelledTradesQuery } from '../../features/trades/trades.api';
 import TradesTable from '../../features/trades/TradesTable';
-import { rateTradeAction } from '../../features/trades/RateTradeModal';
+import { Role } from '../../common/constants';
 
-export default function AllTrades() {
+export default function SelledTrades() {
   const [searchParams] = useSearchParams();
 
   const [page, setPage] = useState(+(searchParams.get('page') || 1));
@@ -23,26 +23,23 @@ export default function AllTrades() {
     rate: +(searchParams.get('rate') || 0) || null,
   });
 
-  const response = useGetAllTradesQuery({ page, search });
+  const response = useGetSelledTradesQuery({ page, search });
 
   const links = [
     { label: 'My', to: '../my' },
-    { label: 'Selled', to: '../selled' },
     { label: 'Placed', to: '../placed' },
+    { label: 'All', to: '../all', role: Role.MANAGER },
   ];
-
-  const actions = [rateTradeAction];
 
   return (
     <TradesTable
       {...response}
-      title='All Trades'
+      title='Selled Trades'
       page={page}
       setPage={setPage}
       search={search}
       setSearch={setSearch}
       links={links}
-      actions={actions}
     />
   );
 }

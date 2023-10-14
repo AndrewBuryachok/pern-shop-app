@@ -27,6 +27,7 @@ export default function MySales() {
   const response = useGetMySalesQuery({ page, search });
 
   const links = [
+    { label: 'Selled', to: '../selled' },
     { label: 'Placed', to: '../placed' },
     { label: 'All', to: '../all', role: Role.MANAGER },
   ];

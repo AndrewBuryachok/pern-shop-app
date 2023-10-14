@@ -27,6 +27,7 @@ export default function MyTrades() {
   const response = useGetMyTradesQuery({ page, search });
 
   const links = [
+    { label: 'Selled', to: '../selled' },
     { label: 'Placed', to: '../placed' },
     { label: 'All', to: '../all', role: Role.MANAGER },
   ];

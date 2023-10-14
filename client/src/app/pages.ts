@@ -66,12 +66,15 @@ const PlacedDeliveries = lazy(
 );
 const AllDeliveries = lazy(() => import('../pages/deliveries/AllDeliveries'));
 const MyTrades = lazy(() => import('../pages/trades/MyTrades'));
+const SelledTrades = lazy(() => import('../pages/trades/SelledTrades'));
 const PlacedTrades = lazy(() => import('../pages/trades/PlacedTrades'));
 const AllTrades = lazy(() => import('../pages/trades/AllTrades'));
 const MySales = lazy(() => import('../pages/sales/MySales'));
+const SelledSales = lazy(() => import('../pages/sales/SelledSales'));
 const PlacedSales = lazy(() => import('../pages/sales/PlacedSales'));
 const AllSales = lazy(() => import('../pages/sales/AllSales'));
 const MyBids = lazy(() => import('../pages/bids/MyBids'));
+const SelledBids = lazy(() => import('../pages/bids/SelledBids'));
 const PlacedBids = lazy(() => import('../pages/bids/PlacedBids'));
 const AllBids = lazy(() => import('../pages/bids/AllBids'));
 const MainPolls = lazy(() => import('../pages/polls/MainPolls'));
@@ -254,6 +257,7 @@ export const pages = [
     path: 'trades',
     nested: [
       { path: 'my', element: MyTrades },
+      { path: 'selled', element: SelledTrades },
       { path: 'placed', element: PlacedTrades },
       { path: 'all', element: AllTrades, role: Role.MANAGER },
     ],
@@ -262,6 +266,7 @@ export const pages = [
     path: 'sales',
     nested: [
       { path: 'my', element: MySales },
+      { path: 'selled', element: SelledSales },
       { path: 'placed', element: PlacedSales },
       { path: 'all', element: AllSales, role: Role.MANAGER },
     ],
@@ -270,6 +275,7 @@ export const pages = [
     path: 'bids',
     nested: [
       { path: 'my', element: MyBids },
+      { path: 'selled', element: SelledBids },
       { path: 'placed', element: PlacedBids },
       { path: 'all', element: AllBids, role: Role.MANAGER },
     ],

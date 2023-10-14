@@ -27,6 +27,7 @@ export default function PlacedTrades() {
 
   const links = [
     { label: 'My', to: '../my' },
+    { label: 'Selled', to: '../selled' },
     { label: 'All', to: '../all', role: Role.MANAGER },
   ];
 

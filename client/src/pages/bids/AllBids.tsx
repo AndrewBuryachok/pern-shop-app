@@ -26,6 +26,7 @@ export default function AllBids() {
 
   const links = [
     { label: 'My', to: '../my' },
+    { label: 'Selled', to: '../selled' },
     { label: 'Placed', to: '../placed' },
   ];
 

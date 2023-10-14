@@ -27,6 +27,7 @@ export default function AllSales() {
 
   const links = [
     { label: 'My', to: '../my' },
+    { label: 'Selled', to: '../selled' },
     { label: 'Placed', to: '../placed' },
   ];
 

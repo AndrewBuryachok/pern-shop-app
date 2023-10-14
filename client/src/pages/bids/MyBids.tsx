@@ -26,6 +26,7 @@ export default function MyBids() {
   const response = useGetMyBidsQuery({ page, search });
 
   const links = [
+    { label: 'Selled', to: '../selled' },
     { label: 'Placed', to: '../placed' },
     { label: 'All', to: '../all', role: Role.MANAGER },
   ];
