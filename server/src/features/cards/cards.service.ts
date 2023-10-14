@@ -211,10 +211,18 @@ export class CardsService {
   private selectCardsQueryBuilder(userId: number): SelectQueryBuilder<Card> {
     return this.cardsRepository
       .createQueryBuilder('card')
+      .innerJoin('card.user', 'ownerUser')
       .innerJoin('card.users', 'ownerUsers')
       .where('ownerUsers.id = :userId', { userId })
       .orderBy('card.name', 'ASC')
-      .select(['card.id', 'card.name', 'card.color']);
+      .select([
+        'card.id',
+        'ownerUser.id',
+        'ownerUser.name',
+        'ownerUser.status',
+        'card.name',
+        'card.color',
+      ]);
   }
 
   private async loadUsers(cards: Card[]): Promise<void> {
