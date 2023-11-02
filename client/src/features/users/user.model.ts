@@ -16,6 +16,7 @@ export interface MdUser extends SmUser {
 }
 
 export interface User extends MdUser {
+  registeredAt: Date;
   city?: SmCity;
   cards: SmCard[];
 }

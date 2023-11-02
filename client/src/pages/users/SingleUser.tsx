@@ -26,9 +26,10 @@ export default function SingleUser() {
           <Skeleton key={key} h={16} w={40} />
         ))}
       </Group>
+      <Skeleton h={40} w={96} />
+      <Skeleton h={40} w={96} />
       <Chip disabled>Friend</Chip>
       <CustomRating />
-      <Skeleton h={40} w={96} />
       <Group spacing={8}>
         {[...Array(3).keys()].map((key) => (
           <Skeleton key={key} h={32} w={64} />

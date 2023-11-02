@@ -5,7 +5,12 @@ import { User } from './user.model';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import { ColorsItem } from '../../common/components/ColorsItem';
 import { CardsItem } from '../../common/components/CardsItem';
-import { parsePlace, viewCards, viewRoles } from '../../common/utils';
+import {
+  parsePlace,
+  parseTime,
+  viewCards,
+  viewRoles,
+} from '../../common/utils';
 import { Color } from '../../common/constants';
 
 type Props = IModal<User>;
@@ -38,6 +43,11 @@ export default function ViewUserModal({ data: user }: Props) {
         itemComponent={CardsItem}
         data={viewCards(user.cards)}
         searchable
+      />
+      <TextInput
+        label='Registered'
+        value={parseTime(user.registeredAt)}
+        disabled
       />
     </Stack>
   );

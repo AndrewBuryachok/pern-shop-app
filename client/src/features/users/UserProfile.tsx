@@ -1,9 +1,10 @@
 import { Avatar, Group, Paper, SimpleGrid, Stack, Text } from '@mantine/core';
-import { IconBuildingSkyscraper } from '@tabler/icons';
+import { IconBuildingSkyscraper, IconClock } from '@tabler/icons';
 import { ExtUser } from './user.model';
 import { getCurrentUser } from '../auth/auth.slice';
 import CustomIndicator from '../../common/components/CustomIndicator';
 import RolesBadge from '../../common/components/RolesBadge';
+import DateText from '../../common/components/DateText';
 import FriendChip from '../../common/components/FriendChip';
 import CustomRating from '../../common/components/CustomRating';
 import PlaceText from '../../common/components/PlaceText';
@@ -46,8 +47,12 @@ export default function UserProfile({ data: user }: Props) {
         {user.name}
       </Text>
       <RolesBadge roles={user.roles} />
-      <FriendChip data={user} />
-      <CustomRating value={user.rating} />
+      <Group spacing={8}>
+        <IconClock size={32} />
+        <div>
+          <DateText date={user.registeredAt} />
+        </div>
+      </Group>
       {user.city && (
         <Group spacing={8}>
           <IconBuildingSkyscraper size={32} />
@@ -56,6 +61,8 @@ export default function UserProfile({ data: user }: Props) {
           </div>
         </Group>
       )}
+      <FriendChip data={user} />
+      <CustomRating value={user.rating} />
       {!!user.cards.length && (
         <Group spacing={8}>
           {user.cards.map((card) => (
