@@ -1,5 +1,6 @@
 import {
   Column,
+  CreateDateColumn,
   Entity,
   JoinColumn,
   ManyToOne,
@@ -31,6 +32,9 @@ export class User {
 
   @Column({ type: 'enum', enum: Role, array: true, default: [] })
   roles: Role[];
+
+  @CreateDateColumn({ type: 'timestamptz', name: 'registered_at' })
+  registeredAt: Date;
 
   @Column({ name: 'city_id', nullable: true })
   cityId?: number;
