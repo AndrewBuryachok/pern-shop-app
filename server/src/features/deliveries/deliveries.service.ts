@@ -30,8 +30,10 @@ export class DeliveriesService {
 
   async getMainDeliveries(req: Request): Promise<Response<Delivery>> {
     const [result, count] = await this.getDeliveriesQueryBuilder(req)
-      .andWhere('delivery.executorCard IS NULL')
       .andWhere('delivery.createdAt > :date', { date: getDateWeekAgo() })
+      .andWhere('delivery.status = :status', {
+        status: TransportationStatus.CREATED,
+      })
       .getManyAndCount();
     return { result, count };
   }
@@ -41,13 +43,8 @@ export class DeliveriesService {
     req: Request,
   ): Promise<Response<Delivery>> {
     const [result, count] = await this.getDeliveriesQueryBuilder(req)
-      .innerJoin('senderCard.users', 'senderUsers')
-      .andWhere(
-        new Brackets((qb) =>
-          qb.where('senderUsers.id = :myId').orWhere('receiverUser.id = :myId'),
-        ),
-        { myId },
-      )
+      .innerJoin('customerCard.users', 'customerUsers')
+      .andWhere('customerUsers.id = :myId', { myId })
       .getManyAndCount();
     return { result, count };
   }
@@ -114,8 +111,8 @@ export class DeliveriesService {
     if (delivery.createdAt < getDateWeekAgo()) {
       throw new AppException(DeliveryError.ALREADY_EXPIRED);
     }
-    if (delivery.executorCardId) {
-      throw new AppException(DeliveryError.ALREADY_TAKEN);
+    if (delivery.status !== TransportationStatus.CREATED) {
+      throw new AppException(DeliveryError.NOT_CREATED);
     }
     await this.take(delivery, dto.cardId);
   }
@@ -127,7 +124,7 @@ export class DeliveriesService {
       dto.hasRole,
     );
     if (delivery.status !== TransportationStatus.TAKEN) {
-      throw new AppException(DeliveryError.ALREADY_EXECUTED);
+      throw new AppException(DeliveryError.NOT_TAKEN);
     }
     await this.untake(delivery);
   }
@@ -139,20 +136,17 @@ export class DeliveriesService {
       dto.hasRole,
     );
     if (delivery.status !== TransportationStatus.TAKEN) {
-      throw new AppException(DeliveryError.ALREADY_EXECUTED);
+      throw new AppException(DeliveryError.NOT_TAKEN);
     }
     await this.execute(delivery);
   }
 
   async completeDelivery(dto: ExtDeliveryIdDto): Promise<void> {
-    const delivery = await this.checkDeliveryReceiver(
+    const delivery = await this.checkDeliveryCustomer(
       dto.deliveryId,
       dto.myId,
       dto.hasRole,
     );
-    if (delivery.completedAt) {
-      throw new AppException(DeliveryError.ALREADY_COMPLETED);
-    }
     if (delivery.status !== TransportationStatus.EXECUTED) {
       throw new AppException(DeliveryError.NOT_EXECUTED);
     }
@@ -172,13 +166,13 @@ export class DeliveriesService {
   }
 
   async deleteDelivery(dto: ExtDeliveryIdDto): Promise<void> {
-    const delivery = await this.checkDeliverySender(
+    const delivery = await this.checkDeliveryCustomer(
       dto.deliveryId,
       dto.myId,
       dto.hasRole,
     );
-    if (delivery.executorCardId) {
-      throw new AppException(DeliveryError.ALREADY_TAKEN);
+    if (delivery.status !== TransportationStatus.CREATED) {
+      throw new AppException(DeliveryError.NOT_CREATED);
     }
     await this.cardsService.increaseCardBalance({
       cardId: delivery.fromLease.cardId,
@@ -188,12 +182,12 @@ export class DeliveriesService {
   }
 
   async rateDelivery(dto: ExtRateDeliveryDto): Promise<void> {
-    const delivery = await this.checkDeliveryReceiver(
+    const delivery = await this.checkDeliveryCustomer(
       dto.deliveryId,
       dto.myId,
       dto.hasRole,
     );
-    if (!delivery.completedAt) {
+    if (delivery.status !== TransportationStatus.COMPLETED) {
       throw new AppException(DeliveryError.NOT_COMPLETED);
     }
     await this.rate(delivery, dto.rate);
@@ -203,32 +197,20 @@ export class DeliveriesService {
     await this.deliveriesRepository.findOneByOrFail({ id });
   }
 
-  private async checkDeliverySender(
+  private async checkDeliveryCustomer(
     id: number,
     userId: number,
     hasRole: boolean,
   ): Promise<Delivery> {
     const delivery = await this.deliveriesRepository.findOne({
-      relations: ['fromLease', 'fromLease.card'],
+      relations: ['fromLease', 'fromLease.card', 'fromLease.card.users'],
       where: { id },
     });
-    if (delivery.fromLease.card.userId !== userId && !hasRole) {
-      throw new AppException(DeliveryError.NOT_SENDER);
-    }
-    return delivery;
-  }
-
-  private async checkDeliveryReceiver(
-    id: number,
-    userId: number,
-    hasRole: boolean,
-  ): Promise<Delivery> {
-    const delivery = await this.deliveriesRepository.findOne({
-      relations: ['fromLease'],
-      where: { id },
-    });
-    if (delivery.receiverUserId !== userId && !hasRole) {
-      throw new AppException(DeliveryError.NOT_RECEIVER);
+    if (
+      !delivery.fromLease.card.users.map((user) => user.id).includes(userId) &&
+      !hasRole
+    ) {
+      throw new AppException(DeliveryError.NOT_CUSTOMER);
     }
     return delivery;
   }
@@ -256,7 +238,6 @@ export class DeliveriesService {
       const delivery = this.deliveriesRepository.create({
         fromLeaseId: dto.fromStorageId,
         toLeaseId: dto.toStorageId,
-        receiverUserId: dto.userId,
         item: dto.item,
         description: dto.description,
         amount: dto.amount,
@@ -282,6 +263,7 @@ export class DeliveriesService {
 
   private async untake(delivery: Delivery): Promise<void> {
     try {
+      delivery.executorCard = null;
       delivery.executorCardId = null;
       delivery.status = TransportationStatus.CREATED;
       await this.deliveriesRepository.save(delivery);
@@ -311,7 +293,9 @@ export class DeliveriesService {
 
   private async delete(delivery: Delivery): Promise<void> {
     try {
-      await this.deliveriesRepository.remove(delivery);
+      delivery.completedAt = new Date();
+      delivery.status = TransportationStatus.COMPLETED;
+      await this.deliveriesRepository.save(delivery);
     } catch (error) {
       throw new AppException(DeliveryError.DELETE_FAILED);
     }
@@ -341,9 +325,8 @@ export class DeliveriesService {
       .innerJoin('toCell.storage', 'toStorage')
       .innerJoin('toStorage.card', 'toOwnerCard')
       .innerJoin('toOwnerCard.user', 'toOwnerUser')
-      .innerJoin('fromLease.card', 'senderCard')
-      .innerJoin('senderCard.user', 'senderUser')
-      .innerJoin('delivery.receiverUser', 'receiverUser')
+      .innerJoin('fromLease.card', 'customerCard')
+      .innerJoin('customerCard.user', 'customerUser')
       .leftJoin('delivery.executorCard', 'executorCard')
       .leftJoin('executorCard.user', 'executorUser')
       .where(
@@ -353,15 +336,8 @@ export class DeliveriesService {
             .orWhere(
               new Brackets((qb) =>
                 qb
-                  .where(`${!req.mode || req.mode == Mode.SENDER}`)
-                  .andWhere('senderUser.id = :userId'),
-              ),
-            )
-            .orWhere(
-              new Brackets((qb) =>
-                qb
-                  .where(`${!req.mode || req.mode == Mode.RECEIVER}`)
-                  .andWhere('receiverUser.id = :userId'),
+                  .where(`${!req.mode || req.mode == Mode.CUSTOMER}`)
+                  .andWhere('customerUser.id = :userId'),
               ),
             )
             .orWhere(
@@ -390,8 +366,8 @@ export class DeliveriesService {
             .orWhere(
               new Brackets((qb) =>
                 qb
-                  .where(`${!req.mode || req.mode == Mode.SENDER}`)
-                  .andWhere('senderCard.id = :cardId'),
+                  .where(`${!req.mode || req.mode == Mode.CUSTOMER}`)
+                  .andWhere('customerCard.id = :cardId'),
               ),
             )
             .orWhere(
@@ -490,15 +466,12 @@ export class DeliveriesService {
         'toStorage.x',
         'toStorage.y',
         'toCell.name',
-        'senderCard.id',
-        'senderUser.id',
-        'senderUser.name',
-        'senderUser.status',
-        'senderCard.name',
-        'senderCard.color',
-        'receiverUser.id',
-        'receiverUser.name',
-        'receiverUser.status',
+        'customerCard.id',
+        'customerUser.id',
+        'customerUser.name',
+        'customerUser.status',
+        'customerCard.name',
+        'customerCard.color',
         'delivery.item',
         'delivery.description',
         'delivery.amount',

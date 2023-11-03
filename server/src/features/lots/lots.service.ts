@@ -25,6 +25,7 @@ export class LotsService {
   async getMainLots(req: Request): Promise<Response<Lot>> {
     const [result, count] = await this.getLotsQueryBuilder(req)
       .andWhere('lot.createdAt > :date', { date: getDateWeekAgo() })
+      .andWhere('lot.completedAt IS NULL')
       .getManyAndCount();
     await this.loadBids(result);
     return { result, count };
@@ -69,7 +70,7 @@ export class LotsService {
     if (lot.createdAt < getDateWeekAgo()) {
       throw new AppException(LotError.ALREADY_EXPIRED);
     }
-    if (lot.price < dto.price) {
+    if (lot.price >= dto.price) {
       throw new AppException(LotError.NOT_ENOUGH_PRICE);
     }
     await this.cardsService.decreaseCardBalance({ ...dto, sum: dto.price });
@@ -87,7 +88,7 @@ export class LotsService {
     );
     await Promise.all(promises);
     await this.paymentsService.createPayment({
-      myId: dto.myId,
+      myId: lot.bids[0].card.userId,
       hasRole: dto.hasRole,
       senderCardId: lot.bids[0].cardId,
       receiverCardId: lot.lease.cardId,
@@ -107,7 +108,13 @@ export class LotsService {
     hasRole: boolean,
   ): Promise<Lot> {
     const lot = await this.lotsRepository.findOne({
-      relations: ['lease', 'lease.card', 'lease.card.users', 'bids'],
+      relations: [
+        'lease',
+        'lease.card',
+        'lease.card.users',
+        'bids',
+        'bids.card',
+      ],
       where: { id },
       order: { bids: { id: 'DESC' } },
     });
@@ -126,6 +133,7 @@ export class LotsService {
         leaseId: dto.storageId,
         item: dto.item,
         description: dto.description,
+        amount: dto.amount,
         intake: dto.intake,
         kit: dto.kit,
         price: dto.price,

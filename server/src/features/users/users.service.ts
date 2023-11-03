@@ -51,7 +51,9 @@ export class UsersService {
   }
 
   selectNotCitizensUsers(): Promise<User[]> {
-    return this.selectUsersQueryBuilder().where('user.city IS NULL').getMany();
+    return this.selectUsersQueryBuilder()
+      .where('user.cityId IS NULL')
+      .getMany();
   }
 
   async selectNotFriendsUsers(myId: number): Promise<User[]> {

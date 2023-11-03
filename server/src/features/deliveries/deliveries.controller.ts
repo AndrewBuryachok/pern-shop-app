@@ -34,7 +34,6 @@ export class DeliveriesController {
   @Get('my')
   getMyDeliveries(
     @MyId() myId: number,
-    @HasRole(Role.MANAGER) hasRole: boolean,
     @Query() req: Request,
   ): Promise<Response<Delivery>> {
     return this.deliveriesService.getMyDeliveries(myId, req);
@@ -43,7 +42,6 @@ export class DeliveriesController {
   @Get('taken')
   getTakenDeliveries(
     @MyId() myId: number,
-    @HasRole(Role.MANAGER) hasRole: boolean,
     @Query() req: Request,
   ): Promise<Response<Delivery>> {
     return this.deliveriesService.getTakenDeliveries(myId, req);
@@ -52,7 +50,6 @@ export class DeliveriesController {
   @Get('placed')
   getPlacedDeliveries(
     @MyId() myId: number,
-    @HasRole(Role.MANAGER) hasRole: boolean,
     @Query() req: Request,
   ): Promise<Response<Delivery>> {
     return this.deliveriesService.getPlacedDeliveries(myId, req);

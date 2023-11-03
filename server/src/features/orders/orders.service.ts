@@ -30,8 +30,10 @@ export class OrdersService {
 
   async getMainOrders(req: Request): Promise<Response<Order>> {
     const [result, count] = await this.getOrdersQueryBuilder(req)
-      .andWhere('order.executorCard IS NULL')
       .andWhere('order.createdAt > :date', { date: getDateWeekAgo() })
+      .andWhere('order.status = :status', {
+        status: TransportationStatus.CREATED,
+      })
       .getManyAndCount();
     return { result, count };
   }
@@ -81,8 +83,8 @@ export class OrdersService {
     if (order.createdAt < getDateWeekAgo()) {
       throw new AppException(OrderError.ALREADY_EXPIRED);
     }
-    if (order.executorCardId) {
-      throw new AppException(OrderError.ALREADY_TAKEN);
+    if (order.status !== TransportationStatus.CREATED) {
+      throw new AppException(OrderError.NOT_CREATED);
     }
     await this.take(order, dto.cardId);
   }
@@ -106,7 +108,7 @@ export class OrdersService {
       dto.hasRole,
     );
     if (order.status !== TransportationStatus.TAKEN) {
-      throw new AppException(OrderError.ALREADY_EXECUTED);
+      throw new AppException(OrderError.NOT_TAKEN);
     }
     await this.execute(order);
   }
@@ -117,9 +119,6 @@ export class OrdersService {
       dto.myId,
       dto.hasRole,
     );
-    if (order.completedAt) {
-      throw new AppException(OrderError.ALREADY_COMPLETED);
-    }
     if (order.status !== TransportationStatus.EXECUTED) {
       throw new AppException(OrderError.NOT_EXECUTED);
     }
@@ -144,8 +143,8 @@ export class OrdersService {
       dto.myId,
       dto.hasRole,
     );
-    if (order.executorCardId) {
-      throw new AppException(OrderError.ALREADY_TAKEN);
+    if (order.status !== TransportationStatus.CREATED) {
+      throw new AppException(OrderError.NOT_CREATED);
     }
     await this.cardsService.increaseCardBalance({
       cardId: order.lease.cardId,
@@ -160,7 +159,7 @@ export class OrdersService {
       dto.myId,
       dto.hasRole,
     );
-    if (!order.completedAt) {
+    if (order.status !== TransportationStatus.COMPLETED) {
       throw new AppException(OrderError.NOT_COMPLETED);
     }
     await this.rate(order, dto.rate);
@@ -176,10 +175,13 @@ export class OrdersService {
     hasRole: boolean,
   ): Promise<Order> {
     const order = await this.ordersRepository.findOne({
-      relations: ['lease', 'lease.card'],
+      relations: ['lease', 'lease.card', 'lease.card.users'],
       where: { id },
     });
-    if (order.lease.card.userId !== userId && !hasRole) {
+    if (
+      !order.lease.card.users.map((user) => user.id).includes(userId) &&
+      !hasRole
+    ) {
       throw new AppException(OrderError.NOT_CUSTOMER);
     }
     return order;
@@ -232,6 +234,7 @@ export class OrdersService {
 
   private async untake(order: Order): Promise<void> {
     try {
+      order.executorCard = null;
       order.executorCardId = null;
       order.status = TransportationStatus.CREATED;
       await this.ordersRepository.save(order);
@@ -261,7 +264,9 @@ export class OrdersService {
 
   private async delete(order: Order): Promise<void> {
     try {
-      await this.ordersRepository.remove(order);
+      order.completedAt = new Date();
+      order.status = TransportationStatus.COMPLETED;
+      await this.ordersRepository.save(order);
     } catch (error) {
       throw new AppException(OrderError.DELETE_FAILED);
     }

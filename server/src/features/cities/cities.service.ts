@@ -30,7 +30,8 @@ export class CitiesService {
 
   async getMyCities(myId: number, req: Request): Promise<Response<City>> {
     const [result, count] = await this.getCitiesQueryBuilder(req)
-      .andWhere('ownerUser.id = :myId', { myId })
+      .innerJoin('city.users', 'ownerUsers')
+      .andWhere('ownerUsers.id = :myId', { myId })
       .getManyAndCount();
     await this.loadUsers(result);
     return { result, count };
@@ -55,6 +56,7 @@ export class CitiesService {
   }
 
   async createCity(dto: ExtCreateCityDto): Promise<void> {
+    await this.checkNotCityUser(dto.userId);
     await this.checkHasNotEnough(dto.userId);
     await this.checkNameNotUsed(dto.name);
     await this.checkCoordinatesNotUsed(dto.x, dto.y);
@@ -68,9 +70,7 @@ export class CitiesService {
 
   async addCityUser(dto: ExtUpdateCityUserDto): Promise<void> {
     const city = await this.checkCityOwner(dto.cityId, dto.myId, dto.hasRole);
-    if (city.users.map((user) => user.id).includes(dto.userId)) {
-      throw new AppException(CityError.ALREADY_IN_CITY);
-    }
+    await this.checkNotCityUser(dto.userId);
     await this.addUser(city, dto.userId);
   }
 
@@ -87,6 +87,16 @@ export class CitiesService {
 
   async checkCityExists(id: number): Promise<void> {
     await this.citiesRepository.findOneByOrFail({ id });
+  }
+
+  async checkNotCityUser(userId: number): Promise<void> {
+    const city = await this.citiesRepository.findOne({
+      relations: ['users'],
+      where: { users: [{ id: userId }] },
+    });
+    if (city) {
+      throw new AppException(CityError.ALREADY_IN_CITY);
+    }
   }
 
   async checkCityOwner(

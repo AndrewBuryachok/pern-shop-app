@@ -60,8 +60,8 @@ export class TasksService {
     const task = await this.tasksRepository.findOneBy({
       id: dto.taskId,
     });
-    if (task.executorUserId) {
-      throw new AppException(TaskError.ALREADY_TAKEN);
+    if (task.status !== TransportationStatus.CREATED) {
+      throw new AppException(TaskError.NOT_CREATED);
     }
     await this.take(task, dto.myId);
   }
@@ -69,7 +69,7 @@ export class TasksService {
   async untakeTask(dto: ExtTaskIdDto): Promise<void> {
     const task = await this.checkTaskExecutor(dto.taskId, dto.myId);
     if (task.status !== TransportationStatus.TAKEN) {
-      throw new AppException(TaskError.ALREADY_EXECUTED);
+      throw new AppException(TaskError.NOT_TAKEN);
     }
     await this.untake(task);
   }
@@ -77,16 +77,13 @@ export class TasksService {
   async executeTask(dto: ExtTaskIdDto): Promise<void> {
     const task = await this.checkTaskExecutor(dto.taskId, dto.myId);
     if (task.status !== TransportationStatus.TAKEN) {
-      throw new AppException(TaskError.ALREADY_EXECUTED);
+      throw new AppException(TaskError.NOT_TAKEN);
     }
     await this.execute(task);
   }
 
   async completeTask(dto: ExtTaskIdDto): Promise<void> {
     const task = await this.checkTaskCustomer(dto.taskId, dto.myId);
-    if (task.completedAt) {
-      throw new AppException(TaskError.ALREADY_COMPLETED);
-    }
     if (task.status !== TransportationStatus.EXECUTED) {
       throw new AppException(TaskError.NOT_EXECUTED);
     }
@@ -95,8 +92,8 @@ export class TasksService {
 
   async deleteTask(dto: ExtTaskIdDto): Promise<void> {
     const task = await this.checkTaskCustomer(dto.taskId, dto.myId);
-    if (task.executorUserId) {
-      throw new AppException(TaskError.ALREADY_TAKEN);
+    if (task.status !== TransportationStatus.CREATED) {
+      throw new AppException(TaskError.NOT_CREATED);
     }
     await this.delete(task);
   }
@@ -132,6 +129,7 @@ export class TasksService {
       const task = this.tasksRepository.create({
         customerUserId: dto.myId,
         description: dto.description,
+        priority: dto.priority,
       });
       await this.tasksRepository.save(task);
     } catch (error) {

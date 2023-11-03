@@ -1,9 +1,7 @@
 export enum TaskError {
-  ALREADY_TAKEN = '400: Task already taken',
+  NOT_CREATED = '400: Task is not created',
   NOT_TAKEN = '400: Task is not taken',
-  ALREADY_EXECUTED = '400: Task already executed',
   NOT_EXECUTED = '400: Task is not executed',
-  ALREADY_COMPLETED = '400: Task already completed',
   NOT_CUSTOMER = '403: You are not task customer',
   NOT_EXECUTOR = '403: You are not task executor',
   CREATE_FAILED = '500: Failed to create task',

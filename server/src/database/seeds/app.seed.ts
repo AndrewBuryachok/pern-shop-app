@@ -268,7 +268,6 @@ export default class AppSeed implements Seeder {
         delivery.fromLease = leases[leaseId++];
         delivery.toLease = leases[leaseId++];
         delivery.fromLease.card.balance -= delivery.price;
-        delivery.receiverUser = getRandom(users);
         if (delivery.status !== TransportationStatus.CREATED) {
           delivery.executorCard = getRandom(cards);
         }

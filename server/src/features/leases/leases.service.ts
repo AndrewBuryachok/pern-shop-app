@@ -69,6 +69,7 @@ export class LeasesService {
           'product',
           'lease.id = product.leaseId',
         )
+        .leftJoinAndMapOne('lease.lot', 'lots', 'lot', 'lease.id = lot.leaseId')
         .leftJoinAndMapOne(
           'lease.order',
           'orders',
@@ -87,6 +88,9 @@ export class LeasesService {
           'product.id',
           'product.item',
           'product.description',
+          'lot.id',
+          'lot.item',
+          'lot.description',
           'order.id',
           'order.item',
           'order.description',
@@ -99,9 +103,14 @@ export class LeasesService {
         ? 'delivery'
         : result['order']
         ? 'order'
-        : 'product';
+        : result['product']
+        ? 'product'
+        : 'lot';
       lease['thing'] =
-        result['product'] || result['order'] || result['delivery'];
+        result['product'] ||
+        result['lot'] ||
+        result['order'] ||
+        result['delivery'];
     });
     await Promise.all(promises);
   }
