@@ -39,7 +39,7 @@ export const cardsApi = emptyApi.injectEndpoints({
       query: (userId) => ({
         url: `/cards/${userId}/ext-select`,
       }),
-      providesTags: ['Card'],
+      providesTags: ['Auth', 'Card'],
     }),
     createMyCard: build.mutation<void, CreateCardDto>({
       query: (dto) => ({

@@ -5,9 +5,9 @@ import { Mode } from '../../common/enums';
 import { useGetMyDeliveriesQuery } from '../../features/deliveries/deliveries.api';
 import DeliveriesTable from '../../features/deliveries/DeliveriesTable';
 import { createDeliveryButton } from '../../features/deliveries/CreateDeliveryModal';
-import { completeMyDeliveryAction } from '../../features/deliveries/CompleteDeliveryModal';
-import { rateMyDeliveryAction } from '../../features/deliveries/RateDeliveryModal';
-import { deleteMyDeliveryAction } from '../../features/deliveries/DeleteDeliveryModal';
+import { completeDeliveryAction } from '../../features/deliveries/CompleteDeliveryModal';
+import { rateDeliveryAction } from '../../features/deliveries/RateDeliveryModal';
+import { deleteDeliveryAction } from '../../features/deliveries/DeleteDeliveryModal';
 import { Role } from '../../common/constants';
 
 export default function MyDeliveries() {
@@ -18,7 +18,7 @@ export default function MyDeliveries() {
   const [search, setSearch] = useState<ISearch>({
     user: searchParams.get('user'),
     card: searchParams.get('card'),
-    modes: [Mode.SENDER, Mode.RECEIVER, Mode.EXECUTOR, Mode.OWNER],
+    modes: [Mode.CUSTOMER, Mode.EXECUTOR, Mode.OWNER],
     mode: searchParams.get('mode') as Mode,
     storage: searchParams.get('storage'),
     cell: searchParams.get('cell'),
@@ -40,9 +40,9 @@ export default function MyDeliveries() {
   const button = createDeliveryButton;
 
   const actions = [
-    completeMyDeliveryAction,
-    rateMyDeliveryAction,
-    deleteMyDeliveryAction,
+    completeDeliveryAction,
+    rateDeliveryAction,
+    deleteDeliveryAction,
   ];
 
   return (

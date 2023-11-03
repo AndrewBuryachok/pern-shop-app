@@ -45,7 +45,7 @@ export const storagesApi = emptyApi.injectEndpoints({
       query: () => ({
         url: '/storages/all/select',
       }),
-      providesTags: ['Storage', 'Cell'],
+      providesTags: ['Auth', 'Storage', 'Cell'],
     }),
     selectFreeStorages: build.query<SmStorageWithPrice[], void>({
       query: () => ({

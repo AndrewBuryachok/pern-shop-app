@@ -10,7 +10,6 @@ import CustomAvatar from '../../common/components/CustomAvatar';
 import ThingImage from '../../common/components/ThingImage';
 import { parseCard, parseCell, parseThingAmount } from '../../common/utils';
 import { Color, items, Status } from '../../common/constants';
-import { getCurrentUser } from '../auth/auth.slice';
 
 type Props = IModal<Order>;
 
@@ -62,22 +61,12 @@ export default function DeleteOrderModal({ data: order }: Props) {
   );
 }
 
-export const deleteOrderFactory = (hasRole: boolean) => ({
+export const deleteOrderAction = {
   open: (order: Order) =>
     openModal({
       title: 'Delete Order',
       children: <DeleteOrderModal data={order} />,
     }),
-  disable: (order: Order) => {
-    const user = getCurrentUser()!;
-    return (
-      order.status !== Status.CREATED ||
-      (order.lease.card.user.id !== user.id && !hasRole)
-    );
-  },
+  disable: (order: Order) => order.status !== Status.CREATED,
   color: Color.RED,
-});
-
-export const deleteMyOrderAction = deleteOrderFactory(false);
-
-export const deleteUserOrderAction = deleteOrderFactory(true);
+};

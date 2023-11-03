@@ -5,23 +5,20 @@ import { openModal } from '@mantine/modals';
 import { useCreateDeliveryMutation } from './deliveries.api';
 import { useSelectFreeStoragesQuery } from '../storages/storages.api';
 import { useSelectMyCardsQuery } from '../cards/cards.api';
-import { useSelectAllUsersQuery } from '../users/users.api';
 import { CreateDeliveryDto } from './delivery.dto';
 import CustomForm from '../../common/components/CustomForm';
 import RefetchAction from '../../common/components/RefetchAction';
-import CustomAvatar from '../../common/components/CustomAvatar';
-import { UsersItem } from '../../common/components/UsersItem';
 import ThingImage from '../../common/components/ThingImage';
 import { ThingsItem } from '../../common/components/ThingItem';
 import { CardsItem } from '../../common/components/CardsItem';
 import { PlacesItem } from '../../common/components/PlacesItem';
 import {
+  customMin,
   selectCardsWithBalance,
   selectCategories,
   selectItems,
   selectKits,
   selectStoragesWithPrice,
-  selectUsers,
 } from '../../common/utils';
 import {
   MAX_AMOUNT_VALUE,
@@ -40,7 +37,6 @@ export default function CreateDeliveryModal() {
       fromStorage: '',
       toStorage: '',
       card: '',
-      user: '',
       category: '',
       item: '',
       description: '-',
@@ -53,7 +49,6 @@ export default function CreateDeliveryModal() {
       fromStorage,
       toStorage,
       card,
-      user,
       item,
       kit,
       ...rest
@@ -62,13 +57,12 @@ export default function CreateDeliveryModal() {
       fromStorageId: +fromStorage,
       toStorageId: +toStorage,
       cardId: +card,
-      userId: +user,
       item: +item,
       kit: +kit,
     }),
     validate: {
-      card: () =>
-        myCard.balance < fromStorage.price + toStorage.price
+      card: (_, values) =>
+        myCard.balance < fromStorage.price + toStorage.price + values.price
           ? 'Not enough balance'
           : null,
     },
@@ -78,7 +72,6 @@ export default function CreateDeliveryModal() {
 
   const { data: storages, ...storagesResponse } = useSelectFreeStoragesQuery();
   const { data: cards, ...cardsResponse } = useSelectMyCardsQuery();
-  const { data: users, ...usersResponse } = useSelectAllUsersQuery();
 
   fromStorage.price =
     storages?.find((storage) => storage.id === +form.values.fromStorage)
@@ -88,7 +81,6 @@ export default function CreateDeliveryModal() {
     0;
   myCard.balance =
     cards?.find((card) => card.id === +form.values.card)?.balance || 0;
-  const user = users?.find((user) => user.id === +form.values.user);
 
   const [createDelivery, { isLoading }] = useCreateDeliveryMutation();
 
@@ -134,19 +126,6 @@ export default function CreateDeliveryModal() {
         required
         disabled={cardsResponse.isFetching}
         {...form.getInputProps('card')}
-      />
-      <Select
-        label='User'
-        placeholder='User'
-        icon={user && <CustomAvatar {...user} />}
-        iconWidth={48}
-        rightSection={<RefetchAction {...usersResponse} />}
-        itemComponent={UsersItem}
-        data={selectUsers(users)}
-        searchable
-        required
-        disabled={usersResponse.isFetching}
-        {...form.getInputProps('user')}
       />
       <Select
         label='Category'
@@ -203,7 +182,10 @@ export default function CreateDeliveryModal() {
         placeholder='Price'
         required
         min={1}
-        max={MAX_PRICE_VALUE}
+        max={customMin(
+          MAX_PRICE_VALUE,
+          myCard.balance - fromStorage.price - toStorage.price,
+        )}
         {...form.getInputProps('price')}
       />
     </CustomForm>

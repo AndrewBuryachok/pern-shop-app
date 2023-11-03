@@ -4,8 +4,8 @@ import { ISearch } from '../../common/interfaces';
 import { Mode } from '../../common/enums';
 import { useGetTakenDeliveriesQuery } from '../../features/deliveries/deliveries.api';
 import DeliveriesTable from '../../features/deliveries/DeliveriesTable';
-import { untakeMyDeliveryAction } from '../../features/deliveries/UntakeDeliveryModal';
-import { executeMyDeliveryAction } from '../../features/deliveries/ExecuteDeliveryModal';
+import { untakeDeliveryAction } from '../../features/deliveries/UntakeDeliveryModal';
+import { executeDeliveryAction } from '../../features/deliveries/ExecuteDeliveryModal';
 import { Role } from '../../common/constants';
 
 export default function TakenDeliveries() {
@@ -16,7 +16,7 @@ export default function TakenDeliveries() {
   const [search, setSearch] = useState<ISearch>({
     user: searchParams.get('user'),
     card: searchParams.get('card'),
-    modes: [Mode.SENDER, Mode.RECEIVER, Mode.EXECUTOR, Mode.OWNER],
+    modes: [Mode.CUSTOMER, Mode.EXECUTOR, Mode.OWNER],
     mode: searchParams.get('mode') as Mode,
     storage: searchParams.get('storage'),
     cell: searchParams.get('cell'),
@@ -35,7 +35,7 @@ export default function TakenDeliveries() {
     { label: 'All', to: '../all', role: Role.MANAGER },
   ];
 
-  const actions = [untakeMyDeliveryAction, executeMyDeliveryAction];
+  const actions = [untakeDeliveryAction, executeDeliveryAction];
 
   return (
     <DeliveriesTable

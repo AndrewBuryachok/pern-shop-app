@@ -5,11 +5,11 @@ import { Mode } from '../../common/enums';
 import { useGetAllOrdersQuery } from '../../features/orders/orders.api';
 import OrdersTable from '../../features/orders/OrdersTable';
 import { takeUserOrderAction } from '../../features/orders/TakeOrderModal';
-import { executeUserOrderAction } from '../../features/orders/ExecuteOrderModal';
-import { completeUserOrderAction } from '../../features/orders/CompleteOrderModal';
-import { rateUserOrderAction } from '../../features/orders/RateOrderModal';
-import { untakeUserOrderAction } from '../../features/orders/UntakeOrderModal';
-import { deleteUserOrderAction } from '../../features/orders/DeleteOrderModal';
+import { executeOrderAction } from '../../features/orders/ExecuteOrderModal';
+import { completeOrderAction } from '../../features/orders/CompleteOrderModal';
+import { rateOrderAction } from '../../features/orders/RateOrderModal';
+import { untakeOrderAction } from '../../features/orders/UntakeOrderModal';
+import { deleteOrderAction } from '../../features/orders/DeleteOrderModal';
 
 export default function AllOrders() {
   const [searchParams] = useSearchParams();
@@ -40,11 +40,11 @@ export default function AllOrders() {
 
   const actions = [
     takeUserOrderAction,
-    executeUserOrderAction,
-    completeUserOrderAction,
-    untakeUserOrderAction,
-    deleteUserOrderAction,
-    rateUserOrderAction,
+    executeOrderAction,
+    completeOrderAction,
+    untakeOrderAction,
+    deleteOrderAction,
+    rateOrderAction,
   ];
 
   return (

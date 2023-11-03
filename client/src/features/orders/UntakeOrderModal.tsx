@@ -10,7 +10,6 @@ import CustomAvatar from '../../common/components/CustomAvatar';
 import ThingImage from '../../common/components/ThingImage';
 import { parseCard, parseCell, parseThingAmount } from '../../common/utils';
 import { Color, items, Status } from '../../common/constants';
-import { getCurrentUser } from '../auth/auth.slice';
 
 type Props = IModal<Order>;
 
@@ -69,22 +68,12 @@ export default function UntakeOrderModal({ data: order }: Props) {
   );
 }
 
-export const untakeOrderFactory = (hasRole: boolean) => ({
+export const untakeOrderAction = {
   open: (order: Order) =>
     openModal({
       title: 'Untake Order',
       children: <UntakeOrderModal data={order} />,
     }),
-  disable: (order: Order) => {
-    const user = getCurrentUser()!;
-    return (
-      order.status !== Status.TAKEN ||
-      (order.executorCard?.user.id !== user.id && !hasRole)
-    );
-  },
+  disable: (order: Order) => order.status !== Status.TAKEN,
   color: Color.RED,
-});
-
-export const untakeMyOrderAction = untakeOrderFactory(false);
-
-export const untakeUserOrderAction = untakeOrderFactory(true);
+};

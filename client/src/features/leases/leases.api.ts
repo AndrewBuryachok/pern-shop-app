@@ -9,13 +9,13 @@ export const leasesApi = emptyApi.injectEndpoints({
       query: (req) => ({
         url: `/leases/my?${getQuery(req)}`,
       }),
-      providesTags: ['Auth', 'Lease', 'Product'],
+      providesTags: ['Auth', 'Lease'],
     }),
     getAllLeases: build.query<IResponse<Lease>, IRequest>({
       query: (req) => ({
         url: `/leases/all?${getQuery(req)}`,
       }),
-      providesTags: ['Auth', 'Lease', 'Product'],
+      providesTags: ['Auth', 'Lease'],
     }),
   }),
 });

@@ -16,8 +16,7 @@ import CustomForm from '../../common/components/CustomForm';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import ThingImage from '../../common/components/ThingImage';
 import { parseCard, parseThingAmount } from '../../common/utils';
-import { Color, items } from '../../common/constants';
-import { getCurrentUser } from '../auth/auth.slice';
+import { Color, items, Status } from '../../common/constants';
 
 type Props = IModal<Order>;
 
@@ -58,11 +57,7 @@ export default function RateOrderModal({ data: order }: Props) {
       />
       <Textarea label='Description' value={order.description} disabled />
       <TextInput label='Amount' value={parseThingAmount(order)} disabled />
-      <TextInput
-        label='Sum'
-        value={`${order.amount * order.price}$`}
-        disabled
-      />
+      <TextInput label='Price' value={`${order.price}$`} disabled />
       <Input.Wrapper label='Rate' required>
         <Group spacing={8}>
           <Rating {...form.getInputProps('rate')} />
@@ -77,21 +72,12 @@ export default function RateOrderModal({ data: order }: Props) {
   );
 }
 
-export const rateOrderFactory = (hasRole: boolean) => ({
+export const rateOrderAction = {
   open: (order: Order) =>
     openModal({
       title: 'Rate Order',
       children: <RateOrderModal data={order} />,
     }),
-  disable: (order: Order) => {
-    const user = getCurrentUser()!;
-    return (
-      !order.completedAt || (order.lease.card.user.id !== user.id && !hasRole)
-    );
-  },
+  disable: (order: Order) => order.status !== Status.COMPLETED,
   color: Color.YELLOW,
-});
-
-export const rateMyOrderAction = rateOrderFactory(false);
-
-export const rateUserOrderAction = rateOrderFactory(true);
+};

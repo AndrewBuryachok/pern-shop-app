@@ -10,6 +10,7 @@ import CustomForm from '../../common/components/CustomForm';
 import RefetchAction from '../../common/components/RefetchAction';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import ThingImage from '../../common/components/ThingImage';
+import { StatesItem } from '../../common/components/StatesItem';
 import { CardsItem } from '../../common/components/CardsItem';
 import {
   customMin,
@@ -17,8 +18,9 @@ import {
   parseCell,
   parseThingAmount,
   selectCardsWithBalance,
+  viewStates,
 } from '../../common/utils';
-import { Color, items, MAX_SUM_VALUE } from '../../common/constants';
+import { Color, items, MAX_PRICE_VALUE } from '../../common/constants';
 
 type Props = IModal<Lot>;
 
@@ -27,7 +29,7 @@ export default function BuyLotModal({ data: lot }: Props) {
     initialValues: {
       lotId: lot.id,
       card: '',
-      price: 1,
+      price: lot.price + 1,
     },
     transformValues: ({ card, ...rest }) => ({ ...rest, cardId: +card }),
   });
@@ -35,7 +37,7 @@ export default function BuyLotModal({ data: lot }: Props) {
   const { data: cards, ...cardsResponse } = useSelectMyCardsQuery();
 
   const card = cards?.find((card) => card.id === +form.values.card);
-  const maxPrice = card && Math.floor(card.balance / lot.price);
+  const maxPrice = card?.balance;
 
   const [createBid, { isLoading }] = useCreateBidMutation();
 
@@ -66,6 +68,13 @@ export default function BuyLotModal({ data: lot }: Props) {
       <Textarea label='Description' value={lot.description} disabled />
       <TextInput label='Amount' value={parseThingAmount(lot)} disabled />
       <TextInput label='Price' value={`${lot.price}$`} disabled />
+      <Select
+        label='Bids'
+        placeholder={`Total: ${lot.bids.length}`}
+        itemComponent={StatesItem}
+        data={viewStates(lot.bids)}
+        searchable
+      />
       <TextInput label='Storage' value={parseCell(lot.lease.cell)} disabled />
       <TextInput
         label='Owner'
@@ -89,8 +98,8 @@ export default function BuyLotModal({ data: lot }: Props) {
         label='Price'
         placeholder='Price'
         required
-        min={1}
-        max={customMin(MAX_SUM_VALUE, maxPrice)}
+        min={lot.price + 1}
+        max={customMin(MAX_PRICE_VALUE, maxPrice)}
         {...form.getInputProps('price')}
       />
     </CustomForm>

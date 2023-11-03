@@ -10,7 +10,6 @@ import CustomAvatar from '../../common/components/CustomAvatar';
 import ThingImage from '../../common/components/ThingImage';
 import { parseCard, parseCell, parseThingAmount } from '../../common/utils';
 import { Color, items, Status } from '../../common/constants';
-import { getCurrentUser } from '../auth/auth.slice';
 
 type Props = IModal<Order>;
 
@@ -69,22 +68,12 @@ export default function CompleteOrderModal({ data: order }: Props) {
   );
 }
 
-export const completeOrderFactory = (hasRole: boolean) => ({
+export const completeOrderAction = {
   open: (order: Order) =>
     openModal({
       title: 'Complete Order',
       children: <CompleteOrderModal data={order} />,
     }),
-  disable: (order: Order) => {
-    const user = getCurrentUser()!;
-    return (
-      order.status !== Status.EXECUTED ||
-      (order.lease.card.user.id !== user.id && !hasRole)
-    );
-  },
+  disable: (order: Order) => order.status !== Status.EXECUTED,
   color: Color.GREEN,
-});
-
-export const completeMyOrderAction = completeOrderFactory(false);
-
-export const completeUserOrderAction = completeOrderFactory(true);
+};

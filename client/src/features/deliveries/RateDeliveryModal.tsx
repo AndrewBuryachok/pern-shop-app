@@ -16,8 +16,7 @@ import CustomForm from '../../common/components/CustomForm';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import ThingImage from '../../common/components/ThingImage';
 import { parseCard, parseThingAmount } from '../../common/utils';
-import { Color, items } from '../../common/constants';
-import { getCurrentUser } from '../auth/auth.slice';
+import { Color, items, Status } from '../../common/constants';
 
 type Props = IModal<Delivery>;
 
@@ -43,7 +42,7 @@ export default function RateDeliveryModal({ data: delivery }: Props) {
       isChanged={!form.isDirty()}
     >
       <TextInput
-        label='Seller'
+        label='Executor'
         icon={<CustomAvatar {...delivery.executorCard!.user} />}
         iconWidth={48}
         value={parseCard(delivery.executorCard!)}
@@ -58,11 +57,7 @@ export default function RateDeliveryModal({ data: delivery }: Props) {
       />
       <Textarea label='Description' value={delivery.description} disabled />
       <TextInput label='Amount' value={parseThingAmount(delivery)} disabled />
-      <TextInput
-        label='Sum'
-        value={`${delivery.amount * delivery.price}$`}
-        disabled
-      />
+      <TextInput label='Price' value={`${delivery.price}$`} disabled />
       <Input.Wrapper label='Rate' required>
         <Group spacing={8}>
           <Rating {...form.getInputProps('rate')} />
@@ -77,22 +72,12 @@ export default function RateDeliveryModal({ data: delivery }: Props) {
   );
 }
 
-export const rateDeliveryFactory = (hasRole: boolean) => ({
+export const rateDeliveryAction = {
   open: (delivery: Delivery) =>
     openModal({
       title: 'Rate Delivery',
       children: <RateDeliveryModal data={delivery} />,
     }),
-  disable: (delivery: Delivery) => {
-    const user = getCurrentUser()!;
-    return (
-      !delivery.completedAt ||
-      (delivery.receiverUser.id !== user.id && !hasRole)
-    );
-  },
+  disable: (delivery: Delivery) => delivery.status !== Status.COMPLETED,
   color: Color.YELLOW,
-});
-
-export const rateMyDeliveryAction = rateDeliveryFactory(false);
-
-export const rateUserDeliveryAction = rateDeliveryFactory(true);
+};

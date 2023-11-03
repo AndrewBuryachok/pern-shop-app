@@ -4,9 +4,9 @@ import { ISearch } from '../../common/interfaces';
 import { useGetMyCitiesQuery } from '../../features/cities/cities.api';
 import CitiesTable from '../../features/cities/CitiesTable';
 import { createMyCityButton } from '../../features/cities/CreateCityModal';
-import { editCityAction } from '../../features/cities/EditCityModal';
-import { addCityUserAction } from '../../features/cities/AddCityUserModal';
-import { removeCityUserAction } from '../../features/cities/RemoveCityUserModal';
+import { editMyCityAction } from '../../features/cities/EditCityModal';
+import { addMyCityUserAction } from '../../features/cities/AddCityUserModal';
+import { removeMyCityUserAction } from '../../features/cities/RemoveCityUserModal';
 import { Role } from '../../common/constants';
 
 export default function MyCities() {
@@ -29,7 +29,11 @@ export default function MyCities() {
 
   const button = createMyCityButton;
 
-  const actions = [editCityAction, addCityUserAction, removeCityUserAction];
+  const actions = [
+    editMyCityAction,
+    addMyCityUserAction,
+    removeMyCityUserAction,
+  ];
 
   return (
     <CitiesTable

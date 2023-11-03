@@ -4,8 +4,8 @@ import { ISearch } from '../../common/interfaces';
 import { Mode } from '../../common/enums';
 import { useGetTakenOrdersQuery } from '../../features/orders/orders.api';
 import OrdersTable from '../../features/orders/OrdersTable';
-import { untakeMyOrderAction } from '../../features/orders/UntakeOrderModal';
-import { executeMyOrderAction } from '../../features/orders/ExecuteOrderModal';
+import { untakeOrderAction } from '../../features/orders/UntakeOrderModal';
+import { executeOrderAction } from '../../features/orders/ExecuteOrderModal';
 import { Role } from '../../common/constants';
 
 export default function TakenOrders() {
@@ -35,7 +35,7 @@ export default function TakenOrders() {
     { label: 'All', to: '../all', role: Role.MANAGER },
   ];
 
-  const actions = [untakeMyOrderAction, executeMyOrderAction];
+  const actions = [untakeOrderAction, executeOrderAction];
 
   return (
     <OrdersTable

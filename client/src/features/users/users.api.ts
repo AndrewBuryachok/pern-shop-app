@@ -34,7 +34,7 @@ export const usersApi = emptyApi.injectEndpoints({
       query: () => ({
         url: '/users/not-citizens/select',
       }),
-      providesTags: ['Active', 'User'],
+      providesTags: ['Active', 'User', 'City'],
     }),
     selectNotFriendsUsers: build.query<SmUser[], void>({
       query: () => ({

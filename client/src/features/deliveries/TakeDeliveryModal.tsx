@@ -61,17 +61,10 @@ export default function TakeDeliveryModal({ data: delivery, hasRole }: Props) {
       text={'Take delivery'}
     >
       <TextInput
-        label='Sender'
+        label='Customer'
         icon={<CustomAvatar {...delivery.fromLease.card.user} />}
         iconWidth={48}
         value={parseCard(delivery.fromLease.card)}
-        disabled
-      />
-      <TextInput
-        label='Receiver'
-        icon={<CustomAvatar {...delivery.receiverUser} />}
-        iconWidth={48}
-        value={delivery.receiverUser.name}
         disabled
       />
       <TextInput

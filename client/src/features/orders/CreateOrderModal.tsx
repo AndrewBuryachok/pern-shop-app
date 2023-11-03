@@ -13,6 +13,7 @@ import { ThingsItem } from '../../common/components/ThingItem';
 import { CardsItem } from '../../common/components/CardsItem';
 import { PlacesItem } from '../../common/components/PlacesItem';
 import {
+  customMin,
   selectCardsWithBalance,
   selectCategories,
   selectItems,
@@ -50,8 +51,10 @@ export default function CreateOrderModal() {
       kit: +kit,
     }),
     validate: {
-      card: () =>
-        myCard.balance < storage.price ? 'Not enough balance' : null,
+      card: (_, values) =>
+        myCard.balance < storage.price + values.price
+          ? 'Not enough balance'
+          : null,
     },
   });
 
@@ -155,7 +158,7 @@ export default function CreateOrderModal() {
         placeholder='Price'
         required
         min={1}
-        max={MAX_PRICE_VALUE}
+        max={customMin(MAX_PRICE_VALUE, myCard.balance - storage.price)}
         {...form.getInputProps('price')}
       />
     </CustomForm>

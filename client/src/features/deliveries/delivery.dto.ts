@@ -7,7 +7,6 @@ import {
 export interface CreateDeliveryDto extends CreateTransportationDto {
   fromStorageId: number;
   toStorageId: number;
-  userId: number;
 }
 
 export interface TakeDeliveryDto extends TakeTransportationDto {

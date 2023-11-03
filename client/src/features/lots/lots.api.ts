@@ -36,7 +36,7 @@ export const lotsApi = emptyApi.injectEndpoints({
         method: 'POST',
         body: dto,
       }),
-      invalidatesTags: ['Lot', 'Cell', 'Payment', 'Card'],
+      invalidatesTags: ['Lot', 'Lease', 'Cell', 'Payment', 'Card'],
     }),
     completeLot: build.mutation<void, CompleteLotDto>({
       query: ({ lotId }) => ({

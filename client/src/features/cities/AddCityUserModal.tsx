@@ -3,6 +3,7 @@ import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { City } from './city.model';
+import { getCurrentUser } from '../auth/auth.slice';
 import { useAddCityUserMutation } from './cities.api';
 import { useSelectNotCitizensUsersQuery } from '../users/users.api';
 import { UpdateCityUserDto } from './city.dto';
@@ -58,12 +59,19 @@ export default function AddCityUserModal({ data: city }: Props) {
   );
 }
 
-export const addCityUserAction = {
+export const addCityUserFactory = (hasRole: boolean) => ({
   open: (city: City) =>
     openModal({
       title: 'Add City User',
       children: <AddCityUserModal data={city} />,
     }),
-  disable: () => false,
+  disable: (city: City) => {
+    const user = getCurrentUser()!;
+    return city.user.id !== user.id && !hasRole;
+  },
   color: Color.GREEN,
-};
+});
+
+export const addMyCityUserAction = addCityUserFactory(false);
+
+export const addUserCityUserAction = addCityUserFactory(true);

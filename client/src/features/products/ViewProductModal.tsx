@@ -11,6 +11,7 @@ import { IModal } from '../../common/interfaces';
 import { Product } from './product.model';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import ThingImage from '../../common/components/ThingImage';
+import { StatesItem } from '../../common/components/StatesItem';
 import {
   parseCard,
   parseCell,
@@ -19,7 +20,6 @@ import {
   viewStates,
 } from '../../common/utils';
 import { Color, items } from '../../common/constants';
-import { StatesItem } from '../../common/components/StatesItem';
 
 type Props = IModal<Product>;
 

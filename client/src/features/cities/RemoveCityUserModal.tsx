@@ -55,7 +55,7 @@ export default function RemoveCityUserModal({ data: city }: Props) {
   );
 }
 
-export const removeCityUserAction = {
+export const removeCityUserFactory = (hasRole: boolean) => ({
   open: (city: City) =>
     openModal({
       title: 'Remove City User',
@@ -63,7 +63,11 @@ export const removeCityUserAction = {
     }),
   disable: (city: City) => {
     const user = getCurrentUser()!;
-    return city.user.id !== user.id || city.users.length === 1;
+    return (city.user.id !== user.id && !hasRole) || city.users.length === 1;
   },
   color: Color.RED,
-};
+});
+
+export const removeMyCityUserAction = removeCityUserFactory(false);
+
+export const removeUserCityUserAction = removeCityUserFactory(true);

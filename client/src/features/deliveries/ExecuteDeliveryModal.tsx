@@ -10,7 +10,6 @@ import CustomAvatar from '../../common/components/CustomAvatar';
 import ThingImage from '../../common/components/ThingImage';
 import { parseCard, parseCell, parseThingAmount } from '../../common/utils';
 import { Color, items, Status } from '../../common/constants';
-import { getCurrentUser } from '../auth/auth.slice';
 
 type Props = IModal<Delivery>;
 
@@ -34,17 +33,10 @@ export default function ExecuteDeliveryModal({ data: delivery }: Props) {
       text={'Execute delivery'}
     >
       <TextInput
-        label='Sender'
+        label='Customer'
         icon={<CustomAvatar {...delivery.fromLease.card.user} />}
         iconWidth={48}
         value={parseCard(delivery.fromLease.card)}
-        disabled
-      />
-      <TextInput
-        label='Receiver'
-        icon={<CustomAvatar {...delivery.receiverUser} />}
-        iconWidth={48}
-        value={delivery.receiverUser.name}
         disabled
       />
       <TextInput
@@ -92,22 +84,12 @@ export default function ExecuteDeliveryModal({ data: delivery }: Props) {
   );
 }
 
-export const executeDeliveryFactory = (hasRole: boolean) => ({
+export const executeDeliveryAction = {
   open: (delivery: Delivery) =>
     openModal({
       title: 'Execute Delivery',
       children: <ExecuteDeliveryModal data={delivery} />,
     }),
-  disable: (delivery: Delivery) => {
-    const user = getCurrentUser()!;
-    return (
-      delivery.status !== Status.TAKEN ||
-      (delivery.executorCard?.user.id !== user.id && !hasRole)
-    );
-  },
+  disable: (delivery: Delivery) => delivery.status !== Status.TAKEN,
   color: Color.GREEN,
-});
-
-export const executeMyDeliveryAction = executeDeliveryFactory(false);
-
-export const executeUserDeliveryAction = executeDeliveryFactory(true);
+};

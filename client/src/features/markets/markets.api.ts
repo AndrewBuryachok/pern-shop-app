@@ -40,7 +40,7 @@ export const marketsApi = emptyApi.injectEndpoints({
       query: () => ({
         url: '/markets/all/select',
       }),
-      providesTags: ['Market', 'Store'],
+      providesTags: ['Auth', 'Market', 'Store'],
     }),
     createMarket: build.mutation<void, CreateMarketDto>({
       query: (dto) => ({

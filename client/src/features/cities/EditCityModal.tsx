@@ -3,6 +3,7 @@ import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { City } from './city.model';
+import { getCurrentUser } from '../auth/auth.slice';
 import { useEditCityMutation } from './cities.api';
 import { EditCityDto } from './city.dto';
 import CustomForm from '../../common/components/CustomForm';
@@ -67,12 +68,19 @@ export default function EditCityModal({ data: city }: Props) {
   );
 }
 
-export const editCityAction = {
+export const editCityFactory = (hasRole: boolean) => ({
   open: (city: City) =>
     openModal({
       title: 'Edit City',
       children: <EditCityModal data={city} />,
     }),
-  disable: () => false,
+  disable: (city: City) => {
+    const user = getCurrentUser()!;
+    return city.user.id !== user.id && !hasRole;
+  },
   color: Color.YELLOW,
-};
+});
+
+export const editMyCityAction = editCityFactory(false);
+
+export const editUserCityAction = editCityFactory(true);

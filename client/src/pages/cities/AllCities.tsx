@@ -4,9 +4,9 @@ import { ISearch } from '../../common/interfaces';
 import { useGetAllCitiesQuery } from '../../features/cities/cities.api';
 import CitiesTable from '../../features/cities/CitiesTable';
 import { createUserCityButton } from '../../features/cities/CreateCityModal';
-import { editCityAction } from '../../features/cities/EditCityModal';
-import { addCityUserAction } from '../../features/cities/AddCityUserModal';
-import { removeCityUserAction } from '../../features/cities/RemoveCityUserModal';
+import { editUserCityAction } from '../../features/cities/EditCityModal';
+import { addUserCityUserAction } from '../../features/cities/AddCityUserModal';
+import { removeUserCityUserAction } from '../../features/cities/RemoveCityUserModal';
 
 export default function AllCities() {
   const [searchParams] = useSearchParams();
@@ -28,7 +28,11 @@ export default function AllCities() {
 
   const button = createUserCityButton;
 
-  const actions = [editCityAction, addCityUserAction, removeCityUserAction];
+  const actions = [
+    editUserCityAction,
+    addUserCityUserAction,
+    removeUserCityUserAction,
+  ];
 
   return (
     <CitiesTable

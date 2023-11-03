@@ -10,7 +10,6 @@ import CustomAvatar from '../../common/components/CustomAvatar';
 import ThingImage from '../../common/components/ThingImage';
 import { parseCard, parseCell, parseThingAmount } from '../../common/utils';
 import { Color, items, Status } from '../../common/constants';
-import { getCurrentUser } from '../auth/auth.slice';
 
 type Props = IModal<Order>;
 
@@ -69,22 +68,12 @@ export default function ExecuteOrderModal({ data: order }: Props) {
   );
 }
 
-export const executeOrderFactory = (hasRole: boolean) => ({
+export const executeOrderAction = {
   open: (order: Order) =>
     openModal({
       title: 'Execute Order',
       children: <ExecuteOrderModal data={order} />,
     }),
-  disable: (order: Order) => {
-    const user = getCurrentUser()!;
-    return (
-      order.status !== Status.TAKEN ||
-      (order.executorCard?.user.id !== user.id && !hasRole)
-    );
-  },
+  disable: (order: Order) => order.status !== Status.TAKEN,
   color: Color.GREEN,
-});
-
-export const executeMyOrderAction = executeOrderFactory(false);
-
-export const executeUserOrderAction = executeOrderFactory(true);
+};

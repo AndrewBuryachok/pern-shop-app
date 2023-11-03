@@ -25,7 +25,7 @@ export const authApi = emptyApi.injectEndpoints({
         url: '/auth/logout',
         method: 'POST',
       }),
-      invalidatesTags: ['Active'],
+      invalidatesTags: ['Auth', 'Active'],
     }),
     updatePassword: build.mutation<void, UpdatePasswordDto>({
       query: (dto) => ({

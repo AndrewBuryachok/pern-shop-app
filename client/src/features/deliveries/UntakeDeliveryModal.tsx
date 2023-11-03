@@ -10,7 +10,6 @@ import CustomAvatar from '../../common/components/CustomAvatar';
 import ThingImage from '../../common/components/ThingImage';
 import { parseCard, parseCell, parseThingAmount } from '../../common/utils';
 import { Color, items, Status } from '../../common/constants';
-import { getCurrentUser } from '../auth/auth.slice';
 
 type Props = IModal<Delivery>;
 
@@ -34,17 +33,10 @@ export default function UntakeDeliveryModal({ data: delivery }: Props) {
       text={'Untake delivery'}
     >
       <TextInput
-        label='Sender'
+        label='Customer'
         icon={<CustomAvatar {...delivery.fromLease.card.user} />}
         iconWidth={48}
         value={parseCard(delivery.fromLease.card)}
-        disabled
-      />
-      <TextInput
-        label='Receiver'
-        icon={<CustomAvatar {...delivery.receiverUser} />}
-        iconWidth={48}
-        value={delivery.receiverUser.name}
         disabled
       />
       <TextInput
@@ -92,22 +84,12 @@ export default function UntakeDeliveryModal({ data: delivery }: Props) {
   );
 }
 
-export const untakeDeliveryFactory = (hasRole: boolean) => ({
+export const untakeDeliveryAction = {
   open: (delivery: Delivery) =>
     openModal({
       title: 'Untake Delivery',
       children: <UntakeDeliveryModal data={delivery} />,
     }),
-  disable: (delivery: Delivery) => {
-    const user = getCurrentUser()!;
-    return (
-      delivery.status !== Status.TAKEN ||
-      (delivery.executorCard?.user.id !== user.id && !hasRole)
-    );
-  },
+  disable: (delivery: Delivery) => delivery.status !== Status.TAKEN,
   color: Color.RED,
-});
-
-export const untakeMyDeliveryAction = untakeDeliveryFactory(false);
-
-export const untakeUserDeliveryAction = untakeDeliveryFactory(true);
+};

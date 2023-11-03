@@ -42,7 +42,7 @@ export const productsApi = emptyApi.injectEndpoints({
         method: 'POST',
         body: dto,
       }),
-      invalidatesTags: ['Product', 'Cell', 'Payment', 'Card'],
+      invalidatesTags: ['Product', 'Lease', 'Cell', 'Payment', 'Card'],
     }),
     editProduct: build.mutation<void, EditProductDto>({
       query: ({ productId, ...dto }) => ({
