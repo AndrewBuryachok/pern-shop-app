@@ -1,7 +1,7 @@
 import { emptyApi } from '../../app/empty.api';
 import { IRequest, IResponse } from '../../common/interfaces';
 import { ExtUser, SmUser, SmUserWithCity, User } from './user.model';
-import { UpdateUserRoleDto } from './user.dto';
+import { EditUserPasswordDto, UpdateUserRoleDto } from './user.dto';
 import { getQuery } from '../../common/utils';
 
 export const usersApi = emptyApi.injectEndpoints({
@@ -61,6 +61,13 @@ export const usersApi = emptyApi.injectEndpoints({
         'Rating',
       ],
     }),
+    editUserPassword: build.mutation<void, EditUserPasswordDto>({
+      query: ({ userId, ...dto }) => ({
+        url: `/users/${userId}/password`,
+        method: 'PATCH',
+        body: dto,
+      }),
+    }),
     addUserRole: build.mutation<void, UpdateUserRoleDto>({
       query: ({ userId, ...dto }) => ({
         url: `/users/${userId}/roles`,
@@ -88,6 +95,7 @@ export const {
   useSelectNotCitizensUsersQuery,
   useSelectNotFriendsUsersQuery,
   useGetSingleUserQuery,
+  useEditUserPasswordMutation,
   useAddUserRoleMutation,
   useRemoveUserRoleMutation,
 } = usersApi;

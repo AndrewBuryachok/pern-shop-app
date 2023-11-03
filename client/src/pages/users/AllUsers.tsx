@@ -3,6 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import { ISearch } from '../../common/interfaces';
 import { useGetAllUsersQuery } from '../../features/users/users.api';
 import UsersTable from '../../features/users/UsersTable';
+import { editUserPasswordAction } from '../../features/users/EditUserPasswordModal';
 import { addUserRoleAction } from '../../features/users/AddUserRoleModal';
 import { removeUserRoleAction } from '../../features/users/RemoveUserRoleModal';
 
@@ -27,7 +28,11 @@ export default function AllUsers() {
     { label: 'My', to: '../my' },
   ];
 
-  const actions = [addUserRoleAction, removeUserRoleAction];
+  const actions = [
+    editUserPasswordAction,
+    addUserRoleAction,
+    removeUserRoleAction,
+  ];
 
   return (
     <UsersTable
