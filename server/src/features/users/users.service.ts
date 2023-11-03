@@ -4,10 +4,12 @@ import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { User } from './user.entity';
 import {
   CreateUserDto,
+  ExtEditUserPasswordDto,
   ExtUpdateUserRoleDto,
   UpdateUserTokenDto,
 } from './user.dto';
 import { Request, Response } from '../../common/interfaces';
+import { hashData } from '../../common/utils';
 import { AppException } from '../../common/exceptions';
 import { UserError } from './user-error.enum';
 import { Role } from './role.enum';
@@ -103,6 +105,12 @@ export class UsersService {
 
   async updateUserPassword(user: User, password: string): Promise<void> {
     await this.updatePassword(user, password);
+  }
+
+  async editUserPassword(dto: ExtEditUserPasswordDto): Promise<void> {
+    const user = await this.usersRepository.findOneBy({ id: dto.userId });
+    const hash = await hashData(dto.password);
+    await this.updatePassword(user, hash);
   }
 
   async addUserRole(dto: ExtUpdateUserRoleDto): Promise<void> {

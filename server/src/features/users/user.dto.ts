@@ -12,14 +12,20 @@ export class UserIdDto {
   userId: number;
 }
 
-export class CreateUserDto {
-  @ApiProperty()
-  @IsName()
-  name: string;
-
+export class EditUserPasswordDto {
   @ApiProperty()
   @IsPassword()
   password: string;
+}
+
+export class ExtEditUserPasswordDto extends EditUserPasswordDto {
+  userId: number;
+}
+
+export class CreateUserDto extends EditUserPasswordDto {
+  @ApiProperty()
+  @IsName()
+  name: string;
 }
 
 export class UpdateUserTokenDto extends UserIdDto {

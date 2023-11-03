@@ -4,13 +4,14 @@ import {
   Delete,
   Get,
   Param,
+  Patch,
   Post,
   Query,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { UsersService } from './users.service';
 import { User } from './user.entity';
-import { UpdateUserRoleDto, UserIdDto } from './user.dto';
+import { EditUserPasswordDto, UpdateUserRoleDto, UserIdDto } from './user.dto';
 import { Request, Response } from '../../common/interfaces';
 import { MyId, Public, Roles } from '../../common/decorators';
 import { Role } from './role.enum';
@@ -61,6 +62,15 @@ export class UsersController {
   @Get(':userId')
   getSingleUser(@Param() { userId }: UserIdDto): Promise<User> {
     return this.usersService.getSingleUser(userId);
+  }
+
+  @Roles(Role.ADMIN)
+  @Patch(':userId/password')
+  editUserPassword(
+    @Param() { userId }: UserIdDto,
+    @Body() dto: EditUserPasswordDto,
+  ): Promise<void> {
+    return this.usersService.editUserPassword({ ...dto, userId });
   }
 
   @Roles(Role.ADMIN)
