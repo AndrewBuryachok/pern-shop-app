@@ -5,7 +5,7 @@ import { Task } from './task.model';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import PriorityIcon from '../../common/components/PriorityIcon';
 import { parseTime } from '../../common/utils';
-import { Color, priorities } from '../../common/constants';
+import { Color, priorities, statuses } from '../../common/constants';
 
 type Props = IModal<Task>;
 
@@ -40,6 +40,7 @@ export default function ViewTaskModal({ data: task }: Props) {
         value={parseTime(task.completedAt)}
         disabled
       />
+      <TextInput label='Status' value={statuses[task.status - 1]} disabled />
     </Stack>
   );
 }

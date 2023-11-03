@@ -10,7 +10,7 @@ import {
   parseThingAmount,
   parseTime,
 } from '../../common/utils';
-import { Color, items } from '../../common/constants';
+import { Color, items, statuses } from '../../common/constants';
 
 type Props = IModal<Order>;
 
@@ -57,6 +57,7 @@ export default function ViewOrderModal({ data: order }: Props) {
         value={parseTime(order.completedAt)}
         disabled
       />
+      <TextInput label='Status' value={statuses[order.status - 1]} disabled />
       <Input.Wrapper label='Rate'>
         <Rating value={order.rate} readOnly />
       </Input.Wrapper>

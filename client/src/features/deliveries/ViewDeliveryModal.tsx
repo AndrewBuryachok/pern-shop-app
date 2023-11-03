@@ -10,7 +10,7 @@ import {
   parseThingAmount,
   parseTime,
 } from '../../common/utils';
-import { Color, items } from '../../common/constants';
+import { Color, items, statuses } from '../../common/constants';
 
 type Props = IModal<Delivery>;
 
@@ -77,6 +77,11 @@ export default function ViewDeliveryModal({ data: delivery }: Props) {
       <TextInput
         label='Completed'
         value={parseTime(delivery.completedAt)}
+        disabled
+      />
+      <TextInput
+        label='Status'
+        value={statuses[delivery.status - 1]}
         disabled
       />
       <Input.Wrapper label='Rate'>
