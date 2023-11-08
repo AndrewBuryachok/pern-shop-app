@@ -2,17 +2,19 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { Friend } from './friend.entity';
+import { MqttService } from '../mqtt/mqtt.service';
 import { ExtCreateFriendDto, UpdateFriendDto } from './friend.dto';
 import { Request, Response } from '../../common/interfaces';
 import { AppException } from '../../common/exceptions';
 import { FriendError } from './friend-error.enum';
-import { Mode } from '../../common/enums';
+import { Mode, Notification } from '../../common/enums';
 
 @Injectable()
 export class FriendsService {
   constructor(
     @InjectRepository(Friend)
     private friendsRepository: Repository<Friend>,
+    private mqttService: MqttService,
   ) {}
 
   async getMainFriends(req: Request): Promise<Response<Friend>> {
@@ -58,6 +60,10 @@ export class FriendsService {
     } else {
       await this.add(friend2);
     }
+    this.mqttService.publishNotificationMessage(
+      dto.userId,
+      Notification.CREATED_FRIEND,
+    );
   }
 
   async addFriend(dto: UpdateFriendDto): Promise<void> {
@@ -69,6 +75,10 @@ export class FriendsService {
       throw new AppException(FriendError.NOT_RECEIVER);
     }
     await this.add(friend);
+    this.mqttService.publishNotificationMessage(
+      friend.senderUserId,
+      Notification.ADDED_FRIEND,
+    );
   }
 
   async removeFriend(dto: UpdateFriendDto): Promise<void> {
@@ -82,6 +92,12 @@ export class FriendsService {
       throw new AppException(FriendError.NOT_FRIENDS);
     }
     await this.remove(friend);
+    this.mqttService.publishNotificationMessage(
+      friend.senderUserId === dto.myId
+        ? friend.receiverUserId
+        : friend.senderUserId,
+      Notification.REMOVED_FRIEND,
+    );
   }
 
   async checkFriendExists(id: number): Promise<void> {
@@ -158,10 +174,8 @@ export class FriendsService {
         'friend.id',
         'senderUser.id',
         'senderUser.name',
-        'senderUser.status',
         'receiverUser.id',
         'receiverUser.name',
-        'receiverUser.status',
         'friend.type',
         'friend.createdAt',
       ]);

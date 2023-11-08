@@ -5,6 +5,7 @@ import { Product } from './product.entity';
 import { ProductState } from './product-state.entity';
 import { LeasesService } from '../leases/leases.service';
 import { PaymentsService } from '../payments/payments.service';
+import { MqttService } from '../mqtt/mqtt.service';
 import {
   BuyProductDto,
   ExtCreateProductDto,
@@ -14,7 +15,7 @@ import { Request, Response, Stats } from '../../common/interfaces';
 import { getDateMonthAgo, getDateWeekAgo } from '../../common/utils';
 import { AppException } from '../../common/exceptions';
 import { ProductError } from './product-error.enum';
-import { Mode } from '../../common/enums';
+import { Mode, Notification } from '../../common/enums';
 
 @Injectable()
 export class ProductsService {
@@ -25,6 +26,7 @@ export class ProductsService {
     private productsStatesRepository: Repository<ProductState>,
     private leasesService: LeasesService,
     private paymentsService: PaymentsService,
+    private mqttService: MqttService,
   ) {}
 
   async getProductsStats(): Promise<Stats> {
@@ -97,7 +99,7 @@ export class ProductsService {
 
   async buyProduct(dto: BuyProductDto): Promise<void> {
     const product = await this.productsRepository.findOne({
-      relations: ['lease'],
+      relations: ['lease', 'lease.card'],
       where: { id: dto.productId },
     });
     if (product.createdAt < getDateWeekAgo()) {
@@ -115,6 +117,10 @@ export class ProductsService {
       description: 'buy product',
     });
     await this.buy(product, dto.amount);
+    this.mqttService.publishNotificationMessage(
+      product.lease.card.userId,
+      Notification.CREATED_SALE,
+    );
   }
 
   async checkProductExists(id: number): Promise<void> {
@@ -311,7 +317,6 @@ export class ProductsService {
         'ownerCard.id',
         'ownerUser.id',
         'ownerUser.name',
-        'ownerUser.status',
         'ownerCard.name',
         'ownerCard.color',
         'storage.name',
@@ -321,7 +326,6 @@ export class ProductsService {
         'sellerCard.id',
         'sellerUser.id',
         'sellerUser.name',
-        'sellerUser.status',
         'sellerCard.name',
         'sellerCard.color',
         'product.item',

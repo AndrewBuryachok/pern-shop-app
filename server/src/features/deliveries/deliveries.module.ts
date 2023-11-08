@@ -4,6 +4,7 @@ import { Delivery } from './delivery.entity';
 import { LeasesModule } from '../leases/leases.module';
 import { CardsModule } from '../cards/cards.module';
 import { PaymentsModule } from '../payments/payments.module';
+import { MqttModule } from '../mqtt/mqtt.module';
 import { DeliveriesController } from './deliveries.controller';
 import { DeliveriesService } from './deliveries.service';
 import { IsDeliveryExists } from '../../common/constraints';
@@ -14,6 +15,7 @@ import { IsDeliveryExists } from '../../common/constraints';
     LeasesModule,
     CardsModule,
     PaymentsModule,
+    MqttModule,
   ],
   controllers: [DeliveriesController],
   providers: [DeliveriesService, IsDeliveryExists],

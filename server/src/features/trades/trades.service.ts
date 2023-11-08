@@ -3,12 +3,13 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { Trade } from './trade.entity';
 import { WaresService } from '../wares/wares.service';
+import { MqttService } from '../mqtt/mqtt.service';
 import { ExtCreateTradeDto, ExtRateTradeDto } from './trade.dto';
 import { Request, Response, Stats } from '../../common/interfaces';
 import { getDateMonthAgo } from '../../common/utils';
 import { AppException } from '../../common/exceptions';
 import { TradeError } from './trade-error.enum';
-import { Mode } from '../../common/enums';
+import { Mode, Notification } from '../../common/enums';
 
 @Injectable()
 export class TradesService {
@@ -16,6 +17,7 @@ export class TradesService {
     @InjectRepository(Trade)
     private tradesRepository: Repository<Trade>,
     private waresService: WaresService,
+    private mqttService: MqttService,
   ) {}
 
   async getTradesStats(): Promise<Stats> {
@@ -77,6 +79,10 @@ export class TradesService {
       dto.hasRole,
     );
     await this.rate(trade, dto.rate);
+    this.mqttService.publishNotificationMessage(
+      trade.ware.rent.card.userId,
+      Notification.RATED_TRADE,
+    );
   }
 
   async checkTradeExists(id: number): Promise<void> {
@@ -89,7 +95,7 @@ export class TradesService {
     hasRole: boolean,
   ): Promise<Trade> {
     const trade = await this.tradesRepository.findOne({
-      relations: ['card', 'card.users'],
+      relations: ['card', 'card.users', 'ware', 'ware.rent', 'ware.rent.card'],
       where: { id },
     });
     if (!trade.card.users.map((user) => user.id).includes(userId) && !hasRole) {
@@ -245,7 +251,6 @@ export class TradesService {
         'ownerCard.id',
         'ownerUser.id',
         'ownerUser.name',
-        'ownerUser.status',
         'ownerCard.name',
         'ownerCard.color',
         'market.name',
@@ -255,7 +260,6 @@ export class TradesService {
         'sellerCard.id',
         'sellerUser.id',
         'sellerUser.name',
-        'sellerUser.status',
         'sellerCard.name',
         'sellerCard.color',
         'ware.item',
@@ -266,7 +270,6 @@ export class TradesService {
         'buyerCard.id',
         'buyerUser.id',
         'buyerUser.name',
-        'buyerUser.status',
         'buyerCard.name',
         'buyerCard.color',
         'trade.amount',

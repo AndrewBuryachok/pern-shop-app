@@ -5,6 +5,7 @@ import { Delivery } from './delivery.entity';
 import { LeasesService } from '../leases/leases.service';
 import { CardsService } from '../cards/cards.service';
 import { PaymentsService } from '../payments/payments.service';
+import { MqttService } from '../mqtt/mqtt.service';
 import {
   ExtCreateDeliveryDto,
   ExtDeliveryIdDto,
@@ -16,7 +17,7 @@ import { getDateWeekAgo } from '../../common/utils';
 import { AppException } from '../../common/exceptions';
 import { DeliveryError } from './delivery-error.enum';
 import { TransportationStatus } from '../transportations/transportation-status.enum';
-import { Mode } from '../../common/enums';
+import { Mode, Notification } from '../../common/enums';
 
 @Injectable()
 export class DeliveriesService {
@@ -26,6 +27,7 @@ export class DeliveriesService {
     private leasesService: LeasesService,
     private cardsService: CardsService,
     private paymentsService: PaymentsService,
+    private mqttService: MqttService,
   ) {}
 
   async getMainDeliveries(req: Request): Promise<Response<Delivery>> {
@@ -105,8 +107,9 @@ export class DeliveriesService {
 
   async takeDelivery(dto: ExtTakeDeliveryDto): Promise<void> {
     await this.cardsService.checkCardUser(dto.cardId, dto.myId, dto.hasRole);
-    const delivery = await this.deliveriesRepository.findOneBy({
-      id: dto.deliveryId,
+    const delivery = await this.deliveriesRepository.findOne({
+      relations: ['fromLease', 'fromLease.card'],
+      where: { id: dto.deliveryId },
     });
     if (delivery.createdAt < getDateWeekAgo()) {
       throw new AppException(DeliveryError.ALREADY_EXPIRED);
@@ -115,6 +118,10 @@ export class DeliveriesService {
       throw new AppException(DeliveryError.NOT_CREATED);
     }
     await this.take(delivery, dto.cardId);
+    this.mqttService.publishNotificationMessage(
+      delivery.fromLease.card.userId,
+      Notification.TAKEN_DELIVERY,
+    );
   }
 
   async untakeDelivery(dto: ExtDeliveryIdDto): Promise<void> {
@@ -127,6 +134,10 @@ export class DeliveriesService {
       throw new AppException(DeliveryError.NOT_TAKEN);
     }
     await this.untake(delivery);
+    this.mqttService.publishNotificationMessage(
+      delivery.fromLease.card.userId,
+      Notification.UNTAKEN_DELIVERY,
+    );
   }
 
   async executeDelivery(dto: ExtDeliveryIdDto): Promise<void> {
@@ -139,6 +150,10 @@ export class DeliveriesService {
       throw new AppException(DeliveryError.NOT_TAKEN);
     }
     await this.execute(delivery);
+    this.mqttService.publishNotificationMessage(
+      delivery.fromLease.card.userId,
+      Notification.EXECUTED_DELIVERY,
+    );
   }
 
   async completeDelivery(dto: ExtDeliveryIdDto): Promise<void> {
@@ -163,6 +178,10 @@ export class DeliveriesService {
       description: 'complete delivery',
     });
     await this.complete(delivery);
+    this.mqttService.publishNotificationMessage(
+      delivery.executorCard.userId,
+      Notification.COMPLETED_DELIVERY,
+    );
   }
 
   async deleteDelivery(dto: ExtDeliveryIdDto): Promise<void> {
@@ -191,6 +210,10 @@ export class DeliveriesService {
       throw new AppException(DeliveryError.NOT_COMPLETED);
     }
     await this.rate(delivery, dto.rate);
+    this.mqttService.publishNotificationMessage(
+      delivery.executorCard.userId,
+      Notification.RATED_DELIVERY,
+    );
   }
 
   async checkDeliveryExists(id: number): Promise<void> {
@@ -203,7 +226,12 @@ export class DeliveriesService {
     hasRole: boolean,
   ): Promise<Delivery> {
     const delivery = await this.deliveriesRepository.findOne({
-      relations: ['fromLease', 'fromLease.card', 'fromLease.card.users'],
+      relations: [
+        'fromLease',
+        'fromLease.card',
+        'fromLease.card.users',
+        'executorCard',
+      ],
       where: { id },
     });
     if (
@@ -221,7 +249,12 @@ export class DeliveriesService {
     hasRole: boolean,
   ): Promise<Delivery> {
     const delivery = await this.deliveriesRepository.findOne({
-      relations: ['executorCard', 'executorCard.users'],
+      relations: [
+        'executorCard',
+        'executorCard.users',
+        'fromLease',
+        'fromLease.card',
+      ],
       where: { id },
     });
     if (
@@ -446,7 +479,6 @@ export class DeliveriesService {
         'fromOwnerCard.id',
         'fromOwnerUser.id',
         'fromOwnerUser.name',
-        'fromOwnerUser.status',
         'fromOwnerCard.name',
         'fromOwnerCard.color',
         'fromStorage.name',
@@ -459,7 +491,6 @@ export class DeliveriesService {
         'toOwnerCard.id',
         'toOwnerUser.id',
         'toOwnerUser.name',
-        'toOwnerUser.status',
         'toOwnerCard.name',
         'toOwnerCard.color',
         'toStorage.name',
@@ -469,7 +500,6 @@ export class DeliveriesService {
         'customerCard.id',
         'customerUser.id',
         'customerUser.name',
-        'customerUser.status',
         'customerCard.name',
         'customerCard.color',
         'delivery.item',
@@ -482,7 +512,6 @@ export class DeliveriesService {
         'executorCard.id',
         'executorUser.id',
         'executorUser.name',
-        'executorUser.status',
         'executorCard.name',
         'executorCard.color',
         'delivery.completedAt',

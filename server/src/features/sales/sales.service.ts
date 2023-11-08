@@ -3,12 +3,13 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { Sale } from './sale.entity';
 import { ProductsService } from '../products/products.service';
+import { MqttService } from '../mqtt/mqtt.service';
 import { ExtCreateSaleDto, ExtRateSaleDto } from './sale.dto';
 import { Request, Response, Stats } from '../../common/interfaces';
 import { getDateMonthAgo } from '../../common/utils';
 import { AppException } from '../../common/exceptions';
 import { SaleError } from './sale-error.enum';
-import { Mode } from '../../common/enums';
+import { Mode, Notification } from '../../common/enums';
 
 @Injectable()
 export class SalesService {
@@ -16,6 +17,7 @@ export class SalesService {
     @InjectRepository(Sale)
     private salesRepository: Repository<Sale>,
     private productsService: ProductsService,
+    private mqttService: MqttService,
   ) {}
 
   async getSalesStats(): Promise<Stats> {
@@ -73,6 +75,10 @@ export class SalesService {
   async rateSale(dto: ExtRateSaleDto): Promise<void> {
     const sale = await this.checkSaleOwner(dto.saleId, dto.myId, dto.hasRole);
     await this.rate(sale, dto.rate);
+    this.mqttService.publishNotificationMessage(
+      sale.product.lease.card.userId,
+      Notification.RATED_SALE,
+    );
   }
 
   async checkSaleExists(id: number): Promise<void> {
@@ -85,7 +91,13 @@ export class SalesService {
     hasRole: boolean,
   ): Promise<Sale> {
     const sale = await this.salesRepository.findOne({
-      relations: ['card', 'card.users'],
+      relations: [
+        'card',
+        'card.users',
+        'product',
+        'product.lease',
+        'product.lease.card',
+      ],
       where: { id },
     });
     if (!sale.card.users.map((user) => user.id).includes(userId) && !hasRole) {
@@ -241,7 +253,6 @@ export class SalesService {
         'ownerCard.id',
         'ownerUser.id',
         'ownerUser.name',
-        'ownerUser.status',
         'ownerCard.name',
         'ownerCard.color',
         'storage.name',
@@ -251,7 +262,6 @@ export class SalesService {
         'sellerCard.id',
         'sellerUser.id',
         'sellerUser.name',
-        'sellerUser.status',
         'sellerCard.name',
         'sellerCard.color',
         'product.item',
@@ -262,7 +272,6 @@ export class SalesService {
         'buyerCard.id',
         'buyerUser.id',
         'buyerUser.name',
-        'buyerUser.status',
         'buyerCard.name',
         'buyerCard.color',
         'sale.amount',

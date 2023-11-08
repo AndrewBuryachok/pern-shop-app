@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { Rating } from './rating.entity';
+import { MqttService } from '../mqtt/mqtt.service';
 import {
   DeleteRatingDto,
   ExtCreateRatingDto,
@@ -10,13 +11,14 @@ import {
 import { Request, Response } from '../../common/interfaces';
 import { AppException } from '../../common/exceptions';
 import { RatingError } from './rating-error.enum';
-import { Mode } from '../../common/enums';
+import { Mode, Notification } from '../../common/enums';
 
 @Injectable()
 export class RatingsService {
   constructor(
     @InjectRepository(Rating)
     private ratingsRepository: Repository<Rating>,
+    private mqttService: MqttService,
   ) {}
 
   async getMyRatings(myId: number, req: Request): Promise<Response<Rating>> {
@@ -55,6 +57,10 @@ export class RatingsService {
     } else {
       await this.delete(rating);
     }
+    this.mqttService.publishNotificationMessage(
+      dto.userId,
+      Notification.CREATED_RATING,
+    );
   }
 
   async editRating(dto: ExtEditRatingDto): Promise<void> {
@@ -64,6 +70,10 @@ export class RatingsService {
     } else {
       await this.delete(rating);
     }
+    this.mqttService.publishNotificationMessage(
+      rating.receiverUserId,
+      Notification.EDITED_RATING,
+    );
   }
 
   async deleteRating(dto: DeleteRatingDto): Promise<void> {
@@ -156,10 +166,8 @@ export class RatingsService {
         'rating.id',
         'senderUser.id',
         'senderUser.name',
-        'senderUser.status',
         'receiverUser.id',
         'receiverUser.name',
-        'receiverUser.status',
         'rating.rate',
         'rating.createdAt',
       ]);

@@ -3,11 +3,12 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { Exchange } from './exchange.entity';
 import { CardsService } from '../cards/cards.service';
+import { MqttService } from '../mqtt/mqtt.service';
 import { ExtCreateExchangeDto } from './exchange.dto';
 import { Request, Response } from '../../common/interfaces';
 import { AppException } from '../../common/exceptions';
 import { ExchangeError } from './exchange-error.enum';
-import { Mode } from '../../common/enums';
+import { Mode, Notification } from '../../common/enums';
 
 @Injectable()
 export class ExchangesService {
@@ -15,6 +16,7 @@ export class ExchangesService {
     @InjectRepository(Exchange)
     private exchangesRepository: Repository<Exchange>,
     private cardsService: CardsService,
+    private mqttService: MqttService,
   ) {}
 
   async getMyExchanges(
@@ -43,10 +45,14 @@ export class ExchangesService {
   }
 
   async createExchange(dto: ExtCreateExchangeDto): Promise<void> {
-    dto.type
+    const card = dto.type
       ? await this.cardsService.increaseCardBalance(dto)
       : await this.cardsService.decreaseCardBalance(dto);
     this.create(dto);
+    this.mqttService.publishNotificationMessage(
+      card.userId,
+      Notification.CREATED_EXCHANGE,
+    );
   }
 
   private async create(dto: ExtCreateExchangeDto): Promise<void> {
@@ -111,11 +117,9 @@ export class ExchangesService {
         'exchange.id',
         'executorUser.id',
         'executorUser.name',
-        'executorUser.status',
         'customerCard.id',
         'customerUser.id',
         'customerUser.name',
-        'customerUser.status',
         'customerCard.name',
         'customerCard.color',
         'exchange.type',

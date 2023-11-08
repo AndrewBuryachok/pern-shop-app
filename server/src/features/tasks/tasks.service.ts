@@ -2,18 +2,20 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { Task } from './task.entity';
+import { MqttService } from '../mqtt/mqtt.service';
 import { ExtCreateTaskDto, ExtTaskIdDto } from './task.dto';
 import { Request, Response } from '../../common/interfaces';
 import { AppException } from '../../common/exceptions';
 import { TaskError } from './task-error.enum';
 import { TransportationStatus } from '../transportations/transportation-status.enum';
-import { Mode } from '../../common/enums';
+import { Mode, Notification } from '../../common/enums';
 
 @Injectable()
 export class TasksService {
   constructor(
     @InjectRepository(Task)
     private tasksRepository: Repository<Task>,
+    private mqttService: MqttService,
   ) {}
 
   async getMainTasks(myId: number, req: Request): Promise<Response<Task>> {
@@ -64,6 +66,10 @@ export class TasksService {
       throw new AppException(TaskError.NOT_CREATED);
     }
     await this.take(task, dto.myId);
+    this.mqttService.publishNotificationMessage(
+      task.customerUserId,
+      Notification.TAKEN_TASK,
+    );
   }
 
   async untakeTask(dto: ExtTaskIdDto): Promise<void> {
@@ -72,6 +78,10 @@ export class TasksService {
       throw new AppException(TaskError.NOT_TAKEN);
     }
     await this.untake(task);
+    this.mqttService.publishNotificationMessage(
+      task.customerUserId,
+      Notification.UNTAKEN_TASK,
+    );
   }
 
   async executeTask(dto: ExtTaskIdDto): Promise<void> {
@@ -80,6 +90,10 @@ export class TasksService {
       throw new AppException(TaskError.NOT_TAKEN);
     }
     await this.execute(task);
+    this.mqttService.publishNotificationMessage(
+      task.customerUserId,
+      Notification.EXECUTED_TASK,
+    );
   }
 
   async completeTask(dto: ExtTaskIdDto): Promise<void> {
@@ -88,6 +102,10 @@ export class TasksService {
       throw new AppException(TaskError.NOT_EXECUTED);
     }
     await this.complete(task);
+    this.mqttService.publishNotificationMessage(
+      task.executorUserId,
+      Notification.COMPLETED_TASK,
+    );
   }
 
   async deleteTask(dto: ExtTaskIdDto): Promise<void> {
@@ -256,13 +274,11 @@ export class TasksService {
         'task.id',
         'customerUser.id',
         'customerUser.name',
-        'customerUser.status',
         'task.description',
         'task.priority',
         'task.createdAt',
         'executorUser.id',
         'executorUser.name',
-        'executorUser.status',
         'task.completedAt',
         'task.status',
       ]);

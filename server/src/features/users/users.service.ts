@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { User } from './user.entity';
+import { MqttService } from '../mqtt/mqtt.service';
 import {
   CreateUserDto,
   ExtEditUserPasswordDto,
@@ -19,6 +20,7 @@ export class UsersService {
   constructor(
     @InjectRepository(User)
     private usersRepository: Repository<User>,
+    private mqttService: MqttService,
   ) {}
 
   async getMainUsers(req: Request): Promise<Response<User>> {
@@ -98,11 +100,13 @@ export class UsersService {
   async addUserToken(dto: UpdateUserTokenDto): Promise<void> {
     const user = await this.usersRepository.findOneBy({ id: dto.userId });
     await this.addToken(user, dto.token);
+    this.mqttService.publishUserMessage(dto.userId, 'online');
   }
 
   async removeUserToken(dto: UpdateUserTokenDto): Promise<void> {
     const user = await this.usersRepository.findOneBy({ id: dto.userId });
     await this.removeToken(user);
+    this.mqttService.publishUserMessage(dto.userId, '');
   }
 
   async updateUserPassword(user: User, password: string): Promise<void> {
@@ -213,9 +217,8 @@ export class UsersService {
   private selectUsersQueryBuilder(): SelectQueryBuilder<User> {
     return this.usersRepository
       .createQueryBuilder('user')
-      .orderBy('user.status', 'DESC')
-      .addOrderBy('user.name', 'ASC')
-      .select(['user.id', 'user.name', 'user.status']);
+      .orderBy('user.name', 'ASC')
+      .select(['user.id', 'user.name']);
   }
 
   private async loadCards(users: User[]): Promise<void> {
@@ -273,20 +276,17 @@ export class UsersService {
             .orWhere('user.name ILIKE :name', { name: req.name }),
         ),
       )
-      .orderBy('user.status', 'DESC')
-      .addOrderBy('user.id', 'DESC')
+      .orderBy('user.id', 'DESC')
       .skip(req.skip)
       .take(req.take)
       .select([
         'user.id',
         'user.name',
-        'user.status',
         'user.roles',
         'user.registeredAt',
         'city.id',
         'ownerUser.id',
         'ownerUser.name',
-        'ownerUser.status',
         'city.name',
         'city.x',
         'city.y',
@@ -307,7 +307,6 @@ export class UsersService {
       .select([
         'user.id',
         'user.name',
-        'user.status',
         'user.roles',
         'user.registeredAt',
         'city.id',

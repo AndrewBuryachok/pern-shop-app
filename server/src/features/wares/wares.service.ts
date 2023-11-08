@@ -5,12 +5,13 @@ import { Ware } from './ware.entity';
 import { WareState } from './ware-state.entity';
 import { RentsService } from '../rents/rents.service';
 import { PaymentsService } from '../payments/payments.service';
+import { MqttService } from '../mqtt/mqtt.service';
 import { BuyWareDto, ExtCreateWareDto, ExtEditWareDto } from './ware.dto';
 import { Request, Response, Stats } from '../../common/interfaces';
 import { getDateMonthAgo, getDateWeekAgo } from '../../common/utils';
 import { AppException } from '../../common/exceptions';
 import { WareError } from './ware-error.enum';
-import { Mode } from '../../common/enums';
+import { Mode, Notification } from '../../common/enums';
 
 @Injectable()
 export class WaresService {
@@ -21,6 +22,7 @@ export class WaresService {
     private waresStatesRepository: Repository<WareState>,
     private rentsService: RentsService,
     private paymentsService: PaymentsService,
+    private mqttService: MqttService,
   ) {}
 
   async getWaresStats(): Promise<Stats> {
@@ -86,7 +88,7 @@ export class WaresService {
 
   async buyWare(dto: BuyWareDto): Promise<void> {
     const ware = await this.waresRepository.findOne({
-      relations: ['rent'],
+      relations: ['rent', 'rent.card'],
       where: { id: dto.wareId },
     });
     if (ware.createdAt < getDateWeekAgo()) {
@@ -104,6 +106,10 @@ export class WaresService {
       description: 'buy ware',
     });
     await this.buy(ware, dto.amount);
+    this.mqttService.publishNotificationMessage(
+      ware.rent.card.userId,
+      Notification.CREATED_TRADE,
+    );
   }
 
   async checkWareExists(id: number): Promise<void> {
@@ -300,7 +306,6 @@ export class WaresService {
         'ownerCard.id',
         'ownerUser.id',
         'ownerUser.name',
-        'ownerUser.status',
         'ownerCard.name',
         'ownerCard.color',
         'market.name',
@@ -310,7 +315,6 @@ export class WaresService {
         'sellerCard.id',
         'sellerUser.id',
         'sellerUser.name',
-        'sellerUser.status',
         'sellerCard.name',
         'sellerCard.color',
         'ware.item',

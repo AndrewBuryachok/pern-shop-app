@@ -3,11 +3,12 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { Payment } from './payment.entity';
 import { CardsService } from '../cards/cards.service';
+import { MqttService } from '../mqtt/mqtt.service';
 import { ExtCreatePaymentDto } from './payment.dto';
 import { Request, Response } from '../../common/interfaces';
 import { AppException } from '../../common/exceptions';
 import { PaymentError } from './payment-error.enum';
-import { Mode } from '../../common/enums';
+import { Mode, Notification } from '../../common/enums';
 
 @Injectable()
 export class PaymentsService {
@@ -15,6 +16,7 @@ export class PaymentsService {
     @InjectRepository(Payment)
     private paymentsRepository: Repository<Payment>,
     private cardsService: CardsService,
+    private mqttService: MqttService,
   ) {}
 
   async getMyPayments(myId: number, req: Request): Promise<Response<Payment>> {
@@ -50,11 +52,15 @@ export class PaymentsService {
       ...dto,
       cardId: dto.senderCardId,
     });
-    await this.cardsService.increaseCardBalance({
+    const card = await this.cardsService.increaseCardBalance({
       ...dto,
       cardId: dto.receiverCardId,
     });
     await this.create(dto);
+    this.mqttService.publishNotificationMessage(
+      card.userId,
+      Notification.CREATED_PAYMENT,
+    );
   }
 
   private async create(dto: ExtCreatePaymentDto): Promise<void> {
@@ -137,13 +143,11 @@ export class PaymentsService {
         'senderCard.id',
         'senderUser.id',
         'senderUser.name',
-        'senderUser.status',
         'senderCard.name',
         'senderCard.color',
         'receiverCard.id',
         'receiverUser.id',
         'receiverUser.name',
-        'receiverUser.status',
         'receiverCard.name',
         'receiverCard.color',
         'payment.sum',

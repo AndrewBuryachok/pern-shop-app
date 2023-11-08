@@ -3,11 +3,12 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { Vote } from './vote.entity';
 import { PollsService } from '../polls/polls.service';
+import { MqttService } from '../mqtt/mqtt.service';
 import { ExtCreateVoteDto } from './vote.dto';
 import { Request, Response } from '../../common/interfaces';
 import { AppException } from '../../common/exceptions';
 import { VoteError } from './vote-error.enum';
-import { Mode } from '../../common/enums';
+import { Mode, Notification } from '../../common/enums';
 
 @Injectable()
 export class VotesService {
@@ -15,6 +16,7 @@ export class VotesService {
     @InjectRepository(Vote)
     private votesRepository: Repository<Vote>,
     private pollsService: PollsService,
+    private mqttService: MqttService,
   ) {}
 
   async getMyVotes(myId: number, req: Request): Promise<Response<Vote>> {
@@ -39,7 +41,7 @@ export class VotesService {
   }
 
   async createVote(dto: ExtCreateVoteDto): Promise<void> {
-    await this.pollsService.checkPollNotCompleted(dto.pollId);
+    const poll = await this.pollsService.checkPollNotCompleted(dto.pollId);
     const vote = await this.votesRepository.findOneBy({
       pollId: dto.pollId,
       userId: dto.myId,
@@ -51,6 +53,10 @@ export class VotesService {
     } else {
       await this.delete(vote);
     }
+    this.mqttService.publishNotificationMessage(
+      poll.userId,
+      Notification.CREATED_VOTE,
+    );
   }
 
   private async create(dto: ExtCreateVoteDto): Promise<void> {
@@ -134,11 +140,9 @@ export class VotesService {
         'poll.id',
         'pollerUser.id',
         'pollerUser.name',
-        'pollerUser.status',
         'poll.description',
         'voterUser.id',
         'voterUser.name',
-        'voterUser.status',
         'vote.type',
         'vote.createdAt',
       ]);

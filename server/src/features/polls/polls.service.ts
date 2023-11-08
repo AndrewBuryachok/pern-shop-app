@@ -152,7 +152,6 @@ export class PollsService {
         'poll.id',
         'pollerUser.id',
         'pollerUser.name',
-        'pollerUser.status',
         'poll.description',
         'poll.createdAt',
         'poll.completedAt',

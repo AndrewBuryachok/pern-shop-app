@@ -170,7 +170,6 @@ export class GoodsService {
         'shop.id',
         'sellerUser.id',
         'sellerUser.name',
-        'sellerUser.status',
         'shop.name',
         'shop.x',
         'shop.y',

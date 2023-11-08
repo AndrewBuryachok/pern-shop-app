@@ -4,6 +4,7 @@ import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { Invoice } from './invoice.entity';
 import { CardsService } from '../cards/cards.service';
 import { PaymentsService } from '../payments/payments.service';
+import { MqttService } from '../mqtt/mqtt.service';
 import {
   DeleteInvoiceDto,
   ExtCompleteInvoiceDto,
@@ -12,7 +13,7 @@ import {
 import { Request, Response } from '../../common/interfaces';
 import { AppException } from '../../common/exceptions';
 import { InvoiceError } from './invoice-error.enum';
-import { Mode } from '../../common/enums';
+import { Mode, Notification } from '../../common/enums';
 
 @Injectable()
 export class InvoicesService {
@@ -21,6 +22,7 @@ export class InvoicesService {
     private invoicesRepository: Repository<Invoice>,
     private cardsService: CardsService,
     private paymentsService: PaymentsService,
+    private mqttService: MqttService,
   ) {}
 
   async getMyInvoices(myId: number, req: Request): Promise<Response<Invoice>> {
@@ -54,6 +56,10 @@ export class InvoicesService {
       dto.hasRole,
     );
     await this.create(dto);
+    this.mqttService.publishNotificationMessage(
+      dto.receiverUserId,
+      Notification.CREATED_INVOICE,
+    );
   }
 
   async completeInvoice(dto: ExtCompleteInvoiceDto): Promise<void> {
@@ -74,6 +80,10 @@ export class InvoicesService {
       description: invoice.description,
     });
     await this.complete(invoice, dto.cardId);
+    this.mqttService.publishNotificationMessage(
+      invoice.senderCard.userId,
+      Notification.COMPLETED_INVOICE,
+    );
   }
 
   async deleteInvoice(dto: DeleteInvoiceDto): Promise<void> {
@@ -112,7 +122,10 @@ export class InvoicesService {
     userId: number,
     hasRole: boolean,
   ): Promise<Invoice> {
-    const invoice = await this.invoicesRepository.findOneBy({ id });
+    const invoice = await this.invoicesRepository.findOne({
+      relations: ['senderCard'],
+      where: { id },
+    });
     if (invoice.receiverUserId !== userId && !hasRole) {
       throw new AppException(InvoiceError.NOT_RECEIVER);
     }
@@ -218,16 +231,13 @@ export class InvoicesService {
         'senderCard.id',
         'senderUser.id',
         'senderUser.name',
-        'senderUser.status',
         'senderCard.name',
         'senderCard.color',
         'receiverUser.id',
         'receiverUser.name',
-        'receiverUser.status',
         'receiverCard.id',
         'user.id',
         'user.name',
-        'user.status',
         'receiverCard.name',
         'receiverCard.color',
         'invoice.sum',

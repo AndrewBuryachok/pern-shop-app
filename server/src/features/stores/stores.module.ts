@@ -3,12 +3,18 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Store } from './store.entity';
 import { MarketsModule } from '../markets/markets.module';
 import { PaymentsModule } from '../payments/payments.module';
+import { MqttModule } from '../mqtt/mqtt.module';
 import { StoresController } from './stores.controller';
 import { StoresService } from './stores.service';
 import { IsStoreExists } from '../../common/constraints';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Store]), MarketsModule, PaymentsModule],
+  imports: [
+    TypeOrmModule.forFeature([Store]),
+    MarketsModule,
+    PaymentsModule,
+    MqttModule,
+  ],
   controllers: [StoresController],
   providers: [StoresService, IsStoreExists],
   exports: [StoresService],

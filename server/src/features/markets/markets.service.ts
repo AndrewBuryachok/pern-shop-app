@@ -239,7 +239,6 @@ export class MarketsService {
         'ownerCard.id',
         'ownerUser.id',
         'ownerUser.name',
-        'ownerUser.status',
         'ownerCard.name',
         'ownerCard.color',
         'market.name',

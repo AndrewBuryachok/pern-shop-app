@@ -4,12 +4,14 @@ import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { Store } from './store.entity';
 import { MarketsService } from '../markets/markets.service';
 import { PaymentsService } from '../payments/payments.service';
+import { MqttService } from '../mqtt/mqtt.service';
 import { ExtCreateStoreDto, ReserveStoreDto } from './store.dto';
 import { Request, Response } from '../../common/interfaces';
 import { getDateWeekAgo } from '../../common/utils';
 import { MAX_STORES_NUMBER } from '../../common/constants';
 import { AppException } from '../../common/exceptions';
 import { StoreError } from './store-error.enum';
+import { Notification } from '../../common/enums';
 
 @Injectable()
 export class StoresService {
@@ -18,6 +20,7 @@ export class StoresService {
     private storesRepository: Repository<Store>,
     private marketsService: MarketsService,
     private paymentsService: PaymentsService,
+    private mqttService: MqttService,
   ) {}
 
   async getMainStores(req: Request): Promise<Response<Store>> {
@@ -75,6 +78,10 @@ export class StoresService {
       description: 'reserve store',
     });
     await this.reserve(store);
+    this.mqttService.publishNotificationMessage(
+      store.market.card.userId,
+      Notification.CREATED_RENT,
+    );
   }
 
   async checkStoreExists(id: number): Promise<void> {
@@ -93,6 +100,7 @@ export class StoresService {
     const store = await this.storesRepository
       .createQueryBuilder('store')
       .innerJoinAndSelect('store.market', 'market')
+      .innerJoinAndSelect('market.card', 'card')
       .where('store.id = :storeId', { storeId })
       .andWhere(
         new Brackets((qb) =>
@@ -189,7 +197,6 @@ export class StoresService {
         'ownerCard.id',
         'ownerUser.id',
         'ownerUser.name',
-        'ownerUser.status',
         'ownerCard.name',
         'ownerCard.color',
         'market.name',

@@ -4,12 +4,14 @@ import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { Cell } from './cell.entity';
 import { StoragesService } from '../storages/storages.service';
 import { PaymentsService } from '../payments/payments.service';
+import { MqttService } from '../mqtt/mqtt.service';
 import { ExtCreateCellDto, ReserveCellDto } from './cell.dto';
 import { Request, Response } from '../../common/interfaces';
 import { getDateWeekAgo } from '../../common/utils';
 import { MAX_CELLS_NUMBER } from '../../common/constants';
 import { AppException } from '../../common/exceptions';
 import { CellError } from './cell-error.enum';
+import { Notification } from '../../common/enums';
 
 @Injectable()
 export class CellsService {
@@ -18,6 +20,7 @@ export class CellsService {
     private cellsRepository: Repository<Cell>,
     private storagesService: StoragesService,
     private paymentsService: PaymentsService,
+    private mqttService: MqttService,
   ) {}
 
   async getMainCells(req: Request): Promise<Response<Cell>> {
@@ -75,6 +78,10 @@ export class CellsService {
       description: 'reserve cell',
     });
     await this.reserve(cell);
+    this.mqttService.publishNotificationMessage(
+      cell.storage.card.userId,
+      Notification.CREATED_LEASE,
+    );
     return cell.id;
   }
 
@@ -90,6 +97,7 @@ export class CellsService {
     const cell = await this.cellsRepository
       .createQueryBuilder('cell')
       .innerJoinAndSelect('cell.storage', 'storage')
+      .innerJoinAndSelect('storage.card', 'card')
       .where('storage.id = :storageId', { storageId })
       .andWhere(
         new Brackets((qb) =>
@@ -184,7 +192,6 @@ export class CellsService {
         'ownerCard.id',
         'ownerUser.id',
         'ownerUser.name',
-        'ownerUser.status',
         'ownerCard.name',
         'ownerCard.color',
         'storage.name',

@@ -82,20 +82,22 @@ export class CardsService {
     await this.removeUser(card, dto.userId);
   }
 
-  async increaseCardBalance(dto: UpdateCardBalanceDto): Promise<void> {
+  async increaseCardBalance(dto: UpdateCardBalanceDto): Promise<Card> {
     const card = await this.cardsRepository.findOneBy({ id: dto.cardId });
     if (card.balance + dto.sum > MAX_CARD_BALANCE) {
       throw new AppException(CardError.ALREADY_ENOUGH_BALANCE);
     }
     await this.increaseBalance(card, dto.sum);
+    return card;
   }
 
-  async decreaseCardBalance(dto: UpdateCardBalanceDto): Promise<void> {
+  async decreaseCardBalance(dto: UpdateCardBalanceDto): Promise<Card> {
     const card = await this.cardsRepository.findOneBy({ id: dto.cardId });
     if (card.balance - dto.sum < MIN_CARD_BALANCE) {
       throw new AppException(CardError.NOT_ENOUGH_BALANCE);
     }
     await this.decreaseBalance(card, dto.sum);
+    return card;
   }
 
   async checkCardExists(id: number): Promise<void> {
@@ -219,7 +221,6 @@ export class CardsService {
         'card.id',
         'ownerUser.id',
         'ownerUser.name',
-        'ownerUser.status',
         'card.name',
         'card.color',
       ]);
@@ -232,9 +233,8 @@ export class CardsService {
           .createQueryBuilder('card')
           .leftJoin('card.users', 'user')
           .where('card.id = :cardId', { cardId: card.id })
-          .orderBy('user.status', 'DESC')
-          .addOrderBy('user.name', 'ASC')
-          .select(['card.id', 'user.id', 'user.name', 'user.status'])
+          .orderBy('user.name', 'ASC')
+          .select(['card.id', 'user.id', 'user.name'])
           .getOne()
       ).users;
     });
@@ -273,7 +273,6 @@ export class CardsService {
         'card.id',
         'ownerUser.id',
         'ownerUser.name',
-        'ownerUser.status',
         'card.name',
         'card.color',
         'card.balance',

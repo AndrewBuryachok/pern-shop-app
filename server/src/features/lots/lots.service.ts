@@ -5,12 +5,13 @@ import { Lot } from './lot.entity';
 import { LeasesService } from '../leases/leases.service';
 import { CardsService } from '../cards/cards.service';
 import { PaymentsService } from '../payments/payments.service';
+import { MqttService } from '../mqtt/mqtt.service';
 import { BuyLotDto, CompleteLotDto, ExtCreateLotDto } from './lot.dto';
 import { Request, Response } from '../../common/interfaces';
 import { getDateWeekAgo } from '../../common/utils';
 import { AppException } from '../../common/exceptions';
 import { LotError } from './lot-error.enum';
-import { Mode } from '../../common/enums';
+import { Mode, Notification } from '../../common/enums';
 
 @Injectable()
 export class LotsService {
@@ -20,6 +21,7 @@ export class LotsService {
     private leasesService: LeasesService,
     private cardsService: CardsService,
     private paymentsService: PaymentsService,
+    private mqttService: MqttService,
   ) {}
 
   async getMainLots(req: Request): Promise<Response<Lot>> {
@@ -64,7 +66,7 @@ export class LotsService {
 
   async buyLot(dto: BuyLotDto): Promise<void> {
     const lot = await this.lotsRepository.findOne({
-      relations: ['lease'],
+      relations: ['lease', 'lease.card'],
       where: { id: dto.lotId },
     });
     if (lot.createdAt < getDateWeekAgo()) {
@@ -75,6 +77,10 @@ export class LotsService {
     }
     await this.cardsService.decreaseCardBalance({ ...dto, sum: dto.price });
     await this.buy(lot, dto.price);
+    this.mqttService.publishNotificationMessage(
+      lot.lease.card.userId,
+      Notification.CREATED_BID,
+    );
   }
 
   async completeLot(dto: CompleteLotDto): Promise<void> {
@@ -96,6 +102,12 @@ export class LotsService {
       description: 'buy lot',
     });
     await this.complete(lot);
+    lot.bids.forEach((bid) =>
+      this.mqttService.publishNotificationMessage(
+        bid.card.userId,
+        Notification.COMPLETED_LOT,
+      ),
+    );
   }
 
   async checkLotExists(id: number): Promise<void> {
@@ -277,7 +289,6 @@ export class LotsService {
         'ownerCard.id',
         'ownerUser.id',
         'ownerUser.name',
-        'ownerUser.status',
         'ownerCard.name',
         'ownerCard.color',
         'storage.name',
@@ -287,7 +298,6 @@ export class LotsService {
         'sellerCard.id',
         'sellerUser.id',
         'sellerUser.name',
-        'sellerUser.status',
         'sellerCard.name',
         'sellerCard.color',
         'lot.item',

@@ -5,6 +5,7 @@ import { Order } from './order.entity';
 import { LeasesService } from '../leases/leases.service';
 import { CardsService } from '../cards/cards.service';
 import { PaymentsService } from '../payments/payments.service';
+import { MqttService } from '../mqtt/mqtt.service';
 import {
   ExtCreateOrderDto,
   ExtOrderIdDto,
@@ -16,7 +17,7 @@ import { getDateWeekAgo } from '../../common/utils';
 import { AppException } from '../../common/exceptions';
 import { OrderError } from './order-error.enum';
 import { TransportationStatus } from '../transportations/transportation-status.enum';
-import { Mode } from '../../common/enums';
+import { Mode, Notification } from '../../common/enums';
 
 @Injectable()
 export class OrdersService {
@@ -26,6 +27,7 @@ export class OrdersService {
     private leasesService: LeasesService,
     private cardsService: CardsService,
     private paymentsService: PaymentsService,
+    private mqttService: MqttService,
   ) {}
 
   async getMainOrders(req: Request): Promise<Response<Order>> {
@@ -77,8 +79,9 @@ export class OrdersService {
 
   async takeOrder(dto: ExtTakeOrderDto): Promise<void> {
     await this.cardsService.checkCardUser(dto.cardId, dto.myId, dto.hasRole);
-    const order = await this.ordersRepository.findOneBy({
-      id: dto.orderId,
+    const order = await this.ordersRepository.findOne({
+      relations: ['lease', 'lease.card'],
+      where: { id: dto.orderId },
     });
     if (order.createdAt < getDateWeekAgo()) {
       throw new AppException(OrderError.ALREADY_EXPIRED);
@@ -87,6 +90,10 @@ export class OrdersService {
       throw new AppException(OrderError.NOT_CREATED);
     }
     await this.take(order, dto.cardId);
+    this.mqttService.publishNotificationMessage(
+      order.lease.card.userId,
+      Notification.TAKEN_ORDER,
+    );
   }
 
   async untakeOrder(dto: ExtOrderIdDto): Promise<void> {
@@ -99,6 +106,10 @@ export class OrdersService {
       throw new AppException(OrderError.NOT_TAKEN);
     }
     await this.untake(order);
+    this.mqttService.publishNotificationMessage(
+      order.lease.card.userId,
+      Notification.UNTAKEN_ORDER,
+    );
   }
 
   async executeOrder(dto: ExtOrderIdDto): Promise<void> {
@@ -111,6 +122,10 @@ export class OrdersService {
       throw new AppException(OrderError.NOT_TAKEN);
     }
     await this.execute(order);
+    this.mqttService.publishNotificationMessage(
+      order.lease.card.userId,
+      Notification.EXECUTED_ORDER,
+    );
   }
 
   async completeOrder(dto: ExtOrderIdDto): Promise<void> {
@@ -135,6 +150,10 @@ export class OrdersService {
       description: 'complete order',
     });
     await this.complete(order);
+    this.mqttService.publishNotificationMessage(
+      order.executorCard.userId,
+      Notification.COMPLETED_ORDER,
+    );
   }
 
   async deleteOrder(dto: ExtOrderIdDto): Promise<void> {
@@ -163,6 +182,10 @@ export class OrdersService {
       throw new AppException(OrderError.NOT_COMPLETED);
     }
     await this.rate(order, dto.rate);
+    this.mqttService.publishNotificationMessage(
+      order.executorCard.userId,
+      Notification.RATED_ORDER,
+    );
   }
 
   async checkOrderExists(id: number): Promise<void> {
@@ -175,7 +198,7 @@ export class OrdersService {
     hasRole: boolean,
   ): Promise<Order> {
     const order = await this.ordersRepository.findOne({
-      relations: ['lease', 'lease.card', 'lease.card.users'],
+      relations: ['lease', 'lease.card', 'lease.card.users', 'executorCard'],
       where: { id },
     });
     if (
@@ -193,7 +216,7 @@ export class OrdersService {
     hasRole: boolean,
   ): Promise<Order> {
     const order = await this.ordersRepository.findOne({
-      relations: ['executorCard', 'executorCard.users'],
+      relations: ['executorCard', 'executorCard.users', 'lease', 'lease.card'],
       where: { id },
     });
     if (
@@ -404,7 +427,6 @@ export class OrdersService {
         'ownerCard.id',
         'ownerUser.id',
         'ownerUser.name',
-        'ownerUser.status',
         'ownerCard.name',
         'ownerCard.color',
         'storage.name',
@@ -414,7 +436,6 @@ export class OrdersService {
         'customerCard.id',
         'customerUser.id',
         'customerUser.name',
-        'customerUser.status',
         'customerCard.name',
         'customerCard.color',
         'order.item',
@@ -427,7 +448,6 @@ export class OrdersService {
         'executorCard.id',
         'executorUser.id',
         'executorUser.name',
-        'executorUser.status',
         'executorCard.name',
         'executorCard.color',
         'order.completedAt',
