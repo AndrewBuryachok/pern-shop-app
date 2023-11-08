@@ -4,8 +4,8 @@ import CustomAvatar from './CustomAvatar';
 import SingleText from './SingleText';
 
 interface Props extends React.ComponentPropsWithoutRef<'div'> {
-  user?: string;
-  status?: number;
+  userid: number;
+  username: string;
   name: string;
   color: string;
   balance?: number;
@@ -14,11 +14,11 @@ interface Props extends React.ComponentPropsWithoutRef<'div'> {
 export const CardsItem = forwardRef<HTMLDivElement, Props>(
   (props: Props, ref) => (
     <div ref={ref} {...props}>
-      {props.user ? (
+      {props.userid && props.username ? (
         <Group spacing={8}>
-          <CustomAvatar name={props.user} status={!!props.status} />
+          <CustomAvatar id={+props.userid} name={props.username} />
           <div>
-            <SingleText text={props.user} />
+            <SingleText text={props.username} />
             <Group spacing={8}>
               <SingleText text={props.name} color={+props.color} />
               {props.balance !== undefined && (

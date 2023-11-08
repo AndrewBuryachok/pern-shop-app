@@ -10,7 +10,7 @@ export const tradesApi = emptyApi.injectEndpoints({
       query: () => ({
         url: '/trades/stats',
       }),
-      providesTags: ['Active', 'Trade'],
+      providesTags: ['Trade'],
     }),
     getMyTrades: build.query<IResponse<Trade>, IRequest>({
       query: (req) => ({

@@ -1,14 +1,12 @@
 import { Avatar } from '@mantine/core';
+import { SmUser } from '../../features/users/user.model';
 import CustomIndicator from './CustomIndicator';
 
-type Props = {
-  name: string;
-  status: boolean;
-};
+type Props = SmUser;
 
 export default function CustomAvatar(props: Props) {
   return (
-    <CustomIndicator status={props.status}>
+    <CustomIndicator {...props}>
       <Avatar
         size={32}
         src={`${import.meta.env.VITE_AVATAR_URL}${

@@ -15,7 +15,7 @@ export const citiesApi = emptyApi.injectEndpoints({
       query: (req) => ({
         url: `/cities?${getQuery(req)}`,
       }),
-      providesTags: ['Active', 'City'],
+      providesTags: ['City'],
     }),
     getMyCities: build.query<IResponse<City>, IRequest>({
       query: (req) => ({

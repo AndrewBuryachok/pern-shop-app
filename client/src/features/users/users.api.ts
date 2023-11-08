@@ -10,7 +10,7 @@ export const usersApi = emptyApi.injectEndpoints({
       query: (req) => ({
         url: `/users?${getQuery(req)}`,
       }),
-      providesTags: ['Active', 'User', 'Card'],
+      providesTags: ['User', 'Card'],
     }),
     getMyUsers: build.query<IResponse<User>, IRequest>({
       query: (req) => ({
@@ -28,13 +28,13 @@ export const usersApi = emptyApi.injectEndpoints({
       query: () => ({
         url: '/users/all/select',
       }),
-      providesTags: ['Active', 'User'],
+      providesTags: ['User'],
     }),
     selectNotCitizensUsers: build.query<SmUser[], void>({
       query: () => ({
         url: '/users/not-citizens/select',
       }),
-      providesTags: ['Active', 'User', 'City'],
+      providesTags: ['User', 'City'],
     }),
     selectNotFriendsUsers: build.query<SmUser[], void>({
       query: () => ({
@@ -47,7 +47,6 @@ export const usersApi = emptyApi.injectEndpoints({
         url: `/users/${userId}`,
       }),
       providesTags: [
-        'Active',
         'User',
         'Card',
         'Good',

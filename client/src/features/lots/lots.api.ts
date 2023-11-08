@@ -10,7 +10,7 @@ export const lotsApi = emptyApi.injectEndpoints({
       query: (req) => ({
         url: `/lots?${getQuery(req)}`,
       }),
-      providesTags: ['Active', 'Lot'],
+      providesTags: ['Lot'],
     }),
     getMyLots: build.query<IResponse<Lot>, IRequest>({
       query: (req) => ({

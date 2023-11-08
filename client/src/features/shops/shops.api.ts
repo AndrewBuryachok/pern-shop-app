@@ -10,7 +10,7 @@ export const shopsApi = emptyApi.injectEndpoints({
       query: (req) => ({
         url: `/shops?${getQuery(req)}`,
       }),
-      providesTags: ['Active', 'Shop', 'Good'],
+      providesTags: ['Shop', 'Good'],
     }),
     getMyShops: build.query<IResponse<Shop>, IRequest>({
       query: (req) => ({

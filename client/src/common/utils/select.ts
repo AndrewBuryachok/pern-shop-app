@@ -23,7 +23,8 @@ import {
 export const selectUsers = (users?: SmUserWithCity[]) =>
   users?.map(({ cityId, ...user }) => ({
     ...user,
-    status: +user.status,
+    userid: user.id,
+    username: user.name,
     city: cityId,
     value: `${user.id}`,
     label: user.name,
@@ -32,8 +33,8 @@ export const selectUsers = (users?: SmUserWithCity[]) =>
 export const selectCards = (cards?: MdCard[]) =>
   cards?.map(({ user, ...card }) => ({
     ...card,
-    user: user.name,
-    status: +user.status,
+    userid: user.id,
+    username: user.name,
     color: `${card.color}`,
     value: `${card.id}`,
     label: card.name,
@@ -42,8 +43,8 @@ export const selectCards = (cards?: MdCard[]) =>
 export const selectCardsWithBalance = (cards?: MdCardWithBalance[]) =>
   cards?.map(({ user, ...card }) => ({
     ...card,
-    user: user.name,
-    status: +user.status,
+    userid: user.id,
+    username: user.name,
     color: `${card.color}`,
     value: `${card.id}`,
     label: `${card.name} ${card.balance}$`,
@@ -138,7 +139,7 @@ export const selectItems = (category: string) =>
       value: `${index + 1}`,
       label: t('constants.items.' + item.split(': ')[1]),
     }))
-    .filter((item) => item.category.includes(category));
+    .filter((item) => category && item.category.includes(category));
 
 export const selectKits = () =>
   kits.map((kit, index) => ({

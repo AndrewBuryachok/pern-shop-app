@@ -5,7 +5,6 @@ export const emptyApi = createApi({
   baseQuery: baseQueryWithAuth,
   tagTypes: [
     'Auth',
-    'Active',
     'User',
     'Card',
     'Exchange',

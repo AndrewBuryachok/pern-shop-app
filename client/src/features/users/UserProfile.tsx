@@ -34,7 +34,7 @@ export default function UserProfile({ data: user }: Props) {
 
   return (
     <Stack align='center'>
-      <CustomIndicator status={user.status}>
+      <CustomIndicator {...user}>
         <Avatar
           size={128}
           src={`${import.meta.env.VITE_AVATAR_URL}${

@@ -4,7 +4,6 @@ import { SmCard } from '../cards/card.model';
 export interface SmUser {
   id: number;
   name: string;
-  status: boolean;
 }
 
 export interface SmUserWithCity extends SmUser {

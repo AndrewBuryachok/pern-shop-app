@@ -10,7 +10,7 @@ export const marketsApi = emptyApi.injectEndpoints({
       query: (req) => ({
         url: `/markets?${getQuery(req)}`,
       }),
-      providesTags: ['Active', 'Market', 'Store'],
+      providesTags: ['Market', 'Store'],
     }),
     getMyMarkets: build.query<IResponse<Market>, IRequest>({
       query: (req) => ({

@@ -10,13 +10,13 @@ export const waresApi = emptyApi.injectEndpoints({
       query: () => ({
         url: '/wares/stats',
       }),
-      providesTags: ['Active', 'Ware'],
+      providesTags: ['Ware'],
     }),
     getMainWares: build.query<IResponse<Ware>, IRequest>({
       query: (req) => ({
         url: `/wares?${getQuery(req)}`,
       }),
-      providesTags: ['Active', 'Ware'],
+      providesTags: ['Ware'],
     }),
     getMyWares: build.query<IResponse<Ware>, IRequest>({
       query: (req) => ({

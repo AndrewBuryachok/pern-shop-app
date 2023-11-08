@@ -10,7 +10,7 @@ export const friendsApi = emptyApi.injectEndpoints({
       query: (req) => ({
         url: `/friends?${getQuery(req)}`,
       }),
-      providesTags: ['Active', 'Friend'],
+      providesTags: ['Friend'],
     }),
     getMyFriends: build.query<IResponse<Friend>, IRequest>({
       query: (req) => ({

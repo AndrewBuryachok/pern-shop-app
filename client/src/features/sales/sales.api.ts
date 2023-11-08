@@ -10,7 +10,7 @@ export const salesApi = emptyApi.injectEndpoints({
       query: () => ({
         url: '/sales/stats',
       }),
-      providesTags: ['Active', 'Sale'],
+      providesTags: ['Sale'],
     }),
     getMySales: build.query<IResponse<Sale>, IRequest>({
       query: (req) => ({

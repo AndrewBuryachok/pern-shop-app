@@ -97,7 +97,16 @@
     "remove": "Remove",
     "untake": "Untake",
     "vote": "Vote",
-    "view": "View"
+    "view": "View",
+    "created": "Created",
+    "added": "Added",
+    "completed": "Completed",
+    "taken": "Taken",
+    "executed": "Executed",
+    "edited": "Edited",
+    "rated": "Rated",
+    "removed": "Removed",
+    "untaken": "Untaken"
   },
   "components": {
     "submit": "Submit",
@@ -227,7 +236,8 @@
   "notifications": {
     "success": "Success",
     "error": "Error",
-    "message": "Operation completed successfully"
+    "message": "Operation completed successfully",
+    "notification": "Notification"
   },
   "constants": {
     "increase": "Increase",

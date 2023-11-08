@@ -10,7 +10,7 @@ export const cellsApi = emptyApi.injectEndpoints({
       query: (req) => ({
         url: `/cells?${getQuery(req)}`,
       }),
-      providesTags: ['Active', 'Cell'],
+      providesTags: ['Cell'],
     }),
     getMyCells: build.query<IResponse<Cell>, IRequest>({
       query: (req) => ({

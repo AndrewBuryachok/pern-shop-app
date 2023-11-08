@@ -228,7 +228,7 @@ export default function SearchModal(props: Props) {
       <Select
         label={t('columns.user')}
         placeholder={`${t('components.total')}: ${users?.length}`}
-        icon={user && <CustomAvatar {...user} status={!!user.status} />}
+        icon={user && <CustomAvatar {...user} />}
         iconWidth={48}
         rightSection={<RefetchAction {...usersResponse} />}
         itemComponent={UsersItem}

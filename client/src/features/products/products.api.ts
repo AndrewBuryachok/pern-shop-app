@@ -10,13 +10,13 @@ export const productsApi = emptyApi.injectEndpoints({
       query: () => ({
         url: '/products/stats',
       }),
-      providesTags: ['Active', 'Product'],
+      providesTags: ['Product'],
     }),
     getMainProducts: build.query<IResponse<Product>, IRequest>({
       query: (req) => ({
         url: `/products?${getQuery(req)}`,
       }),
-      providesTags: ['Active', 'Product'],
+      providesTags: ['Product'],
     }),
     getMyProducts: build.query<IResponse<Product>, IRequest>({
       query: (req) => ({

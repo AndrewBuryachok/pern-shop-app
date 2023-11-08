@@ -19,7 +19,8 @@ export const viewRoles = (roles: Role[]) =>
 export const viewUsers = (users: SmUser[]) =>
   users.map((user) => ({
     ...user,
-    status: +user.status,
+    userid: user.id,
+    username: user.name,
     value: `${user.id}`,
     label: user.name,
     disabled: true,

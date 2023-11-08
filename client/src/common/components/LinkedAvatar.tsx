@@ -7,7 +7,7 @@ type Props = SmUser;
 
 export default function LinkedAvatar(props: Props) {
   return (
-    <CustomIndicator status={props.status}>
+    <CustomIndicator {...props}>
       <Avatar
         component={Link}
         to={`/users/${props.id}`}

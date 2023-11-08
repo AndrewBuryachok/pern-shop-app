@@ -1,11 +1,9 @@
 import { Group } from '@mantine/core';
+import { SmUser } from '../../features/users/user.model';
 import CustomAvatar from './CustomAvatar';
 import SingleText from './SingleText';
 
-type Props = {
-  name: string;
-  status: boolean;
-};
+type Props = SmUser;
 
 export default function CustomAvatarWithText(props: Props) {
   return (

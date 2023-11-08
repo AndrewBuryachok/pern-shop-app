@@ -15,7 +15,7 @@ export const deliveriesApi = emptyApi.injectEndpoints({
       query: (req) => ({
         url: `/deliveries?${getQuery(req)}`,
       }),
-      providesTags: ['Active', 'Delivery'],
+      providesTags: ['Delivery'],
     }),
     getMyDeliveries: build.query<IResponse<Delivery>, IRequest>({
       query: (req) => ({

@@ -10,7 +10,7 @@ export const authApi = emptyApi.injectEndpoints({
         method: 'POST',
         body: dto,
       }),
-      invalidatesTags: ['Auth', 'Active'],
+      invalidatesTags: ['Auth'],
     }),
     login: build.mutation<Tokens, AuthDto>({
       query: (dto) => ({
@@ -18,14 +18,14 @@ export const authApi = emptyApi.injectEndpoints({
         method: 'POST',
         body: dto,
       }),
-      invalidatesTags: ['Auth', 'Active'],
+      invalidatesTags: ['Auth'],
     }),
     logout: build.mutation<void, void>({
       query: () => ({
         url: '/auth/logout',
         method: 'POST',
       }),
-      invalidatesTags: ['Auth', 'Active'],
+      invalidatesTags: ['Auth'],
     }),
     updatePassword: build.mutation<void, UpdatePasswordDto>({
       query: (dto) => ({

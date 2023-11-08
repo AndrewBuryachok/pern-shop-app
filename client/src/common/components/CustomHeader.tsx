@@ -29,6 +29,7 @@ import {
   removeCurrentUser,
 } from '../../features/auth/auth.slice';
 import { toggleCurrentLanguage } from '../../features/lang/lang.slice';
+import { unsubscribe } from '../../features/mqtt/mqtt.slice';
 import { useLogoutMutation } from '../../features/auth/auth.api';
 import { openAuthModal } from '../../features/auth/AuthModal';
 import { openUpdatePasswordModal } from '../../features/auth/UpdatePasswordModal';
@@ -54,6 +55,7 @@ export default function CustomHeader(props: Props) {
   const handleSubmit = async () => {
     await logout();
     dispatch(removeCurrentUser());
+    dispatch(unsubscribe(user!.id));
   };
 
   return (

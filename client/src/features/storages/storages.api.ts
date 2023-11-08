@@ -15,7 +15,7 @@ export const storagesApi = emptyApi.injectEndpoints({
       query: (req) => ({
         url: `/storages?${getQuery(req)}`,
       }),
-      providesTags: ['Active', 'Storage', 'Cell'],
+      providesTags: ['Storage', 'Cell'],
     }),
     getMyStorages: build.query<IResponse<Storage>, IRequest>({
       query: (req) => ({
