@@ -1,3 +1,5 @@
+import { t } from 'i18next';
+import { useTranslation } from 'react-i18next';
 import {
   CloseButton,
   Rating as CustomRating,
@@ -18,6 +20,8 @@ import { Color } from '../../common/constants';
 type Props = IModal<Rating>;
 
 export default function EditRatingModal({ data: rating }: Props) {
+  const [t] = useTranslation();
+
   const form = useForm({
     initialValues: {
       ratingId: rating.id,
@@ -35,24 +39,24 @@ export default function EditRatingModal({ data: rating }: Props) {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={'Edit rating'}
+      text={t('actions.edit') + ' ' + t('modals.rating')}
       isChanged={!form.isDirty()}
     >
       <TextInput
-        label='Sender'
+        label={t('columns.sender')}
         icon={<CustomAvatar {...rating.senderUser} />}
         iconWidth={48}
         value={rating.senderUser.name}
         disabled
       />
       <TextInput
-        label='Receiver'
+        label={t('columns.receiver')}
         icon={<CustomAvatar {...rating.receiverUser} />}
         iconWidth={48}
         value={rating.receiverUser.name}
         disabled
       />
-      <Input.Wrapper label='Rate' required>
+      <Input.Wrapper label={t('columns.rate')} required>
         <Group spacing={8}>
           <CustomRating {...form.getInputProps('rate')} />
           <CloseButton
@@ -69,7 +73,7 @@ export default function EditRatingModal({ data: rating }: Props) {
 export const editRatingAction = {
   open: (rating: Rating) =>
     openModal({
-      title: 'Edit Rating',
+      title: t('actions.edit') + ' ' + t('modals.rating'),
       children: <EditRatingModal data={rating} />,
     }),
   disable: () => false,

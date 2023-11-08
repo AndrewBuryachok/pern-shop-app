@@ -1,3 +1,5 @@
+import { t } from 'i18next';
+import { useTranslation } from 'react-i18next';
 import { Select, Stack, TextInput } from '@mantine/core';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
@@ -10,21 +12,23 @@ import { Color } from '../../common/constants';
 type Props = IModal<City>;
 
 export default function ViewCityModal({ data: city }: Props) {
+  const [t] = useTranslation();
+
   return (
     <Stack spacing={8}>
       <TextInput
-        label='Owner'
+        label={t('columns.owner')}
         icon={<CustomAvatar {...city.user} />}
         iconWidth={48}
         value={city.user.name}
         disabled
       />
-      <TextInput label='City' value={city.name} disabled />
-      <TextInput label='X' value={city.x} disabled />
-      <TextInput label='Y' value={city.y} disabled />
+      <TextInput label={t('columns.city')} value={city.name} disabled />
+      <TextInput label={t('columns.x')} value={city.x} disabled />
+      <TextInput label={t('columns.y')} value={city.y} disabled />
       <Select
-        label='Users'
-        placeholder={`Total: ${city.users.length}`}
+        label={t('columns.users')}
+        placeholder={`${t('components.total')}: ${city.users.length}`}
         itemComponent={UsersItem}
         data={viewUsers(city.users)}
         searchable
@@ -36,7 +40,7 @@ export default function ViewCityModal({ data: city }: Props) {
 export const viewCityAction = {
   open: (city: City) =>
     openModal({
-      title: 'View City',
+      title: t('actions.view') + ' ' + t('modals.city'),
       children: <ViewCityModal data={city} />,
     }),
   disable: () => false,

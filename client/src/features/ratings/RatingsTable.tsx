@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { ITableWithActions } from '../../common/interfaces';
 import { Rating } from './rating.model';
 import CustomTable from '../../common/components/CustomTable';
@@ -10,10 +11,18 @@ import { viewRatingAction } from './ViewRatingModal';
 type Props = ITableWithActions<Rating>;
 
 export default function RatingsTable({ actions = [], ...props }: Props) {
+  const [t] = useTranslation();
+
   return (
     <CustomTable
       minWidth={800}
-      columns={['Sender', 'Receiver', 'Rate', 'Created', 'Action']}
+      columns={[
+        t('columns.sender'),
+        t('columns.receiver'),
+        t('columns.rate'),
+        t('columns.created'),
+        t('columns.action'),
+      ]}
       {...props}
     >
       {props.data?.result.map((rating) => (

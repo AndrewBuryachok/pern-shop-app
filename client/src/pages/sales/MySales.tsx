@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
 import { ISearch } from '../../common/interfaces';
 import { Mode } from '../../common/enums';
@@ -8,6 +9,8 @@ import { rateSaleAction } from '../../features/sales/RateSaleModal';
 import { Role } from '../../common/constants';
 
 export default function MySales() {
+  const [t] = useTranslation();
+
   const [searchParams] = useSearchParams();
 
   const [page, setPage] = useState(+(searchParams.get('page') || 1));
@@ -27,9 +30,9 @@ export default function MySales() {
   const response = useGetMySalesQuery({ page, search });
 
   const links = [
-    { label: 'Selled', to: '../selled' },
-    { label: 'Placed', to: '../placed' },
-    { label: 'All', to: '../all', role: Role.MANAGER },
+    { label: t('pages.selled'), to: '../selled' },
+    { label: t('pages.placed'), to: '../placed' },
+    { label: t('pages.all'), to: '../all', role: Role.MANAGER },
   ];
 
   const actions = [rateSaleAction];
@@ -37,7 +40,7 @@ export default function MySales() {
   return (
     <SalesTable
       {...response}
-      title='My Sales'
+      title={t('pages.my') + ' ' + t('navbar.sales')}
       page={page}
       setPage={setPage}
       search={search}

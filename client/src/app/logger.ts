@@ -1,3 +1,4 @@
+import { t } from 'i18next';
 import {
   MiddlewareAPI,
   Middleware,
@@ -12,14 +13,14 @@ export const logger: Middleware =
     if (isFulfilled(action) && action.meta.arg.type !== 'query') {
       closeAllModals();
       showNotification({
-        title: 'Success',
-        message: 'Operation completed successfully',
+        title: t('notifications.success'),
+        message: t('notifications.message'),
         color: 'green',
       });
     }
     if (isRejectedWithValue(action)) {
       showNotification({
-        title: 'Error',
+        title: t('notifications.error'),
         message: action.payload.data.message,
         color: 'red',
       });

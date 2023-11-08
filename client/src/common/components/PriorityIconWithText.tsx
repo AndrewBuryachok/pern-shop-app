@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { Group } from '@mantine/core';
 import PriorityIcon from './PriorityIcon';
 import SingleText from './SingleText';
@@ -8,10 +9,14 @@ type Props = {
 };
 
 export default function PriorityIconWithText(props: Props) {
+  const [t] = useTranslation();
+
   return (
     <Group spacing={8}>
       <PriorityIcon {...props} />
-      <SingleText text={priorities[props.priority - 1]} />
+      <SingleText
+        text={t('constants.priorities.' + priorities[props.priority - 1])}
+      />
     </Group>
   );
 }

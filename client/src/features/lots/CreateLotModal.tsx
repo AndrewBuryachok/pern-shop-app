@@ -1,4 +1,6 @@
+import { t } from 'i18next';
 import { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { NumberInput, Select, Textarea } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
@@ -36,6 +38,8 @@ import {
 type Props = { hasRole: boolean };
 
 export default function CreateLotModal({ hasRole }: Props) {
+  const [t] = useTranslation();
+
   const storage = { price: 0 };
   const myCard = { balance: 0 };
 
@@ -61,7 +65,7 @@ export default function CreateLotModal({ hasRole }: Props) {
     }),
     validate: {
       card: () =>
-        myCard.balance < storage.price ? 'Not enough balance' : null,
+        myCard.balance < storage.price ? t('errors.not_enough_balance') : null,
     },
   });
 
@@ -95,11 +99,11 @@ export default function CreateLotModal({ hasRole }: Props) {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={'Create lot'}
+      text={t('actions.create') + ' ' + t('modals.lot')}
     >
       <Select
-        label='Storage'
-        placeholder='Storage'
+        label={t('columns.storage')}
+        placeholder={t('columns.storage')}
         rightSection={<RefetchAction {...storagesResponse} />}
         itemComponent={PlacesItem}
         data={selectStoragesWithPrice(storages)}
@@ -110,8 +114,8 @@ export default function CreateLotModal({ hasRole }: Props) {
       />
       {hasRole && (
         <Select
-          label='User'
-          placeholder='User'
+          label={t('columns.user')}
+          placeholder={t('columns.user')}
           icon={user && <CustomAvatar {...user} />}
           iconWidth={48}
           rightSection={<RefetchAction {...usersResponse} />}
@@ -124,8 +128,8 @@ export default function CreateLotModal({ hasRole }: Props) {
         />
       )}
       <Select
-        label='Card'
-        placeholder='Card'
+        label={t('columns.card')}
+        placeholder={t('columns.card')}
         rightSection={
           <RefetchAction
             {...cardsResponse}
@@ -140,16 +144,16 @@ export default function CreateLotModal({ hasRole }: Props) {
         {...form.getInputProps('card')}
       />
       <Select
-        label='Category'
-        placeholder='Category'
+        label={t('columns.category')}
+        placeholder={t('columns.category')}
         data={selectCategories()}
         searchable
         required
         {...form.getInputProps('category')}
       />
       <Select
-        label='Item'
-        placeholder='Item'
+        label={t('columns.item')}
+        placeholder={t('columns.item')}
         icon={form.values.item && <ThingImage item={+form.values.item} />}
         iconWidth={48}
         itemComponent={ThingsItem}
@@ -159,39 +163,39 @@ export default function CreateLotModal({ hasRole }: Props) {
         {...form.getInputProps('item')}
       />
       <Textarea
-        label='Description'
-        placeholder='Description'
+        label={t('columns.description')}
+        placeholder={t('columns.description')}
         required
         maxLength={MAX_DESCRIPTION_LENGTH}
         {...form.getInputProps('description')}
       />
       <NumberInput
-        label='Amount'
-        placeholder='Amount'
+        label={t('columns.amount')}
+        placeholder={t('columns.amount')}
         required
         min={1}
         max={MAX_AMOUNT_VALUE}
         {...form.getInputProps('amount')}
       />
       <NumberInput
-        label='Intake'
-        placeholder='Intake'
+        label={t('columns.intake')}
+        placeholder={t('columns.intake')}
         required
         min={1}
         max={MAX_INTAKE_VALUE}
         {...form.getInputProps('intake')}
       />
       <Select
-        label='Kit'
-        placeholder='Kit'
+        label={t('columns.kit')}
+        placeholder={t('columns.kit')}
         data={selectKits()}
         searchable
         required
         {...form.getInputProps('kit')}
       />
       <NumberInput
-        label='Price'
-        placeholder='Price'
+        label={t('columns.price')}
+        placeholder={t('columns.price')}
         required
         min={1}
         max={MAX_PRICE_VALUE}
@@ -202,10 +206,10 @@ export default function CreateLotModal({ hasRole }: Props) {
 }
 
 export const createLotFactory = (hasRole: boolean) => ({
-  label: 'Create',
+  label: 'create',
   open: () =>
     openModal({
-      title: 'Create Lot',
+      title: t('actions.create') + ' ' + t('modals.lot'),
       children: <CreateLotModal hasRole={hasRole} />,
     }),
 });

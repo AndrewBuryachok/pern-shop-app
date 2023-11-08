@@ -1,4 +1,6 @@
+import { t } from 'i18next';
 import { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { NumberInput, Select, Textarea } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
@@ -20,6 +22,8 @@ import { MAX_DESCRIPTION_LENGTH, MAX_SUM_VALUE } from '../../common/constants';
 type Props = { hasRole: boolean };
 
 export default function CreateInvoiceModal({ hasRole }: Props) {
+  const [t] = useTranslation();
+
   const form = useForm({
     initialValues: {
       senderUser: '',
@@ -62,12 +66,12 @@ export default function CreateInvoiceModal({ hasRole }: Props) {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={'Create invoice'}
+      text={t('actions.create') + ' ' + t('modals.invoice')}
     >
       {hasRole && (
         <Select
-          label='Sender User'
-          placeholder='Sender User'
+          label={t('columns.sender')}
+          placeholder={t('columns.sender')}
           icon={senderUser && <CustomAvatar {...senderUser} />}
           iconWidth={48}
           rightSection={<RefetchAction {...usersResponse} />}
@@ -80,8 +84,8 @@ export default function CreateInvoiceModal({ hasRole }: Props) {
         />
       )}
       <Select
-        label='Sender Card'
-        placeholder='Sender Card'
+        label={t('columns.card')}
+        placeholder={t('columns.card')}
         rightSection={
           <RefetchAction
             {...cardsResponse}
@@ -96,8 +100,8 @@ export default function CreateInvoiceModal({ hasRole }: Props) {
         {...form.getInputProps('senderCard')}
       />
       <Select
-        label='Receiver User'
-        placeholder='Receiver User'
+        label={t('columns.receiver')}
+        placeholder={t('columns.receiver')}
         icon={receiverUser && <CustomAvatar {...receiverUser} />}
         iconWidth={48}
         rightSection={<RefetchAction {...usersResponse} />}
@@ -109,16 +113,16 @@ export default function CreateInvoiceModal({ hasRole }: Props) {
         {...form.getInputProps('receiverUser')}
       />
       <NumberInput
-        label='Sum'
-        placeholder='Sum'
+        label={t('columns.sum')}
+        placeholder={t('columns.sum')}
         required
         min={1}
         max={MAX_SUM_VALUE}
         {...form.getInputProps('sum')}
       />
       <Textarea
-        label='Description'
-        placeholder='Description'
+        label={t('columns.description')}
+        placeholder={t('columns.description')}
         required
         maxLength={MAX_DESCRIPTION_LENGTH}
         {...form.getInputProps('description')}
@@ -128,10 +132,10 @@ export default function CreateInvoiceModal({ hasRole }: Props) {
 }
 
 export const createInvoiceFactory = (hasRole: boolean) => ({
-  label: 'Create',
+  label: 'create',
   open: () =>
     openModal({
-      title: 'Create Invoice',
+      title: t('actions.create') + ' ' + t('modals.invoice'),
       children: <CreateInvoiceModal hasRole={hasRole} />,
     }),
 });

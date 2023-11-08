@@ -1,7 +1,7 @@
+import { useTranslation } from 'react-i18next';
 import { Avatar, Group, Paper, SimpleGrid, Stack, Text } from '@mantine/core';
 import { IconBuildingSkyscraper, IconClock } from '@tabler/icons';
 import { ExtUser } from './user.model';
-import { getCurrentUser } from '../auth/auth.slice';
 import CustomIndicator from '../../common/components/CustomIndicator';
 import RolesBadge from '../../common/components/RolesBadge';
 import DateText from '../../common/components/DateText';
@@ -15,21 +15,21 @@ type Props = {
 };
 
 export default function UserProfile({ data: user }: Props) {
-  const me = getCurrentUser();
+  const [t] = useTranslation();
 
   const stats = [
-    { label: 'Wares', value: user.wares, color: 'red' },
-    { label: 'Products', value: user.products, color: 'yellow' },
-    { label: 'Orders', value: user.orders, color: 'green' },
-    { label: 'Deliveries', value: user.deliveries, color: 'blue' },
-    { label: 'Goods', value: user.goods, color: 'violet' },
+    { label: 'wares', value: user.wares, color: 'red' },
+    { label: 'products', value: user.products, color: 'yellow' },
+    { label: 'orders', value: user.orders, color: 'green' },
+    { label: 'deliveries', value: user.deliveries, color: 'blue' },
+    { label: 'goods', value: user.goods, color: 'violet' },
   ];
 
   const rates = [
-    { label: 'Trades', value: user.tradesRate, color: 'red' },
-    { label: 'Sales', value: user.salesRate, color: 'yellow' },
-    { label: 'Orders', value: user.ordersRate, color: 'green' },
-    { label: 'Deliveries', value: user.deliveriesRate, color: 'blue' },
+    { label: 'trades', value: user.tradesRate, color: 'red' },
+    { label: 'sales', value: user.salesRate, color: 'yellow' },
+    { label: 'orders', value: user.ordersRate, color: 'green' },
+    { label: 'deliveries', value: user.deliveriesRate, color: 'blue' },
   ];
 
   return (
@@ -85,7 +85,7 @@ export default function UserProfile({ data: user }: Props) {
               {stat.value}
             </Text>
             <Text align='center' size='sm' color={stat.color}>
-              {stat.label}
+              {t('navbar.' + stat.label)}
             </Text>
           </Paper>
         ))}
@@ -101,7 +101,7 @@ export default function UserProfile({ data: user }: Props) {
               {rate.value.toFixed(1)}
             </Text>
             <Text align='center' size='sm' color={rate.color}>
-              {rate.label}
+              {t('navbar.' + rate.label)}
             </Text>
           </Paper>
         ))}

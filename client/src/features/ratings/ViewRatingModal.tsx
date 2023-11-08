@@ -1,3 +1,5 @@
+import { t } from 'i18next';
+import { useTranslation } from 'react-i18next';
 import { Rating as CustomRating, Input, Stack, TextInput } from '@mantine/core';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
@@ -9,26 +11,32 @@ import { Color } from '../../common/constants';
 type Props = IModal<Rating>;
 
 export default function ViewRatingModal({ data: rating }: Props) {
+  const [t] = useTranslation();
+
   return (
     <Stack spacing={8}>
       <TextInput
-        label='Sender'
+        label={t('columns.sender')}
         icon={<CustomAvatar {...rating.senderUser} />}
         iconWidth={48}
         value={rating.senderUser.name}
         disabled
       />
       <TextInput
-        label='Receiver'
+        label={t('columns.receiver')}
         icon={<CustomAvatar {...rating.receiverUser} />}
         iconWidth={48}
         value={rating.receiverUser.name}
         disabled
       />
-      <Input.Wrapper label='Rate'>
+      <Input.Wrapper label={t('columns.rate')}>
         <CustomRating value={rating.rate} readOnly />
       </Input.Wrapper>
-      <TextInput label='Created' value={parseTime(rating.createdAt)} disabled />
+      <TextInput
+        label={t('columns.created')}
+        value={parseTime(rating.createdAt)}
+        disabled
+      />
     </Stack>
   );
 }
@@ -36,7 +44,7 @@ export default function ViewRatingModal({ data: rating }: Props) {
 export const viewRatingAction = {
   open: (rating: Rating) =>
     openModal({
-      title: 'View Rating',
+      title: t('actions.view') + ' ' + t('modals.rating'),
       children: <ViewRatingModal data={rating} />,
     }),
   disable: () => false,

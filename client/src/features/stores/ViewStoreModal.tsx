@@ -1,3 +1,5 @@
+import { t } from 'i18next';
+import { useTranslation } from 'react-i18next';
 import { Stack, TextInput } from '@mantine/core';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
@@ -9,20 +11,30 @@ import { Color } from '../../common/constants';
 type Props = IModal<Store>;
 
 export default function ViewStoreModal({ data: store }: Props) {
+  const [t] = useTranslation();
+
   return (
     <Stack spacing={8}>
       <TextInput
-        label='Owner'
+        label={t('columns.owner')}
         icon={<CustomAvatar {...store.market.card.user} />}
         iconWidth={48}
         value={parseCard(store.market.card)}
         disabled
       />
-      <TextInput label='Market' value={parsePlace(store.market)} disabled />
-      <TextInput label='Store' value={`#${store.name}`} disabled />
-      <TextInput label='Price' value={`${store.market.price}$`} disabled />
       <TextInput
-        label='Reserved'
+        label={t('columns.market')}
+        value={parsePlace(store.market)}
+        disabled
+      />
+      <TextInput label={t('columns.store')} value={`#${store.name}`} disabled />
+      <TextInput
+        label={t('columns.price')}
+        value={`${store.market.price}$`}
+        disabled
+      />
+      <TextInput
+        label={t('columns.reserved')}
         value={parseTime(store.reservedAt)}
         disabled
       />
@@ -33,7 +45,7 @@ export default function ViewStoreModal({ data: store }: Props) {
 export const viewStoreAction = {
   open: (store: Store) =>
     openModal({
-      title: 'View Store',
+      title: t('actions.view') + ' ' + t('modals.store'),
       children: <ViewStoreModal data={store} />,
     }),
   disable: () => false,

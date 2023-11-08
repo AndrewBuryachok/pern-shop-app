@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import SingleText from './SingleText';
 
 type Props = {
@@ -5,5 +6,7 @@ type Props = {
 };
 
 export default function TotalText(props: Props) {
-  return <SingleText text={`Total: ${props.data}`} />;
+  const [t] = useTranslation();
+
+  return <SingleText text={`${t('components.total')}: ${props.data}`} />;
 }

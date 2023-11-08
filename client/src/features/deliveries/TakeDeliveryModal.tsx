@@ -1,3 +1,5 @@
+import { t } from 'i18next';
+import { useTranslation } from 'react-i18next';
 import { Select, Textarea, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
@@ -19,15 +21,18 @@ import { CardsItem } from '../../common/components/CardsItem';
 import {
   parseCard,
   parseCell,
+  parseItem,
   parseThingAmount,
   selectCardsWithBalance,
   selectUsers,
 } from '../../common/utils';
-import { Color, items, Status } from '../../common/constants';
+import { Color, Status } from '../../common/constants';
 
 type Props = IModal<Delivery> & { hasRole: boolean };
 
 export default function TakeDeliveryModal({ data: delivery, hasRole }: Props) {
+  const [t] = useTranslation();
+
   const form = useForm({
     initialValues: {
       deliveryId: delivery.id,
@@ -58,44 +63,56 @@ export default function TakeDeliveryModal({ data: delivery, hasRole }: Props) {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={'Take delivery'}
+      text={t('actions.take') + ' ' + t('modals.delivery')}
     >
       <TextInput
-        label='Customer'
+        label={t('columns.customer')}
         icon={<CustomAvatar {...delivery.fromLease.card.user} />}
         iconWidth={48}
         value={parseCard(delivery.fromLease.card)}
         disabled
       />
       <TextInput
-        label='Item'
+        label={t('columns.item')}
         icon={<ThingImage {...delivery} />}
         iconWidth={48}
-        value={items[delivery.item - 1].substring(3)}
+        value={parseItem(delivery.item)}
         disabled
       />
-      <Textarea label='Description' value={delivery.description} disabled />
-      <TextInput label='Amount' value={parseThingAmount(delivery)} disabled />
-      <TextInput label='Price' value={`${delivery.price}$`} disabled />
+      <Textarea
+        label={t('columns.description')}
+        value={delivery.description}
+        disabled
+      />
       <TextInput
-        label='From Storage'
+        label={t('columns.amount')}
+        value={parseThingAmount(delivery)}
+        disabled
+      />
+      <TextInput
+        label={t('columns.price')}
+        value={`${delivery.price}$`}
+        disabled
+      />
+      <TextInput
+        label={t('columns.storage') + ' ' + t('columns.from')}
         value={parseCell(delivery.fromLease.cell)}
         disabled
       />
       <TextInput
-        label='From Owner'
+        label={t('columns.owner') + ' ' + t('columns.from')}
         icon={<CustomAvatar {...delivery.fromLease.cell.storage.card.user} />}
         iconWidth={48}
         value={parseCard(delivery.fromLease.cell.storage.card)}
         disabled
       />
       <TextInput
-        label='To Storage'
+        label={t('columns.storage') + ' ' + t('columns.to')}
         value={parseCell(delivery.toLease.cell)}
         disabled
       />
       <TextInput
-        label='To Owner'
+        label={t('columns.owner') + ' ' + t('columns.to')}
         icon={<CustomAvatar {...delivery.toLease.cell.storage.card.user} />}
         iconWidth={48}
         value={parseCard(delivery.toLease.cell.storage.card)}
@@ -103,8 +120,8 @@ export default function TakeDeliveryModal({ data: delivery, hasRole }: Props) {
       />
       {hasRole && (
         <Select
-          label='User'
-          placeholder='User'
+          label={t('columns.user')}
+          placeholder={t('columns.user')}
           icon={user && <CustomAvatar {...user} />}
           iconWidth={48}
           rightSection={<RefetchAction {...usersResponse} />}
@@ -117,8 +134,8 @@ export default function TakeDeliveryModal({ data: delivery, hasRole }: Props) {
         />
       )}
       <Select
-        label='Card'
-        placeholder='Card'
+        label={t('columns.card')}
+        placeholder={t('columns.card')}
         rightSection={
           <RefetchAction
             {...cardsResponse}
@@ -139,7 +156,7 @@ export default function TakeDeliveryModal({ data: delivery, hasRole }: Props) {
 export const takeDeliveryFactory = (hasRole: boolean) => ({
   open: (delivery: Delivery) =>
     openModal({
-      title: 'Take Delivery',
+      title: t('actions.take') + ' ' + t('modals.delivery'),
       children: <TakeDeliveryModal data={delivery} hasRole={hasRole} />,
     }),
   disable: (delivery: Delivery) => delivery.status !== Status.CREATED,

@@ -1,3 +1,5 @@
+import { t } from 'i18next';
+import { useTranslation } from 'react-i18next';
 import {
   CloseButton,
   Group,
@@ -15,12 +17,14 @@ import { RateOrderDto } from './order.dto';
 import CustomForm from '../../common/components/CustomForm';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import ThingImage from '../../common/components/ThingImage';
-import { parseCard, parseThingAmount } from '../../common/utils';
-import { Color, items, Status } from '../../common/constants';
+import { parseCard, parseItem, parseThingAmount } from '../../common/utils';
+import { Color, Status } from '../../common/constants';
 
 type Props = IModal<Order>;
 
 export default function RateOrderModal({ data: order }: Props) {
+  const [t] = useTranslation();
+
   const form = useForm({
     initialValues: {
       orderId: order.id,
@@ -38,27 +42,39 @@ export default function RateOrderModal({ data: order }: Props) {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={'Rate order'}
+      text={t('actions.rate') + ' ' + t('modals.order')}
       isChanged={!form.isDirty()}
     >
       <TextInput
-        label='Executor'
+        label={t('columns.executor')}
         icon={<CustomAvatar {...order.executorCard!.user} />}
         iconWidth={48}
         value={parseCard(order.executorCard!)}
         disabled
       />
       <TextInput
-        label='Item'
+        label={t('columns.item')}
         icon={<ThingImage {...order} />}
         iconWidth={48}
-        value={items[order.item - 1].substring(3)}
+        value={parseItem(order.item)}
         disabled
       />
-      <Textarea label='Description' value={order.description} disabled />
-      <TextInput label='Amount' value={parseThingAmount(order)} disabled />
-      <TextInput label='Price' value={`${order.price}$`} disabled />
-      <Input.Wrapper label='Rate' required>
+      <Textarea
+        label={t('columns.description')}
+        value={order.description}
+        disabled
+      />
+      <TextInput
+        label={t('columns.amount')}
+        value={parseThingAmount(order)}
+        disabled
+      />
+      <TextInput
+        label={t('columns.price')}
+        value={`${order.price}$`}
+        disabled
+      />
+      <Input.Wrapper label={t('columns.rate')} required>
         <Group spacing={8}>
           <Rating {...form.getInputProps('rate')} />
           <CloseButton
@@ -75,7 +91,7 @@ export default function RateOrderModal({ data: order }: Props) {
 export const rateOrderAction = {
   open: (order: Order) =>
     openModal({
-      title: 'Rate Order',
+      title: t('actions.rate') + ' ' + t('modals.order'),
       children: <RateOrderModal data={order} />,
     }),
   disable: (order: Order) => order.status !== Status.COMPLETED,

@@ -1,6 +1,6 @@
+import { useTranslation } from 'react-i18next';
 import { ITableWithActions } from '../../common/interfaces';
 import { Bid } from './bid.model';
-import { getCurrentUser } from '../auth/auth.slice';
 import CustomTable from '../../common/components/CustomTable';
 import AvatarWithDoubleText from '../../common/components/AvatarWithDoubleText';
 import ThingImageWithText from '../../common/components/ThingImageWithText';
@@ -15,20 +15,20 @@ import { parseThingAmount } from '../../common/utils';
 type Props = ITableWithActions<Bid>;
 
 export default function BidsTable({ actions = [], ...props }: Props) {
-  const user = getCurrentUser()!;
+  const [t] = useTranslation();
 
   return (
     <CustomTable
       minWidth={1100}
       columns={[
-        'Buyer',
-        'Seller',
-        'Item',
-        'Amount',
-        'Sum',
-        'Storage',
-        'Created',
-        'Action',
+        t('columns.buyer'),
+        t('columns.seller'),
+        t('columns.item'),
+        t('columns.amount'),
+        t('columns.sum'),
+        t('columns.storage'),
+        t('columns.created'),
+        t('columns.action'),
       ]}
       {...props}
     >
@@ -48,7 +48,6 @@ export default function BidsTable({ actions = [], ...props }: Props) {
           </td>
           <td>
             <SumText
-              myId={user.id}
               fromId={bid.card.user.id}
               toId={bid.lot.lease.card.user.id}
               sum={bid.price}

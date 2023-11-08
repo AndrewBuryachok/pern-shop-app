@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { Button, Group, Title } from '@mantine/core';
 import { useDocumentTitle } from '@mantine/hooks';
 import { IconRefresh, IconSearch } from '@tabler/icons';
@@ -7,7 +8,9 @@ import { openSearchModal } from './SearchModal';
 type Props = IHead;
 
 export default function CustomHead(props: Props) {
-  useDocumentTitle(`${props.title} | Shop`);
+  const [t] = useTranslation();
+
+  useDocumentTitle(props.title);
 
   return (
     <Group position='apart' spacing={8}>
@@ -18,14 +21,14 @@ export default function CustomHead(props: Props) {
         onClick={props.refetch}
         compact
       >
-        Refresh
+        {t('components.refresh')}
       </Button>
       <Button
         leftIcon={<IconSearch size={16} />}
         onClick={() => openSearchModal(props)}
         compact
       >
-        Search
+        {t('components.search')}
       </Button>
     </Group>
   );

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
 import { ISearch } from '../../common/interfaces';
 import { Mode } from '../../common/enums';
@@ -10,6 +11,8 @@ import { deleteTaskAction } from '../../features/tasks/DeleteTaskModal';
 import { Role } from '../../common/constants';
 
 export default function MyTasks() {
+  const [t] = useTranslation();
+
   const [searchParams] = useSearchParams();
 
   const [page, setPage] = useState(+(searchParams.get('page') || 1));
@@ -27,10 +30,10 @@ export default function MyTasks() {
   const response = useGetMyTasksQuery({ page, search });
 
   const links = [
-    { label: 'Main', to: '..' },
-    { label: 'Taken', to: '../taken' },
-    { label: 'Placed', to: '../placed' },
-    { label: 'All', to: '../all', role: Role.ADMIN },
+    { label: t('pages.main'), to: '..' },
+    { label: t('pages.taken'), to: '../taken' },
+    { label: t('pages.placed'), to: '../placed' },
+    { label: t('pages.all'), to: '../all', role: Role.ADMIN },
   ];
 
   const button = createTaskButton;
@@ -40,7 +43,7 @@ export default function MyTasks() {
   return (
     <TasksTable
       {...response}
-      title='My Tasks'
+      title={t('pages.my') + ' ' + t('navbar.tasks')}
       page={page}
       setPage={setPage}
       search={search}

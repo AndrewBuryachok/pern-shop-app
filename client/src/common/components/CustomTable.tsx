@@ -1,4 +1,6 @@
 import { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useLocation } from 'react-router-dom';
 import { Paper, ScrollArea, Skeleton, Stack, Table } from '@mantine/core';
 import { IPage } from '../interfaces';
 import CustomNav from './CustomNav';
@@ -10,13 +12,17 @@ import { ROWS_PER_PAGE } from '../constants';
 type Props<T> = IPage<T>;
 
 export default function CustomTable<T>(props: Props<T>) {
+  const [t] = useTranslation();
+
+  const active = useLocation().pathname.split('/');
+
   useEffect(() => props.setPage(1), [props.search]);
 
   return (
     <Stack spacing={8}>
       <CustomNav {...props} />
-      {['Goods', 'Wares', 'Products'].includes(props.title.split(' ')[1]) &&
-        props.title.split(' ')[0] === 'Main' && <CustomStats />}
+      {['goods', 'wares', 'products'].includes(active[1]) &&
+        active.length === 2 && <CustomStats />}
       <CustomHead {...props} />
       <Paper withBorder>
         <ScrollArea>
@@ -50,13 +56,13 @@ export default function CustomTable<T>(props: Props<T>) {
             {!props.isFetching && (
               <caption style={{ marginTop: 0 }}>
                 {props.data?.result.length
-                  ? `Showing ${
+                  ? `${t('components.pagination.from')} ${
                       (props.page - 1) * ROWS_PER_PAGE + 1
-                    } to ${Math.min(
+                    } ${t('components.pagination.to')} ${Math.min(
                       props.page * ROWS_PER_PAGE,
                       props.data.count,
-                    )} of ${props.data.count}`
-                  : 'No data to display'}
+                    )} ${t('components.pagination.of')} ${props.data.count}`
+                  : t('components.pagination.no')}
               </caption>
             )}
           </Table>

@@ -1,3 +1,5 @@
+import { t } from 'i18next';
+import { useTranslation } from 'react-i18next';
 import { Select, TextInput, Textarea } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
@@ -12,15 +14,18 @@ import { StatesItem } from '../../common/components/StatesItem';
 import {
   parseCard,
   parseCell,
+  parseItem,
   parseThingAmount,
   parseTime,
   viewStates,
 } from '../../common/utils';
-import { Color, items } from '../../common/constants';
+import { Color } from '../../common/constants';
 
 type Props = IModal<Lot>;
 
 export default function CompleteLotModal({ data: lot }: Props) {
+  const [t] = useTranslation();
+
   const form = useForm({
     initialValues: {
       lotId: lot.id,
@@ -38,41 +43,57 @@ export default function CompleteLotModal({ data: lot }: Props) {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={'Complete lot'}
+      text={t('actions.complete') + ' ' + t('modals.lot')}
     >
       <TextInput
-        label='Seller'
+        label={t('columns.seller')}
         icon={<CustomAvatar {...lot.lease.card.user} />}
         iconWidth={48}
         value={parseCard(lot.lease.card)}
         disabled
       />
       <TextInput
-        label='Item'
+        label={t('columns.item')}
         icon={<ThingImage {...lot} />}
         iconWidth={48}
-        value={items[lot.item - 1].substring(3)}
+        value={parseItem(lot.item)}
         disabled
       />
-      <Textarea label='Description' value={lot.description} disabled />
-      <TextInput label='Amount' value={parseThingAmount(lot)} disabled />
-      <TextInput label='Price' value={`${lot.price}$`} disabled />
+      <Textarea
+        label={t('columns.description')}
+        value={lot.description}
+        disabled
+      />
+      <TextInput
+        label={t('columns.amount')}
+        value={parseThingAmount(lot)}
+        disabled
+      />
+      <TextInput label={t('columns.price')} value={`${lot.price}$`} disabled />
       <Select
-        label='Bids'
+        label={t('columns.bids')}
         placeholder={`Total: ${lot.bids.length}`}
         itemComponent={StatesItem}
         data={viewStates(lot.bids)}
         searchable
       />
-      <TextInput label='Market' value={parseCell(lot.lease.cell)} disabled />
       <TextInput
-        label='Owner'
+        label={t('columns.market')}
+        value={parseCell(lot.lease.cell)}
+        disabled
+      />
+      <TextInput
+        label={t('columns.owner')}
         icon={<CustomAvatar {...lot.lease.cell.storage.card.user} />}
         iconWidth={48}
         value={parseCard(lot.lease.cell.storage.card)}
         disabled
       />
-      <TextInput label='Created' value={parseTime(lot.createdAt)} disabled />
+      <TextInput
+        label={t('columns.created')}
+        value={parseTime(lot.createdAt)}
+        disabled
+      />
     </CustomForm>
   );
 }
@@ -80,7 +101,7 @@ export default function CompleteLotModal({ data: lot }: Props) {
 export const completeLotAction = {
   open: (lot: Lot) =>
     openModal({
-      title: 'Complete Lot',
+      title: t('actions.complete') + ' ' + t('modals.lot'),
       children: <CompleteLotModal data={lot} />,
     }),
   disable: (lot: Lot) => !!lot.completedAt,

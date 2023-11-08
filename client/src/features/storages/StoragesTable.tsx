@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { ITableWithActions } from '../../common/interfaces';
 import { Storage } from './storage.model';
 import CustomTable from '../../common/components/CustomTable';
@@ -12,10 +13,20 @@ import { viewStorageAction } from './ViewStorageModal';
 type Props = ITableWithActions<Storage>;
 
 export default function StoragesTable({ actions = [], ...props }: Props) {
+  const [t] = useTranslation();
+
   return (
     <CustomTable
       minWidth={700}
-      columns={['Owner', 'Storage', 'X', 'Y', 'Price', 'Cells', 'Action']}
+      columns={[
+        t('columns.owner'),
+        t('columns.storage'),
+        t('columns.x'),
+        t('columns.y'),
+        t('columns.price'),
+        t('columns.cells'),
+        t('columns.action'),
+      ]}
       {...props}
     >
       {props.data?.result.map((storage) => (

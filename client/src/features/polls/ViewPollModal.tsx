@@ -1,3 +1,5 @@
+import { t } from 'i18next';
+import { useTranslation } from 'react-i18next';
 import { Stack, Textarea, TextInput } from '@mantine/core';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
@@ -9,6 +11,8 @@ import { Color } from '../../common/constants';
 type Props = IModal<Poll>;
 
 export default function ViewPollModal({ data: poll }: Props) {
+  const [t] = useTranslation();
+
   const total = poll.upVotes + poll.downVotes;
   const votes = [poll.upVotes, poll.downVotes].map(
     (value) => `${value} (${total && Math.round((value * 100) / total)}%)`,
@@ -17,23 +21,37 @@ export default function ViewPollModal({ data: poll }: Props) {
   return (
     <Stack spacing={8}>
       <TextInput
-        label='Poller'
+        label={t('columns.poller')}
         icon={<CustomAvatar {...poll.user} />}
         iconWidth={48}
         value={poll.user.name}
         disabled
       />
-      <Textarea label='Description' value={poll.description} disabled />
-      <TextInput label='Up' value={votes[0]} disabled />
-      <TextInput label='Down' value={votes[1]} disabled />
-      <TextInput
-        label='My'
-        value={poll.myVote ? (poll.myVote.type ? 'up' : 'down') : '-'}
+      <Textarea
+        label={t('columns.description')}
+        value={poll.description}
         disabled
       />
-      <TextInput label='Created' value={parseTime(poll.createdAt)} disabled />
+      <TextInput label={t('columns.up')} value={votes[0]} disabled />
+      <TextInput label={t('columns.down')} value={votes[1]} disabled />
       <TextInput
-        label='Completed'
+        label={t('columns.my')}
+        value={
+          poll.myVote
+            ? poll.myVote.type
+              ? t('columns.up')
+              : t('columns.down')
+            : '-'
+        }
+        disabled
+      />
+      <TextInput
+        label={t('columns.created')}
+        value={parseTime(poll.createdAt)}
+        disabled
+      />
+      <TextInput
+        label={t('columns.completed')}
         value={parseTime(poll.completedAt)}
         disabled
       />
@@ -44,7 +62,7 @@ export default function ViewPollModal({ data: poll }: Props) {
 export const viewPollAction = {
   open: (poll: Poll) =>
     openModal({
-      title: 'View Poll',
+      title: t('actions.view') + ' ' + t('modals.poll'),
       children: <ViewPollModal data={poll} />,
     }),
   disable: () => false,

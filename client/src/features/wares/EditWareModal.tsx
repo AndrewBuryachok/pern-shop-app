@@ -1,3 +1,5 @@
+import { t } from 'i18next';
+import { useTranslation } from 'react-i18next';
 import { NumberInput, Select, TextInput, Textarea } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
@@ -11,16 +13,19 @@ import ThingImage from '../../common/components/ThingImage';
 import { StatesItem } from '../../common/components/StatesItem';
 import {
   parseCard,
+  parseItem,
   parseStore,
   parseThingAmount,
   parseTime,
   viewStates,
 } from '../../common/utils';
-import { Color, MAX_PRICE_VALUE, items } from '../../common/constants';
+import { Color, MAX_PRICE_VALUE } from '../../common/constants';
 
 type Props = IModal<Ware>;
 
 export default function EditWareModal({ data: ware }: Props) {
+  const [t] = useTranslation();
+
   const form = useForm({
     initialValues: {
       wareId: ware.id,
@@ -38,49 +43,65 @@ export default function EditWareModal({ data: ware }: Props) {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={'Edit ware'}
+      text={t('actions.edit') + ' ' + t('modals.ware')}
       isChanged={!form.isDirty()}
     >
       <TextInput
-        label='Seller'
+        label={t('columns.seller')}
         icon={<CustomAvatar {...ware.rent.card.user} />}
         iconWidth={48}
         value={parseCard(ware.rent.card)}
         disabled
       />
       <TextInput
-        label='Item'
+        label={t('columns.item')}
         icon={<ThingImage {...ware} />}
         iconWidth={48}
-        value={items[ware.item - 1].substring(3)}
+        value={parseItem(ware.item)}
         disabled
       />
-      <Textarea label='Description' value={ware.description} disabled />
-      <TextInput label='Amount' value={parseThingAmount(ware)} disabled />
+      <Textarea
+        label={t('columns.description')}
+        value={ware.description}
+        disabled
+      />
+      <TextInput
+        label={t('columns.amount')}
+        value={parseThingAmount(ware)}
+        disabled
+      />
       <NumberInput
-        label='Price'
-        placeholder='Price'
+        label={t('columns.price')}
+        placeholder={t('columns.price')}
         required
         min={1}
         max={MAX_PRICE_VALUE}
         {...form.getInputProps('price')}
       />
       <Select
-        label='Prices'
+        label={t('columns.prices')}
         placeholder={`Total: ${ware.states.length}`}
         itemComponent={StatesItem}
         data={viewStates(ware.states)}
         searchable
       />
-      <TextInput label='Market' value={parseStore(ware.rent.store)} disabled />
       <TextInput
-        label='Owner'
+        label={t('columns.market')}
+        value={parseStore(ware.rent.store)}
+        disabled
+      />
+      <TextInput
+        label={t('columns.owner')}
         icon={<CustomAvatar {...ware.rent.store.market.card.user} />}
         iconWidth={48}
         value={parseCard(ware.rent.store.market.card)}
         disabled
       />
-      <TextInput label='Created' value={parseTime(ware.createdAt)} disabled />
+      <TextInput
+        label={t('columns.created')}
+        value={parseTime(ware.createdAt)}
+        disabled
+      />
     </CustomForm>
   );
 }
@@ -88,7 +109,7 @@ export default function EditWareModal({ data: ware }: Props) {
 export const editWareAction = {
   open: (ware: Ware) =>
     openModal({
-      title: 'Edit Ware',
+      title: t('actions.edit') + ' ' + t('modals.ware'),
       children: <EditWareModal data={ware} />,
     }),
   disable: (ware: Ware) => !ware.amount,

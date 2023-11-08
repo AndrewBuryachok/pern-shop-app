@@ -15,6 +15,8 @@ import {
 } from '@mantine/hooks';
 import { ModalsProvider } from '@mantine/modals';
 import { NotificationsProvider } from '@mantine/notifications';
+import { useAppDispatch } from './app/hooks';
+import { toggleCurrentLanguage } from './features/lang/lang.slice';
 import CustomHeader from './common/components/CustomHeader';
 import CustomNavbar from './common/components/CustomNavbar';
 import CustomLoader from './common/components/CustomLoader';
@@ -22,6 +24,8 @@ import Protected from './common/components/Protected';
 import { pages } from './app/pages';
 
 export default function App() {
+  const dispatch = useAppDispatch();
+
   const preferredColorScheme = useColorScheme();
 
   const [colorScheme, setColorScheme] = useLocalStorage<ColorScheme>({
@@ -38,6 +42,7 @@ export default function App() {
   useHotkeys([
     ['J', () => toggleColorScheme()],
     ['F', () => toggleFullscreen()],
+    ['L', () => dispatch(toggleCurrentLanguage())],
   ]);
 
   const [opened, toggle] = useToggle();

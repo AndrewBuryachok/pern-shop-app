@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
 import { ISearch } from '../../common/interfaces';
 import { useGetMyCardsQuery } from '../../features/cards/cards.api';
@@ -10,6 +11,8 @@ import { removeMyCardUserAction } from '../../features/cards/RemoveCardUserModal
 import { Role } from '../../common/constants';
 
 export default function MyCards() {
+  const [t] = useTranslation();
+
   const [searchParams] = useSearchParams();
 
   const [page, setPage] = useState(+(searchParams.get('page') || 1));
@@ -23,7 +26,7 @@ export default function MyCards() {
 
   const response = useGetMyCardsQuery({ page, search });
 
-  const links = [{ label: 'All', to: '../all', role: Role.BANKER }];
+  const links = [{ label: t('pages.all'), to: '../all', role: Role.BANKER }];
 
   const button = createMyCardButton;
 
@@ -36,7 +39,7 @@ export default function MyCards() {
   return (
     <CardsTable
       {...response}
-      title='My Cards'
+      title={t('pages.my') + ' ' + t('navbar.cards')}
       page={page}
       setPage={setPage}
       search={search}

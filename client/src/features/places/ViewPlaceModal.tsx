@@ -1,3 +1,5 @@
+import { t } from 'i18next';
+import { useTranslation } from 'react-i18next';
 import { Select, Stack, TextInput } from '@mantine/core';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
@@ -10,26 +12,30 @@ import { parseCard } from '../../common/utils';
 type Props = IModal<ExtPlace>;
 
 export default function PlaceModal({ data: place }: Props) {
-  const label = ['Users', 'Goods', 'Stores', 'Cells'][place.type];
+  const [t] = useTranslation();
+
+  const label = ['users', 'goods', 'stores', 'cells'][place.type];
   const component =
-    label === 'Users' ? UsersItem : label === 'Goods' ? ThingsItem : undefined;
+    label === 'users' ? UsersItem : label === 'goods' ? ThingsItem : undefined;
 
   return (
     <Stack spacing={8}>
       <TextInput
-        label='Owner'
+        label={t('columns.owner')}
         icon={<CustomAvatar {...place.owner} />}
         iconWidth={48}
         value={place.card ? parseCard(place.card) : place.owner.name}
         disabled
       />
-      <TextInput label='Name' value={place.name} disabled />
-      <TextInput label='X' value={place.x} disabled />
-      <TextInput label='Y' value={place.y} disabled />
-      {place.price && <TextInput label='Price' value={place.price} disabled />}
+      <TextInput label={t('columns.place')} value={place.name} disabled />
+      <TextInput label={t('columns.x')} value={place.x} disabled />
+      <TextInput label={t('columns.y')} value={place.y} disabled />
+      {place.price && (
+        <TextInput label={t('columns.price')} value={place.price} disabled />
+      )}
       <Select
-        label={label}
-        placeholder={`Total: ${place.data.length}`}
+        label={t('columns.' + label)}
+        placeholder={`${t('components.total')}: ${place.data.length}`}
         itemComponent={component}
         data={place.data}
         searchable
@@ -40,6 +46,9 @@ export default function PlaceModal({ data: place }: Props) {
 
 export const openPlaceModal = (place: ExtPlace) =>
   openModal({
-    title: `View ${['City', 'Shop', 'Market', 'Storage'][place.type]}`,
+    title:
+      t('actions.view') +
+      ' ' +
+      t('modals.' + ['city', 'shop', 'market', 'storage'][place.type]),
     children: <PlaceModal data={place} />,
   });

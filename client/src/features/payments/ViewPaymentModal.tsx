@@ -1,3 +1,5 @@
+import { t } from 'i18next';
+import { useTranslation } from 'react-i18next';
 import { Stack, Textarea, TextInput } from '@mantine/core';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
@@ -9,26 +11,32 @@ import { Color } from '../../common/constants';
 type Props = IModal<Payment>;
 
 export default function ViewPaymentModal({ data: payment }: Props) {
+  const [t] = useTranslation();
+
   return (
     <Stack spacing={8}>
       <TextInput
-        label='Sender'
+        label={t('columns.sender')}
         icon={<CustomAvatar {...payment.senderCard.user} />}
         iconWidth={48}
         value={parseCard(payment.senderCard)}
         disabled
       />
       <TextInput
-        label='Receiver'
+        label={t('columns.receiver')}
         icon={<CustomAvatar {...payment.receiverCard.user} />}
         iconWidth={48}
         value={parseCard(payment.receiverCard)}
         disabled
       />
-      <TextInput label='Sum' value={`${payment.sum}$`} disabled />
-      <Textarea label='Description' value={payment.description} disabled />
+      <TextInput label={t('columns.sum')} value={`${payment.sum}$`} disabled />
+      <Textarea
+        label={t('columns.description')}
+        value={payment.description}
+        disabled
+      />
       <TextInput
-        label='Created'
+        label={t('columns.created')}
         value={parseTime(payment.createdAt)}
         disabled
       />
@@ -39,7 +47,7 @@ export default function ViewPaymentModal({ data: payment }: Props) {
 export const viewPaymentAction = {
   open: (payment: Payment) =>
     openModal({
-      title: 'View Payment',
+      title: t('actions.view') + ' ' + t('modals.payment'),
       children: <ViewPaymentModal data={payment} />,
     }),
   disable: () => false,

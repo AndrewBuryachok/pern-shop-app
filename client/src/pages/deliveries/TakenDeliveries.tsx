@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
 import { ISearch } from '../../common/interfaces';
 import { Mode } from '../../common/enums';
@@ -9,6 +10,8 @@ import { executeDeliveryAction } from '../../features/deliveries/ExecuteDelivery
 import { Role } from '../../common/constants';
 
 export default function TakenDeliveries() {
+  const [t] = useTranslation();
+
   const [searchParams] = useSearchParams();
 
   const [page, setPage] = useState(+(searchParams.get('page') || 1));
@@ -29,10 +32,10 @@ export default function TakenDeliveries() {
   const response = useGetTakenDeliveriesQuery({ page, search });
 
   const links = [
-    { label: 'Main', to: '..' },
-    { label: 'My', to: '../my' },
-    { label: 'Placed', to: '../placed' },
-    { label: 'All', to: '../all', role: Role.MANAGER },
+    { label: t('pages.main'), to: '..' },
+    { label: t('pages.my'), to: '../my' },
+    { label: t('pages.placed'), to: '../placed' },
+    { label: t('pages.all'), to: '../all', role: Role.MANAGER },
   ];
 
   const actions = [untakeDeliveryAction, executeDeliveryAction];
@@ -40,7 +43,7 @@ export default function TakenDeliveries() {
   return (
     <DeliveriesTable
       {...response}
-      title='Taken Deliveries'
+      title={t('pages.taken') + ' ' + t('navbar.deliveries')}
       page={page}
       setPage={setPage}
       search={search}

@@ -1,4 +1,6 @@
 import { useEffect } from 'react';
+import { t } from 'i18next';
+import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
 import {
   Autocomplete,
@@ -57,6 +59,8 @@ type Props = {
 };
 
 export default function SearchModal(props: Props) {
+  const [t] = useTranslation();
+
   const [searchParams, setSearchParams] = useSearchParams();
 
   const form = useForm({
@@ -218,12 +222,12 @@ export default function SearchModal(props: Props) {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={props.isFetching}
-      text={'Save changes'}
+      text={t('components.save')}
       isChanged={!form.isDirty()}
     >
       <Select
-        label='User'
-        placeholder={`Total: ${users?.length}`}
+        label={t('columns.user')}
+        placeholder={`${t('components.total')}: ${users?.length}`}
         icon={user && <CustomAvatar {...user} status={!!user.status} />}
         iconWidth={48}
         rightSection={<RefetchAction {...usersResponse} />}
@@ -236,8 +240,8 @@ export default function SearchModal(props: Props) {
       />
       {props.search.card !== undefined && (
         <Select
-          label='Card'
-          placeholder={`Total: ${cards.length}`}
+          label={t('columns.card')}
+          placeholder={`${t('components.total')}: ${cards.length}`}
           rightSection={
             <RefetchAction {...cardsResponse} skip={!form.values.user} />
           }
@@ -251,8 +255,8 @@ export default function SearchModal(props: Props) {
       )}
       {props.search.roles && (
         <MultiSelect
-          label='Roles'
-          placeholder='Roles'
+          label={t('columns.roles')}
+          placeholder={t('columns.roles')}
           itemComponent={ColorsItem}
           data={selectRoles()}
           searchable
@@ -260,9 +264,13 @@ export default function SearchModal(props: Props) {
         />
       )}
       {props.search.modes && (
-        <Radio.Group label='Mode' spacing='md' {...form.getInputProps('mode')}>
+        <Radio.Group
+          label={t('columns.mode')}
+          spacing='md'
+          {...form.getInputProps('mode')}
+        >
           {props.search.modes.map((mode) => (
-            <Radio key={mode} label={mode} value={mode.toLowerCase()} />
+            <Radio key={mode} label={t('columns.' + mode)} value={mode} />
           ))}
           <CloseButton
             size={24}
@@ -273,8 +281,8 @@ export default function SearchModal(props: Props) {
       )}
       {props.search.city !== undefined && (
         <Select
-          label='City'
-          placeholder={`Total: ${cities.length}`}
+          label={t('columns.city')}
+          placeholder={`${t('components.total')}: ${cities.length}`}
           rightSection={<RefetchAction {...citiesResponse} />}
           itemComponent={PlacesItem}
           data={cities}
@@ -286,8 +294,8 @@ export default function SearchModal(props: Props) {
       )}
       {props.search.shop !== undefined && (
         <Select
-          label='Shop'
-          placeholder={`Total: ${shops.length}`}
+          label={t('columns.shop')}
+          placeholder={`${t('components.total')}: ${shops.length}`}
           itemComponent={PlacesItem}
           data={shops}
           searchable
@@ -297,8 +305,8 @@ export default function SearchModal(props: Props) {
       )}
       {props.search.market !== undefined && (
         <Select
-          label='Market'
-          placeholder={`Total: ${markets.length}`}
+          label={t('columns.market')}
+          placeholder={`${t('components.total')}: ${markets.length}`}
           rightSection={<RefetchAction {...marketsResponse} />}
           itemComponent={PlacesItem}
           data={markets}
@@ -310,8 +318,8 @@ export default function SearchModal(props: Props) {
       )}
       {props.search.storage !== undefined && (
         <Select
-          label='Storage'
-          placeholder={`Total: ${storages.length}`}
+          label={t('columns.storage')}
+          placeholder={`${t('components.total')}: ${storages.length}`}
           rightSection={<RefetchAction {...storagesResponse} />}
           itemComponent={PlacesItem}
           data={storages}
@@ -323,8 +331,8 @@ export default function SearchModal(props: Props) {
       )}
       {props.search.store !== undefined && (
         <Select
-          label='Store'
-          placeholder={`Total: ${stores.length}`}
+          label={t('columns.store')}
+          placeholder={`${t('components.total')}: ${stores.length}`}
           rightSection={
             <RefetchAction {...storesResponse} skip={!form.values.market} />
           }
@@ -337,8 +345,8 @@ export default function SearchModal(props: Props) {
       )}
       {props.search.cell !== undefined && (
         <Select
-          label='Cell'
-          placeholder={`Total: ${cells.length}`}
+          label={t('columns.cell')}
+          placeholder={`${t('components.total')}: ${cells.length}`}
           rightSection={
             <RefetchAction {...cellsResponse} skip={!form.values.storage} />
           }
@@ -352,20 +360,20 @@ export default function SearchModal(props: Props) {
       {props.search.item !== undefined && (
         <>
           <Select
-            label='Category'
-            placeholder='Category'
+            label={t('columns.category')}
+            placeholder={t('columns.category')}
             data={selectCategories()}
             searchable
             allowDeselect
             {...form.getInputProps('category')}
           />
           <Select
-            label='Item'
-            placeholder='Item'
+            label={t('columns.item')}
+            placeholder={t('columns.item')}
             icon={form.values.item && <ThingImage item={+form.values.item} />}
             iconWidth={48}
             itemComponent={ThingsItem}
-            data={selectItems(form.values.category!)}
+            data={selectItems(form.values.category || '')}
             searchable
             allowDeselect
             {...form.getInputProps('item')}
@@ -374,15 +382,15 @@ export default function SearchModal(props: Props) {
       )}
       {props.search.description !== undefined && (
         <Textarea
-          label='Description'
-          placeholder='Description'
+          label={t('columns.description')}
+          placeholder={t('columns.description')}
           {...form.getInputProps('description')}
         />
       )}
       {props.search.type !== undefined && (
         <Select
-          label='Type'
-          placeholder='Type'
+          label={t('columns.type')}
+          placeholder={t('columns.type')}
           itemComponent={ColorsItem}
           data={selectColors()
             .filter((element) => +element.value % 2)
@@ -397,8 +405,8 @@ export default function SearchModal(props: Props) {
       )}
       {props.search.priority !== undefined && (
         <Select
-          label='Priority'
-          placeholder='Priority'
+          label={t('columns.priority')}
+          placeholder={t('columns.priority')}
           itemComponent={PrioritiesItem}
           data={selectPriorities()}
           searchable
@@ -408,8 +416,8 @@ export default function SearchModal(props: Props) {
       )}
       {props.search.status !== undefined && (
         <Select
-          label='Status'
-          placeholder='Status'
+          label={t('columns.status')}
+          placeholder={t('columns.status')}
           itemComponent={ColorsItem}
           data={selectStatuses()}
           searchable
@@ -418,7 +426,7 @@ export default function SearchModal(props: Props) {
         />
       )}
       {props.search.rate !== undefined && (
-        <Input.Wrapper label='Rate'>
+        <Input.Wrapper label={t('columns.rate')}>
           <Group spacing={8}>
             <Rating {...form.getInputProps('rate')} />
             <CloseButton
@@ -431,8 +439,8 @@ export default function SearchModal(props: Props) {
       )}
       {props.search.name !== undefined && (
         <Autocomplete
-          label='Name'
-          placeholder={`Total: ${data.length}`}
+          label={t('columns.name')}
+          placeholder={`${t('components.total')}: ${data.length}`}
           itemComponent={component}
           data={data.map((element) => ({ ...element, value: element.name }))}
           disabled={isFetching}
@@ -445,6 +453,6 @@ export default function SearchModal(props: Props) {
 
 export const openSearchModal = (props: Props) =>
   openModal({
-    title: 'Search',
+    title: t('components.search'),
     children: <SearchModal {...props} />,
   });

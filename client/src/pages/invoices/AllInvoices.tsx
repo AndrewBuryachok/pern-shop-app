@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
 import { ISearch } from '../../common/interfaces';
 import { Mode } from '../../common/enums';
@@ -9,6 +10,8 @@ import { completeUserInvoiceAction } from '../../features/invoices/CompleteInvoi
 import { deleteUserInvoiceAction } from '../../features/invoices/DeleteInvoiceModal';
 
 export default function AllInvoices() {
+  const [t] = useTranslation();
+
   const [searchParams] = useSearchParams();
 
   const [page, setPage] = useState(+(searchParams.get('page') || 1));
@@ -23,7 +26,7 @@ export default function AllInvoices() {
 
   const response = useGetAllInvoicesQuery({ page, search });
 
-  const links = [{ label: 'My', to: '../my' }];
+  const links = [{ label: t('pages.my'), to: '../my' }];
 
   const button = createUserInvoiceButton;
 
@@ -32,7 +35,7 @@ export default function AllInvoices() {
   return (
     <InvoicesTable
       {...response}
-      title='All Invoices'
+      title={t('pages.all') + ' ' + t('navbar.invoices')}
       page={page}
       setPage={setPage}
       search={search}

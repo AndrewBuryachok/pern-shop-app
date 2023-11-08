@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
 import { ISearch } from '../../common/interfaces';
 import { useGetMainUsersQuery } from '../../features/users/users.api';
@@ -6,6 +7,8 @@ import UsersTable from '../../features/users/UsersTable';
 import { Role } from '../../common/constants';
 
 export default function MainUsers() {
+  const [t] = useTranslation();
+
   const [searchParams] = useSearchParams();
 
   const [page, setPage] = useState(+(searchParams.get('page') || 1));
@@ -22,14 +25,14 @@ export default function MainUsers() {
   const response = useGetMainUsersQuery({ page, search });
 
   const links = [
-    { label: 'My', to: 'my' },
-    { label: 'All', to: 'all', role: Role.ADMIN },
+    { label: t('pages.my'), to: 'my' },
+    { label: t('pages.all'), to: 'all', role: Role.ADMIN },
   ];
 
   return (
     <UsersTable
       {...response}
-      title='Main Users'
+      title={t('pages.main') + ' ' + t('navbar.users')}
       page={page}
       setPage={setPage}
       search={search}

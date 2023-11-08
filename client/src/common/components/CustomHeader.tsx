@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import {
   Avatar,
@@ -20,12 +21,14 @@ import {
   IconMoon,
   IconSun,
   IconUser,
+  IconWorld,
 } from '@tabler/icons';
 import { useAppDispatch } from '../../app/hooks';
 import {
   getCurrentUser,
   removeCurrentUser,
 } from '../../features/auth/auth.slice';
+import { toggleCurrentLanguage } from '../../features/lang/lang.slice';
 import { useLogoutMutation } from '../../features/auth/auth.api';
 import { openAuthModal } from '../../features/auth/AuthModal';
 import { openUpdatePasswordModal } from '../../features/auth/UpdatePasswordModal';
@@ -36,6 +39,8 @@ type Props = {
 };
 
 export default function CustomHeader(props: Props) {
+  const [t] = useTranslation();
+
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
   const dark = colorScheme === 'dark';
   const { fullscreen, toggle: toggleFullscreen } = useFullscreen();
@@ -57,7 +62,7 @@ export default function CustomHeader(props: Props) {
         <MediaQuery largerThan='sm' styles={{ display: 'none' }}>
           <Burger opened={props.opened} onClick={props.toggle} size='sm' />
         </MediaQuery>
-        <Title order={1}>Shop</Title>
+        <Title order={1}>{t('header.title')}</Title>
         <Menu offset={4} position='bottom-end'>
           <Menu.Target>
             <Tooltip
@@ -81,12 +86,20 @@ export default function CustomHeader(props: Props) {
             </Tooltip>
           </Menu.Target>
           <Menu.Dropdown>
-            <Menu.Label>Settings</Menu.Label>
+            <Menu.Label>{t('header.menu.settings.title')}</Menu.Label>
+            <Menu.Item
+              icon={<IconWorld size={16} />}
+              onClick={() => dispatch(toggleCurrentLanguage())}
+            >
+              {t('header.menu.settings.language')}
+            </Menu.Item>
             <Menu.Item
               icon={dark ? <IconSun size={16} /> : <IconMoon size={16} />}
               onClick={() => toggleColorScheme()}
             >
-              {dark ? 'Light' : 'Dark'} theme
+              {dark
+                ? t('header.menu.settings.theme.light')
+                : t('header.menu.settings.theme.dark')}
             </Menu.Item>
             <Menu.Item
               icon={
@@ -98,9 +111,11 @@ export default function CustomHeader(props: Props) {
               }
               onClick={() => toggleFullscreen()}
             >
-              {fullscreen ? 'Exit' : 'Enter'} fullscreen
+              {fullscreen
+                ? t('header.menu.settings.fullscreen.exit')
+                : t('header.menu.settings.fullscreen.enter')}
             </Menu.Item>
-            <Menu.Label>Account</Menu.Label>
+            <Menu.Label>{t('header.menu.account.title')}</Menu.Label>
             {user ? (
               <>
                 <Menu.Item
@@ -108,24 +123,24 @@ export default function CustomHeader(props: Props) {
                   component={Link}
                   to={`/users/${user.id}`}
                 >
-                  Profile
+                  {t('header.menu.account.profile')}
                 </Menu.Item>
                 <Menu.Item
                   icon={<IconLock size={16} />}
                   onClick={openUpdatePasswordModal}
                 >
-                  Password
+                  {t('header.menu.account.password')}
                 </Menu.Item>
                 <Menu.Item
                   icon={<IconLogout size={16} />}
                   onClick={handleSubmit}
                 >
-                  Logout
+                  {t('header.menu.account.logout')}
                 </Menu.Item>
               </>
             ) : (
               <Menu.Item icon={<IconLogin size={16} />} onClick={openAuthModal}>
-                Login
+                {t('header.menu.account.login')}
               </Menu.Item>
             )}
           </Menu.Dropdown>

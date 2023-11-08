@@ -1,3 +1,5 @@
+import { t } from 'i18next';
+import { useTranslation } from 'react-i18next';
 import { Select, Stack, TextInput } from '@mantine/core';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
@@ -10,29 +12,35 @@ import { Color } from '../../common/constants';
 type Props = IModal<Market>;
 
 export default function ViewMarketModal({ data: market }: Props) {
+  const [t] = useTranslation();
+
   return (
     <Stack spacing={8}>
       <TextInput
-        label='Owner'
+        label={t('columns.owner')}
         icon={<CustomAvatar {...market.card.user} />}
         iconWidth={48}
         value={parseCard(market.card)}
         disabled
       />
-      <TextInput label='Market' value={market.name} disabled />
-      <TextInput label='X' value={market.x} disabled />
-      <TextInput label='Y' value={market.y} disabled />
-      <TextInput label='Price' value={`${market.price}$`} disabled />
+      <TextInput label={t('columns.market')} value={market.name} disabled />
+      <TextInput label={t('columns.x')} value={market.x} disabled />
+      <TextInput label={t('columns.y')} value={market.y} disabled />
+      <TextInput
+        label={t('columns.price')}
+        value={`${market.price}$`}
+        disabled
+      />
       <Select
-        label='Prices'
-        placeholder={`Total: ${market.states.length}`}
+        label={t('columns.prices')}
+        placeholder={`${t('components.total')}: ${market.states.length}`}
         itemComponent={StatesItem}
         data={viewStates(market.states)}
         searchable
       />
       <Select
-        label='Stores'
-        placeholder={`Total: ${market.stores.length}`}
+        label={t('columns.stores')}
+        placeholder={`${t('components.total')}: ${market.stores.length}`}
         data={viewContainers(market.stores)}
         searchable
       />
@@ -43,7 +51,7 @@ export default function ViewMarketModal({ data: market }: Props) {
 export const viewMarketAction = {
   open: (market: Market) =>
     openModal({
-      title: 'View Market',
+      title: t('actions.view') + ' ' + t('modals.market'),
       children: <ViewMarketModal data={market} />,
     }),
   disable: () => false,

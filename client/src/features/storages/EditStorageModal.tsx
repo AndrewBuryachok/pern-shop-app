@@ -1,3 +1,5 @@
+import { t } from 'i18next';
+import { useTranslation } from 'react-i18next';
 import { NumberInput, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
@@ -18,6 +20,8 @@ import {
 type Props = IModal<Storage>;
 
 export default function EditStorageModal({ data: storage }: Props) {
+  const [t] = useTranslation();
+
   const form = useForm({
     initialValues: {
       storageId: storage.id,
@@ -38,36 +42,36 @@ export default function EditStorageModal({ data: storage }: Props) {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={'Edit storage'}
+      text={t('actions.edit') + ' ' + t('modals.storage')}
       isChanged={!form.isDirty()}
     >
       <TextInput
-        label='Name'
-        placeholder='Name'
+        label={t('columns.name')}
+        placeholder={t('columns.name')}
         required
         minLength={MIN_TEXT_LENGTH}
         maxLength={MAX_TEXT_LENGTH}
         {...form.getInputProps('name')}
       />
       <NumberInput
-        label='X'
-        placeholder='X'
+        label={t('columns.x')}
+        placeholder={t('columns.x')}
         required
         min={MIN_COORDINATE_VALUE}
         max={MAX_COORDINATE_VALUE}
         {...form.getInputProps('x')}
       />
       <NumberInput
-        label='Y'
-        placeholder='Y'
+        label={t('columns.y')}
+        placeholder={t('columns.y')}
         required
         min={MIN_COORDINATE_VALUE}
         max={MAX_COORDINATE_VALUE}
         {...form.getInputProps('y')}
       />
       <NumberInput
-        label='Price'
-        placeholder='Price'
+        label={t('columns.price')}
+        placeholder={t('columns.price')}
         required
         min={1}
         max={MAX_PRICE_VALUE}
@@ -80,7 +84,7 @@ export default function EditStorageModal({ data: storage }: Props) {
 export const editStorageAction = {
   open: (storage: Storage) =>
     openModal({
-      title: 'Edit Storage',
+      title: t('actions.edit') + ' ' + t('modals.storage'),
       children: <EditStorageModal data={storage} />,
     }),
   disable: () => false,

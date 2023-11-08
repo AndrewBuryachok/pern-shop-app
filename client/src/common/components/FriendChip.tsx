@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { Chip } from '@mantine/core';
 import { getCurrentUser } from '../../features/auth/auth.slice';
 import { ExtUser } from '../../features/users/user.model';
@@ -8,6 +9,8 @@ type Props = {
 };
 
 export default function FriendChip(props: Props) {
+  const [t] = useTranslation();
+
   const user = getCurrentUser();
 
   const checked =
@@ -19,7 +22,7 @@ export default function FriendChip(props: Props) {
       onClick={() => openViewUserModal(props.data)}
       readOnly
     >
-      Friend
+      {t('components.friend')}
     </Chip>
   );
 }

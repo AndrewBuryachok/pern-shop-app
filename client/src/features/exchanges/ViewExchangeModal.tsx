@@ -1,3 +1,5 @@
+import { t } from 'i18next';
+import { useTranslation } from 'react-i18next';
 import { Stack, TextInput } from '@mantine/core';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
@@ -9,30 +11,34 @@ import { Color } from '../../common/constants';
 type Props = IModal<Exchange>;
 
 export default function ViewExchangeModal({ data: exchange }: Props) {
+  const [t] = useTranslation();
+
   return (
     <Stack spacing={8}>
       <TextInput
-        label='Executor'
+        label={t('columns.executor')}
         icon={<CustomAvatar {...exchange.executorUser} />}
         iconWidth={48}
         value={exchange.executorUser.name}
         disabled
       />
       <TextInput
-        label='Customer'
+        label={t('columns.customer')}
         icon={<CustomAvatar {...exchange.customerCard.user} />}
         iconWidth={48}
         value={parseCard(exchange.customerCard)}
         disabled
       />
       <TextInput
-        label='Type'
-        value={exchange.type ? 'increase' : 'decrease'}
+        label={t('columns.type')}
+        value={
+          exchange.type ? t('constants.increase') : t('constants.decrease')
+        }
         disabled
       />
-      <TextInput label='Sum' value={`${exchange.sum}$`} disabled />
+      <TextInput label={t('columns.sum')} value={`${exchange.sum}$`} disabled />
       <TextInput
-        label='Created'
+        label={t('columns.created')}
         value={parseTime(exchange.createdAt)}
         disabled
       />
@@ -43,7 +49,7 @@ export default function ViewExchangeModal({ data: exchange }: Props) {
 export const viewExchangeAction = {
   open: (exchange: Exchange) =>
     openModal({
-      title: 'View Exchange',
+      title: t('actions.view') + ' ' + t('modals.exchange'),
       children: <ViewExchangeModal data={exchange} />,
     }),
   disable: () => false,

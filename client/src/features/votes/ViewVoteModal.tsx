@@ -1,3 +1,5 @@
+import { t } from 'i18next';
+import { useTranslation } from 'react-i18next';
 import { Stack, Textarea, TextInput } from '@mantine/core';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
@@ -9,25 +11,39 @@ import { Color } from '../../common/constants';
 type Props = IModal<Vote>;
 
 export default function ViewVoteModal({ data: vote }: Props) {
+  const [t] = useTranslation();
+
   return (
     <Stack spacing={8}>
       <TextInput
-        label='Voter'
+        label={t('columns.voter')}
         icon={<CustomAvatar {...vote.user} />}
         iconWidth={48}
         value={vote.user.name}
         disabled
       />
       <TextInput
-        label='Poller'
+        label={t('columns.poller')}
         icon={<CustomAvatar {...vote.poll.user} />}
         iconWidth={48}
         value={vote.poll.user.name}
         disabled
       />
-      <Textarea label='Description' value={vote.poll.description} disabled />
-      <TextInput label='Vote' value={vote.type ? 'up' : 'down'} disabled />
-      <TextInput label='Created' value={parseTime(vote.createdAt)} disabled />
+      <Textarea
+        label={t('columns.description')}
+        value={vote.poll.description}
+        disabled
+      />
+      <TextInput
+        label={t('columns.vote')}
+        value={vote.type ? t('columns.up') : t('columns.down')}
+        disabled
+      />
+      <TextInput
+        label={t('columns.created')}
+        value={parseTime(vote.createdAt)}
+        disabled
+      />
     </Stack>
   );
 }
@@ -35,7 +51,7 @@ export default function ViewVoteModal({ data: vote }: Props) {
 export const viewVoteAction = {
   open: (vote: Vote) =>
     openModal({
-      title: 'View Vote',
+      title: t('actions.view') + ' ' + t('modals.vote'),
       children: <ViewVoteModal data={vote} />,
     }),
   disable: () => false,

@@ -1,3 +1,5 @@
+import { t } from 'i18next';
+import { useTranslation } from 'react-i18next';
 import { Select, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
@@ -18,6 +20,8 @@ import { MAX_TEXT_LENGTH, MIN_TEXT_LENGTH } from '../../common/constants';
 type Props = { hasRole: boolean };
 
 export default function CreateCardModal({ hasRole }: Props) {
+  const [t] = useTranslation();
+
   const form = useForm({
     initialValues: {
       user: '',
@@ -49,12 +53,12 @@ export default function CreateCardModal({ hasRole }: Props) {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={'Create card'}
+      text={t('actions.create') + ' ' + t('modals.card')}
     >
       {hasRole && (
         <Select
-          label='User'
-          placeholder='User'
+          label={t('columns.user')}
+          placeholder={t('columns.user')}
           icon={user && <CustomAvatar {...user} />}
           iconWidth={48}
           rightSection={<RefetchAction {...usersResponse} />}
@@ -67,16 +71,16 @@ export default function CreateCardModal({ hasRole }: Props) {
         />
       )}
       <TextInput
-        label='Name'
-        placeholder='Name'
+        label={t('columns.name')}
+        placeholder={t('columns.name')}
         required
         minLength={MIN_TEXT_LENGTH}
         maxLength={MAX_TEXT_LENGTH}
         {...form.getInputProps('name')}
       />
       <Select
-        label='Color'
-        placeholder='Color'
+        label={t('columns.color')}
+        placeholder={t('columns.color')}
         itemComponent={ColorsItem}
         data={selectColors()}
         searchable
@@ -88,10 +92,10 @@ export default function CreateCardModal({ hasRole }: Props) {
 }
 
 export const createCardFactory = (hasRole: boolean) => ({
-  label: 'Create',
+  label: 'create',
   open: () =>
     openModal({
-      title: 'Create Card',
+      title: t('actions.create') + ' ' + t('modals.card'),
       children: <CreateCardModal hasRole={hasRole} />,
     }),
 });

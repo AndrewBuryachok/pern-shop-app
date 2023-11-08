@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { ITableWithActions } from '../../common/interfaces';
 import { User } from './user.model';
 import CustomTable from '../../common/components/CustomTable';
@@ -13,17 +14,19 @@ import { viewUserAction } from './ViewUserModal';
 type Props = ITableWithActions<User>;
 
 export default function UsersTable({ actions = [], ...props }: Props) {
+  const [t] = useTranslation();
+
   return (
     <CustomTable
       minWidth={1100}
       columns={[
-        'User',
-        'Roles',
-        'Owner',
-        'City',
-        'Cards',
-        'Registered',
-        'Action',
+        t('columns.user'),
+        t('columns.roles'),
+        t('columns.owner'),
+        t('columns.city'),
+        t('columns.cards'),
+        t('columns.registered'),
+        t('columns.action'),
       ]}
       {...props}
     >
@@ -39,15 +42,11 @@ export default function UsersTable({ actions = [], ...props }: Props) {
             {user.city?.user ? (
               <AvatarWithSingleText {...user.city.user} />
             ) : (
-              <SingleText text={'-'} />
+              <SingleText text='-' />
             )}
           </td>
           <td>
-            {user.city ? (
-              <PlaceText {...user.city} />
-            ) : (
-              <SingleText text={'-'} />
-            )}
+            {user.city ? <PlaceText {...user.city} /> : <SingleText text='-' />}
           </td>
           <td>
             <TotalText data={user.cards.length} />

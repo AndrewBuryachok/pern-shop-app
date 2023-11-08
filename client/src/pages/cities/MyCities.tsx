@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
 import { ISearch } from '../../common/interfaces';
 import { useGetMyCitiesQuery } from '../../features/cities/cities.api';
@@ -10,6 +11,8 @@ import { removeMyCityUserAction } from '../../features/cities/RemoveCityUserModa
 import { Role } from '../../common/constants';
 
 export default function MyCities() {
+  const [t] = useTranslation();
+
   const [searchParams] = useSearchParams();
 
   const [page, setPage] = useState(+(searchParams.get('page') || 1));
@@ -23,8 +26,8 @@ export default function MyCities() {
   const response = useGetMyCitiesQuery({ page, search });
 
   const links = [
-    { label: 'Main', to: '..' },
-    { label: 'All', to: '../all', role: Role.ADMIN },
+    { label: t('pages.main'), to: '..' },
+    { label: t('pages.all'), to: '../all', role: Role.ADMIN },
   ];
 
   const button = createMyCityButton;
@@ -38,7 +41,7 @@ export default function MyCities() {
   return (
     <CitiesTable
       {...response}
-      title='My Cities'
+      title={t('pages.my') + ' ' + t('navbar.cities')}
       page={page}
       setPage={setPage}
       search={search}

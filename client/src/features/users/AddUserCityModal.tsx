@@ -1,3 +1,5 @@
+import { t } from 'i18next';
+import { useTranslation } from 'react-i18next';
 import { Select } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
@@ -15,6 +17,8 @@ import { UsersItem } from '../../common/components/UsersItem';
 import { selectCities, selectUsers } from '../../common/utils';
 
 export default function AddUserCityModal() {
+  const [t] = useTranslation();
+
   const form = useForm({
     initialValues: {
       user: '',
@@ -41,11 +45,11 @@ export default function AddUserCityModal() {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={'Add user city'}
+      text={t('actions.add') + ' ' + t('modals.city') + ' ' + t('modals.user')}
     >
       <Select
-        label='User'
-        placeholder='User'
+        label={t('columns.user')}
+        placeholder={t('columns.user')}
         icon={user && <CustomAvatar {...user} />}
         iconWidth={48}
         rightSection={<RefetchAction {...usersResponse} />}
@@ -57,8 +61,8 @@ export default function AddUserCityModal() {
         {...form.getInputProps('user')}
       />
       <Select
-        label='City'
-        placeholder='City'
+        label={t('columns.city')}
+        placeholder={t('columns.city')}
         rightSection={<RefetchAction {...citiesResponse} />}
         itemComponent={PlacesItem}
         data={selectCities(cities)}
@@ -72,10 +76,10 @@ export default function AddUserCityModal() {
 }
 
 export const addUserCityButton = {
-  label: 'Add',
+  label: 'add',
   open: () =>
     openModal({
-      title: 'Add User City',
+      title: t('actions.add') + ' ' + t('modals.city') + ' ' + t('modals.user'),
       children: <AddUserCityModal />,
     }),
 };

@@ -1,3 +1,5 @@
+import { t } from 'i18next';
+import { useTranslation } from 'react-i18next';
 import { Select, Stack, TextInput } from '@mantine/core';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
@@ -10,21 +12,31 @@ import { Color, colors } from '../../common/constants';
 type Props = IModal<Card>;
 
 export default function ViewCardModal({ data: card }: Props) {
+  const [t] = useTranslation();
+
   return (
     <Stack spacing={8}>
       <TextInput
-        label='Owner'
+        label={t('columns.owner')}
         icon={<CustomAvatar {...card.user} />}
         iconWidth={48}
         value={card.user.name}
         disabled
       />
-      <TextInput label='Card' value={card.name} disabled />
-      <TextInput label='Color' value={colors[card.color - 1]} disabled />
-      <TextInput label='Balance' value={`${card.balance}$`} disabled />
+      <TextInput label={t('columns.card')} value={card.name} disabled />
+      <TextInput
+        label={t('columns.color')}
+        value={t('constants.colors.' + colors[card.color - 1])}
+        disabled
+      />
+      <TextInput
+        label={t('columns.balance')}
+        value={`${card.balance}$`}
+        disabled
+      />
       <Select
-        label='Users'
-        placeholder={`Total: ${card.users.length}`}
+        label={t('columns.users')}
+        placeholder={`${t('components.total')}: ${card.users.length}`}
         itemComponent={UsersItem}
         data={viewUsers(card.users)}
         searchable
@@ -36,7 +48,7 @@ export default function ViewCardModal({ data: card }: Props) {
 export const viewCardAction = {
   open: (card: Card) =>
     openModal({
-      title: 'View Card',
+      title: t('actions.view') + ' ' + t('modals.card'),
       children: <ViewCardModal data={card} />,
     }),
   disable: () => false,

@@ -1,3 +1,5 @@
+import { t } from 'i18next';
+import { useTranslation } from 'react-i18next';
 import { Textarea, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
@@ -13,6 +15,8 @@ import { Color } from '../../common/constants';
 type Props = IModal<Poll>;
 
 export default function CompletePollModal({ data: poll }: Props) {
+  const [t] = useTranslation();
+
   const total = poll.upVotes + poll.downVotes;
   const votes = [poll.upVotes, poll.downVotes].map(
     (value) => `${value} (${Math.round((value * 100) / total)}%)`,
@@ -34,24 +38,38 @@ export default function CompletePollModal({ data: poll }: Props) {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={'Complete poll'}
+      text={t('actions.complete') + ' ' + t('modals.poll')}
     >
       <TextInput
-        label='Poller'
+        label={t('columns.poller')}
         icon={<CustomAvatar {...poll.user} />}
         iconWidth={48}
         value={poll.user.name}
         disabled
       />
-      <Textarea label='Description' value={poll.description} disabled />
-      <TextInput label='Up' value={votes[0]} disabled />
-      <TextInput label='Down' value={votes[1]} disabled />
-      <TextInput
-        label='My'
-        value={poll.myVote ? (poll.myVote.type ? 'up' : 'down') : '-'}
+      <Textarea
+        label={t('columns.description')}
+        value={poll.description}
         disabled
       />
-      <TextInput label='Created' value={parseTime(poll.createdAt)} disabled />
+      <TextInput label={t('columns.up')} value={votes[0]} disabled />
+      <TextInput label={t('columns.down')} value={votes[1]} disabled />
+      <TextInput
+        label={t('columns.my')}
+        value={
+          poll.myVote
+            ? poll.myVote.type
+              ? t('columns.up')
+              : t('columns.down')
+            : '-'
+        }
+        disabled
+      />
+      <TextInput
+        label={t('columns.created')}
+        value={parseTime(poll.createdAt)}
+        disabled
+      />
     </CustomForm>
   );
 }
@@ -59,7 +77,7 @@ export default function CompletePollModal({ data: poll }: Props) {
 export const completePollAction = {
   open: (poll: Poll) =>
     openModal({
-      title: 'Complete Poll',
+      title: t('actions.complete') + ' ' + t('modals.poll'),
       children: <CompletePollModal data={poll} />,
     }),
   disable: (poll: Poll) => !!poll.completedAt,

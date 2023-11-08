@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { ITableWithActions } from '../../common/interfaces';
 import { Poll } from './poll.model';
 import CustomTable from '../../common/components/CustomTable';
@@ -13,16 +14,18 @@ import { Color } from '../../common/constants';
 type Props = ITableWithActions<Poll>;
 
 export default function PollsTable({ actions = [], ...props }: Props) {
+  const [t] = useTranslation();
+
   return (
     <CustomTable
       minWidth={1000}
       columns={[
-        'Poller',
-        'Description',
-        'Vote',
-        'Results',
-        'Completed',
-        'Action',
+        t('columns.poller'),
+        t('columns.description'),
+        t('columns.vote'),
+        t('columns.results'),
+        t('columns.completed'),
+        t('columns.action'),
       ]}
       {...props}
     >

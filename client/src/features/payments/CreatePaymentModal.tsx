@@ -1,4 +1,6 @@
+import { t } from 'i18next';
 import { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { NumberInput, Select, Textarea } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
@@ -26,6 +28,8 @@ import { MAX_DESCRIPTION_LENGTH, MAX_SUM_VALUE } from '../../common/constants';
 type Props = { hasRole: boolean };
 
 export default function CreatePaymentModal({ hasRole }: Props) {
+  const [t] = useTranslation();
+
   const form = useForm({
     initialValues: {
       senderUser: '',
@@ -83,12 +87,12 @@ export default function CreatePaymentModal({ hasRole }: Props) {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={'Create payment'}
+      text={t('actions.create') + ' ' + t('modals.payment')}
     >
       {hasRole && (
         <Select
-          label='Sender User'
-          placeholder='Sender User'
+          label={t('columns.sender')}
+          placeholder={t('columns.sender')}
           icon={senderUser && <CustomAvatar {...senderUser} />}
           iconWidth={48}
           rightSection={<RefetchAction {...usersResponse} />}
@@ -101,8 +105,8 @@ export default function CreatePaymentModal({ hasRole }: Props) {
         />
       )}
       <Select
-        label='Sender Card'
-        placeholder='Sender Card'
+        label={t('columns.card')}
+        placeholder={t('columns.card')}
         rightSection={
           <RefetchAction
             {...senderCardsResponse}
@@ -117,8 +121,8 @@ export default function CreatePaymentModal({ hasRole }: Props) {
         {...form.getInputProps('senderCard')}
       />
       <Select
-        label='Receiver User'
-        placeholder='Receiver User'
+        label={t('columns.receiver')}
+        placeholder={t('columns.receiver')}
         icon={receiverUser && <CustomAvatar {...receiverUser} />}
         iconWidth={48}
         rightSection={<RefetchAction {...usersResponse} />}
@@ -130,8 +134,8 @@ export default function CreatePaymentModal({ hasRole }: Props) {
         {...form.getInputProps('receiverUser')}
       />
       <Select
-        label='Receiver Card'
-        placeholder='Receiver Card'
+        label={t('columns.card')}
+        placeholder={t('columns.card')}
         rightSection={
           <RefetchAction
             {...receiverCardsResponse}
@@ -146,16 +150,16 @@ export default function CreatePaymentModal({ hasRole }: Props) {
         {...form.getInputProps('receiverCard')}
       />
       <NumberInput
-        label='Sum'
-        placeholder='Sum'
+        label={t('columns.sum')}
+        placeholder={t('columns.sum')}
         required
         min={1}
         max={customMin(MAX_SUM_VALUE, maxSum)}
         {...form.getInputProps('sum')}
       />
       <Textarea
-        label='Description'
-        placeholder='Description'
+        label={t('columns.description')}
+        placeholder={t('columns.description')}
         required
         maxLength={MAX_DESCRIPTION_LENGTH}
         {...form.getInputProps('description')}
@@ -165,10 +169,10 @@ export default function CreatePaymentModal({ hasRole }: Props) {
 }
 
 export const createPaymentFactory = (hasRole: boolean) => ({
-  label: 'Create',
+  label: 'create',
   open: () =>
     openModal({
-      title: 'Create Payment',
+      title: t('actions.create') + ' ' + t('modals.payment'),
       children: <CreatePaymentModal hasRole={hasRole} />,
     }),
 });

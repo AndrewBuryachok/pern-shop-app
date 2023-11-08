@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
 import { ISearch } from '../../common/interfaces';
 import { useGetAllStoragesQuery } from '../../features/storages/storages.api';
@@ -7,6 +8,8 @@ import { createUserStorageButton } from '../../features/storages/CreateStorageMo
 import { editStorageAction } from '../../features/storages/EditStorageModal';
 
 export default function AllStorages() {
+  const [t] = useTranslation();
+
   const [searchParams] = useSearchParams();
 
   const [page, setPage] = useState(+(searchParams.get('page') || 1));
@@ -21,8 +24,8 @@ export default function AllStorages() {
   const response = useGetAllStoragesQuery({ page, search });
 
   const links = [
-    { label: 'Main', to: '..' },
-    { label: 'My', to: '../my' },
+    { label: t('pages.main'), to: '..' },
+    { label: t('pages.my'), to: '../my' },
   ];
 
   const button = createUserStorageButton;
@@ -32,7 +35,7 @@ export default function AllStorages() {
   return (
     <StoragesTable
       {...response}
-      title='All Storages'
+      title={t('pages.all') + ' ' + t('navbar.storages')}
       page={page}
       setPage={setPage}
       search={search}

@@ -1,3 +1,5 @@
+import { t } from 'i18next';
+import { useTranslation } from 'react-i18next';
 import { Select, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
@@ -15,6 +17,8 @@ import { Color } from '../../common/constants';
 type Props = IModal<City>;
 
 export default function RemoveCityUserModal({ data: city }: Props) {
+  const [t] = useTranslation();
+
   const form = useForm({
     initialValues: {
       cityId: city.id,
@@ -35,12 +39,14 @@ export default function RemoveCityUserModal({ data: city }: Props) {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={'Remove city user'}
+      text={
+        t('actions.remove') + ' ' + t('modals.city') + ' ' + t('modals.user')
+      }
     >
-      <TextInput label='City' value={parsePlace(city)} disabled />
+      <TextInput label={t('columns.city')} value={parsePlace(city)} disabled />
       <Select
-        label='User'
-        placeholder='User'
+        label={t('columns.user')}
+        placeholder={t('columns.user')}
         icon={user && <CustomAvatar {...user} />}
         iconWidth={48}
         itemComponent={UsersItem}
@@ -58,7 +64,8 @@ export default function RemoveCityUserModal({ data: city }: Props) {
 export const removeCityUserFactory = (hasRole: boolean) => ({
   open: (city: City) =>
     openModal({
-      title: 'Remove City User',
+      title:
+        t('actions.remove') + ' ' + t('modals.city') + ' ' + t('modals.user'),
       children: <RemoveCityUserModal data={city} />,
     }),
   disable: (city: City) => {

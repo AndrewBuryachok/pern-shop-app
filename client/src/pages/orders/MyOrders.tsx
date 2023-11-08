@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
 import { ISearch } from '../../common/interfaces';
 import { Mode } from '../../common/enums';
@@ -11,6 +12,8 @@ import { deleteOrderAction } from '../../features/orders/DeleteOrderModal';
 import { Role } from '../../common/constants';
 
 export default function MyOrders() {
+  const [t] = useTranslation();
+
   const [searchParams] = useSearchParams();
 
   const [page, setPage] = useState(+(searchParams.get('page') || 1));
@@ -31,10 +34,10 @@ export default function MyOrders() {
   const response = useGetMyOrdersQuery({ page, search });
 
   const links = [
-    { label: 'Main', to: '..' },
-    { label: 'Taken', to: '../taken' },
-    { label: 'Placed', to: '../placed' },
-    { label: 'All', to: '../all', role: Role.MANAGER },
+    { label: t('pages.main'), to: '..' },
+    { label: t('pages.taken'), to: '../taken' },
+    { label: t('pages.placed'), to: '../placed' },
+    { label: t('pages.all'), to: '../all', role: Role.MANAGER },
   ];
 
   const button = createOrderButton;
@@ -44,7 +47,7 @@ export default function MyOrders() {
   return (
     <OrdersTable
       {...response}
-      title='My Orders'
+      title={t('pages.my') + ' ' + t('navbar.orders')}
       page={page}
       setPage={setPage}
       search={search}

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
 import { ISearch } from '../../common/interfaces';
 import { Mode } from '../../common/enums';
@@ -7,6 +8,8 @@ import DeliveriesTable from '../../features/deliveries/DeliveriesTable';
 import { Role } from '../../common/constants';
 
 export default function PlacedDeliveries() {
+  const [t] = useTranslation();
+
   const [searchParams] = useSearchParams();
 
   const [page, setPage] = useState(+(searchParams.get('page') || 1));
@@ -27,16 +30,16 @@ export default function PlacedDeliveries() {
   const response = useGetPlacedDeliveriesQuery({ page, search });
 
   const links = [
-    { label: 'Main', to: '..' },
-    { label: 'My', to: '../my' },
-    { label: 'Taken', to: '../taken' },
-    { label: 'All', to: '../all', role: Role.MANAGER },
+    { label: t('pages.main'), to: '..' },
+    { label: t('pages.my'), to: '../my' },
+    { label: t('pages.taken'), to: '../taken' },
+    { label: t('pages.all'), to: '../all', role: Role.MANAGER },
   ];
 
   return (
     <DeliveriesTable
       {...response}
-      title='Placed Deliveries'
+      title={t('pages.placed') + ' ' + t('navbar.deliveries')}
       page={page}
       setPage={setPage}
       search={search}

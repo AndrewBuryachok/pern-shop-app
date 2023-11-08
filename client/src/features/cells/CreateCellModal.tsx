@@ -1,4 +1,6 @@
+import { t } from 'i18next';
 import { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Select, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
@@ -16,6 +18,8 @@ import { selectStorages } from '../../common/utils';
 type Props = { hasRole: boolean };
 
 export default function CreateCellModal({ hasRole }: Props) {
+  const [t] = useTranslation();
+
   const form = useForm({
     initialValues: {
       storage: '',
@@ -50,11 +54,11 @@ export default function CreateCellModal({ hasRole }: Props) {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={'Create cell'}
+      text={t('actions.create') + ' ' + t('modals.cell')}
     >
       <Select
-        label='Storage'
-        placeholder='Storage'
+        label={t('columns.storage')}
+        placeholder={t('columns.storage')}
         rightSection={<RefetchAction {...storagesResponse} />}
         itemComponent={PlacesItem}
         data={selectStorages(storages)}
@@ -63,16 +67,20 @@ export default function CreateCellModal({ hasRole }: Props) {
         disabled={storagesResponse.isFetching}
         {...form.getInputProps('storage')}
       />
-      <TextInput label='Name' disabled {...form.getInputProps('name')} />
+      <TextInput
+        label={t('columns.name')}
+        disabled
+        {...form.getInputProps('name')}
+      />
     </CustomForm>
   );
 }
 
 export const createCellFactory = (hasRole: boolean) => ({
-  label: 'Create',
+  label: 'create',
   open: () =>
     openModal({
-      title: 'Create Cell',
+      title: t('actions.create') + ' ' + t('modals.cell'),
       children: <CreateCellModal hasRole={hasRole} />,
     }),
 });

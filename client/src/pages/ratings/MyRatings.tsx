@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
 import { ISearch } from '../../common/interfaces';
 import { Mode } from '../../common/enums';
@@ -10,6 +11,8 @@ import { deleteRatingAction } from '../../features/ratings/DeleteRatingModal';
 import { Role } from '../../common/constants';
 
 export default function MyRatings() {
+  const [t] = useTranslation();
+
   const [searchParams] = useSearchParams();
 
   const [page, setPage] = useState(+(searchParams.get('page') || 1));
@@ -24,8 +27,8 @@ export default function MyRatings() {
   const response = useGetMyRatingsQuery({ page, search });
 
   const links = [
-    { label: 'Polled', to: '../polled' },
-    { label: 'All', to: '../all', role: Role.ADMIN },
+    { label: t('pages.polled'), to: '../polled' },
+    { label: t('pages.all'), to: '../all', role: Role.ADMIN },
   ];
 
   const button = createRatingButton;
@@ -35,7 +38,7 @@ export default function MyRatings() {
   return (
     <RatingsTable
       {...response}
-      title='My Ratings'
+      title={t('pages.my') + ' ' + t('navbar.ratings')}
       page={page}
       setPage={setPage}
       search={search}

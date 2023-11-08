@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
 import { ISearch } from '../../common/interfaces';
 import { Mode } from '../../common/enums';
@@ -7,6 +8,8 @@ import ExchangesTable from '../../features/exchanges/ExchangesTable';
 import { createExchangeButton } from '../../features/exchanges/CreateExchangeModal';
 
 export default function AllExchanges() {
+  const [t] = useTranslation();
+
   const [searchParams] = useSearchParams();
 
   const [page, setPage] = useState(+(searchParams.get('page') || 1));
@@ -21,14 +24,14 @@ export default function AllExchanges() {
 
   const response = useGetAllExchangesQuery({ page, search });
 
-  const links = [{ label: 'My', to: '../my' }];
+  const links = [{ label: t('pages.my'), to: '../my' }];
 
   const button = createExchangeButton;
 
   return (
     <ExchangesTable
       {...response}
-      title='All Exchanges'
+      title={t('pages.all') + ' ' + t('navbar.exchanges')}
       page={page}
       setPage={setPage}
       search={search}

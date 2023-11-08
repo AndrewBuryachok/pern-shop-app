@@ -8,7 +8,7 @@ type Props = {
 
 export default function DateText(props: Props) {
   if (!props.date) {
-    return <SingleText text={'-'} />;
+    return <SingleText text='-' />;
   }
 
   const { date, time } = parseDate(props.date);

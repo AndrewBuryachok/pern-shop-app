@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import {
   Anchor,
@@ -37,138 +38,145 @@ import {
   IconTags,
   IconTrolley,
   IconTruck,
+  IconUsers,
 } from '@tabler/icons';
 
 export default function Home() {
-  useDocumentTitle('Home | Shop');
+  const [t] = useTranslation();
+
+  useDocumentTitle(t('navbar.home'));
 
   const theme = useMantineTheme();
 
   const features = [
     {
-      title: 'Cards',
+      title: 'users',
+      icon: IconUsers,
+    },
+    {
+      title: 'cards',
       icon: IconCreditCard,
       my: true,
     },
     {
-      title: 'Payments',
+      title: 'payments',
       icon: IconCashBanknote,
       my: true,
     },
     {
-      title: 'Exchanges',
+      title: 'exchanges',
       icon: IconExchange,
       my: true,
     },
     {
-      title: 'Invoices',
+      title: 'invoices',
       icon: IconBusinessplan,
       my: true,
     },
     {
-      title: 'Goods',
+      title: 'goods',
       icon: IconBasket,
     },
     {
-      title: 'Wares',
+      title: 'wares',
       icon: IconShoppingBag,
     },
     {
-      title: 'Products',
+      title: 'products',
       icon: IconShoppingCart,
     },
     {
-      title: 'Lots',
+      title: 'lots',
       icon: IconGavel,
     },
     {
-      title: 'Trades',
+      title: 'trades',
       icon: IconPaperBag,
       my: true,
     },
     {
-      title: 'Sales',
+      title: 'sales',
       icon: IconGardenCart,
       my: true,
     },
     {
-      title: 'Bids',
+      title: 'bids',
       icon: IconTags,
       my: true,
     },
     {
-      title: 'Orders',
+      title: 'orders',
       icon: IconTrolley,
     },
     {
-      title: 'Deliveries',
+      title: 'deliveries',
       icon: IconTruck,
     },
     {
-      title: 'Map',
+      title: 'map',
       icon: IconMap,
     },
     {
-      title: 'Cities',
+      title: 'cities',
       icon: IconBuildingSkyscraper,
     },
     {
-      title: 'Shops',
+      title: 'shops',
       icon: IconBuildingStore,
     },
     {
-      title: 'Markets',
+      title: 'markets',
       icon: IconBuildingStadium,
     },
     {
-      title: 'Storages',
+      title: 'storages',
       icon: IconBuildingWarehouse,
     },
     {
-      title: 'Stores',
+      title: 'stores',
       icon: IconBuildingCircus,
     },
     {
-      title: 'Cells',
+      title: 'cells',
       icon: IconBoxModel,
     },
     {
-      title: 'Rents',
+      title: 'rents',
       icon: IconFileDollar,
       my: true,
     },
     {
-      title: 'Leases',
+      title: 'leases',
       icon: IconReportMoney,
       my: true,
     },
     {
-      title: 'Polls',
+      title: 'polls',
       icon: IconChartBar,
     },
     {
-      title: 'Votes',
+      title: 'votes',
       icon: IconNotes,
       my: true,
     },
     {
-      title: 'Friends',
+      title: 'friends',
       icon: IconFriends,
     },
     {
-      title: 'Ratings',
+      title: 'ratings',
       icon: IconStar,
       my: true,
     },
     {
-      title: 'Tasks',
+      title: 'tasks',
       icon: IconChecklist,
     },
   ];
 
   return (
     <Stack align='center'>
-      <Title order={1}>Online shop app</Title>
+      <Title order={1}>{t('home.title')}</Title>
       <SimpleGrid
         cols={5}
         spacing={8}
@@ -184,17 +192,15 @@ export default function Home() {
             <Stack spacing={0}>
               <feature.icon size={48} color={theme.fn.primaryColor()} />
               <Text size='lg' weight='bold'>
-                {feature.title}
+                {t('navbar.' + feature.title)}
               </Text>
               <Text size='sm' color='dimmed'>
-                {'Create and view '}
+                {t('home.text')}
                 <Anchor
                   component={Link}
-                  to={`/${feature.title.toLowerCase()}${
-                    feature.my ? '/my' : ''
-                  }`}
+                  to={`/${feature.title}${feature.my ? '/my' : ''}`}
                 >
-                  {feature.title.toLowerCase()}
+                  {t('home.anchor')}
                 </Anchor>
               </Text>
             </Stack>

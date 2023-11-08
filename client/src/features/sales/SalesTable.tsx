@@ -1,6 +1,6 @@
+import { useTranslation } from 'react-i18next';
 import { ITableWithActions } from '../../common/interfaces';
 import { Sale } from './sale.model';
-import { getCurrentUser } from '../auth/auth.slice';
 import CustomTable from '../../common/components/CustomTable';
 import AvatarWithDoubleText from '../../common/components/AvatarWithDoubleText';
 import ThingImageWithText from '../../common/components/ThingImageWithText';
@@ -15,20 +15,20 @@ import { parseSaleAmount } from '../../common/utils';
 type Props = ITableWithActions<Sale>;
 
 export default function SalesTable({ actions = [], ...props }: Props) {
-  const user = getCurrentUser()!;
+  const [t] = useTranslation();
 
   return (
     <CustomTable
       minWidth={1100}
       columns={[
-        'Buyer',
-        'Seller',
-        'Item',
-        'Amount',
-        'Sum',
-        'Storage',
-        'Created',
-        'Action',
+        t('columns.buyer'),
+        t('columns.seller'),
+        t('columns.item'),
+        t('columns.amount'),
+        t('columns.sum'),
+        t('columns.storage'),
+        t('columns.created'),
+        t('columns.action'),
       ]}
       {...props}
     >
@@ -48,7 +48,6 @@ export default function SalesTable({ actions = [], ...props }: Props) {
           </td>
           <td>
             <SumText
-              myId={user.id}
               fromId={sale.card.user.id}
               toId={sale.product.lease.card.user.id}
               sum={sale.amount * sale.product.price}

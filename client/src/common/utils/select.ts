@@ -1,3 +1,4 @@
+import { t } from 'i18next';
 import { SmUserWithCity } from '../../features/users/user.model';
 import { MdCard, MdCardWithBalance } from '../../features/cards/card.model';
 import { SmCityWithUser } from '../../features/cities/city.model';
@@ -103,22 +104,22 @@ export const selectRents = (rents?: SelectRent[]) =>
 
 export const selectRoles = () =>
   roles.map((role, index) => ({
-    text: role,
+    text: t('constants.roles.' + role),
     color: `${index + 1}`,
     value: `${index + 1}`,
-    label: role,
+    label: t('constants.roles.' + role),
   }));
 
 export const selectColors = () =>
   colors.map((color, index) => ({
-    text: color,
+    text: t('constants.colors.' + color),
     color: `${index + 1}`,
     value: `${index + 1}`,
-    label: color,
+    label: t('constants.colors.' + color),
   }));
 
 export const selectTypes = () =>
-  ['decrease', 'increase'].map((type, index) => ({
+  [t('constants.decrease'), t('constants.increase')].map((type, index) => ({
     value: `${index}`,
     label: type,
   }));
@@ -126,7 +127,7 @@ export const selectTypes = () =>
 export const selectCategories = () =>
   categories.map((category, index) => ({
     value: `${index}`,
-    label: category,
+    label: t('constants.categories.' + category),
   }));
 
 export const selectItems = (category: string) =>
@@ -135,24 +136,27 @@ export const selectItems = (category: string) =>
       item: index + 1,
       category: item.split(': ')[0],
       value: `${index + 1}`,
-      label: item.split(': ')[1],
+      label: t('constants.items.' + item.split(': ')[1]),
     }))
     .filter((item) => item.category.includes(category));
 
 export const selectKits = () =>
-  kits.map((kit, index) => ({ value: `${index + 1}`, label: kit }));
+  kits.map((kit, index) => ({
+    value: `${index + 1}`,
+    label: t('constants.kits.' + kit),
+  }));
 
 export const selectStatuses = () =>
   statuses.map((status, index) => ({
-    text: status,
+    text: t('constants.statuses.' + status),
     color: `${index + 1}`,
     value: `${index + 1}`,
-    label: status,
+    label: t('constants.statuses.' + status),
   }));
 
 export const selectPriorities = () =>
   priorities.map((priority, index) => ({
     priority: index + 1,
     value: `${index + 1}`,
-    label: priority,
+    label: t('constants.priorities.' + priority),
   }));

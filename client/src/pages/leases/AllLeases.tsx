@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
 import { ISearch } from '../../common/interfaces';
 import { Mode } from '../../common/enums';
@@ -6,6 +7,8 @@ import { useGetAllLeasesQuery } from '../../features/leases/leases.api';
 import LeasesTable from '../../features/leases/LeasesTable';
 
 export default function AllLeases() {
+  const [t] = useTranslation();
+
   const [searchParams] = useSearchParams();
 
   const [page, setPage] = useState(+(searchParams.get('page') || 1));
@@ -21,12 +24,12 @@ export default function AllLeases() {
 
   const response = useGetAllLeasesQuery({ page, search });
 
-  const links = [{ label: 'My', to: '../my' }];
+  const links = [{ label: t('pages.my'), to: '../my' }];
 
   return (
     <LeasesTable
       {...response}
-      title='All Leases'
+      title={t('pages.all') + ' ' + t('navbar.leases')}
       page={page}
       setPage={setPage}
       search={search}

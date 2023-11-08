@@ -1,3 +1,5 @@
+import { t } from 'i18next';
+import { useTranslation } from 'react-i18next';
 import { CloseButton, Group, Input, Rating, Select } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
@@ -11,6 +13,8 @@ import { UsersItem } from '../../common/components/UsersItem';
 import { selectUsers } from '../../common/utils';
 
 export default function CreateRatingModal() {
+  const [t] = useTranslation();
+
   const form = useForm({
     initialValues: {
       user: '',
@@ -33,11 +37,11 @@ export default function CreateRatingModal() {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={'Create rating'}
+      text={t('actions.create') + ' ' + t('modals.rating')}
     >
       <Select
-        label='User'
-        placeholder='User'
+        label={t('columns.user')}
+        placeholder={t('columns.user')}
         icon={user && <CustomAvatar {...user} />}
         iconWidth={48}
         rightSection={<RefetchAction {...usersResponse} />}
@@ -48,7 +52,7 @@ export default function CreateRatingModal() {
         disabled={usersResponse.isFetching}
         {...form.getInputProps('user')}
       />
-      <Input.Wrapper label='Rate' required>
+      <Input.Wrapper label={t('columns.rate')} required>
         <Group spacing={8}>
           <Rating {...form.getInputProps('rate')} />
           <CloseButton
@@ -63,10 +67,10 @@ export default function CreateRatingModal() {
 }
 
 export const createRatingButton = {
-  label: 'Create',
+  label: 'create',
   open: () =>
     openModal({
-      title: 'Create Rating',
+      title: t('actions.create') + ' ' + t('modals.rating'),
       children: <CreateRatingModal />,
     }),
 };

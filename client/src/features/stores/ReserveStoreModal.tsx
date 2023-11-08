@@ -1,4 +1,6 @@
+import { t } from 'i18next';
 import { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Select, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
@@ -27,6 +29,8 @@ import { Color } from '../../common/constants';
 type Props = IModal<Store> & { hasRole: boolean };
 
 export default function ReserveStoreModal({ data: store, hasRole }: Props) {
+  const [t] = useTranslation();
+
   const myCard = { balance: 0 };
 
   const form = useForm({
@@ -38,7 +42,9 @@ export default function ReserveStoreModal({ data: store, hasRole }: Props) {
     transformValues: ({ card, ...rest }) => ({ ...rest, cardId: +card }),
     validate: {
       card: () =>
-        myCard.balance < store.market.price ? 'Not enough balance' : null,
+        myCard.balance < store.market.price
+          ? t('errors.not_enough_balance')
+          : null,
     },
   });
 
@@ -68,21 +74,29 @@ export default function ReserveStoreModal({ data: store, hasRole }: Props) {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={'Reserve store'}
+      text={t('actions.reserve') + ' ' + t('modals.store')}
     >
       <TextInput
-        label='Owner'
+        label={t('columns.owner')}
         icon={<CustomAvatar {...store.market.card.user} />}
         iconWidth={48}
         value={parseCard(store.market.card)}
         disabled
       />
-      <TextInput label='Store' value={parseStore(store)} disabled />
-      <TextInput label='Price' value={`${store.market.price}$`} disabled />
+      <TextInput
+        label={t('columns.store')}
+        value={parseStore(store)}
+        disabled
+      />
+      <TextInput
+        label={t('columns.price')}
+        value={`${store.market.price}$`}
+        disabled
+      />
       {hasRole && (
         <Select
-          label='User'
-          placeholder='User'
+          label={t('columns.user')}
+          placeholder={t('columns.user')}
           icon={user && <CustomAvatar {...user} />}
           iconWidth={48}
           rightSection={<RefetchAction {...usersResponse} />}
@@ -95,8 +109,8 @@ export default function ReserveStoreModal({ data: store, hasRole }: Props) {
         />
       )}
       <Select
-        label='Card'
-        placeholder='Card'
+        label={t('columns.card')}
+        placeholder={t('columns.card')}
         rightSection={
           <RefetchAction
             {...cardsResponse}
@@ -117,7 +131,7 @@ export default function ReserveStoreModal({ data: store, hasRole }: Props) {
 export const reserveStoreFactory = (hasRole: boolean) => ({
   open: (store: Store) =>
     openModal({
-      title: 'Reserve Store',
+      title: t('actions.reserve') + ' ' + t('modals.store'),
       children: <ReserveStoreModal data={store} hasRole={hasRole} />,
     }),
   disable: () => false,

@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { Link, useLocation } from 'react-router-dom';
 import { Navbar, NavLink, ScrollArea } from '@mantine/core';
 import {
@@ -23,84 +24,84 @@ type Props = {
 };
 
 export default function CustomNavbar(props: Props) {
+  const [t] = useTranslation();
+
   const links = [
     {
-      label: 'Home',
+      route: 'home',
       icon: IconHome,
     },
     {
-      label: 'Users',
+      route: 'users',
       icon: IconUsers,
     },
     {
-      label: 'Wallet',
+      route: 'wallet',
       icon: IconWallet,
-      nested: ['Cards', 'Payments', 'Exchanges', 'Invoices'],
+      nested: ['cards', 'payments', 'exchanges', 'invoices'],
       my: true,
     },
     {
-      label: 'Things',
+      route: 'things',
       icon: IconBasket,
-      nested: ['Goods', 'Wares', 'Products', 'Lots'],
+      nested: ['goods', 'wares', 'products', 'lots'],
     },
     {
-      label: 'Purchases',
+      route: 'purchases',
       icon: IconTags,
-      nested: ['Trades', 'Sales', 'Bids'],
+      nested: ['trades', 'sales', 'bids'],
       my: true,
     },
     {
-      label: 'Transportations',
+      route: 'transportations',
       icon: IconBoxSeam,
-      nested: ['Orders', 'Deliveries'],
+      nested: ['orders', 'deliveries'],
     },
     {
-      label: 'Map',
+      route: 'map',
       icon: IconMap,
     },
     {
-      label: 'Places',
+      route: 'places',
       icon: IconBuildingCommunity,
-      nested: ['Cities', 'Shops', 'Markets', 'Storages'],
+      nested: ['cities', 'shops', 'markets', 'storages'],
     },
     {
-      label: 'Containers',
+      route: 'containers',
       icon: IconContainer,
-      nested: ['Stores', 'Cells'],
+      nested: ['stores', 'cells'],
     },
     {
-      label: 'Receipts',
+      route: 'receipts',
       icon: IconReceipt,
-      nested: ['Rents', 'Leases'],
+      nested: ['rents', 'leases'],
       my: true,
     },
     {
-      label: 'Polls',
+      route: 'polls',
       icon: IconChartBar,
     },
     {
-      label: 'Votes',
+      route: 'votes',
       icon: IconNotes,
       my: true,
     },
     {
-      label: 'Friends',
+      route: 'friends',
       icon: IconFriends,
     },
     {
-      label: 'Ratings',
+      route: 'ratings',
       icon: IconStar,
       my: true,
     },
     {
-      label: 'Tasks',
+      route: 'tasks',
       icon: IconChecklist,
     },
   ];
 
-  const location = useLocation().pathname.split('/')[1] || 'home';
-
-  const active = location.charAt(0).toUpperCase() + location.substring(1);
+  const active = useLocation().pathname.split('/')[1] || 'home';
 
   return (
     <Navbar
@@ -114,32 +115,32 @@ export default function CustomNavbar(props: Props) {
         {links.map((link) =>
           link.nested ? (
             <NavLink
-              key={link.label}
-              label={link.label}
+              key={link.route}
+              label={t('navbar.' + link.route)}
               icon={<link.icon size={16} />}
               active={link.nested.includes(active)}
               childrenOffset={28}
             >
-              {link.nested.map((label) => (
+              {link.nested.map((route) => (
                 <NavLink
-                  key={label}
-                  label={label}
+                  key={route}
+                  label={t('navbar.' + route)}
                   component={Link}
-                  to={`${label.toLocaleLowerCase()}${link.my ? '/my' : ''}`}
-                  active={label === active}
+                  to={`${route}${link.my ? '/my' : ''}`}
+                  active={route === active}
                 />
               ))}
             </NavLink>
           ) : (
             <NavLink
-              key={link.label}
-              label={link.label}
+              key={link.route}
+              label={t('navbar.' + link.route)}
               icon={<link.icon size={16} />}
-              active={link.label === active}
+              active={link.route === active}
               component={Link}
-              to={`/${
-                link.label === 'Home' ? '' : link.label.toLocaleLowerCase()
-              }${link.my ? '/my' : ''}`}
+              to={`/${link.route === 'home' ? '' : link.route}${
+                link.my ? '/my' : ''
+              }`}
             />
           ),
         )}

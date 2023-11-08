@@ -1,3 +1,5 @@
+import { t } from 'i18next';
+import { useTranslation } from 'react-i18next';
 import { Select, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
@@ -18,6 +20,8 @@ import {
 type Props = IModal<Card>;
 
 export default function EditCardModal({ data: card }: Props) {
+  const [t] = useTranslation();
+
   const form = useForm({
     initialValues: {
       cardId: card.id,
@@ -37,20 +41,20 @@ export default function EditCardModal({ data: card }: Props) {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={'Edit card'}
+      text={t('actions.edit') + ' ' + t('modals.card')}
       isChanged={!form.isDirty()}
     >
       <TextInput
-        label='Name'
-        placeholder='Name'
+        label={t('columns.name')}
+        placeholder={t('columns.name')}
         required
         minLength={MIN_TEXT_LENGTH}
         maxLength={MAX_TEXT_LENGTH}
         {...form.getInputProps('name')}
       />
       <Select
-        label='Color'
-        placeholder='Color'
+        label={t('columns.color')}
+        placeholder={t('columns.color')}
         itemComponent={ColorsItem}
         data={selectColors()}
         searchable
@@ -64,7 +68,7 @@ export default function EditCardModal({ data: card }: Props) {
 export const editCardFactory = (hasRole: boolean) => ({
   open: (card: Card) =>
     openModal({
-      title: 'Edit Card',
+      title: t('actions.edit') + ' ' + t('modals.card'),
       children: <EditCardModal data={card} />,
     }),
   disable: (card: Card) => {

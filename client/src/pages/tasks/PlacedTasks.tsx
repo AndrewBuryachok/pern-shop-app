@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
 import { ISearch } from '../../common/interfaces';
 import { Mode } from '../../common/enums';
@@ -7,6 +8,8 @@ import TasksTable from '../../features/tasks/TasksTable';
 import { Role } from '../../common/constants';
 
 export default function PlacedTasks() {
+  const [t] = useTranslation();
+
   const [searchParams] = useSearchParams();
 
   const [page, setPage] = useState(+(searchParams.get('page') || 1));
@@ -24,16 +27,16 @@ export default function PlacedTasks() {
   const response = useGetPlacedTasksQuery({ page, search });
 
   const links = [
-    { label: 'Main', to: '..' },
-    { label: 'My', to: '../my' },
-    { label: 'Taken', to: '../taken' },
-    { label: 'All', to: '../all', role: Role.ADMIN },
+    { label: t('pages.main'), to: '..' },
+    { label: t('pages.my'), to: '../my' },
+    { label: t('pages.taken'), to: '../taken' },
+    { label: t('pages.all'), to: '../all', role: Role.ADMIN },
   ];
 
   return (
     <TasksTable
       {...response}
-      title='Placed Tasks'
+      title={t('pages.placed') + ' ' + t('navbar.tasks')}
       page={page}
       setPage={setPage}
       search={search}

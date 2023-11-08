@@ -1,3 +1,5 @@
+import { t } from 'i18next';
+import { useTranslation } from 'react-i18next';
 import { Select, Stack, TextInput } from '@mantine/core';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
@@ -10,29 +12,35 @@ import { Color } from '../../common/constants';
 type Props = IModal<Storage>;
 
 export default function ViewStorageModal({ data: storage }: Props) {
+  const [t] = useTranslation();
+
   return (
     <Stack spacing={8}>
       <TextInput
-        label='Owner'
+        label={t('columns.owner')}
         icon={<CustomAvatar {...storage.card.user} />}
         iconWidth={48}
         value={parseCard(storage.card)}
         disabled
       />
-      <TextInput label='Storage' value={storage.name} disabled />
-      <TextInput label='X' value={storage.x} disabled />
-      <TextInput label='Y' value={storage.y} disabled />
-      <TextInput label='Price' value={`${storage.price}$`} disabled />
+      <TextInput label={t('columns.storage')} value={storage.name} disabled />
+      <TextInput label={t('columns.x')} value={storage.x} disabled />
+      <TextInput label={t('columns.y')} value={storage.y} disabled />
+      <TextInput
+        label={t('columns.price')}
+        value={`${storage.price}$`}
+        disabled
+      />
       <Select
-        label='Prices'
-        placeholder={`Total: ${storage.states.length}`}
+        label={t('columns.prices')}
+        placeholder={`${t('components.total')}: ${storage.states.length}`}
         itemComponent={StatesItem}
         data={viewStates(storage.states)}
         searchable
       />
       <Select
-        label='Cells'
-        placeholder={`Total: ${storage.cells.length}`}
+        label={t('columns.cells')}
+        placeholder={`${t('components.total')}: ${storage.cells.length}`}
         data={viewContainers(storage.cells)}
         searchable
       />
@@ -43,7 +51,7 @@ export default function ViewStorageModal({ data: storage }: Props) {
 export const viewStorageAction = {
   open: (storage: Storage) =>
     openModal({
-      title: 'View Storage',
+      title: t('actions.view') + ' ' + t('modals.storage'),
       children: <ViewStorageModal data={storage} />,
     }),
   disable: () => false,

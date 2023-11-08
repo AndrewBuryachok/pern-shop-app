@@ -1,6 +1,6 @@
+import { useTranslation } from 'react-i18next';
 import { ITableWithActions } from '../../common/interfaces';
 import { Payment } from './payment.model';
-import { getCurrentUser } from '../auth/auth.slice';
 import CustomTable from '../../common/components/CustomTable';
 import AvatarWithDoubleText from '../../common/components/AvatarWithDoubleText';
 import SumText from '../../common/components/SumText';
@@ -12,18 +12,18 @@ import { viewPaymentAction } from './ViewPaymentModal';
 type Props = ITableWithActions<Payment>;
 
 export default function PaymentsTable({ actions = [], ...props }: Props) {
-  const user = getCurrentUser()!;
+  const [t] = useTranslation();
 
   return (
     <CustomTable
       minWidth={900}
       columns={[
-        'Sender',
-        'Receiver',
-        'Sum',
-        'Description',
-        'Created',
-        'Action',
+        t('columns.sender'),
+        t('columns.receiver'),
+        t('columns.sum'),
+        t('columns.description'),
+        t('columns.created'),
+        t('columns.action'),
       ]}
       {...props}
     >
@@ -37,7 +37,6 @@ export default function PaymentsTable({ actions = [], ...props }: Props) {
           </td>
           <td>
             <SumText
-              myId={user.id}
               fromId={payment.senderCard.user.id}
               toId={payment.receiverCard.user.id}
               sum={payment.sum}

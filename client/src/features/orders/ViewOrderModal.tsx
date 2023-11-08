@@ -1,3 +1,5 @@
+import { t } from 'i18next';
+import { useTranslation } from 'react-i18next';
 import { Input, Rating, Stack, Textarea, TextInput } from '@mantine/core';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
@@ -7,36 +9,56 @@ import ThingImage from '../../common/components/ThingImage';
 import {
   parseCard,
   parseCell,
+  parseItem,
+  parseStatus,
   parseThingAmount,
   parseTime,
 } from '../../common/utils';
-import { Color, items, statuses } from '../../common/constants';
+import { Color } from '../../common/constants';
 
 type Props = IModal<Order>;
 
 export default function ViewOrderModal({ data: order }: Props) {
+  const [t] = useTranslation();
+
   return (
     <Stack spacing={8}>
       <TextInput
-        label='Customer'
+        label={t('columns.customer')}
         icon={<CustomAvatar {...order.lease.card.user} />}
         iconWidth={48}
         value={parseCard(order.lease.card)}
         disabled
       />
       <TextInput
-        label='Item'
+        label={t('columns.item')}
         icon={<ThingImage {...order} />}
         iconWidth={48}
-        value={items[order.item - 1].substring(3)}
+        value={parseItem(order.item)}
         disabled
       />
-      <Textarea label='Description' value={order.description} disabled />
-      <TextInput label='Amount' value={parseThingAmount(order)} disabled />
-      <TextInput label='Price' value={`${order.price}$`} disabled />
-      <TextInput label='Storage' value={parseCell(order.lease.cell)} disabled />
+      <Textarea
+        label={t('columns.description')}
+        value={order.description}
+        disabled
+      />
       <TextInput
-        label='Executor'
+        label={t('columns.amount')}
+        value={parseThingAmount(order)}
+        disabled
+      />
+      <TextInput
+        label={t('columns.price')}
+        value={`${order.price}$`}
+        disabled
+      />
+      <TextInput
+        label={t('columns.storage')}
+        value={parseCell(order.lease.cell)}
+        disabled
+      />
+      <TextInput
+        label={t('columns.executor')}
         icon={
           order.executorCard && <CustomAvatar {...order.executorCard.user} />
         }
@@ -45,20 +67,28 @@ export default function ViewOrderModal({ data: order }: Props) {
         disabled
       />
       <TextInput
-        label='Owner'
+        label={t('columns.owner')}
         icon={<CustomAvatar {...order.lease.cell.storage.card.user} />}
         iconWidth={48}
         value={parseCard(order.lease.cell.storage.card)}
         disabled
       />
-      <TextInput label='Created' value={parseTime(order.createdAt)} disabled />
       <TextInput
-        label='Completed'
+        label={t('columns.created')}
+        value={parseTime(order.createdAt)}
+        disabled
+      />
+      <TextInput
+        label={t('columns.completed')}
         value={parseTime(order.completedAt)}
         disabled
       />
-      <TextInput label='Status' value={statuses[order.status - 1]} disabled />
-      <Input.Wrapper label='Rate'>
+      <TextInput
+        label={t('columns.status')}
+        value={parseStatus(order.status)}
+        disabled
+      />
+      <Input.Wrapper label={t('columns.rate')}>
         <Rating value={order.rate} readOnly />
       </Input.Wrapper>
     </Stack>
@@ -68,7 +98,7 @@ export default function ViewOrderModal({ data: order }: Props) {
 export const viewOrderAction = {
   open: (order: Order) =>
     openModal({
-      title: 'View Order',
+      title: t('actions.view') + ' ' + t('modals.order'),
       children: <ViewOrderModal data={order} />,
     }),
   disable: () => false,

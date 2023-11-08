@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
 import { ISearch } from '../../common/interfaces';
 import { useGetMainMarketsQuery } from '../../features/markets/markets.api';
@@ -6,6 +7,8 @@ import MarketsTable from '../../features/markets/MarketsTable';
 import { Role } from '../../common/constants';
 
 export default function MainMarkets() {
+  const [t] = useTranslation();
+
   const [searchParams] = useSearchParams();
 
   const [page, setPage] = useState(+(searchParams.get('page') || 1));
@@ -20,14 +23,14 @@ export default function MainMarkets() {
   const response = useGetMainMarketsQuery({ page, search });
 
   const links = [
-    { label: 'My', to: 'my' },
-    { label: 'All', to: 'all', role: Role.MANAGER },
+    { label: t('pages.my'), to: 'my' },
+    { label: t('pages.all'), to: 'all', role: Role.MANAGER },
   ];
 
   return (
     <MarketsTable
       {...response}
-      title='Main Markets'
+      title={t('pages.main') + ' ' + t('navbar.markets')}
       page={page}
       setPage={setPage}
       search={search}

@@ -1,3 +1,5 @@
+import { t } from 'i18next';
+import { useTranslation } from 'react-i18next';
 import { NumberInput, Select, Textarea, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
@@ -16,15 +18,18 @@ import {
   customMin,
   parseCard,
   parseCell,
+  parseItem,
   parseThingAmount,
   selectCardsWithBalance,
   viewStates,
 } from '../../common/utils';
-import { Color, items, MAX_PRICE_VALUE } from '../../common/constants';
+import { Color, MAX_PRICE_VALUE } from '../../common/constants';
 
 type Props = IModal<Lot>;
 
 export default function BuyLotModal({ data: lot }: Props) {
+  const [t] = useTranslation();
+
   const form = useForm({
     initialValues: {
       lotId: lot.id,
@@ -49,43 +54,55 @@ export default function BuyLotModal({ data: lot }: Props) {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={'Buy lot'}
+      text={t('actions.buy') + ' ' + t('modals.lot')}
     >
       <TextInput
-        label='Seller'
+        label={t('columns.seller')}
         icon={<CustomAvatar {...lot.lease.card.user} />}
         iconWidth={48}
         value={parseCard(lot.lease.card)}
         disabled
       />
       <TextInput
-        label='Item'
+        label={t('columns.item')}
         icon={<ThingImage {...lot} />}
         iconWidth={48}
-        value={items[lot.item - 1].substring(3)}
+        value={parseItem(lot.item)}
         disabled
       />
-      <Textarea label='Description' value={lot.description} disabled />
-      <TextInput label='Amount' value={parseThingAmount(lot)} disabled />
-      <TextInput label='Price' value={`${lot.price}$`} disabled />
+      <Textarea
+        label={t('columns.description')}
+        value={lot.description}
+        disabled
+      />
+      <TextInput
+        label={t('columns.amount')}
+        value={parseThingAmount(lot)}
+        disabled
+      />
+      <TextInput label={t('columns.price')} value={`${lot.price}$`} disabled />
       <Select
-        label='Bids'
-        placeholder={`Total: ${lot.bids.length}`}
+        label={t('columns.bids')}
+        placeholder={`${t('components.total')}: ${lot.bids.length}`}
         itemComponent={StatesItem}
         data={viewStates(lot.bids)}
         searchable
       />
-      <TextInput label='Storage' value={parseCell(lot.lease.cell)} disabled />
       <TextInput
-        label='Owner'
+        label={t('columns.storage')}
+        value={parseCell(lot.lease.cell)}
+        disabled
+      />
+      <TextInput
+        label={t('columns.owner')}
         icon={<CustomAvatar {...lot.lease.cell.storage.card.user} />}
         iconWidth={48}
         value={parseCard(lot.lease.cell.storage.card)}
         disabled
       />
       <Select
-        label='Card'
-        placeholder='Card'
+        label={t('columns.card')}
+        placeholder={t('columns.card')}
         rightSection={<RefetchAction {...cardsResponse} />}
         itemComponent={CardsItem}
         data={selectCardsWithBalance(cards)}
@@ -95,8 +112,8 @@ export default function BuyLotModal({ data: lot }: Props) {
         {...form.getInputProps('card')}
       />
       <NumberInput
-        label='Price'
-        placeholder='Price'
+        label={t('columns.price')}
+        placeholder={t('columns.price')}
         required
         min={lot.price + 1}
         max={customMin(MAX_PRICE_VALUE, maxPrice)}
@@ -109,7 +126,7 @@ export default function BuyLotModal({ data: lot }: Props) {
 export const buyLotAction = {
   open: (lot: Lot) =>
     openModal({
-      title: 'Buy Lot',
+      title: t('actions.buy') + ' ' + t('modals.lot'),
       children: <BuyLotModal data={lot} />,
     }),
   disable: () => false,

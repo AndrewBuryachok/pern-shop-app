@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
 import { ISearch } from '../../common/interfaces';
 import { useGetAllShopsQuery } from '../../features/shops/shops.api';
@@ -7,6 +8,8 @@ import { createUserShopButton } from '../../features/shops/CreateShopModal';
 import { editShopAction } from '../../features/shops/EditShopModal';
 
 export default function AllShops() {
+  const [t] = useTranslation();
+
   const [searchParams] = useSearchParams();
 
   const [page, setPage] = useState(+(searchParams.get('page') || 1));
@@ -20,8 +23,8 @@ export default function AllShops() {
   const response = useGetAllShopsQuery({ page, search });
 
   const links = [
-    { label: 'Main', to: '..' },
-    { label: 'My', to: '../my' },
+    { label: t('pages.main'), to: '..' },
+    { label: t('pages.my'), to: '../my' },
   ];
 
   const button = createUserShopButton;
@@ -31,7 +34,7 @@ export default function AllShops() {
   return (
     <ShopsTable
       {...response}
-      title='All Shops'
+      title={t('pages.all') + ' ' + t('navbar.shops')}
       page={page}
       setPage={setPage}
       search={search}

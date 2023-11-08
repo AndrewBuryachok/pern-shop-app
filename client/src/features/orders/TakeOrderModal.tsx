@@ -1,3 +1,5 @@
+import { t } from 'i18next';
+import { useTranslation } from 'react-i18next';
 import { Select, Textarea, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
@@ -19,15 +21,18 @@ import { CardsItem } from '../../common/components/CardsItem';
 import {
   parseCard,
   parseCell,
+  parseItem,
   parseThingAmount,
   selectCardsWithBalance,
   selectUsers,
 } from '../../common/utils';
-import { Color, items, Status } from '../../common/constants';
+import { Color, Status } from '../../common/constants';
 
 type Props = IModal<Order> & { hasRole: boolean };
 
 export default function TakeOrderModal({ data: order, hasRole }: Props) {
+  const [t] = useTranslation();
+
   const form = useForm({
     initialValues: {
       orderId: order.id,
@@ -58,28 +63,44 @@ export default function TakeOrderModal({ data: order, hasRole }: Props) {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={'Take order'}
+      text={t('actions.take') + ' ' + t('modals.order')}
     >
       <TextInput
-        label='Customer'
+        label={t('columns.customer')}
         icon={<CustomAvatar {...order.lease.card.user} />}
         iconWidth={48}
         value={parseCard(order.lease.card)}
         disabled
       />
       <TextInput
-        label='Item'
+        label={t('columns.item')}
         icon={<ThingImage {...order} />}
         iconWidth={48}
-        value={items[order.item - 1].substring(3)}
+        value={parseItem(order.item)}
         disabled
       />
-      <Textarea label='Description' value={order.description} disabled />
-      <TextInput label='Amount' value={parseThingAmount(order)} disabled />
-      <TextInput label='Price' value={`${order.price}$`} disabled />
-      <TextInput label='Storage' value={parseCell(order.lease.cell)} disabled />
+      <Textarea
+        label={t('columns.description')}
+        value={order.description}
+        disabled
+      />
       <TextInput
-        label='Owner'
+        label={t('columns.amount')}
+        value={parseThingAmount(order)}
+        disabled
+      />
+      <TextInput
+        label={t('columns.price')}
+        value={`${order.price}$`}
+        disabled
+      />
+      <TextInput
+        label={t('columns.storage')}
+        value={parseCell(order.lease.cell)}
+        disabled
+      />
+      <TextInput
+        label={t('columns.owner')}
         icon={<CustomAvatar {...order.lease.cell.storage.card.user} />}
         iconWidth={48}
         value={parseCard(order.lease.cell.storage.card)}
@@ -87,8 +108,8 @@ export default function TakeOrderModal({ data: order, hasRole }: Props) {
       />
       {hasRole && (
         <Select
-          label='User'
-          placeholder='User'
+          label={t('columns.user')}
+          placeholder={t('columns.user')}
           icon={user && <CustomAvatar {...user} />}
           iconWidth={48}
           rightSection={<RefetchAction {...usersResponse} />}
@@ -101,8 +122,8 @@ export default function TakeOrderModal({ data: order, hasRole }: Props) {
         />
       )}
       <Select
-        label='Card'
-        placeholder='Card'
+        label={t('columns.card')}
+        placeholder={t('columns.card')}
         rightSection={
           <RefetchAction
             {...cardsResponse}
@@ -123,7 +144,7 @@ export default function TakeOrderModal({ data: order, hasRole }: Props) {
 export const takeOrderFactory = (hasRole: boolean) => ({
   open: (order: Order) =>
     openModal({
-      title: 'Take Order',
+      title: t('actions.take') + ' ' + t('modals.order'),
       children: <TakeOrderModal data={order} hasRole={hasRole} />,
     }),
   disable: (order: Order) => order.status !== Status.CREATED,

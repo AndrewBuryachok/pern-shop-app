@@ -1,16 +1,18 @@
+import { t } from 'i18next';
 import { SmUser } from '../../features/users/user.model';
 import { SmCard } from '../../features/cards/card.model';
 import { Container } from '../../features/containers/container.model';
 import { SmThing } from '../../features/things/thing.model';
 import { State } from '../../features/states/state.model';
-import { items, Role, roles as allRoles } from '../constants';
+import { Role, roles as allRoles } from '../constants';
+import { parseItem } from './parse';
 
 export const viewRoles = (roles: Role[]) =>
   roles.map((role) => ({
-    text: allRoles[role - 1],
+    text: t('constants.roles.' + allRoles[role - 1]),
     color: `${role}`,
     value: `${role}`,
-    label: allRoles[role - 1],
+    label: t('constants.roles.' + allRoles[role - 1]),
     disabled: true,
   }));
 
@@ -43,7 +45,7 @@ export const viewThings = (things: SmThing[]) =>
   things.map((thing) => ({
     ...thing,
     value: `${thing.id}`,
-    label: items[thing.item - 1].substring(3),
+    label: parseItem(thing.item),
     disabled: true,
   }));
 

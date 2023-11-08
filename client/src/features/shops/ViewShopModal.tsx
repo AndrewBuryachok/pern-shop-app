@@ -1,3 +1,5 @@
+import { t } from 'i18next';
+import { useTranslation } from 'react-i18next';
 import { Select, Stack, TextInput } from '@mantine/core';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
@@ -10,21 +12,23 @@ import { Color } from '../../common/constants';
 type Props = IModal<Shop>;
 
 export default function ViewShopModal({ data: shop }: Props) {
+  const [t] = useTranslation();
+
   return (
     <Stack spacing={8}>
       <TextInput
-        label='Owner'
+        label={t('columns.owner')}
         icon={<CustomAvatar {...shop.user} />}
         iconWidth={48}
         value={shop.user.name}
         disabled
       />
-      <TextInput label='Shop' value={shop.name} disabled />
-      <TextInput label='X' value={shop.x} disabled />
-      <TextInput label='Y' value={shop.y} disabled />
+      <TextInput label={t('columns.shop')} value={shop.name} disabled />
+      <TextInput label={t('columns.x')} value={shop.x} disabled />
+      <TextInput label={t('columns.y')} value={shop.y} disabled />
       <Select
-        label='Goods'
-        placeholder={`Total: ${shop.goods.length}`}
+        label={t('columns.goods')}
+        placeholder={`${t('components.total')}: ${shop.goods.length}`}
         itemComponent={ThingsItem}
         data={viewThings(shop.goods)}
         searchable
@@ -36,7 +40,7 @@ export default function ViewShopModal({ data: shop }: Props) {
 export const viewShopAction = {
   open: (shop: Shop) =>
     openModal({
-      title: 'View Shop',
+      title: t('actions.view') + ' ' + t('modals.shop'),
       children: <ViewShopModal data={shop} />,
     }),
   disable: () => false,

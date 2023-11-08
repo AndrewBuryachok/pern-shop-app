@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { ITableWithActions } from '../../common/interfaces';
 import { Card } from './card.model';
 import CustomTable from '../../common/components/CustomTable';
@@ -11,10 +12,19 @@ import { viewCardAction } from './ViewCardModal';
 type Props = ITableWithActions<Card>;
 
 export default function CardsTable({ actions = [], ...props }: Props) {
+  const [t] = useTranslation();
+
   return (
     <CustomTable
       minWidth={700}
-      columns={['Owner', 'Card', 'Color', 'Balance', 'Users', 'Action']}
+      columns={[
+        t('columns.owner'),
+        t('columns.card'),
+        t('columns.color'),
+        t('columns.balance'),
+        t('columns.users'),
+        t('columns.action'),
+      ]}
       {...props}
     >
       {props.data?.result.map((card) => (

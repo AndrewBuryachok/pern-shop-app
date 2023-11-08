@@ -1,3 +1,5 @@
+import { t } from 'i18next';
+import { useTranslation } from 'react-i18next';
 import {
   CloseButton,
   Group,
@@ -15,12 +17,14 @@ import { RateTradeDto } from './trade.dto';
 import CustomForm from '../../common/components/CustomForm';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import ThingImage from '../../common/components/ThingImage';
-import { parseCard, parseTradeAmount } from '../../common/utils';
-import { Color, items } from '../../common/constants';
+import { parseCard, parseItem, parseTradeAmount } from '../../common/utils';
+import { Color } from '../../common/constants';
 
 type Props = IModal<Trade>;
 
 export default function RateTradeModal({ data: trade }: Props) {
+  const [t] = useTranslation();
+
   const form = useForm({
     initialValues: {
       tradeId: trade.id,
@@ -38,31 +42,39 @@ export default function RateTradeModal({ data: trade }: Props) {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={'Rate trade'}
+      text={t('actions.rate') + ' ' + t('modals.trade')}
       isChanged={!form.isDirty()}
     >
       <TextInput
-        label='Seller'
+        label={t('columns.seller')}
         icon={<CustomAvatar {...trade.ware.rent.card.user} />}
         iconWidth={48}
         value={parseCard(trade.ware.rent.card)}
         disabled
       />
       <TextInput
-        label='Item'
+        label={t('columns.item')}
         icon={<ThingImage {...trade.ware} />}
         iconWidth={48}
-        value={items[trade.ware.item - 1].substring(3)}
+        value={parseItem(trade.ware.item)}
         disabled
       />
-      <Textarea label='Description' value={trade.ware.description} disabled />
-      <TextInput label='Amount' value={parseTradeAmount(trade)} disabled />
+      <Textarea
+        label={t('columns.description')}
+        value={trade.ware.description}
+        disabled
+      />
       <TextInput
-        label='Sum'
+        label={t('columns.amount')}
+        value={parseTradeAmount(trade)}
+        disabled
+      />
+      <TextInput
+        label={t('columns.sum')}
         value={`${trade.amount * trade.ware.price}$`}
         disabled
       />
-      <Input.Wrapper label='Rate' required>
+      <Input.Wrapper label={t('columns.rate')} required>
         <Group spacing={8}>
           <Rating {...form.getInputProps('rate')} />
           <CloseButton
@@ -79,7 +91,7 @@ export default function RateTradeModal({ data: trade }: Props) {
 export const rateTradeAction = {
   open: (trade: Trade) =>
     openModal({
-      title: 'Rate Trade',
+      title: t('actions.rate') + ' ' + t('modals.trade'),
       children: <RateTradeModal data={trade} />,
     }),
   disable: () => false,

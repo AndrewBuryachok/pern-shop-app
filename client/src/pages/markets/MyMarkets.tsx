@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
 import { ISearch } from '../../common/interfaces';
 import { useGetMyMarketsQuery } from '../../features/markets/markets.api';
@@ -8,6 +9,8 @@ import { editMarketAction } from '../../features/markets/EditMarketModal';
 import { Role } from '../../common/constants';
 
 export default function MyMarkets() {
+  const [t] = useTranslation();
+
   const [searchParams] = useSearchParams();
 
   const [page, setPage] = useState(+(searchParams.get('page') || 1));
@@ -22,8 +25,8 @@ export default function MyMarkets() {
   const response = useGetMyMarketsQuery({ page, search });
 
   const links = [
-    { label: 'Main', to: '..' },
-    { label: 'All', to: '../all', role: Role.MANAGER },
+    { label: t('pages.main'), to: '..' },
+    { label: t('pages.all'), to: '../all', role: Role.MANAGER },
   ];
 
   const button = createMyMarketButton;
@@ -33,7 +36,7 @@ export default function MyMarkets() {
   return (
     <MarketsTable
       {...response}
-      title='My Markets'
+      title={t('pages.my') + ' ' + t('navbar.markets')}
       page={page}
       setPage={setPage}
       search={search}

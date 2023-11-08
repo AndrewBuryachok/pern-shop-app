@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import {
   Group,
   Paper,
@@ -14,6 +15,8 @@ import { useGetTradesStatsQuery } from '../../features/trades/trades.api';
 import { useGetWaresStatsQuery } from '../../features/wares/wares.api';
 
 export default function CustomStats() {
+  const [t] = useTranslation();
+
   const goods = useGetGoodsStatsQuery();
   const wares = useGetWaresStatsQuery();
   const products = useGetProductsStatsQuery();
@@ -48,7 +51,9 @@ export default function CustomStats() {
             <Group position='apart' spacing={0}>
               <div>
                 <Text size='xs' weight='bold' color='dimmed'>
-                  {`new ${stat.label}`.toUpperCase()}
+                  {`${t('components.new')} ${t(
+                    'navbar.' + stat.label,
+                  )}`.toUpperCase()}
                 </Text>
                 <Text size='xl' weight='bold'>
                   {stat.current || 0}
@@ -76,7 +81,7 @@ export default function CustomStats() {
               %
             </Text>
             <Text size='xs' color='dimmed'>
-              Compared to previous month - {stat.previous}
+              {t('components.stats')} - {stat.previous}
             </Text>
           </Paper>
         </Skeleton>

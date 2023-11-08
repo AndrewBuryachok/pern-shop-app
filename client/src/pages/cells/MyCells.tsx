@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
 import { ISearch } from '../../common/interfaces';
 import { useGetMyCellsQuery } from '../../features/cells/cells.api';
@@ -7,6 +8,8 @@ import { createMyCellButton } from '../../features/cells/CreateCellModal';
 import { Role } from '../../common/constants';
 
 export default function MyCells() {
+  const [t] = useTranslation();
+
   const [searchParams] = useSearchParams();
 
   const [page, setPage] = useState(+(searchParams.get('page') || 1));
@@ -22,8 +25,8 @@ export default function MyCells() {
   const response = useGetMyCellsQuery({ page, search });
 
   const links = [
-    { label: 'Main', to: '..' },
-    { label: 'All', to: '../all', role: Role.MANAGER },
+    { label: t('pages.main'), to: '..' },
+    { label: t('pages.all'), to: '../all', role: Role.MANAGER },
   ];
 
   const button = createMyCellButton;
@@ -31,7 +34,7 @@ export default function MyCells() {
   return (
     <CellsTable
       {...response}
-      title='My Cells'
+      title={t('pages.my') + ' ' + t('navbar.cells')}
       page={page}
       setPage={setPage}
       search={search}

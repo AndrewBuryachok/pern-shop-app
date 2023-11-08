@@ -1,3 +1,5 @@
+import { t } from 'i18next';
+import { useTranslation } from 'react-i18next';
 import {
   CloseButton,
   Group,
@@ -15,12 +17,14 @@ import { RateSaleDto } from './sale.dto';
 import CustomForm from '../../common/components/CustomForm';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import ThingImage from '../../common/components/ThingImage';
-import { parseCard, parseSaleAmount } from '../../common/utils';
-import { Color, items } from '../../common/constants';
+import { parseCard, parseItem, parseSaleAmount } from '../../common/utils';
+import { Color } from '../../common/constants';
 
 type Props = IModal<Sale>;
 
 export default function RateSaleModal({ data: sale }: Props) {
+  const [t] = useTranslation();
+
   const form = useForm({
     initialValues: {
       saleId: sale.id,
@@ -38,31 +42,39 @@ export default function RateSaleModal({ data: sale }: Props) {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={'Rate sale'}
+      text={t('actions.rate') + ' ' + t('modals.sale')}
       isChanged={!form.isDirty()}
     >
       <TextInput
-        label='Seller'
+        label={t('columns.seller')}
         icon={<CustomAvatar {...sale.product.lease.card.user} />}
         iconWidth={48}
         value={parseCard(sale.product.lease.card)}
         disabled
       />
       <TextInput
-        label='Item'
+        label={t('columns.item')}
         icon={<ThingImage {...sale.product} />}
         iconWidth={48}
-        value={items[sale.product.item - 1].substring(3)}
+        value={parseItem(sale.product.item)}
         disabled
       />
-      <Textarea label='Description' value={sale.product.description} disabled />
-      <TextInput label='Amount' value={parseSaleAmount(sale)} disabled />
+      <Textarea
+        label={t('columns.description')}
+        value={sale.product.description}
+        disabled
+      />
       <TextInput
-        label='Sum'
+        label={t('columns.amount')}
+        value={parseSaleAmount(sale)}
+        disabled
+      />
+      <TextInput
+        label={t('columns.sum')}
         value={`${sale.amount * sale.product.price}$`}
         disabled
       />
-      <Input.Wrapper label='Rate' required>
+      <Input.Wrapper label={t('columns.rate')} required>
         <Group spacing={8}>
           <Rating {...form.getInputProps('rate')} />
           <CloseButton
@@ -79,7 +91,7 @@ export default function RateSaleModal({ data: sale }: Props) {
 export const rateSaleAction = {
   open: (sale: Sale) =>
     openModal({
-      title: 'Rate Sale',
+      title: t('actions.rate') + ' ' + t('modals.sale'),
       children: <RateSaleModal data={sale} />,
     }),
   disable: () => false,

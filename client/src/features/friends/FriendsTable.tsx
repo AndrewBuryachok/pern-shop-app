@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { ITableWithActions } from '../../common/interfaces';
 import { Friend } from './friend.model';
 import CustomTable from '../../common/components/CustomTable';
@@ -11,10 +12,18 @@ import { Color } from '../../common/constants';
 type Props = ITableWithActions<Friend>;
 
 export default function FriendsTable({ actions = [], ...props }: Props) {
+  const [t] = useTranslation();
+
   return (
     <CustomTable
       minWidth={800}
-      columns={['Sender', 'Receiver', 'Type', 'Created', 'Action']}
+      columns={[
+        t('columns.sender'),
+        t('columns.receiver'),
+        t('columns.type'),
+        t('columns.created'),
+        t('columns.action'),
+      ]}
       {...props}
     >
       {props.data?.result.map((friend) => (

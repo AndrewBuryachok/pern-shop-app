@@ -1,3 +1,5 @@
+import { t } from 'i18next';
+import { useTranslation } from 'react-i18next';
 import { Textarea, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
@@ -8,12 +10,19 @@ import { DeleteGoodDto } from './good.dto';
 import CustomForm from '../../common/components/CustomForm';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import ThingImage from '../../common/components/ThingImage';
-import { parsePlace, parseThingAmount, parseTime } from '../../common/utils';
-import { Color, items } from '../../common/constants';
+import {
+  parseItem,
+  parsePlace,
+  parseThingAmount,
+  parseTime,
+} from '../../common/utils';
+import { Color } from '../../common/constants';
 
 type Props = IModal<Good>;
 
 export default function DeleteGoodModal({ data: good }: Props) {
+  const [t] = useTranslation();
+
   const form = useForm({
     initialValues: {
       goodId: good.id,
@@ -30,27 +39,43 @@ export default function DeleteGoodModal({ data: good }: Props) {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={'Delete good'}
+      text={t('actions.delete') + ' ' + t('modals.good')}
     >
       <TextInput
-        label='Seller'
+        label={t('columns.seller')}
         icon={<CustomAvatar {...good.shop.user} />}
         iconWidth={48}
         value={good.shop.user.name}
         disabled
       />
       <TextInput
-        label='Item'
+        label={t('columns.item')}
         icon={<ThingImage {...good} />}
         iconWidth={48}
-        value={items[good.item - 1].substring(3)}
+        value={parseItem(good.item)}
         disabled
       />
-      <Textarea label='Description' value={good.description} disabled />
-      <TextInput label='Amount' value={parseThingAmount(good)} disabled />
-      <TextInput label='Price' value={`${good.price}$`} disabled />
-      <TextInput label='Shop' value={parsePlace(good.shop)} disabled />
-      <TextInput label='Created' value={parseTime(good.createdAt)} disabled />
+      <Textarea
+        label={t('columns.description')}
+        value={good.description}
+        disabled
+      />
+      <TextInput
+        label={t('columns.amount')}
+        value={parseThingAmount(good)}
+        disabled
+      />
+      <TextInput label={t('columns.price')} value={`${good.price}$`} disabled />
+      <TextInput
+        label={t('columns.shop')}
+        value={parsePlace(good.shop)}
+        disabled
+      />
+      <TextInput
+        label={t('columns.created')}
+        value={parseTime(good.createdAt)}
+        disabled
+      />
     </CustomForm>
   );
 }
@@ -58,7 +83,7 @@ export default function DeleteGoodModal({ data: good }: Props) {
 export const deleteGoodAction = {
   open: (good: Good) =>
     openModal({
-      title: 'Delete Good',
+      title: t('actions.delete') + ' ' + t('modals.good'),
       children: <DeleteGoodModal data={good} />,
     }),
   disable: () => false,

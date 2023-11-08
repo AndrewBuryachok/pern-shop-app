@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
 import { ISearch } from '../../common/interfaces';
 import { Mode } from '../../common/enums';
@@ -7,6 +8,8 @@ import BidsTable from '../../features/bids/BidsTable';
 import { Role } from '../../common/constants';
 
 export default function MyBids() {
+  const [t] = useTranslation();
+
   const [searchParams] = useSearchParams();
 
   const [page, setPage] = useState(+(searchParams.get('page') || 1));
@@ -26,15 +29,15 @@ export default function MyBids() {
   const response = useGetMyBidsQuery({ page, search });
 
   const links = [
-    { label: 'Selled', to: '../selled' },
-    { label: 'Placed', to: '../placed' },
-    { label: 'All', to: '../all', role: Role.MANAGER },
+    { label: t('pages.selled'), to: '../selled' },
+    { label: t('pages.placed'), to: '../placed' },
+    { label: t('pages.all'), to: '../all', role: Role.MANAGER },
   ];
 
   return (
     <BidsTable
       {...response}
-      title='My Bids'
+      title={t('pages.my') + ' ' + t('navbar.bids')}
       page={page}
       setPage={setPage}
       search={search}

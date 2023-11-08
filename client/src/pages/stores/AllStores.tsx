@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
 import { ISearch } from '../../common/interfaces';
 import { useGetAllStoresQuery } from '../../features/stores/stores.api';
@@ -7,6 +8,8 @@ import { createUserStoreButton } from '../../features/stores/CreateStoreModal';
 import { reserveUserStoreAction } from '../../features/stores/ReserveStoreModal';
 
 export default function AllStores() {
+  const [t] = useTranslation();
+
   const [searchParams] = useSearchParams();
 
   const [page, setPage] = useState(+(searchParams.get('page') || 1));
@@ -22,8 +25,8 @@ export default function AllStores() {
   const response = useGetAllStoresQuery({ page, search });
 
   const links = [
-    { label: 'Main', to: '..' },
-    { label: 'My', to: '../my' },
+    { label: t('pages.main'), to: '..' },
+    { label: t('pages.my'), to: '../my' },
   ];
 
   const button = createUserStoreButton;
@@ -33,7 +36,7 @@ export default function AllStores() {
   return (
     <StoresTable
       {...response}
-      title='All Stores'
+      title={t('pages.all') + ' ' + t('navbar.stores')}
       page={page}
       setPage={setPage}
       search={search}

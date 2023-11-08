@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { useMantineTheme } from '@mantine/core';
 import { useDocumentTitle } from '@mantine/hooks';
 import { useGetMainCitiesQuery } from '../../features/cities/cities.api';
@@ -9,7 +10,9 @@ import { viewContainers, viewThings, viewUsers } from '../../common/utils';
 import { colors } from '../../common/constants';
 
 export default function Map() {
-  useDocumentTitle('Map | Shop');
+  const [t] = useTranslation();
+
+  useDocumentTitle(t('navbar.map'));
 
   const theme = useMantineTheme();
 

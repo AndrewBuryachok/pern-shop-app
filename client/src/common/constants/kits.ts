@@ -1,1 +1,1 @@
-export const kits = ['piece(s)', 'stack(s)', 'shulker(s)'];
+export const kits = ['piece', 'stack', 'shulker'];

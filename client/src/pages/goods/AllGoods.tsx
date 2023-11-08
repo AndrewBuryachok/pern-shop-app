@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
 import { ISearch } from '../../common/interfaces';
 import { useGetAllGoodsQuery } from '../../features/goods/goods.api';
@@ -8,6 +9,8 @@ import { editGoodAction } from '../../features/goods/EditGoodModal';
 import { deleteGoodAction } from '../../features/goods/DeleteGoodModal';
 
 export default function AllGoods() {
+  const [t] = useTranslation();
+
   const [searchParams] = useSearchParams();
 
   const [page, setPage] = useState(+(searchParams.get('page') || 1));
@@ -22,8 +25,8 @@ export default function AllGoods() {
   const response = useGetAllGoodsQuery({ page, search });
 
   const links = [
-    { label: 'Main', to: '..' },
-    { label: 'My', to: '../my' },
+    { label: t('pages.main'), to: '..' },
+    { label: t('pages.my'), to: '../my' },
   ];
 
   const button = createUserGoodButton;
@@ -33,7 +36,7 @@ export default function AllGoods() {
   return (
     <GoodsTable
       {...response}
-      title='All Goods'
+      title={t('pages.all') + ' ' + t('navbar.goods')}
       page={page}
       setPage={setPage}
       search={search}

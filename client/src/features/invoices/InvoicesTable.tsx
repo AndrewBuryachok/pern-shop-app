@@ -1,6 +1,6 @@
+import { useTranslation } from 'react-i18next';
 import { ITableWithActions } from '../../common/interfaces';
 import { Invoice } from './invoice.model';
-import { getCurrentUser } from '../auth/auth.slice';
 import CustomTable from '../../common/components/CustomTable';
 import AvatarWithDoubleText from '../../common/components/AvatarWithDoubleText';
 import AvatarWithSingleText from '../../common/components/AvatarWithSingleText';
@@ -13,18 +13,18 @@ import { viewInvoiceAction } from './ViewInvoiceModal';
 type Props = ITableWithActions<Invoice>;
 
 export default function InvoicesTable({ actions = [], ...props }: Props) {
-  const user = getCurrentUser()!;
+  const [t] = useTranslation();
 
   return (
     <CustomTable
       minWidth={900}
       columns={[
-        'Sender',
-        'Receiver',
-        'Sum',
-        'Description',
-        'Completed',
-        'Action',
+        t('columns.sender'),
+        t('columns.receiver'),
+        t('columns.sum'),
+        t('columns.description'),
+        t('columns.completed'),
+        t('columns.action'),
       ]}
       {...props}
     >
@@ -42,7 +42,6 @@ export default function InvoicesTable({ actions = [], ...props }: Props) {
           </td>
           <td>
             <SumText
-              myId={user.id}
               fromId={invoice.receiverUser.id}
               toId={invoice.senderCard.user.id}
               sum={invoice.sum}

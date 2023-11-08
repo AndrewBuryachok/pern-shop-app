@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 import { Chip, Group, SimpleGrid, Skeleton, Stack } from '@mantine/core';
 import { useDocumentTitle } from '@mantine/hooks';
@@ -6,11 +7,13 @@ import UserProfile from '../../features/users/UserProfile';
 import CustomRating from '../../common/components/CustomRating';
 
 export default function SingleUser() {
-  useDocumentTitle('Single User | Shop');
+  const [t] = useTranslation();
 
   const { userId } = useParams();
 
   const { data: user, isFetching } = useGetSingleUserQuery(+userId!);
+
+  useDocumentTitle(t('navbar.user') + ' ' + (user?.name || ''));
 
   return user && !isFetching ? (
     <UserProfile data={user} />
@@ -28,7 +31,7 @@ export default function SingleUser() {
       </Group>
       <Skeleton h={40} w={96} />
       <Skeleton h={40} w={96} />
-      <Chip disabled>Friend</Chip>
+      <Chip disabled>{t('components.friend')}</Chip>
       <CustomRating />
       <Group spacing={8}>
         {[...Array(3).keys()].map((key) => (

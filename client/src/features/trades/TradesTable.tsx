@@ -1,6 +1,6 @@
+import { useTranslation } from 'react-i18next';
 import { ITableWithActions } from '../../common/interfaces';
 import { Trade } from './trade.model';
-import { getCurrentUser } from '../auth/auth.slice';
 import CustomTable from '../../common/components/CustomTable';
 import AvatarWithDoubleText from '../../common/components/AvatarWithDoubleText';
 import ThingImageWithText from '../../common/components/ThingImageWithText';
@@ -15,20 +15,20 @@ import { parseTradeAmount } from '../../common/utils';
 type Props = ITableWithActions<Trade>;
 
 export default function TradesTable({ actions = [], ...props }: Props) {
-  const user = getCurrentUser()!;
+  const [t] = useTranslation();
 
   return (
     <CustomTable
       minWidth={1100}
       columns={[
-        'Buyer',
-        'Seller',
-        'Item',
-        'Amount',
-        'Sum',
-        'Market',
-        'Created',
-        'Action',
+        t('columns.buyer'),
+        t('columns.seller'),
+        t('columns.item'),
+        t('columns.amount'),
+        t('columns.sum'),
+        t('columns.market'),
+        t('columns.created'),
+        t('columns.action'),
       ]}
       {...props}
     >
@@ -48,7 +48,6 @@ export default function TradesTable({ actions = [], ...props }: Props) {
           </td>
           <td>
             <SumText
-              myId={user.id}
               fromId={trade.card.user.id}
               toId={trade.ware.rent.card.user.id}
               sum={trade.amount * trade.ware.price}

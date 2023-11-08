@@ -1,4 +1,6 @@
+import { t } from 'i18next';
 import { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Select, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
@@ -16,6 +18,8 @@ import { selectMarkets } from '../../common/utils';
 type Props = { hasRole: boolean };
 
 export default function CreateStoreModal({ hasRole }: Props) {
+  const [t] = useTranslation();
+
   const form = useForm({
     initialValues: {
       market: '',
@@ -48,11 +52,11 @@ export default function CreateStoreModal({ hasRole }: Props) {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={'Create store'}
+      text={t('actions.create') + ' ' + t('modals.store')}
     >
       <Select
-        label='Market'
-        placeholder='Market'
+        label={t('columns.market')}
+        placeholder={t('columns.market')}
         rightSection={<RefetchAction {...marketsResponse} />}
         itemComponent={PlacesItem}
         data={selectMarkets(markets)}
@@ -61,16 +65,20 @@ export default function CreateStoreModal({ hasRole }: Props) {
         disabled={marketsResponse.isFetching}
         {...form.getInputProps('market')}
       />
-      <TextInput label='Name' disabled {...form.getInputProps('name')} />
+      <TextInput
+        label={t('columns.name')}
+        disabled
+        {...form.getInputProps('name')}
+      />
     </CustomForm>
   );
 }
 
 export const createStoreFactory = (hasRole: boolean) => ({
-  label: 'Create',
+  label: 'create',
   open: () =>
     openModal({
-      title: 'Create Store',
+      title: t('actions.create') + ' ' + t('modals.store'),
       children: <CreateStoreModal hasRole={hasRole} />,
     }),
 });

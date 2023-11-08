@@ -1,3 +1,5 @@
+import { t } from 'i18next';
+import { useTranslation } from 'react-i18next';
 import { Textarea, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
@@ -14,6 +16,8 @@ import { getCurrentUser } from '../auth/auth.slice';
 type Props = IModal<Invoice>;
 
 export default function DeleteInvoiceModal({ data: invoice }: Props) {
+  const [t] = useTranslation();
+
   const form = useForm({
     initialValues: {
       invoiceId: invoice.id,
@@ -30,17 +34,17 @@ export default function DeleteInvoiceModal({ data: invoice }: Props) {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={'Delete invoice'}
+      text={t('actions.delete') + ' ' + t('modals.invoice')}
     >
       <TextInput
-        label='Sender'
+        label={t('columns.sender')}
         icon={<CustomAvatar {...invoice.senderCard.user} />}
         iconWidth={48}
         value={parseCard(invoice.senderCard)}
         disabled
       />
       <TextInput
-        label='Receiver'
+        label={t('columns.receiver')}
         icon={<CustomAvatar {...invoice.receiverUser} />}
         iconWidth={48}
         value={
@@ -50,10 +54,14 @@ export default function DeleteInvoiceModal({ data: invoice }: Props) {
         }
         disabled
       />
-      <TextInput label='Sum' value={`${invoice.sum}$`} disabled />
-      <Textarea label='Description' value={invoice.description} disabled />
+      <TextInput label={t('columns.sum')} value={`${invoice.sum}$`} disabled />
+      <Textarea
+        label={t('columns.description')}
+        value={invoice.description}
+        disabled
+      />
       <TextInput
-        label='Created'
+        label={t('columns.created')}
         value={parseTime(invoice.createdAt)}
         disabled
       />
@@ -64,7 +72,7 @@ export default function DeleteInvoiceModal({ data: invoice }: Props) {
 export const deleteInvoiceFactory = (hasRole: boolean) => ({
   open: (invoice: Invoice) =>
     openModal({
-      title: 'Delete Invoice',
+      title: t('actions.delete') + ' ' + t('modals.invoice'),
       children: <DeleteInvoiceModal data={invoice} />,
     }),
   disable: (invoice: Invoice) => {

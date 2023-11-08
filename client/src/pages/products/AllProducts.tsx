@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
 import { ISearch } from '../../common/interfaces';
 import { Mode } from '../../common/enums';
@@ -8,6 +9,8 @@ import { createUserProductButton } from '../../features/products/CreateProductMo
 import { editProductAction } from '../../features/products/EditProductModal';
 
 export default function AllProducts() {
+  const [t] = useTranslation();
+
   const [searchParams] = useSearchParams();
 
   const [page, setPage] = useState(+(searchParams.get('page') || 1));
@@ -26,9 +29,9 @@ export default function AllProducts() {
   const response = useGetAllProductsQuery({ page, search });
 
   const links = [
-    { label: 'Main', to: '..' },
-    { label: 'My', to: '../my' },
-    { label: 'Placed', to: '../placed' },
+    { label: t('pages.main'), to: '..' },
+    { label: t('pages.my'), to: '../my' },
+    { label: t('pages.placed'), to: '../placed' },
   ];
 
   const button = createUserProductButton;
@@ -38,7 +41,7 @@ export default function AllProducts() {
   return (
     <ProductsTable
       {...response}
-      title='All Products'
+      title={t('pages.all') + ' ' + t('navbar.products')}
       page={page}
       setPage={setPage}
       search={search}

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
 import { ISearch } from '../../common/interfaces';
 import { Mode } from '../../common/enums';
@@ -9,6 +10,8 @@ import { completeLotAction } from '../../features/lots/CompleteLotModal';
 import { Role } from '../../common/constants';
 
 export default function MyLots() {
+  const [t] = useTranslation();
+
   const [searchParams] = useSearchParams();
 
   const [page, setPage] = useState(+(searchParams.get('page') || 1));
@@ -27,9 +30,9 @@ export default function MyLots() {
   const response = useGetMyLotsQuery({ page, search });
 
   const links = [
-    { label: 'Main', to: '..' },
-    { label: 'Placed', to: '../placed' },
-    { label: 'All', to: '../all', role: Role.MANAGER },
+    { label: t('pages.main'), to: '..' },
+    { label: t('pages.placed'), to: '../placed' },
+    { label: t('pages.all'), to: '../all', role: Role.MANAGER },
   ];
 
   const button = createMyLotButton;
@@ -39,7 +42,7 @@ export default function MyLots() {
   return (
     <LotsTable
       {...response}
-      title='My Lots'
+      title={t('pages.my') + ' ' + t('navbar.lots')}
       page={page}
       setPage={setPage}
       search={search}

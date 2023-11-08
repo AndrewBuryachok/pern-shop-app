@@ -1,10 +1,13 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
 import { ISearch } from '../../common/interfaces';
 import { useGetAllPollsQuery } from '../../features/polls/polls.api';
 import PollsTable from '../../features/polls/PollsTable';
 
 export default function AllPolls() {
+  const [t] = useTranslation();
+
   const [searchParams] = useSearchParams();
 
   const [page, setPage] = useState(+(searchParams.get('page') || 1));
@@ -17,14 +20,14 @@ export default function AllPolls() {
   const response = useGetAllPollsQuery({ page, search });
 
   const links = [
-    { label: 'Main', to: '..' },
-    { label: 'My', to: '../my' },
+    { label: t('pages.main'), to: '..' },
+    { label: t('pages.my'), to: '../my' },
   ];
 
   return (
     <PollsTable
       {...response}
-      title='All Polls'
+      title={t('pages.all') + ' ' + t('navbar.polls')}
       page={page}
       setPage={setPage}
       search={search}

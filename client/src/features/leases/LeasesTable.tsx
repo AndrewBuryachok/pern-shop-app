@@ -1,6 +1,6 @@
+import { useTranslation } from 'react-i18next';
 import { ITableWithActions } from '../../common/interfaces';
 import { Lease } from './lease.model';
-import { getCurrentUser } from '../auth/auth.slice';
 import CustomTable from '../../common/components/CustomTable';
 import AvatarWithDoubleText from '../../common/components/AvatarWithDoubleText';
 import PlaceText from '../../common/components/PlaceText';
@@ -13,19 +13,19 @@ import { viewLeaseAction } from './ViewLeaseModal';
 type Props = ITableWithActions<Lease>;
 
 export default function LeasesTable({ actions = [], ...props }: Props) {
-  const user = getCurrentUser()!;
+  const [t] = useTranslation();
 
   return (
     <CustomTable
       minWidth={900}
       columns={[
-        'Renter',
-        'Owner',
-        'Storage',
-        'Sum',
-        'Created',
-        'Type',
-        'Action',
+        t('columns.renter'),
+        t('columns.owner'),
+        t('columns.storage'),
+        t('columns.sum'),
+        t('columns.created'),
+        t('columns.type'),
+        t('columns.action'),
       ]}
       {...props}
     >
@@ -42,7 +42,6 @@ export default function LeasesTable({ actions = [], ...props }: Props) {
           </td>
           <td>
             <SumText
-              myId={user.id}
               fromId={lease.card.user.id}
               toId={lease.cell.storage.card.user.id}
               sum={lease.cell.storage.price}

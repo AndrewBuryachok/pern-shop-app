@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
 import { ISearch } from '../../common/interfaces';
 import { Mode } from '../../common/enums';
@@ -7,6 +8,8 @@ import PaymentsTable from '../../features/payments/PaymentsTable';
 import { createUserPaymentButton } from '../../features/payments/CreatePaymentModal';
 
 export default function AllPayments() {
+  const [t] = useTranslation();
+
   const [searchParams] = useSearchParams();
 
   const [page, setPage] = useState(+(searchParams.get('page') || 1));
@@ -21,14 +24,14 @@ export default function AllPayments() {
 
   const response = useGetAllPaymentsQuery({ page, search });
 
-  const links = [{ label: 'My', to: '../my' }];
+  const links = [{ label: t('pages.my'), to: '../my' }];
 
   const button = createUserPaymentButton;
 
   return (
     <PaymentsTable
       {...response}
-      title='All Payments'
+      title={t('pages.all') + ' ' + t('navbar.payments')}
       page={page}
       setPage={setPage}
       search={search}

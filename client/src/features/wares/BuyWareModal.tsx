@@ -1,3 +1,5 @@
+import { t } from 'i18next';
+import { useTranslation } from 'react-i18next';
 import { NumberInput, Select, Textarea, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
@@ -14,15 +16,18 @@ import { CardsItem } from '../../common/components/CardsItem';
 import {
   customMin,
   parseCard,
+  parseItem,
   parseStore,
   parseThingAmount,
   selectCardsWithBalance,
 } from '../../common/utils';
-import { Color, items } from '../../common/constants';
+import { Color } from '../../common/constants';
 
 type Props = IModal<Ware>;
 
 export default function BuyWareModal({ data: ware }: Props) {
+  const [t] = useTranslation();
+
   const form = useForm({
     initialValues: {
       wareId: ware.id,
@@ -47,36 +52,48 @@ export default function BuyWareModal({ data: ware }: Props) {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={'Buy ware'}
+      text={t('actions.buy') + ' ' + t('modals.ware')}
     >
       <TextInput
-        label='Seller'
+        label={t('columns.seller')}
         icon={<CustomAvatar {...ware.rent.card.user} />}
         iconWidth={48}
         value={parseCard(ware.rent.card)}
         disabled
       />
       <TextInput
-        label='Item'
+        label={t('columns.item')}
         icon={<ThingImage {...ware} />}
         iconWidth={48}
-        value={items[ware.item - 1].substring(3)}
+        value={parseItem(ware.item)}
         disabled
       />
-      <Textarea label='Description' value={ware.description} disabled />
-      <TextInput label='Amount' value={parseThingAmount(ware)} disabled />
-      <TextInput label='Price' value={`${ware.price}$`} disabled />
-      <TextInput label='Market' value={parseStore(ware.rent.store)} disabled />
+      <Textarea
+        label={t('columns.description')}
+        value={ware.description}
+        disabled
+      />
       <TextInput
-        label='Owner'
+        label={t('columns.amount')}
+        value={parseThingAmount(ware)}
+        disabled
+      />
+      <TextInput label={t('columns.price')} value={`${ware.price}$`} disabled />
+      <TextInput
+        label={t('columns.market')}
+        value={parseStore(ware.rent.store)}
+        disabled
+      />
+      <TextInput
+        label={t('columns.owner')}
         icon={<CustomAvatar {...ware.rent.store.market.card.user} />}
         iconWidth={48}
         value={parseCard(ware.rent.store.market.card)}
         disabled
       />
       <Select
-        label='Card'
-        placeholder='Card'
+        label={t('columns.card')}
+        placeholder={t('columns.card')}
         rightSection={<RefetchAction {...cardsResponse} />}
         itemComponent={CardsItem}
         data={selectCardsWithBalance(cards)}
@@ -86,8 +103,8 @@ export default function BuyWareModal({ data: ware }: Props) {
         {...form.getInputProps('card')}
       />
       <NumberInput
-        label='Amount'
-        placeholder='Amount'
+        label={t('columns.amount')}
+        placeholder={t('columns.amount')}
         required
         min={1}
         max={customMin(ware.amount, maxAmount)}
@@ -100,7 +117,7 @@ export default function BuyWareModal({ data: ware }: Props) {
 export const buyWareAction = {
   open: (ware: Ware) =>
     openModal({
-      title: 'Buy Ware',
+      title: t('actions.buy') + ' ' + t('modals.ware'),
       children: <BuyWareModal data={ware} />,
     }),
   disable: () => false,

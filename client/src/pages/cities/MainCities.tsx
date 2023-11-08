@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
 import { ISearch } from '../../common/interfaces';
 import { useGetMainCitiesQuery } from '../../features/cities/cities.api';
@@ -6,6 +7,8 @@ import CitiesTable from '../../features/cities/CitiesTable';
 import { Role } from '../../common/constants';
 
 export default function MainCities() {
+  const [t] = useTranslation();
+
   const [searchParams] = useSearchParams();
 
   const [page, setPage] = useState(+(searchParams.get('page') || 1));
@@ -19,14 +22,14 @@ export default function MainCities() {
   const response = useGetMainCitiesQuery({ page, search });
 
   const links = [
-    { label: 'My', to: 'my' },
-    { label: 'All', to: 'all', role: Role.ADMIN },
+    { label: t('pages.my'), to: 'my' },
+    { label: t('pages.all'), to: 'all', role: Role.ADMIN },
   ];
 
   return (
     <CitiesTable
       {...response}
-      title='Main Cities'
+      title={t('pages.main') + ' ' + t('navbar.cities')}
       page={page}
       setPage={setPage}
       search={search}

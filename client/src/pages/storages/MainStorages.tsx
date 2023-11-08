@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
 import { ISearch } from '../../common/interfaces';
 import { useGetMainStoragesQuery } from '../../features/storages/storages.api';
@@ -6,6 +7,8 @@ import StoragesTable from '../../features/storages/StoragesTable';
 import { Role } from '../../common/constants';
 
 export default function MainStorages() {
+  const [t] = useTranslation();
+
   const [searchParams] = useSearchParams();
 
   const [page, setPage] = useState(+(searchParams.get('page') || 1));
@@ -20,14 +23,14 @@ export default function MainStorages() {
   const response = useGetMainStoragesQuery({ page, search });
 
   const links = [
-    { label: 'My', to: 'my' },
-    { label: 'All', to: 'all', role: Role.MANAGER },
+    { label: t('pages.my'), to: 'my' },
+    { label: t('pages.all'), to: 'all', role: Role.MANAGER },
   ];
 
   return (
     <StoragesTable
       {...response}
-      title='Main Storages'
+      title={t('pages.main') + ' ' + t('navbar.storages')}
       page={page}
       setPage={setPage}
       search={search}

@@ -1,3 +1,5 @@
+import { t } from 'i18next';
+import { useTranslation } from 'react-i18next';
 import { Rating as CustomRating, Input, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
@@ -12,6 +14,8 @@ import { Color } from '../../common/constants';
 type Props = IModal<Rating>;
 
 export default function DeleteRatingModal({ data: rating }: Props) {
+  const [t] = useTranslation();
+
   const form = useForm({
     initialValues: {
       ratingId: rating.id,
@@ -28,23 +32,23 @@ export default function DeleteRatingModal({ data: rating }: Props) {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={'Remove rating'}
+      text={t('actions.delete') + ' ' + t('modals.rating')}
     >
       <TextInput
-        label='Sender'
+        label={t('columns.sender')}
         icon={<CustomAvatar {...rating.senderUser} />}
         iconWidth={48}
         value={rating.senderUser.name}
         disabled
       />
       <TextInput
-        label='Receiver'
+        label={t('columns.receiver')}
         icon={<CustomAvatar {...rating.receiverUser} />}
         iconWidth={48}
         value={rating.receiverUser.name}
         disabled
       />
-      <Input.Wrapper label='Rate'>
+      <Input.Wrapper label={t('columns.rate')}>
         <CustomRating value={rating.rate} readOnly />
       </Input.Wrapper>
     </CustomForm>
@@ -54,7 +58,7 @@ export default function DeleteRatingModal({ data: rating }: Props) {
 export const deleteRatingAction = {
   open: (rating: Rating) =>
     openModal({
-      title: 'Delete Rating',
+      title: t('actions.delete') + ' ' + t('modals.rating'),
       children: <DeleteRatingModal data={rating} />,
     }),
   disable: () => false,

@@ -1,3 +1,5 @@
+import { t } from 'i18next';
+import { useTranslation } from 'react-i18next';
 import {
   Input,
   Rating,
@@ -15,59 +17,74 @@ import { StatesItem } from '../../common/components/StatesItem';
 import {
   parseCard,
   parseCell,
+  parseItem,
   parseThingAmount,
   parseTime,
   viewStates,
 } from '../../common/utils';
-import { Color, items } from '../../common/constants';
+import { Color } from '../../common/constants';
 
 type Props = IModal<Product>;
 
 export default function ViewProductModal({ data: product }: Props) {
+  const [t] = useTranslation();
+
   return (
     <Stack spacing={8}>
       <TextInput
-        label='Seller'
+        label={t('columns.seller')}
         icon={<CustomAvatar {...product.lease.card.user} />}
         iconWidth={48}
         value={parseCard(product.lease.card)}
         disabled
       />
       <TextInput
-        label='Item'
+        label={t('columns.item')}
         icon={<ThingImage {...product} />}
         iconWidth={48}
-        value={items[product.item - 1].substring(3)}
+        value={parseItem(product.item)}
         disabled
       />
-      <Textarea label='Description' value={product.description} disabled />
-      <TextInput label='Amount' value={parseThingAmount(product)} disabled />
-      <TextInput label='Price' value={`${product.price}$`} disabled />
+      <Textarea
+        label={t('columns.description')}
+        value={product.description}
+        disabled
+      />
+      <TextInput
+        label={t('columns.amount')}
+        value={parseThingAmount(product)}
+        disabled
+      />
+      <TextInput
+        label={t('columns.price')}
+        value={`${product.price}$`}
+        disabled
+      />
       <Select
-        label='Prices'
-        placeholder={`Total: ${product.states.length}`}
+        label={t('columns.prices')}
+        placeholder={`${t('components.total')}: ${product.states.length}`}
         itemComponent={StatesItem}
         data={viewStates(product.states)}
         searchable
       />
       <TextInput
-        label='Storage'
+        label={t('columns.storage')}
         value={parseCell(product.lease.cell)}
         disabled
       />
       <TextInput
-        label='Owner'
+        label={t('columns.owner')}
         icon={<CustomAvatar {...product.lease.cell.storage.card.user} />}
         iconWidth={48}
         value={parseCard(product.lease.cell.storage.card)}
         disabled
       />
       <TextInput
-        label='Created'
+        label={t('columns.created')}
         value={parseTime(product.createdAt)}
         disabled
       />
-      <Input.Wrapper label='Rate'>
+      <Input.Wrapper label={t('columns.rate')}>
         <Rating value={product.rate} readOnly />
       </Input.Wrapper>
     </Stack>
@@ -77,7 +94,7 @@ export default function ViewProductModal({ data: product }: Props) {
 export const viewProductAction = {
   open: (product: Product) =>
     openModal({
-      title: 'View Product',
+      title: t('actions.view') + ' ' + t('modals.product'),
       children: <ViewProductModal data={product} />,
     }),
   disable: () => false,

@@ -1,6 +1,6 @@
+import { useTranslation } from 'react-i18next';
 import { ITableWithActions } from '../../common/interfaces';
 import { Rent } from './rent.model';
-import { getCurrentUser } from '../auth/auth.slice';
 import CustomTable from '../../common/components/CustomTable';
 import AvatarWithDoubleText from '../../common/components/AvatarWithDoubleText';
 import PlaceText from '../../common/components/PlaceText';
@@ -13,19 +13,19 @@ import { viewRentAction } from './ViewRentModal';
 type Props = ITableWithActions<Rent>;
 
 export default function RentsTable({ actions = [], ...props }: Props) {
-  const user = getCurrentUser()!;
+  const [t] = useTranslation();
 
   return (
     <CustomTable
       minWidth={900}
       columns={[
-        'Renter',
-        'Owner',
-        'Market',
-        'Sum',
-        'Created',
-        'Wares',
-        'Action',
+        t('columns.renter'),
+        t('columns.owner'),
+        t('columns.market'),
+        t('columns.sum'),
+        t('columns.created'),
+        t('columns.wares'),
+        t('columns.action'),
       ]}
       {...props}
     >
@@ -42,7 +42,6 @@ export default function RentsTable({ actions = [], ...props }: Props) {
           </td>
           <td>
             <SumText
-              myId={user.id}
               fromId={rent.card.user.id}
               toId={rent.store.market.card.user.id}
               sum={rent.store.market.price}

@@ -1,3 +1,5 @@
+import { t } from 'i18next';
+import { useTranslation } from 'react-i18next';
 import { NumberInput, Select, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
@@ -22,6 +24,8 @@ import {
 type Props = { hasRole: boolean };
 
 export default function CreateCityModal({ hasRole }: Props) {
+  const [t] = useTranslation();
+
   const form = useForm({
     initialValues: {
       user: '',
@@ -50,12 +54,12 @@ export default function CreateCityModal({ hasRole }: Props) {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={'Create city'}
+      text={t('actions.create') + ' ' + t('modals.city')}
     >
       {hasRole && (
         <Select
-          label='User'
-          placeholder='User'
+          label={t('columns.user')}
+          placeholder={t('columns.user')}
           icon={user && <CustomAvatar {...user} />}
           iconWidth={48}
           rightSection={<RefetchAction {...usersResponse} />}
@@ -68,24 +72,24 @@ export default function CreateCityModal({ hasRole }: Props) {
         />
       )}
       <TextInput
-        label='Name'
-        placeholder='Name'
+        label={t('columns.name')}
+        placeholder={t('columns.name')}
         required
         minLength={MIN_TEXT_LENGTH}
         maxLength={MAX_TEXT_LENGTH}
         {...form.getInputProps('name')}
       />
       <NumberInput
-        label='X'
-        placeholder='X'
+        label={t('columns.x')}
+        placeholder={t('columns.x')}
         required
         min={MIN_COORDINATE_VALUE}
         max={MAX_COORDINATE_VALUE}
         {...form.getInputProps('x')}
       />
       <NumberInput
-        label='Y'
-        placeholder='Y'
+        label={t('columns.y')}
+        placeholder={t('columns.y')}
         required
         min={MIN_COORDINATE_VALUE}
         max={MAX_COORDINATE_VALUE}
@@ -96,10 +100,10 @@ export default function CreateCityModal({ hasRole }: Props) {
 }
 
 export const createCityFactory = (hasRole: boolean) => ({
-  label: 'Create',
+  label: 'create',
   open: () =>
     openModal({
-      title: 'Create City',
+      title: t('actions.create') + ' ' + t('modals.city'),
       children: <CreateCityModal hasRole={hasRole} />,
     }),
 });

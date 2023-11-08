@@ -1,3 +1,5 @@
+import { t } from 'i18next';
+import { useTranslation } from 'react-i18next';
 import { Stack, TextInput } from '@mantine/core';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
@@ -9,19 +11,33 @@ import { Color } from '../../common/constants';
 type Props = IModal<Cell>;
 
 export default function ViewCellModal({ data: cell }: Props) {
+  const [t] = useTranslation();
+
   return (
     <Stack spacing={8}>
       <TextInput
-        label='Owner'
+        label={t('columns.owner')}
         icon={<CustomAvatar {...cell.storage.card.user} />}
         iconWidth={48}
         value={parseCard(cell.storage.card)}
         disabled
       />
-      <TextInput label='Storage' value={parsePlace(cell.storage)} disabled />
-      <TextInput label='Cell' value={`#${cell.name}`} disabled />
-      <TextInput label='Price' value={`${cell.storage.price}$`} disabled />
-      <TextInput label='Reserved' value={parseTime(cell.reservedAt)} disabled />
+      <TextInput
+        label={t('columns.storage')}
+        value={parsePlace(cell.storage)}
+        disabled
+      />
+      <TextInput label={t('columns.cell')} value={`#${cell.name}`} disabled />
+      <TextInput
+        label={t('columns.price')}
+        value={`${cell.storage.price}$`}
+        disabled
+      />
+      <TextInput
+        label={t('columns.reserved')}
+        value={parseTime(cell.reservedAt)}
+        disabled
+      />
     </Stack>
   );
 }
@@ -29,7 +45,7 @@ export default function ViewCellModal({ data: cell }: Props) {
 export const viewCellAction = {
   open: (cell: Cell) =>
     openModal({
-      title: 'View Cell',
+      title: t('actions.view') + ' ' + t('modals.cell'),
       children: <ViewCellModal data={cell} />,
     }),
   disable: () => false,

@@ -1,3 +1,5 @@
+import { t } from 'i18next';
+import { useTranslation } from 'react-i18next';
 import { Select, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
@@ -14,6 +16,8 @@ import { Color } from '../../common/constants';
 type Props = IModal<User>;
 
 export default function RemoveUserRoleModal({ data: user }: Props) {
+  const [t] = useTranslation();
+
   const form = useForm({
     initialValues: {
       userId: user.id,
@@ -32,18 +36,20 @@ export default function RemoveUserRoleModal({ data: user }: Props) {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={'Remove user role'}
+      text={
+        t('actions.remove') + ' ' + t('columns.role') + ' ' + t('modals.user')
+      }
     >
       <TextInput
-        label='User'
+        label={t('columns.user')}
         icon={<CustomAvatar {...user} />}
         iconWidth={48}
         value={user.name}
         disabled
       />
       <Select
-        label='Role'
-        placeholder='Role'
+        label={t('columns.role')}
+        placeholder={t('columns.role')}
         itemComponent={ColorsItem}
         data={selectRoles().filter((role) => user.roles.includes(+role.value))}
         searchable
@@ -57,7 +63,8 @@ export default function RemoveUserRoleModal({ data: user }: Props) {
 export const removeUserRoleAction = {
   open: (user: User) =>
     openModal({
-      title: 'Remove User Role',
+      title:
+        t('actions.remove') + ' ' + t('columns.role') + ' ' + t('modals.user'),
       children: <RemoveUserRoleModal data={user} />,
     }),
   disable: (user: User) => user.roles.length === 0,

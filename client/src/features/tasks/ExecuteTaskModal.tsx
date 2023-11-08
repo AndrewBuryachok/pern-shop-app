@@ -1,3 +1,5 @@
+import { t } from 'i18next';
+import { useTranslation } from 'react-i18next';
 import { Textarea, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
@@ -13,6 +15,8 @@ import { Color, priorities, Status } from '../../common/constants';
 type Props = IModal<Task>;
 
 export default function ExecuteTaskModal({ data: task }: Props) {
+  const [t] = useTranslation();
+
   const form = useForm({
     initialValues: {
       taskId: task.id,
@@ -29,28 +33,32 @@ export default function ExecuteTaskModal({ data: task }: Props) {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={'Execute task'}
+      text={t('actions.execute') + ' ' + t('modals.task')}
     >
       <TextInput
-        label='Customer'
+        label={t('columns.customer')}
         icon={<CustomAvatar {...task.customerUser} />}
         iconWidth={48}
         value={task.customerUser.name}
         disabled
       />
-      <Textarea label='Description' value={task.description} disabled />
+      <Textarea
+        label={t('columns.description')}
+        value={task.description}
+        disabled
+      />
       <TextInput
-        label='Executor'
+        label={t('columns.executor')}
         icon={<CustomAvatar {...task.executorUser!} />}
         iconWidth={48}
         value={task.executorUser!.name}
         disabled
       />
       <TextInput
-        label='Priority'
+        label={t('columns.priority')}
         icon={<PriorityIcon {...task} />}
         iconWidth={48}
-        value={priorities[task.priority - 1]}
+        value={t('constants.priorities.' + priorities[task.priority - 1])}
         disabled
       />
     </CustomForm>
@@ -60,7 +68,7 @@ export default function ExecuteTaskModal({ data: task }: Props) {
 export const executeTaskAction = {
   open: (task: Task) =>
     openModal({
-      title: 'Execute Task',
+      title: t('actions.execute') + ' ' + t('modals.task'),
       children: <ExecuteTaskModal data={task} />,
     }),
   disable: (task: Task) => task.status !== Status.TAKEN,

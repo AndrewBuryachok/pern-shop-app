@@ -1,46 +1,62 @@
+import { t } from 'i18next';
+import { useTranslation } from 'react-i18next';
 import { Stack, Textarea, TextInput } from '@mantine/core';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { Task } from './task.model';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import PriorityIcon from '../../common/components/PriorityIcon';
-import { parseTime } from '../../common/utils';
-import { Color, priorities, statuses } from '../../common/constants';
+import { parseStatus, parseTime } from '../../common/utils';
+import { Color, priorities } from '../../common/constants';
 
 type Props = IModal<Task>;
 
 export default function ViewTaskModal({ data: task }: Props) {
+  const [t] = useTranslation();
+
   return (
     <Stack spacing={8}>
       <TextInput
-        label='Customer'
+        label={t('columns.customer')}
         icon={<CustomAvatar {...task.customerUser} />}
         iconWidth={48}
         value={task.customerUser.name}
         disabled
       />
-      <Textarea label='Description' value={task.description} disabled />
-      <TextInput
-        label='Priority'
-        icon={<PriorityIcon {...task} />}
-        iconWidth={48}
-        value={priorities[task.priority - 1]}
+      <Textarea
+        label={t('columns.description')}
+        value={task.description}
         disabled
       />
       <TextInput
-        label='Executor'
+        label={t('columns.priority')}
+        icon={<PriorityIcon {...task} />}
+        iconWidth={48}
+        value={t('constants.priorities.' + priorities[task.priority - 1])}
+        disabled
+      />
+      <TextInput
+        label={t('columns.executor')}
         icon={task.executorUser && <CustomAvatar {...task.executorUser} />}
         iconWidth={48}
         value={task.executorUser ? task.executorUser.name : '-'}
         disabled
       />
-      <TextInput label='Created' value={parseTime(task.createdAt)} disabled />
       <TextInput
-        label='Completed'
+        label={t('columns.created')}
+        value={parseTime(task.createdAt)}
+        disabled
+      />
+      <TextInput
+        label={t('columns.completed')}
         value={parseTime(task.completedAt)}
         disabled
       />
-      <TextInput label='Status' value={statuses[task.status - 1]} disabled />
+      <TextInput
+        label={t('columns.status')}
+        value={parseStatus(task.status)}
+        disabled
+      />
     </Stack>
   );
 }
@@ -48,7 +64,7 @@ export default function ViewTaskModal({ data: task }: Props) {
 export const viewTaskAction = {
   open: (task: Task) =>
     openModal({
-      title: 'View Task',
+      title: t('actions.view') + ' ' + t('modals.task'),
       children: <ViewTaskModal data={task} />,
     }),
   disable: () => false,

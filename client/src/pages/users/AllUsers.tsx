@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
 import { ISearch } from '../../common/interfaces';
 import { useGetAllUsersQuery } from '../../features/users/users.api';
@@ -8,6 +9,8 @@ import { addUserRoleAction } from '../../features/users/AddUserRoleModal';
 import { removeUserRoleAction } from '../../features/users/RemoveUserRoleModal';
 
 export default function AllUsers() {
+  const [t] = useTranslation();
+
   const [searchParams] = useSearchParams();
 
   const [page, setPage] = useState(+(searchParams.get('page') || 1));
@@ -24,8 +27,8 @@ export default function AllUsers() {
   const response = useGetAllUsersQuery({ page, search });
 
   const links = [
-    { label: 'Main', to: '..' },
-    { label: 'My', to: '../my' },
+    { label: t('pages.main'), to: '..' },
+    { label: t('pages.my'), to: '../my' },
   ];
 
   const actions = [
@@ -37,7 +40,7 @@ export default function AllUsers() {
   return (
     <UsersTable
       {...response}
-      title='All Users'
+      title={t('pages.all') + ' ' + t('navbar.users')}
       page={page}
       setPage={setPage}
       search={search}

@@ -1,3 +1,5 @@
+import { t } from 'i18next';
+import { useTranslation } from 'react-i18next';
 import { Select, Textarea, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
@@ -27,6 +29,8 @@ export default function CompleteInvoiceModal({
   data: invoice,
   hasRole,
 }: Props) {
+  const [t] = useTranslation();
+
   const myCard = { balance: 0 };
 
   const form = useForm({
@@ -39,7 +43,8 @@ export default function CompleteInvoiceModal({
       cardId: +card,
     }),
     validate: {
-      card: () => (myCard.balance < invoice.sum ? 'Not enough balance' : null),
+      card: () =>
+        myCard.balance < invoice.sum ? t('errors.not_enough_balance') : null,
     },
   });
 
@@ -60,32 +65,36 @@ export default function CompleteInvoiceModal({
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={'Complete invoice'}
+      text={t('actions.complete') + ' ' + t('modals.invoice')}
     >
       <TextInput
-        label='Sender'
+        label={t('columns.sender')}
         icon={<CustomAvatar {...invoice.senderCard.user} />}
         iconWidth={48}
         value={parseCard(invoice.senderCard)}
         disabled
       />
       <TextInput
-        label='Receiver'
+        label={t('columns.receiver')}
         icon={<CustomAvatar {...invoice.receiverUser} />}
         iconWidth={48}
         value={invoice.receiverUser.name}
         disabled
       />
-      <TextInput label='Sum' value={`${invoice.sum}$`} disabled />
-      <Textarea label='Description' value={invoice.description} disabled />
+      <TextInput label={t('columns.sum')} value={`${invoice.sum}$`} disabled />
+      <Textarea
+        label={t('columns.description')}
+        value={invoice.description}
+        disabled
+      />
       <TextInput
-        label='Created'
+        label={t('columns.created')}
         value={parseTime(invoice.createdAt)}
         disabled
       />
       <Select
-        label='Card'
-        placeholder='Card'
+        label={t('columns.card')}
+        placeholder={t('columns.card')}
         rightSection={<RefetchAction {...cardsResponse} />}
         itemComponent={CardsItem}
         data={selectCardsWithBalance(cards)}
@@ -101,7 +110,7 @@ export default function CompleteInvoiceModal({
 export const completeInvoiceFactory = (hasRole: boolean) => ({
   open: (invoice: Invoice) =>
     openModal({
-      title: 'Complete Invoice',
+      title: t('actions.complete') + ' ' + t('modals.invoice'),
       children: <CompleteInvoiceModal data={invoice} hasRole={hasRole} />,
     }),
   disable: (invoice: Invoice) => {

@@ -2,7 +2,7 @@ import { Group } from '@mantine/core';
 import ThingImage from './ThingImage';
 import SingleText from './SingleText';
 import DoubleText from './DoubleText';
-import { items } from '../constants';
+import { parseItem } from '../utils';
 
 type Props = {
   item: number;
@@ -10,7 +10,7 @@ type Props = {
 };
 
 export default function ThingImageWithText(props: Props) {
-  const text = items[props.item - 1].split(': ')[1];
+  const text = parseItem(props.item);
 
   return (
     <Group spacing={8}>

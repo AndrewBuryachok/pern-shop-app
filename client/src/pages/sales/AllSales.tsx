@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
 import { ISearch } from '../../common/interfaces';
 import { Mode } from '../../common/enums';
@@ -7,6 +8,8 @@ import SalesTable from '../../features/sales/SalesTable';
 import { rateSaleAction } from '../../features/sales/RateSaleModal';
 
 export default function AllSales() {
+  const [t] = useTranslation();
+
   const [searchParams] = useSearchParams();
 
   const [page, setPage] = useState(+(searchParams.get('page') || 1));
@@ -26,9 +29,9 @@ export default function AllSales() {
   const response = useGetAllSalesQuery({ page, search });
 
   const links = [
-    { label: 'My', to: '../my' },
-    { label: 'Selled', to: '../selled' },
-    { label: 'Placed', to: '../placed' },
+    { label: t('pages.my'), to: '../my' },
+    { label: t('pages.selled'), to: '../selled' },
+    { label: t('pages.placed'), to: '../placed' },
   ];
 
   const actions = [rateSaleAction];
@@ -36,7 +39,7 @@ export default function AllSales() {
   return (
     <SalesTable
       {...response}
-      title='All Sales'
+      title={t('pages.all') + ' ' + t('navbar.sales')}
       page={page}
       setPage={setPage}
       search={search}

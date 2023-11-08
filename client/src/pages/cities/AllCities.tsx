@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
 import { ISearch } from '../../common/interfaces';
 import { useGetAllCitiesQuery } from '../../features/cities/cities.api';
@@ -9,6 +10,8 @@ import { addUserCityUserAction } from '../../features/cities/AddCityUserModal';
 import { removeUserCityUserAction } from '../../features/cities/RemoveCityUserModal';
 
 export default function AllCities() {
+  const [t] = useTranslation();
+
   const [searchParams] = useSearchParams();
 
   const [page, setPage] = useState(+(searchParams.get('page') || 1));
@@ -22,8 +25,8 @@ export default function AllCities() {
   const response = useGetAllCitiesQuery({ page, search });
 
   const links = [
-    { label: 'Main', to: '..' },
-    { label: 'My', to: '../my' },
+    { label: t('pages.main'), to: '..' },
+    { label: t('pages.my'), to: '../my' },
   ];
 
   const button = createUserCityButton;
@@ -37,7 +40,7 @@ export default function AllCities() {
   return (
     <CitiesTable
       {...response}
-      title='All Cities'
+      title={t('pages.all') + ' ' + t('navbar.cities')}
       page={page}
       setPage={setPage}
       search={search}

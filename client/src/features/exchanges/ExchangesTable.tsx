@@ -1,6 +1,6 @@
+import { useTranslation } from 'react-i18next';
 import { ITableWithActions } from '../../common/interfaces';
 import { Exchange } from './exchange.model';
-import { getCurrentUser } from '../auth/auth.slice';
 import CustomTable from '../../common/components/CustomTable';
 import AvatarWithSingleText from '../../common/components/AvatarWithSingleText';
 import AvatarWithDoubleText from '../../common/components/AvatarWithDoubleText';
@@ -14,12 +14,19 @@ import { Color } from '../../common/constants';
 type Props = ITableWithActions<Exchange>;
 
 export default function ExchangesTable({ actions = [], ...props }: Props) {
-  const user = getCurrentUser()!;
+  const [t] = useTranslation();
 
   return (
     <CustomTable
       minWidth={800}
-      columns={['Executor', 'Customer', 'Type', 'Sum', 'Created', 'Action']}
+      columns={[
+        t('columns.executor'),
+        t('columns.customer'),
+        t('columns.type'),
+        t('columns.sum'),
+        t('columns.created'),
+        t('columns.action'),
+      ]}
       {...props}
     >
       {props.data?.result.map((exchange) => (
@@ -35,7 +42,6 @@ export default function ExchangesTable({ actions = [], ...props }: Props) {
           </td>
           <td>
             <SumText
-              myId={user.id}
               fromId={exchange.type ? 0 : exchange.customerCard.user.id}
               toId={!exchange.type ? 0 : exchange.customerCard.user.id}
               sum={exchange.sum}

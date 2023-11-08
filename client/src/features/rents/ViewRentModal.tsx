@@ -1,3 +1,5 @@
+import { t } from 'i18next';
+import { useTranslation } from 'react-i18next';
 import { Select, Stack, TextInput } from '@mantine/core';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
@@ -15,28 +17,42 @@ import { Color } from '../../common/constants';
 type Props = IModal<Rent>;
 
 export default function ViewRentModal({ data: rent }: Props) {
+  const [t] = useTranslation();
+
   return (
     <Stack spacing={8}>
       <TextInput
-        label='Renter'
+        label={t('columns.renter')}
         icon={<CustomAvatar {...rent.card.user} />}
         iconWidth={48}
         value={parseCard(rent.card)}
         disabled
       />
       <TextInput
-        label='Owner'
+        label={t('columns.owner')}
         icon={<CustomAvatar {...rent.store.market.card.user} />}
         iconWidth={48}
         value={parseCard(rent.store.market.card)}
         disabled
       />
-      <TextInput label='Storage' value={parseStore(rent.store)} disabled />
-      <TextInput label='Sum' value={`${rent.store.market.price}$`} disabled />
-      <TextInput label='Created' value={parseTime(rent.createdAt)} disabled />
+      <TextInput
+        label={t('columns.storage')}
+        value={parseStore(rent.store)}
+        disabled
+      />
+      <TextInput
+        label={t('columns.sum')}
+        value={`${rent.store.market.price}$`}
+        disabled
+      />
+      <TextInput
+        label={t('columns.created')}
+        value={parseTime(rent.createdAt)}
+        disabled
+      />
       <Select
-        label='Wares'
-        placeholder={`Total: ${rent.wares.length}`}
+        label={t('columns.wares')}
+        placeholder={`${t('components.total')}: ${rent.wares.length}`}
         itemComponent={ThingsItem}
         data={viewThings(rent.wares)}
         searchable
@@ -48,7 +64,7 @@ export default function ViewRentModal({ data: rent }: Props) {
 export const viewRentAction = {
   open: (rent: Rent) =>
     openModal({
-      title: 'View Rent',
+      title: t('actions.view') + ' ' + t('modals.rent'),
       children: <ViewRentModal data={rent} />,
     }),
   disable: () => false,

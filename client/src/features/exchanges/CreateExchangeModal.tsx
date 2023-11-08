@@ -1,4 +1,6 @@
+import { t } from 'i18next';
 import { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { NumberInput, Select } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
@@ -20,6 +22,8 @@ import {
 import { MAX_SUM_VALUE } from '../../common/constants';
 
 export default function CreateExchangeModal() {
+  const [t] = useTranslation();
+
   const form = useForm({
     initialValues: {
       user: '',
@@ -57,11 +61,11 @@ export default function CreateExchangeModal() {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={'Create exchange'}
+      text={t('actions.create') + ' ' + t('modals.exchange')}
     >
       <Select
-        label='User'
-        placeholder='User'
+        label={t('columns.user')}
+        placeholder={t('columns.user')}
         icon={user && <CustomAvatar {...user} />}
         iconWidth={48}
         rightSection={<RefetchAction {...usersResponse} />}
@@ -73,8 +77,8 @@ export default function CreateExchangeModal() {
         {...form.getInputProps('user')}
       />
       <Select
-        label='Card'
-        placeholder='Card'
+        label={t('columns.card')}
+        placeholder={t('columns.card')}
         rightSection={
           <RefetchAction {...cardsResponse} skip={!form.values.user} />
         }
@@ -86,16 +90,16 @@ export default function CreateExchangeModal() {
         {...form.getInputProps('card')}
       />
       <Select
-        label='Type'
-        placeholder='Type'
+        label={t('columns.type')}
+        placeholder={t('columns.type')}
         data={selectTypes()}
         searchable
         required
         {...form.getInputProps('type')}
       />
       <NumberInput
-        label='Sum'
-        placeholder='Sum'
+        label={t('columns.sum')}
+        placeholder={t('columns.sum')}
         required
         min={1}
         max={customMin(MAX_SUM_VALUE, maxSum)}
@@ -106,10 +110,10 @@ export default function CreateExchangeModal() {
 }
 
 export const createExchangeButton = {
-  label: 'Create',
+  label: 'create',
   open: () =>
     openModal({
-      title: 'Create Exchange',
+      title: t('actions.create') + ' ' + t('modals.exchange'),
       children: <CreateExchangeModal />,
     }),
 };

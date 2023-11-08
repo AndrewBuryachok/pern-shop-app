@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
 import { ISearch } from '../../common/interfaces';
 import { Mode } from '../../common/enums';
@@ -10,6 +11,8 @@ import { removeFriendAction } from '../../features/friends/RemoveFriendModal';
 import { Role } from '../../common/constants';
 
 export default function MyFriends() {
+  const [t] = useTranslation();
+
   const [searchParams] = useSearchParams();
 
   const [page, setPage] = useState(+(searchParams.get('page') || 1));
@@ -24,8 +27,8 @@ export default function MyFriends() {
   const response = useGetMyFriendsQuery({ page, search });
 
   const links = [
-    { label: 'Main', to: '..' },
-    { label: 'All', to: '../all', role: Role.ADMIN },
+    { label: t('pages.main'), to: '..' },
+    { label: t('pages.all'), to: '../all', role: Role.ADMIN },
   ];
 
   const button = createFriendButton;
@@ -35,7 +38,7 @@ export default function MyFriends() {
   return (
     <FriendsTable
       {...response}
-      title='My Friends'
+      title={t('pages.my') + ' ' + t('navbar.friends')}
       page={page}
       setPage={setPage}
       search={search}

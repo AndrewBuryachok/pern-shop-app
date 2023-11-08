@@ -4,4 +4,4 @@ export enum Role {
   MANAGER = 3,
 }
 
-export const roles = ['Admin', 'Banker', 'Manager'];
+export const roles = ['admin', 'banker', 'manager'];

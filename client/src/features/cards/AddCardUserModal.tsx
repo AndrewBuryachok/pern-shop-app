@@ -1,3 +1,5 @@
+import { t } from 'i18next';
+import { useTranslation } from 'react-i18next';
 import { Select, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
@@ -17,6 +19,8 @@ import { Color } from '../../common/constants';
 type Props = IModal<Card>;
 
 export default function AddCardUserModal({ data: card }: Props) {
+  const [t] = useTranslation();
+
   const form = useForm({
     initialValues: {
       cardId: card.id,
@@ -39,12 +43,12 @@ export default function AddCardUserModal({ data: card }: Props) {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={'Add card user'}
+      text={t('actions.add') + ' ' + t('modals.card') + ' ' + t('modals.user')}
     >
-      <TextInput label='Card' value={card.name} disabled />
+      <TextInput label={t('columns.card')} value={card.name} disabled />
       <Select
-        label='User'
-        placeholder='User'
+        label={t('columns.user')}
+        placeholder={t('columns.user')}
         icon={user && <CustomAvatar {...user} />}
         iconWidth={48}
         rightSection={<RefetchAction {...usersResponse} />}
@@ -64,7 +68,7 @@ export default function AddCardUserModal({ data: card }: Props) {
 export const addCardUserFactory = (hasRole: boolean) => ({
   open: (card: Card) =>
     openModal({
-      title: 'Add Card User',
+      title: t('actions.add') + ' ' + t('modals.card') + ' ' + t('modals.user'),
       children: <AddCardUserModal data={card} />,
     }),
   disable: (card: Card) => {

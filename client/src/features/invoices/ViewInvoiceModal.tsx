@@ -1,3 +1,5 @@
+import { t } from 'i18next';
+import { useTranslation } from 'react-i18next';
 import { Stack, Textarea, TextInput } from '@mantine/core';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
@@ -9,17 +11,19 @@ import { Color } from '../../common/constants';
 type Props = IModal<Invoice>;
 
 export default function ViewInvoiceModal({ data: invoice }: Props) {
+  const [t] = useTranslation();
+
   return (
     <Stack spacing={8}>
       <TextInput
-        label='Sender'
+        label={t('columns.sender')}
         icon={<CustomAvatar {...invoice.senderCard.user} />}
         iconWidth={48}
         value={parseCard(invoice.senderCard)}
         disabled
       />
       <TextInput
-        label='Receiver'
+        label={t('columns.receiver')}
         icon={<CustomAvatar {...invoice.receiverUser} />}
         iconWidth={48}
         value={
@@ -29,15 +33,19 @@ export default function ViewInvoiceModal({ data: invoice }: Props) {
         }
         disabled
       />
-      <TextInput label='Sum' value={`${invoice.sum}$`} disabled />
-      <Textarea label='Description' value={invoice.description} disabled />
+      <TextInput label={t('columns.sum')} value={`${invoice.sum}$`} disabled />
+      <Textarea
+        label={t('columns.description')}
+        value={invoice.description}
+        disabled
+      />
       <TextInput
-        label='Created'
+        label={t('columns.created')}
         value={parseTime(invoice.createdAt)}
         disabled
       />
       <TextInput
-        label='Completed'
+        label={t('columns.completed')}
         value={parseTime(invoice.completedAt)}
         disabled
       />
@@ -48,7 +56,7 @@ export default function ViewInvoiceModal({ data: invoice }: Props) {
 export const viewInvoiceAction = {
   open: (invoice: Invoice) =>
     openModal({
-      title: 'View Invoice',
+      title: t('actions.view') + ' ' + t('modals.invoice'),
       children: <ViewInvoiceModal data={invoice} />,
     }),
   disable: () => false,

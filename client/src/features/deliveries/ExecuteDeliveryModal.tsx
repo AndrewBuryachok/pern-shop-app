@@ -1,3 +1,5 @@
+import { t } from 'i18next';
+import { useTranslation } from 'react-i18next';
 import { Textarea, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
@@ -8,12 +10,19 @@ import { DeliveryIdDto } from '../deliveries/delivery.dto';
 import CustomForm from '../../common/components/CustomForm';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import ThingImage from '../../common/components/ThingImage';
-import { parseCard, parseCell, parseThingAmount } from '../../common/utils';
-import { Color, items, Status } from '../../common/constants';
+import {
+  parseCard,
+  parseCell,
+  parseItem,
+  parseThingAmount,
+} from '../../common/utils';
+import { Color, Status } from '../../common/constants';
 
 type Props = IModal<Delivery>;
 
 export default function ExecuteDeliveryModal({ data: delivery }: Props) {
+  const [t] = useTranslation();
+
   const form = useForm({
     initialValues: {
       deliveryId: delivery.id,
@@ -30,51 +39,63 @@ export default function ExecuteDeliveryModal({ data: delivery }: Props) {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={'Execute delivery'}
+      text={t('actions.execute') + ' ' + t('modals.delivery')}
     >
       <TextInput
-        label='Customer'
+        label={t('columns.customer')}
         icon={<CustomAvatar {...delivery.fromLease.card.user} />}
         iconWidth={48}
         value={parseCard(delivery.fromLease.card)}
         disabled
       />
       <TextInput
-        label='Item'
+        label={t('columns.item')}
         icon={<ThingImage {...delivery} />}
         iconWidth={48}
-        value={items[delivery.item - 1].substring(3)}
+        value={parseItem(delivery.item)}
         disabled
       />
-      <Textarea label='Description' value={delivery.description} disabled />
-      <TextInput label='Amount' value={parseThingAmount(delivery)} disabled />
-      <TextInput label='Price' value={`${delivery.price}$`} disabled />
+      <Textarea
+        label={t('columns.description')}
+        value={delivery.description}
+        disabled
+      />
       <TextInput
-        label='Executor'
+        label={t('columns.amount')}
+        value={parseThingAmount(delivery)}
+        disabled
+      />
+      <TextInput
+        label={t('columns.price')}
+        value={`${delivery.price}$`}
+        disabled
+      />
+      <TextInput
+        label={t('columns.executor')}
         icon={<CustomAvatar {...delivery.executorCard!.user} />}
         iconWidth={48}
         value={parseCard(delivery.executorCard!)}
         disabled
       />
       <TextInput
-        label='From Storage'
+        label={t('columns.storage') + ' ' + t('columns.from')}
         value={parseCell(delivery.fromLease.cell)}
         disabled
       />
       <TextInput
-        label='From Owner'
+        label={t('columns.owner') + ' ' + t('columns.from')}
         icon={<CustomAvatar {...delivery.fromLease.cell.storage.card.user} />}
         iconWidth={48}
         value={parseCard(delivery.fromLease.cell.storage.card)}
         disabled
       />
       <TextInput
-        label='To Storage'
+        label={t('columns.storage') + ' ' + t('columns.to')}
         value={parseCell(delivery.toLease.cell)}
         disabled
       />
       <TextInput
-        label='To Owner'
+        label={t('columns.owner') + ' ' + t('columns.to')}
         icon={<CustomAvatar {...delivery.toLease.cell.storage.card.user} />}
         iconWidth={48}
         value={parseCard(delivery.toLease.cell.storage.card)}
@@ -87,7 +108,7 @@ export default function ExecuteDeliveryModal({ data: delivery }: Props) {
 export const executeDeliveryAction = {
   open: (delivery: Delivery) =>
     openModal({
-      title: 'Execute Delivery',
+      title: t('actions.execute') + ' ' + t('modals.delivery'),
       children: <ExecuteDeliveryModal data={delivery} />,
     }),
   disable: (delivery: Delivery) => delivery.status !== Status.TAKEN,

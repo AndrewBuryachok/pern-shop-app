@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
 import { ISearch } from '../../common/interfaces';
 import { Mode } from '../../common/enums';
@@ -6,6 +7,8 @@ import { useGetAllRentsQuery } from '../../features/rents/rents.api';
 import RentsTable from '../../features/rents/RentsTable';
 
 export default function AllRents() {
+  const [t] = useTranslation();
+
   const [searchParams] = useSearchParams();
 
   const [page, setPage] = useState(+(searchParams.get('page') || 1));
@@ -21,12 +24,12 @@ export default function AllRents() {
 
   const response = useGetAllRentsQuery({ page, search });
 
-  const links = [{ label: 'My', to: '../my' }];
+  const links = [{ label: t('pages.my'), to: '../my' }];
 
   return (
     <RentsTable
       {...response}
-      title='All Rents'
+      title={t('pages.all') + ' ' + t('navbar.rents')}
       page={page}
       setPage={setPage}
       search={search}

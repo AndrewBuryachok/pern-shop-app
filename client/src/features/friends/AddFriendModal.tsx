@@ -1,3 +1,5 @@
+import { t } from 'i18next';
+import { useTranslation } from 'react-i18next';
 import { TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
@@ -13,6 +15,8 @@ import { Color } from '../../common/constants';
 type Props = IModal<Friend>;
 
 export default function AddFriendModal({ data: friend }: Props) {
+  const [t] = useTranslation();
+
   const form = useForm({
     initialValues: {
       friendId: friend.id,
@@ -29,17 +33,17 @@ export default function AddFriendModal({ data: friend }: Props) {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={'Add friend'}
+      text={t('actions.add') + ' ' + t('modals.friend')}
     >
       <TextInput
-        label='Sender User'
+        label={t('columns.sender')}
         icon={<CustomAvatar {...friend.senderUser} />}
         iconWidth={48}
         value={friend.senderUser.name}
         disabled
       />
       <TextInput
-        label='Receiver User'
+        label={t('columns.receiver')}
         icon={<CustomAvatar {...friend.receiverUser} />}
         iconWidth={48}
         value={friend.receiverUser.name}
@@ -52,7 +56,7 @@ export default function AddFriendModal({ data: friend }: Props) {
 export const addFriendAction = {
   open: (friend: Friend) =>
     openModal({
-      title: 'Add Friend',
+      title: t('actions.add') + ' ' + t('modals.friend'),
       children: <AddFriendModal data={friend} />,
     }),
   disable: (friend: Friend) => {

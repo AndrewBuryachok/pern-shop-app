@@ -1,3 +1,5 @@
+import { t } from 'i18next';
+import { useTranslation } from 'react-i18next';
 import {
   CloseButton,
   Group,
@@ -15,12 +17,14 @@ import { RateDeliveryDto } from './delivery.dto';
 import CustomForm from '../../common/components/CustomForm';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import ThingImage from '../../common/components/ThingImage';
-import { parseCard, parseThingAmount } from '../../common/utils';
-import { Color, items, Status } from '../../common/constants';
+import { parseCard, parseItem, parseThingAmount } from '../../common/utils';
+import { Color, Status } from '../../common/constants';
 
 type Props = IModal<Delivery>;
 
 export default function RateDeliveryModal({ data: delivery }: Props) {
+  const [t] = useTranslation();
+
   const form = useForm({
     initialValues: {
       deliveryId: delivery.id,
@@ -38,27 +42,39 @@ export default function RateDeliveryModal({ data: delivery }: Props) {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={'Rate delivery'}
+      text={t('actions.rate') + ' ' + t('modals.delivery')}
       isChanged={!form.isDirty()}
     >
       <TextInput
-        label='Executor'
+        label={t('columns.executor')}
         icon={<CustomAvatar {...delivery.executorCard!.user} />}
         iconWidth={48}
         value={parseCard(delivery.executorCard!)}
         disabled
       />
       <TextInput
-        label='Item'
+        label={t('columns.item')}
         icon={<ThingImage {...delivery} />}
         iconWidth={48}
-        value={items[delivery.item - 1].substring(3)}
+        value={parseItem(delivery.item)}
         disabled
       />
-      <Textarea label='Description' value={delivery.description} disabled />
-      <TextInput label='Amount' value={parseThingAmount(delivery)} disabled />
-      <TextInput label='Price' value={`${delivery.price}$`} disabled />
-      <Input.Wrapper label='Rate' required>
+      <Textarea
+        label={t('columns.description')}
+        value={delivery.description}
+        disabled
+      />
+      <TextInput
+        label={t('columns.amount')}
+        value={parseThingAmount(delivery)}
+        disabled
+      />
+      <TextInput
+        label={t('columns.price')}
+        value={`${delivery.price}$`}
+        disabled
+      />
+      <Input.Wrapper label={t('columns.rate')} required>
         <Group spacing={8}>
           <Rating {...form.getInputProps('rate')} />
           <CloseButton
@@ -75,7 +91,7 @@ export default function RateDeliveryModal({ data: delivery }: Props) {
 export const rateDeliveryAction = {
   open: (delivery: Delivery) =>
     openModal({
-      title: 'Rate Delivery',
+      title: t('actions.rate') + ' ' + t('modals.delivery'),
       children: <RateDeliveryModal data={delivery} />,
     }),
   disable: (delivery: Delivery) => delivery.status !== Status.COMPLETED,

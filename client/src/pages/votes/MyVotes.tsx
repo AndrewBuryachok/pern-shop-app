@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
 import { ISearch } from '../../common/interfaces';
 import { Mode } from '../../common/enums';
@@ -7,6 +8,8 @@ import VotesTable from '../../features/votes/VotesTable';
 import { Role } from '../../common/constants';
 
 export default function MyVotes() {
+  const [t] = useTranslation();
+
   const [searchParams] = useSearchParams();
 
   const [page, setPage] = useState(+(searchParams.get('page') || 1));
@@ -22,14 +25,14 @@ export default function MyVotes() {
   const response = useGetMyVotesQuery({ page, search });
 
   const links = [
-    { label: 'Polled', to: '../polled' },
-    { label: 'All', to: '../all', role: Role.ADMIN },
+    { label: t('pages.polled'), to: '../polled' },
+    { label: t('pages.all'), to: '../all', role: Role.ADMIN },
   ];
 
   return (
     <VotesTable
       {...response}
-      title='My Votes'
+      title={t('pages.my') + ' ' + t('navbar.votes')}
       page={page}
       setPage={setPage}
       search={search}

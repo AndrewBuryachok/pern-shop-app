@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { Button, Group } from '@mantine/core';
 import { IconExternalLink, IconPlus } from '@tabler/icons';
@@ -7,6 +8,8 @@ import { isUserNotHasRole } from '../utils';
 type Props = INav;
 
 export default function CustomNav(props: Props) {
+  const [t] = useTranslation();
+
   return (
     <Group spacing={8}>
       {props.links.map((link) => (
@@ -29,7 +32,7 @@ export default function CustomNav(props: Props) {
           color='green'
           compact
         >
-          {props.button.label}
+          {t('actions.' + props.button.label)}
         </Button>
       )}
     </Group>

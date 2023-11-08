@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
 import { ISearch } from '../../common/interfaces';
 import { Mode } from '../../common/enums';
@@ -7,6 +8,8 @@ import RatingsTable from '../../features/ratings/RatingsTable';
 import { Role } from '../../common/constants';
 
 export default function PolledRatings() {
+  const [t] = useTranslation();
+
   const [searchParams] = useSearchParams();
 
   const [page, setPage] = useState(+(searchParams.get('page') || 1));
@@ -21,14 +24,14 @@ export default function PolledRatings() {
   const response = useGetPolledRatingsQuery({ page, search });
 
   const links = [
-    { label: 'My', to: '../my' },
-    { label: 'All', to: '../all', role: Role.ADMIN },
+    { label: t('pages.my'), to: '../my' },
+    { label: t('pages.all'), to: '../all', role: Role.ADMIN },
   ];
 
   return (
     <RatingsTable
       {...response}
-      title='Polled Ratings'
+      title={t('pages.polled') + ' ' + t('navbar.ratings')}
       page={page}
       setPage={setPage}
       search={search}

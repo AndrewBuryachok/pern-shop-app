@@ -1,3 +1,5 @@
+import { t } from 'i18next';
+import { useTranslation } from 'react-i18next';
 import { PasswordInput, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
@@ -16,6 +18,8 @@ import {
 type Props = IModal<User>;
 
 export default function EditUserPasswordModal({ data: user }: Props) {
+  const [t] = useTranslation();
+
   const form = useForm({
     initialValues: {
       userId: user.id,
@@ -33,18 +37,20 @@ export default function EditUserPasswordModal({ data: user }: Props) {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={'Edit user password'}
+      text={
+        t('actions.edit') + ' ' + t('columns.password') + ' ' + t('modals.user')
+      }
     >
       <TextInput
-        label='User'
+        label={t('columns.user')}
         icon={<CustomAvatar {...user} />}
         iconWidth={48}
         value={user.name}
         disabled
       />
       <PasswordInput
-        label='Password'
-        placeholder='Password'
+        label={t('columns.password')}
+        placeholder={t('columns.password')}
         required
         minLength={MIN_TEXT_LENGTH}
         maxLength={MAX_TEXT_LENGTH}
@@ -57,7 +63,12 @@ export default function EditUserPasswordModal({ data: user }: Props) {
 export const editUserPasswordAction = {
   open: (user: User) =>
     openModal({
-      title: 'Edit User Password',
+      title:
+        t('actions.edit') +
+        ' ' +
+        t('columns.password') +
+        ' ' +
+        t('modals.user'),
       children: <EditUserPasswordModal data={user} />,
     }),
   disable: () => false,

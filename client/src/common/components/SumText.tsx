@@ -1,28 +1,31 @@
 import SingleText from './SingleText';
+import { getCurrentUser } from '../../features/auth/auth.slice';
 import { Color } from '../constants';
 
 type Props = {
-  myId: number;
   fromId: number;
   toId: number;
   sum: number;
 };
 
 export default function SumText(props: Props) {
+  const user = getCurrentUser()!;
+
   const char =
     props.fromId === props.toId
       ? ''
-      : props.myId === props.fromId
+      : user.id === props.fromId
       ? '-'
-      : props.myId === props.toId
+      : user.id === props.toId
       ? '+'
       : '';
+
   const color =
     props.fromId === props.toId
       ? undefined
-      : props.myId === props.fromId
+      : user.id === props.fromId
       ? Color.RED
-      : props.myId === props.toId
+      : user.id === props.toId
       ? Color.GREEN
       : undefined;
 

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
 import { ISearch } from '../../common/interfaces';
 import { Mode } from '../../common/enums';
@@ -8,6 +9,8 @@ import { takeMyDeliveryAction } from '../../features/deliveries/TakeDeliveryModa
 import { Role } from '../../common/constants';
 
 export default function MainDeliveries() {
+  const [t] = useTranslation();
+
   const [searchParams] = useSearchParams();
 
   const [page, setPage] = useState(+(searchParams.get('page') || 1));
@@ -28,10 +31,10 @@ export default function MainDeliveries() {
   const response = useGetMainDeliveriesQuery({ page, search });
 
   const links = [
-    { label: 'My', to: 'my' },
-    { label: 'Taken', to: 'taken' },
-    { label: 'Placed', to: 'placed' },
-    { label: 'All', to: 'all', role: Role.MANAGER },
+    { label: t('pages.my'), to: 'my' },
+    { label: t('pages.taken'), to: 'taken' },
+    { label: t('pages.placed'), to: 'placed' },
+    { label: t('pages.all'), to: 'all', role: Role.MANAGER },
   ];
 
   const actions = [takeMyDeliveryAction];
@@ -39,7 +42,7 @@ export default function MainDeliveries() {
   return (
     <DeliveriesTable
       {...response}
-      title='Main Deliveries'
+      title={t('pages.main') + ' ' + t('navbar.deliveries')}
       page={page}
       setPage={setPage}
       search={search}

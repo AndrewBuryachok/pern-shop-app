@@ -1,3 +1,5 @@
+import { t } from 'i18next';
+import { useTranslation } from 'react-i18next';
 import { Select } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
@@ -11,6 +13,8 @@ import { UsersItem } from '../../common/components/UsersItem';
 import { selectUsers } from '../../common/utils';
 
 export default function CreateFriendModal() {
+  const [t] = useTranslation();
+
   const form = useForm({
     initialValues: {
       user: '',
@@ -34,11 +38,11 @@ export default function CreateFriendModal() {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={'Create friend'}
+      text={t('actions.create') + ' ' + t('modals.friend')}
     >
       <Select
-        label='User'
-        placeholder='User'
+        label={t('columns.user')}
+        placeholder={t('columns.user')}
         icon={user && <CustomAvatar {...user} />}
         iconWidth={48}
         rightSection={<RefetchAction {...usersResponse} />}
@@ -54,10 +58,10 @@ export default function CreateFriendModal() {
 }
 
 export const createFriendButton = {
-  label: 'Create',
+  label: 'create',
   open: () =>
     openModal({
-      title: 'Create Friend',
+      title: t('actions.create') + ' ' + t('modals.friend'),
       children: <CreateFriendModal />,
     }),
 };

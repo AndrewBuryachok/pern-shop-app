@@ -6,4 +6,4 @@ export enum Priority {
   HIGHEST = 5,
 }
 
-export const priorities = ['Lowest', 'Low', 'Medium', 'High', 'Highest'];
+export const priorities = ['lowest', 'low', 'medium', 'high', 'highest'];

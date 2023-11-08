@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
 import { ISearch } from '../../common/interfaces';
 import { Mode } from '../../common/enums';
@@ -8,6 +9,8 @@ import { buyProductAction } from '../../features/products/BuyProductModal';
 import { Role } from '../../common/constants';
 
 export default function MainProducts() {
+  const [t] = useTranslation();
+
   const [searchParams] = useSearchParams();
 
   const [page, setPage] = useState(+(searchParams.get('page') || 1));
@@ -26,9 +29,9 @@ export default function MainProducts() {
   const response = useGetMainProductsQuery({ page, search });
 
   const links = [
-    { label: 'My', to: 'my' },
-    { label: 'Placed', to: 'placed' },
-    { label: 'All', to: 'all', role: Role.MANAGER },
+    { label: t('pages.my'), to: 'my' },
+    { label: t('pages.placed'), to: 'placed' },
+    { label: t('pages.all'), to: 'all', role: Role.MANAGER },
   ];
 
   const actions = [buyProductAction];
@@ -36,7 +39,7 @@ export default function MainProducts() {
   return (
     <ProductsTable
       {...response}
-      title='Main Products'
+      title={t('pages.main') + ' ' + t('navbar.products')}
       page={page}
       setPage={setPage}
       search={search}

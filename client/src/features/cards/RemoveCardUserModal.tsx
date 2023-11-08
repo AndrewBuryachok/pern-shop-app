@@ -1,3 +1,5 @@
+import { t } from 'i18next';
+import { useTranslation } from 'react-i18next';
 import { Select, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
@@ -15,6 +17,8 @@ import { Color } from '../../common/constants';
 type Props = IModal<Card>;
 
 export default function RemoveCardUserModal({ data: card }: Props) {
+  const [t] = useTranslation();
+
   const form = useForm({
     initialValues: {
       cardId: card.id,
@@ -35,12 +39,14 @@ export default function RemoveCardUserModal({ data: card }: Props) {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={'Remove card user'}
+      text={
+        t('actions.remove') + ' ' + t('modals.card') + ' ' + t('modals.user')
+      }
     >
-      <TextInput label='Card' value={card.name} disabled />
+      <TextInput label={t('columns.card')} value={card.name} disabled />
       <Select
-        label='User'
-        placeholder='User'
+        label={t('columns.user')}
+        placeholder={t('columns.user')}
         icon={user && <CustomAvatar {...user} />}
         iconWidth={48}
         itemComponent={UsersItem}
@@ -58,7 +64,8 @@ export default function RemoveCardUserModal({ data: card }: Props) {
 export const removeCardUserFactory = (hasRole: boolean) => ({
   open: (card: Card) =>
     openModal({
-      title: 'Remove Card User',
+      title:
+        t('actions.remove') + ' ' + t('modals.card') + ' ' + t('modals.user'),
       children: <RemoveCardUserModal data={card} />,
     }),
   disable: (card: Card) => {

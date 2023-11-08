@@ -1,3 +1,5 @@
+import { t } from 'i18next';
+import { useTranslation } from 'react-i18next';
 import { Select, Textarea } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
@@ -9,6 +11,8 @@ import { selectPriorities } from '../../common/utils';
 import { MAX_DESCRIPTION_LENGTH } from '../../common/constants';
 
 export default function CreateTaskModal() {
+  const [t] = useTranslation();
+
   const form = useForm({
     initialValues: {
       description: '-',
@@ -30,18 +34,18 @@ export default function CreateTaskModal() {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={'Create task'}
+      text={t('actions.create') + ' ' + t('modals.task')}
     >
       <Textarea
-        label='Description'
-        placeholder='Description'
+        label={t('columns.description')}
+        placeholder={t('columns.description')}
         required
         maxLength={MAX_DESCRIPTION_LENGTH}
         {...form.getInputProps('description')}
       />
       <Select
-        label='Priority'
-        placeholder='Priority'
+        label={t('columns.priority')}
+        placeholder={t('columns.priority')}
         itemComponent={PrioritiesItem}
         data={selectPriorities()}
         searchable
@@ -53,10 +57,10 @@ export default function CreateTaskModal() {
 }
 
 export const createTaskButton = {
-  label: 'Create',
+  label: 'create',
   open: () =>
     openModal({
-      title: 'Create Task',
+      title: t('actions.create') + ' ' + t('modals.task'),
       children: <CreateTaskModal />,
     }),
 };

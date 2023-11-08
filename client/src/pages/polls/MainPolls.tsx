@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
 import { ISearch } from '../../common/interfaces';
 import { useGetMainPollsQuery } from '../../features/polls/polls.api';
@@ -10,6 +11,8 @@ import {
 import { Role } from '../../common/constants';
 
 export default function MainPolls() {
+  const [t] = useTranslation();
+
   const [searchParams] = useSearchParams();
 
   const [page, setPage] = useState(+(searchParams.get('page') || 1));
@@ -22,8 +25,8 @@ export default function MainPolls() {
   const response = useGetMainPollsQuery({ page, search });
 
   const links = [
-    { label: 'My', to: 'my' },
-    { label: 'All', to: 'all', role: Role.ADMIN },
+    { label: t('pages.my'), to: 'my' },
+    { label: t('pages.all'), to: 'all', role: Role.ADMIN },
   ];
 
   const actions = [createUpVoteAction, createDownVoteAction];
@@ -31,7 +34,7 @@ export default function MainPolls() {
   return (
     <PollsTable
       {...response}
-      title='Main Polls'
+      title={t('pages.main') + ' ' + t('navbar.polls')}
       page={page}
       setPage={setPage}
       search={search}

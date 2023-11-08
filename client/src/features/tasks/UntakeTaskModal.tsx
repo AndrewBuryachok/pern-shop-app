@@ -1,3 +1,5 @@
+import { t } from 'i18next';
+import { useTranslation } from 'react-i18next';
 import { Textarea, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
@@ -13,6 +15,8 @@ import { Color, priorities, Status } from '../../common/constants';
 type Props = IModal<Task>;
 
 export default function UntakeTaskModal({ data: task }: Props) {
+  const [t] = useTranslation();
+
   const form = useForm({
     initialValues: {
       taskId: task.id,
@@ -29,25 +33,29 @@ export default function UntakeTaskModal({ data: task }: Props) {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={'Untake task'}
+      text={t('actions.untake') + ' ' + t('modals.task')}
     >
       <TextInput
-        label='Customer'
+        label={t('columns.customer')}
         icon={<CustomAvatar {...task.customerUser} />}
         iconWidth={48}
         value={task.customerUser.name}
         disabled
       />
-      <Textarea label='Description' value={task.description} disabled />
-      <TextInput
-        label='Priority'
-        icon={<PriorityIcon {...task} />}
-        iconWidth={48}
-        value={priorities[task.priority - 1]}
+      <Textarea
+        label={t('columns.description')}
+        value={task.description}
         disabled
       />
       <TextInput
-        label='Executor'
+        label={t('columns.priority')}
+        icon={<PriorityIcon {...task} />}
+        iconWidth={48}
+        value={t('constants.priorities.' + priorities[task.priority - 1])}
+        disabled
+      />
+      <TextInput
+        label={t('columns.executor')}
         icon={<CustomAvatar {...task.executorUser!} />}
         iconWidth={48}
         value={task.executorUser!.name}
@@ -60,7 +68,7 @@ export default function UntakeTaskModal({ data: task }: Props) {
 export const untakeTaskAction = {
   open: (task: Task) =>
     openModal({
-      title: 'Untake Task',
+      title: t('actions.untake') + ' ' + t('modals.task'),
       children: <UntakeTaskModal data={task} />,
     }),
   disable: (task: Task) => task.status !== Status.TAKEN,
