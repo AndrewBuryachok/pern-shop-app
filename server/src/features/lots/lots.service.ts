@@ -11,6 +11,7 @@ import { Request, Response } from '../../common/interfaces';
 import { getDateWeekAgo } from '../../common/utils';
 import { AppException } from '../../common/exceptions';
 import { LotError } from './lot-error.enum';
+import { Kind } from '../leases/kind.enum';
 import { Mode, Notification } from '../../common/enums';
 
 @Injectable()
@@ -60,7 +61,10 @@ export class LotsService {
   }
 
   async createLot(dto: ExtCreateLotDto): Promise<void> {
-    const leaseId = await this.leasesService.createLease(dto);
+    const leaseId = await this.leasesService.createLease({
+      ...dto,
+      kind: Kind.LOT,
+    });
     await this.create({ ...dto, storageId: leaseId });
   }
 

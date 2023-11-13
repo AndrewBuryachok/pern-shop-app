@@ -100,6 +100,12 @@ export class Request {
 
   @ApiProperty({ required: false })
   @IsOptional()
+  @IsInt()
+  @Type(() => Number)
+  kind?: number;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
   @IsEnum(TransportationStatus)
   @Type(() => Number)
   status?: TransportationStatus;

@@ -15,6 +15,7 @@ import { Request, Response, Stats } from '../../common/interfaces';
 import { getDateMonthAgo, getDateWeekAgo } from '../../common/utils';
 import { AppException } from '../../common/exceptions';
 import { ProductError } from './product-error.enum';
+import { Kind } from '../leases/kind.enum';
 import { Mode, Notification } from '../../common/enums';
 
 @Injectable()
@@ -84,7 +85,10 @@ export class ProductsService {
   }
 
   async createProduct(dto: ExtCreateProductDto): Promise<void> {
-    const leaseId = await this.leasesService.createLease(dto);
+    const leaseId = await this.leasesService.createLease({
+      ...dto,
+      kind: Kind.PRODUCT,
+    });
     await this.create({ ...dto, storageId: leaseId });
   }
 

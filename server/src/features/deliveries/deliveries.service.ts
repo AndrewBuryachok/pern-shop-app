@@ -17,6 +17,7 @@ import { getDateWeekAgo } from '../../common/utils';
 import { AppException } from '../../common/exceptions';
 import { DeliveryError } from './delivery-error.enum';
 import { TransportationStatus } from '../transportations/transportation-status.enum';
+import { Kind } from '../leases/kind.enum';
 import { Mode, Notification } from '../../common/enums';
 
 @Injectable()
@@ -92,10 +93,12 @@ export class DeliveriesService {
     const fromLeaseId = await this.leasesService.createLease({
       ...dto,
       storageId: dto.fromStorageId,
+      kind: Kind.DELIVERY,
     });
     const toLeaseId = await this.leasesService.createLease({
       ...dto,
       storageId: dto.toStorageId,
+      kind: Kind.DELIVERY,
     });
     await this.cardsService.decreaseCardBalance({ ...dto, sum: dto.price });
     await this.create({

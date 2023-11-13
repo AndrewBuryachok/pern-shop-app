@@ -51,6 +51,7 @@ export class LeasesService {
       const lease = this.leasesRepository.create({
         cellId: dto.storageId,
         cardId: dto.cardId,
+        kind: dto.kind,
       });
       await this.leasesRepository.save(lease);
       return lease;
@@ -99,13 +100,6 @@ export class LeasesService {
           'delivery.description',
         ])
         .getOne();
-      lease['type'] = result['delivery']
-        ? 'delivery'
-        : result['order']
-        ? 'order'
-        : result['product']
-        ? 'product'
-        : 'lot';
       lease['thing'] =
         result['product'] ||
         result['lot'] ||
@@ -187,6 +181,13 @@ export class LeasesService {
             .orWhere('cell.id = :cellId', { cellId: req.cell }),
         ),
       )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.kind}`)
+            .orWhere('lease.kind = :kind', { kind: req.kind }),
+        ),
+      )
       .orderBy('lease.id', 'DESC')
       .skip(req.skip)
       .take(req.take)
@@ -210,6 +211,7 @@ export class LeasesService {
         'renterCard.name',
         'renterCard.color',
         'lease.createdAt',
+        'lease.kind',
       ]);
   }
 }

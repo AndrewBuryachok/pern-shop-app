@@ -31,6 +31,7 @@ import { Friend } from '../../features/friends/friend.entity';
 import { Rating } from '../../features/ratings/rating.entity';
 import { Task } from '../../features/tasks/task.entity';
 import { TransportationStatus } from '../../features/transportations/transportation-status.enum';
+import { Kind } from '../../features/leases/kind.enum';
 import { hashData } from '../../common/utils';
 
 const getRandom = (list) => list[Math.floor(Math.random() * list.length)];
@@ -225,6 +226,7 @@ export default class AppSeed implements Seeder {
     const products = await factory(Product)()
       .map(async (product) => {
         product.lease = leases[leaseId++];
+        product.lease.kind = Kind.PRODUCT;
         return product;
       })
       .makeMany(10);
@@ -239,12 +241,14 @@ export default class AppSeed implements Seeder {
     const lots = await factory(Lot)()
       .map(async (lot) => {
         lot.lease = leases[leaseId++];
+        lot.lease.kind = Kind.LOT;
         return lot;
       })
       .makeMany(10);
     const orders = await factory(Order)()
       .map(async (order) => {
         order.lease = leases[leaseId++];
+        order.lease.kind = Kind.ORDER;
         order.lease.card.balance -= order.price;
         if (order.status !== TransportationStatus.CREATED) {
           order.executorCard = getRandom(cards);
@@ -266,7 +270,9 @@ export default class AppSeed implements Seeder {
     const deliveries = await factory(Delivery)()
       .map(async (delivery) => {
         delivery.fromLease = leases[leaseId++];
+        delivery.fromLease.kind = Kind.DELIVERY;
         delivery.toLease = leases[leaseId++];
+        delivery.toLease.kind = Kind.DELIVERY;
         delivery.fromLease.card.balance -= delivery.price;
         if (delivery.status !== TransportationStatus.CREATED) {
           delivery.executorCard = getRandom(cards);

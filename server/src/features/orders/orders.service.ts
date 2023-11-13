@@ -17,6 +17,7 @@ import { getDateWeekAgo } from '../../common/utils';
 import { AppException } from '../../common/exceptions';
 import { OrderError } from './order-error.enum';
 import { TransportationStatus } from '../transportations/transportation-status.enum';
+import { Kind } from '../leases/kind.enum';
 import { Mode, Notification } from '../../common/enums';
 
 @Injectable()
@@ -72,7 +73,10 @@ export class OrdersService {
   }
 
   async createOrder(dto: ExtCreateOrderDto): Promise<void> {
-    const leaseId = await this.leasesService.createLease(dto);
+    const leaseId = await this.leasesService.createLease({
+      ...dto,
+      kind: Kind.ORDER,
+    });
     await this.cardsService.decreaseCardBalance({ ...dto, sum: dto.price });
     await this.create({ ...dto, storageId: leaseId });
   }
