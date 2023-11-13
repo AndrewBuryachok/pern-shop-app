@@ -24,8 +24,10 @@ export class ExtCreatePollDto extends CreatePollDto {
 
 export class CompletePollDto extends PollIdDto {
   myId: number;
+  hasRole: boolean;
 }
 
 export class DeletePollDto extends PollIdDto {
   myId: number;
+  hasRole: boolean;
 }

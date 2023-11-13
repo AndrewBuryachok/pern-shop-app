@@ -12,7 +12,7 @@ import { PollsService } from './polls.service';
 import { Poll } from './poll.entity';
 import { CreatePollDto, PollIdDto } from './poll.dto';
 import { Request, Response } from '../../common/interfaces';
-import { MyId, Roles } from '../../common/decorators';
+import { HasRole, MyId, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
 
 @ApiTags('polls')
@@ -36,6 +36,14 @@ export class PollsController {
     return this.pollsService.getMyPolls(myId, req);
   }
 
+  @Get('voted')
+  getVotedPolls(
+    @MyId() myId: number,
+    @Query() req: Request,
+  ): Promise<Response<Poll>> {
+    return this.pollsService.getVotedPolls(myId, req);
+  }
+
   @Roles(Role.ADMIN)
   @Get('all')
   getAllPolls(
@@ -53,16 +61,18 @@ export class PollsController {
   @Post(':pollId')
   completePoll(
     @MyId() myId: number,
+    @HasRole(Role.ADMIN) hasRole: boolean,
     @Param() { pollId }: PollIdDto,
   ): Promise<void> {
-    return this.pollsService.completePoll({ pollId, myId });
+    return this.pollsService.completePoll({ pollId, myId, hasRole });
   }
 
   @Delete(':pollId')
   deletePoll(
     @MyId() myId: number,
+    @HasRole(Role.ADMIN) hasRole: boolean,
     @Param() { pollId }: PollIdDto,
   ): Promise<void> {
-    return this.pollsService.deletePoll({ pollId, myId });
+    return this.pollsService.deletePoll({ pollId, myId, hasRole });
   }
 }

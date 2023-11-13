@@ -15,16 +15,22 @@ export class PollsService {
   ) {}
 
   async getMainPolls(myId: number, req: Request): Promise<Response<Poll>> {
-    const [result, count] = await this.getPollsQueryBuilder(
-      myId,
-      req,
-    ).getManyAndCount();
+    const [result, count] = await this.getPollsQueryBuilder(myId, req)
+      .andWhere('poll.completedAt IS NULL')
+      .getManyAndCount();
     return { result, count };
   }
 
   async getMyPolls(myId: number, req: Request): Promise<Response<Poll>> {
     const [result, count] = await this.getPollsQueryBuilder(myId, req)
       .andWhere('pollerUser.id = :myId', { myId })
+      .getManyAndCount();
+    return { result, count };
+  }
+
+  async getVotedPolls(myId: number, req: Request): Promise<Response<Poll>> {
+    const [result, count] = await this.getPollsQueryBuilder(myId, req)
+      .andWhere('myVote.id IS NOT NULL')
       .getManyAndCount();
     return { result, count };
   }
@@ -42,7 +48,7 @@ export class PollsService {
   }
 
   async completePoll(dto: CompletePollDto): Promise<void> {
-    const poll = await this.checkPollOwner(dto.pollId, dto.myId);
+    const poll = await this.checkPollOwner(dto.pollId, dto.myId, dto.hasRole);
     if (poll.completedAt) {
       throw new AppException(PollError.ALREADY_COMPLETED);
     }
@@ -50,7 +56,7 @@ export class PollsService {
   }
 
   async deletePoll(dto: DeletePollDto): Promise<void> {
-    const poll = await this.checkPollOwner(dto.pollId, dto.myId);
+    const poll = await this.checkPollOwner(dto.pollId, dto.myId, dto.hasRole);
     if (poll.completedAt) {
       throw new AppException(PollError.ALREADY_COMPLETED);
     }
@@ -61,9 +67,13 @@ export class PollsService {
     await this.pollsRepository.findOneByOrFail({ id });
   }
 
-  async checkPollOwner(id: number, userId: number): Promise<Poll> {
-    const poll = await this.pollsRepository.findOneBy({ id, userId });
-    if (!poll) {
+  async checkPollOwner(
+    id: number,
+    userId: number,
+    hasRole: boolean,
+  ): Promise<Poll> {
+    const poll = await this.pollsRepository.findOneBy({ id });
+    if (poll.userId !== userId && !hasRole) {
       throw new AppException(PollError.NOT_OWNER);
     }
     return poll;
