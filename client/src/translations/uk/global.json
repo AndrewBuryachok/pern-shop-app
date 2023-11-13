@@ -275,11 +275,9 @@
       "completed": "Завершено"
     },
     "priorities": {
-      "lowest": "Найнижчий",
-      "low": "Низький",
-      "medium": "Середній",
       "high": "Високий",
-      "highest": "Найвищий"
+      "medium": "Середній",
+      "low": "Низький"
     },
     "categories": {
       "building": "Будівельні",

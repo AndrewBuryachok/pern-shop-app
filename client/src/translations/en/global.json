@@ -275,11 +275,9 @@
       "completed": "Completed"
     },
     "priorities": {
-      "lowest": "Lowest",
-      "low": "Low",
-      "medium": "Medium",
       "high": "High",
-      "highest": "Highest"
+      "medium": "Medium",
+      "low": "Low"
     },
     "categories": {
       "building": "Building",
