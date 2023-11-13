@@ -15,5 +15,5 @@ export const MAX_COLOR_VALUE = 4;
 export const MAX_ITEM_VALUE = 1418;
 export const MAX_KIT_VALUE = 3;
 export const MAX_KIND_VALUE = 5;
-export const MAX_PRIORITY_VALUE = 5;
+export const MAX_PRIORITY_VALUE = 3;
 export const MAX_RATE_VALUE = 5;
