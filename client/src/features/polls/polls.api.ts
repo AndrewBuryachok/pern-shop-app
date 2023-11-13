@@ -18,6 +18,12 @@ export const pollsApi = emptyApi.injectEndpoints({
       }),
       providesTags: ['Auth', 'Poll', 'Vote'],
     }),
+    getVotedPolls: build.query<IResponse<Poll>, IRequest>({
+      query: (req) => ({
+        url: `/polls/voted?${getQuery(req)}`,
+      }),
+      providesTags: ['Auth', 'Poll', 'Vote'],
+    }),
     getAllPolls: build.query<IResponse<Poll>, IRequest>({
       query: (req) => ({
         url: `/polls/all?${getQuery(req)}`,
@@ -53,6 +59,7 @@ export const pollsApi = emptyApi.injectEndpoints({
 export const {
   useGetMainPollsQuery,
   useGetMyPollsQuery,
+  useGetVotedPollsQuery,
   useGetAllPollsQuery,
   useCreatePollMutation,
   useCompletePollMutation,

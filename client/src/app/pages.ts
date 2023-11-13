@@ -79,6 +79,7 @@ const PlacedBids = lazy(() => import('../pages/bids/PlacedBids'));
 const AllBids = lazy(() => import('../pages/bids/AllBids'));
 const MainPolls = lazy(() => import('../pages/polls/MainPolls'));
 const MyPolls = lazy(() => import('../pages/polls/MyPolls'));
+const VotedPolls = lazy(() => import('../pages/polls/VotedPolls'));
 const AllPolls = lazy(() => import('../pages/polls/AllPolls'));
 const MyVotes = lazy(() => import('../pages/votes/MyVotes'));
 const PolledVotes = lazy(() => import('../pages/votes/PolledVotes'));
@@ -285,6 +286,7 @@ export const pages = [
     nested: [
       { index: true, element: MainPolls },
       { path: 'my', element: MyPolls },
+      { path: 'voted', element: VotedPolls },
       { path: 'all', element: AllPolls, role: Role.ADMIN },
     ],
   },

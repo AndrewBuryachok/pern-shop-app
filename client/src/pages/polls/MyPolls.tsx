@@ -25,6 +25,7 @@ export default function MyPolls() {
 
   const links = [
     { label: t('pages.main'), to: '..' },
+    { label: t('pages.voted'), to: '../voted' },
     { label: t('pages.all'), to: '../all', role: Role.ADMIN },
   ];
 
