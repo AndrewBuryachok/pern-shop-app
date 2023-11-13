@@ -42,6 +42,7 @@ import {
   selectColors,
   selectContainers,
   selectItems,
+  selectKinds,
   selectMarkets,
   selectPriorities,
   selectRoles,
@@ -403,15 +404,15 @@ export default function SearchModal(props: Props) {
           {...form.getInputProps('type')}
         />
       )}
-      {props.search.priority !== undefined && (
+      {props.search.kind !== undefined && (
         <Select
-          label={t('columns.priority')}
-          placeholder={t('columns.priority')}
-          itemComponent={PrioritiesItem}
-          data={selectPriorities()}
+          label={t('columns.kind')}
+          placeholder={t('columns.kind')}
+          itemComponent={ColorsItem}
+          data={selectKinds()}
           searchable
           allowDeselect
-          {...form.getInputProps('priority')}
+          {...form.getInputProps('kind')}
         />
       )}
       {props.search.status !== undefined && (
@@ -423,6 +424,17 @@ export default function SearchModal(props: Props) {
           searchable
           allowDeselect
           {...form.getInputProps('status')}
+        />
+      )}
+      {props.search.priority !== undefined && (
+        <Select
+          label={t('columns.priority')}
+          placeholder={t('columns.priority')}
+          itemComponent={PrioritiesItem}
+          data={selectPriorities()}
+          searchable
+          allowDeselect
+          {...form.getInputProps('priority')}
         />
       )}
       {props.search.rate !== undefined && (

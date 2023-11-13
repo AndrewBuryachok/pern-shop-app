@@ -21,6 +21,7 @@ export default function MyLeases() {
     mode: searchParams.get('mode') as Mode,
     storage: searchParams.get('storage'),
     cell: searchParams.get('cell'),
+    kind: +(searchParams.get('kind') || 0) || null,
   });
 
   const response = useGetMyLeasesQuery({ page, search });

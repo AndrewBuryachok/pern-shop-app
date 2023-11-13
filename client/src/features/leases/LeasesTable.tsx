@@ -9,6 +9,7 @@ import DateText from '../../common/components/DateText';
 import SingleText from '../../common/components/SingleText';
 import CustomActions from '../../common/components/CustomActions';
 import { viewLeaseAction } from './ViewLeaseModal';
+import { parseKind } from '../../common/utils';
 
 type Props = ITableWithActions<Lease>;
 
@@ -24,7 +25,7 @@ export default function LeasesTable({ actions = [], ...props }: Props) {
         t('columns.storage'),
         t('columns.sum'),
         t('columns.created'),
-        t('columns.type'),
+        t('columns.kind'),
         t('columns.action'),
       ]}
       {...props}
@@ -51,7 +52,7 @@ export default function LeasesTable({ actions = [], ...props }: Props) {
             <DateText date={lease.createdAt} />
           </td>
           <td>
-            <SingleText text={lease.type} />
+            <SingleText text={parseKind(lease.kind)} />
           </td>
           <td>
             <CustomActions

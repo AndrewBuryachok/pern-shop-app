@@ -6,7 +6,7 @@ import { MdStore } from '../../features/stores/store.model';
 import { MdCell } from '../../features/cells/cell.model';
 import { Trade } from '../../features/trades/trade.model';
 import { Sale } from '../../features/sales/sale.model';
-import { items, kits, statuses } from '../constants';
+import { items, kinds, kits, statuses } from '../constants';
 
 type Coordinates = {
   x: number;
@@ -59,6 +59,9 @@ export const parseTradeAmount = (trade: Trade) =>
 
 export const parseSaleAmount = (sale: Sale) =>
   `${sale.amount} * ${sale.product.intake} ${kits[sale.product.kit - 1]}`;
+
+export const parseKind = (kind: number) =>
+  t('constants.kinds.' + kinds[kind - 1]);
 
 export const parseStatus = (status: number) =>
   t('constants.statuses.' + statuses[status - 1]);

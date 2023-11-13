@@ -4,6 +4,7 @@ export * from './colors';
 export * from './categories';
 export * from './items';
 export * from './kits';
+export * from './kind';
 export * from './status';
 export * from './priority';
 

@@ -1,6 +1,7 @@
 import { Receipt, ReceiptWithDate } from '../receipts/receipt.model';
 import { LgCell } from '../cells/cell.model';
 import { SmThing } from '../things/thing.model';
+import { Kind } from '../../common/constants';
 
 export interface SmLease extends Receipt {
   cell: LgCell;
@@ -8,6 +9,6 @@ export interface SmLease extends Receipt {
 
 export interface Lease extends ReceiptWithDate {
   cell: LgCell;
-  type: string;
+  kind: Kind;
   thing: SmThing;
 }

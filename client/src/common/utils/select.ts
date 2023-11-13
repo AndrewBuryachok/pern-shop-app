@@ -14,6 +14,7 @@ import {
   categories,
   colors,
   items,
+  kinds,
   kits,
   priorities,
   roles,
@@ -145,6 +146,14 @@ export const selectKits = () =>
   kits.map((kit, index) => ({
     value: `${index + 1}`,
     label: t('constants.kits.' + kit),
+  }));
+
+export const selectKinds = () =>
+  kinds.map((kind, index) => ({
+    text: t('constants.kinds.' + kind),
+    color: `${index + 1}`,
+    value: `${index + 1}`,
+    label: t('constants.kinds.' + kind),
   }));
 
 export const selectStatuses = () =>

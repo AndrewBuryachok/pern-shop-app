@@ -9,6 +9,7 @@ import { ThingsItem } from '../../common/components/ThingItem';
 import {
   parseCard,
   parseCell,
+  parseKind,
   parseTime,
   viewThings,
 } from '../../common/utils';
@@ -50,7 +51,11 @@ export default function ViewLeaseModal({ data: lease }: Props) {
         value={parseTime(lease.createdAt)}
         disabled
       />
-      <TextInput label={t('columns.type')} value={lease.type} disabled />
+      <TextInput
+        label={t('columns.kind')}
+        value={parseKind(lease.kind)}
+        disabled
+      />
       <Select
         label={t('columns.things')}
         placeholder={`${t('components.total')}: ${[lease.thing].length}`}

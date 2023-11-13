@@ -159,6 +159,7 @@
     "cell": "Cell",
     "renter": "Renter",
     "wares": "Wares",
+    "kind": "Kind",
     "seller": "Seller",
     "item": "Item",
     "amount": "Amount",
@@ -260,6 +261,12 @@
       "piece": "Piece(s)",
       "stack": "Stack(s)",
       "shulker": "Shulker(s)"
+    },
+    "kinds": {
+      "product": "Product",
+      "lot": "Lot",
+      "order": "Order",
+      "delivery": "Delivery"
     },
     "statuses": {
       "created": "Created",
