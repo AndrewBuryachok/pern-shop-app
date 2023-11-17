@@ -3,4 +3,5 @@ export enum CellError {
   NO_FREE = '404: No free cells',
   CREATE_FAILED = '500: Failed to create cell',
   RESERVE_FAILED = '500: Failed to reserve cell',
+  UNRESERVE_FAILED = '500: Failed to unreserve cell',
 }

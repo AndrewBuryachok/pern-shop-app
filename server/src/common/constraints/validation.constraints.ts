@@ -12,6 +12,7 @@ import { MarketsService } from '../../features/markets/markets.service';
 import { StoragesService } from '../../features/storages/storages.service';
 import { StoresService } from '../../features/stores/stores.service';
 import { RentsService } from '../../features/rents/rents.service';
+import { LeasesService } from '../../features/leases/leases.service';
 import { GoodsService } from '../../features/goods/goods.service';
 import { WaresService } from '../../features/wares/wares.service';
 import { ProductsService } from '../../features/products/products.service';
@@ -193,6 +194,25 @@ export class IsRentExists implements ValidatorConstraintInterface {
 
   defaultMessage(): string {
     return 'Unknown rent';
+  }
+}
+
+@Injectable()
+@ValidatorConstraint({ name: 'isLeaseExists', async: true })
+export class IsLeaseExists implements ValidatorConstraintInterface {
+  constructor(private leasesService: LeasesService) {}
+
+  async validate(value: number): Promise<boolean> {
+    try {
+      await this.leasesService.checkLeaseExists(value);
+    } catch (error) {
+      return false;
+    }
+    return true;
+  }
+
+  defaultMessage(): string {
+    return 'Unknown lease';
   }
 }
 

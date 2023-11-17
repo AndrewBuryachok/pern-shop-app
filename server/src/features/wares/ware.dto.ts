@@ -4,7 +4,7 @@ import { Type } from 'class-transformer';
 import { IsId } from '../../common/decorators';
 import { IsRentExists, IsWareExists } from '../../common/constraints';
 import { CreateThingDto } from '../things/thing.dto';
-import { EditStateDto } from '../states/state.dto';
+import { ExtEditStateDto } from '../states/state.dto';
 import { ExtCreateTradeDto } from '../trades/trade.dto';
 
 export class WareIdDto {
@@ -27,10 +27,15 @@ export class ExtCreateWareDto extends CreateWareDto {
   hasRole: boolean;
 }
 
-export class EditWareDto extends EditStateDto {}
+export class EditWareDto extends ExtEditStateDto {}
 
 export class ExtEditWareDto extends EditWareDto {
   wareId: number;
+  myId: number;
+  hasRole: boolean;
+}
+
+export class CompleteWareDto extends WareIdDto {
   myId: number;
   hasRole: boolean;
 }

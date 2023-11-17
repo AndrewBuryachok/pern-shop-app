@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { Rent } from './rent.entity';
 import { StoresService } from '../stores/stores.service';
-import { ExtCreateRentDto } from './rent.dto';
+import { CompleteRentDto, ExtCreateRentDto } from './rent.dto';
 import { Request, Response } from '../../common/interfaces';
 import { getDateWeekAgo } from '../../common/utils';
 import { AppException } from '../../common/exceptions';
@@ -20,14 +20,17 @@ export class RentsService {
 
   async getMyRents(myId: number, req: Request): Promise<Response<Rent>> {
     const [result, count] = await this.getRentsQueryBuilder(req)
-      .innerJoin('ownerCard.users', 'ownerUsers')
       .innerJoin('renterCard.users', 'renterUsers')
-      .andWhere(
-        new Brackets((qb) =>
-          qb.where('renterUsers.id = :myId').orWhere('ownerUsers.id = :myId'),
-        ),
-        { myId },
-      )
+      .andWhere('renterUsers.id = :myId', { myId })
+      .getManyAndCount();
+    await this.loadWares(result);
+    return { result, count };
+  }
+
+  async getPlacedRents(myId: number, req: Request): Promise<Response<Rent>> {
+    const [result, count] = await this.getRentsQueryBuilder(req)
+      .innerJoin('ownerCard.users', 'ownerUsers')
+      .andWhere('ownerUsers.id = :myId', { myId })
       .getManyAndCount();
     await this.loadWares(result);
     return { result, count };
@@ -42,23 +45,26 @@ export class RentsService {
   }
 
   selectAllRents(): Promise<Rent[]> {
-    return this.selectRentsQueryBuilder()
-      .where('rent.createdAt > :date', { date: getDateWeekAgo() })
-      .getMany();
+    return this.selectRentsQueryBuilder().getMany();
   }
 
   selectMyRents(myId: number): Promise<Rent[]> {
     return this.selectRentsQueryBuilder()
       .innerJoin('rent.card', 'renterCard')
       .innerJoin('renterCard.users', 'renterUsers')
-      .where('renterUsers.id = :myId', { myId })
-      .andWhere('rent.createdAt > :date', { date: getDateWeekAgo() })
+      .andWhere('renterUsers.id = :myId', { myId })
       .getMany();
   }
 
   async createRent(dto: ExtCreateRentDto): Promise<void> {
     await this.storesService.reserveStore(dto);
     await this.create(dto);
+  }
+
+  async completeRent(dto: CompleteRentDto): Promise<void> {
+    const rent = await this.checkRentOwner(dto.rentId, dto.myId, dto.hasRole);
+    await this.storesService.unreserveStore(rent.storeId);
+    await this.complete(rent);
   }
 
   async checkRentExists(id: number): Promise<void> {
@@ -80,6 +86,9 @@ export class RentsService {
     if (rent.createdAt < getDateWeekAgo()) {
       throw new AppException(RentError.ALREADY_EXPIRED);
     }
+    if (rent.completedAt) {
+      throw new AppException(RentError.ALREADY_COMPLETED);
+    }
     return rent;
   }
 
@@ -95,11 +104,22 @@ export class RentsService {
     }
   }
 
+  private async complete(rent: Rent): Promise<void> {
+    try {
+      rent.completedAt = new Date();
+      await this.rentsRepository.save(rent);
+    } catch (error) {
+      throw new AppException(RentError.COMPLETE_FAILED);
+    }
+  }
+
   private selectRentsQueryBuilder(): SelectQueryBuilder<Rent> {
     return this.rentsRepository
       .createQueryBuilder('rent')
       .innerJoin('rent.store', 'store')
       .innerJoin('store.market', 'market')
+      .where('rent.createdAt > :date', { date: getDateWeekAgo() })
+      .andWhere('rent.completedAt IS NULL')
       .orderBy('rent.id', 'DESC')
       .select([
         'rent.id',
@@ -227,6 +247,7 @@ export class RentsService {
         'renterCard.name',
         'renterCard.color',
         'rent.createdAt',
+        'rent.completedAt',
       ]);
   }
 }

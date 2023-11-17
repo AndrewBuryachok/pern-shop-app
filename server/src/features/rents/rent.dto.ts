@@ -24,3 +24,8 @@ export class ExtCreateRentDto extends CreateRentDto {
   myId: number;
   hasRole: boolean;
 }
+
+export class CompleteRentDto extends RentIdDto {
+  myId: number;
+  hasRole: boolean;
+}

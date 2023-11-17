@@ -85,6 +85,11 @@ export class CellsService {
     return cell.id;
   }
 
+  async unreserveCell(id: number): Promise<void> {
+    const cell = await this.cellsRepository.findOneBy({ id });
+    await this.unreserve(cell);
+  }
+
   private async checkHasNotEnough(storageId: number): Promise<number> {
     const count = await this.cellsRepository.countBy({ storageId });
     if (count === MAX_CELLS_NUMBER) {
@@ -106,6 +111,7 @@ export class CellsService {
             .orWhere('cell.reservedAt < :date', { date: getDateWeekAgo() }),
         ),
       )
+      .orderBy('RANDOM()')
       .getOne();
     if (!cell) {
       throw new AppException(CellError.NO_FREE);
@@ -131,6 +137,15 @@ export class CellsService {
       await this.cellsRepository.save(cell);
     } catch (error) {
       throw new AppException(CellError.RESERVE_FAILED);
+    }
+  }
+
+  private async unreserve(cell: Cell): Promise<void> {
+    try {
+      cell.reservedAt = null;
+      await this.cellsRepository.save(cell);
+    } catch (error) {
+      throw new AppException(CellError.UNRESERVE_FAILED);
     }
   }
 

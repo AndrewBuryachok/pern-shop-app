@@ -77,4 +77,13 @@ export class ProductsController {
       hasRole,
     });
   }
+
+  @Post(':productId')
+  completeProduct(
+    @MyId() myId: number,
+    @HasRole(Role.MANAGER) hasRole: boolean,
+    @Param() { productId }: ProductIdDto,
+  ): Promise<void> {
+    return this.productsService.completeProduct({ productId, myId, hasRole });
+  }
 }

@@ -3,8 +3,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { Lease } from './lease.entity';
 import { CellsService } from '../cells/cells.service';
-import { ExtCreateLeaseDto } from './lease.dto';
+import { CompleteLeaseDto, ExtCreateLeaseDto } from './lease.dto';
 import { Request, Response } from '../../common/interfaces';
+import { getDateWeekAgo } from '../../common/utils';
 import { AppException } from '../../common/exceptions';
 import { LeaseError } from './lease-error.enum';
 import { Mode } from '../../common/enums';
@@ -19,14 +20,17 @@ export class LeasesService {
 
   async getMyLeases(myId: number, req: Request): Promise<Response<Lease>> {
     const [result, count] = await this.getLeasesQueryBuilder(req)
-      .innerJoin('ownerCard.users', 'ownerUsers')
       .innerJoin('renterCard.users', 'renterUsers')
-      .andWhere(
-        new Brackets((qb) =>
-          qb.where('renterUsers.id = :myId').orWhere('ownerUsers.id = :myId'),
-        ),
-        { myId },
-      )
+      .andWhere('renterUsers.id = :myId', { myId })
+      .getManyAndCount();
+    await this.loadThing(result);
+    return { result, count };
+  }
+
+  async getPlacedLeases(myId: number, req: Request): Promise<Response<Lease>> {
+    const [result, count] = await this.getLeasesQueryBuilder(req)
+      .innerJoin('ownerCard.users', 'ownerUsers')
+      .andWhere('ownerUsers.id = :myId', { myId })
       .getManyAndCount();
     await this.loadThing(result);
     return { result, count };
@@ -46,6 +50,41 @@ export class LeasesService {
     return lease.id;
   }
 
+  async completeLease(dto: CompleteLeaseDto): Promise<void> {
+    const lease = await this.checkLeaseOwner(
+      dto.leaseId,
+      dto.myId,
+      dto.hasRole,
+    );
+    await this.cellsService.unreserveCell(lease.cellId);
+    await this.complete(lease);
+  }
+
+  async checkLeaseExists(id: number): Promise<void> {
+    await this.leasesRepository.findOneByOrFail({ id });
+  }
+
+  async checkLeaseOwner(
+    id: number,
+    userId: number,
+    hasRole: boolean,
+  ): Promise<Lease> {
+    const lease = await this.leasesRepository.findOne({
+      relations: ['card', 'card.users'],
+      where: { id },
+    });
+    if (!lease.card.users.map((user) => user.id).includes(userId) && !hasRole) {
+      throw new AppException(LeaseError.NOT_OWNER);
+    }
+    if (lease.createdAt < getDateWeekAgo()) {
+      throw new AppException(LeaseError.ALREADY_EXPIRED);
+    }
+    if (lease.completedAt) {
+      throw new AppException(LeaseError.ALREADY_COMPLETED);
+    }
+    return lease;
+  }
+
   private async create(dto: ExtCreateLeaseDto): Promise<Lease> {
     try {
       const lease = this.leasesRepository.create({
@@ -57,6 +96,15 @@ export class LeasesService {
       return lease;
     } catch (error) {
       throw new AppException(LeaseError.CREATE_FAILED);
+    }
+  }
+
+  private async complete(lease: Lease): Promise<void> {
+    try {
+      lease.completedAt = new Date();
+      await this.leasesRepository.save(lease);
+    } catch (error) {
+      throw new AppException(LeaseError.COMPLETE_FAILED);
     }
   }
 
@@ -212,6 +260,7 @@ export class LeasesService {
         'renterCard.color',
         'lease.createdAt',
         'lease.kind',
+        'lease.completedAt',
       ]);
   }
 }

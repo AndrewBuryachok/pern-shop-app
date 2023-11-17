@@ -84,6 +84,11 @@ export class StoresService {
     );
   }
 
+  async unreserveStore(id: number): Promise<void> {
+    const store = await this.storesRepository.findOneBy({ id });
+    await this.unreserve(store);
+  }
+
   async checkStoreExists(id: number): Promise<void> {
     await this.storesRepository.findOneByOrFail({ id });
   }
@@ -134,6 +139,15 @@ export class StoresService {
       await this.storesRepository.save(store);
     } catch (error) {
       throw new AppException(StoreError.RESERVE_FAILED);
+    }
+  }
+
+  private async unreserve(store: Store): Promise<void> {
+    try {
+      store.reservedAt = null;
+      await this.storesRepository.save(store);
+    } catch (error) {
+      throw new AppException(StoreError.UNRESERVE_FAILED);
     }
   }
 

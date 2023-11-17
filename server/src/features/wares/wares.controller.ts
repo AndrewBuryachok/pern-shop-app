@@ -72,4 +72,13 @@ export class WaresController {
   ): Promise<void> {
     return this.waresService.editWare({ ...dto, wareId, myId, hasRole });
   }
+
+  @Post(':wareId')
+  completeWare(
+    @MyId() myId: number,
+    @HasRole(Role.MANAGER) hasRole: boolean,
+    @Param() { wareId }: WareIdDto,
+  ): Promise<void> {
+    return this.waresService.completeWare({ wareId, myId, hasRole });
+  }
 }

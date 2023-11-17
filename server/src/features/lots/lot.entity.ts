@@ -12,9 +12,6 @@ export class Lot extends Thing {
   @JoinColumn({ name: 'lease_id' })
   lease: Lease;
 
-  @Column({ type: 'timestamptz', name: 'completed_at', nullable: true })
-  completedAt?: Date;
-
   @OneToMany(() => Bid, (bid) => bid.lot)
   bids: Bid[];
 }

@@ -8,6 +8,7 @@ import { PaymentsService } from '../payments/payments.service';
 import { MqttService } from '../mqtt/mqtt.service';
 import {
   BuyProductDto,
+  CompleteProductDto,
   ExtCreateProductDto,
   ExtEditProductDto,
 } from './product.dto';
@@ -49,7 +50,7 @@ export class ProductsService {
   async getMainProducts(req: Request): Promise<Response<Product>> {
     const [result, count] = await this.getProductsQueryBuilder(req)
       .andWhere('product.amount > 0')
-      .andWhere('product.createdAt > :date', { date: getDateWeekAgo() })
+      .andWhere('lease.createdAt > :date', { date: getDateWeekAgo() })
       .getManyAndCount();
     await this.loadStatesAndRates(result);
     return { result, count };
@@ -98,7 +99,16 @@ export class ProductsService {
       dto.myId,
       dto.hasRole,
     );
-    await this.edit(product, dto.price);
+    await this.edit(product, dto);
+  }
+
+  async completeProduct(dto: CompleteProductDto): Promise<void> {
+    const product = await this.checkProductOwner(
+      dto.productId,
+      dto.myId,
+      dto.hasRole,
+    );
+    await this.complete(product);
   }
 
   async buyProduct(dto: BuyProductDto): Promise<void> {
@@ -146,6 +156,12 @@ export class ProductsService {
     ) {
       throw new AppException(ProductError.NOT_OWNER);
     }
+    if (product.createdAt < getDateWeekAgo()) {
+      throw new AppException(ProductError.ALREADY_EXPIRED);
+    }
+    if (product.completedAt) {
+      throw new AppException(ProductError.ALREADY_COMPLETED);
+    }
     return product;
   }
 
@@ -171,17 +187,30 @@ export class ProductsService {
     }
   }
 
-  private async edit(product: Product, price: number): Promise<void> {
+  private async edit(product: Product, dto: ExtEditProductDto): Promise<void> {
     try {
-      product.price = price;
+      if (product.price !== dto.price) {
+        const productState = this.productsStatesRepository.create({
+          productId: product.id,
+          price: dto.price,
+        });
+        await this.productsStatesRepository.save(productState);
+      }
+      product.amount = dto.amount;
+      product.price = dto.price;
       await this.productsRepository.save(product);
-      const productState = this.productsStatesRepository.create({
-        productId: product.id,
-        price,
-      });
-      await this.productsStatesRepository.save(productState);
     } catch (error) {
       throw new AppException(ProductError.EDIT_FAILED);
+    }
+  }
+
+  private async complete(product: Product): Promise<void> {
+    try {
+      product.amount = 0;
+      product.completedAt = new Date();
+      await this.productsRepository.save(product);
+    } catch (error) {
+      throw new AppException(ProductError.COMPLETE_FAILED);
     }
   }
 
@@ -339,6 +368,7 @@ export class ProductsService {
         'product.kit',
         'product.price',
         'product.createdAt',
+        'product.completedAt',
       ]);
   }
 }

@@ -11,9 +11,6 @@ export abstract class Transportation extends Thing {
   @JoinColumn({ name: 'executor_card_id' })
   executorCard?: Card;
 
-  @Column({ type: 'timestamptz', name: 'completed_at', nullable: true })
-  completedAt?: Date;
-
   @Column({
     type: 'enum',
     enum: TransportationStatus,

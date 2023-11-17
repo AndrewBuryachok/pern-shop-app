@@ -6,7 +6,12 @@ import { WareState } from './ware-state.entity';
 import { RentsService } from '../rents/rents.service';
 import { PaymentsService } from '../payments/payments.service';
 import { MqttService } from '../mqtt/mqtt.service';
-import { BuyWareDto, ExtCreateWareDto, ExtEditWareDto } from './ware.dto';
+import {
+  BuyWareDto,
+  CompleteWareDto,
+  ExtCreateWareDto,
+  ExtEditWareDto,
+} from './ware.dto';
 import { Request, Response, Stats } from '../../common/interfaces';
 import { getDateMonthAgo, getDateWeekAgo } from '../../common/utils';
 import { AppException } from '../../common/exceptions';
@@ -83,7 +88,12 @@ export class WaresService {
 
   async editWare(dto: ExtEditWareDto): Promise<void> {
     const ware = await this.checkWareOwner(dto.wareId, dto.myId, dto.hasRole);
-    await this.edit(ware, dto.price);
+    await this.edit(ware, dto);
+  }
+
+  async completeWare(dto: CompleteWareDto): Promise<void> {
+    const ware = await this.checkWareOwner(dto.wareId, dto.myId, dto.hasRole);
+    await this.complete(ware);
   }
 
   async buyWare(dto: BuyWareDto): Promise<void> {
@@ -131,6 +141,12 @@ export class WaresService {
     ) {
       throw new AppException(WareError.NOT_OWNER);
     }
+    if (ware.createdAt < getDateWeekAgo()) {
+      throw new AppException(WareError.ALREADY_EXPIRED);
+    }
+    if (ware.completedAt) {
+      throw new AppException(WareError.ALREADY_COMPLETED);
+    }
     return ware;
   }
 
@@ -156,17 +172,30 @@ export class WaresService {
     }
   }
 
-  private async edit(ware: Ware, price: number): Promise<void> {
+  private async edit(ware: Ware, dto: ExtEditWareDto): Promise<void> {
     try {
-      ware.price = price;
+      if (ware.price !== dto.price) {
+        const wareState = this.waresStatesRepository.create({
+          wareId: ware.id,
+          price: dto.price,
+        });
+        await this.waresStatesRepository.save(wareState);
+      }
+      ware.amount = dto.amount;
+      ware.price = dto.price;
       await this.waresRepository.save(ware);
-      const wareState = this.waresStatesRepository.create({
-        wareId: ware.id,
-        price,
-      });
-      await this.waresStatesRepository.save(wareState);
     } catch (error) {
       throw new AppException(WareError.EDIT_FAILED);
+    }
+  }
+
+  private async complete(ware: Ware): Promise<void> {
+    try {
+      ware.amount = 0;
+      ware.completedAt = new Date();
+      await this.waresRepository.save(ware);
+    } catch (error) {
+      throw new AppException(WareError.COMPLETE_FAILED);
     }
   }
 
@@ -324,6 +353,7 @@ export class WaresService {
         'ware.kit',
         'ware.price',
         'ware.createdAt',
+        'ware.completedAt',
       ]);
   }
 }

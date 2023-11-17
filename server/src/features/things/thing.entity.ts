@@ -24,4 +24,7 @@ export abstract class Thing {
 
   @CreateDateColumn({ type: 'timestamptz', name: 'created_at' })
   createdAt: Date;
+
+  @Column({ type: 'timestamptz', name: 'completed_at', nullable: true })
+  completedAt?: Date;
 }

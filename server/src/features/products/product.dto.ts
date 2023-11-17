@@ -8,7 +8,7 @@ import {
   IsStorageExists,
 } from '../../common/constraints';
 import { CreateThingDto } from '../things/thing.dto';
-import { EditStateDto } from '../states/state.dto';
+import { ExtEditStateDto } from '../states/state.dto';
 import { ExtCreateSaleDto } from '../sales/sale.dto';
 
 export class ProductIdDto {
@@ -36,10 +36,15 @@ export class ExtCreateProductDto extends CreateProductDto {
   hasRole: boolean;
 }
 
-export class EditProductDto extends EditStateDto {}
+export class EditProductDto extends ExtEditStateDto {}
 
 export class ExtEditProductDto extends EditProductDto {
   productId: number;
+  myId: number;
+  hasRole: boolean;
+}
+
+export class CompleteProductDto extends ProductIdDto {
   myId: number;
   hasRole: boolean;
 }
