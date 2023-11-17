@@ -10,7 +10,7 @@ export const authApi = emptyApi.injectEndpoints({
         method: 'POST',
         body: dto,
       }),
-      invalidatesTags: ['Auth'],
+      invalidatesTags: ['Auth', 'User'],
     }),
     login: build.mutation<Tokens, AuthDto>({
       query: (dto) => ({

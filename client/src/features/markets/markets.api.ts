@@ -10,19 +10,19 @@ export const marketsApi = emptyApi.injectEndpoints({
       query: (req) => ({
         url: `/markets?${getQuery(req)}`,
       }),
-      providesTags: ['Market', 'Store'],
+      providesTags: ['Market'],
     }),
     getMyMarkets: build.query<IResponse<Market>, IRequest>({
       query: (req) => ({
         url: `/markets/my?${getQuery(req)}`,
       }),
-      providesTags: ['Auth', 'Market', 'Store'],
+      providesTags: ['Auth', 'Market'],
     }),
     getAllMarkets: build.query<IResponse<Market>, IRequest>({
       query: (req) => ({
         url: `/markets/all?${getQuery(req)}`,
       }),
-      providesTags: ['Auth', 'Market', 'Store'],
+      providesTags: ['Auth', 'Market'],
     }),
     selectMainMarkets: build.query<SmMarketWithCard[], void>({
       query: () => ({

@@ -10,13 +10,13 @@ export const rentsApi = emptyApi.injectEndpoints({
       query: (req) => ({
         url: `/rents/my?${getQuery(req)}`,
       }),
-      providesTags: ['Auth', 'Rent', 'Ware'],
+      providesTags: ['Auth', 'Rent'],
     }),
     getAllRents: build.query<IResponse<Rent>, IRequest>({
       query: (req) => ({
         url: `/rents/all?${getQuery(req)}`,
       }),
-      providesTags: ['Auth', 'Rent', 'Ware'],
+      providesTags: ['Auth', 'Rent'],
     }),
     selectAllRents: build.query<SelectRent[], void>({
       query: () => ({

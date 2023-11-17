@@ -15,19 +15,19 @@ export const storagesApi = emptyApi.injectEndpoints({
       query: (req) => ({
         url: `/storages?${getQuery(req)}`,
       }),
-      providesTags: ['Storage', 'Cell'],
+      providesTags: ['Storage'],
     }),
     getMyStorages: build.query<IResponse<Storage>, IRequest>({
       query: (req) => ({
         url: `/storages/my?${getQuery(req)}`,
       }),
-      providesTags: ['Auth', 'Storage', 'Cell'],
+      providesTags: ['Auth', 'Storage'],
     }),
     getAllStorages: build.query<IResponse<Storage>, IRequest>({
       query: (req) => ({
         url: `/storages/all?${getQuery(req)}`,
       }),
-      providesTags: ['Auth', 'Storage', 'Cell'],
+      providesTags: ['Auth', 'Storage'],
     }),
     selectMainStorages: build.query<SmStorageWithCard[], void>({
       query: () => ({

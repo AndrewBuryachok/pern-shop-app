@@ -10,19 +10,19 @@ export const shopsApi = emptyApi.injectEndpoints({
       query: (req) => ({
         url: `/shops?${getQuery(req)}`,
       }),
-      providesTags: ['Shop', 'Good'],
+      providesTags: ['Shop'],
     }),
     getMyShops: build.query<IResponse<Shop>, IRequest>({
       query: (req) => ({
         url: `/shops/my?${getQuery(req)}`,
       }),
-      providesTags: ['Auth', 'Shop', 'Good'],
+      providesTags: ['Auth', 'Shop'],
     }),
     getAllShops: build.query<IResponse<Shop>, IRequest>({
       query: (req) => ({
         url: `/shops/all?${getQuery(req)}`,
       }),
-      providesTags: ['Auth', 'Shop', 'Good'],
+      providesTags: ['Auth', 'Shop'],
     }),
     selectAllShops: build.query<SmShopWithUser[], void>({
       query: () => ({
