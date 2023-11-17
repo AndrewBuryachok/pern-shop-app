@@ -1,9 +1,13 @@
 import { t } from 'i18next';
 import { useTranslation } from 'react-i18next';
-import { Select, Stack, TextInput } from '@mantine/core';
+import { Select, TextInput } from '@mantine/core';
+import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { Rent } from './rent.model';
+import { useCompleteRentMutation } from './rents.api';
+import { CompleteRentDto } from './rent.dto';
+import CustomForm from '../../common/components/CustomForm';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import { ThingsItem } from '../../common/components/ThingItem';
 import {
@@ -16,11 +20,27 @@ import { Color } from '../../common/constants';
 
 type Props = IModal<Rent>;
 
-export default function ViewRentModal({ data: rent }: Props) {
+export default function CompleteRentModal({ data: rent }: Props) {
   const [t] = useTranslation();
 
+  const form = useForm({
+    initialValues: {
+      rentId: rent.id,
+    },
+  });
+
+  const [completeRent, { isLoading }] = useCompleteRentMutation();
+
+  const handleSubmit = async (dto: CompleteRentDto) => {
+    await completeRent(dto);
+  };
+
   return (
-    <Stack spacing={8}>
+    <CustomForm
+      onSubmit={form.onSubmit(handleSubmit)}
+      isLoading={isLoading}
+      text={t('actions.complete') + ' ' + t('modals.rent')}
+    >
       <TextInput
         label={t('columns.renter')}
         icon={<CustomAvatar {...rent.card.user} />}
@@ -50,11 +70,6 @@ export default function ViewRentModal({ data: rent }: Props) {
         value={parseTime(rent.createdAt)}
         disabled
       />
-      <TextInput
-        label={t('columns.completed')}
-        value={parseTime(rent.completedAt)}
-        disabled
-      />
       <Select
         label={t('columns.wares')}
         placeholder={`${t('components.total')}: ${rent.wares.length}`}
@@ -62,16 +77,16 @@ export default function ViewRentModal({ data: rent }: Props) {
         data={viewThings(rent.wares)}
         searchable
       />
-    </Stack>
+    </CustomForm>
   );
 }
 
-export const viewRentAction = {
+export const completeRentAction = {
   open: (rent: Rent) =>
     openModal({
-      title: t('actions.view') + ' ' + t('modals.rent'),
-      children: <ViewRentModal data={rent} />,
+      title: t('actions.complete') + ' ' + t('modals.rent'),
+      children: <CompleteRentModal data={rent} />,
     }),
-  disable: () => false,
-  color: Color.BLUE,
+  disable: (rent: Rent) => !!rent.completedAt,
+  color: Color.GREEN,
 };

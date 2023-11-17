@@ -1,12 +1,12 @@
 import { t } from 'i18next';
 import { useTranslation } from 'react-i18next';
-import { NumberInput, Select, TextInput, Textarea } from '@mantine/core';
+import { Select, TextInput, Textarea } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { Product } from './product.model';
-import { useEditProductMutation } from './products.api';
-import { EditProductDto } from './product.dto';
+import { useCompleteProductMutation } from './products.api';
+import { CompleteProductDto } from './product.dto';
 import CustomForm from '../../common/components/CustomForm';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import ThingImage from '../../common/components/ThingImage';
@@ -19,37 +19,30 @@ import {
   parseTime,
   viewStates,
 } from '../../common/utils';
-import {
-  Color,
-  MAX_AMOUNT_VALUE,
-  MAX_PRICE_VALUE,
-} from '../../common/constants';
+import { Color } from '../../common/constants';
 
 type Props = IModal<Product>;
 
-export default function EditProductModal({ data: product }: Props) {
+export default function CompleteProductModal({ data: product }: Props) {
   const [t] = useTranslation();
 
   const form = useForm({
     initialValues: {
       productId: product.id,
-      amount: product.amount,
-      price: product.price,
     },
   });
 
-  const [editProduct, { isLoading }] = useEditProductMutation();
+  const [completeProduct, { isLoading }] = useCompleteProductMutation();
 
-  const handleSubmit = async (dto: EditProductDto) => {
-    await editProduct(dto);
+  const handleSubmit = async (dto: CompleteProductDto) => {
+    await completeProduct(dto);
   };
 
   return (
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={t('actions.edit') + ' ' + t('modals.product')}
-      isChanged={!form.isDirty()}
+      text={t('actions.complete') + ' ' + t('modals.product')}
     >
       <TextInput
         label={t('columns.seller')}
@@ -75,25 +68,14 @@ export default function EditProductModal({ data: product }: Props) {
         value={parseThingAmount(product)}
         disabled
       />
-      <NumberInput
-        label={t('columns.amount')}
-        placeholder={t('columns.amount')}
-        required
-        min={1}
-        max={MAX_AMOUNT_VALUE}
-        {...form.getInputProps('amount')}
-      />
-      <NumberInput
+      <TextInput
         label={t('columns.price')}
-        placeholder={t('columns.price')}
-        required
-        min={1}
-        max={MAX_PRICE_VALUE}
-        {...form.getInputProps('price')}
+        value={`${product.price}$`}
+        disabled
       />
       <Select
         label={t('columns.prices')}
-        placeholder={`Total: ${product.states.length}`}
+        placeholder={`${t('components.total')}: ${product.states.length}`}
         itemComponent={StatesItem}
         data={viewStates(product.states)}
         searchable
@@ -119,12 +101,12 @@ export default function EditProductModal({ data: product }: Props) {
   );
 }
 
-export const editProductAction = {
+export const completeProductAction = {
   open: (product: Product) =>
     openModal({
-      title: t('actions.edit') + ' ' + t('modals.product'),
-      children: <EditProductModal data={product} />,
+      title: t('actions.complete') + ' ' + t('modals.product'),
+      children: <CompleteProductModal data={product} />,
     }),
   disable: (product: Product) => !!product.completedAt,
-  color: Color.YELLOW,
+  color: Color.GREEN,
 };

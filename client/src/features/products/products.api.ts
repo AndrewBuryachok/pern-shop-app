@@ -1,7 +1,11 @@
 import { emptyApi } from '../../app/empty.api';
 import { IRequest, IResponse, IStats } from '../../common/interfaces';
 import { Product } from './product.model';
-import { CreateProductDto, EditProductDto } from './product.dto';
+import {
+  CompleteProductDto,
+  CreateProductDto,
+  EditProductDto,
+} from './product.dto';
 import { getQuery } from '../../common/utils';
 
 export const productsApi = emptyApi.injectEndpoints({
@@ -52,6 +56,13 @@ export const productsApi = emptyApi.injectEndpoints({
       }),
       invalidatesTags: ['Product'],
     }),
+    completeProduct: build.mutation<void, CompleteProductDto>({
+      query: ({ productId }) => ({
+        url: `/products/${productId}`,
+        method: 'POST',
+      }),
+      invalidatesTags: ['Product'],
+    }),
   }),
 });
 
@@ -63,4 +74,5 @@ export const {
   useGetAllProductsQuery,
   useCreateProductMutation,
   useEditProductMutation,
+  useCompleteProductMutation,
 } = productsApi;

@@ -36,8 +36,10 @@ const MainCells = lazy(() => import('../pages/cells/MainCells'));
 const MyCells = lazy(() => import('../pages/cells/MyCells'));
 const AllCells = lazy(() => import('../pages/cells/AllCells'));
 const MyRents = lazy(() => import('../pages/rents/MyRents'));
+const PlacedRents = lazy(() => import('../pages/rents/PlacedRents'));
 const AllRents = lazy(() => import('../pages/rents/AllRents'));
 const MyLeases = lazy(() => import('../pages/leases/MyLeases'));
+const PlacedLeases = lazy(() => import('../pages/leases/PlacedLeases'));
 const AllLeases = lazy(() => import('../pages/leases/AllLeases'));
 const MainGoods = lazy(() => import('../pages/goods/MainGoods'));
 const MyGoods = lazy(() => import('../pages/goods/MyGoods'));
@@ -193,6 +195,7 @@ export const pages = [
     path: 'rents',
     nested: [
       { path: 'my', element: MyRents },
+      { path: 'placed', element: PlacedRents },
       { path: 'all', element: AllRents, role: Role.MANAGER },
     ],
   },
@@ -200,6 +203,7 @@ export const pages = [
     path: 'leases',
     nested: [
       { path: 'my', element: MyLeases },
+      { path: 'placed', element: PlacedLeases },
       { path: 'all', element: AllLeases, role: Role.MANAGER },
     ],
   },

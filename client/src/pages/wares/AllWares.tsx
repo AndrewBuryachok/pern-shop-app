@@ -7,6 +7,7 @@ import { useGetAllWaresQuery } from '../../features/wares/wares.api';
 import WaresTable from '../../features/wares/WaresTable';
 import { createUserWareButton } from '../../features/wares/CreateWareModal';
 import { editWareAction } from '../../features/wares/EditWareModal';
+import { completeWareAction } from '../../features/wares/CompleteWareModal';
 
 export default function AllWares() {
   const [t] = useTranslation();
@@ -36,7 +37,7 @@ export default function AllWares() {
 
   const button = createUserWareButton;
 
-  const actions = [editWareAction];
+  const actions = [editWareAction, completeWareAction];
 
   return (
     <WaresTable

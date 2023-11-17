@@ -7,6 +7,7 @@ import { useGetMyProductsQuery } from '../../features/products/products.api';
 import ProductsTable from '../../features/products/ProductsTable';
 import { createMyProductButton } from '../../features/products/CreateProductModal';
 import { editProductAction } from '../../features/products/EditProductModal';
+import { completeProductAction } from '../../features/products/CompleteProductModal';
 import { Role } from '../../common/constants';
 
 export default function MyProducts() {
@@ -37,7 +38,7 @@ export default function MyProducts() {
 
   const button = createMyProductButton;
 
-  const actions = [editProductAction];
+  const actions = [editProductAction, completeProductAction];
 
   return (
     <ProductsTable

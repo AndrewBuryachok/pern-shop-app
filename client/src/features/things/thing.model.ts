@@ -13,4 +13,5 @@ export interface MdThing extends SmThing {
 export interface LgThing extends MdThing {
   amount: number;
   createdAt: Date;
+  completedAt?: Date;
 }

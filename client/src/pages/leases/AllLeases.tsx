@@ -5,6 +5,7 @@ import { ISearch } from '../../common/interfaces';
 import { Mode } from '../../common/enums';
 import { useGetAllLeasesQuery } from '../../features/leases/leases.api';
 import LeasesTable from '../../features/leases/LeasesTable';
+import { completeLeaseAction } from '../../features/leases/CompleteLeaseModal';
 
 export default function AllLeases() {
   const [t] = useTranslation();
@@ -25,7 +26,12 @@ export default function AllLeases() {
 
   const response = useGetAllLeasesQuery({ page, search });
 
-  const links = [{ label: t('pages.my'), to: '../my' }];
+  const links = [
+    { label: t('pages.my'), to: '../my' },
+    { label: t('pages.placed'), to: '../placed' },
+  ];
+
+  const actions = [completeLeaseAction];
 
   return (
     <LeasesTable
@@ -36,6 +42,7 @@ export default function AllLeases() {
       search={search}
       setSearch={setSearch}
       links={links}
+      actions={actions}
     />
   );
 }

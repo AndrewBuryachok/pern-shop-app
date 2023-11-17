@@ -9,3 +9,7 @@ export interface CreateProductDto extends CreateThingDto {
 export interface EditProductDto extends EditStateDto {
   productId: number;
 }
+
+export interface CompleteProductDto {
+  productId: number;
+}

@@ -8,3 +8,7 @@ export interface CreateWareDto extends CreateThingDto {
 export interface EditWareDto extends EditStateDto {
   wareId: number;
 }
+
+export interface CompleteWareDto {
+  wareId: number;
+}

@@ -5,6 +5,7 @@ import { ISearch } from '../../common/interfaces';
 import { Mode } from '../../common/enums';
 import { useGetMyRentsQuery } from '../../features/rents/rents.api';
 import RentsTable from '../../features/rents/RentsTable';
+import { completeRentAction } from '../../features/rents/CompleteRentModal';
 import { Role } from '../../common/constants';
 
 export default function MyRents() {
@@ -25,7 +26,12 @@ export default function MyRents() {
 
   const response = useGetMyRentsQuery({ page, search });
 
-  const links = [{ label: t('pages.all'), to: '../all', role: Role.MANAGER }];
+  const links = [
+    { label: t('pages.placed'), to: '../placed' },
+    { label: t('pages.all'), to: '../all', role: Role.MANAGER },
+  ];
+
+  const actions = [completeRentAction];
 
   return (
     <RentsTable
@@ -36,6 +42,7 @@ export default function MyRents() {
       search={search}
       setSearch={setSearch}
       links={links}
+      actions={actions}
     />
   );
 }

@@ -1,12 +1,12 @@
 import { t } from 'i18next';
 import { useTranslation } from 'react-i18next';
-import { NumberInput, Select, TextInput, Textarea } from '@mantine/core';
+import { Select, TextInput, Textarea } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { Ware } from './ware.model';
-import { useEditWareMutation } from './wares.api';
-import { EditWareDto } from './ware.dto';
+import { useCompleteWareMutation } from './wares.api';
+import { CompleteWareDto } from './ware.dto';
 import CustomForm from '../../common/components/CustomForm';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import ThingImage from '../../common/components/ThingImage';
@@ -19,37 +19,30 @@ import {
   parseTime,
   viewStates,
 } from '../../common/utils';
-import {
-  Color,
-  MAX_AMOUNT_VALUE,
-  MAX_PRICE_VALUE,
-} from '../../common/constants';
+import { Color } from '../../common/constants';
 
 type Props = IModal<Ware>;
 
-export default function EditWareModal({ data: ware }: Props) {
+export default function CompleteWareModal({ data: ware }: Props) {
   const [t] = useTranslation();
 
   const form = useForm({
     initialValues: {
       wareId: ware.id,
-      amount: ware.amount,
-      price: ware.price,
     },
   });
 
-  const [editWare, { isLoading }] = useEditWareMutation();
+  const [completeWare, { isLoading }] = useCompleteWareMutation();
 
-  const handleSubmit = async (dto: EditWareDto) => {
-    await editWare(dto);
+  const handleSubmit = async (dto: CompleteWareDto) => {
+    await completeWare(dto);
   };
 
   return (
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={t('actions.edit') + ' ' + t('modals.ware')}
-      isChanged={!form.isDirty()}
+      text={t('actions.complete') + ' ' + t('modals.ware')}
     >
       <TextInput
         label={t('columns.seller')}
@@ -75,25 +68,10 @@ export default function EditWareModal({ data: ware }: Props) {
         value={parseThingAmount(ware)}
         disabled
       />
-      <NumberInput
-        label={t('columns.amount')}
-        placeholder={t('columns.amount')}
-        required
-        min={1}
-        max={MAX_AMOUNT_VALUE}
-        {...form.getInputProps('amount')}
-      />
-      <NumberInput
-        label={t('columns.price')}
-        placeholder={t('columns.price')}
-        required
-        min={1}
-        max={MAX_PRICE_VALUE}
-        {...form.getInputProps('price')}
-      />
+      <TextInput label={t('columns.price')} value={`${ware.price}$`} disabled />
       <Select
         label={t('columns.prices')}
-        placeholder={`Total: ${ware.states.length}`}
+        placeholder={`${t('components.total')}: ${ware.states.length}`}
         itemComponent={StatesItem}
         data={viewStates(ware.states)}
         searchable
@@ -119,12 +97,12 @@ export default function EditWareModal({ data: ware }: Props) {
   );
 }
 
-export const editWareAction = {
+export const completeWareAction = {
   open: (ware: Ware) =>
     openModal({
-      title: t('actions.edit') + ' ' + t('modals.ware'),
-      children: <EditWareModal data={ware} />,
+      title: t('actions.complete') + ' ' + t('modals.ware'),
+      children: <CompleteWareModal data={ware} />,
     }),
   disable: (ware: Ware) => !!ware.completedAt,
-  color: Color.YELLOW,
+  color: Color.GREEN,
 };

@@ -1,7 +1,7 @@
 import { emptyApi } from '../../app/empty.api';
 import { IRequest, IResponse, IStats } from '../../common/interfaces';
 import { Ware } from './ware.model';
-import { CreateWareDto, EditWareDto } from './ware.dto';
+import { CompleteWareDto, CreateWareDto, EditWareDto } from './ware.dto';
 import { getQuery } from '../../common/utils';
 
 export const waresApi = emptyApi.injectEndpoints({
@@ -52,6 +52,13 @@ export const waresApi = emptyApi.injectEndpoints({
       }),
       invalidatesTags: ['Ware'],
     }),
+    completeWare: build.mutation<void, CompleteWareDto>({
+      query: ({ wareId }) => ({
+        url: `/wares/${wareId}`,
+        method: 'POST',
+      }),
+      invalidatesTags: ['Ware'],
+    }),
   }),
 });
 
@@ -63,4 +70,5 @@ export const {
   useGetAllWaresQuery,
   useCreateWareMutation,
   useEditWareMutation,
+  useCompleteWareMutation,
 } = waresApi;

@@ -3,11 +3,11 @@ import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
 import { ISearch } from '../../common/interfaces';
 import { Mode } from '../../common/enums';
-import { useGetAllRentsQuery } from '../../features/rents/rents.api';
-import RentsTable from '../../features/rents/RentsTable';
-import { completeRentAction } from '../../features/rents/CompleteRentModal';
+import { useGetPlacedLeasesQuery } from '../../features/leases/leases.api';
+import LeasesTable from '../../features/leases/LeasesTable';
+import { Role } from '../../common/constants';
 
-export default function AllRents() {
+export default function PlacedLeases() {
   const [t] = useTranslation();
 
   const [searchParams] = useSearchParams();
@@ -19,29 +19,27 @@ export default function AllRents() {
     card: searchParams.get('card'),
     modes: [Mode.RENTER, Mode.OWNER],
     mode: searchParams.get('mode') as Mode,
-    market: searchParams.get('market'),
-    store: searchParams.get('store'),
+    storage: searchParams.get('storage'),
+    cell: searchParams.get('cell'),
+    kind: +(searchParams.get('kind') || 0) || null,
   });
 
-  const response = useGetAllRentsQuery({ page, search });
+  const response = useGetPlacedLeasesQuery({ page, search });
 
   const links = [
     { label: t('pages.my'), to: '../my' },
-    { label: t('pages.placed'), to: '../placed' },
+    { label: t('pages.all'), to: '../all', role: Role.MANAGER },
   ];
 
-  const actions = [completeRentAction];
-
   return (
-    <RentsTable
+    <LeasesTable
       {...response}
-      title={t('pages.all') + ' ' + t('navbar.rents')}
+      title={t('pages.placed') + ' ' + t('navbar.leases')}
       page={page}
       setPage={setPage}
       search={search}
       setSearch={setSearch}
       links={links}
-      actions={actions}
     />
   );
 }

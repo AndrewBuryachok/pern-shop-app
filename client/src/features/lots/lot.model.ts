@@ -11,6 +11,5 @@ export interface MdLot extends MdThing {
 
 export interface Lot extends LgThing {
   lease: SmLease;
-  completedAt?: Date;
   bids: State[];
 }

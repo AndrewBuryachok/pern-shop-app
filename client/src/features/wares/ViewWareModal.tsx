@@ -80,6 +80,11 @@ export default function ViewWareModal({ data: ware }: Props) {
         value={parseTime(ware.createdAt)}
         disabled
       />
+      <TextInput
+        label={t('columns.completed')}
+        value={parseTime(ware.completedAt)}
+        disabled
+      />
       <Input.Wrapper label={t('columns.rate')}>
         <Rating value={ware.rate} readOnly />
       </Input.Wrapper>
