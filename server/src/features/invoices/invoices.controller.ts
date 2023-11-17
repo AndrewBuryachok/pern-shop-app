@@ -32,6 +32,14 @@ export class InvoicesController {
     return this.invoicesService.getMyInvoices(myId, req);
   }
 
+  @Get('received')
+  getReceivedInvoices(
+    @MyId() myId: number,
+    @Query() req: Request,
+  ): Promise<Response<Invoice>> {
+    return this.invoicesService.getReceivedInvoices(myId, req);
+  }
+
   @Roles(Role.BANKER)
   @Get('all')
   getAllInvoices(@Query() req: Request): Promise<Response<Invoice>> {

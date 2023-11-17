@@ -28,12 +28,21 @@ export class InvoicesService {
   async getMyInvoices(myId: number, req: Request): Promise<Response<Invoice>> {
     const [result, count] = await this.getInvoicesQueryBuilder(req)
       .innerJoin('senderCard.users', 'senderUsers')
+      .andWhere('senderUsers.id = :myId', { myId })
+      .getManyAndCount();
+    return { result, count };
+  }
+
+  async getReceivedInvoices(
+    myId: number,
+    req: Request,
+  ): Promise<Response<Invoice>> {
+    const [result, count] = await this.getInvoicesQueryBuilder(req)
       .leftJoin('receiverCard.users', 'receiverUsers')
       .andWhere(
         new Brackets((qb) =>
           qb
-            .where('senderUsers.id = :myId')
-            .orWhere('receiverUser.id = :myId')
+            .where('receiverUser.id = :myId')
             .orWhere('receiverUsers.id = :myId'),
         ),
         { myId },
@@ -108,10 +117,13 @@ export class InvoicesService {
     hasRole: boolean,
   ): Promise<Invoice> {
     const invoice = await this.invoicesRepository.findOne({
-      relations: ['senderCard'],
+      relations: ['senderCard', 'senderCard.users'],
       where: { id },
     });
-    if (invoice.senderCard.userId !== userId && !hasRole) {
+    if (
+      !invoice.senderCard.users.map((user) => user.id).includes(userId) &&
+      !hasRole
+    ) {
       throw new AppException(InvoiceError.NOT_SENDER);
     }
     return invoice;
