@@ -29,7 +29,6 @@ export default function CompleteLotModal({ data: lot }: Props) {
   const form = useForm({
     initialValues: {
       lotId: lot.id,
-      price: lot.price,
     },
   });
 

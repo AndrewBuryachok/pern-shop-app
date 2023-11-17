@@ -55,10 +55,14 @@ export const parseThingAmount = (data: {
   )}`;
 
 export const parseTradeAmount = (trade: Trade) =>
-  `${trade.amount} * ${trade.ware.intake} ${kits[trade.ware.kit - 1]}`;
+  `${trade.amount} * ${trade.ware.intake} ${t(
+    'constants.kits.' + kits[trade.ware.kit - 1],
+  )}`;
 
 export const parseSaleAmount = (sale: Sale) =>
-  `${sale.amount} * ${sale.product.intake} ${kits[sale.product.kit - 1]}`;
+  `${sale.amount} * ${sale.product.intake} ${t(
+    'constants.kits.' + kits[sale.product.kit - 1],
+  )}`;
 
 export const parseKind = (kind: number) =>
   t('constants.kinds.' + kinds[kind - 1]);

@@ -5,13 +5,13 @@ import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { Order } from './order.model';
-import { useTakeOrderMutation } from '../orders/orders.api';
+import { useTakeOrderMutation } from './orders.api';
 import { useSelectAllUsersQuery } from '../users/users.api';
 import {
   useSelectMyCardsQuery,
   useSelectUserCardsWithBalanceQuery,
 } from '../cards/cards.api';
-import { TakeOrderDto } from '../orders/order.dto';
+import { TakeOrderDto } from './order.dto';
 import CustomForm from '../../common/components/CustomForm';
 import RefetchAction from '../../common/components/RefetchAction';
 import CustomAvatar from '../../common/components/CustomAvatar';
