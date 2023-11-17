@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Param,
+  Patch,
   Post,
   Query,
 } from '@nestjs/common';
@@ -129,7 +130,7 @@ export class DeliveriesController {
     return this.deliveriesService.deleteDelivery({ deliveryId, myId, hasRole });
   }
 
-  @Post(':deliveryId/rate')
+  @Patch(':deliveryId/rate')
   rateDelivery(
     @MyId() myId: number,
     @HasRole(Role.MANAGER) hasRole: boolean,

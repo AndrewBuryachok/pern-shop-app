@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
+} from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { SalesService } from './sales.service';
 import { Sale } from './sale.entity';
@@ -57,7 +65,7 @@ export class SalesController {
     return this.salesService.createSale({ ...dto, myId, hasRole });
   }
 
-  @Post(':saleId/rate')
+  @Patch(':saleId/rate')
   rateSale(
     @MyId() myId: number,
     @HasRole(Role.MANAGER) hasRole: boolean,
