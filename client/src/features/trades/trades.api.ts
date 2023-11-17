@@ -47,7 +47,7 @@ export const tradesApi = emptyApi.injectEndpoints({
     rateTrade: build.mutation<void, RateTradeDto>({
       query: ({ tradeId, ...dto }) => ({
         url: `/trades/${tradeId}/rate`,
-        method: 'POST',
+        method: 'PATCH',
         body: dto,
       }),
       invalidatesTags: ['Trade'],

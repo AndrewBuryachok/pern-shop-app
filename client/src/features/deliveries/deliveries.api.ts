@@ -88,7 +88,7 @@ export const deliveriesApi = emptyApi.injectEndpoints({
     rateDelivery: build.mutation<void, RateDeliveryDto>({
       query: ({ deliveryId, ...dto }) => ({
         url: `/deliveries/${deliveryId}/rate`,
-        method: 'POST',
+        method: 'PATCH',
         body: dto,
       }),
       invalidatesTags: ['Delivery'],
