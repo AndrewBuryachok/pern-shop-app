@@ -13,6 +13,9 @@ const AllExchanges = lazy(() => import('../pages/exchanges/AllExchanges'));
 const MyPayments = lazy(() => import('../pages/payments/MyPayments'));
 const AllPayments = lazy(() => import('../pages/payments/AllPayments'));
 const MyInvoices = lazy(() => import('../pages/invoices/MyInvoices'));
+const ReceivedInvoices = lazy(
+  () => import('../pages/invoices/ReceivedInvoices'),
+);
 const AllInvoices = lazy(() => import('../pages/invoices/AllInvoices'));
 const MainCities = lazy(() => import('../pages/cities/MainCities'));
 const MyCities = lazy(() => import('../pages/cities/MyCities'));
@@ -134,6 +137,7 @@ export const pages = [
     path: 'invoices',
     nested: [
       { path: 'my', element: MyInvoices },
+      { path: 'received', element: ReceivedInvoices },
       { path: 'all', element: AllInvoices, role: Role.BANKER },
     ],
   },

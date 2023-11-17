@@ -11,7 +11,6 @@ import CustomForm from '../../common/components/CustomForm';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import { parseCard, parseTime } from '../../common/utils';
 import { Color } from '../../common/constants';
-import { getCurrentUser } from '../auth/auth.slice';
 
 type Props = IModal<Invoice>;
 
@@ -69,22 +68,12 @@ export default function DeleteInvoiceModal({ data: invoice }: Props) {
   );
 }
 
-export const deleteInvoiceFactory = (hasRole: boolean) => ({
+export const deleteInvoiceAction = {
   open: (invoice: Invoice) =>
     openModal({
       title: t('actions.delete') + ' ' + t('modals.invoice'),
       children: <DeleteInvoiceModal data={invoice} />,
     }),
-  disable: (invoice: Invoice) => {
-    const user = getCurrentUser()!;
-    return (
-      !!invoice.completedAt ||
-      (invoice.senderCard.user.id !== user.id && !hasRole)
-    );
-  },
+  disable: (invoice: Invoice) => !!invoice.completedAt,
   color: Color.RED,
-});
-
-export const deleteMyInvoiceAction = deleteInvoiceFactory(false);
-
-export const deleteUserInvoiceAction = deleteInvoiceFactory(true);
+};

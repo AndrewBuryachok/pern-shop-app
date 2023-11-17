@@ -16,6 +16,12 @@ export const invoicesApi = emptyApi.injectEndpoints({
       }),
       providesTags: ['Auth', 'Invoice'],
     }),
+    getReceivedInvoices: build.query<IResponse<Invoice>, IRequest>({
+      query: (req) => ({
+        url: `/invoices/received?${getQuery(req)}`,
+      }),
+      providesTags: ['Auth', 'Invoice'],
+    }),
     getAllInvoices: build.query<IResponse<Invoice>, IRequest>({
       query: (req) => ({
         url: `/invoices/all?${getQuery(req)}`,
@@ -50,6 +56,7 @@ export const invoicesApi = emptyApi.injectEndpoints({
 
 export const {
   useGetMyInvoicesQuery,
+  useGetReceivedInvoicesQuery,
   useGetAllInvoicesQuery,
   useCreateInvoiceMutation,
   useCompleteInvoiceMutation,

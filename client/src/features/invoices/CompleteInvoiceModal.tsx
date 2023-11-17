@@ -21,7 +21,6 @@ import {
   selectCardsWithBalance,
 } from '../../common/utils';
 import { Color } from '../../common/constants';
-import { getCurrentUser } from '../auth/auth.slice';
 
 type Props = IModal<Invoice> & { hasRole: boolean };
 
@@ -113,12 +112,7 @@ export const completeInvoiceFactory = (hasRole: boolean) => ({
       title: t('actions.complete') + ' ' + t('modals.invoice'),
       children: <CompleteInvoiceModal data={invoice} hasRole={hasRole} />,
     }),
-  disable: (invoice: Invoice) => {
-    const user = getCurrentUser()!;
-    return (
-      !!invoice.completedAt || (invoice.receiverUser.id !== user.id && !hasRole)
-    );
-  },
+  disable: (invoice: Invoice) => !!invoice.completedAt,
   color: Color.GREEN,
 });
 

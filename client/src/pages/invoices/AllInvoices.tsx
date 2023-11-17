@@ -7,7 +7,7 @@ import { useGetAllInvoicesQuery } from '../../features/invoices/invoices.api';
 import InvoicesTable from '../../features/invoices/InvoicesTable';
 import { createUserInvoiceButton } from '../../features/invoices/CreateInvoiceModal';
 import { completeUserInvoiceAction } from '../../features/invoices/CompleteInvoiceModal';
-import { deleteUserInvoiceAction } from '../../features/invoices/DeleteInvoiceModal';
+import { deleteInvoiceAction } from '../../features/invoices/DeleteInvoiceModal';
 
 export default function AllInvoices() {
   const [t] = useTranslation();
@@ -26,11 +26,14 @@ export default function AllInvoices() {
 
   const response = useGetAllInvoicesQuery({ page, search });
 
-  const links = [{ label: t('pages.my'), to: '../my' }];
+  const links = [
+    { label: t('pages.my'), to: '../my' },
+    { label: t('pages.received'), to: '../received' },
+  ];
 
   const button = createUserInvoiceButton;
 
-  const actions = [completeUserInvoiceAction, deleteUserInvoiceAction];
+  const actions = [completeUserInvoiceAction, deleteInvoiceAction];
 
   return (
     <InvoicesTable
