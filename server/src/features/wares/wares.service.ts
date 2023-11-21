@@ -174,16 +174,17 @@ export class WaresService {
 
   private async edit(ware: Ware, dto: ExtEditWareDto): Promise<void> {
     try {
-      if (ware.price !== dto.price) {
-        const wareState = this.waresStatesRepository.create({
-          wareId: ware.id,
-          price: dto.price,
-        });
-        await this.waresStatesRepository.save(wareState);
-      }
+      const equal = ware.price === dto.price;
       ware.amount = dto.amount;
       ware.price = dto.price;
       await this.waresRepository.save(ware);
+      if (!equal) {
+        const wareState = this.waresStatesRepository.create({
+          wareId: ware.id,
+          price: ware.price,
+        });
+        await this.waresStatesRepository.save(wareState);
+      }
     } catch (error) {
       throw new AppException(WareError.EDIT_FAILED);
     }

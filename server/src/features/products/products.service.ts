@@ -189,16 +189,17 @@ export class ProductsService {
 
   private async edit(product: Product, dto: ExtEditProductDto): Promise<void> {
     try {
-      if (product.price !== dto.price) {
-        const productState = this.productsStatesRepository.create({
-          productId: product.id,
-          price: dto.price,
-        });
-        await this.productsStatesRepository.save(productState);
-      }
+      const equal = product.price === dto.price;
       product.amount = dto.amount;
       product.price = dto.price;
       await this.productsRepository.save(product);
+      if (!equal) {
+        const productState = this.productsStatesRepository.create({
+          productId: product.id,
+          price: product.price,
+        });
+        await this.productsStatesRepository.save(productState);
+      }
     } catch (error) {
       throw new AppException(ProductError.EDIT_FAILED);
     }
