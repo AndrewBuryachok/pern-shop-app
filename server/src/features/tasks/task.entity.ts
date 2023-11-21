@@ -6,6 +6,7 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { City } from '../cities/city.entity';
 import { User } from '../users/user.entity';
 import { Priority } from './priority.enum';
 import { TransportationStatus } from '../transportations/transportation-status.enum';
@@ -14,6 +15,13 @@ import { TransportationStatus } from '../transportations/transportation-status.e
 export class Task {
   @PrimaryGeneratedColumn()
   id: number;
+
+  @Column({ name: 'city_id' })
+  cityId: number;
+
+  @ManyToOne(() => City, { nullable: false })
+  @JoinColumn({ name: 'city_id' })
+  city: City;
 
   @Column({ name: 'customer_user_id' })
   customerUserId: number;

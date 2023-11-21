@@ -417,6 +417,7 @@ export default class AppSeed implements Seeder {
       .createMany(80);
     const tasks = await factory(Task)()
       .map(async (task) => {
+        task.city = getRandom(cities);
         task.customerUser = getRandom(users);
         if (task.status !== TransportationStatus.CREATED) {
           task.executorUser = getRandom(users);

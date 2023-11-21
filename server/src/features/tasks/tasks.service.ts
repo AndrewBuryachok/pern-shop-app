@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { Task } from './task.entity';
+import { CitiesService } from '../cities/cities.service';
 import { MqttService } from '../mqtt/mqtt.service';
 import { ExtCreateTaskDto, ExtTaskIdDto } from './task.dto';
 import { Request, Response } from '../../common/interfaces';
@@ -15,6 +16,7 @@ export class TasksService {
   constructor(
     @InjectRepository(Task)
     private tasksRepository: Repository<Task>,
+    private citiesService: CitiesService,
     private mqttService: MqttService,
   ) {}
 
@@ -22,6 +24,9 @@ export class TasksService {
     const [result, count] = await this.getTasksQueryBuilder(req)
       .leftJoin('city.users', 'cityUsers')
       .andWhere('cityUsers.id = :myId', { myId })
+      .andWhere('task.status = :status', {
+        status: TransportationStatus.CREATED,
+      })
       .getManyAndCount();
     return { result, count };
   }
@@ -55,13 +60,15 @@ export class TasksService {
   }
 
   async createTask(dto: ExtCreateTaskDto): Promise<void> {
-    await this.create(dto);
+    const city = await this.citiesService.checkCityUser(dto.myId);
+    await this.create({ ...dto, cityId: city.id });
   }
 
   async takeTask(dto: ExtTaskIdDto): Promise<void> {
     const task = await this.tasksRepository.findOneBy({
       id: dto.taskId,
     });
+    await this.citiesService.checkCityUser(dto.myId, task.cityId);
     if (task.status !== TransportationStatus.CREATED) {
       throw new AppException(TaskError.NOT_CREATED);
     }
@@ -145,6 +152,7 @@ export class TasksService {
   private async create(dto: ExtCreateTaskDto): Promise<void> {
     try {
       const task = this.tasksRepository.create({
+        cityId: dto.cityId,
         customerUserId: dto.myId,
         description: dto.description,
         priority: dto.priority,
@@ -205,10 +213,10 @@ export class TasksService {
   private getTasksQueryBuilder(req: Request): SelectQueryBuilder<Task> {
     return this.tasksRepository
       .createQueryBuilder('task')
+      .leftJoin('task.city', 'city')
+      .leftJoin('city.user', 'ownerUser')
       .innerJoin('task.customerUser', 'customerUser')
       .leftJoin('task.executorUser', 'executorUser')
-      .leftJoin('customerUser.city', 'city')
-      .leftJoin('city.user', 'ownerUser')
       .where(
         new Brackets((qb) =>
           qb
@@ -272,6 +280,12 @@ export class TasksService {
       .take(req.take)
       .select([
         'task.id',
+        'city.id',
+        'ownerUser.id',
+        'ownerUser.name',
+        'city.name',
+        'city.x',
+        'city.y',
         'customerUser.id',
         'customerUser.name',
         'task.description',

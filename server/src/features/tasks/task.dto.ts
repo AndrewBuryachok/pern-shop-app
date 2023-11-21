@@ -24,6 +24,7 @@ export class CreateTaskDto {
 
 export class ExtCreateTaskDto extends CreateTaskDto {
   myId: number;
+  cityId?: number;
 }
 
 export class ExtTaskIdDto extends TaskIdDto {

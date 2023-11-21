@@ -90,13 +90,18 @@ export class CitiesService {
   }
 
   async checkNotCityUser(userId: number): Promise<void> {
-    const city = await this.citiesRepository.findOne({
-      relations: ['users'],
-      where: { users: [{ id: userId }] },
-    });
+    const city = await this.findCityByUser(userId);
     if (city) {
       throw new AppException(CityError.ALREADY_IN_CITY);
     }
+  }
+
+  async checkCityUser(userId: number, id?: number): Promise<City> {
+    const city = await this.findCityByUser(userId);
+    if (!city || (id && city.id !== id)) {
+      throw new AppException(CityError.NOT_USER);
+    }
+    return city;
   }
 
   async checkCityOwner(
@@ -112,6 +117,13 @@ export class CitiesService {
       throw new AppException(CityError.NOT_OWNER);
     }
     return city;
+  }
+
+  private findCityByUser(userId: number): Promise<City> {
+    return this.citiesRepository.findOne({
+      relations: ['users'],
+      where: { users: [{ id: userId }] },
+    });
   }
 
   private async checkHasNotEnough(userId: number): Promise<void> {

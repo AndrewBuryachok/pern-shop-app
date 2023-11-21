@@ -6,6 +6,7 @@ export enum CityError {
   NOT_IN_CITY = '400: User not in city',
   OWNER = '400: You are city owner',
   NOT_OWNER = '403: You are not city owner',
+  NOT_USER = '403: You are not city user',
   CREATE_FAILED = '500: Failed to create city',
   EDIT_FAILED = '500: Failed to edit city',
   ADD_USER_FAILED = '500: Failed to add city user',
