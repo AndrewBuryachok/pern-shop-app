@@ -3,10 +3,6 @@ export interface CreateTaskDto {
   priority: number;
 }
 
-export interface TakeTaskDto {
-  taskId: number;
-}
-
 export interface TaskIdDto {
   taskId: number;
 }

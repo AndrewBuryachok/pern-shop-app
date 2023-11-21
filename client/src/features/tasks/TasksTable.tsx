@@ -6,6 +6,7 @@ import AvatarWithSingleText from '../../common/components/AvatarWithSingleText';
 import SingleText from '../../common/components/SingleText';
 import PriorityIconWithText from '../../common/components/PriorityIconWithText';
 import ColorBadge from '../../common/components/ColorBadge';
+import PlaceText from '../../common/components/PlaceText';
 import CustomActions from '../../common/components/CustomActions';
 import { viewTaskAction } from './ViewTaskModal';
 
@@ -23,6 +24,7 @@ export default function TasksTable({ actions = [], ...props }: Props) {
         t('columns.priority'),
         t('columns.executor'),
         t('columns.status'),
+        t('columns.city'),
         t('columns.action'),
       ]}
       {...props}
@@ -47,6 +49,9 @@ export default function TasksTable({ actions = [], ...props }: Props) {
           </td>
           <td>
             <ColorBadge color={task.status} />
+          </td>
+          <td>
+            <PlaceText {...task.city} />
           </td>
           <td>
             <CustomActions data={task} actions={[viewTaskAction, ...actions]} />

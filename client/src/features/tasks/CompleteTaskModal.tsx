@@ -10,6 +10,7 @@ import { TaskIdDto } from './task.dto';
 import CustomForm from '../../common/components/CustomForm';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import PriorityIcon from '../../common/components/PriorityIcon';
+import { parsePlace } from '../../common/utils';
 import { Color, priorities, Status } from '../../common/constants';
 
 type Props = IModal<Task>;
@@ -59,6 +60,11 @@ export default function CompleteTaskModal({ data: task }: Props) {
         icon={<CustomAvatar {...task.executorUser!} />}
         iconWidth={48}
         value={task.executorUser!.name}
+        disabled
+      />
+      <TextInput
+        label={t('columns.city')}
+        value={parsePlace(task.city)}
         disabled
       />
     </CustomForm>

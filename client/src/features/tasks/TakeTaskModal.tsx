@@ -7,11 +7,12 @@ import { IModal } from '../../common/interfaces';
 import { Task } from './task.model';
 import { useTakeTaskMutation } from './tasks.api';
 import { useSelectMyCardsQuery } from '../cards/cards.api';
-import { TakeTaskDto } from './task.dto';
+import { TaskIdDto } from './task.dto';
 import CustomForm from '../../common/components/CustomForm';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import PriorityIcon from '../../common/components/PriorityIcon';
-import { Color, priorities } from '../../common/constants';
+import { parsePlace } from '../../common/utils';
+import { Color, priorities, Status } from '../../common/constants';
 
 type Props = IModal<Task>;
 
@@ -28,7 +29,7 @@ export default function TakeTaskModal({ data: task }: Props) {
 
   const [takeTask, { isLoading }] = useTakeTaskMutation();
 
-  const handleSubmit = async (dto: TakeTaskDto) => {
+  const handleSubmit = async (dto: TaskIdDto) => {
     await takeTask(dto);
   };
 
@@ -57,6 +58,11 @@ export default function TakeTaskModal({ data: task }: Props) {
         value={t('constants.priorities.' + priorities[task.priority - 1])}
         disabled
       />
+      <TextInput
+        label={t('columns.city')}
+        value={parsePlace(task.city)}
+        disabled
+      />
     </CustomForm>
   );
 }
@@ -67,6 +73,6 @@ export const takeTaskAction = {
       title: t('actions.take') + ' ' + t('modals.task'),
       children: <TakeTaskModal data={task} />,
     }),
-  disable: (task: Task) => !!task.executorUser,
+  disable: (task: Task) => task.status !== Status.CREATED,
   color: Color.GREEN,
 };

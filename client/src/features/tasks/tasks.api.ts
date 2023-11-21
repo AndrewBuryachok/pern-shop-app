@@ -1,7 +1,7 @@
 import { emptyApi } from '../../app/empty.api';
 import { IRequest, IResponse } from '../../common/interfaces';
 import { Task } from './task.model';
-import { CreateTaskDto, TaskIdDto, TakeTaskDto } from './task.dto';
+import { CreateTaskDto, TaskIdDto } from './task.dto';
 import { getQuery } from '../../common/utils';
 
 export const tasksApi = emptyApi.injectEndpoints({
@@ -44,7 +44,7 @@ export const tasksApi = emptyApi.injectEndpoints({
       }),
       invalidatesTags: ['Task'],
     }),
-    takeTask: build.mutation<void, TakeTaskDto>({
+    takeTask: build.mutation<void, TaskIdDto>({
       query: ({ taskId, ...dto }) => ({
         url: `/tasks/${taskId}/take`,
         method: 'POST',
