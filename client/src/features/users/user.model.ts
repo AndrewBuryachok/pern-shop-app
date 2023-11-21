@@ -1,4 +1,4 @@
-import { SmCity } from '../cities/city.model';
+import { MdCity } from '../cities/city.model';
 import { SmCard } from '../cards/card.model';
 
 export interface SmUser {
@@ -16,7 +16,7 @@ export interface MdUser extends SmUser {
 
 export interface User extends MdUser {
   registeredAt: Date;
-  city?: SmCity;
+  city?: MdCity;
   cards: SmCard[];
 }
 
