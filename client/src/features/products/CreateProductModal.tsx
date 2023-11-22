@@ -71,10 +71,10 @@ export default function CreateProductModal({ hasRole }: Props) {
 
   useEffect(() => form.setFieldValue('item', ''), [form.values.category]);
 
-  useEffect(() => form.setFieldValue('item', ''), [form.values.category]);
-
   const { data: storages, ...storagesResponse } = useSelectFreeStoragesQuery();
-  const { data: users, ...usersResponse } = useSelectAllUsersQuery();
+  const { data: users, ...usersResponse } = useSelectAllUsersQuery(undefined, {
+    skip: !hasRole,
+  });
   const { data: cards, ...cardsResponse } = hasRole
     ? useSelectUserCardsWithBalanceQuery(+form.values.user, {
         skip: !form.values.user,

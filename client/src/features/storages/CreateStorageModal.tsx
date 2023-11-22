@@ -44,7 +44,9 @@ export default function CreateStorageModal({ hasRole }: Props) {
 
   useEffect(() => form.setFieldValue('card', ''), [form.values.user]);
 
-  const { data: users, ...usersResponse } = useSelectAllUsersQuery();
+  const { data: users, ...usersResponse } = useSelectAllUsersQuery(undefined, {
+    skip: !hasRole,
+  });
   const { data: cards, ...cardsResponse } = hasRole
     ? useSelectUserCardsWithBalanceQuery(+form.values.user, {
         skip: !form.values.user,
