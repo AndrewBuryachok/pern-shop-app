@@ -6,7 +6,7 @@ import AvatarWithDoubleText from '../../common/components/AvatarWithDoubleText';
 import ThingImageWithText from '../../common/components/ThingImageWithText';
 import SingleText from '../../common/components/SingleText';
 import SumText from '../../common/components/SumText';
-import CustomPlaceWithAvatar from '../../common/components/CustomPlaceWithAvatar';
+import PlaceWithDoubleAvatar from '../../common/components/PlaceWithDoubleAvatar';
 import DateText from '../../common/components/DateText';
 import CustomActions from '../../common/components/CustomActions';
 import { viewSaleAction } from './ViewSaleModal';
@@ -54,7 +54,7 @@ export default function SalesTable({ actions = [], ...props }: Props) {
             />
           </td>
           <td>
-            <CustomPlaceWithAvatar
+            <PlaceWithDoubleAvatar
               {...sale.product.lease.cell.storage}
               container={sale.product.lease.cell.name}
             />

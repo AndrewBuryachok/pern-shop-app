@@ -6,8 +6,8 @@ import AvatarWithDoubleText from '../../common/components/AvatarWithDoubleText';
 import ThingImageWithText from '../../common/components/ThingImageWithText';
 import SingleText from '../../common/components/SingleText';
 import PriceText from '../../common/components/PriceText';
-import StatusBadgeWithAvatar from '../../common/components/StatusBadgeWithAvatar';
-import CustomPlaceWithAvatar from '../../common/components/CustomPlaceWithAvatar';
+import StatusWithDoubleAvatar from '../../common/components/StatusWithDoubleAvatar';
+import PlaceWithDoubleAvatar from '../../common/components/PlaceWithDoubleAvatar';
 import CustomActions from '../../common/components/CustomActions';
 import { viewDeliveryAction } from './ViewDeliveryModal';
 import { parseThingAmount } from '../../common/utils';
@@ -47,16 +47,16 @@ export default function DeliveriesTable({ actions = [], ...props }: Props) {
             <PriceText {...delivery} />
           </td>
           <td>
-            <StatusBadgeWithAvatar {...delivery} />
+            <StatusWithDoubleAvatar {...delivery} />
           </td>
           <td>
-            <CustomPlaceWithAvatar
+            <PlaceWithDoubleAvatar
               {...delivery.fromLease.cell.storage}
               container={delivery.fromLease.cell.name}
             />
           </td>
           <td>
-            <CustomPlaceWithAvatar
+            <PlaceWithDoubleAvatar
               {...delivery.toLease.cell.storage}
               container={delivery.toLease.cell.name}
             />

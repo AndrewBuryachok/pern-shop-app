@@ -14,22 +14,18 @@ interface Props extends React.ComponentPropsWithoutRef<'div'> {
 export const CardsItem = forwardRef<HTMLDivElement, Props>(
   (props: Props, ref) => (
     <div ref={ref} {...props}>
-      {props.userid && props.username ? (
-        <Group spacing={8}>
-          <CustomAvatar id={+props.userid} name={props.username} />
-          <div>
-            <SingleText text={props.username} />
-            <Group spacing={8}>
-              <SingleText text={props.name} color={+props.color} />
-              {props.balance !== undefined && (
-                <SingleText text={`${props.balance}$`} />
-              )}
-            </Group>
-          </div>
-        </Group>
-      ) : (
-        <SingleText text={props.name} color={+props.color} />
-      )}
+      <Group spacing={8}>
+        <CustomAvatar id={props.userid} name={props.username} />
+        <div>
+          <SingleText text={props.username} />
+          <Group spacing={8}>
+            <SingleText text={props.name} color={+props.color} />
+            {props.balance !== undefined && (
+              <SingleText text={`${props.balance}$`} />
+            )}
+          </Group>
+        </div>
+      </Group>
     </div>
   ),
 );

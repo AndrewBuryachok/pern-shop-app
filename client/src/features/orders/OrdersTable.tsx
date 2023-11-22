@@ -6,8 +6,8 @@ import AvatarWithDoubleText from '../../common/components/AvatarWithDoubleText';
 import ThingImageWithText from '../../common/components/ThingImageWithText';
 import SingleText from '../../common/components/SingleText';
 import PriceText from '../../common/components/PriceText';
-import StatusBadgeWithAvatar from '../../common/components/StatusBadgeWithAvatar';
-import CustomPlaceWithAvatar from '../../common/components/CustomPlaceWithAvatar';
+import StatusWithDoubleAvatar from '../../common/components/StatusWithDoubleAvatar';
+import PlaceWithDoubleAvatar from '../../common/components/PlaceWithDoubleAvatar';
 import CustomActions from '../../common/components/CustomActions';
 import { viewOrderAction } from './ViewOrderModal';
 import { parseThingAmount } from '../../common/utils';
@@ -46,10 +46,10 @@ export default function OrdersTable({ actions = [], ...props }: Props) {
             <PriceText {...order} />
           </td>
           <td>
-            <StatusBadgeWithAvatar {...order} />
+            <StatusWithDoubleAvatar {...order} />
           </td>
           <td>
-            <CustomPlaceWithAvatar
+            <PlaceWithDoubleAvatar
               {...order.lease.cell.storage}
               container={order.lease.cell.name}
             />

@@ -1,13 +1,11 @@
 import { HoverCard } from '@mantine/core';
-import { PlaceWithCard } from '../../features/places/place.model';
+import { PlaceWithUser } from '../../features/places/place.model';
 import PlaceText from './PlaceText';
-import AvatarWithDoubleText from './AvatarWithDoubleText';
+import AvatarWithSingleText from './AvatarWithSingleText';
 
-type Props = PlaceWithCard & {
-  container: number;
-};
+type Props = PlaceWithUser;
 
-export default function CustomPlaceWithAvatar(props: Props) {
+export default function PlaceWithSingleAvatar(props: Props) {
   return (
     <HoverCard position='left' withArrow>
       <HoverCard.Target>
@@ -16,7 +14,7 @@ export default function CustomPlaceWithAvatar(props: Props) {
         </div>
       </HoverCard.Target>
       <HoverCard.Dropdown p={4}>
-        <AvatarWithDoubleText {...props.card} />
+        <AvatarWithSingleText {...props.user} />
       </HoverCard.Dropdown>
     </HoverCard>
   );

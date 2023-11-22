@@ -26,9 +26,11 @@ export const viewUsers = (users: SmUser[]) =>
     disabled: true,
   }));
 
-export const viewCards = (cards: SmCard[]) =>
+export const viewCards = (cards: SmCard[], user: SmUser) =>
   cards.map((card) => ({
     ...card,
+    userid: user.id,
+    username: user.name,
     color: `${card.color}`,
     value: `${card.id}`,
     label: card.name,

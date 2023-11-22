@@ -5,8 +5,8 @@ import CustomTable from '../../common/components/CustomTable';
 import AvatarWithSingleText from '../../common/components/AvatarWithSingleText';
 import SingleText from '../../common/components/SingleText';
 import PriorityIconWithText from '../../common/components/PriorityIconWithText';
-import ColorBadge from '../../common/components/ColorBadge';
-import PlaceText from '../../common/components/PlaceText';
+import StatusWithSingleAvatar from '../../common/components/StatusWithSingleAvatar';
+import PlaceWithSingleAvatar from '../../common/components/PlaceWithSingleAvatar';
 import CustomActions from '../../common/components/CustomActions';
 import { viewTaskAction } from './ViewTaskModal';
 
@@ -22,7 +22,6 @@ export default function TasksTable({ actions = [], ...props }: Props) {
         t('columns.customer'),
         t('columns.description'),
         t('columns.priority'),
-        t('columns.executor'),
         t('columns.status'),
         t('columns.city'),
         t('columns.action'),
@@ -41,17 +40,10 @@ export default function TasksTable({ actions = [], ...props }: Props) {
             <PriorityIconWithText {...task} />
           </td>
           <td>
-            {task.executorUser ? (
-              <AvatarWithSingleText {...task.executorUser} />
-            ) : (
-              <SingleText text='-' />
-            )}
+            <StatusWithSingleAvatar {...task} />
           </td>
           <td>
-            <ColorBadge color={task.status} />
-          </td>
-          <td>
-            <PlaceText {...task.city} />
+            <PlaceWithSingleAvatar {...task.city} />
           </td>
           <td>
             <CustomActions data={task} actions={[viewTaskAction, ...actions]} />

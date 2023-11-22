@@ -45,7 +45,7 @@ export default function ViewUserModal({ data: user }: Props) {
         label={t('columns.cards')}
         placeholder={`${t('components.total')}: ${user.cards.length}`}
         itemComponent={CardsItem}
-        data={viewCards(user.cards)}
+        data={viewCards(user.cards, user)}
         searchable
       />
       <TextInput
