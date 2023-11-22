@@ -1,6 +1,6 @@
 import { t } from 'i18next';
 import { useTranslation } from 'react-i18next';
-import { Select, TextInput, Textarea } from '@mantine/core';
+import { TextInput, Textarea } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
@@ -10,15 +10,7 @@ import { CompleteWareDto } from './ware.dto';
 import CustomForm from '../../common/components/CustomForm';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import ThingImage from '../../common/components/ThingImage';
-import { StatesItem } from '../../common/components/StatesItem';
-import {
-  parseCard,
-  parseItem,
-  parseStore,
-  parseThingAmount,
-  parseTime,
-  viewStates,
-} from '../../common/utils';
+import { parseCard, parseItem, parseThingAmount } from '../../common/utils';
 import { Color } from '../../common/constants';
 
 type Props = IModal<Ware>;
@@ -69,30 +61,6 @@ export default function CompleteWareModal({ data: ware }: Props) {
         disabled
       />
       <TextInput label={t('columns.price')} value={`${ware.price}$`} disabled />
-      <Select
-        label={t('columns.prices')}
-        placeholder={`${t('components.total')}: ${ware.states.length}`}
-        itemComponent={StatesItem}
-        data={viewStates(ware.states)}
-        searchable
-      />
-      <TextInput
-        label={t('columns.market')}
-        value={parseStore(ware.rent.store)}
-        disabled
-      />
-      <TextInput
-        label={t('columns.owner')}
-        icon={<CustomAvatar {...ware.rent.store.market.card.user} />}
-        iconWidth={48}
-        value={parseCard(ware.rent.store.market.card)}
-        disabled
-      />
-      <TextInput
-        label={t('columns.created')}
-        value={parseTime(ware.createdAt)}
-        disabled
-      />
     </CustomForm>
   );
 }

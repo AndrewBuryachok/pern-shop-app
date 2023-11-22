@@ -10,12 +10,7 @@ import { DeleteGoodDto } from './good.dto';
 import CustomForm from '../../common/components/CustomForm';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import ThingImage from '../../common/components/ThingImage';
-import {
-  parseItem,
-  parsePlace,
-  parseThingAmount,
-  parseTime,
-} from '../../common/utils';
+import { parseItem, parseThingAmount } from '../../common/utils';
 import { Color } from '../../common/constants';
 
 type Props = IModal<Good>;
@@ -66,16 +61,6 @@ export default function DeleteGoodModal({ data: good }: Props) {
         disabled
       />
       <TextInput label={t('columns.price')} value={`${good.price}$`} disabled />
-      <TextInput
-        label={t('columns.shop')}
-        value={parsePlace(good.shop)}
-        disabled
-      />
-      <TextInput
-        label={t('columns.created')}
-        value={parseTime(good.createdAt)}
-        disabled
-      />
     </CustomForm>
   );
 }

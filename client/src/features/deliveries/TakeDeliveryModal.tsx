@@ -20,7 +20,6 @@ import { UsersItem } from '../../common/components/UsersItem';
 import { CardsItem } from '../../common/components/CardsItem';
 import {
   parseCard,
-  parseCell,
   parseItem,
   parseThingAmount,
   selectCardsWithBalance,
@@ -92,30 +91,6 @@ export default function TakeDeliveryModal({ data: delivery, hasRole }: Props) {
       <TextInput
         label={t('columns.price')}
         value={`${delivery.price}$`}
-        disabled
-      />
-      <TextInput
-        label={t('columns.storage') + ' ' + t('columns.from')}
-        value={parseCell(delivery.fromLease.cell)}
-        disabled
-      />
-      <TextInput
-        label={t('columns.owner') + ' ' + t('columns.from')}
-        icon={<CustomAvatar {...delivery.fromLease.cell.storage.card.user} />}
-        iconWidth={48}
-        value={parseCard(delivery.fromLease.cell.storage.card)}
-        disabled
-      />
-      <TextInput
-        label={t('columns.storage') + ' ' + t('columns.to')}
-        value={parseCell(delivery.toLease.cell)}
-        disabled
-      />
-      <TextInput
-        label={t('columns.owner') + ' ' + t('columns.to')}
-        icon={<CustomAvatar {...delivery.toLease.cell.storage.card.user} />}
-        iconWidth={48}
-        value={parseCard(delivery.toLease.cell.storage.card)}
         disabled
       />
       {hasRole && (

@@ -15,11 +15,7 @@ import CustomForm from '../../common/components/CustomForm';
 import RefetchAction from '../../common/components/RefetchAction';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import { CardsItem } from '../../common/components/CardsItem';
-import {
-  parseCard,
-  parseTime,
-  selectCardsWithBalance,
-} from '../../common/utils';
+import { parseCard, selectCardsWithBalance } from '../../common/utils';
 import { Color } from '../../common/constants';
 
 type Props = IModal<Invoice> & { hasRole: boolean };
@@ -84,11 +80,6 @@ export default function CompleteInvoiceModal({
       <Textarea
         label={t('columns.description')}
         value={invoice.description}
-        disabled
-      />
-      <TextInput
-        label={t('columns.created')}
-        value={parseTime(invoice.createdAt)}
         disabled
       />
       <Select

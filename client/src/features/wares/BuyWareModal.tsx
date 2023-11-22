@@ -17,7 +17,6 @@ import {
   customMin,
   parseCard,
   parseItem,
-  parseStore,
   parseThingAmount,
   selectCardsWithBalance,
 } from '../../common/utils';
@@ -79,18 +78,6 @@ export default function BuyWareModal({ data: ware }: Props) {
         disabled
       />
       <TextInput label={t('columns.price')} value={`${ware.price}$`} disabled />
-      <TextInput
-        label={t('columns.market')}
-        value={parseStore(ware.rent.store)}
-        disabled
-      />
-      <TextInput
-        label={t('columns.owner')}
-        icon={<CustomAvatar {...ware.rent.store.market.card.user} />}
-        iconWidth={48}
-        value={parseCard(ware.rent.store.market.card)}
-        disabled
-      />
       <Select
         label={t('columns.card')}
         placeholder={t('columns.card')}

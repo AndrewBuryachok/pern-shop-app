@@ -62,7 +62,7 @@ export const votePollFactory = (vote: boolean) => ({
       title: t('actions.vote') + ' ' + t('modals.poll'),
       children: <VotePollModal data={{ ...poll, type: vote }} />,
     }),
-  disable: (poll: Poll) => !!poll.completedAt,
+  disable: () => false,
   color: vote ? Color.GREEN : Color.RED,
 });
 

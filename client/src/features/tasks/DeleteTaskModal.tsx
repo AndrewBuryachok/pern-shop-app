@@ -10,7 +10,6 @@ import { TaskIdDto } from './task.dto';
 import CustomForm from '../../common/components/CustomForm';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import PriorityIcon from '../../common/components/PriorityIcon';
-import { parsePlace } from '../../common/utils';
 import { Color, priorities, Status } from '../../common/constants';
 
 type Props = IModal<Task>;
@@ -53,11 +52,6 @@ export default function DeleteTaskModal({ data: task }: Props) {
         icon={<PriorityIcon {...task} />}
         iconWidth={48}
         value={t('constants.priorities.' + priorities[task.priority - 1])}
-        disabled
-      />
-      <TextInput
-        label={t('columns.city')}
-        value={parsePlace(task.city)}
         disabled
       />
     </CustomForm>

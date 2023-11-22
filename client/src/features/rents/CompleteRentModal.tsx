@@ -1,6 +1,6 @@
 import { t } from 'i18next';
 import { useTranslation } from 'react-i18next';
-import { Select, TextInput } from '@mantine/core';
+import { TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
@@ -9,13 +9,7 @@ import { useCompleteRentMutation } from './rents.api';
 import { CompleteRentDto } from './rent.dto';
 import CustomForm from '../../common/components/CustomForm';
 import CustomAvatar from '../../common/components/CustomAvatar';
-import { ThingsItem } from '../../common/components/ThingItem';
-import {
-  parseCard,
-  parseStore,
-  parseTime,
-  viewThings,
-} from '../../common/utils';
+import { parseCard, parseStore } from '../../common/utils';
 import { Color } from '../../common/constants';
 
 type Props = IModal<Rent>;
@@ -64,18 +58,6 @@ export default function CompleteRentModal({ data: rent }: Props) {
         label={t('columns.sum')}
         value={`${rent.store.market.price}$`}
         disabled
-      />
-      <TextInput
-        label={t('columns.created')}
-        value={parseTime(rent.createdAt)}
-        disabled
-      />
-      <Select
-        label={t('columns.wares')}
-        placeholder={`${t('components.total')}: ${rent.wares.length}`}
-        itemComponent={ThingsItem}
-        data={viewThings(rent.wares)}
-        searchable
       />
     </CustomForm>
   );

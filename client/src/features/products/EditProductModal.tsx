@@ -1,6 +1,6 @@
 import { t } from 'i18next';
 import { useTranslation } from 'react-i18next';
-import { NumberInput, Select, TextInput, Textarea } from '@mantine/core';
+import { NumberInput, TextInput, Textarea } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
@@ -10,15 +10,7 @@ import { EditProductDto } from './product.dto';
 import CustomForm from '../../common/components/CustomForm';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import ThingImage from '../../common/components/ThingImage';
-import { StatesItem } from '../../common/components/StatesItem';
-import {
-  parseCard,
-  parseCell,
-  parseItem,
-  parseThingAmount,
-  parseTime,
-  viewStates,
-} from '../../common/utils';
+import { parseCard, parseItem, parseThingAmount } from '../../common/utils';
 import {
   Color,
   MAX_AMOUNT_VALUE,
@@ -90,30 +82,6 @@ export default function EditProductModal({ data: product }: Props) {
         min={1}
         max={MAX_PRICE_VALUE}
         {...form.getInputProps('price')}
-      />
-      <Select
-        label={t('columns.prices')}
-        placeholder={`Total: ${product.states.length}`}
-        itemComponent={StatesItem}
-        data={viewStates(product.states)}
-        searchable
-      />
-      <TextInput
-        label={t('columns.market')}
-        value={parseCell(product.lease.cell)}
-        disabled
-      />
-      <TextInput
-        label={t('columns.owner')}
-        icon={<CustomAvatar {...product.lease.cell.storage.card.user} />}
-        iconWidth={48}
-        value={parseCard(product.lease.cell.storage.card)}
-        disabled
-      />
-      <TextInput
-        label={t('columns.created')}
-        value={parseTime(product.createdAt)}
-        disabled
       />
     </CustomForm>
   );

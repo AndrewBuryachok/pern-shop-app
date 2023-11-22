@@ -1,6 +1,6 @@
 import { t } from 'i18next';
 import { useTranslation } from 'react-i18next';
-import { Select, TextInput, Textarea } from '@mantine/core';
+import { TextInput, Textarea } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
@@ -10,15 +10,7 @@ import { CompleteLotDto } from './lot.dto';
 import CustomForm from '../../common/components/CustomForm';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import ThingImage from '../../common/components/ThingImage';
-import { StatesItem } from '../../common/components/StatesItem';
-import {
-  parseCard,
-  parseCell,
-  parseItem,
-  parseThingAmount,
-  parseTime,
-  viewStates,
-} from '../../common/utils';
+import { parseCard, parseItem, parseThingAmount } from '../../common/utils';
 import { Color } from '../../common/constants';
 
 type Props = IModal<Lot>;
@@ -69,30 +61,6 @@ export default function CompleteLotModal({ data: lot }: Props) {
         disabled
       />
       <TextInput label={t('columns.price')} value={`${lot.price}$`} disabled />
-      <Select
-        label={t('columns.bids')}
-        placeholder={`Total: ${lot.bids.length}`}
-        itemComponent={StatesItem}
-        data={viewStates(lot.bids)}
-        searchable
-      />
-      <TextInput
-        label={t('columns.market')}
-        value={parseCell(lot.lease.cell)}
-        disabled
-      />
-      <TextInput
-        label={t('columns.owner')}
-        icon={<CustomAvatar {...lot.lease.cell.storage.card.user} />}
-        iconWidth={48}
-        value={parseCard(lot.lease.cell.storage.card)}
-        disabled
-      />
-      <TextInput
-        label={t('columns.created')}
-        value={parseTime(lot.createdAt)}
-        disabled
-      />
     </CustomForm>
   );
 }

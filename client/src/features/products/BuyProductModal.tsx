@@ -16,7 +16,6 @@ import { CardsItem } from '../../common/components/CardsItem';
 import {
   customMin,
   parseCard,
-  parseCell,
   parseItem,
   parseThingAmount,
   selectCardsWithBalance,
@@ -81,18 +80,6 @@ export default function BuyProductModal({ data: product }: Props) {
       <TextInput
         label={t('columns.price')}
         value={`${product.price}$`}
-        disabled
-      />
-      <TextInput
-        label={t('columns.storage')}
-        value={parseCell(product.lease.cell)}
-        disabled
-      />
-      <TextInput
-        label={t('columns.owner')}
-        icon={<CustomAvatar {...product.lease.cell.storage.card.user} />}
-        iconWidth={48}
-        value={parseCard(product.lease.cell.storage.card)}
         disabled
       />
       <Select

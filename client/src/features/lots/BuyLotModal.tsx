@@ -12,16 +12,13 @@ import CustomForm from '../../common/components/CustomForm';
 import RefetchAction from '../../common/components/RefetchAction';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import ThingImage from '../../common/components/ThingImage';
-import { StatesItem } from '../../common/components/StatesItem';
 import { CardsItem } from '../../common/components/CardsItem';
 import {
   customMin,
   parseCard,
-  parseCell,
   parseItem,
   parseThingAmount,
   selectCardsWithBalance,
-  viewStates,
 } from '../../common/utils';
 import { Color, MAX_PRICE_VALUE } from '../../common/constants';
 
@@ -81,25 +78,6 @@ export default function BuyLotModal({ data: lot }: Props) {
         disabled
       />
       <TextInput label={t('columns.price')} value={`${lot.price}$`} disabled />
-      <Select
-        label={t('columns.bids')}
-        placeholder={`${t('components.total')}: ${lot.bids.length}`}
-        itemComponent={StatesItem}
-        data={viewStates(lot.bids)}
-        searchable
-      />
-      <TextInput
-        label={t('columns.storage')}
-        value={parseCell(lot.lease.cell)}
-        disabled
-      />
-      <TextInput
-        label={t('columns.owner')}
-        icon={<CustomAvatar {...lot.lease.cell.storage.card.user} />}
-        iconWidth={48}
-        value={parseCard(lot.lease.cell.storage.card)}
-        disabled
-      />
       <Select
         label={t('columns.card')}
         placeholder={t('columns.card')}

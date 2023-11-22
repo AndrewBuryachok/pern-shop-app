@@ -10,12 +10,7 @@ import { DeliveryIdDto } from './delivery.dto';
 import CustomForm from '../../common/components/CustomForm';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import ThingImage from '../../common/components/ThingImage';
-import {
-  parseCard,
-  parseCell,
-  parseItem,
-  parseThingAmount,
-} from '../../common/utils';
+import { parseCard, parseItem, parseThingAmount } from '../../common/utils';
 import { Color, Status } from '../../common/constants';
 
 type Props = IModal<Delivery>;
@@ -68,37 +63,6 @@ export default function ExecuteDeliveryModal({ data: delivery }: Props) {
       <TextInput
         label={t('columns.price')}
         value={`${delivery.price}$`}
-        disabled
-      />
-      <TextInput
-        label={t('columns.executor')}
-        icon={<CustomAvatar {...delivery.executorCard!.user} />}
-        iconWidth={48}
-        value={parseCard(delivery.executorCard!)}
-        disabled
-      />
-      <TextInput
-        label={t('columns.storage') + ' ' + t('columns.from')}
-        value={parseCell(delivery.fromLease.cell)}
-        disabled
-      />
-      <TextInput
-        label={t('columns.owner') + ' ' + t('columns.from')}
-        icon={<CustomAvatar {...delivery.fromLease.cell.storage.card.user} />}
-        iconWidth={48}
-        value={parseCard(delivery.fromLease.cell.storage.card)}
-        disabled
-      />
-      <TextInput
-        label={t('columns.storage') + ' ' + t('columns.to')}
-        value={parseCell(delivery.toLease.cell)}
-        disabled
-      />
-      <TextInput
-        label={t('columns.owner') + ' ' + t('columns.to')}
-        icon={<CustomAvatar {...delivery.toLease.cell.storage.card.user} />}
-        iconWidth={48}
-        value={parseCard(delivery.toLease.cell.storage.card)}
         disabled
       />
     </CustomForm>

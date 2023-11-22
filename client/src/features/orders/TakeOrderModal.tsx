@@ -20,7 +20,6 @@ import { UsersItem } from '../../common/components/UsersItem';
 import { CardsItem } from '../../common/components/CardsItem';
 import {
   parseCard,
-  parseCell,
   parseItem,
   parseThingAmount,
   selectCardsWithBalance,
@@ -92,18 +91,6 @@ export default function TakeOrderModal({ data: order, hasRole }: Props) {
       <TextInput
         label={t('columns.price')}
         value={`${order.price}$`}
-        disabled
-      />
-      <TextInput
-        label={t('columns.storage')}
-        value={parseCell(order.lease.cell)}
-        disabled
-      />
-      <TextInput
-        label={t('columns.owner')}
-        icon={<CustomAvatar {...order.lease.cell.storage.card.user} />}
-        iconWidth={48}
-        value={parseCard(order.lease.cell.storage.card)}
         disabled
       />
       {hasRole && (

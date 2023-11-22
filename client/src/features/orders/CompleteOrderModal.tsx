@@ -10,12 +10,7 @@ import { OrderIdDto } from './order.dto';
 import CustomForm from '../../common/components/CustomForm';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import ThingImage from '../../common/components/ThingImage';
-import {
-  parseCard,
-  parseCell,
-  parseItem,
-  parseThingAmount,
-} from '../../common/utils';
+import { parseCard, parseItem, parseThingAmount } from '../../common/utils';
 import { Color, Status } from '../../common/constants';
 
 type Props = IModal<Order>;
@@ -68,25 +63,6 @@ export default function CompleteOrderModal({ data: order }: Props) {
       <TextInput
         label={t('columns.price')}
         value={`${order.price}$`}
-        disabled
-      />
-      <TextInput
-        label={t('columns.executor')}
-        icon={<CustomAvatar {...order.executorCard!.user} />}
-        iconWidth={48}
-        value={parseCard(order.executorCard!)}
-        disabled
-      />
-      <TextInput
-        label={t('columns.storage')}
-        value={parseCell(order.lease.cell)}
-        disabled
-      />
-      <TextInput
-        label={t('columns.owner')}
-        icon={<CustomAvatar {...order.lease.cell.storage.card.user} />}
-        iconWidth={48}
-        value={parseCard(order.lease.cell.storage.card)}
         disabled
       />
     </CustomForm>

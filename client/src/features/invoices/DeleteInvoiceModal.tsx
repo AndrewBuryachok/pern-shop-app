@@ -9,7 +9,7 @@ import { useDeleteInvoiceMutation } from './invoices.api';
 import { DeleteInvoiceDto } from './invoice.dto';
 import CustomForm from '../../common/components/CustomForm';
 import CustomAvatar from '../../common/components/CustomAvatar';
-import { parseCard, parseTime } from '../../common/utils';
+import { parseCard } from '../../common/utils';
 import { Color } from '../../common/constants';
 
 type Props = IModal<Invoice>;
@@ -46,22 +46,13 @@ export default function DeleteInvoiceModal({ data: invoice }: Props) {
         label={t('columns.receiver')}
         icon={<CustomAvatar {...invoice.receiverUser} />}
         iconWidth={48}
-        value={
-          invoice.receiverCard
-            ? parseCard(invoice.receiverCard)
-            : invoice.receiverUser.name
-        }
+        value={invoice.receiverUser.name}
         disabled
       />
       <TextInput label={t('columns.sum')} value={`${invoice.sum}$`} disabled />
       <Textarea
         label={t('columns.description')}
         value={invoice.description}
-        disabled
-      />
-      <TextInput
-        label={t('columns.created')}
-        value={parseTime(invoice.createdAt)}
         disabled
       />
     </CustomForm>
