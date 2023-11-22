@@ -53,17 +53,22 @@ export default function ViewOrderModal({ data: order }: Props) {
         disabled
       />
       <TextInput
-        label={t('columns.storage')}
-        value={parseCell(order.lease.cell)}
-        disabled
-      />
-      <TextInput
         label={t('columns.executor')}
         icon={
           order.executorCard && <CustomAvatar {...order.executorCard.user} />
         }
         iconWidth={48}
         value={order.executorCard ? parseCard(order.executorCard) : '-'}
+        disabled
+      />
+      <TextInput
+        label={t('columns.status')}
+        value={parseStatus(order.status)}
+        disabled
+      />
+      <TextInput
+        label={t('columns.storage')}
+        value={parseCell(order.lease.cell)}
         disabled
       />
       <TextInput
@@ -81,11 +86,6 @@ export default function ViewOrderModal({ data: order }: Props) {
       <TextInput
         label={t('columns.completed')}
         value={parseTime(order.completedAt)}
-        disabled
-      />
-      <TextInput
-        label={t('columns.status')}
-        value={parseStatus(order.status)}
         disabled
       />
       <Input.Wrapper label={t('columns.rate')}>

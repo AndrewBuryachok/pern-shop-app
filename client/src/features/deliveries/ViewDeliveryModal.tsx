@@ -64,6 +64,11 @@ export default function ViewDeliveryModal({ data: delivery }: Props) {
         disabled
       />
       <TextInput
+        label={t('columns.status')}
+        value={parseStatus(delivery.status)}
+        disabled
+      />
+      <TextInput
         label={t('columns.storage') + ' ' + t('columns.from')}
         value={parseCell(delivery.fromLease.cell)}
         disabled
@@ -95,11 +100,6 @@ export default function ViewDeliveryModal({ data: delivery }: Props) {
       <TextInput
         label={t('columns.completed')}
         value={parseTime(delivery.completedAt)}
-        disabled
-      />
-      <TextInput
-        label={t('columns.status')}
-        value={parseStatus(delivery.status)}
         disabled
       />
       <Input.Wrapper label={t('columns.rate')}>
