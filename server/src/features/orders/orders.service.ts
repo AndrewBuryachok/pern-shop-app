@@ -409,6 +409,20 @@ export class OrdersService {
       .andWhere(
         new Brackets((qb) =>
           qb
+            .where(`${!req.minPrice}`)
+            .orWhere('order.price >= :minPrice', { minPrice: req.minPrice }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.maxPrice}`)
+            .orWhere('order.price <= :maxPrice', { maxPrice: req.maxPrice }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
             .where(`${!req.status}`)
             .orWhere('order.status = :status', { status: req.status }),
         ),

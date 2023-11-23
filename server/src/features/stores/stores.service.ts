@@ -195,6 +195,20 @@ export class StoresService {
             .orWhere('store.id = :storeId', { storeId: req.store }),
         ),
       )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.minPrice}`)
+            .orWhere('market.price >= :minPrice', { minPrice: req.minPrice }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.maxPrice}`)
+            .orWhere('market.price <= :maxPrice', { maxPrice: req.maxPrice }),
+        ),
+      )
       .orderBy('store.id', 'DESC')
       .skip(req.skip)
       .take(req.take)

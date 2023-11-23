@@ -97,6 +97,18 @@ export class Request {
   @IsOptional()
   @IsInt()
   @Type(() => Number)
+  minPrice?: number;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsInt()
+  @Type(() => Number)
+  maxPrice?: number;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsInt()
+  @Type(() => Number)
   type?: number;
 
   @ApiProperty({ required: false })

@@ -191,6 +191,20 @@ export class CellsService {
             .orWhere('cell.id = :cellId', { cellId: req.cell }),
         ),
       )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.minPrice}`)
+            .orWhere('storage.price >= :minPrice', { minPrice: req.minPrice }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.maxPrice}`)
+            .orWhere('storage.price <= :maxPrice', { maxPrice: req.maxPrice }),
+        ),
+      )
       .orderBy('cell.id', 'DESC')
       .skip(req.skip)
       .take(req.take)

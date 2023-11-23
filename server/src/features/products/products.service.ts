@@ -340,6 +340,20 @@ export class ProductsService {
             }),
         ),
       )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.minPrice}`)
+            .orWhere('product.price >= :minPrice', { minPrice: req.minPrice }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.maxPrice}`)
+            .orWhere('product.price <= :maxPrice', { maxPrice: req.maxPrice }),
+        ),
+      )
       .orderBy('product.id', 'DESC')
       .skip(req.skip)
       .take(req.take)

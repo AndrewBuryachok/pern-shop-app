@@ -237,6 +237,20 @@ export class SalesService {
       .andWhere(
         new Brackets((qb) =>
           qb
+            .where(`${!req.minPrice}`)
+            .orWhere('product.price >= :minPrice', { minPrice: req.minPrice }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.maxPrice}`)
+            .orWhere('product.price <= :maxPrice', { maxPrice: req.maxPrice }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
             .where(`${!req.rate}`)
             .orWhere('sale.rate = :rate', { rate: req.rate }),
         ),

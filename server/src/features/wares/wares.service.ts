@@ -325,6 +325,20 @@ export class WaresService {
             }),
         ),
       )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.minPrice}`)
+            .orWhere('ware.price >= :minPrice', { minPrice: req.minPrice }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.maxPrice}`)
+            .orWhere('ware.price <= :maxPrice', { maxPrice: req.maxPrice }),
+        ),
+      )
       .orderBy('ware.id', 'DESC')
       .skip(req.skip)
       .take(req.take)

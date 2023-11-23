@@ -222,6 +222,20 @@ export class MarketsService {
             .orWhere('market.id = :marketId', { marketId: req.market }),
         ),
       )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.minPrice}`)
+            .orWhere('market.price >= :minPrice', { minPrice: req.minPrice }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.maxPrice}`)
+            .orWhere('market.price <= :maxPrice', { maxPrice: req.maxPrice }),
+        ),
+      )
       .orderBy('market.id', 'DESC')
       .skip(req.skip)
       .take(req.take)

@@ -246,6 +246,20 @@ export class StoragesService {
             .orWhere('storage.id = :storageId', { storageId: req.storage }),
         ),
       )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.minPrice}`)
+            .orWhere('storage.price >= :minPrice', { minPrice: req.minPrice }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.maxPrice}`)
+            .orWhere('storage.price <= :maxPrice', { maxPrice: req.maxPrice }),
+        ),
+      )
       .orderBy('storage.id', 'DESC')
       .skip(req.skip)
       .take(req.take)

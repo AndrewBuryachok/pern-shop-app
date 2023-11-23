@@ -282,6 +282,20 @@ export class LotsService {
             }),
         ),
       )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.minPrice}`)
+            .orWhere('lot.price >= :minPrice', { minPrice: req.minPrice }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.maxPrice}`)
+            .orWhere('lot.price <= :maxPrice', { maxPrice: req.maxPrice }),
+        ),
+      )
       .orderBy('lot.id', 'DESC')
       .skip(req.skip)
       .take(req.take)

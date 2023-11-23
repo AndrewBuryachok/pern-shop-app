@@ -169,6 +169,20 @@ export class BidsService {
             }),
         ),
       )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.minPrice}`)
+            .orWhere('bid.price >= :minPrice', { minPrice: req.minPrice }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.maxPrice}`)
+            .orWhere('bid.price <= :maxPrice', { maxPrice: req.maxPrice }),
+        ),
+      )
       .orderBy('bid.id', 'DESC')
       .skip(req.skip)
       .take(req.take)
