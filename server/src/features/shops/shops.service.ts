@@ -40,7 +40,7 @@ export class ShopsService {
   }
 
   selectAllShops(): Promise<Shop[]> {
-    return this.selectShopsQueryBuilder().addSelect('shop.userId').getMany();
+    return this.selectShopsQueryBuilder().getMany();
   }
 
   selectMyShops(myId: number): Promise<Shop[]> {
@@ -161,13 +161,6 @@ export class ShopsService {
           qb
             .where(`${!req.shop}`)
             .orWhere('shop.id = :shopId', { shopId: req.shop }),
-        ),
-      )
-      .andWhere(
-        new Brackets((qb) =>
-          qb
-            .where(`${!req.name}`)
-            .orWhere('shop.name ILIKE :name', { name: req.name }),
         ),
       )
       .orderBy('shop.id', 'DESC')

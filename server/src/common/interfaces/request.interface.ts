@@ -2,6 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsEnum, IsInt, IsOptional, IsString, Min } from 'class-validator';
 import { Transform, Type } from 'class-transformer';
 import { Role } from '../../features/users/role.enum';
+import { Kind } from '../../features/leases/kind.enum';
 import { TransportationStatus } from '../../features/transportations/transportation-status.enum';
 import { Priority } from '../../features/tasks/priority.enum';
 import { Mode } from '../enums';
@@ -100,9 +101,9 @@ export class Request {
 
   @ApiProperty({ required: false })
   @IsOptional()
-  @IsInt()
+  @IsEnum(Kind)
   @Type(() => Number)
-  kind?: number;
+  kind?: Kind;
 
   @ApiProperty({ required: false })
   @IsOptional()
@@ -121,10 +122,4 @@ export class Request {
   @IsInt()
   @Type(() => Number)
   rate?: number;
-
-  @ApiProperty({ required: false })
-  @IsOptional()
-  @IsString()
-  @Transform(({ value }) => value && `%${value}%`)
-  name?: string;
 }

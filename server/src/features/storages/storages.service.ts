@@ -47,9 +47,7 @@ export class StoragesService {
   }
 
   selectMainStorages(): Promise<Storage[]> {
-    return this.selectStoragesQueryBuilder()
-      .addSelect('storage.cardId')
-      .getMany();
+    return this.selectStoragesQueryBuilder().getMany();
   }
 
   selectMyStorages(myId: number): Promise<Storage[]> {
@@ -246,13 +244,6 @@ export class StoragesService {
           qb
             .where(`${!req.storage}`)
             .orWhere('storage.id = :storageId', { storageId: req.storage }),
-        ),
-      )
-      .andWhere(
-        new Brackets((qb) =>
-          qb
-            .where(`${!req.name}`)
-            .orWhere('storage.name ILIKE :name', { name: req.name }),
         ),
       )
       .orderBy('storage.id', 'DESC')

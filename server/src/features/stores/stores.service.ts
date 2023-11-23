@@ -195,13 +195,6 @@ export class StoresService {
             .orWhere('store.id = :storeId', { storeId: req.store }),
         ),
       )
-      .andWhere(
-        new Brackets((qb) =>
-          qb
-            .where(`${!req.name}`)
-            .orWhere('market.name ILIKE :name', { name: req.name }),
-        ),
-      )
       .orderBy('store.id', 'DESC')
       .skip(req.skip)
       .take(req.take)

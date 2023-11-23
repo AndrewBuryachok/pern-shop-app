@@ -49,7 +49,7 @@ export class UsersService {
   }
 
   selectAllUsers(): Promise<User[]> {
-    return this.selectUsersQueryBuilder().addSelect('user.cityId').getMany();
+    return this.selectUsersQueryBuilder().getMany();
   }
 
   selectNotCitizensUsers(): Promise<User[]> {
@@ -267,13 +267,6 @@ export class UsersService {
           qb
             .where(`${!req.type}`)
             .orWhere('user.status = :type', { type: req.type === 1 }),
-        ),
-      )
-      .andWhere(
-        new Brackets((qb) =>
-          qb
-            .where(`${!req.name}`)
-            .orWhere('user.name ILIKE :name', { name: req.name }),
         ),
       )
       .orderBy('user.id', 'DESC')

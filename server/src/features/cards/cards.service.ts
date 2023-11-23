@@ -259,13 +259,6 @@ export class CardsService {
             .orWhere('card.id = :cardId', { cardId: req.card }),
         ),
       )
-      .andWhere(
-        new Brackets((qb) =>
-          qb
-            .where(`${!req.name}`)
-            .orWhere('card.name ILIKE :name', { name: req.name }),
-        ),
-      )
       .orderBy('card.id', 'DESC')
       .skip(req.skip)
       .take(req.take)

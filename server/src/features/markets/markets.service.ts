@@ -46,9 +46,7 @@ export class MarketsService {
   }
 
   selectMainMarkets(): Promise<Market[]> {
-    return this.selectMarketsQueryBuilder()
-      .addSelect('market.cardId')
-      .getMany();
+    return this.selectMarketsQueryBuilder().getMany();
   }
 
   selectMyMarkets(myId: number): Promise<Market[]> {
@@ -222,13 +220,6 @@ export class MarketsService {
           qb
             .where(`${!req.market}`)
             .orWhere('market.id = :marketId', { marketId: req.market }),
-        ),
-      )
-      .andWhere(
-        new Brackets((qb) =>
-          qb
-            .where(`${!req.name}`)
-            .orWhere('market.name ILIKE :name', { name: req.name }),
         ),
       )
       .orderBy('market.id', 'DESC')
