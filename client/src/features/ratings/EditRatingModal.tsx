@@ -1,12 +1,6 @@
 import { t } from 'i18next';
 import { useTranslation } from 'react-i18next';
-import {
-  CloseButton,
-  Rating as CustomRating,
-  Group,
-  Input,
-  TextInput,
-} from '@mantine/core';
+import { Rating as CustomRating, Input, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
@@ -57,14 +51,7 @@ export default function EditRatingModal({ data: rating }: Props) {
         disabled
       />
       <Input.Wrapper label={t('columns.rate')} required>
-        <Group spacing={8}>
-          <CustomRating {...form.getInputProps('rate')} />
-          <CloseButton
-            size={24}
-            iconSize={16}
-            onClick={() => form.setFieldValue('rate', 0)}
-          />
-        </Group>
+        <CustomRating {...form.getInputProps('rate')} />
       </Input.Wrapper>
     </CustomForm>
   );

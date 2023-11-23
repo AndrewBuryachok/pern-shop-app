@@ -1,13 +1,6 @@
 import { t } from 'i18next';
 import { useTranslation } from 'react-i18next';
-import {
-  CloseButton,
-  Group,
-  Input,
-  Rating,
-  Textarea,
-  TextInput,
-} from '@mantine/core';
+import { Input, Rating, Textarea, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
@@ -28,7 +21,7 @@ export default function RateDeliveryModal({ data: delivery }: Props) {
   const form = useForm({
     initialValues: {
       deliveryId: delivery.id,
-      rate: delivery.rate || 0,
+      rate: 5,
     },
   });
 
@@ -43,7 +36,6 @@ export default function RateDeliveryModal({ data: delivery }: Props) {
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
       text={t('actions.rate') + ' ' + t('modals.delivery')}
-      isChanged={!form.isDirty()}
     >
       <TextInput
         label={t('columns.executor')}
@@ -75,14 +67,7 @@ export default function RateDeliveryModal({ data: delivery }: Props) {
         disabled
       />
       <Input.Wrapper label={t('columns.rate')} required>
-        <Group spacing={8}>
-          <Rating {...form.getInputProps('rate')} />
-          <CloseButton
-            size={24}
-            iconSize={16}
-            onClick={() => form.setFieldValue('rate', 0)}
-          />
-        </Group>
+        <Rating {...form.getInputProps('rate')} />
       </Input.Wrapper>
     </CustomForm>
   );
@@ -94,6 +79,7 @@ export const rateDeliveryAction = {
       title: t('actions.rate') + ' ' + t('modals.delivery'),
       children: <RateDeliveryModal data={delivery} />,
     }),
-  disable: (delivery: Delivery) => delivery.status !== Status.COMPLETED,
+  disable: (delivery: Delivery) =>
+    delivery.status !== Status.COMPLETED || !!delivery.rate,
   color: Color.YELLOW,
 };

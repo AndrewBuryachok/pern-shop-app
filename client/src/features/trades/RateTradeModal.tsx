@@ -1,13 +1,6 @@
 import { t } from 'i18next';
 import { useTranslation } from 'react-i18next';
-import {
-  CloseButton,
-  Group,
-  Input,
-  Rating,
-  Textarea,
-  TextInput,
-} from '@mantine/core';
+import { Input, Rating, Textarea, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
@@ -28,7 +21,7 @@ export default function RateTradeModal({ data: trade }: Props) {
   const form = useForm({
     initialValues: {
       tradeId: trade.id,
-      rate: trade.rate || 0,
+      rate: 5,
     },
   });
 
@@ -43,7 +36,6 @@ export default function RateTradeModal({ data: trade }: Props) {
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
       text={t('actions.rate') + ' ' + t('modals.trade')}
-      isChanged={!form.isDirty()}
     >
       <TextInput
         label={t('columns.seller')}
@@ -75,14 +67,7 @@ export default function RateTradeModal({ data: trade }: Props) {
         disabled
       />
       <Input.Wrapper label={t('columns.rate')} required>
-        <Group spacing={8}>
-          <Rating {...form.getInputProps('rate')} />
-          <CloseButton
-            size={24}
-            iconSize={16}
-            onClick={() => form.setFieldValue('rate', 0)}
-          />
-        </Group>
+        <Rating {...form.getInputProps('rate')} />
       </Input.Wrapper>
     </CustomForm>
   );
@@ -94,6 +79,6 @@ export const rateTradeAction = {
       title: t('actions.rate') + ' ' + t('modals.trade'),
       children: <RateTradeModal data={trade} />,
     }),
-  disable: () => false,
+  disable: (trade: Trade) => !!trade.rate,
   color: Color.YELLOW,
 };

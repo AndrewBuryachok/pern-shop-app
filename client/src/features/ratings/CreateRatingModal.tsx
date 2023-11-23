@@ -1,10 +1,10 @@
 import { t } from 'i18next';
 import { useTranslation } from 'react-i18next';
-import { CloseButton, Group, Input, Rating, Select } from '@mantine/core';
+import { Input, Rating, Select } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { useCreateRatingMutation } from './ratings.api';
-import { useSelectAllUsersQuery } from '../users/users.api';
+import { useSelectNotRatedUsersQuery } from '../users/users.api';
 import { CreateRatingDto } from './rating.dto';
 import CustomForm from '../../common/components/CustomForm';
 import RefetchAction from '../../common/components/RefetchAction';
@@ -18,12 +18,12 @@ export default function CreateRatingModal() {
   const form = useForm({
     initialValues: {
       user: '',
-      rate: 0,
+      rate: 5,
     },
     transformValues: ({ user, ...rest }) => ({ ...rest, userId: +user }),
   });
 
-  const { data: users, ...usersResponse } = useSelectAllUsersQuery();
+  const { data: users, ...usersResponse } = useSelectNotRatedUsersQuery();
 
   const user = users?.find((user) => user.id === +form.values.user);
 
@@ -53,14 +53,7 @@ export default function CreateRatingModal() {
         {...form.getInputProps('user')}
       />
       <Input.Wrapper label={t('columns.rate')} required>
-        <Group spacing={8}>
-          <Rating {...form.getInputProps('rate')} />
-          <CloseButton
-            size={24}
-            iconSize={16}
-            onClick={() => form.setFieldValue('rate', 0)}
-          />
-        </Group>
+        <Rating {...form.getInputProps('rate')} />
       </Input.Wrapper>
     </CustomForm>
   );
