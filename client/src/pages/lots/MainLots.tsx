@@ -24,6 +24,8 @@ export default function MainLots() {
     cell: searchParams.get('cell'),
     item: searchParams.get('item'),
     description: searchParams.get('description') || '',
+    minPrice: +(searchParams.get('minPrice') || 0) || null,
+    maxPrice: +(searchParams.get('maxPrice') || 0) || null,
   });
 
   const response = useGetMainLotsQuery({ page, search });

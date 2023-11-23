@@ -19,6 +19,8 @@ export default function MyCells() {
     card: searchParams.get('card'),
     storage: searchParams.get('storage'),
     cell: searchParams.get('cell'),
+    minPrice: +(searchParams.get('minPrice') || 0) || null,
+    maxPrice: +(searchParams.get('maxPrice') || 0) || null,
   });
 
   const response = useGetMyCellsQuery({ page, search });

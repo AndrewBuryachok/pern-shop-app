@@ -22,6 +22,8 @@ export default function MyRents() {
     mode: searchParams.get('mode') as Mode,
     market: searchParams.get('market'),
     store: searchParams.get('store'),
+    minPrice: +(searchParams.get('minPrice') || 0) || null,
+    maxPrice: +(searchParams.get('maxPrice') || 0) || null,
   });
 
   const response = useGetMyRentsQuery({ page, search });

@@ -19,6 +19,8 @@ export default function MainStores() {
     card: searchParams.get('card'),
     market: searchParams.get('market'),
     store: searchParams.get('store'),
+    minPrice: +(searchParams.get('minPrice') || 0) || null,
+    maxPrice: +(searchParams.get('maxPrice') || 0) || null,
   });
 
   const response = useGetMainStoresQuery({ page, search });

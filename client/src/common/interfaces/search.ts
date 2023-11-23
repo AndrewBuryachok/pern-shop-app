@@ -14,6 +14,8 @@ export interface ISearch {
   cell?: string | null;
   item?: string | null;
   description?: string;
+  minPrice?: number | null;
+  maxPrice?: number | null;
   type?: string | null;
   kind?: string | null;
   status?: string | null;

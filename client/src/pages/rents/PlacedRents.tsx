@@ -21,6 +21,8 @@ export default function PlacedRents() {
     mode: searchParams.get('mode') as Mode,
     market: searchParams.get('market'),
     store: searchParams.get('store'),
+    minPrice: +(searchParams.get('minPrice') || 0) || null,
+    maxPrice: +(searchParams.get('maxPrice') || 0) || null,
   });
 
   const response = useGetPlacedRentsQuery({ page, search });

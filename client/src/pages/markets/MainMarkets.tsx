@@ -17,6 +17,8 @@ export default function MainMarkets() {
     user: searchParams.get('user'),
     card: searchParams.get('card'),
     market: searchParams.get('market'),
+    minPrice: +(searchParams.get('minPrice') || 0) || null,
+    maxPrice: +(searchParams.get('maxPrice') || 0) || null,
   });
 
   const response = useGetMainMarketsQuery({ page, search });

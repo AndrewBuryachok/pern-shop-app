@@ -18,6 +18,8 @@ export default function AllMarkets() {
     user: searchParams.get('user'),
     card: searchParams.get('card'),
     market: searchParams.get('market'),
+    minPrice: +(searchParams.get('minPrice') || 0) || null,
+    maxPrice: +(searchParams.get('maxPrice') || 0) || null,
   });
 
   const response = useGetAllMarketsQuery({ page, search });

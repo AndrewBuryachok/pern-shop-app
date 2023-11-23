@@ -23,6 +23,8 @@ export default function PlacedWares() {
     store: searchParams.get('store'),
     item: searchParams.get('item'),
     description: searchParams.get('description') || '',
+    minPrice: +(searchParams.get('minPrice') || 0) || null,
+    maxPrice: +(searchParams.get('maxPrice') || 0) || null,
   });
 
   const response = useGetPlacedWaresQuery({ page, search });

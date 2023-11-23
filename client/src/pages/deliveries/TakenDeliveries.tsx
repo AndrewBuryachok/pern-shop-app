@@ -25,6 +25,8 @@ export default function TakenDeliveries() {
     cell: searchParams.get('cell'),
     item: searchParams.get('item'),
     description: searchParams.get('description') || '',
+    minPrice: +(searchParams.get('minPrice') || 0) || null,
+    maxPrice: +(searchParams.get('maxPrice') || 0) || null,
     status: searchParams.get('status'),
     rate: +(searchParams.get('rate') || 0) || null,
   });

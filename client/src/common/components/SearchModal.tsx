@@ -10,6 +10,7 @@ import {
   Radio,
   Rating,
   Select,
+  Slider,
   Textarea,
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
@@ -34,6 +35,9 @@ import { PlacesItem } from './PlacesItem';
 import { ColorsItem } from './ColorsItem';
 import { PrioritiesItem } from './PrioritiesItem';
 import {
+  scaleMaxPrice,
+  scaleMinPrice,
+  scalePrice,
   selectCards,
   selectCategories,
   selectCities,
@@ -48,6 +52,8 @@ import {
   selectStatuses,
   selectStorages,
   selectUsers,
+  unscaleMaxPrice,
+  unscaleMinPrice,
 } from '../../common/utils';
 import { items } from '../constants';
 
@@ -66,8 +72,14 @@ export default function SearchModal(props: Props) {
     initialValues: {
       ...props.search,
       category: props.search.item && items[+props.search.item - 1][0],
+      minPrice: unscaleMinPrice(props.search.minPrice),
+      maxPrice: unscaleMaxPrice(props.search.maxPrice),
     },
-    transformValues: ({ category, modes, ...rest }) => ({ ...rest }),
+    transformValues: ({ category, modes, ...rest }) => ({
+      ...rest,
+      minPrice: scaleMinPrice(rest.minPrice),
+      maxPrice: scaleMaxPrice(rest.maxPrice),
+    }),
   });
 
   useEffect(() => {
@@ -316,6 +328,25 @@ export default function SearchModal(props: Props) {
           placeholder={t('columns.description')}
           {...form.getInputProps('description')}
         />
+      )}
+      {(props.search.minPrice && props.search.maxPrice) !== undefined && (
+        <Input.Wrapper label={t('columns.price')}>
+          <Slider
+            min={1}
+            max={200}
+            scale={scalePrice}
+            marks={[{ value: 100 }]}
+            inverted
+            {...form.getInputProps('minPrice')}
+          />
+          <Slider
+            min={1}
+            max={200}
+            scale={scalePrice}
+            marks={[{ value: 100 }]}
+            {...form.getInputProps('maxPrice')}
+          />
+        </Input.Wrapper>
       )}
       {props.search.type !== undefined && (
         <Select

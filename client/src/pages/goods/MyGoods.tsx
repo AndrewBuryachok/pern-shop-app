@@ -21,6 +21,8 @@ export default function MyGoods() {
     shop: searchParams.get('shop'),
     item: searchParams.get('item'),
     description: searchParams.get('description') || '',
+    minPrice: +(searchParams.get('minPrice') || 0) || null,
+    maxPrice: +(searchParams.get('maxPrice') || 0) || null,
   });
 
   const response = useGetMyGoodsQuery({ page, search });

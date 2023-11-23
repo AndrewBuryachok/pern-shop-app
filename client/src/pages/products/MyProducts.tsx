@@ -26,6 +26,8 @@ export default function MyProducts() {
     cell: searchParams.get('cell'),
     item: searchParams.get('item'),
     description: searchParams.get('description') || '',
+    minPrice: +(searchParams.get('minPrice') || 0) || null,
+    maxPrice: +(searchParams.get('maxPrice') || 0) || null,
   });
 
   const response = useGetMyProductsQuery({ page, search });
