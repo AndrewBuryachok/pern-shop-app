@@ -141,6 +141,6 @@ export const IsPriority = () => (target: object, key: string) => {
 export const IsRate = () => (target: object, key: string) => {
   IsNotEmpty()(target, key);
   IsInt()(target, key);
-  Min(0)(target, key);
+  IsPositive()(target, key);
   Max(MAX_RATE_VALUE)(target, key);
 };

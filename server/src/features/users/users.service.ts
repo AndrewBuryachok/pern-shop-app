@@ -86,6 +86,16 @@ export class UsersService {
     return users.filter((user) => !friends.includes(user.id));
   }
 
+  async selectNotRatedUsers(myId: number): Promise<User[]> {
+    const rated = await this.selectUsersQueryBuilder()
+      .innerJoin('user.ratings', 'rating')
+      .where('rating.senderUserId = :myId', { myId })
+      .getMany();
+    const ratings = rated.map((user) => user.id);
+    const users = await this.selectUsersQueryBuilder().getMany();
+    return users.filter((user) => !ratings.includes(user.id));
+  }
+
   async getSingleUser(userId: number): Promise<User> {
     const profile = await this.getUserProfile(userId);
     const stats = await this.getUserStatsAndRates(userId);

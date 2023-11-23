@@ -50,13 +50,10 @@ export class RatingsService {
       senderUserId: dto.myId,
       receiverUserId: dto.userId,
     });
-    if (!rating) {
-      await this.create(dto);
-    } else if (rating.rate) {
-      await this.edit(rating, dto.rate);
-    } else {
-      await this.delete(rating);
+    if (rating) {
+      throw new AppException(RatingError.ALREADY_HAS_RATING);
     }
+    await this.create(dto);
     this.mqttService.publishNotificationMessage(
       dto.userId,
       Notification.CREATED_RATING,
@@ -65,11 +62,7 @@ export class RatingsService {
 
   async editRating(dto: ExtEditRatingDto): Promise<void> {
     const rating = await this.checkRatingSender(dto.ratingId, dto.myId);
-    if (dto.rate) {
-      await this.edit(rating, dto.rate);
-    } else {
-      await this.delete(rating);
-    }
+    await this.edit(rating, dto.rate);
     this.mqttService.publishNotificationMessage(
       rating.receiverUserId,
       Notification.EDITED_RATING,

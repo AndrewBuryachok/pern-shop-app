@@ -58,6 +58,11 @@ export class UsersController {
     return this.usersService.selectNotFriendsUsers(myId);
   }
 
+  @Get('not-rated/select')
+  selectNotRatedUsers(@MyId() myId: number): Promise<User[]> {
+    return this.usersService.selectNotRatedUsers(myId);
+  }
+
   @Public()
   @Get(':userId')
   getSingleUser(@Param() { userId }: UserIdDto): Promise<User> {
