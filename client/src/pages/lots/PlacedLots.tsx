@@ -22,7 +22,7 @@ export default function PlacedLots() {
     storage: searchParams.get('storage'),
     cell: searchParams.get('cell'),
     item: searchParams.get('item'),
-    description: '',
+    description: searchParams.get('description') || '',
   });
 
   const response = useGetPlacedLotsQuery({ page, search });

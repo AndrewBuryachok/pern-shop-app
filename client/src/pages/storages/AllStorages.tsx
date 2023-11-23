@@ -18,7 +18,6 @@ export default function AllStorages() {
     user: searchParams.get('user'),
     card: searchParams.get('card'),
     storage: searchParams.get('storage'),
-    name: searchParams.get('name') || '',
   });
 
   const response = useGetAllStoragesQuery({ page, search });

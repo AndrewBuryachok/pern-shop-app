@@ -18,7 +18,6 @@ export default function AllCells() {
     card: searchParams.get('card'),
     storage: searchParams.get('storage'),
     cell: searchParams.get('cell'),
-    name: searchParams.get('name') || '',
   });
 
   const response = useGetAllCellsQuery({ page, search });

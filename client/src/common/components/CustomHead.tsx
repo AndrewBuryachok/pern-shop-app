@@ -25,6 +25,7 @@ export default function CustomHead(props: Props) {
       </Button>
       <Button
         leftIcon={<IconSearch size={16} />}
+        loading={props.isFetching}
         onClick={() => openSearchModal(props)}
         compact
       >

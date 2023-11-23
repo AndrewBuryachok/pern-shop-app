@@ -18,7 +18,6 @@ export default function MainCells() {
     card: searchParams.get('card'),
     storage: searchParams.get('storage'),
     cell: searchParams.get('cell'),
-    name: searchParams.get('name') || '',
   });
 
   const response = useGetMainCellsQuery({ page, search });

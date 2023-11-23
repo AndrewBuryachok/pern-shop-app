@@ -22,7 +22,7 @@ export default function PlacedWares() {
     market: searchParams.get('market'),
     store: searchParams.get('store'),
     item: searchParams.get('item'),
-    description: '',
+    description: searchParams.get('description') || '',
   });
 
   const response = useGetPlacedWaresQuery({ page, search });

@@ -2,7 +2,7 @@ import { emptyApi } from '../../app/empty.api';
 import { IRequest, IResponse } from '../../common/interfaces';
 import {
   MyStorage,
-  SmStorageWithCard,
+  SmStorage,
   SmStorageWithPrice,
   Storage,
 } from './storage.model';
@@ -29,7 +29,7 @@ export const storagesApi = emptyApi.injectEndpoints({
       }),
       providesTags: ['Auth', 'Storage'],
     }),
-    selectMainStorages: build.query<SmStorageWithCard[], void>({
+    selectMainStorages: build.query<SmStorage[], void>({
       query: () => ({
         url: '/storages/main/select',
       }),

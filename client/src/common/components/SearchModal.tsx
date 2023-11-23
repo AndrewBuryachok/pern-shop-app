@@ -3,7 +3,6 @@ import { t } from 'i18next';
 import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
 import {
-  Autocomplete,
   CloseButton,
   Group,
   Input,
@@ -16,7 +15,6 @@ import {
 import { useForm } from '@mantine/form';
 import { closeAllModals, openModal } from '@mantine/modals';
 import { ISearch } from '../interfaces';
-import { Mode } from '../enums';
 import { useSelectAllUsersQuery } from '../../features/users/users.api';
 import { useSelectUserCardsQuery } from '../../features/cards/cards.api';
 import { useSelectAllCitiesQuery } from '../../features/cities/cities.api';
@@ -69,9 +67,7 @@ export default function SearchModal(props: Props) {
       ...props.search,
       category: props.search.item && items[+props.search.item - 1][0],
     },
-    transformValues: ({ category, modes, users, cards, ...rest }) => ({
-      ...rest,
-    }),
+    transformValues: ({ category, modes, ...rest }) => ({ ...rest }),
   });
 
   useEffect(() => {
@@ -85,28 +81,7 @@ export default function SearchModal(props: Props) {
     if (form.values.card !== undefined) {
       form.setFieldValue('card', null);
     }
-    if (!props.search.users && form.values.city !== undefined) {
-      form.setFieldValue('city', null);
-    }
-    if (form.values.shop !== undefined) {
-      form.setFieldValue('shop', null);
-    }
   }, [form.values.user]);
-
-  useEffect(() => {
-    if (props.search.users) {
-      form.setFieldValue('user', null);
-    }
-  }, [form.values.city]);
-
-  useEffect(() => {
-    if (form.values.market !== undefined) {
-      form.setFieldValue('market', null);
-    }
-    if (form.values.storage !== undefined) {
-      form.setFieldValue('storage', null);
-    }
-  }, [form.values.card]);
 
   useEffect(() => {
     if (form.values.store !== undefined) {
@@ -128,82 +103,36 @@ export default function SearchModal(props: Props) {
 
   useEffect(form.reset, []);
 
-  const usersResponse = useSelectAllUsersQuery();
-  const cardsResponse = useSelectUserCardsQuery(+(form.values.user || ''), {
-    skip: props.search.card === undefined || !form.values.user,
-  });
-  const citiesResponse = useSelectAllCitiesQuery(undefined, {
-    skip: props.search.city === undefined,
-  });
-  const shopsResponse = useSelectAllShopsQuery(undefined, {
+  const { data: users, ...usersResponse } = useSelectAllUsersQuery();
+  const { data: cards, ...cardsResponse } = useSelectUserCardsQuery(
+    +(form.values.user || ''),
+    { skip: props.search.card === undefined || !form.values.user },
+  );
+  const { data: cities, ...citiesResponse } = useSelectAllCitiesQuery(
+    undefined,
+    { skip: props.search.city === undefined },
+  );
+  const { data: shops, ...shopsResponse } = useSelectAllShopsQuery(undefined, {
     skip: props.search.shop === undefined,
   });
-  const marketsResponse = useSelectMainMarketsQuery(undefined, {
-    skip: props.search.market === undefined,
-  });
-  const storagesResponse = useSelectMainStoragesQuery(undefined, {
-    skip: props.search.storage === undefined,
-  });
-  const storesResponse = useSelectMarketStoresQuery(
+  const { data: markets, ...marketsResponse } = useSelectMainMarketsQuery(
+    undefined,
+    { skip: props.search.market === undefined },
+  );
+  const { data: storages, ...storagesResponse } = useSelectMainStoragesQuery(
+    undefined,
+    { skip: props.search.storage === undefined },
+  );
+  const { data: stores, ...storesResponse } = useSelectMarketStoresQuery(
     +(form.values.market || ''),
     { skip: props.search.store === undefined || !form.values.market },
   );
-  const cellsResponse = useSelectStorageCellsQuery(
+  const { data: cells, ...cellsResponse } = useSelectStorageCellsQuery(
     +(form.values.storage || ''),
     { skip: props.search.cell === undefined || !form.values.storage },
   );
 
-  const users = selectUsers(usersResponse.data).filter(
-    (user) =>
-      !props.search.users ||
-      !form.values.city ||
-      user.city === +form.values.city,
-  );
-  const cards = selectCards(cardsResponse.data);
-  const cities = selectCities(citiesResponse.data).filter(
-    (city) =>
-      props.search.users ||
-      !form.values.user ||
-      city.user === +form.values.user,
-  );
-  const shops = selectShops(shopsResponse.data).filter(
-    (shop) =>
-      form.values.mode !== Mode.OWNER ||
-      !form.values.user ||
-      shop.user === +form.values.user,
-  );
-  const markets = selectMarkets(marketsResponse.data).filter(
-    (market) =>
-      form.values.mode !== Mode.OWNER ||
-      ((!form.values.card || market.card === +form.values.card) &&
-        (!form.values.user || cards.find((card) => card.id === market.card))),
-  );
-  const storages = selectStorages(storagesResponse.data).filter(
-    (storage) =>
-      form.values.mode !== Mode.OWNER ||
-      ((!form.values.card || storage.card === +form.values.card) &&
-        (!form.values.user || cards.find((card) => card.id === storage.card))),
-  );
-  const stores = selectContainers(storesResponse.data);
-  const cells = selectContainers(cellsResponse.data);
-
-  const user = users.find((user) => user.id === +form.values.user!);
-
-  const isFetching = props.search.users
-    ? usersResponse.isFetching
-    : cardsResponse.isFetching ||
-      citiesResponse.isFetching ||
-      shopsResponse.isFetching ||
-      marketsResponse.isFetching ||
-      storagesResponse.isFetching;
-  const component = props.search.users
-    ? UsersItem
-    : props.search.cards
-    ? CardsItem
-    : PlacesItem;
-  const data = props.search.users
-    ? users
-    : [...cards, ...cities, ...shops, ...markets, ...storages];
+  const user = users?.find((user) => user.id === +form.values.user!);
 
   const handleSubmit = (search: ISearch) => {
     const updatedSearchParams = new URLSearchParams(searchParams);
@@ -228,12 +157,12 @@ export default function SearchModal(props: Props) {
     >
       <Select
         label={t('columns.user')}
-        placeholder={`${t('components.total')}: ${users?.length}`}
+        placeholder={`${t('components.total')}: ${users?.length || 0}`}
         icon={user && <CustomAvatar {...user} />}
         iconWidth={48}
         rightSection={<RefetchAction {...usersResponse} />}
         itemComponent={UsersItem}
-        data={users}
+        data={selectUsers(users)}
         searchable
         allowDeselect
         disabled={usersResponse.isFetching}
@@ -242,12 +171,12 @@ export default function SearchModal(props: Props) {
       {props.search.card !== undefined && (
         <Select
           label={t('columns.card')}
-          placeholder={`${t('components.total')}: ${cards.length}`}
+          placeholder={`${t('components.total')}: ${cards?.length || 0}`}
           rightSection={
             <RefetchAction {...cardsResponse} skip={!form.values.user} />
           }
           itemComponent={CardsItem}
-          data={cards}
+          data={selectCards(cards)}
           searchable
           allowDeselect
           disabled={cardsResponse.isFetching}
@@ -283,10 +212,10 @@ export default function SearchModal(props: Props) {
       {props.search.city !== undefined && (
         <Select
           label={t('columns.city')}
-          placeholder={`${t('components.total')}: ${cities.length}`}
+          placeholder={`${t('components.total')}: ${cities?.length || 0}`}
           rightSection={<RefetchAction {...citiesResponse} />}
           itemComponent={PlacesItem}
-          data={cities}
+          data={selectCities(cities)}
           searchable
           allowDeselect
           disabled={citiesResponse.isFetching}
@@ -296,9 +225,9 @@ export default function SearchModal(props: Props) {
       {props.search.shop !== undefined && (
         <Select
           label={t('columns.shop')}
-          placeholder={`${t('components.total')}: ${shops.length}`}
+          placeholder={`${t('components.total')}: ${shops?.length || 0}`}
           itemComponent={PlacesItem}
-          data={shops}
+          data={selectShops(shops)}
           searchable
           allowDeselect
           {...form.getInputProps('shop')}
@@ -307,10 +236,10 @@ export default function SearchModal(props: Props) {
       {props.search.market !== undefined && (
         <Select
           label={t('columns.market')}
-          placeholder={`${t('components.total')}: ${markets.length}`}
+          placeholder={`${t('components.total')}: ${markets?.length || 0}`}
           rightSection={<RefetchAction {...marketsResponse} />}
           itemComponent={PlacesItem}
-          data={markets}
+          data={selectMarkets(markets)}
           searchable
           allowDeselect
           disabled={marketsResponse.isFetching}
@@ -320,10 +249,10 @@ export default function SearchModal(props: Props) {
       {props.search.storage !== undefined && (
         <Select
           label={t('columns.storage')}
-          placeholder={`${t('components.total')}: ${storages.length}`}
+          placeholder={`${t('components.total')}: ${storages?.length || 0}`}
           rightSection={<RefetchAction {...storagesResponse} />}
           itemComponent={PlacesItem}
-          data={storages}
+          data={selectStorages(storages)}
           searchable
           allowDeselect
           disabled={storagesResponse.isFetching}
@@ -333,11 +262,11 @@ export default function SearchModal(props: Props) {
       {props.search.store !== undefined && (
         <Select
           label={t('columns.store')}
-          placeholder={`${t('components.total')}: ${stores.length}`}
+          placeholder={`${t('components.total')}: ${stores?.length || 0}`}
           rightSection={
             <RefetchAction {...storesResponse} skip={!form.values.market} />
           }
-          data={stores}
+          data={selectContainers(stores)}
           searchable
           allowDeselect
           disabled={storesResponse.isFetching}
@@ -347,11 +276,11 @@ export default function SearchModal(props: Props) {
       {props.search.cell !== undefined && (
         <Select
           label={t('columns.cell')}
-          placeholder={`${t('components.total')}: ${cells.length}`}
+          placeholder={`${t('components.total')}: ${cells?.length || 0}`}
           rightSection={
             <RefetchAction {...cellsResponse} skip={!form.values.storage} />
           }
-          data={cells}
+          data={selectContainers(cells)}
           searchable
           allowDeselect
           disabled={cellsResponse.isFetching}
@@ -448,16 +377,6 @@ export default function SearchModal(props: Props) {
             />
           </Group>
         </Input.Wrapper>
-      )}
-      {props.search.name !== undefined && (
-        <Autocomplete
-          label={t('columns.name')}
-          placeholder={`${t('components.total')}: ${data.length}`}
-          itemComponent={component}
-          data={data.map((element) => ({ ...element, value: element.name }))}
-          disabled={isFetching}
-          {...form.getInputProps('name')}
-        />
       )}
     </CustomForm>
   );

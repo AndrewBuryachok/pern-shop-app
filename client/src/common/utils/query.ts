@@ -47,19 +47,16 @@ export const getQuery = ({ page, search }: IRequest) => {
     query.append('type', search.type);
   }
   if (search?.kind) {
-    query.append('kind', `${search.kind}`);
+    query.append('kind', search.kind);
   }
   if (search?.status) {
-    query.append('status', `${search.status}`);
+    query.append('status', search.status);
   }
   if (search?.priority) {
-    query.append('priority', `${search.priority}`);
+    query.append('priority', search.priority);
   }
   if (search?.rate) {
     query.append('rate', `${search.rate}`);
-  }
-  if (search?.name) {
-    query.append('name', search.name);
   }
   return query.toString();
 };

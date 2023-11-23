@@ -17,7 +17,7 @@ export default function MainGoods() {
     user: searchParams.get('user'),
     shop: searchParams.get('shop'),
     item: searchParams.get('item'),
-    description: '',
+    description: searchParams.get('description') || '',
   });
 
   const response = useGetMainGoodsQuery({ page, search });

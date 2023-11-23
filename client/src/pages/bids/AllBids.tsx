@@ -21,8 +21,8 @@ export default function AllBids() {
     storage: searchParams.get('storage'),
     cell: searchParams.get('cell'),
     item: searchParams.get('item'),
-    description: '',
-    rate: +(+(searchParams.get('rate') || 0) || null || 0) || null,
+    description: searchParams.get('description') || '',
+    rate: +(searchParams.get('rate') || 0) || null,
   });
 
   const response = useGetAllBidsQuery({ page, search });

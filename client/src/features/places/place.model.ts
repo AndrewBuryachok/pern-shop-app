@@ -8,16 +8,8 @@ export interface Place {
   y: number;
 }
 
-export interface SmPlaceWithUser extends Place {
-  userId?: number;
-}
-
 export interface PlaceWithUser extends Place {
   user: SmUser;
-}
-
-export interface SmPlaceWithCard extends Place {
-  cardId?: number;
 }
 
 export interface PlaceWithCard extends Place {

@@ -22,7 +22,7 @@ export default function AllTrades() {
     market: searchParams.get('market'),
     store: searchParams.get('store'),
     item: searchParams.get('item'),
-    description: '',
+    description: searchParams.get('description') || '',
     rate: +(searchParams.get('rate') || 0) || null,
   });
 

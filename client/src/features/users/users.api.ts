@@ -1,6 +1,6 @@
 import { emptyApi } from '../../app/empty.api';
 import { IRequest, IResponse } from '../../common/interfaces';
-import { ExtUser, SmUser, SmUserWithCity, User } from './user.model';
+import { ExtUser, SmUser, User } from './user.model';
 import { EditUserPasswordDto, UpdateUserRoleDto } from './user.dto';
 import { getQuery } from '../../common/utils';
 
@@ -24,7 +24,7 @@ export const usersApi = emptyApi.injectEndpoints({
       }),
       providesTags: ['Auth', 'User', 'City'],
     }),
-    selectAllUsers: build.query<SmUserWithCity[], void>({
+    selectAllUsers: build.query<SmUser[], void>({
       query: () => ({
         url: '/users/all/select',
       }),

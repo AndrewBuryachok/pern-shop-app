@@ -20,7 +20,7 @@ export default function MyGoods() {
     user: searchParams.get('user'),
     shop: searchParams.get('shop'),
     item: searchParams.get('item'),
-    description: '',
+    description: searchParams.get('description') || '',
   });
 
   const response = useGetMyGoodsQuery({ page, search });

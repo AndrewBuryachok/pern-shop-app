@@ -15,7 +15,7 @@ export default function VotedPolls() {
 
   const [search, setSearch] = useState<ISearch>({
     user: searchParams.get('user'),
-    description: '',
+    description: searchParams.get('description') || '',
   });
 
   const response = useGetVotedPollsQuery({ page, search });

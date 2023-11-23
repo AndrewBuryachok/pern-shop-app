@@ -21,7 +21,7 @@ export default function MyInvoices() {
     card: searchParams.get('card'),
     modes: [Mode.SENDER, Mode.RECEIVER],
     mode: searchParams.get('mode') as Mode,
-    description: '',
+    description: searchParams.get('description') || '',
   });
 
   const response = useGetMyInvoicesQuery({ page, search });

@@ -20,9 +20,9 @@ export default function MainTasks() {
     modes: [Mode.CUSTOMER, Mode.EXECUTOR, Mode.OWNER],
     mode: searchParams.get('mode') as Mode,
     city: searchParams.get('city'),
-    description: '',
-    priority: +(searchParams.get('priority') || 0) || null,
-    status: +(searchParams.get('status') || 0) || null,
+    description: searchParams.get('description') || '',
+    priority: searchParams.get('priority'),
+    status: searchParams.get('status'),
   });
 
   const response = useGetMainTasksQuery({ page, search });

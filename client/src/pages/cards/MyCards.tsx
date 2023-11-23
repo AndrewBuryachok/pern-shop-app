@@ -20,8 +20,6 @@ export default function MyCards() {
   const [search, setSearch] = useState<ISearch>({
     user: searchParams.get('user'),
     card: searchParams.get('card'),
-    name: searchParams.get('name') || '',
-    cards: true,
   });
 
   const response = useGetMyCardsQuery({ page, search });

@@ -19,7 +19,7 @@ export default function AllGoods() {
     user: searchParams.get('user'),
     shop: searchParams.get('shop'),
     item: searchParams.get('item'),
-    description: '',
+    description: searchParams.get('description') || '',
   });
 
   const response = useGetAllGoodsQuery({ page, search });

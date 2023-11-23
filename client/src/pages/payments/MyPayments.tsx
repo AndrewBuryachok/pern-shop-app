@@ -20,7 +20,7 @@ export default function MyPayments() {
     card: searchParams.get('card'),
     modes: [Mode.SENDER, Mode.RECEIVER],
     mode: searchParams.get('mode') as Mode,
-    description: '',
+    description: searchParams.get('description') || '',
   });
 
   const response = useGetMyPaymentsQuery({ page, search });

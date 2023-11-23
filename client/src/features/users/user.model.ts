@@ -6,10 +6,6 @@ export interface SmUser {
   name: string;
 }
 
-export interface SmUserWithCity extends SmUser {
-  cityId?: number;
-}
-
 export interface MdUser extends SmUser {
   roles: number[];
 }

@@ -1,6 +1,6 @@
 import { emptyApi } from '../../app/empty.api';
 import { IRequest, IResponse } from '../../common/interfaces';
-import { City, SmCity, SmCityWithUser } from './city.model';
+import { City, SmCity } from './city.model';
 import {
   CreateCityDto,
   EditCityDto,
@@ -29,7 +29,7 @@ export const citiesApi = emptyApi.injectEndpoints({
       }),
       providesTags: ['Auth', 'City'],
     }),
-    selectAllCities: build.query<SmCityWithUser[], void>({
+    selectAllCities: build.query<SmCity[], void>({
       query: () => ({
         url: '/cities/all/select',
       }),

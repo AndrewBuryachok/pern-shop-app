@@ -24,8 +24,8 @@ export default function TakenOrders() {
     storage: searchParams.get('storage'),
     cell: searchParams.get('cell'),
     item: searchParams.get('item'),
-    description: '',
-    status: +(searchParams.get('status') || 0) || null,
+    description: searchParams.get('description') || '',
+    status: searchParams.get('status'),
     rate: +(searchParams.get('rate') || 0) || null,
   });
 

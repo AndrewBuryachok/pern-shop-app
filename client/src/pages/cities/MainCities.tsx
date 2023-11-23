@@ -16,7 +16,6 @@ export default function MainCities() {
   const [search, setSearch] = useState<ISearch>({
     user: searchParams.get('user'),
     city: searchParams.get('city'),
-    name: searchParams.get('name') || '',
   });
 
   const response = useGetMainCitiesQuery({ page, search });

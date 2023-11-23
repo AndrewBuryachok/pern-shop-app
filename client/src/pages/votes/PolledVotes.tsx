@@ -18,7 +18,7 @@ export default function PolledVotes() {
     user: searchParams.get('user'),
     modes: [Mode.VOTER, Mode.POLLER],
     mode: searchParams.get('mode') as Mode,
-    description: '',
+    description: searchParams.get('description') || '',
     type: searchParams.get('type'),
   });
 

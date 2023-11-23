@@ -23,7 +23,7 @@ export default function MySales() {
     storage: searchParams.get('storage'),
     cell: searchParams.get('cell'),
     item: searchParams.get('item'),
-    description: '',
+    description: searchParams.get('description') || '',
     rate: +(searchParams.get('rate') || 0) || null,
   });
 

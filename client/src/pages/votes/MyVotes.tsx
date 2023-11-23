@@ -18,7 +18,7 @@ export default function MyVotes() {
     user: searchParams.get('user'),
     modes: [Mode.VOTER, Mode.POLLER],
     mode: searchParams.get('mode') as Mode,
-    description: '',
+    description: searchParams.get('description') || '',
     type: searchParams.get('type'),
   });
 

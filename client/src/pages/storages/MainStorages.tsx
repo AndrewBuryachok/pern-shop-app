@@ -17,7 +17,6 @@ export default function MainStorages() {
     user: searchParams.get('user'),
     card: searchParams.get('card'),
     storage: searchParams.get('storage'),
-    name: searchParams.get('name') || '',
   });
 
   const response = useGetMainStoragesQuery({ page, search });

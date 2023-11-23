@@ -18,7 +18,6 @@ export default function MyShops() {
   const [search, setSearch] = useState<ISearch>({
     user: searchParams.get('user'),
     shop: searchParams.get('shop'),
-    name: searchParams.get('name') || '',
   });
 
   const response = useGetMyShopsQuery({ page, search });

@@ -16,7 +16,6 @@ export default function MainShops() {
   const [search, setSearch] = useState<ISearch>({
     user: searchParams.get('user'),
     shop: searchParams.get('shop'),
-    name: searchParams.get('name') || '',
   });
 
   const response = useGetMainShopsQuery({ page, search });
