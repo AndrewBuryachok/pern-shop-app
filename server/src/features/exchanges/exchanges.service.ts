@@ -110,6 +110,20 @@ export class ExchangesService {
             .orWhere('exchange.type = :type', { type: req.type === 1 }),
         ),
       )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.minSum}`)
+            .orWhere('exchange.sum >= :minSum', { minSum: req.minSum }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.maxSum}`)
+            .orWhere('exchange.sum <= :maxSum', { maxSum: req.maxSum }),
+        ),
+      )
       .orderBy('exchange.id', 'DESC')
       .skip(req.skip)
       .take(req.take)

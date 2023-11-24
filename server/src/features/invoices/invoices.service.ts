@@ -235,6 +235,20 @@ export class InvoicesService {
             }),
         ),
       )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.minSum}`)
+            .orWhere('invoice.sum >= :minSum', { minSum: req.minSum }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.maxSum}`)
+            .orWhere('invoice.sum <= :maxSum', { maxSum: req.maxSum }),
+        ),
+      )
       .orderBy('invoice.id', 'DESC')
       .skip(req.skip)
       .take(req.take)

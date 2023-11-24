@@ -135,6 +135,20 @@ export class PaymentsService {
             }),
         ),
       )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.minSum}`)
+            .orWhere('payment.sum >= :minSum', { minSum: req.minSum }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.maxSum}`)
+            .orWhere('payment.sum <= :maxSum', { maxSum: req.maxSum }),
+        ),
+      )
       .orderBy('payment.id', 'DESC')
       .skip(req.skip)
       .take(req.take)
