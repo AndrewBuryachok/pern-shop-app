@@ -460,6 +460,49 @@ export class DeliveriesService {
       .andWhere(
         new Brackets((qb) =>
           qb
+            .where(`${!req.minAmount}`)
+            .orWhere('delivery.amount >= :minAmount', {
+              minAmount: req.minAmount,
+            }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.maxAmount}`)
+            .orWhere('delivery.amount <= :maxAmount', {
+              maxAmount: req.maxAmount,
+            }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.minIntake}`)
+            .orWhere('delivery.intake >= :minIntake', {
+              minIntake: req.minIntake,
+            }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.maxIntake}`)
+            .orWhere('delivery.intake <= :maxIntake', {
+              maxIntake: req.maxIntake,
+            }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.kit}`)
+            .orWhere('delivery.kit = :kit', { kit: req.kit }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
             .where(`${!req.minPrice}`)
             .orWhere('delivery.price >= :minPrice', { minPrice: req.minPrice }),
         ),

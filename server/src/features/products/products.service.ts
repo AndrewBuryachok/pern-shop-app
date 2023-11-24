@@ -343,6 +343,49 @@ export class ProductsService {
       .andWhere(
         new Brackets((qb) =>
           qb
+            .where(`${!req.minAmount}`)
+            .orWhere('product.amount >= :minAmount', {
+              minAmount: req.minAmount,
+            }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.maxAmount}`)
+            .orWhere('product.amount <= :maxAmount', {
+              maxAmount: req.maxAmount,
+            }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.minIntake}`)
+            .orWhere('product.intake >= :minIntake', {
+              minIntake: req.minIntake,
+            }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.maxIntake}`)
+            .orWhere('product.intake <= :maxIntake', {
+              maxIntake: req.maxIntake,
+            }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.kit}`)
+            .orWhere('product.kit = :kit', { kit: req.kit }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
             .where(`${!req.minPrice}`)
             .orWhere('product.price >= :minPrice', { minPrice: req.minPrice }),
         ),

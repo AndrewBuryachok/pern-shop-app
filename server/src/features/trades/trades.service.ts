@@ -234,6 +234,39 @@ export class TradesService {
       )
       .andWhere(
         new Brackets((qb) =>
+          qb.where(`${!req.minAmount}`).orWhere('trade.amount >= :minAmount', {
+            minAmount: req.minAmount,
+          }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb.where(`${!req.maxAmount}`).orWhere('trade.amount <= :maxAmount', {
+            maxAmount: req.maxAmount,
+          }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb.where(`${!req.minIntake}`).orWhere('ware.intake >= :minIntake', {
+            minIntake: req.minIntake,
+          }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb.where(`${!req.maxIntake}`).orWhere('ware.intake <= :maxIntake', {
+            maxIntake: req.maxIntake,
+          }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb.where(`${!req.kit}`).orWhere('ware.kit = :kit', { kit: req.kit }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
           qb
             .where(`${!req.minPrice}`)
             .orWhere('ware.price >= :minPrice', { minPrice: req.minPrice }),

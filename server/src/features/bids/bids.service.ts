@@ -172,6 +172,39 @@ export class BidsService {
       .andWhere(
         new Brackets((qb) =>
           qb
+            .where(`${!req.minAmount}`)
+            .orWhere('lot.amount >= :minAmount', { minAmount: req.minAmount }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.maxAmount}`)
+            .orWhere('lot.amount <= :maxAmount', { maxAmount: req.maxAmount }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.minIntake}`)
+            .orWhere('lot.intake >= :minIntake', { minIntake: req.minIntake }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.maxIntake}`)
+            .orWhere('lot.intake <= :maxIntake', { maxIntake: req.maxIntake }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb.where(`${!req.kit}`).orWhere('lot.kit = :kit', { kit: req.kit }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
             .where(`${!req.minPrice}`)
             .orWhere('bid.price >= :minPrice', { minPrice: req.minPrice }),
         ),
