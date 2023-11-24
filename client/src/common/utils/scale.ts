@@ -1,4 +1,30 @@
-import { MAX_PRICE_VALUE } from '../constants';
+import { MAX_PRICE_VALUE, MAX_SUM_VALUE } from '../constants';
+
+export const scaleSum = (v: number) => (v < 1000 ? v : 29 * v - 28000);
+
+export const unscaleSum = (v: number) => (v < 1000 ? v : (v + 28000) / 29);
+
+export const scaleMinSum = (v: number | undefined) => {
+  if (v === undefined) return v;
+  const res = scaleSum(v);
+  return res === 1 ? null : res;
+};
+
+export const scaleMaxSum = (v: number | undefined) => {
+  if (v === undefined) return v;
+  const res = scaleSum(v);
+  return res === MAX_SUM_VALUE ? null : res;
+};
+
+export const unscaleMinSum = (v: number | null | undefined) => {
+  if (v === undefined) return v;
+  return unscaleSum(v === null ? 1 : v);
+};
+
+export const unscaleMaxSum = (v: number | null | undefined) => {
+  if (v === undefined) return v;
+  return unscaleSum(v === null ? MAX_SUM_VALUE : v);
+};
 
 export const scaleMinSearch = (v: number | undefined) => {
   if (v === undefined) return v;

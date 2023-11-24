@@ -20,6 +20,8 @@ export default function MyExchanges() {
     modes: [Mode.EXECUTOR, Mode.CUSTOMER],
     mode: searchParams.get('mode') as Mode,
     type: searchParams.get('type'),
+    minSum: +(searchParams.get('minSum') || 0) || null,
+    maxSum: +(searchParams.get('maxSum') || 0) || null,
   });
 
   const response = useGetMyExchangesQuery({ page, search });

@@ -1,7 +1,7 @@
 export const MIN_TEXT_LENGTH = 2;
 export const MAX_TEXT_LENGTH = 16;
 export const MAX_DESCRIPTION_LENGTH = 32;
-export const MAX_SUM_VALUE = 32000;
+export const MAX_SUM_VALUE = 30000;
 export const MIN_COORDINATE_VALUE = -1000;
 export const MAX_COORDINATE_VALUE = 1000;
 export const MAX_AMOUNT_VALUE = 27;

@@ -115,6 +115,14 @@ export const selectColors = () =>
     label: t('constants.colors.' + color),
   }));
 
+export const searchTypes = () =>
+  selectColors()
+    .filter((color) => +color.value % 2)
+    .map((color, index) => ({
+      ...color,
+      value: `${index * 2 - 1}`,
+    }));
+
 export const selectTypes = () =>
   [t('constants.decrease'), t('constants.increase')].map((type, index) => ({
     value: `${index}`,

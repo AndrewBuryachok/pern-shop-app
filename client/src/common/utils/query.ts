@@ -43,6 +43,15 @@ export const getQuery = ({ page, search }: IRequest) => {
   if (search?.description) {
     query.append('description', search.description);
   }
+  if (search?.type) {
+    query.append('type', search.type);
+  }
+  if (search?.minSum) {
+    query.append('minSum', `${search.minSum}`);
+  }
+  if (search?.maxSum) {
+    query.append('maxSum', `${search.maxSum}`);
+  }
   if (search?.minAmount) {
     query.append('minAmount', `${search.minAmount}`);
   }
@@ -63,9 +72,6 @@ export const getQuery = ({ page, search }: IRequest) => {
   }
   if (search?.maxPrice) {
     query.append('maxPrice', `${search.maxPrice}`);
-  }
-  if (search?.type) {
-    query.append('type', search.type);
   }
   if (search?.kind) {
     query.append('kind', search.kind);

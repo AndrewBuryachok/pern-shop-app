@@ -37,13 +37,16 @@ import { PrioritiesItem } from './PrioritiesItem';
 import {
   scaleMaxPrice,
   scaleMaxSearch,
+  scaleMaxSum,
   scaleMinPrice,
   scaleMinSearch,
+  scaleMinSum,
   scalePrice,
+  scaleSum,
+  searchTypes,
   selectCards,
   selectCategories,
   selectCities,
-  selectColors,
   selectContainers,
   selectItems,
   selectKinds,
@@ -57,8 +60,10 @@ import {
   selectUsers,
   unscaleMaxPrice,
   unscaleMaxSearch,
+  unscaleMaxSum,
   unscaleMinPrice,
   unscaleMinSearch,
+  unscaleMinSum,
 } from '../../common/utils';
 import { MAX_AMOUNT_VALUE, MAX_INTAKE_VALUE, items } from '../constants';
 
@@ -77,6 +82,8 @@ export default function SearchModal(props: Props) {
     initialValues: {
       ...props.search,
       category: props.search.item && items[+props.search.item - 1][0],
+      minSum: unscaleMinSum(props.search.minSum),
+      maxSum: unscaleMaxSum(props.search.maxSum),
       minAmount: unscaleMinSearch(props.search.minAmount),
       maxAmount: unscaleMaxSearch(props.search.maxAmount, MAX_AMOUNT_VALUE),
       minIntake: unscaleMinSearch(props.search.minIntake),
@@ -86,6 +93,8 @@ export default function SearchModal(props: Props) {
     },
     transformValues: ({ category, modes, ...rest }) => ({
       ...rest,
+      minSum: scaleMinSum(rest.minSum),
+      maxSum: scaleMaxSum(rest.maxSum),
       minAmount: scaleMinSearch(rest.minAmount),
       maxAmount: scaleMaxSearch(rest.maxAmount, MAX_AMOUNT_VALUE),
       minIntake: scaleMinSearch(rest.minIntake),
@@ -342,6 +351,36 @@ export default function SearchModal(props: Props) {
           {...form.getInputProps('description')}
         />
       )}
+      {props.search.type !== undefined && (
+        <Select
+          label={t('columns.type')}
+          placeholder={t('columns.type')}
+          itemComponent={ColorsItem}
+          data={searchTypes()}
+          searchable
+          allowDeselect
+          {...form.getInputProps('type')}
+        />
+      )}
+      {(props.search.minSum && props.search.maxSum) !== undefined && (
+        <Input.Wrapper label={t('columns.sum')}>
+          <Slider
+            min={1}
+            max={2000}
+            scale={scaleSum}
+            marks={[{ value: 1000 }]}
+            inverted
+            {...form.getInputProps('minSum')}
+          />
+          <Slider
+            min={1}
+            max={2000}
+            scale={scaleSum}
+            marks={[{ value: 1000 }]}
+            {...form.getInputProps('maxSum')}
+          />
+        </Input.Wrapper>
+      )}
       {(props.search.minAmount && props.search.maxAmount) !== undefined && (
         <Input.Wrapper label={t('columns.amount')}>
           <Slider
@@ -404,22 +443,6 @@ export default function SearchModal(props: Props) {
             {...form.getInputProps('maxPrice')}
           />
         </Input.Wrapper>
-      )}
-      {props.search.type !== undefined && (
-        <Select
-          label={t('columns.type')}
-          placeholder={t('columns.type')}
-          itemComponent={ColorsItem}
-          data={selectColors()
-            .filter((element) => +element.value % 2)
-            .map((element, index) => ({
-              ...element,
-              value: `${index * 2 - 1}`,
-            }))}
-          searchable
-          allowDeselect
-          {...form.getInputProps('type')}
-        />
       )}
       {props.search.kind !== undefined && (
         <Select

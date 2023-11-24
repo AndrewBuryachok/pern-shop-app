@@ -21,6 +21,8 @@ export default function ReceivedInvoices() {
     modes: [Mode.SENDER, Mode.RECEIVER],
     mode: searchParams.get('mode') as Mode,
     description: searchParams.get('description') || '',
+    minSum: +(searchParams.get('minSum') || 0) || null,
+    maxSum: +(searchParams.get('maxSum') || 0) || null,
   });
 
   const response = useGetReceivedInvoicesQuery({ page, search });
