@@ -43,6 +43,21 @@ export const getQuery = ({ page, search }: IRequest) => {
   if (search?.description) {
     query.append('description', search.description);
   }
+  if (search?.minAmount) {
+    query.append('minAmount', `${search.minAmount}`);
+  }
+  if (search?.maxAmount) {
+    query.append('maxAmount', `${search.maxAmount}`);
+  }
+  if (search?.minIntake) {
+    query.append('minIntake', `${search.minIntake}`);
+  }
+  if (search?.maxIntake) {
+    query.append('maxIntake', `${search.maxIntake}`);
+  }
+  if (search?.kit) {
+    query.append('kit', search.kit);
+  }
   if (search?.minPrice) {
     query.append('minPrice', `${search.minPrice}`);
   }

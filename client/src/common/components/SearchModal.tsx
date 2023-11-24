@@ -36,7 +36,9 @@ import { ColorsItem } from './ColorsItem';
 import { PrioritiesItem } from './PrioritiesItem';
 import {
   scaleMaxPrice,
+  scaleMaxSearch,
   scaleMinPrice,
+  scaleMinSearch,
   scalePrice,
   selectCards,
   selectCategories,
@@ -45,6 +47,7 @@ import {
   selectContainers,
   selectItems,
   selectKinds,
+  selectKits,
   selectMarkets,
   selectPriorities,
   selectRoles,
@@ -53,9 +56,11 @@ import {
   selectStorages,
   selectUsers,
   unscaleMaxPrice,
+  unscaleMaxSearch,
   unscaleMinPrice,
+  unscaleMinSearch,
 } from '../../common/utils';
-import { items } from '../constants';
+import { MAX_AMOUNT_VALUE, MAX_INTAKE_VALUE, items } from '../constants';
 
 type Props = {
   search: ISearch;
@@ -72,11 +77,19 @@ export default function SearchModal(props: Props) {
     initialValues: {
       ...props.search,
       category: props.search.item && items[+props.search.item - 1][0],
+      minAmount: unscaleMinSearch(props.search.minAmount),
+      maxAmount: unscaleMaxSearch(props.search.maxAmount, MAX_AMOUNT_VALUE),
+      minIntake: unscaleMinSearch(props.search.minIntake),
+      maxIntake: unscaleMaxSearch(props.search.maxIntake, MAX_INTAKE_VALUE),
       minPrice: unscaleMinPrice(props.search.minPrice),
       maxPrice: unscaleMaxPrice(props.search.maxPrice),
     },
     transformValues: ({ category, modes, ...rest }) => ({
       ...rest,
+      minAmount: scaleMinSearch(rest.minAmount),
+      maxAmount: scaleMaxSearch(rest.maxAmount, MAX_AMOUNT_VALUE),
+      minIntake: scaleMinSearch(rest.minIntake),
+      maxIntake: scaleMaxSearch(rest.maxIntake, MAX_INTAKE_VALUE),
       minPrice: scaleMinPrice(rest.minPrice),
       maxPrice: scaleMaxPrice(rest.maxPrice),
     }),
@@ -327,6 +340,50 @@ export default function SearchModal(props: Props) {
           label={t('columns.description')}
           placeholder={t('columns.description')}
           {...form.getInputProps('description')}
+        />
+      )}
+      {(props.search.minAmount && props.search.maxAmount) !== undefined && (
+        <Input.Wrapper label={t('columns.amount')}>
+          <Slider
+            min={1}
+            max={MAX_AMOUNT_VALUE}
+            marks={[{ value: 1 }, { value: MAX_AMOUNT_VALUE }]}
+            inverted
+            {...form.getInputProps('minAmount')}
+          />
+          <Slider
+            min={1}
+            max={MAX_AMOUNT_VALUE}
+            marks={[{ value: 1 }, { value: MAX_AMOUNT_VALUE }]}
+            {...form.getInputProps('maxAmount')}
+          />
+        </Input.Wrapper>
+      )}
+      {(props.search.minIntake && props.search.maxIntake) !== undefined && (
+        <Input.Wrapper label={t('columns.intake')}>
+          <Slider
+            min={1}
+            max={MAX_INTAKE_VALUE}
+            marks={[{ value: 1 }, { value: MAX_INTAKE_VALUE }]}
+            inverted
+            {...form.getInputProps('minIntake')}
+          />
+          <Slider
+            min={1}
+            max={MAX_INTAKE_VALUE}
+            marks={[{ value: 1 }, { value: MAX_INTAKE_VALUE }]}
+            {...form.getInputProps('maxIntake')}
+          />
+        </Input.Wrapper>
+      )}
+      {props.search.kit !== undefined && (
+        <Select
+          label={t('columns.kit')}
+          placeholder={t('columns.kit')}
+          data={selectKits()}
+          searchable
+          allowDeselect
+          {...form.getInputProps('kit')}
         />
       )}
       {(props.search.minPrice && props.search.maxPrice) !== undefined && (
