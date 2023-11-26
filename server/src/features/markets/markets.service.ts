@@ -78,6 +78,8 @@ export class MarketsService {
       dto.myId,
       dto.hasRole,
     );
+    await this.checkNameNotUsed(dto.name, dto.marketId);
+    await this.checkCoordinatesNotUsed(dto.x, dto.y, dto.marketId);
     await this.edit(market, dto);
   }
 
@@ -110,16 +112,20 @@ export class MarketsService {
     }
   }
 
-  private async checkNameNotUsed(name: string): Promise<void> {
+  private async checkNameNotUsed(name: string, id?: number): Promise<void> {
     const market = await this.marketsRepository.findOneBy({ name });
-    if (market) {
+    if (market && (!id || market.id !== id)) {
       throw new AppException(MarketError.NAME_ALREADY_USED);
     }
   }
 
-  private async checkCoordinatesNotUsed(x: number, y: number): Promise<void> {
+  private async checkCoordinatesNotUsed(
+    x: number,
+    y: number,
+    id?: number,
+  ): Promise<void> {
     const market = await this.marketsRepository.findOneBy({ x, y });
-    if (market) {
+    if (market && (!id || market.id !== id)) {
       throw new AppException(MarketError.COORDINATES_ALREADY_USED);
     }
   }

@@ -102,6 +102,8 @@ export class StoragesService {
       dto.myId,
       dto.hasRole,
     );
+    await this.checkNameNotUsed(dto.name, dto.storageId);
+    await this.checkCoordinatesNotUsed(dto.x, dto.y, dto.storageId);
     await this.edit(storage, dto);
   }
 
@@ -134,16 +136,20 @@ export class StoragesService {
     }
   }
 
-  private async checkNameNotUsed(name: string): Promise<void> {
+  private async checkNameNotUsed(name: string, id?: number): Promise<void> {
     const storage = await this.storagesRepository.findOneBy({ name });
-    if (storage) {
+    if (storage && (!id || storage.id !== id)) {
       throw new AppException(StorageError.NAME_ALREADY_USED);
     }
   }
 
-  private async checkCoordinatesNotUsed(x: number, y: number): Promise<void> {
+  private async checkCoordinatesNotUsed(
+    x: number,
+    y: number,
+    id?: number,
+  ): Promise<void> {
     const storage = await this.storagesRepository.findOneBy({ x, y });
-    if (storage) {
+    if (storage && (!id || storage.id !== id)) {
       throw new AppException(StorageError.COORDINATES_ALREADY_USED);
     }
   }

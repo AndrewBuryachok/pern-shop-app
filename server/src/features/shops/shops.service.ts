@@ -58,6 +58,8 @@ export class ShopsService {
 
   async editShop(dto: ExtEditShopDto): Promise<void> {
     const shop = await this.checkShopOwner(dto.shopId, dto.myId, dto.hasRole);
+    await this.checkNameNotUsed(dto.name, dto.shopId);
+    await this.checkCoordinatesNotUsed(dto.x, dto.y, dto.shopId);
     await this.edit(shop, dto);
   }
 
@@ -84,16 +86,20 @@ export class ShopsService {
     }
   }
 
-  private async checkNameNotUsed(name: string): Promise<void> {
+  private async checkNameNotUsed(name: string, id?: number): Promise<void> {
     const shop = await this.shopsRepository.findOneBy({ name });
-    if (shop) {
+    if (shop && (!id || shop.id !== id)) {
       throw new AppException(ShopError.NAME_ALREADY_USED);
     }
   }
 
-  private async checkCoordinatesNotUsed(x: number, y: number): Promise<void> {
+  private async checkCoordinatesNotUsed(
+    x: number,
+    y: number,
+    id?: number,
+  ): Promise<void> {
     const shop = await this.shopsRepository.findOneBy({ x, y });
-    if (shop) {
+    if (shop && (!id || shop.id !== id)) {
       throw new AppException(ShopError.COORDINATES_ALREADY_USED);
     }
   }

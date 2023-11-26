@@ -60,6 +60,7 @@ export class CardsService {
 
   async editCard(dto: ExtEditCardDto): Promise<void> {
     const card = await this.checkCardOwner(dto.cardId, dto.myId, dto.hasRole);
+    await this.checkNameNotUsed(dto.myId, dto.name, dto.cardId);
     await this.edit(card, dto);
   }
 
@@ -141,9 +142,13 @@ export class CardsService {
     }
   }
 
-  private async checkNameNotUsed(userId: number, name: string): Promise<void> {
+  private async checkNameNotUsed(
+    userId: number,
+    name: string,
+    id?: number,
+  ): Promise<void> {
     const card = await this.cardsRepository.findOneBy({ userId, name });
-    if (card) {
+    if (card && (!id || card.id !== id)) {
       throw new AppException(CardError.NAME_ALREADY_USED);
     }
   }
