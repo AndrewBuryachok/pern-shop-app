@@ -4,7 +4,7 @@ import { Exchange } from './exchange.model';
 import CustomTable from '../../common/components/CustomTable';
 import AvatarWithSingleText from '../../common/components/AvatarWithSingleText';
 import AvatarWithDoubleText from '../../common/components/AvatarWithDoubleText';
-import ColorBadge from '../../common/components/ColorBadge';
+import CustomBadge from '../../common/components/CustomBadge';
 import SumText from '../../common/components/SumText';
 import DateText from '../../common/components/DateText';
 import CustomActions from '../../common/components/CustomActions';
@@ -38,7 +38,14 @@ export default function ExchangesTable({ actions = [], ...props }: Props) {
             <AvatarWithDoubleText {...exchange.customerCard} />
           </td>
           <td>
-            <ColorBadge color={exchange.type ? Color.GREEN : Color.RED} />
+            <CustomBadge
+              color={exchange.type ? Color.GREEN : Color.RED}
+              text={
+                exchange.type
+                  ? t('constants.increase')
+                  : t('constants.decrease')
+              }
+            />
           </td>
           <td>
             <SumText

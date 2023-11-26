@@ -4,7 +4,7 @@ import { Vote } from './vote.model';
 import CustomTable from '../../common/components/CustomTable';
 import AvatarWithSingleText from '../../common/components/AvatarWithSingleText';
 import SingleText from '../../common/components/SingleText';
-import ColorBadge from '../../common/components/ColorBadge';
+import CustomBadge from '../../common/components/CustomBadge';
 import DateText from '../../common/components/DateText';
 import CustomActions from '../../common/components/CustomActions';
 import { viewVoteAction } from './ViewVoteModal';
@@ -40,7 +40,10 @@ export default function VotesTable({ actions = [], ...props }: Props) {
             <SingleText text={vote.poll.description} />
           </td>
           <td>
-            <ColorBadge color={vote.type ? Color.GREEN : Color.RED} />
+            <CustomBadge
+              color={vote.type ? Color.GREEN : Color.RED}
+              text={vote.type ? t('columns.up') : t('columns.down')}
+            />
           </td>
           <td>
             <DateText date={vote.createdAt} />

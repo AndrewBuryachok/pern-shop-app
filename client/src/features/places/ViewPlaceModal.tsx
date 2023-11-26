@@ -31,7 +31,11 @@ export default function PlaceModal({ data: place }: Props) {
       <TextInput label={t('columns.x')} value={place.x} disabled />
       <TextInput label={t('columns.y')} value={place.y} disabled />
       {place.price && (
-        <TextInput label={t('columns.price')} value={place.price} disabled />
+        <TextInput
+          label={t('columns.price')}
+          value={`${place.price}$`}
+          disabled
+        />
       )}
       <Select
         label={t('columns.' + label)}

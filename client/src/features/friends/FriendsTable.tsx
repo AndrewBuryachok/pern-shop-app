@@ -3,7 +3,7 @@ import { ITableWithActions } from '../../common/interfaces';
 import { Friend } from './friend.model';
 import CustomTable from '../../common/components/CustomTable';
 import AvatarWithSingleText from '../../common/components/AvatarWithSingleText';
-import ColorBadge from '../../common/components/ColorBadge';
+import CustomBadge from '../../common/components/CustomBadge';
 import DateText from '../../common/components/DateText';
 import CustomActions from '../../common/components/CustomActions';
 import { viewFriendAction } from './ViewFriendModal';
@@ -35,7 +35,14 @@ export default function FriendsTable({ actions = [], ...props }: Props) {
             <AvatarWithSingleText {...friend.receiverUser} />
           </td>
           <td>
-            <ColorBadge color={friend.type ? Color.GREEN : Color.RED} />
+            <CustomBadge
+              color={friend.type ? Color.GREEN : Color.RED}
+              text={
+                friend.type
+                  ? t('constants.confirmed')
+                  : t('constants.unconfirmed')
+              }
+            />
           </td>
           <td>
             <DateText date={friend.createdAt} />

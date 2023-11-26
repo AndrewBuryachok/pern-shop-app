@@ -4,10 +4,11 @@ import { Card } from './card.model';
 import CustomTable from '../../common/components/CustomTable';
 import AvatarWithSingleText from '../../common/components/AvatarWithSingleText';
 import SingleText from '../../common/components/SingleText';
-import ColorBadge from '../../common/components/ColorBadge';
+import CustomBadge from '../../common/components/CustomBadge';
 import TotalText from '../../common/components/TotalText';
 import CustomActions from '../../common/components/CustomActions';
 import { viewCardAction } from './ViewCardModal';
+import { colors } from '../../common/constants';
 
 type Props = ITableWithActions<Card>;
 
@@ -36,7 +37,10 @@ export default function CardsTable({ actions = [], ...props }: Props) {
             <SingleText text={card.name} color={card.color} />
           </td>
           <td>
-            <ColorBadge color={card.color} />
+            <CustomBadge
+              color={card.color}
+              text={t('constants.colors.' + colors[card.color - 1])}
+            />
           </td>
           <td>
             <SingleText text={`${card.balance}$`} />

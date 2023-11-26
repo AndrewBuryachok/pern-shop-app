@@ -4,7 +4,7 @@ import { Poll } from './poll.model';
 import CustomTable from '../../common/components/CustomTable';
 import AvatarWithSingleText from '../../common/components/AvatarWithSingleText';
 import SingleText from '../../common/components/SingleText';
-import ColorBadge from '../../common/components/ColorBadge';
+import CustomBadge from '../../common/components/CustomBadge';
 import CustomProgress from '../../common/components/CustomProgress';
 import DateText from '../../common/components/DateText';
 import CustomActions from '../../common/components/CustomActions';
@@ -38,9 +38,13 @@ export default function PollsTable({ actions = [], ...props }: Props) {
             <SingleText text={poll.description} />
           </td>
           <td>
-            <ColorBadge
+            <CustomBadge
               color={
                 poll.myVote && (poll.myVote.type ? Color.GREEN : Color.RED)
+              }
+              text={
+                poll.myVote &&
+                (poll.myVote.type ? t('columns.up') : t('columns.down'))
               }
             />
           </td>

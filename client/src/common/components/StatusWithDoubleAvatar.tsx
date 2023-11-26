@@ -1,7 +1,8 @@
-import { Badge, Group, HoverCard } from '@mantine/core';
+import { HoverCard } from '@mantine/core';
 import { MdCard } from '../../features/cards/card.model';
 import AvatarWithDoubleText from './AvatarWithDoubleText';
-import { colors } from '../constants';
+import CustomBadge from './CustomBadge';
+import { parseStatus } from '../utils';
 
 type Props = {
   executorCard?: MdCard;
@@ -12,9 +13,9 @@ export default function StatusWithDoubleAvatar(props: Props) {
   return (
     <HoverCard position='left' withArrow>
       <HoverCard.Target>
-        <Group spacing={0}>
-          <Badge size='xs' variant='filled' color={colors[props.status - 1]} />
-        </Group>
+        <div>
+          <CustomBadge color={props.status} text={parseStatus(props.status)} />
+        </div>
       </HoverCard.Target>
       <HoverCard.Dropdown p={4} hidden={!props.executorCard}>
         {props.executorCard && <AvatarWithDoubleText {...props.executorCard} />}
