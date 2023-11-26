@@ -19,6 +19,7 @@ export default function ViewUserFriendsModal({ data: user }: Props) {
         placeholder={`${t('components.total')}: ${user.friends.length}`}
         itemComponent={UsersItem}
         data={viewUsers(user.friends)}
+        limit={20}
         searchable
       />
     </Stack>

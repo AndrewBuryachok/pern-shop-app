@@ -47,6 +47,7 @@ export default function CreateRatingModal() {
         rightSection={<RefetchAction {...usersResponse} />}
         itemComponent={UsersItem}
         data={selectUsers(users)}
+        limit={20}
         searchable
         required
         disabled={usersResponse.isFetching}

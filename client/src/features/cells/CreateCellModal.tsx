@@ -62,6 +62,7 @@ export default function CreateCellModal({ hasRole }: Props) {
         rightSection={<RefetchAction {...storagesResponse} />}
         itemComponent={PlacesItem}
         data={selectStorages(storages)}
+        limit={20}
         searchable
         required
         disabled={storagesResponse.isFetching}

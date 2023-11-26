@@ -143,7 +143,7 @@ export const selectItems = (category: string) =>
       value: `${index + 1}`,
       label: t('constants.items.' + item.split(': ')[1]),
     }))
-    .filter((item) => category && item.category.includes(category));
+    .filter((item) => item.category.includes(category));
 
 export const selectKits = () =>
   kits.map((kit, index) => ({

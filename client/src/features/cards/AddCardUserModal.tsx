@@ -56,6 +56,7 @@ export default function AddCardUserModal({ data: card }: Props) {
         data={selectUsers(users).filter(
           (user) => !card.users.map((user) => user.id).includes(user.id),
         )}
+        limit={20}
         searchable
         required
         disabled={usersResponse.isFetching}

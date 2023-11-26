@@ -102,6 +102,7 @@ export default function TakeOrderModal({ data: order, hasRole }: Props) {
           rightSection={<RefetchAction {...usersResponse} />}
           itemComponent={UsersItem}
           data={selectUsers(users)}
+          limit={20}
           searchable
           required
           disabled={usersResponse.isFetching}
@@ -119,6 +120,7 @@ export default function TakeOrderModal({ data: order, hasRole }: Props) {
         }
         itemComponent={CardsItem}
         data={selectCardsWithBalance(cards)}
+        limit={20}
         searchable
         required
         disabled={cardsResponse.isFetching}

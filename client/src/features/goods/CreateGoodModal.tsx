@@ -76,6 +76,7 @@ export default function CreateGoodModal({ hasRole }: Props) {
         rightSection={<RefetchAction {...shopsResponse} />}
         itemComponent={PlacesItem}
         data={selectShops(shops)}
+        limit={20}
         searchable
         required
         disabled={shopsResponse.isFetching}
@@ -96,6 +97,7 @@ export default function CreateGoodModal({ hasRole }: Props) {
         iconWidth={48}
         itemComponent={ThingsItem}
         data={selectItems(form.values.category)}
+        limit={20}
         searchable
         required
         {...form.getInputProps('item')}

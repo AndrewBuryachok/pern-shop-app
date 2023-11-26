@@ -60,6 +60,7 @@ export default function CreateStoreModal({ hasRole }: Props) {
         rightSection={<RefetchAction {...marketsResponse} />}
         itemComponent={PlacesItem}
         data={selectMarkets(markets)}
+        limit={20}
         searchable
         required
         disabled={marketsResponse.isFetching}

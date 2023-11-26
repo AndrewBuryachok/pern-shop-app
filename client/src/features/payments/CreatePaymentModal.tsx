@@ -98,6 +98,7 @@ export default function CreatePaymentModal({ hasRole }: Props) {
           rightSection={<RefetchAction {...usersResponse} />}
           itemComponent={UsersItem}
           data={selectUsers(users)}
+          limit={20}
           searchable
           required
           disabled={usersResponse.isFetching}
@@ -115,6 +116,7 @@ export default function CreatePaymentModal({ hasRole }: Props) {
         }
         itemComponent={CardsItem}
         data={selectCardsWithBalance(senderCards)}
+        limit={20}
         searchable
         required
         disabled={senderCardsResponse.isFetching}
@@ -128,6 +130,7 @@ export default function CreatePaymentModal({ hasRole }: Props) {
         rightSection={<RefetchAction {...usersResponse} />}
         itemComponent={UsersItem}
         data={selectUsers(users)}
+        limit={20}
         searchable
         required
         disabled={usersResponse.isFetching}
@@ -144,6 +147,7 @@ export default function CreatePaymentModal({ hasRole }: Props) {
         }
         itemComponent={CardsItem}
         data={selectCards(receiverCards)}
+        limit={20}
         searchable
         required
         disabled={receiverCardsResponse.isFetching}

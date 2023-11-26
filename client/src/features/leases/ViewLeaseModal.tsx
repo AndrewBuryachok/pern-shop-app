@@ -66,6 +66,7 @@ export default function ViewLeaseModal({ data: lease }: Props) {
         placeholder={`${t('components.total')}: ${[lease.thing].length}`}
         itemComponent={ThingsItem}
         data={viewThings([lease.thing])}
+        limit={20}
         searchable
       />
     </Stack>

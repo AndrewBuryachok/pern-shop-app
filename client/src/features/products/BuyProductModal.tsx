@@ -88,6 +88,7 @@ export default function BuyProductModal({ data: product }: Props) {
         rightSection={<RefetchAction {...cardsResponse} />}
         itemComponent={CardsItem}
         data={selectCardsWithBalance(cards)}
+        limit={20}
         searchable
         required
         disabled={cardsResponse.isFetching}

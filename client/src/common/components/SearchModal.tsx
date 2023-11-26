@@ -197,6 +197,7 @@ export default function SearchModal(props: Props) {
         rightSection={<RefetchAction {...usersResponse} />}
         itemComponent={UsersItem}
         data={selectUsers(users)}
+        limit={20}
         searchable
         allowDeselect
         disabled={usersResponse.isFetching}
@@ -211,6 +212,7 @@ export default function SearchModal(props: Props) {
           }
           itemComponent={CardsItem}
           data={selectCards(cards)}
+          limit={20}
           searchable
           allowDeselect
           disabled={cardsResponse.isFetching}
@@ -250,6 +252,7 @@ export default function SearchModal(props: Props) {
           rightSection={<RefetchAction {...citiesResponse} />}
           itemComponent={PlacesItem}
           data={selectCities(cities)}
+          limit={20}
           searchable
           allowDeselect
           disabled={citiesResponse.isFetching}
@@ -260,8 +263,10 @@ export default function SearchModal(props: Props) {
         <Select
           label={t('columns.shop')}
           placeholder={`${t('components.total')}: ${shops?.length || 0}`}
+          rightSection={<RefetchAction {...citiesResponse} />}
           itemComponent={PlacesItem}
           data={selectShops(shops)}
+          limit={20}
           searchable
           allowDeselect
           {...form.getInputProps('shop')}
@@ -274,6 +279,7 @@ export default function SearchModal(props: Props) {
           rightSection={<RefetchAction {...marketsResponse} />}
           itemComponent={PlacesItem}
           data={selectMarkets(markets)}
+          limit={20}
           searchable
           allowDeselect
           disabled={marketsResponse.isFetching}
@@ -287,6 +293,7 @@ export default function SearchModal(props: Props) {
           rightSection={<RefetchAction {...storagesResponse} />}
           itemComponent={PlacesItem}
           data={selectStorages(storages)}
+          limit={20}
           searchable
           allowDeselect
           disabled={storagesResponse.isFetching}
@@ -301,6 +308,7 @@ export default function SearchModal(props: Props) {
             <RefetchAction {...storesResponse} skip={!form.values.market} />
           }
           data={selectContainers(stores)}
+          limit={20}
           searchable
           allowDeselect
           disabled={storesResponse.isFetching}
@@ -315,6 +323,7 @@ export default function SearchModal(props: Props) {
             <RefetchAction {...cellsResponse} skip={!form.values.storage} />
           }
           data={selectContainers(cells)}
+          limit={20}
           searchable
           allowDeselect
           disabled={cellsResponse.isFetching}
@@ -338,6 +347,7 @@ export default function SearchModal(props: Props) {
             iconWidth={48}
             itemComponent={ThingsItem}
             data={selectItems(form.values.category || '')}
+            limit={20}
             searchable
             allowDeselect
             {...form.getInputProps('item')}

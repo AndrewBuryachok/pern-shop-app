@@ -65,6 +65,7 @@ export default function CreateCityModal({ hasRole }: Props) {
           rightSection={<RefetchAction {...usersResponse} />}
           itemComponent={UsersItem}
           data={selectUsers(users)}
+          limit={20}
           searchable
           required
           disabled={usersResponse.isFetching}

@@ -53,6 +53,7 @@ export default function RemoveCityUserModal({ data: city }: Props) {
         data={selectUsers(city.users).filter(
           (user) => user.id !== city.user.id,
         )}
+        limit={20}
         searchable
         required
         {...form.getInputProps('user')}

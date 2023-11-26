@@ -39,6 +39,7 @@ export default function ViewCardModal({ data: card }: Props) {
         placeholder={`${t('components.total')}: ${card.users.length}`}
         itemComponent={UsersItem}
         data={viewUsers(card.users)}
+        limit={20}
         searchable
       />
     </Stack>

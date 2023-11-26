@@ -46,6 +46,7 @@ export default function ViewUserModal({ data: user }: Props) {
         placeholder={`${t('components.total')}: ${user.cards.length}`}
         itemComponent={CardsItem}
         data={viewCards(user.cards, user)}
+        limit={20}
         searchable
       />
       <TextInput

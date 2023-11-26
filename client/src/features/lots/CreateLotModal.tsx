@@ -107,6 +107,7 @@ export default function CreateLotModal({ hasRole }: Props) {
         rightSection={<RefetchAction {...storagesResponse} />}
         itemComponent={PlacesItem}
         data={selectStoragesWithPrice(storages)}
+        limit={20}
         searchable
         required
         disabled={storagesResponse.isFetching}
@@ -121,6 +122,7 @@ export default function CreateLotModal({ hasRole }: Props) {
           rightSection={<RefetchAction {...usersResponse} />}
           itemComponent={UsersItem}
           data={selectUsers(users)}
+          limit={20}
           searchable
           required
           disabled={usersResponse.isFetching}
@@ -138,6 +140,7 @@ export default function CreateLotModal({ hasRole }: Props) {
         }
         itemComponent={CardsItem}
         data={selectCardsWithBalance(cards)}
+        limit={20}
         searchable
         required
         disabled={cardsResponse.isFetching}
@@ -158,6 +161,7 @@ export default function CreateLotModal({ hasRole }: Props) {
         iconWidth={48}
         itemComponent={ThingsItem}
         data={selectItems(form.values.category)}
+        limit={20}
         searchable
         required
         {...form.getInputProps('item')}

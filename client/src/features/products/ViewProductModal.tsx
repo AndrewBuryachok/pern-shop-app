@@ -65,6 +65,7 @@ export default function ViewProductModal({ data: product }: Props) {
         placeholder={`${t('components.total')}: ${product.states.length}`}
         itemComponent={StatesItem}
         data={viewStates(product.states)}
+        limit={20}
         searchable
       />
       <TextInput

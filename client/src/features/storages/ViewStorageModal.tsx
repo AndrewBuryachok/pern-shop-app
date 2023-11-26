@@ -36,12 +36,14 @@ export default function ViewStorageModal({ data: storage }: Props) {
         placeholder={`${t('components.total')}: ${storage.states.length}`}
         itemComponent={StatesItem}
         data={viewStates(storage.states)}
+        limit={20}
         searchable
       />
       <Select
         label={t('columns.cells')}
         placeholder={`${t('components.total')}: ${storage.cells.length}`}
         data={viewContainers(storage.cells)}
+        limit={20}
         searchable
       />
     </Stack>

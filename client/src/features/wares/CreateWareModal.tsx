@@ -76,6 +76,7 @@ export default function CreateWareModal({ hasRole }: Props) {
         rightSection={<RefetchAction {...rentsResponse} />}
         itemComponent={PlacesItem}
         data={selectRents(rents)}
+        limit={20}
         searchable
         required
         disabled={rentsResponse.isFetching}
@@ -96,6 +97,7 @@ export default function CreateWareModal({ hasRole }: Props) {
         iconWidth={48}
         itemComponent={ThingsItem}
         data={selectItems(form.values.category)}
+        limit={20}
         searchable
         required
         {...form.getInputProps('item')}

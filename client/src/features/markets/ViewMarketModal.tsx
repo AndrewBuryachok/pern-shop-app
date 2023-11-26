@@ -36,12 +36,14 @@ export default function ViewMarketModal({ data: market }: Props) {
         placeholder={`${t('components.total')}: ${market.states.length}`}
         itemComponent={StatesItem}
         data={viewStates(market.states)}
+        limit={20}
         searchable
       />
       <Select
         label={t('columns.stores')}
         placeholder={`${t('components.total')}: ${market.stores.length}`}
         data={viewContainers(market.stores)}
+        limit={20}
         searchable
       />
     </Stack>

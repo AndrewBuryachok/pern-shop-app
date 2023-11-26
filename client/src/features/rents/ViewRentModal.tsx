@@ -60,6 +60,7 @@ export default function ViewRentModal({ data: rent }: Props) {
         placeholder={`${t('components.total')}: ${rent.wares.length}`}
         itemComponent={ThingsItem}
         data={viewThings(rent.wares)}
+        limit={20}
         searchable
       />
     </Stack>

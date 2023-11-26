@@ -55,6 +55,7 @@ export default function AddUserCityModal() {
         rightSection={<RefetchAction {...usersResponse} />}
         itemComponent={UsersItem}
         data={selectUsers(users)}
+        limit={20}
         searchable
         required
         disabled={usersResponse.isFetching}
@@ -66,6 +67,7 @@ export default function AddUserCityModal() {
         rightSection={<RefetchAction {...citiesResponse} />}
         itemComponent={PlacesItem}
         data={selectCities(cities)}
+        limit={20}
         searchable
         required
         disabled={citiesResponse.isFetching}

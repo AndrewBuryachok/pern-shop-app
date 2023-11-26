@@ -76,6 +76,7 @@ export default function EditGoodModal({ data: good }: Props) {
         iconWidth={48}
         itemComponent={ThingsItem}
         data={selectItems(form.values.category)}
+        limit={20}
         searchable
         required
         {...form.getInputProps('item')}

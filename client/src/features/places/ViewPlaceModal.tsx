@@ -38,6 +38,7 @@ export default function PlaceModal({ data: place }: Props) {
         placeholder={`${t('components.total')}: ${place.data.length}`}
         itemComponent={component}
         data={place.data}
+        limit={20}
         searchable
       />
     </Stack>

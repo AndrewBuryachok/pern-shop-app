@@ -31,6 +31,7 @@ export default function ViewCityModal({ data: city }: Props) {
         placeholder={`${t('components.total')}: ${city.users.length}`}
         itemComponent={UsersItem}
         data={viewUsers(city.users)}
+        limit={20}
         searchable
       />
     </Stack>

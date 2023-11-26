@@ -31,6 +31,7 @@ export default function ViewShopModal({ data: shop }: Props) {
         placeholder={`${t('components.total')}: ${shop.goods.length}`}
         itemComponent={ThingsItem}
         data={viewThings(shop.goods)}
+        limit={20}
         searchable
       />
     </Stack>

@@ -91,6 +91,7 @@ export default function CreateOrderModal() {
         rightSection={<RefetchAction {...storagesResponse} />}
         itemComponent={PlacesItem}
         data={selectStoragesWithPrice(storages)}
+        limit={20}
         searchable
         required
         disabled={storagesResponse.isFetching}
@@ -102,6 +103,7 @@ export default function CreateOrderModal() {
         rightSection={<RefetchAction {...cardsResponse} />}
         itemComponent={CardsItem}
         data={selectCardsWithBalance(cards)}
+        limit={20}
         searchable
         required
         disabled={cardsResponse.isFetching}
@@ -122,6 +124,7 @@ export default function CreateOrderModal() {
         iconWidth={48}
         itemComponent={ThingsItem}
         data={selectItems(form.values.category)}
+        limit={20}
         searchable
         required
         {...form.getInputProps('item')}

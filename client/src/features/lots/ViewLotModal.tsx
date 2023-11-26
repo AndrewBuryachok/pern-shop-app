@@ -54,6 +54,7 @@ export default function ViewLotModal({ data: lot }: Props) {
         placeholder={`${t('components.total')}: ${lot.bids.length}`}
         itemComponent={StatesItem}
         data={viewStates(lot.bids)}
+        limit={20}
         searchable
       />
       <TextInput

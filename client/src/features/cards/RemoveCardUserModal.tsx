@@ -53,6 +53,7 @@ export default function RemoveCardUserModal({ data: card }: Props) {
         data={selectUsers(card.users).filter(
           (user) => user.id !== card.user.id,
         )}
+        limit={20}
         searchable
         required
         {...form.getInputProps('user')}
