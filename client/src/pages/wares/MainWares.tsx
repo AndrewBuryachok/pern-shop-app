@@ -5,7 +5,7 @@ import { ISearch } from '../../common/interfaces';
 import { Mode } from '../../common/enums';
 import { useGetMainWaresQuery } from '../../features/wares/wares.api';
 import WaresTable from '../../features/wares/WaresTable';
-import { buyWareAction } from '../../features/wares/BuyWareModal';
+import { buyMyWareAction } from '../../features/wares/BuyWareModal';
 import { Role } from '../../common/constants';
 
 export default function MainWares() {
@@ -41,7 +41,7 @@ export default function MainWares() {
     { label: t('pages.all'), to: 'all', role: Role.MANAGER },
   ];
 
-  const actions = [buyWareAction];
+  const actions = [buyMyWareAction];
 
   return (
     <WaresTable

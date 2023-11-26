@@ -5,7 +5,7 @@ import { ISearch } from '../../common/interfaces';
 import { Mode } from '../../common/enums';
 import { useGetMainLotsQuery } from '../../features/lots/lots.api';
 import LotsTable from '../../features/lots/LotsTable';
-import { buyLotAction } from '../../features/lots/BuyLotModal';
+import { buyMyLotAction } from '../../features/lots/BuyLotModal';
 import { Role } from '../../common/constants';
 
 export default function MainLots() {
@@ -41,7 +41,7 @@ export default function MainLots() {
     { label: t('pages.all'), to: 'all', role: Role.MANAGER },
   ];
 
-  const actions = [buyLotAction];
+  const actions = [buyMyLotAction];
 
   return (
     <LotsTable

@@ -7,7 +7,8 @@ import { useGetAllProductsQuery } from '../../features/products/products.api';
 import ProductsTable from '../../features/products/ProductsTable';
 import { createUserProductButton } from '../../features/products/CreateProductModal';
 import { editProductAction } from '../../features/products/EditProductModal';
-import { completeProductAction } from '../../features/products/CompleteProductModal';
+import { buyUserProductAction } from '../../features/products/BuyProductModal';
+import { completeUserProductAction } from '../../features/products/CompleteProductModal';
 
 export default function AllProducts() {
   const [t] = useTranslation();
@@ -44,7 +45,11 @@ export default function AllProducts() {
 
   const button = createUserProductButton;
 
-  const actions = [editProductAction, completeProductAction];
+  const actions = [
+    editProductAction,
+    buyUserProductAction,
+    completeUserProductAction,
+  ];
 
   return (
     <ProductsTable

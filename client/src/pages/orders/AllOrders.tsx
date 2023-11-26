@@ -5,6 +5,7 @@ import { ISearch } from '../../common/interfaces';
 import { Mode } from '../../common/enums';
 import { useGetAllOrdersQuery } from '../../features/orders/orders.api';
 import OrdersTable from '../../features/orders/OrdersTable';
+import { createUserOrderButton } from '../../features/orders/CreateOrderModal';
 import { takeUserOrderAction } from '../../features/orders/TakeOrderModal';
 import { executeOrderAction } from '../../features/orders/ExecuteOrderModal';
 import { completeOrderAction } from '../../features/orders/CompleteOrderModal';
@@ -48,6 +49,8 @@ export default function AllOrders() {
     { label: t('pages.placed'), to: '../placed' },
   ];
 
+  const button = createUserOrderButton;
+
   const actions = [
     takeUserOrderAction,
     executeOrderAction,
@@ -66,6 +69,7 @@ export default function AllOrders() {
       search={search}
       setSearch={setSearch}
       links={links}
+      button={button}
       actions={actions}
     />
   );

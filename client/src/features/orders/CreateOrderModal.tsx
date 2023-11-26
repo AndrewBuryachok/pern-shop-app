@@ -6,11 +6,17 @@ import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { useCreateOrderMutation } from './orders.api';
 import { useSelectFreeStoragesQuery } from '../storages/storages.api';
-import { useSelectMyCardsQuery } from '../cards/cards.api';
+import { useSelectAllUsersQuery } from '../users/users.api';
+import {
+  useSelectMyCardsQuery,
+  useSelectUserCardsWithBalanceQuery,
+} from '../cards/cards.api';
 import { CreateOrderDto } from './order.dto';
 import CustomForm from '../../common/components/CustomForm';
 import RefetchAction from '../../common/components/RefetchAction';
+import CustomAvatar from '../../common/components/CustomAvatar';
 import ThingImage from '../../common/components/ThingImage';
+import { UsersItem } from '../../common/components/UsersItem';
 import { ThingsItem } from '../../common/components/ThingItem';
 import { CardsItem } from '../../common/components/CardsItem';
 import { PlacesItem } from '../../common/components/PlacesItem';
@@ -21,6 +27,7 @@ import {
   selectItems,
   selectKits,
   selectStoragesWithPrice,
+  selectUsers,
 } from '../../common/utils';
 import {
   MAX_AMOUNT_VALUE,
@@ -29,7 +36,9 @@ import {
   MAX_PRICE_VALUE,
 } from '../../common/constants';
 
-export default function CreateOrderModal() {
+type Props = { hasRole: boolean };
+
+export default function CreateOrderModal({ hasRole }: Props) {
   const [t] = useTranslation();
 
   const storage = { price: 0 };
@@ -38,6 +47,7 @@ export default function CreateOrderModal() {
   const form = useForm({
     initialValues: {
       storage: '',
+      user: '',
       card: '',
       category: '',
       item: '',
@@ -65,7 +75,16 @@ export default function CreateOrderModal() {
   useEffect(() => form.setFieldValue('item', ''), [form.values.category]);
 
   const { data: storages, ...storagesResponse } = useSelectFreeStoragesQuery();
-  const { data: cards, ...cardsResponse } = useSelectMyCardsQuery();
+  const { data: users, ...usersResponse } = useSelectAllUsersQuery(undefined, {
+    skip: !hasRole,
+  });
+  const { data: cards, ...cardsResponse } = hasRole
+    ? useSelectUserCardsWithBalanceQuery(+form.values.user, {
+        skip: !form.values.user,
+      })
+    : useSelectMyCardsQuery();
+
+  const user = users?.find((user) => user.id === +form.values.user);
 
   storage.price =
     storages?.find((storage) => storage.id === +form.values.storage)?.price ||
@@ -97,6 +116,22 @@ export default function CreateOrderModal() {
         disabled={storagesResponse.isFetching}
         {...form.getInputProps('storage')}
       />
+      {hasRole && (
+        <Select
+          label={t('columns.user')}
+          placeholder={t('columns.user')}
+          icon={user && <CustomAvatar {...user} />}
+          iconWidth={48}
+          rightSection={<RefetchAction {...usersResponse} />}
+          itemComponent={UsersItem}
+          data={selectUsers(users)}
+          limit={20}
+          searchable
+          required
+          disabled={usersResponse.isFetching}
+          {...form.getInputProps('user')}
+        />
+      )}
       <Select
         label={t('columns.card')}
         placeholder={t('columns.card')}
@@ -172,11 +207,15 @@ export default function CreateOrderModal() {
   );
 }
 
-export const createOrderButton = {
+export const createOrderFactory = (hasRole: boolean) => ({
   label: 'create',
   open: () =>
     openModal({
       title: t('actions.create') + ' ' + t('modals.order'),
-      children: <CreateOrderModal />,
+      children: <CreateOrderModal hasRole={hasRole} />,
     }),
-};
+});
+
+export const createMyOrderButton = createOrderFactory(false);
+
+export const createUserOrderButton = createOrderFactory(true);

@@ -65,12 +65,16 @@ export default function CompleteLotModal({ data: lot }: Props) {
   );
 }
 
-export const completeLotAction = {
+export const completeLotFactory = (hasRole: boolean) => ({
   open: (lot: Lot) =>
     openModal({
       title: t('actions.complete') + ' ' + t('modals.lot'),
       children: <CompleteLotModal data={lot} />,
     }),
   disable: (lot: Lot) => !!lot.completedAt,
-  color: Color.GREEN,
-};
+  color: hasRole ? Color.GREEN : Color.RED,
+});
+
+export const completeMyLotAction = completeLotFactory(false);
+
+export const completeUserLotAction = completeLotFactory(true);

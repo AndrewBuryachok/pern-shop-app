@@ -6,7 +6,7 @@ import { Mode } from '../../common/enums';
 import { useGetMyLotsQuery } from '../../features/lots/lots.api';
 import LotsTable from '../../features/lots/LotsTable';
 import { createMyLotButton } from '../../features/lots/CreateLotModal';
-import { completeLotAction } from '../../features/lots/CompleteLotModal';
+import { completeMyLotAction } from '../../features/lots/CompleteLotModal';
 import { Role } from '../../common/constants';
 
 export default function MyLots() {
@@ -44,7 +44,7 @@ export default function MyLots() {
 
   const button = createMyLotButton;
 
-  const actions = [completeLotAction];
+  const actions = [completeMyLotAction];
 
   return (
     <LotsTable

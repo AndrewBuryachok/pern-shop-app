@@ -6,12 +6,17 @@ import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { Product } from './product.model';
 import { useCreateSaleMutation } from '../sales/sales.api';
-import { useSelectMyCardsQuery } from '../cards/cards.api';
+import { useSelectAllUsersQuery } from '../users/users.api';
+import {
+  useSelectMyCardsQuery,
+  useSelectUserCardsWithBalanceQuery,
+} from '../cards/cards.api';
 import { CreateSaleDto } from '../sales/sale.dto';
 import CustomForm from '../../common/components/CustomForm';
 import RefetchAction from '../../common/components/RefetchAction';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import ThingImage from '../../common/components/ThingImage';
+import { UsersItem } from '../../common/components/UsersItem';
 import { CardsItem } from '../../common/components/CardsItem';
 import {
   customMin,
@@ -19,25 +24,35 @@ import {
   parseItem,
   parseThingAmount,
   selectCardsWithBalance,
+  selectUsers,
 } from '../../common/utils';
 import { Color } from '../../common/constants';
 
-type Props = IModal<Product>;
+type Props = IModal<Product> & { hasRole: boolean };
 
-export default function BuyProductModal({ data: product }: Props) {
+export default function BuyProductModal({ data: product, hasRole }: Props) {
   const [t] = useTranslation();
 
   const form = useForm({
     initialValues: {
       productId: product.id,
+      user: '',
       card: '',
       amount: 1,
     },
     transformValues: ({ card, ...rest }) => ({ ...rest, cardId: +card }),
   });
 
-  const { data: cards, ...cardsResponse } = useSelectMyCardsQuery();
+  const { data: users, ...usersResponse } = useSelectAllUsersQuery(undefined, {
+    skip: !hasRole,
+  });
+  const { data: cards, ...cardsResponse } = hasRole
+    ? useSelectUserCardsWithBalanceQuery(+form.values.user, {
+        skip: !form.values.user,
+      })
+    : useSelectMyCardsQuery();
 
+  const user = users?.find((user) => user.id === +form.values.user);
   const card = cards?.find((card) => card.id === +form.values.card);
   const maxAmount = card && Math.floor(card.balance / product.price);
 
@@ -82,6 +97,22 @@ export default function BuyProductModal({ data: product }: Props) {
         value={`${product.price}$`}
         disabled
       />
+      {hasRole && (
+        <Select
+          label={t('columns.user')}
+          placeholder={t('columns.user')}
+          icon={user && <CustomAvatar {...user} />}
+          iconWidth={48}
+          rightSection={<RefetchAction {...usersResponse} />}
+          itemComponent={UsersItem}
+          data={selectUsers(users)}
+          limit={20}
+          searchable
+          required
+          disabled={usersResponse.isFetching}
+          {...form.getInputProps('user')}
+        />
+      )}
       <Select
         label={t('columns.card')}
         placeholder={t('columns.card')}
@@ -106,12 +137,16 @@ export default function BuyProductModal({ data: product }: Props) {
   );
 }
 
-export const buyProductAction = {
+export const buyProductFactory = (hasRole: boolean) => ({
   open: (product: Product) =>
     openModal({
       title: t('actions.buy') + ' ' + t('modals.product'),
-      children: <BuyProductModal data={product} />,
+      children: <BuyProductModal data={product} hasRole={hasRole} />,
     }),
   disable: () => false,
   color: Color.GREEN,
-};
+});
+
+export const buyMyProductAction = buyProductFactory(false);
+
+export const buyUserProductAction = buyProductFactory(true);

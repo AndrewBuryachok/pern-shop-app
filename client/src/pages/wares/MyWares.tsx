@@ -7,7 +7,7 @@ import { useGetMyWaresQuery } from '../../features/wares/wares.api';
 import WaresTable from '../../features/wares/WaresTable';
 import { createMyWareButton } from '../../features/wares/CreateWareModal';
 import { editWareAction } from '../../features/wares/EditWareModal';
-import { completeWareAction } from '../../features/wares/CompleteWareModal';
+import { completeMyWareAction } from '../../features/wares/CompleteWareModal';
 import { Role } from '../../common/constants';
 
 export default function MyWares() {
@@ -45,7 +45,7 @@ export default function MyWares() {
 
   const button = createMyWareButton;
 
-  const actions = [editWareAction, completeWareAction];
+  const actions = [editWareAction, completeMyWareAction];
 
   return (
     <WaresTable

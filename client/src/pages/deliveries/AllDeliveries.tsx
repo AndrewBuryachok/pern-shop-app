@@ -5,6 +5,7 @@ import { ISearch } from '../../common/interfaces';
 import { Mode } from '../../common/enums';
 import { useGetAllDeliveriesQuery } from '../../features/deliveries/deliveries.api';
 import DeliveriesTable from '../../features/deliveries/DeliveriesTable';
+import { createUserDeliveryButton } from '../../features/deliveries/CreateDeliveryModal';
 import { takeUserDeliveryAction } from '../../features/deliveries/TakeDeliveryModal';
 import { executeDeliveryAction } from '../../features/deliveries/ExecuteDeliveryModal';
 import { completeDeliveryAction } from '../../features/deliveries/CompleteDeliveryModal';
@@ -48,6 +49,8 @@ export default function AllDeliveries() {
     { label: t('pages.placed'), to: '../placed' },
   ];
 
+  const button = createUserDeliveryButton;
+
   const actions = [
     takeUserDeliveryAction,
     executeDeliveryAction,
@@ -66,6 +69,7 @@ export default function AllDeliveries() {
       search={search}
       setSearch={setSearch}
       links={links}
+      button={button}
       actions={actions}
     />
   );

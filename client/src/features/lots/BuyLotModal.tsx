@@ -6,12 +6,17 @@ import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { Lot } from './lot.model';
 import { useCreateBidMutation } from '../bids/bids.api';
-import { useSelectMyCardsQuery } from '../cards/cards.api';
+import { useSelectAllUsersQuery } from '../users/users.api';
+import {
+  useSelectMyCardsQuery,
+  useSelectUserCardsWithBalanceQuery,
+} from '../cards/cards.api';
 import { CreateBidDto } from '../bids/bid.dto';
 import CustomForm from '../../common/components/CustomForm';
 import RefetchAction from '../../common/components/RefetchAction';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import ThingImage from '../../common/components/ThingImage';
+import { UsersItem } from '../../common/components/UsersItem';
 import { CardsItem } from '../../common/components/CardsItem';
 import {
   customMin,
@@ -19,25 +24,35 @@ import {
   parseItem,
   parseThingAmount,
   selectCardsWithBalance,
+  selectUsers,
 } from '../../common/utils';
 import { Color, MAX_PRICE_VALUE } from '../../common/constants';
 
-type Props = IModal<Lot>;
+type Props = IModal<Lot> & { hasRole: boolean };
 
-export default function BuyLotModal({ data: lot }: Props) {
+export default function BuyLotModal({ data: lot, hasRole }: Props) {
   const [t] = useTranslation();
 
   const form = useForm({
     initialValues: {
       lotId: lot.id,
+      user: '',
       card: '',
       price: lot.price + 1,
     },
     transformValues: ({ card, ...rest }) => ({ ...rest, cardId: +card }),
   });
 
-  const { data: cards, ...cardsResponse } = useSelectMyCardsQuery();
+  const { data: users, ...usersResponse } = useSelectAllUsersQuery(undefined, {
+    skip: !hasRole,
+  });
+  const { data: cards, ...cardsResponse } = hasRole
+    ? useSelectUserCardsWithBalanceQuery(+form.values.user, {
+        skip: !form.values.user,
+      })
+    : useSelectMyCardsQuery();
 
+  const user = users?.find((user) => user.id === +form.values.user);
   const card = cards?.find((card) => card.id === +form.values.card);
   const maxPrice = card?.balance;
 
@@ -78,6 +93,22 @@ export default function BuyLotModal({ data: lot }: Props) {
         disabled
       />
       <TextInput label={t('columns.price')} value={`${lot.price}$`} disabled />
+      {hasRole && (
+        <Select
+          label={t('columns.user')}
+          placeholder={t('columns.user')}
+          icon={user && <CustomAvatar {...user} />}
+          iconWidth={48}
+          rightSection={<RefetchAction {...usersResponse} />}
+          itemComponent={UsersItem}
+          data={selectUsers(users)}
+          limit={20}
+          searchable
+          required
+          disabled={usersResponse.isFetching}
+          {...form.getInputProps('user')}
+        />
+      )}
       <Select
         label={t('columns.card')}
         placeholder={t('columns.card')}
@@ -102,12 +133,16 @@ export default function BuyLotModal({ data: lot }: Props) {
   );
 }
 
-export const buyLotAction = {
+export const buyLotFactory = (hasRole: boolean) => ({
   open: (lot: Lot) =>
     openModal({
       title: t('actions.buy') + ' ' + t('modals.lot'),
-      children: <BuyLotModal data={lot} />,
+      children: <BuyLotModal data={lot} hasRole={hasRole} />,
     }),
   disable: () => false,
   color: Color.GREEN,
-};
+});
+
+export const buyMyLotAction = buyLotFactory(false);
+
+export const buyUserLotAction = buyLotFactory(true);

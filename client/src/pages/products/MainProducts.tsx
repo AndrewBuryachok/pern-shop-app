@@ -5,7 +5,7 @@ import { ISearch } from '../../common/interfaces';
 import { Mode } from '../../common/enums';
 import { useGetMainProductsQuery } from '../../features/products/products.api';
 import ProductsTable from '../../features/products/ProductsTable';
-import { buyProductAction } from '../../features/products/BuyProductModal';
+import { buyMyProductAction } from '../../features/products/BuyProductModal';
 import { Role } from '../../common/constants';
 
 export default function MainProducts() {
@@ -41,7 +41,7 @@ export default function MainProducts() {
     { label: t('pages.all'), to: 'all', role: Role.MANAGER },
   ];
 
-  const actions = [buyProductAction];
+  const actions = [buyMyProductAction];
 
   return (
     <ProductsTable

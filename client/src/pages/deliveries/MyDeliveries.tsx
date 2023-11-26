@@ -5,7 +5,7 @@ import { ISearch } from '../../common/interfaces';
 import { Mode } from '../../common/enums';
 import { useGetMyDeliveriesQuery } from '../../features/deliveries/deliveries.api';
 import DeliveriesTable from '../../features/deliveries/DeliveriesTable';
-import { createDeliveryButton } from '../../features/deliveries/CreateDeliveryModal';
+import { createMyDeliveryButton } from '../../features/deliveries/CreateDeliveryModal';
 import { completeDeliveryAction } from '../../features/deliveries/CompleteDeliveryModal';
 import { rateDeliveryAction } from '../../features/deliveries/RateDeliveryModal';
 import { deleteDeliveryAction } from '../../features/deliveries/DeleteDeliveryModal';
@@ -47,7 +47,7 @@ export default function MyDeliveries() {
     { label: t('pages.all'), to: '../all', role: Role.MANAGER },
   ];
 
-  const button = createDeliveryButton;
+  const button = createMyDeliveryButton;
 
   const actions = [
     completeDeliveryAction,

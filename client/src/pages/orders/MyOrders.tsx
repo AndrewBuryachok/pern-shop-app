@@ -5,7 +5,7 @@ import { ISearch } from '../../common/interfaces';
 import { Mode } from '../../common/enums';
 import { useGetMyOrdersQuery } from '../../features/orders/orders.api';
 import OrdersTable from '../../features/orders/OrdersTable';
-import { createOrderButton } from '../../features/orders/CreateOrderModal';
+import { createMyOrderButton } from '../../features/orders/CreateOrderModal';
 import { completeOrderAction } from '../../features/orders/CompleteOrderModal';
 import { rateOrderAction } from '../../features/orders/RateOrderModal';
 import { deleteOrderAction } from '../../features/orders/DeleteOrderModal';
@@ -47,7 +47,7 @@ export default function MyOrders() {
     { label: t('pages.all'), to: '../all', role: Role.MANAGER },
   ];
 
-  const button = createOrderButton;
+  const button = createMyOrderButton;
 
   const actions = [completeOrderAction, rateOrderAction, deleteOrderAction];
 

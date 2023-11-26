@@ -6,7 +6,8 @@ import { Mode } from '../../common/enums';
 import { useGetAllLotsQuery } from '../../features/lots/lots.api';
 import LotsTable from '../../features/lots/LotsTable';
 import { createUserLotButton } from '../../features/lots/CreateLotModal';
-import { completeLotAction } from '../../features/lots/CompleteLotModal';
+import { buyUserLotAction } from '../../features/lots/BuyLotModal';
+import { completeUserLotAction } from '../../features/lots/CompleteLotModal';
 
 export default function AllLots() {
   const [t] = useTranslation();
@@ -43,7 +44,7 @@ export default function AllLots() {
 
   const button = createUserLotButton;
 
-  const actions = [completeLotAction];
+  const actions = [buyUserLotAction, completeUserLotAction];
 
   return (
     <LotsTable
