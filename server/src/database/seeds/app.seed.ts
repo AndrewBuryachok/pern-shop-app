@@ -1,3 +1,4 @@
+import { faker } from '@faker-js/faker';
 import { Factory, Seeder } from 'typeorm-seeding';
 import { User } from '../../features/users/user.entity';
 import { Card } from '../../features/cards/card.entity';
@@ -34,8 +35,6 @@ import { TransportationStatus } from '../../features/transportations/transportat
 import { Kind } from '../../features/leases/kind.enum';
 import { hashData } from '../../common/utils';
 
-const getRandom = (list) => list[Math.floor(Math.random() * list.length)];
-
 export default class AppSeed implements Seeder {
   public async run(factory: Factory) {
     const users = await factory(User)()
@@ -65,8 +64,8 @@ export default class AppSeed implements Seeder {
       .makeMany(40);
     const exchanges = await factory(Exchange)()
       .map(async (exchange) => {
-        exchange.executorUser = getRandom(users);
-        exchange.customerCard = getRandom(
+        exchange.executorUser = faker.helpers.arrayElement(users);
+        exchange.customerCard = faker.helpers.arrayElement(
           cards.filter((card) => exchange.type || card.balance >= exchange.sum),
         );
         if (exchange.type) {
@@ -79,10 +78,10 @@ export default class AppSeed implements Seeder {
       .makeMany(40);
     const payments = await factory(Payment)()
       .map(async (payment) => {
-        payment.senderCard = getRandom(
+        payment.senderCard = faker.helpers.arrayElement(
           cards.filter((card) => card.balance >= payment.sum),
         );
-        payment.receiverCard = getRandom(cards);
+        payment.receiverCard = faker.helpers.arrayElement(cards);
         payment.senderCard.balance -= payment.sum;
         payment.receiverCard.balance += payment.sum;
         return payment;
@@ -91,10 +90,10 @@ export default class AppSeed implements Seeder {
     const invoices = await factory(Invoice)()
       .map(async (invoice) => {
         const completed = !!Math.floor(Math.random() * 2);
-        invoice.senderCard = getRandom(cards);
-        invoice.receiverUser = getRandom(users);
+        invoice.senderCard = faker.helpers.arrayElement(cards);
+        invoice.receiverUser = faker.helpers.arrayElement(users);
         if (completed) {
-          invoice.receiverCard = getRandom(
+          invoice.receiverCard = faker.helpers.arrayElement(
             cards.filter((card) => card.balance >= invoice.sum),
           );
           invoice.receiverUser = invoice.receiverCard.user;
@@ -114,13 +113,13 @@ export default class AppSeed implements Seeder {
       .makeMany(20);
     const shops = await factory(Shop)()
       .map(async (shop) => {
-        shop.user = getRandom(users);
+        shop.user = faker.helpers.arrayElement(users);
         return shop;
       })
       .createMany(10);
     const markets = await factory(Market)()
       .map(async (market) => {
-        market.card = getRandom(cards);
+        market.card = faker.helpers.arrayElement(cards);
         market.stores = [];
         return market;
       })
@@ -135,7 +134,7 @@ export default class AppSeed implements Seeder {
       .makeMany(markets.length);
     const storages = await factory(Storage)()
       .map(async (storage) => {
-        storage.card = getRandom(cards);
+        storage.card = faker.helpers.arrayElement(cards);
         storage.cells = [];
         return storage;
       })
@@ -150,7 +149,7 @@ export default class AppSeed implements Seeder {
       .makeMany(storages.length);
     const stores = await factory(Store)()
       .map(async (store) => {
-        store.market = getRandom(markets);
+        store.market = faker.helpers.arrayElement(markets);
         store.market.stores.push(store);
         store.name = store.market.stores.length;
         return store;
@@ -158,7 +157,7 @@ export default class AppSeed implements Seeder {
       .makeMany(40);
     const cells = await factory(Cell)()
       .map(async (cell) => {
-        cell.storage = getRandom(storages);
+        cell.storage = faker.helpers.arrayElement(storages);
         cell.storage.cells.push(cell);
         cell.name = cell.storage.cells.length;
         return cell;
@@ -166,9 +165,11 @@ export default class AppSeed implements Seeder {
       .makeMany(60);
     const rents = await factory(Rent)()
       .map(async (rent) => {
-        rent.store = getRandom(stores.filter((store) => !store.reservedAt));
+        rent.store = faker.helpers.arrayElement(
+          stores.filter((store) => !store.reservedAt),
+        );
         rent.store.reservedAt = new Date();
-        rent.card = getRandom(
+        rent.card = faker.helpers.arrayElement(
           cards.filter((card) => card.balance >= rent.store.market.price),
         );
         const payment = await factory(Payment)().make({
@@ -185,9 +186,11 @@ export default class AppSeed implements Seeder {
       .makeMany(10);
     const leases = await factory(Lease)()
       .map(async (lease) => {
-        lease.cell = getRandom(cells.filter((cell) => !cell.reservedAt));
+        lease.cell = faker.helpers.arrayElement(
+          cells.filter((cell) => !cell.reservedAt),
+        );
         lease.cell.reservedAt = new Date();
-        lease.card = getRandom(
+        lease.card = faker.helpers.arrayElement(
           cards.filter((card) => card.balance >= lease.cell.storage.price),
         );
         const payment = await factory(Payment)().make({
@@ -204,13 +207,13 @@ export default class AppSeed implements Seeder {
       .makeMany(50);
     const goods = await factory(Good)()
       .map(async (good) => {
-        good.shop = getRandom(shops);
+        good.shop = faker.helpers.arrayElement(shops);
         return good;
       })
       .createMany(20);
     const wares = await factory(Ware)()
       .map(async (ware) => {
-        ware.rent = getRandom(rents);
+        ware.rent = faker.helpers.arrayElement(rents);
         return ware;
       })
       .makeMany(20);
@@ -251,7 +254,7 @@ export default class AppSeed implements Seeder {
         order.lease.kind = Kind.ORDER;
         order.lease.card.balance -= order.price;
         if (order.status !== TransportationStatus.CREATED) {
-          order.executorCard = getRandom(cards);
+          order.executorCard = faker.helpers.arrayElement(cards);
         }
         if (order.status === TransportationStatus.COMPLETED) {
           order.completedAt = new Date();
@@ -275,7 +278,7 @@ export default class AppSeed implements Seeder {
         delivery.toLease.kind = Kind.DELIVERY;
         delivery.fromLease.card.balance -= delivery.price;
         if (delivery.status !== TransportationStatus.CREATED) {
-          delivery.executorCard = getRandom(cards);
+          delivery.executorCard = faker.helpers.arrayElement(cards);
         }
         if (delivery.status === TransportationStatus.COMPLETED) {
           delivery.completedAt = new Date();
@@ -293,8 +296,10 @@ export default class AppSeed implements Seeder {
       .makeMany(10);
     const trades = await factory(Trade)()
       .map(async (trade) => {
-        trade.ware = getRandom(wares.filter((ware) => ware.amount));
-        trade.card = getRandom(
+        trade.ware = faker.helpers.arrayElement(
+          wares.filter((ware) => ware.amount),
+        );
+        trade.card = faker.helpers.arrayElement(
           cards.filter((card) => card.balance >= trade.ware.price),
         );
         trade.amount =
@@ -320,8 +325,10 @@ export default class AppSeed implements Seeder {
       .makeMany(20);
     const sales = await factory(Sale)()
       .map(async (sale) => {
-        sale.product = getRandom(products.filter((product) => product.amount));
-        sale.card = getRandom(
+        sale.product = faker.helpers.arrayElement(
+          products.filter((product) => product.amount),
+        );
+        sale.card = faker.helpers.arrayElement(
           cards.filter((card) => card.balance >= sale.product.price),
         );
         sale.amount =
@@ -347,10 +354,10 @@ export default class AppSeed implements Seeder {
       .makeMany(20);
     const bids = await factory(Bid)()
       .map(async (bid) => {
-        bid.lot = getRandom(lots);
+        bid.lot = faker.helpers.arrayElement(lots);
         bid.price = Math.floor(Math.random() * 200) + bid.lot.price;
         bid.lot.price = bid.price;
-        bid.card = getRandom(
+        bid.card = faker.helpers.arrayElement(
           cards.filter((card) => card.balance >= bid.lot.price),
         );
         bid.card.balance -= bid.lot.price;
@@ -359,7 +366,7 @@ export default class AppSeed implements Seeder {
       .makeMany(20);
     const polls = await factory(Poll)()
       .map(async (poll) => {
-        poll.user = getRandom(users);
+        poll.user = faker.helpers.arrayElement(users);
         return poll;
       })
       .createMany(10);
@@ -417,10 +424,10 @@ export default class AppSeed implements Seeder {
       .createMany(80);
     const tasks = await factory(Task)()
       .map(async (task) => {
-        task.city = getRandom(cities);
-        task.customerUser = getRandom(users);
+        task.city = faker.helpers.arrayElement(cities);
+        task.customerUser = faker.helpers.arrayElement(users);
         if (task.status !== TransportationStatus.CREATED) {
-          task.executorUser = getRandom(users);
+          task.executorUser = faker.helpers.arrayElement(users);
         }
         if (task.status === TransportationStatus.COMPLETED) {
           task.completedAt = new Date();
