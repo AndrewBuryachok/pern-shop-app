@@ -12,7 +12,7 @@ import globalUK from './translations/uk/global.json';
 i18next.init({
   defaultNS: 'global',
   interpolation: { escapeValue: false },
-  lng: localStorage.getItem('lang') || 'en',
+  lng: localStorage.getItem('lang') || navigator.language.split('-')[0],
   fallbackLng: 'en',
   resources: { en: { global: globalEN }, uk: { global: globalUK } },
 });

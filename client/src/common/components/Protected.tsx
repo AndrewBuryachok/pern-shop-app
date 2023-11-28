@@ -1,5 +1,9 @@
 import { ReactNode } from 'react';
-import { Navigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import { Modal } from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
+import AuthModal from '../../features/auth/AuthModal';
 import { Role } from '../constants';
 import { isUserNotHasRole } from '../utils';
 
@@ -9,8 +13,30 @@ type Props = {
 };
 
 export default function Protected({ children, role }: Props) {
+  const navigate = useNavigate();
+
+  const [t] = useTranslation();
+
+  const [opened, { close }] = useDisclosure(true);
+
   if (isUserNotHasRole(role)) {
+    if (!role) {
+      return (
+        <Modal
+          title={t('header.menu.account.login')}
+          opened={opened}
+          onClose={() => {
+            close();
+            navigate('/', { replace: true });
+          }}
+        >
+          <AuthModal />
+        </Modal>
+      );
+    }
+
     return <Navigate to='/' replace />;
   }
+
   return <>{children}</>;
 }

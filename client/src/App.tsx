@@ -7,7 +7,6 @@ import {
   MantineProvider,
 } from '@mantine/core';
 import {
-  useColorScheme,
   useFullscreen,
   useHotkeys,
   useLocalStorage,
@@ -26,11 +25,13 @@ import { pages } from './app/pages';
 export default function App() {
   const dispatch = useAppDispatch();
 
-  const preferredColorScheme = useColorScheme();
+  const preferredColorScheme = window.matchMedia(
+    '(prefers-color-scheme: dark)',
+  ).matches;
 
   const [colorScheme, setColorScheme] = useLocalStorage<ColorScheme>({
     key: 'theme',
-    defaultValue: preferredColorScheme,
+    defaultValue: preferredColorScheme ? 'dark' : 'light',
     getInitialValueInEffect: true,
   });
 
@@ -84,8 +85,7 @@ export default function App() {
                             {...route}
                             element={
                               (route.index &&
-                                page.path !== 'polls' &&
-                                page.path !== 'tasks') ||
+                                !['polls', 'tasks'].includes(page.path)) ||
                               (route.path && route.path === ':userId') ? (
                                 <route.element />
                               ) : (

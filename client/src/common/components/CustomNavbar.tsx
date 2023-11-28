@@ -136,11 +136,11 @@ export default function CustomNavbar(props: Props) {
               key={link.route}
               label={t('navbar.' + link.route)}
               icon={<link.icon size={16} />}
-              active={link.route === active}
               component={Link}
               to={`/${link.route === 'home' ? '' : link.route}${
                 link.my ? '/my' : ''
               }`}
+              active={link.route === active}
             />
           ),
         )}

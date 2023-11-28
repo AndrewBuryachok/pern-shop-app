@@ -5,6 +5,7 @@ import {
   Burger,
   Group,
   Header,
+  Kbd,
   MediaQuery,
   Menu,
   Title,
@@ -93,7 +94,7 @@ export default function CustomHeader(props: Props) {
               icon={<IconWorld size={16} />}
               onClick={() => dispatch(toggleCurrentLanguage())}
             >
-              {t('header.menu.settings.language')}
+              {t('header.menu.settings.language')} <Kbd>L</Kbd>
             </Menu.Item>
             <Menu.Item
               icon={dark ? <IconSun size={16} /> : <IconMoon size={16} />}
@@ -101,7 +102,8 @@ export default function CustomHeader(props: Props) {
             >
               {dark
                 ? t('header.menu.settings.theme.light')
-                : t('header.menu.settings.theme.dark')}
+                : t('header.menu.settings.theme.dark')}{' '}
+              <Kbd>J</Kbd>
             </Menu.Item>
             <Menu.Item
               icon={
@@ -115,7 +117,8 @@ export default function CustomHeader(props: Props) {
             >
               {fullscreen
                 ? t('header.menu.settings.fullscreen.exit')
-                : t('header.menu.settings.fullscreen.enter')}
+                : t('header.menu.settings.fullscreen.enter')}{' '}
+              <Kbd>F</Kbd>
             </Menu.Item>
             <Menu.Label>{t('header.menu.account.title')}</Menu.Label>
             {user ? (
