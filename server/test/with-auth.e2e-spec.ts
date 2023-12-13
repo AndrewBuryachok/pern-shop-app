@@ -18,6 +18,7 @@ describe('With Auth', () => {
   let admin: Tokens;
   let banker: Tokens;
   let manager: Tokens;
+  let judge: Tokens;
   let cardId: number;
   let invoicesId: number;
   let cityId: number;
@@ -39,6 +40,7 @@ describe('With Auth', () => {
   let friendId: number;
   let ratingId: number;
   let tasksId: number;
+  let plaintsId: number;
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -120,6 +122,21 @@ describe('With Auth', () => {
       return request(app.getHttpServer())
         .post('/auth/logout')
         .set('Authorization', `Bearer ${manager.access}`)
+        .expect(201);
+    });
+
+    it('POST /auth/login as Judge', async () => {
+      return request(app.getHttpServer())
+        .post('/auth/login')
+        .send({ name: 'Judge', password: 'Judge' })
+        .expect(201)
+        .then((res) => (judge = res.body));
+    });
+
+    it('POST /auth/logout as Judge', async () => {
+      return request(app.getHttpServer())
+        .post('/auth/logout')
+        .set('Authorization', `Bearer ${judge.access}`)
         .expect(201);
     });
   });
@@ -1729,6 +1746,75 @@ describe('With Auth', () => {
     it('DELETE /tasks/:taskId', async () => {
       return request(app.getHttpServer())
         .delete(`/tasks/${tasksId[1]}`)
+        .set('Authorization', `Bearer ${user.access}`)
+        .expect('');
+    });
+  });
+
+  describe('Plaints', () => {
+    it('POST /plaints', async () => {
+      return request(app.getHttpServer())
+        .post('/plaints')
+        .set('Authorization', `Bearer ${user.access}`)
+        .send({ userId: user.id, description: '-' })
+        .expect('');
+    });
+
+    it('POST /plaints', async () => {
+      return request(app.getHttpServer())
+        .post('/plaints')
+        .set('Authorization', `Bearer ${user.access}`)
+        .send({ userId: user.id, description: '-' })
+        .expect('');
+    });
+
+    it('GET /plaints', async () => {
+      return request(app.getHttpServer())
+        .get('/plaints')
+        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
+    });
+
+    it('GET /plaints/my', async () => {
+      return request(app.getHttpServer())
+        .get('/plaints/my')
+        .set('Authorization', `Bearer ${user.access}`)
+        .expect((res) => expect(res.body.count).toBeGreaterThan(0))
+        .then((res) => (plaintsId = res.body.result.map((p) => p.id)));
+    });
+
+    it('GET /plaints/received', async () => {
+      return request(app.getHttpServer())
+        .get('/plaints/received')
+        .set('Authorization', `Bearer ${user.access}`)
+        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
+    });
+
+    it('GET /plaints/all', async () => {
+      return request(app.getHttpServer())
+        .get('/plaints/all')
+        .set('Authorization', `Bearer ${judge.access}`)
+        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
+    });
+
+    it('POST /plaints/:plaintId/execute', async () => {
+      return request(app.getHttpServer())
+        .post(`/plaints/${plaintsId[0]}/execute`)
+        .set('Authorization', `Bearer ${user.access}`)
+        .send({ description: '-' })
+        .expect('');
+    });
+
+    it('POST /plaints/:plaintId', async () => {
+      return request(app.getHttpServer())
+        .post(`/plaints/${plaintsId[0]}`)
+        .set('Authorization', `Bearer ${judge.access}`)
+        .send({ description: '-' })
+        .expect('');
+    });
+
+    it('DELETE /plaints/:plaintId', async () => {
+      return request(app.getHttpServer())
+        .delete(`/plaints/${plaintsId[1]}`)
         .set('Authorization', `Bearer ${user.access}`)
         .expect('');
     });

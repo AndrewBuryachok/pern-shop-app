@@ -30,6 +30,14 @@ export default class TestSeed implements Seeder {
       .create();
     await factory(User)()
       .map(async (user) => {
+        user.name = 'Judge';
+        user.password = await hashData(user.name);
+        user.roles = [4];
+        return user;
+      })
+      .create();
+    await factory(User)()
+      .map(async (user) => {
         user.name = 'User';
         user.password = await hashData(user.name);
         user.roles = [];

@@ -25,6 +25,7 @@ import { PollsService } from '../../features/polls/polls.service';
 import { FriendsService } from '../../features/friends/friends.service';
 import { RatingsService } from '../../features/ratings/ratings.service';
 import { TasksService } from '../../features/tasks/tasks.service';
+import { PlaintsService } from '../../features/plaints/plaints.service';
 
 @Injectable()
 @ValidatorConstraint({ name: 'isUserExists', async: true })
@@ -441,5 +442,24 @@ export class IsTaskExists implements ValidatorConstraintInterface {
 
   defaultMessage(): string {
     return 'Unknown task';
+  }
+}
+
+@Injectable()
+@ValidatorConstraint({ name: 'isPlaintExists', async: true })
+export class IsPlaintExists implements ValidatorConstraintInterface {
+  constructor(private plaintsService: PlaintsService) {}
+
+  async validate(value: number): Promise<boolean> {
+    try {
+      await this.plaintsService.checkPlaintExists(value);
+    } catch (error) {
+      return false;
+    }
+    return true;
+  }
+
+  defaultMessage(): string {
+    return 'Unknown plaint';
   }
 }

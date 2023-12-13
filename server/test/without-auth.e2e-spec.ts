@@ -553,4 +553,21 @@ describe('Without Auth', () => {
         .expect(403);
     });
   });
+
+  describe('Plaints', () => {
+    it('GET /plaints/my', async () => {
+      return request(app.getHttpServer()).get('/plaints/my').expect(401);
+    });
+
+    it('GET /plaints/received', async () => {
+      return request(app.getHttpServer()).get('/plaints/received').expect(401);
+    });
+
+    it('GET /plaints/all', async () => {
+      return request(app.getHttpServer())
+        .get('/plaints/all')
+        .set('Authorization', `Bearer ${user.access}`)
+        .expect(403);
+    });
+  });
 });

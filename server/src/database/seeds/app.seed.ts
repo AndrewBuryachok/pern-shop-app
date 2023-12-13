@@ -31,6 +31,7 @@ import { Vote } from '../../features/votes/vote.entity';
 import { Friend } from '../../features/friends/friend.entity';
 import { Rating } from '../../features/ratings/rating.entity';
 import { Task } from '../../features/tasks/task.entity';
+import { Plaint } from '../../features/plaints/plaint.entity';
 import { TransportationStatus } from '../../features/transportations/transportation-status.enum';
 import { Kind } from '../../features/leases/kind.enum';
 import { hashData } from '../../common/utils';
@@ -435,6 +436,16 @@ export default class AppSeed implements Seeder {
         return task;
       })
       .createMany(40);
+    const plaints = await factory(Plaint)()
+      .map(async (plaint) => {
+        plaint.senderUser = faker.helpers.arrayElement(users);
+        plaint.receiverUser = faker.helpers.arrayElement(users);
+        if (plaint.completedAt) {
+          plaint.executorUser = faker.helpers.arrayElement(users);
+        }
+        return plaint;
+      })
+      .createMany(20);
     let id = 0;
     await factory(Card)()
       .map(async () => cards[id++])

@@ -31,4 +31,7 @@ export enum Notification {
   UNTAKEN_TASK = 'Untaken task',
   EXECUTED_TASK = 'Executed task',
   COMPLETED_TASK = 'Completed task',
+  CREATED_PLAINT = 'Created plaint',
+  EXECUTED_PLAINT = 'Executed plaint',
+  COMPLETED_PLAINT = 'Completed plaint',
 }
