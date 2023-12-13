@@ -228,14 +228,14 @@ export class RentsService {
         new Brackets((qb) =>
           qb
             .where(`${!req.minPrice}`)
-            .orWhere('market.price >= :minPrice', { minPrice: req.minPrice }),
+            .orWhere('state.price >= :minPrice', { minPrice: req.minPrice }),
         ),
       )
       .andWhere(
         new Brackets((qb) =>
           qb
             .where(`${!req.maxPrice}`)
-            .orWhere('market.price <= :maxPrice', { maxPrice: req.maxPrice }),
+            .orWhere('state.price <= :maxPrice', { maxPrice: req.maxPrice }),
         ),
       )
       .orderBy('rent.id', 'DESC')
