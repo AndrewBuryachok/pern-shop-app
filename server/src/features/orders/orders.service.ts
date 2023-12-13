@@ -408,38 +408,30 @@ export class OrdersService {
       )
       .andWhere(
         new Brackets((qb) =>
-          qb
-            .where(`${!req.minAmount}`)
-            .orWhere('order.amount >= :minAmount', {
-              minAmount: req.minAmount,
-            }),
+          qb.where(`${!req.minAmount}`).orWhere('order.amount >= :minAmount', {
+            minAmount: req.minAmount,
+          }),
         ),
       )
       .andWhere(
         new Brackets((qb) =>
-          qb
-            .where(`${!req.maxAmount}`)
-            .orWhere('order.amount <= :maxAmount', {
-              maxAmount: req.maxAmount,
-            }),
+          qb.where(`${!req.maxAmount}`).orWhere('order.amount <= :maxAmount', {
+            maxAmount: req.maxAmount,
+          }),
         ),
       )
       .andWhere(
         new Brackets((qb) =>
-          qb
-            .where(`${!req.minIntake}`)
-            .orWhere('order.intake >= :minIntake', {
-              minIntake: req.minIntake,
-            }),
+          qb.where(`${!req.minIntake}`).orWhere('order.intake >= :minIntake', {
+            minIntake: req.minIntake,
+          }),
         ),
       )
       .andWhere(
         new Brackets((qb) =>
-          qb
-            .where(`${!req.maxIntake}`)
-            .orWhere('order.intake <= :maxIntake', {
-              maxIntake: req.maxIntake,
-            }),
+          qb.where(`${!req.maxIntake}`).orWhere('order.intake <= :maxIntake', {
+            maxIntake: req.maxIntake,
+          }),
         ),
       )
       .andWhere(
@@ -459,6 +451,20 @@ export class OrdersService {
           qb
             .where(`${!req.maxPrice}`)
             .orWhere('order.price <= :maxPrice', { maxPrice: req.maxPrice }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.minDate}`)
+            .orWhere('order.createdAt >= :minDate', { minDate: req.minDate }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.maxDate}`)
+            .orWhere('order.createdAt <= :maxDate', { maxDate: req.maxDate }),
         ),
       )
       .andWhere(

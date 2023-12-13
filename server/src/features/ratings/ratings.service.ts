@@ -152,6 +152,20 @@ export class RatingsService {
             .orWhere('rating.rate = :rate', { rate: req.rate }),
         ),
       )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.minDate}`)
+            .orWhere('rating.createdAt >= :minDate', { minDate: req.minDate }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.maxDate}`)
+            .orWhere('rating.createdAt <= :maxDate', { maxDate: req.maxDate }),
+        ),
+      )
       .orderBy('rating.id', 'DESC')
       .skip(req.skip)
       .take(req.take)

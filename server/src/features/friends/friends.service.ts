@@ -167,6 +167,20 @@ export class FriendsService {
             .orWhere('friend.type = :type', { type: req.type === 1 }),
         ),
       )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.minDate}`)
+            .orWhere('friend.createdAt >= :minDate', { minDate: req.minDate }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.maxDate}`)
+            .orWhere('friend.createdAt <= :maxDate', { maxDate: req.maxDate }),
+        ),
+      )
       .orderBy('friend.id', 'DESC')
       .skip(req.skip)
       .take(req.take)

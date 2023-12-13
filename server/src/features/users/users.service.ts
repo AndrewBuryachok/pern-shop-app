@@ -279,6 +279,20 @@ export class UsersService {
             .orWhere('user.status = :type', { type: req.type === 1 }),
         ),
       )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.minDate}`)
+            .orWhere('user.createdAt >= :minDate', { minDate: req.minDate }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.maxDate}`)
+            .orWhere('user.createdAt <= :maxDate', { maxDate: req.maxDate }),
+        ),
+      )
       .orderBy('user.id', 'DESC')
       .skip(req.skip)
       .take(req.take)
@@ -286,7 +300,7 @@ export class UsersService {
         'user.id',
         'user.name',
         'user.roles',
-        'user.registeredAt',
+        'user.createdAt',
         'city.id',
         'ownerUser.id',
         'ownerUser.name',
@@ -311,7 +325,7 @@ export class UsersService {
         'user.id',
         'user.name',
         'user.roles',
-        'user.registeredAt',
+        'user.createdAt',
         'city.id',
         'city.name',
         'city.x',

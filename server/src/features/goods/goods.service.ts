@@ -209,6 +209,20 @@ export class GoodsService {
             .orWhere('good.price <= :maxPrice', { maxPrice: req.maxPrice }),
         ),
       )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.minDate}`)
+            .orWhere('good.createdAt >= :minDate', { minDate: req.minDate }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.maxDate}`)
+            .orWhere('good.createdAt <= :maxDate', { maxDate: req.maxDate }),
+        ),
+      )
       .orderBy('good.id', 'DESC')
       .skip(req.skip)
       .take(req.take)

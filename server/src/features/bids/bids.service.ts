@@ -216,6 +216,20 @@ export class BidsService {
             .orWhere('bid.price <= :maxPrice', { maxPrice: req.maxPrice }),
         ),
       )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.minDate}`)
+            .orWhere('bid.createdAt >= :minDate', { minDate: req.minDate }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.maxDate}`)
+            .orWhere('bid.createdAt <= :maxDate', { maxDate: req.maxDate }),
+        ),
+      )
       .orderBy('bid.id', 'DESC')
       .skip(req.skip)
       .take(req.take)

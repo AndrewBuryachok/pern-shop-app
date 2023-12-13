@@ -1,5 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEnum, IsInt, IsOptional, IsString, Min } from 'class-validator';
+import {
+  IsDate,
+  IsEnum,
+  IsInt,
+  IsOptional,
+  IsString,
+  Min,
+} from 'class-validator';
 import { Transform, Type } from 'class-transformer';
 import { Role } from '../../features/users/role.enum';
 import { Kind } from '../../features/leases/kind.enum';
@@ -152,6 +159,18 @@ export class Request {
   @IsInt()
   @Type(() => Number)
   maxPrice?: number;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsDate()
+  @Type(() => Date)
+  minDate?: Date;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsDate()
+  @Type(() => Date)
+  maxDate?: Date;
 
   @ApiProperty({ required: false })
   @IsOptional()

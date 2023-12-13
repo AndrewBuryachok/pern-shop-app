@@ -246,6 +246,20 @@ export class LeasesService {
       .andWhere(
         new Brackets((qb) =>
           qb
+            .where(`${!req.minDate}`)
+            .orWhere('lease.createdAt >= :minDate', { minDate: req.minDate }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.maxDate}`)
+            .orWhere('lease.createdAt <= :maxDate', { maxDate: req.maxDate }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
             .where(`${!req.kind}`)
             .orWhere('lease.kind = :kind', { kind: req.kind }),
         ),

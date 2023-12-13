@@ -517,6 +517,24 @@ export class DeliveriesService {
       .andWhere(
         new Brackets((qb) =>
           qb
+            .where(`${!req.minDate}`)
+            .orWhere('delivery.createdAt >= :minDate', {
+              minDate: req.minDate,
+            }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.maxDate}`)
+            .orWhere('delivery.createdAt <= :maxDate', {
+              maxDate: req.maxDate,
+            }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
             .where(`${!req.status}`)
             .orWhere('delivery.status = :status', { status: req.status }),
         ),

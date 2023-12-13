@@ -155,6 +155,20 @@ export class PollsService {
             }),
         ),
       )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.minDate}`)
+            .orWhere('poll.createdAt >= :minDate', { minDate: req.minDate }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.maxDate}`)
+            .orWhere('poll.createdAt <= :maxDate', { maxDate: req.maxDate }),
+        ),
+      )
       .orderBy('poll.id', 'DESC')
       .skip(req.skip)
       .take(req.take)

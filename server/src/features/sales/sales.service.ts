@@ -290,6 +290,20 @@ export class SalesService {
       .andWhere(
         new Brackets((qb) =>
           qb
+            .where(`${!req.minDate}`)
+            .orWhere('sale.createdAt >= :minDate', { minDate: req.minDate }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.maxDate}`)
+            .orWhere('sale.createdAt <= :maxDate', { maxDate: req.maxDate }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
             .where(`${!req.rate}`)
             .orWhere('sale.rate = :rate', { rate: req.rate }),
         ),

@@ -282,6 +282,20 @@ export class TradesService {
       .andWhere(
         new Brackets((qb) =>
           qb
+            .where(`${!req.minDate}`)
+            .orWhere('trade.createdAt >= :minDate', { minDate: req.minDate }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.maxDate}`)
+            .orWhere('trade.createdAt <= :maxDate', { maxDate: req.maxDate }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
             .where(`${!req.rate}`)
             .orWhere('trade.rate = :rate', { rate: req.rate }),
         ),

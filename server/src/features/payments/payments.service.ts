@@ -149,6 +149,20 @@ export class PaymentsService {
             .orWhere('payment.sum <= :maxSum', { maxSum: req.maxSum }),
         ),
       )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.minDate}`)
+            .orWhere('payment.createdAt >= :minDate', { minDate: req.minDate }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.maxDate}`)
+            .orWhere('payment.createdAt <= :maxDate', { maxDate: req.maxDate }),
+        ),
+      )
       .orderBy('payment.id', 'DESC')
       .skip(req.skip)
       .take(req.take)

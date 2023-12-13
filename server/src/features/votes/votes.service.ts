@@ -132,6 +132,20 @@ export class VotesService {
             .orWhere('vote.type = :type', { type: req.type === 1 }),
         ),
       )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.minDate}`)
+            .orWhere('vote.createdAt >= :minDate', { minDate: req.minDate }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.maxDate}`)
+            .orWhere('vote.createdAt <= :maxDate', { maxDate: req.maxDate }),
+        ),
+      )
       .orderBy('vote.id', 'DESC')
       .skip(req.skip)
       .take(req.take)

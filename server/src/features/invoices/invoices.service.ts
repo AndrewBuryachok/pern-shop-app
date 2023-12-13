@@ -249,6 +249,20 @@ export class InvoicesService {
             .orWhere('invoice.sum <= :maxSum', { maxSum: req.maxSum }),
         ),
       )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.minDate}`)
+            .orWhere('invoice.createdAt >= :minDate', { minDate: req.minDate }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.maxDate}`)
+            .orWhere('invoice.createdAt <= :maxDate', { maxDate: req.maxDate }),
+        ),
+      )
       .orderBy('invoice.id', 'DESC')
       .skip(req.skip)
       .take(req.take)

@@ -238,6 +238,20 @@ export class RentsService {
             .orWhere('state.price <= :maxPrice', { maxPrice: req.maxPrice }),
         ),
       )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.minDate}`)
+            .orWhere('rent.createdAt >= :minDate', { minDate: req.minDate }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.maxDate}`)
+            .orWhere('rent.createdAt <= :maxDate', { maxDate: req.maxDate }),
+        ),
+      )
       .orderBy('rent.id', 'DESC')
       .skip(req.skip)
       .take(req.take)

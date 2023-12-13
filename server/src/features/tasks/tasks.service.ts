@@ -264,6 +264,20 @@ export class TasksService {
       .andWhere(
         new Brackets((qb) =>
           qb
+            .where(`${!req.minDate}`)
+            .orWhere('task.createdAt >= :minDate', { minDate: req.minDate }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.maxDate}`)
+            .orWhere('task.createdAt <= :maxDate', { maxDate: req.maxDate }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
             .where(`${!req.priority}`)
             .orWhere('task.priority = :priority', { priority: req.priority }),
         ),

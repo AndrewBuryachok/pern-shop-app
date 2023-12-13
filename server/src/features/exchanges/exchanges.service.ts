@@ -124,6 +124,24 @@ export class ExchangesService {
             .orWhere('exchange.sum <= :maxSum', { maxSum: req.maxSum }),
         ),
       )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.minDate}`)
+            .orWhere('exchange.createdAt >= :minDate', {
+              minDate: req.minDate,
+            }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.maxDate}`)
+            .orWhere('exchange.createdAt <= :maxDate', {
+              maxDate: req.maxDate,
+            }),
+        ),
+      )
       .orderBy('exchange.id', 'DESC')
       .skip(req.skip)
       .take(req.take)

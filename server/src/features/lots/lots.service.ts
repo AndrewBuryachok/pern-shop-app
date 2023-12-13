@@ -329,6 +329,20 @@ export class LotsService {
             .orWhere('lot.price <= :maxPrice', { maxPrice: req.maxPrice }),
         ),
       )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.minDate}`)
+            .orWhere('lot.createdAt >= :minDate', { minDate: req.minDate }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.maxDate}`)
+            .orWhere('lot.createdAt <= :maxDate', { maxDate: req.maxDate }),
+        ),
+      )
       .orderBy('lot.id', 'DESC')
       .skip(req.skip)
       .take(req.take)

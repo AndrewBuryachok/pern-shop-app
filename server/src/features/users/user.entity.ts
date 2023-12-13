@@ -33,8 +33,8 @@ export class User {
   @Column({ type: 'enum', enum: Role, array: true, default: [] })
   roles: Role[];
 
-  @CreateDateColumn({ type: 'timestamptz', name: 'registered_at' })
-  registeredAt: Date;
+  @CreateDateColumn({ type: 'timestamptz', name: 'created_at' })
+  createdAt: Date;
 
   @Column({ name: 'city_id', nullable: true })
   cityId?: number;
