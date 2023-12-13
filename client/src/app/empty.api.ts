@@ -32,6 +32,7 @@ export const emptyApi = createApi({
     'Friend',
     'Rating',
     'Task',
+    'Plaint',
   ],
   endpoints: () => ({}),
 });

@@ -32,6 +32,7 @@ import {
   IconNotes,
   IconPaperBag,
   IconReportMoney,
+  IconScale,
   IconShoppingBag,
   IconShoppingCart,
   IconStar,
@@ -171,6 +172,10 @@ export default function Home() {
     {
       title: 'tasks',
       icon: IconChecklist,
+    },
+    {
+      title: 'plaints',
+      icon: IconScale,
     },
   ];
 

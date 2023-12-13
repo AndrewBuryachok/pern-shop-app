@@ -13,6 +13,7 @@ import {
   IconMap,
   IconNotes,
   IconReceipt,
+  IconScale,
   IconStar,
   IconTags,
   IconUsers,
@@ -98,6 +99,10 @@ export default function CustomNavbar(props: Props) {
     {
       route: 'tasks',
       icon: IconChecklist,
+    },
+    {
+      route: 'plaints',
+      icon: IconScale,
     },
   ];
 

@@ -61,7 +61,8 @@
     "votes": "Votes",
     "friends": "Friends",
     "ratings": "Ratings",
-    "tasks": "Tasks"
+    "tasks": "Tasks",
+    "plaints": "Plaints"
   },
   "home": {
     "title": "Online shop",
@@ -178,6 +179,7 @@
     "voter": "Voter",
     "rate": "Rate",
     "priority": "Priority",
+    "executed": "Executed",
     "action": "Action",
     "things": "Things",
     "bids": "Bids",
@@ -232,7 +234,8 @@
     "friend": "Friend",
     "friends": "Friends",
     "rating": "Rating",
-    "task": "Task"
+    "task": "Task",
+    "plaint": "Plaint"
   },
   "errors": {
     "not_enough_balance": "Not enough balance"
@@ -252,6 +255,7 @@
       "admin": "Admin",
       "banker": "Banker",
       "manager": "Manager",
+      "judge": "Judge",
       "user": "User"
     },
     "colors": {
