@@ -23,7 +23,7 @@ export default function UsersTable({ actions = [], ...props }: Props) {
         t('columns.user'),
         t('columns.roles'),
         t('columns.city'),
-        t('columns.registered'),
+        t('columns.created'),
         t('columns.cards'),
         t('columns.action'),
       ]}
@@ -45,7 +45,7 @@ export default function UsersTable({ actions = [], ...props }: Props) {
             )}
           </td>
           <td>
-            <DateText date={user.registeredAt} />
+            <DateText date={user.createdAt} />
           </td>
           <td>
             <TotalText data={user.cards.length} />

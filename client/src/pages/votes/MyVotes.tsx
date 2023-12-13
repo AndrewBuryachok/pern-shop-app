@@ -20,6 +20,8 @@ export default function MyVotes() {
     mode: searchParams.get('mode') as Mode,
     description: searchParams.get('description') || '',
     type: searchParams.get('type'),
+    minDate: searchParams.get('minDate'),
+    maxDate: searchParams.get('maxDate'),
   });
 
   const response = useGetMyVotesQuery({ page, search });

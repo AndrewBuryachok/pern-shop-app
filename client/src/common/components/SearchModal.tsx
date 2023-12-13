@@ -1,5 +1,6 @@
+import 'dayjs/locale/uk';
 import { useEffect } from 'react';
-import { t } from 'i18next';
+import i18next, { t } from 'i18next';
 import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
 import {
@@ -13,6 +14,7 @@ import {
   Slider,
   Textarea,
 } from '@mantine/core';
+import { DatePicker } from '@mantine/dates';
 import { useForm } from '@mantine/form';
 import { closeAllModals, openModal } from '@mantine/modals';
 import { ISearch } from '../interfaces';
@@ -35,6 +37,7 @@ import { PlacesItem } from './PlacesItem';
 import { ColorsItem } from './ColorsItem';
 import { PrioritiesItem } from './PrioritiesItem';
 import {
+  scaleDate,
   scaleMaxPrice,
   scaleMaxSearch,
   scaleMaxSum,
@@ -58,6 +61,7 @@ import {
   selectStatuses,
   selectStorages,
   selectUsers,
+  unscaleDate,
   unscaleMaxPrice,
   unscaleMaxSearch,
   unscaleMaxSum,
@@ -90,6 +94,8 @@ export default function SearchModal(props: Props) {
       maxIntake: unscaleMaxSearch(props.search.maxIntake, MAX_INTAKE_VALUE),
       minPrice: unscaleMinPrice(props.search.minPrice),
       maxPrice: unscaleMaxPrice(props.search.maxPrice),
+      minDate: unscaleDate(props.search.minDate),
+      maxDate: unscaleDate(props.search.maxDate),
     },
     transformValues: ({ category, modes, ...rest }) => ({
       ...rest,
@@ -101,6 +107,8 @@ export default function SearchModal(props: Props) {
       maxIntake: scaleMaxSearch(rest.maxIntake, MAX_INTAKE_VALUE),
       minPrice: scaleMinPrice(rest.minPrice),
       maxPrice: scaleMaxPrice(rest.maxPrice),
+      minDate: scaleDate(rest.minDate),
+      maxDate: scaleDate(rest.maxDate),
     }),
   });
 
@@ -453,6 +461,22 @@ export default function SearchModal(props: Props) {
             {...form.getInputProps('maxPrice')}
           />
         </Input.Wrapper>
+      )}
+      {props.search.minDate !== undefined && (
+        <DatePicker
+          label={t('columns.created') + ' ' + t('columns.after')}
+          placeholder={t('columns.created') + ' ' + t('columns.after')}
+          locale={i18next.language}
+          {...form.getInputProps('minDate')}
+        />
+      )}
+      {props.search.maxDate !== undefined && (
+        <DatePicker
+          label={t('columns.created') + ' ' + t('columns.before')}
+          placeholder={t('columns.created') + ' ' + t('columns.before')}
+          locale={i18next.language}
+          {...form.getInputProps('maxDate')}
+        />
       )}
       {props.search.kind !== undefined && (
         <Select

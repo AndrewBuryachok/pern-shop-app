@@ -22,6 +22,8 @@ export default function AllPayments() {
     description: searchParams.get('description') || '',
     minSum: +(searchParams.get('minSum') || 0) || null,
     maxSum: +(searchParams.get('maxSum') || 0) || null,
+    minDate: searchParams.get('minDate'),
+    maxDate: searchParams.get('maxDate'),
   });
 
   const response = useGetAllPaymentsQuery({ page, search });

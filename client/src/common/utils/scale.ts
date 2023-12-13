@@ -71,3 +71,12 @@ export const unscaleMaxPrice = (v: number | null | undefined) => {
   if (v === undefined) return v;
   return unscalePrice(v === null ? MAX_PRICE_VALUE : v);
 };
+
+export const scaleDate = (date: Date | '' | null | undefined) =>
+  date &&
+  new Date(date.getTime() - date.getTimezoneOffset() * 60000)
+    .toISOString()
+    .slice(0, 10);
+
+export const unscaleDate = (date: string | null | undefined) =>
+  date && new Date(new Date(date).toISOString().slice(0, -1));

@@ -18,6 +18,8 @@ export default function MainUsers() {
     roles: searchParams.get('roles')?.split(',') || [],
     city: searchParams.get('city'),
     type: searchParams.get('type'),
+    minDate: searchParams.get('minDate'),
+    maxDate: searchParams.get('maxDate'),
   });
 
   const response = useGetMainUsersQuery({ page, search });

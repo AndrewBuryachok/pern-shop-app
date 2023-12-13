@@ -18,6 +18,8 @@ export default function AllFriends() {
     modes: [Mode.SENDER, Mode.RECEIVER],
     mode: searchParams.get('mode') as Mode,
     type: searchParams.get('type'),
+    minDate: searchParams.get('minDate'),
+    maxDate: searchParams.get('maxDate'),
   });
 
   const response = useGetAllFriendsQuery({ page, search });

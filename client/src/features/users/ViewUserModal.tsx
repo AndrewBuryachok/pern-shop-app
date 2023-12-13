@@ -50,8 +50,8 @@ export default function ViewUserModal({ data: user }: Props) {
         searchable
       />
       <TextInput
-        label={t('columns.registered')}
-        value={parseTime(user.registeredAt)}
+        label={t('columns.created')}
+        value={parseTime(user.createdAt)}
         disabled
       />
     </Stack>

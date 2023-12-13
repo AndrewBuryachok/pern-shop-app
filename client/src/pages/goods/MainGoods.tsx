@@ -25,6 +25,8 @@ export default function MainGoods() {
     kit: searchParams.get('kit'),
     minPrice: +(searchParams.get('minPrice') || 0) || null,
     maxPrice: +(searchParams.get('maxPrice') || 0) || null,
+    minDate: searchParams.get('minDate'),
+    maxDate: searchParams.get('maxDate'),
   });
 
   const response = useGetMainGoodsQuery({ page, search });

@@ -22,6 +22,8 @@ export default function MyFriends() {
     modes: [Mode.SENDER, Mode.RECEIVER],
     mode: searchParams.get('mode') as Mode,
     type: searchParams.get('type'),
+    minDate: searchParams.get('minDate'),
+    maxDate: searchParams.get('maxDate'),
   });
 
   const response = useGetMyFriendsQuery({ page, search });

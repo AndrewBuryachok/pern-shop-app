@@ -50,7 +50,7 @@ export default function UserProfile({ data: user }: Props) {
       <Group spacing={8}>
         <IconClock size={32} />
         <div>
-          <DateText date={user.registeredAt} />
+          <DateText date={user.createdAt} />
         </div>
       </Group>
       {user.city && (

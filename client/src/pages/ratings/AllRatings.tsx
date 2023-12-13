@@ -17,6 +17,8 @@ export default function AllRatings() {
     user: searchParams.get('user'),
     modes: [Mode.SENDER, Mode.RECEIVER],
     mode: searchParams.get('mode') as Mode,
+    minDate: searchParams.get('minDate'),
+    maxDate: searchParams.get('maxDate'),
     rate: +(searchParams.get('rate') || 0) || null,
   });
 

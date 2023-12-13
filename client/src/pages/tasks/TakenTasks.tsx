@@ -22,6 +22,8 @@ export default function TakenTasks() {
     mode: searchParams.get('mode') as Mode,
     city: searchParams.get('city'),
     description: searchParams.get('description') || '',
+    minDate: searchParams.get('minDate'),
+    maxDate: searchParams.get('maxDate'),
     priority: searchParams.get('priority'),
     status: searchParams.get('status'),
   });

@@ -20,6 +20,8 @@ export default function MainPolls() {
   const [search, setSearch] = useState<ISearch>({
     user: searchParams.get('user'),
     description: searchParams.get('description') || '',
+    minDate: searchParams.get('minDate'),
+    maxDate: searchParams.get('maxDate'),
   });
 
   const response = useGetMainPollsQuery({ page, search });

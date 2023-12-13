@@ -73,6 +73,12 @@ export const getQuery = ({ page, search }: IRequest) => {
   if (search?.maxPrice) {
     query.append('maxPrice', `${search.maxPrice}`);
   }
+  if (search?.minDate) {
+    query.append('minDate', search.minDate);
+  }
+  if (search?.maxDate) {
+    query.append('maxDate', search.maxDate);
+  }
   if (search?.kind) {
     query.append('kind', search.kind);
   }

@@ -1,5 +1,4 @@
-import i18next from 'i18next';
-import { t } from 'i18next';
+import i18next, { t } from 'i18next';
 import { MdCard } from '../../features/cards/card.model';
 import { Place } from '../../features/places/place.model';
 import { MdStore } from '../../features/stores/store.model';
