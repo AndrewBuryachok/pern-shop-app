@@ -126,6 +126,11 @@ export class RatingsService {
       .innerJoin('rating.receiverUser', 'receiverUser')
       .where(
         new Brackets((qb) =>
+          qb.where(`${!req.id}`).orWhere('rating.id = :id', { id: req.id }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
           qb
             .where(`${!req.user}`)
             .orWhere(

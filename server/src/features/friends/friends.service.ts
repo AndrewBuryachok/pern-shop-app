@@ -141,6 +141,11 @@ export class FriendsService {
       .innerJoin('friend.receiverUser', 'receiverUser')
       .where(
         new Brackets((qb) =>
+          qb.where(`${!req.id}`).orWhere('friend.id = :id', { id: req.id }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
           qb
             .where(`${!req.user}`)
             .orWhere(

@@ -186,6 +186,11 @@ export class InvoicesService {
       .leftJoin('receiverCard.user', 'user')
       .where(
         new Brackets((qb) =>
+          qb.where(`${!req.id}`).orWhere('invoice.id = :id', { id: req.id }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
           qb
             .where(`${!req.user}`)
             .orWhere(

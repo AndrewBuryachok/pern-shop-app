@@ -255,6 +255,11 @@ export class WaresService {
       .innerJoin('sellerCard.user', 'sellerUser')
       .where(
         new Brackets((qb) =>
+          qb.where(`${!req.id}`).orWhere('ware.id = :id', { id: req.id }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
           qb
             .where(`${!req.user}`)
             .orWhere(

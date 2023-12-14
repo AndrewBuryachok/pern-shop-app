@@ -184,6 +184,11 @@ export class PlaintsService {
       .leftJoin('plaint.executorUser', 'executorUser')
       .where(
         new Brackets((qb) =>
+          qb.where(`${!req.id}`).orWhere('plaint.id = :id', { id: req.id }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
           qb
             .where(`${!req.user}`)
             .orWhere(

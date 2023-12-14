@@ -134,6 +134,11 @@ export class GoodsService {
       .innerJoin('shop.user', 'sellerUser')
       .where(
         new Brackets((qb) =>
+          qb.where(`${!req.id}`).orWhere('good.id = :id', { id: req.id }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
           qb
             .where(`${!req.user}`)
             .orWhere('sellerUser.id = :userId', { userId: req.user }),

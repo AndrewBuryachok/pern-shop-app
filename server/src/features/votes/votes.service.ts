@@ -97,6 +97,11 @@ export class VotesService {
       .innerJoin('vote.user', 'voterUser')
       .where(
         new Brackets((qb) =>
+          qb.where(`${!req.id}`).orWhere('vote.id = :id', { id: req.id }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
           qb
             .where(`${!req.user}`)
             .orWhere(

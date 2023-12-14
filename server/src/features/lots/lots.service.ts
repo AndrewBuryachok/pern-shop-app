@@ -212,6 +212,11 @@ export class LotsService {
       .innerJoin('sellerCard.user', 'sellerUser')
       .where(
         new Brackets((qb) =>
+          qb.where(`${!req.id}`).orWhere('lot.id = :id', { id: req.id }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
           qb
             .where(`${!req.user}`)
             .orWhere(

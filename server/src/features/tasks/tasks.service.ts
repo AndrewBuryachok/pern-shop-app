@@ -219,6 +219,11 @@ export class TasksService {
       .leftJoin('task.executorUser', 'executorUser')
       .where(
         new Brackets((qb) =>
+          qb.where(`${!req.id}`).orWhere('task.id = :id', { id: req.id }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
           qb
             .where(`${!req.user}`)
             .orWhere(

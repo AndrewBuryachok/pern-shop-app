@@ -233,6 +233,11 @@ export class StoragesService {
       .innerJoin('ownerCard.user', 'ownerUser')
       .where(
         new Brackets((qb) =>
+          qb.where(`${!req.id}`).orWhere('storage.id = :id', { id: req.id }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
           qb
             .where(`${!req.user}`)
             .orWhere('ownerUser.id = :userId', { userId: req.user }),

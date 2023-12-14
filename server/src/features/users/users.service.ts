@@ -253,9 +253,14 @@ export class UsersService {
       .leftJoin('city.user', 'ownerUser')
       .where(
         new Brackets((qb) =>
+          qb.where(`${!req.id}`).orWhere('user.id = :id', { id: req.id }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
           qb
             .where(`${!req.user}`)
-            .orWhere(`user.id = :userId`, { userId: req.user }),
+            .orWhere('user.id = :userId', { userId: req.user }),
         ),
       )
       .andWhere(

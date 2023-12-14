@@ -141,6 +141,11 @@ export class PollsService {
       )
       .where(
         new Brackets((qb) =>
+          qb.where(`${!req.id}`).orWhere('poll.id = :id', { id: req.id }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
           qb
             .where(`${!req.user}`)
             .orWhere('pollerUser.id = :userId', { userId: req.user }),

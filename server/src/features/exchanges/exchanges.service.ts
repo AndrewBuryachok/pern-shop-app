@@ -77,6 +77,11 @@ export class ExchangesService {
       .innerJoin('customerCard.user', 'customerUser')
       .where(
         new Brackets((qb) =>
+          qb.where(`${!req.id}`).orWhere('exchange.id = :id', { id: req.id }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
           qb
             .where(`${!req.user}`)
             .orWhere(

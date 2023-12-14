@@ -86,6 +86,11 @@ export class PaymentsService {
       .innerJoin('receiverCard.user', 'receiverUser')
       .where(
         new Brackets((qb) =>
+          qb.where(`${!req.id}`).orWhere('payment.id = :id', { id: req.id }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
           qb
             .where(`${!req.user}`)
             .orWhere(

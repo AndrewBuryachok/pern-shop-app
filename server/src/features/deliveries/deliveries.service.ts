@@ -367,6 +367,11 @@ export class DeliveriesService {
       .leftJoin('executorCard.user', 'executorUser')
       .where(
         new Brackets((qb) =>
+          qb.where(`${!req.id}`).orWhere('delivery.id = :id', { id: req.id }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
           qb
             .where(`${!req.user}`)
             .orWhere(

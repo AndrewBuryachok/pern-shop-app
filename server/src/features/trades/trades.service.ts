@@ -148,6 +148,11 @@ export class TradesService {
       .where('next.id IS NULL')
       .andWhere(
         new Brackets((qb) =>
+          qb.where(`${!req.id}`).orWhere('trade.id = :id', { id: req.id }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
           qb
             .where(`${!req.user}`)
             .orWhere(

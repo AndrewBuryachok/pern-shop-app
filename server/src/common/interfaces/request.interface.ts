@@ -33,6 +33,12 @@ export class Request {
   @IsOptional()
   @IsInt()
   @Type(() => Number)
+  id?: number;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsInt()
+  @Type(() => Number)
   user?: number;
 
   @ApiProperty({ required: false })

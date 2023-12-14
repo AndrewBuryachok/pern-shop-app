@@ -85,6 +85,11 @@ export class BidsService {
       .innerJoin('buyerCard.user', 'buyerUser')
       .where(
         new Brackets((qb) =>
+          qb.where(`${!req.id}`).orWhere('bid.id = :id', { id: req.id }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
           qb
             .where(`${!req.user}`)
             .orWhere(
