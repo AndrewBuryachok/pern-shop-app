@@ -15,6 +15,7 @@ export default function ViewExchangeModal({ data: exchange }: Props) {
 
   return (
     <Stack spacing={8}>
+      <TextInput label={t('columns.id')} value={exchange.id} disabled />
       <TextInput
         label={t('columns.executor')}
         icon={<CustomAvatar {...exchange.executorUser} />}

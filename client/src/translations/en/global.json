@@ -128,6 +128,7 @@
     "save": "Save changes"
   },
   "columns": {
+    "id": "Identifier",
     "user": "User",
     "role": "Role",
     "roles": "Roles",

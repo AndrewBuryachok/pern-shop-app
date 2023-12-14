@@ -15,6 +15,7 @@ export default function ViewVoteModal({ data: vote }: Props) {
 
   return (
     <Stack spacing={8}>
+      <TextInput label={t('columns.id')} value={vote.id} disabled />
       <TextInput
         label={t('columns.voter')}
         icon={<CustomAvatar {...vote.user} />}

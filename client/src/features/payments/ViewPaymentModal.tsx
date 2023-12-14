@@ -15,6 +15,7 @@ export default function ViewPaymentModal({ data: payment }: Props) {
 
   return (
     <Stack spacing={8}>
+      <TextInput label={t('columns.id')} value={payment.id} disabled />
       <TextInput
         label={t('columns.sender')}
         icon={<CustomAvatar {...payment.senderCard.user} />}

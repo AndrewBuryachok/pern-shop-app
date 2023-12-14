@@ -16,6 +16,7 @@ export default function AllGoods() {
   const [page, setPage] = useState(+(searchParams.get('page') || 1));
 
   const [search, setSearch] = useState<ISearch>({
+    id: +(searchParams.get('id') || 0) || null,
     user: searchParams.get('user'),
     shop: searchParams.get('shop'),
     item: searchParams.get('item'),

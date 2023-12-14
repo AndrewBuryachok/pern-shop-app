@@ -24,6 +24,7 @@ export default function ViewLotModal({ data: lot }: Props) {
 
   return (
     <Stack spacing={8}>
+      <TextInput label={t('columns.id')} value={lot.id} disabled />
       <TextInput
         label={t('columns.seller')}
         icon={<CustomAvatar {...lot.lease.card.user} />}

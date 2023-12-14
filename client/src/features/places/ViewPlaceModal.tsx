@@ -20,6 +20,7 @@ export default function PlaceModal({ data: place }: Props) {
 
   return (
     <Stack spacing={8}>
+      <TextInput label={t('columns.id')} value={place.id} disabled />
       <TextInput
         label={t('columns.owner')}
         icon={<CustomAvatar {...place.owner} />}

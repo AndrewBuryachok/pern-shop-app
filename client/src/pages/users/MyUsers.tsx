@@ -16,6 +16,7 @@ export default function MyUsers() {
   const [page, setPage] = useState(+(searchParams.get('page') || 1));
 
   const [search, setSearch] = useState<ISearch>({
+    id: +(searchParams.get('id') || 0) || null,
     user: searchParams.get('user'),
     roles: searchParams.get('roles')?.split(',') || [],
     city: searchParams.get('city'),

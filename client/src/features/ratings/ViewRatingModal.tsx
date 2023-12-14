@@ -15,6 +15,7 @@ export default function ViewRatingModal({ data: rating }: Props) {
 
   return (
     <Stack spacing={8}>
+      <TextInput label={t('columns.id')} value={rating.id} disabled />
       <TextInput
         label={t('columns.sender')}
         icon={<CustomAvatar {...rating.senderUser} />}

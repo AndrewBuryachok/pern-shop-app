@@ -22,6 +22,7 @@ export default function ViewBidModal({ data: bid }: Props) {
 
   return (
     <Stack spacing={8}>
+      <TextInput label={t('columns.id')} value={bid.id} disabled />
       <TextInput
         label={t('columns.buyer')}
         icon={<CustomAvatar {...bid.card.user} />}

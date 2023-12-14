@@ -7,6 +7,9 @@ export const getQuery = ({ page, search }: IRequest) => {
     query.append('skip', `${(page - 1) * ROWS_PER_PAGE}`);
     query.append('take', `${ROWS_PER_PAGE}`);
   }
+  if (search?.id) {
+    query.append('id', `${search.id}`);
+  }
   if (search?.user) {
     query.append('user', search.user);
   }

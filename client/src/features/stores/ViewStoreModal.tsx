@@ -15,6 +15,7 @@ export default function ViewStoreModal({ data: store }: Props) {
 
   return (
     <Stack spacing={8}>
+      <TextInput label={t('columns.id')} value={store.id} disabled />
       <TextInput
         label={t('columns.owner')}
         icon={<CustomAvatar {...store.market.card.user} />}

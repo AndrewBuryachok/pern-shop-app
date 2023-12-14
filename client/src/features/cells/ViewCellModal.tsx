@@ -15,6 +15,7 @@ export default function ViewCellModal({ data: cell }: Props) {
 
   return (
     <Stack spacing={8}>
+      <TextInput label={t('columns.id')} value={cell.id} disabled />
       <TextInput
         label={t('columns.owner')}
         icon={<CustomAvatar {...cell.storage.card.user} />}

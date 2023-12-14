@@ -15,6 +15,7 @@ export default function ViewPlaintModal({ data: plaint }: Props) {
 
   return (
     <Stack spacing={8}>
+      <TextInput label={t('columns.id')} value={plaint.id} disabled />
       <TextInput
         label={t('columns.sender')}
         icon={<CustomAvatar {...plaint.senderUser} />}

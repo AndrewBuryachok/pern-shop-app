@@ -16,6 +16,7 @@ export default function ViewMarketModal({ data: market }: Props) {
 
   return (
     <Stack spacing={8}>
+      <TextInput label={t('columns.id')} value={market.id} disabled />
       <TextInput
         label={t('columns.owner')}
         icon={<CustomAvatar {...market.card.user} />}

@@ -16,6 +16,7 @@ export default function ViewCardModal({ data: card }: Props) {
 
   return (
     <Stack spacing={8}>
+      <TextInput label={t('columns.id')} value={card.id} disabled />
       <TextInput
         label={t('columns.owner')}
         icon={<CustomAvatar {...card.user} />}

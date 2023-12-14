@@ -20,6 +20,7 @@ export default function ViewPollModal({ data: poll }: Props) {
 
   return (
     <Stack spacing={8}>
+      <TextInput label={t('columns.id')} value={poll.id} disabled />
       <TextInput
         label={t('columns.poller')}
         icon={<CustomAvatar {...poll.user} />}

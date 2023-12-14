@@ -14,6 +14,7 @@ export default function MainStorages() {
   const [page, setPage] = useState(+(searchParams.get('page') || 1));
 
   const [search, setSearch] = useState<ISearch>({
+    id: +(searchParams.get('id') || 0) || null,
     user: searchParams.get('user'),
     card: searchParams.get('card'),
     storage: searchParams.get('storage'),

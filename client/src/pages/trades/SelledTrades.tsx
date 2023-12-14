@@ -15,6 +15,7 @@ export default function SelledTrades() {
   const [page, setPage] = useState(+(searchParams.get('page') || 1));
 
   const [search, setSearch] = useState<ISearch>({
+    id: +(searchParams.get('id') || 0) || null,
     user: searchParams.get('user'),
     card: searchParams.get('card'),
     modes: [Mode.BUYER, Mode.SELLER, Mode.OWNER],

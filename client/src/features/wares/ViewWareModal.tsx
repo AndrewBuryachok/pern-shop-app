@@ -31,6 +31,7 @@ export default function ViewWareModal({ data: ware }: Props) {
 
   return (
     <Stack spacing={8}>
+      <TextInput label={t('columns.id')} value={ware.id} disabled />
       <TextInput
         label={t('columns.seller')}
         icon={<CustomAvatar {...ware.rent.card.user} />}

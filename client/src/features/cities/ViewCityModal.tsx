@@ -16,6 +16,7 @@ export default function ViewCityModal({ data: city }: Props) {
 
   return (
     <Stack spacing={8}>
+      <TextInput label={t('columns.id')} value={city.id} disabled />
       <TextInput
         label={t('columns.owner')}
         icon={<CustomAvatar {...city.user} />}

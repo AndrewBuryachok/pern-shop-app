@@ -22,6 +22,7 @@ export default function ViewSaleModal({ data: sale }: Props) {
 
   return (
     <Stack spacing={8}>
+      <TextInput label={t('columns.id')} value={sale.id} disabled />
       <TextInput
         label={t('columns.buyer')}
         icon={<CustomAvatar {...sale.card.user} />}

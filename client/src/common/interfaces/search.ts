@@ -1,6 +1,7 @@
 import { Mode } from '../enums';
 
 export interface ISearch {
+  id?: number | null;
   user?: string | null;
   card?: string | null;
   modes?: Mode[];

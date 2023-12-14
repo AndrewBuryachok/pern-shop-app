@@ -18,6 +18,7 @@ export default function MyFriends() {
   const [page, setPage] = useState(+(searchParams.get('page') || 1));
 
   const [search, setSearch] = useState<ISearch>({
+    id: +(searchParams.get('id') || 0) || null,
     user: searchParams.get('user'),
     modes: [Mode.SENDER, Mode.RECEIVER],
     mode: searchParams.get('mode') as Mode,

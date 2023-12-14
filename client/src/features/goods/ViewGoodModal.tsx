@@ -21,6 +21,7 @@ export default function ViewGoodModal({ data: good }: Props) {
 
   return (
     <Stack spacing={8}>
+      <TextInput label={t('columns.id')} value={good.id} disabled />
       <TextInput
         label={t('columns.seller')}
         icon={<CustomAvatar {...good.shop.user} />}

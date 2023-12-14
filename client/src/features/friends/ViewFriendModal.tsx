@@ -15,6 +15,7 @@ export default function ViewFriendModal({ data: friend }: Props) {
 
   return (
     <Stack spacing={8}>
+      <TextInput label={t('columns.id')} value={friend.id} disabled />
       <TextInput
         label={t('columns.sender')}
         icon={<CustomAvatar {...friend.senderUser} />}

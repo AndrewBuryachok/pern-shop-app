@@ -16,6 +16,7 @@ export default function ViewTaskModal({ data: task }: Props) {
 
   return (
     <Stack spacing={8}>
+      <TextInput label={t('columns.id')} value={task.id} disabled />
       <TextInput
         label={t('columns.customer')}
         icon={<CustomAvatar {...task.customerUser} />}

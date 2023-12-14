@@ -22,6 +22,7 @@ export default function ViewTradeModal({ data: trade }: Props) {
 
   return (
     <Stack spacing={8}>
+      <TextInput label={t('columns.id')} value={trade.id} disabled />
       <TextInput
         label={t('columns.buyer')}
         icon={<CustomAvatar {...trade.card.user} />}

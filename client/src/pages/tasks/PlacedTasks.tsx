@@ -15,6 +15,7 @@ export default function PlacedTasks() {
   const [page, setPage] = useState(+(searchParams.get('page') || 1));
 
   const [search, setSearch] = useState<ISearch>({
+    id: +(searchParams.get('id') || 0) || null,
     user: searchParams.get('user'),
     modes: [Mode.CUSTOMER, Mode.EXECUTOR, Mode.OWNER],
     mode: searchParams.get('mode') as Mode,

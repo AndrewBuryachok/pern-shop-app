@@ -23,6 +23,7 @@ export default function ViewDeliveryModal({ data: delivery }: Props) {
 
   return (
     <Stack spacing={8}>
+      <TextInput label={t('columns.id')} value={delivery.id} disabled />
       <TextInput
         label={t('columns.customer')}
         icon={<CustomAvatar {...delivery.fromLease.card.user} />}

@@ -22,6 +22,7 @@ export default function ViewUserModal({ data: user }: Props) {
 
   return (
     <Stack spacing={8}>
+      <TextInput label={t('columns.id')} value={user.id} disabled />
       <TextInput
         label={t('columns.user')}
         icon={<CustomAvatar {...user} />}

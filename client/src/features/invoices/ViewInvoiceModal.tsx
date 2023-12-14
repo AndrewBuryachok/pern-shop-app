@@ -15,6 +15,7 @@ export default function ViewInvoiceModal({ data: invoice }: Props) {
 
   return (
     <Stack spacing={8}>
+      <TextInput label={t('columns.id')} value={invoice.id} disabled />
       <TextInput
         label={t('columns.sender')}
         icon={<CustomAvatar {...invoice.senderCard.user} />}

@@ -18,6 +18,7 @@ export default function MyWares() {
   const [page, setPage] = useState(+(searchParams.get('page') || 1));
 
   const [search, setSearch] = useState<ISearch>({
+    id: +(searchParams.get('id') || 0) || null,
     user: searchParams.get('user'),
     card: searchParams.get('card'),
     modes: [Mode.SELLER, Mode.OWNER],

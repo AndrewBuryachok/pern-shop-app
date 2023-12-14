@@ -23,6 +23,7 @@ export default function ViewOrderModal({ data: order }: Props) {
 
   return (
     <Stack spacing={8}>
+      <TextInput label={t('columns.id')} value={order.id} disabled />
       <TextInput
         label={t('columns.customer')}
         icon={<CustomAvatar {...order.lease.card.user} />}

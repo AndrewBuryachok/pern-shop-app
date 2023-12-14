@@ -16,6 +16,7 @@ export default function ViewStorageModal({ data: storage }: Props) {
 
   return (
     <Stack spacing={8}>
+      <TextInput label={t('columns.id')} value={storage.id} disabled />
       <TextInput
         label={t('columns.owner')}
         icon={<CustomAvatar {...storage.card.user} />}

@@ -8,6 +8,7 @@ import {
   Group,
   Input,
   MultiSelect,
+  NumberInput,
   Radio,
   Rating,
   Select,
@@ -113,6 +114,12 @@ export default function SearchModal(props: Props) {
   });
 
   useEffect(() => {
+    if (form.values.id === undefined) {
+      form.setFieldValue('id', null);
+    }
+  }, [form.values.id]);
+
+  useEffect(() => {
     const roles = form.values.roles?.slice(0).sort();
     if (form.values.roles?.toString() !== roles?.toString()) {
       form.setFieldValue('roles', roles);
@@ -197,6 +204,12 @@ export default function SearchModal(props: Props) {
       text={t('components.save')}
       isChanged={!form.isDirty()}
     >
+      <NumberInput
+        label={t('columns.id')}
+        placeholder={t('columns.id')}
+        min={1}
+        {...form.getInputProps('id')}
+      />
       <Select
         label={t('columns.user')}
         placeholder={`${t('components.total')}: ${users?.length || 0}`}
