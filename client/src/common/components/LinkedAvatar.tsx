@@ -16,7 +16,9 @@ export default function LinkedAvatar(props: Props) {
           import.meta.env.VITE_HEAD_ROUTE
         }${props.name}`}
         alt={props.name}
-      />
+      >
+        {props.name.toUpperCase().slice(0, 2)}
+      </Avatar>
     </CustomIndicator>
   );
 }

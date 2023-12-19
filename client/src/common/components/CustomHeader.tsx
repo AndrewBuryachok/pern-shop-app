@@ -76,7 +76,6 @@ export default function CustomHeader(props: Props) {
             >
               <Avatar
                 size={32}
-                color='violet'
                 src={
                   user?.name &&
                   `${import.meta.env.VITE_AVATAR_URL}${
@@ -85,7 +84,9 @@ export default function CustomHeader(props: Props) {
                 }
                 alt={user?.name}
                 style={{ cursor: 'pointer' }}
-              />
+              >
+                {user?.name.toUpperCase().slice(0, 2)}
+              </Avatar>
             </Tooltip>
           </Menu.Target>
           <Menu.Dropdown>

@@ -41,7 +41,9 @@ export default function UserProfile({ data: user }: Props) {
             import.meta.env.VITE_BUST_ROUTE
           }${user.name}`}
           alt={user.name}
-        />
+        >
+          {user.name.toUpperCase().slice(0, 2)}
+        </Avatar>
       </CustomIndicator>
       <Text size='xl' weight='bold'>
         {user.name}
