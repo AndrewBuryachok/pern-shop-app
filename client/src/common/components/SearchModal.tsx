@@ -1,6 +1,6 @@
 import 'dayjs/locale/uk';
 import { useEffect } from 'react';
-import i18next, { t } from 'i18next';
+import { t } from 'i18next';
 import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
 import {
@@ -79,7 +79,7 @@ type Props = {
 };
 
 export default function SearchModal(props: Props) {
-  const [t] = useTranslation();
+  const [t, i18n] = useTranslation();
 
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -479,7 +479,7 @@ export default function SearchModal(props: Props) {
         <DatePicker
           label={t('columns.created') + ' ' + t('columns.after')}
           placeholder={t('columns.created') + ' ' + t('columns.after')}
-          locale={i18next.language}
+          locale={i18n.language}
           {...form.getInputProps('minDate')}
         />
       )}
@@ -487,7 +487,7 @@ export default function SearchModal(props: Props) {
         <DatePicker
           label={t('columns.created') + ' ' + t('columns.before')}
           placeholder={t('columns.created') + ' ' + t('columns.before')}
-          locale={i18next.language}
+          locale={i18n.language}
           {...form.getInputProps('maxDate')}
         />
       )}
