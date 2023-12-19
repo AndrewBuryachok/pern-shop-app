@@ -192,9 +192,9 @@ export class FriendsService {
       .select([
         'friend.id',
         'senderUser.id',
-        'senderUser.name',
+        'senderUser.nick',
         'receiverUser.id',
-        'receiverUser.name',
+        'receiverUser.nick',
         'friend.type',
         'friend.createdAt',
       ]);

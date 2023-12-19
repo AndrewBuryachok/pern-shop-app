@@ -218,7 +218,7 @@ export class CellsService {
         'storage.id',
         'ownerCard.id',
         'ownerUser.id',
-        'ownerUser.name',
+        'ownerUser.nick',
         'ownerCard.name',
         'ownerCard.color',
         'storage.name',

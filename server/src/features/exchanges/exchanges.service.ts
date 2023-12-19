@@ -153,10 +153,10 @@ export class ExchangesService {
       .select([
         'exchange.id',
         'executorUser.id',
-        'executorUser.name',
+        'executorUser.nick',
         'customerCard.id',
         'customerUser.id',
-        'customerUser.name',
+        'customerUser.nick',
         'customerCard.name',
         'customerCard.color',
         'exchange.type',

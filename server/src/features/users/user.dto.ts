@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Validate } from 'class-validator';
 import { Type } from 'class-transformer';
-import { IsId, IsName, IsPassword, IsRole } from '../../common/decorators';
+import { IsId, IsNick, IsPassword, IsRole } from '../../common/decorators';
 import { IsUserExists } from '../../common/constraints';
 
 export class UserIdDto {
@@ -24,8 +24,8 @@ export class ExtEditUserPasswordDto extends EditUserPasswordDto {
 
 export class CreateUserDto extends EditUserPasswordDto {
   @ApiProperty()
-  @IsName()
-  name: string;
+  @IsNick()
+  nick: string;
 }
 
 export class UpdateUserTokenDto extends UserIdDto {

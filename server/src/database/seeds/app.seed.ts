@@ -40,7 +40,7 @@ export default class AppSeed implements Seeder {
   public async run(factory: Factory) {
     const users = await factory(User)()
       .map(async (user) => {
-        user.password = await hashData(user.name);
+        user.password = await hashData(user.nick);
         return user;
       })
       .createMany(20);

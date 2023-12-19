@@ -103,7 +103,7 @@ export class UsersService {
   }
 
   async createUser(dto: CreateUserDto): Promise<User> {
-    await this.checkNameNotUsed(dto.name);
+    await this.checkNickNotUsed(dto.nick);
     return this.create(dto);
   }
 
@@ -153,21 +153,21 @@ export class UsersService {
     return this.usersRepository.findOneBy({ id });
   }
 
-  findUserByName(name: string): Promise<User> {
-    return this.usersRepository.findOneBy({ name });
+  findUserByNick(nick: string): Promise<User> {
+    return this.usersRepository.findOneBy({ nick });
   }
 
-  private async checkNameNotUsed(name: string): Promise<void> {
-    const user = await this.usersRepository.findOneBy({ name });
+  private async checkNickNotUsed(nick: string): Promise<void> {
+    const user = await this.usersRepository.findOneBy({ nick });
     if (user) {
-      throw new AppException(UserError.NAME_ALREADY_USED);
+      throw new AppException(UserError.NICK_ALREADY_USED);
     }
   }
 
   private async create(dto: CreateUserDto): Promise<User> {
     try {
       const user = this.usersRepository.create({
-        name: dto.name,
+        nick: dto.nick,
         password: dto.password,
       });
       await this.usersRepository.save(user);
@@ -227,8 +227,8 @@ export class UsersService {
   private selectUsersQueryBuilder(): SelectQueryBuilder<User> {
     return this.usersRepository
       .createQueryBuilder('user')
-      .orderBy('user.name', 'ASC')
-      .select(['user.id', 'user.name']);
+      .orderBy('user.nick', 'ASC')
+      .select(['user.id', 'user.nick']);
   }
 
   private async loadCards(users: User[]): Promise<void> {
@@ -303,12 +303,12 @@ export class UsersService {
       .take(req.take)
       .select([
         'user.id',
-        'user.name',
+        'user.nick',
         'user.roles',
         'user.createdAt',
         'city.id',
         'ownerUser.id',
-        'ownerUser.name',
+        'ownerUser.nick',
         'city.name',
         'city.x',
         'city.y',
@@ -328,7 +328,7 @@ export class UsersService {
       .where('user.id = :userId', { userId })
       .select([
         'user.id',
-        'user.name',
+        'user.nick',
         'user.roles',
         'user.createdAt',
         'city.id',

@@ -213,8 +213,8 @@ export class CitiesService {
           .createQueryBuilder('city')
           .leftJoin('city.users', 'user')
           .where('city.id = :cityId', { cityId: city.id })
-          .orderBy('user.name', 'ASC')
-          .select(['city.id', 'user.id', 'user.name'])
+          .orderBy('user.nick', 'ASC')
+          .select(['city.id', 'user.id', 'user.nick'])
           .getOne()
       ).users;
     });
@@ -250,7 +250,7 @@ export class CitiesService {
       .select([
         'city.id',
         'ownerUser.id',
-        'ownerUser.name',
+        'ownerUser.nick',
         'city.name',
         'city.x',
         'city.y',

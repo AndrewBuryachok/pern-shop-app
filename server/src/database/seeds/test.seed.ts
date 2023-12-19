@@ -6,40 +6,40 @@ export default class TestSeed implements Seeder {
   public async run(factory: Factory) {
     await factory(User)()
       .map(async (user) => {
-        user.name = 'Admin';
-        user.password = await hashData(user.name);
+        user.nick = 'Admin';
+        user.password = await hashData(user.nick);
         user.roles = [1];
         return user;
       })
       .create();
     await factory(User)()
       .map(async (user) => {
-        user.name = 'Banker';
-        user.password = await hashData(user.name);
+        user.nick = 'Banker';
+        user.password = await hashData(user.nick);
         user.roles = [2];
         return user;
       })
       .create();
     await factory(User)()
       .map(async (user) => {
-        user.name = 'Manager';
-        user.password = await hashData(user.name);
+        user.nick = 'Manager';
+        user.password = await hashData(user.nick);
         user.roles = [3];
         return user;
       })
       .create();
     await factory(User)()
       .map(async (user) => {
-        user.name = 'Judge';
-        user.password = await hashData(user.name);
+        user.nick = 'Judge';
+        user.password = await hashData(user.nick);
         user.roles = [4];
         return user;
       })
       .create();
     await factory(User)()
       .map(async (user) => {
-        user.name = 'User';
-        user.password = await hashData(user.name);
+        user.nick = 'User';
+        user.password = await hashData(user.nick);
         user.roles = [];
         return user;
       })

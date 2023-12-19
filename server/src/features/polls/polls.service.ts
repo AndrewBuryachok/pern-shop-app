@@ -180,7 +180,7 @@ export class PollsService {
       .select([
         'poll.id',
         'pollerUser.id',
-        'pollerUser.name',
+        'pollerUser.nick',
         'poll.description',
         'poll.createdAt',
         'poll.completedAt',

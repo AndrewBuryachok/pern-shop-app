@@ -222,7 +222,7 @@ export class StoresService {
         'market.id',
         'ownerCard.id',
         'ownerUser.id',
-        'ownerUser.name',
+        'ownerUser.nick',
         'ownerCard.name',
         'ownerCard.color',
         'market.name',

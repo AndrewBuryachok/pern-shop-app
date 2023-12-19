@@ -225,7 +225,7 @@ export class CardsService {
       .select([
         'card.id',
         'ownerUser.id',
-        'ownerUser.name',
+        'ownerUser.nick',
         'card.name',
         'card.color',
       ]);
@@ -238,8 +238,8 @@ export class CardsService {
           .createQueryBuilder('card')
           .leftJoin('card.users', 'user')
           .where('card.id = :cardId', { cardId: card.id })
-          .orderBy('user.name', 'ASC')
-          .select(['card.id', 'user.id', 'user.name'])
+          .orderBy('user.nick', 'ASC')
+          .select(['card.id', 'user.id', 'user.nick'])
           .getOne()
       ).users;
     });
@@ -275,7 +275,7 @@ export class CardsService {
       .select([
         'card.id',
         'ownerUser.id',
-        'ownerUser.name',
+        'ownerUser.nick',
         'card.name',
         'card.color',
         'card.balance',

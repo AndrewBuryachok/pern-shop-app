@@ -180,7 +180,7 @@ export class ShopsService {
       .select([
         'shop.id',
         'ownerUser.id',
-        'ownerUser.name',
+        'ownerUser.nick',
         'shop.name',
         'shop.x',
         'shop.y',

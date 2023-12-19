@@ -60,7 +60,7 @@ describe('With Auth', () => {
     it('POST /auth/login as User', async () => {
       return request(app.getHttpServer())
         .post('/auth/login')
-        .send({ name: 'User', password: 'User' })
+        .send({ nick: 'User', password: 'User' })
         .expect(201)
         .then((res) => (user = res.body));
     });
@@ -83,7 +83,7 @@ describe('With Auth', () => {
     it('POST /auth/login as Admin', async () => {
       return request(app.getHttpServer())
         .post('/auth/login')
-        .send({ name: 'Admin', password: 'Admin' })
+        .send({ nick: 'Admin', password: 'Admin' })
         .expect(201)
         .then((res) => (admin = res.body));
     });
@@ -98,7 +98,7 @@ describe('With Auth', () => {
     it('POST /auth/login as Banker', async () => {
       return request(app.getHttpServer())
         .post('/auth/login')
-        .send({ name: 'Banker', password: 'Banker' })
+        .send({ nick: 'Banker', password: 'Banker' })
         .expect(201)
         .then((res) => (banker = res.body));
     });
@@ -113,7 +113,7 @@ describe('With Auth', () => {
     it('POST /auth/login as Manager', async () => {
       return request(app.getHttpServer())
         .post('/auth/login')
-        .send({ name: 'Manager', password: 'Manager' })
+        .send({ nick: 'Manager', password: 'Manager' })
         .expect(201)
         .then((res) => (manager = res.body));
     });
@@ -128,7 +128,7 @@ describe('With Auth', () => {
     it('POST /auth/login as Judge', async () => {
       return request(app.getHttpServer())
         .post('/auth/login')
-        .send({ name: 'Judge', password: 'Judge' })
+        .send({ nick: 'Judge', password: 'Judge' })
         .expect(201)
         .then((res) => (judge = res.body));
     });

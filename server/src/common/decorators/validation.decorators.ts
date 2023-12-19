@@ -16,27 +16,38 @@ import {
   MAX_DESCRIPTION_LENGTH,
   MAX_ID_VALUE,
   MAX_INTAKE_VALUE,
+  MAX_ITEM_VALUE,
+  MAX_KIND_VALUE,
   MAX_KIT_VALUE,
   MAX_NAME_LENGTH,
+  MAX_NICK_LENGTH,
+  MAX_PASSWORD_LENGTH,
   MAX_PRICE_VALUE,
+  MAX_PRIORITY_VALUE,
+  MAX_RATE_VALUE,
   MAX_ROLE_VALUE,
   MAX_SUM_VALUE,
-  MAX_ITEM_VALUE,
   MIN_COORDINATE_VALUE,
   MIN_NAME_LENGTH,
-  MAX_RATE_VALUE,
-  MAX_PRIORITY_VALUE,
-  MAX_KIND_VALUE,
+  MIN_NICK_LENGTH,
+  MIN_PASSWORD_LENGTH,
 } from '../constants';
 
-export const IsName = () => (target: object, key: string) => {
+export const IsNick = () => (target: object, key: string) => {
   IsNotEmpty()(target, key);
   IsString()(target, key);
-  MinLength(MIN_NAME_LENGTH)(target, key);
-  MaxLength(MAX_NAME_LENGTH)(target, key);
+  MinLength(MIN_NICK_LENGTH)(target, key);
+  MaxLength(MAX_NICK_LENGTH)(target, key);
 };
 
 export const IsPassword = () => (target: object, key: string) => {
+  IsNotEmpty()(target, key);
+  IsString()(target, key);
+  MinLength(MIN_PASSWORD_LENGTH)(target, key);
+  MaxLength(MAX_PASSWORD_LENGTH)(target, key);
+};
+
+export const IsName = () => (target: object, key: string) => {
   IsNotEmpty()(target, key);
   IsString()(target, key);
   MinLength(MIN_NAME_LENGTH)(target, key);

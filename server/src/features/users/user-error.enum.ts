@@ -1,5 +1,5 @@
 export enum UserError {
-  NAME_ALREADY_USED = '400: User name already used',
+  NICK_ALREADY_USED = '400: User nick already used',
   ALREADY_HAS_ROLE = '400: User already has role',
   NOT_HAS_ROLE = '400: User has not role',
   CREATE_FAILED = '500: Failed to create user',

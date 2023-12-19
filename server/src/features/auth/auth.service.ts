@@ -24,7 +24,7 @@ export class AuthService {
   }
 
   async login(dto: AuthDto): Promise<Tokens> {
-    const user = await this.usersService.findUserByName(dto.name);
+    const user = await this.usersService.findUserByNick(dto.nick);
     if (!user || !(await compareHash(dto.password, user.password))) {
       throw new AppException(AuthError.INVALID_CREDENTIALS);
     }
@@ -50,7 +50,7 @@ export class AuthService {
   }
 
   private async signTokens(user: User): Promise<Tokens> {
-    const payload = { sub: user.id, name: user.name };
+    const payload = { sub: user.id, nick: user.nick };
     const [access, refresh] = await Promise.all([
       this.jwtService.signAsync(payload, {
         secret: this.configService.get('AT_SECRET'),
@@ -63,6 +63,6 @@ export class AuthService {
     ]);
     const hash = await hashData(refresh);
     await this.usersService.addUserToken({ userId: user.id, token: hash });
-    return { id: user.id, name: user.name, roles: user.roles, access, refresh };
+    return { id: user.id, nick: user.nick, roles: user.roles, access, refresh };
   }
 }

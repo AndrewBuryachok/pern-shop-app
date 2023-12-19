@@ -235,7 +235,7 @@ export class GoodsService {
         'good.id',
         'shop.id',
         'sellerUser.id',
-        'sellerUser.name',
+        'sellerUser.nick',
         'shop.name',
         'shop.x',
         'shop.y',

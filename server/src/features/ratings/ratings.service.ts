@@ -177,9 +177,9 @@ export class RatingsService {
       .select([
         'rating.id',
         'senderUser.id',
-        'senderUser.name',
+        'senderUser.nick',
         'receiverUser.id',
-        'receiverUser.name',
+        'receiverUser.nick',
         'rating.rate',
         'rating.createdAt',
       ]);

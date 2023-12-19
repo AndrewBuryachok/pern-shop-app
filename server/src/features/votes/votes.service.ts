@@ -158,10 +158,10 @@ export class VotesService {
         'vote.id',
         'poll.id',
         'pollerUser.id',
-        'pollerUser.name',
+        'pollerUser.nick',
         'poll.description',
         'voterUser.id',
-        'voterUser.name',
+        'voterUser.nick',
         'vote.type',
         'vote.createdAt',
       ]);

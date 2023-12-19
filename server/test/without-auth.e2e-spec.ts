@@ -34,7 +34,7 @@ describe('Without Auth', () => {
     it('POST /auth/login as User', async () => {
       return request(app.getHttpServer())
         .post('/auth/login')
-        .send({ name: 'User', password: 'User' })
+        .send({ nick: 'User', password: 'User' })
         .expect(201)
         .then((res) => (user = res.body));
     });
