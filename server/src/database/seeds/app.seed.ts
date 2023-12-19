@@ -103,7 +103,7 @@ export default class AppSeed implements Seeder {
             senderCard: invoice.receiverCard,
             receiverCard: invoice.senderCard,
             sum: invoice.sum,
-            description: 'complete invoice',
+            description: '',
           });
           payments.push(payment);
           invoice.receiverCard.balance -= invoice.sum;
@@ -177,7 +177,7 @@ export default class AppSeed implements Seeder {
           senderCard: rent.card,
           receiverCard: rent.store.market.card,
           sum: rent.store.market.price,
-          description: 'reserve store',
+          description: '',
         });
         payments.push(payment);
         rent.card.balance -= rent.store.market.price;
@@ -198,7 +198,7 @@ export default class AppSeed implements Seeder {
           senderCard: lease.card,
           receiverCard: lease.cell.storage.card,
           sum: lease.cell.storage.price,
-          description: 'reserve cell',
+          description: '',
         });
         payments.push(payment);
         lease.card.balance -= lease.cell.storage.price;
@@ -263,7 +263,7 @@ export default class AppSeed implements Seeder {
             senderCard: order.lease.card,
             receiverCard: order.executorCard,
             sum: order.price,
-            description: 'complete order',
+            description: '',
           });
           payments.push(payment);
           order.executorCard.balance += order.price;
@@ -287,7 +287,7 @@ export default class AppSeed implements Seeder {
             senderCard: delivery.fromLease.card,
             receiverCard: delivery.executorCard,
             sum: delivery.price,
-            description: 'complete delivery',
+            description: '',
           });
           payments.push(payment);
           delivery.executorCard.balance += delivery.price;
@@ -316,7 +316,7 @@ export default class AppSeed implements Seeder {
           senderCard: trade.card,
           receiverCard: trade.ware.rent.card,
           sum: trade.amount * trade.ware.price,
-          description: 'buy ware',
+          description: '',
         });
         payments.push(payment);
         trade.card.balance -= trade.amount * trade.ware.price;
@@ -345,7 +345,7 @@ export default class AppSeed implements Seeder {
           senderCard: sale.card,
           receiverCard: sale.product.lease.card,
           sum: sale.amount * sale.product.price,
-          description: 'buy product',
+          description: '',
         });
         payments.push(payment);
         sale.card.balance -= sale.amount * sale.product.price;

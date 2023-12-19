@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Validate } from 'class-validator';
 import { Type } from 'class-transformer';
-import { IsDescription, IsId } from '../../common/decorators';
+import { IsId, IsRequiredDescription } from '../../common/decorators';
 import { IsPollExists } from '../../common/constraints';
 
 export class PollIdDto {
@@ -14,7 +14,7 @@ export class PollIdDto {
 
 export class CreatePollDto {
   @ApiProperty()
-  @IsDescription()
+  @IsRequiredDescription()
   description: string;
 }
 

@@ -151,7 +151,7 @@ export class OrdersService {
       senderCardId: order.lease.cardId,
       receiverCardId: order.executorCardId,
       sum: order.price,
-      description: 'complete order',
+      description: '',
     });
     await this.complete(order);
     this.mqttService.publishNotificationMessage(

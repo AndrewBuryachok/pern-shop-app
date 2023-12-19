@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Validate } from 'class-validator';
-import { IsDescription, IsId, IsSum } from '../../common/decorators';
+import { IsId, IsOptionalDescription, IsSum } from '../../common/decorators';
 import { IsCardExists } from '../../common/constraints';
 
 export class CreatePaymentDto {
@@ -19,7 +19,7 @@ export class CreatePaymentDto {
   sum: number;
 
   @ApiProperty()
-  @IsDescription()
+  @IsOptionalDescription()
   description: string;
 }
 

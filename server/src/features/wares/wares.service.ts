@@ -113,7 +113,7 @@ export class WaresService {
       senderCardId: dto.cardId,
       receiverCardId: ware.rent.cardId,
       sum: dto.amount * ware.price,
-      description: 'buy ware',
+      description: '',
     });
     await this.buy(ware, dto.amount);
     this.mqttService.publishNotificationMessage(

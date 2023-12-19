@@ -10,7 +10,7 @@ import {
 define(Ware, (faker: Faker) => {
   const ware = new Ware();
   ware.item = Math.floor(Math.random() * MAX_ITEM_VALUE) + 1;
-  ware.description = '-';
+  ware.description = '';
   ware.amount = Math.floor(Math.random() * MAX_AMOUNT_VALUE) + 1;
   ware.intake = Math.floor(Math.random() * MAX_AMOUNT_VALUE) + 1;
   ware.kit = Math.floor(Math.random() * MAX_KIT_VALUE) + 1;

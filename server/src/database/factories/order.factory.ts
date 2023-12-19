@@ -11,7 +11,7 @@ import {
 define(Order, (faker: Faker) => {
   const order = new Order();
   order.item = Math.floor(Math.random() * MAX_ITEM_VALUE) + 1;
-  order.description = '-';
+  order.description = '';
   order.amount = Math.floor(Math.random() * MAX_AMOUNT_VALUE) + 1;
   order.intake = Math.floor(Math.random() * MAX_AMOUNT_VALUE) + 1;
   order.kit = Math.floor(Math.random() * MAX_KIT_VALUE) + 1;

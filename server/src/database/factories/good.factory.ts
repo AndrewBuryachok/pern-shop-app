@@ -11,7 +11,7 @@ import {
 define(Good, (faker: Faker) => {
   const good = new Good();
   good.item = Math.floor(Math.random() * MAX_ITEM_VALUE) + 1;
-  good.description = '-';
+  good.description = '';
   good.amount = Math.floor(Math.random() * MAX_AMOUNT_VALUE) + 1;
   good.intake = Math.floor(Math.random() * MAX_INTAKE_VALUE) + 1;
   good.kit = Math.floor(Math.random() * MAX_KIT_VALUE) + 1;

@@ -10,7 +10,7 @@ import {
 define(Lot, (faker: Faker) => {
   const lot = new Lot();
   lot.item = Math.floor(Math.random() * MAX_ITEM_VALUE) + 1;
-  lot.description = '-';
+  lot.description = '';
   lot.amount = Math.floor(Math.random() * MAX_AMOUNT_VALUE) + 1;
   lot.intake = Math.floor(Math.random() * MAX_AMOUNT_VALUE) + 1;
   lot.kit = Math.floor(Math.random() * MAX_KIT_VALUE) + 1;

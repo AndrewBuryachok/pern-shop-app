@@ -376,7 +376,7 @@ describe('With Auth', () => {
           senderCardId: cardId,
           receiverCardId: cardId,
           sum: 10,
-          description: '-',
+          description: '',
         })
         .expect('');
     });
@@ -405,7 +405,7 @@ describe('With Auth', () => {
           senderCardId: cardId,
           receiverUserId: user.id,
           sum: 10,
-          description: '-',
+          description: '',
         })
         .expect('');
     });
@@ -418,7 +418,7 @@ describe('With Auth', () => {
           senderCardId: cardId,
           receiverUserId: user.id,
           sum: 10,
-          description: '-',
+          description: '',
         })
         .expect('');
     });
@@ -818,7 +818,7 @@ describe('With Auth', () => {
         .send({
           rentId,
           item: 1,
-          description: '-',
+          description: '',
           amount: 1,
           intake: 1,
           kit: 1,
@@ -843,7 +843,7 @@ describe('With Auth', () => {
         .send({
           shopId,
           item: 1,
-          description: '-',
+          description: '',
           amount: 1,
           intake: 1,
           kit: 1,
@@ -879,7 +879,7 @@ describe('With Auth', () => {
         .set('Authorization', `Bearer ${user.access}`)
         .send({
           item: 1,
-          description: '-',
+          description: '',
           amount: 1,
           intake: 1,
           kit: 1,
@@ -951,7 +951,7 @@ describe('With Auth', () => {
           storageId,
           cardId,
           item: 1,
-          description: '-',
+          description: '',
           amount: 1,
           intake: 1,
           kit: 1,
@@ -1021,7 +1021,7 @@ describe('With Auth', () => {
           storageId,
           cardId,
           item: 1,
-          description: '-',
+          description: '',
           amount: 1,
           intake: 1,
           kit: 1,
@@ -1083,7 +1083,7 @@ describe('With Auth', () => {
           storageId,
           cardId,
           item: 1,
-          description: '-',
+          description: '',
           amount: 1,
           intake: 1,
           kit: 1,
@@ -1100,7 +1100,7 @@ describe('With Auth', () => {
           storageId,
           cardId,
           item: 1,
-          description: '-',
+          description: '',
           amount: 1,
           intake: 1,
           kit: 1,
@@ -1207,7 +1207,7 @@ describe('With Auth', () => {
           toStorageId: storageId,
           cardId,
           item: 1,
-          description: '-',
+          description: '',
           amount: 1,
           intake: 1,
           kit: 1,
@@ -1225,7 +1225,7 @@ describe('With Auth', () => {
           toStorageId: storageId,
           cardId,
           item: 1,
-          description: '-',
+          description: '',
           amount: 1,
           intake: 1,
           kit: 1,
@@ -1466,7 +1466,7 @@ describe('With Auth', () => {
       return request(app.getHttpServer())
         .post('/polls')
         .set('Authorization', `Bearer ${user.access}`)
-        .send({ description: '-' })
+        .send({ description: 'poll description' })
         .expect('');
     });
 
@@ -1474,7 +1474,7 @@ describe('With Auth', () => {
       return request(app.getHttpServer())
         .post('/polls')
         .set('Authorization', `Bearer ${user.access}`)
-        .send({ description: '-' })
+        .send({ description: 'poll description' })
         .expect('');
     });
 
@@ -1658,7 +1658,7 @@ describe('With Auth', () => {
       return request(app.getHttpServer())
         .post('/tasks')
         .set('Authorization', `Bearer ${user.access}`)
-        .send({ description: '-', priority: 1 })
+        .send({ description: 'task description', priority: 1 })
         .expect('');
     });
 
@@ -1666,7 +1666,7 @@ describe('With Auth', () => {
       return request(app.getHttpServer())
         .post('/tasks')
         .set('Authorization', `Bearer ${user.access}`)
-        .send({ description: '-', priority: 1 })
+        .send({ description: 'task description', priority: 1 })
         .expect('');
     });
 
@@ -1756,7 +1756,7 @@ describe('With Auth', () => {
       return request(app.getHttpServer())
         .post('/plaints')
         .set('Authorization', `Bearer ${user.access}`)
-        .send({ userId: user.id, description: '-' })
+        .send({ userId: user.id, description: 'plaint description' })
         .expect('');
     });
 
@@ -1764,7 +1764,7 @@ describe('With Auth', () => {
       return request(app.getHttpServer())
         .post('/plaints')
         .set('Authorization', `Bearer ${user.access}`)
-        .send({ userId: user.id, description: '-' })
+        .send({ userId: user.id, description: 'plaint description' })
         .expect('');
     });
 
@@ -1800,7 +1800,7 @@ describe('With Auth', () => {
       return request(app.getHttpServer())
         .post(`/plaints/${plaintsId[0]}/execute`)
         .set('Authorization', `Bearer ${user.access}`)
-        .send({ description: '-' })
+        .send({ description: 'plaint description' })
         .expect('');
     });
 
@@ -1808,7 +1808,7 @@ describe('With Auth', () => {
       return request(app.getHttpServer())
         .post(`/plaints/${plaintsId[0]}`)
         .set('Authorization', `Bearer ${judge.access}`)
-        .send({ description: '-' })
+        .send({ description: 'plaint description' })
         .expect('');
     });
 

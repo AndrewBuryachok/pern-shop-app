@@ -75,7 +75,7 @@ export class CellsService {
       senderCardId: dto.cardId,
       receiverCardId: cell.storage.cardId,
       sum: cell.storage.price,
-      description: 'reserve cell',
+      description: '',
     });
     await this.reserve(cell);
     this.mqttService.publishNotificationMessage(

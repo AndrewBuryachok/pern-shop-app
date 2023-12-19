@@ -1,7 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Validate } from 'class-validator';
 import { Type } from 'class-transformer';
-import { IsDescription, IsId, IsPriority } from '../../common/decorators';
+import {
+  IsId,
+  IsPriority,
+  IsRequiredDescription,
+} from '../../common/decorators';
 import { IsTaskExists } from '../../common/constraints';
 
 export class TaskIdDto {
@@ -14,7 +18,7 @@ export class TaskIdDto {
 
 export class CreateTaskDto {
   @ApiProperty()
-  @IsDescription()
+  @IsRequiredDescription()
   description: string;
 
   @ApiProperty()

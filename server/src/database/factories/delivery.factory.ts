@@ -12,7 +12,7 @@ import {
 define(Delivery, (faker: Faker) => {
   const delivery = new Delivery();
   delivery.item = Math.floor(Math.random() * MAX_ITEM_VALUE) + 1;
-  delivery.description = '-';
+  delivery.description = '';
   delivery.amount = Math.floor(Math.random() * MAX_AMOUNT_VALUE) + 1;
   delivery.intake = Math.floor(Math.random() * MAX_INTAKE_VALUE) + 1;
   delivery.kit = Math.floor(Math.random() * MAX_KIT_VALUE) + 1;

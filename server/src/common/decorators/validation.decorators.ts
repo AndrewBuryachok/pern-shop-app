@@ -8,6 +8,7 @@ import {
   MaxLength,
   Min,
   MinLength,
+  ValidateIf,
 } from 'class-validator';
 import {
   MAX_AMOUNT_VALUE,
@@ -54,7 +55,14 @@ export const IsName = () => (target: object, key: string) => {
   MaxLength(MAX_NAME_LENGTH)(target, key);
 };
 
-export const IsDescription = () => (target: object, key: string) => {
+export const IsRequiredDescription = () => (target: object, key: string) => {
+  IsNotEmpty()(target, key);
+  IsString()(target, key);
+  MaxLength(MAX_DESCRIPTION_LENGTH)(target, key);
+};
+
+export const IsOptionalDescription = () => (target: object, key: string) => {
+  ValidateIf((_, value) => value !== '')(target, key);
   IsNotEmpty()(target, key);
   IsString()(target, key);
   MaxLength(MAX_DESCRIPTION_LENGTH)(target, key);

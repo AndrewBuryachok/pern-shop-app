@@ -75,7 +75,7 @@ export class StoresService {
       senderCardId: dto.cardId,
       receiverCardId: store.market.cardId,
       sum: store.market.price,
-      description: 'reserve store',
+      description: '',
     });
     await this.reserve(store);
     this.mqttService.publishNotificationMessage(

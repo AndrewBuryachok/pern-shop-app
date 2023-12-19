@@ -178,7 +178,7 @@ export class DeliveriesService {
       senderCardId: delivery.fromLease.cardId,
       receiverCardId: delivery.executorCardId,
       sum: delivery.price,
-      description: 'complete delivery',
+      description: '',
     });
     await this.complete(delivery);
     this.mqttService.publishNotificationMessage(

@@ -103,7 +103,7 @@ export class LotsService {
       senderCardId: lot.bids[0].cardId,
       receiverCardId: lot.lease.cardId,
       sum: lot.price,
-      description: 'buy lot',
+      description: '',
     });
     await this.complete(lot);
     lot.bids.forEach((bid) =>
