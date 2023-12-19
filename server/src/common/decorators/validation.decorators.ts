@@ -4,6 +4,7 @@ import {
   IsNotEmpty,
   IsPositive,
   IsString,
+  IsUrl,
   Max,
   MaxLength,
   Min,
@@ -16,6 +17,7 @@ import {
   MAX_COORDINATE_VALUE,
   MAX_DESCRIPTION_LENGTH,
   MAX_ID_VALUE,
+  MAX_IMAGE_LENGTH,
   MAX_INTAKE_VALUE,
   MAX_ITEM_VALUE,
   MAX_KIND_VALUE,
@@ -66,6 +68,14 @@ export const IsOptionalDescription = () => (target: object, key: string) => {
   IsNotEmpty()(target, key);
   IsString()(target, key);
   MaxLength(MAX_DESCRIPTION_LENGTH)(target, key);
+};
+
+export const IsImage = () => (target: object, key: string) => {
+  ValidateIf((_, value) => value !== '')(target, key);
+  IsNotEmpty()(target, key);
+  IsString()(target, key);
+  IsUrl()(target, key);
+  MaxLength(MAX_IMAGE_LENGTH)(target, key);
 };
 
 export const IsId = () => (target: object, key: string) => {

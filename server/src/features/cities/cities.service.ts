@@ -158,6 +158,8 @@ export class CitiesService {
       const city = this.citiesRepository.create({
         userId: dto.userId,
         name: dto.name,
+        image: dto.image,
+        description: dto.description,
         x: dto.x,
         y: dto.y,
         users: [{ id: dto.userId }],
@@ -171,6 +173,8 @@ export class CitiesService {
   private async edit(city: City, dto: ExtEditCityDto): Promise<void> {
     try {
       city.name = dto.name;
+      city.image = dto.image;
+      city.description = dto.description;
       city.x = dto.x;
       city.y = dto.y;
       await this.citiesRepository.save(city);
@@ -252,6 +256,8 @@ export class CitiesService {
         'ownerUser.id',
         'ownerUser.nick',
         'city.name',
+        'city.image',
+        'city.description',
         'city.x',
         'city.y',
       ]);

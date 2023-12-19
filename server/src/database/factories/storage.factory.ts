@@ -9,6 +9,8 @@ import {
 define(Storage, (faker: Faker) => {
   const storage = new Storage();
   storage.name = faker.address.city();
+  storage.image = '';
+  storage.description = '';
   storage.x =
     Math.floor(
       Math.random() * (MAX_COORDINATE_VALUE - MIN_COORDINATE_VALUE + 1),

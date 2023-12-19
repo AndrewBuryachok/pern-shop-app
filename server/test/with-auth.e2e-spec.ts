@@ -146,7 +146,7 @@ describe('With Auth', () => {
       return request(app.getHttpServer())
         .post('/cities')
         .set('Authorization', `Bearer ${user.access}`)
-        .send({ name: 'My City', x: 500, y: 500 })
+        .send({ name: 'My City', image: '', description: '', x: 500, y: 500 })
         .expect('');
     });
 
@@ -188,7 +188,7 @@ describe('With Auth', () => {
       return request(app.getHttpServer())
         .patch(`/cities/${cityId}`)
         .set('Authorization', `Bearer ${user.access}`)
-        .send({ name: 'My City', x: 500, y: 500 })
+        .send({ name: 'My City', image: '', description: '', x: 500, y: 500 })
         .expect('');
     });
 
@@ -466,7 +466,7 @@ describe('With Auth', () => {
       return request(app.getHttpServer())
         .post('/shops')
         .set('Authorization', `Bearer ${user.access}`)
-        .send({ name: 'My Shop', x: 500, y: -500 })
+        .send({ name: 'My Shop', image: '', description: '', x: 500, y: -500 })
         .expect('');
     });
 
@@ -508,7 +508,7 @@ describe('With Auth', () => {
       return request(app.getHttpServer())
         .patch(`/shops/${shopId}`)
         .set('Authorization', `Bearer ${user.access}`)
-        .send({ name: 'My Shop', x: 500, y: -500 })
+        .send({ name: 'My Shop', image: '', description: '', x: 500, y: -500 })
         .expect('');
     });
   });
@@ -518,7 +518,15 @@ describe('With Auth', () => {
       return request(app.getHttpServer())
         .post('/markets')
         .set('Authorization', `Bearer ${user.access}`)
-        .send({ cardId, name: 'My Market', x: -500, y: 500, price: 5 })
+        .send({
+          cardId,
+          name: 'My Market',
+          image: '',
+          description: '',
+          x: -500,
+          y: 500,
+          price: 5,
+        })
         .expect('');
     });
 
@@ -567,7 +575,14 @@ describe('With Auth', () => {
       return request(app.getHttpServer())
         .patch(`/markets/${marketId}`)
         .set('Authorization', `Bearer ${user.access}`)
-        .send({ name: 'My Market', x: -500, y: 500, price: 10 })
+        .send({
+          name: 'My Market',
+          image: '',
+          description: '',
+          x: -500,
+          y: 500,
+          price: 10,
+        })
         .expect('');
     });
   });
@@ -577,7 +592,15 @@ describe('With Auth', () => {
       return request(app.getHttpServer())
         .post('/storages')
         .set('Authorization', `Bearer ${user.access}`)
-        .send({ cardId, name: 'My Storage', x: -500, y: -500, price: 5 })
+        .send({
+          cardId,
+          name: 'My Storage',
+          image: '',
+          description: '',
+          x: -500,
+          y: -500,
+          price: 5,
+        })
         .expect('');
     });
 
@@ -626,7 +649,14 @@ describe('With Auth', () => {
       return request(app.getHttpServer())
         .patch(`/storages/${storageId}`)
         .set('Authorization', `Bearer ${user.access}`)
-        .send({ name: 'My Storage', x: -500, y: -500, price: 10 })
+        .send({
+          name: 'My Storage',
+          image: '',
+          description: '',
+          x: -500,
+          y: -500,
+          price: 10,
+        })
         .expect('');
     });
   });

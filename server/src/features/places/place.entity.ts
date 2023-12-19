@@ -10,6 +10,12 @@ export abstract class Place {
   name: string;
 
   @Column()
+  image: string;
+
+  @Column()
+  description: string;
+
+  @Column()
   x: number;
 
   @Column()

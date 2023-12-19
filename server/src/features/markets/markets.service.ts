@@ -135,6 +135,8 @@ export class MarketsService {
       const market = this.marketsRepository.create({
         cardId: dto.cardId,
         name: dto.name,
+        image: dto.image,
+        description: dto.description,
         x: dto.x,
         y: dto.y,
         price: dto.price,
@@ -154,6 +156,8 @@ export class MarketsService {
     try {
       const equal = market.price === dto.price;
       market.name = dto.name;
+      market.image = dto.image;
+      market.description = dto.description;
       market.x = dto.x;
       market.y = dto.y;
       market.price = dto.price;
@@ -258,6 +262,8 @@ export class MarketsService {
         'ownerCard.name',
         'ownerCard.color',
         'market.name',
+        'market.image',
+        'market.description',
         'market.x',
         'market.y',
         'market.price',

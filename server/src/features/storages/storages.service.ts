@@ -159,6 +159,8 @@ export class StoragesService {
       const storage = this.storagesRepository.create({
         cardId: dto.cardId,
         name: dto.name,
+        image: dto.image,
+        description: dto.description,
         x: dto.x,
         y: dto.y,
         price: dto.price,
@@ -178,6 +180,8 @@ export class StoragesService {
     try {
       const equal = storage.price === dto.price;
       storage.name = dto.name;
+      storage.image = dto.image;
+      storage.description = dto.description;
       storage.x = dto.x;
       storage.y = dto.y;
       storage.price = dto.price;
@@ -282,6 +286,8 @@ export class StoragesService {
         'ownerCard.name',
         'ownerCard.color',
         'storage.name',
+        'storage.image',
+        'storage.description',
         'storage.x',
         'storage.y',
         'storage.price',

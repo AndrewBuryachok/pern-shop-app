@@ -1,12 +1,27 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Validate } from 'class-validator';
-import { IsCoordinate, IsId, IsName, IsPrice } from '../../common/decorators';
+import {
+  IsCoordinate,
+  IsId,
+  IsImage,
+  IsName,
+  IsOptionalDescription,
+  IsPrice,
+} from '../../common/decorators';
 import { IsCardExists } from '../../common/constraints';
 
 export abstract class CreatePlaceDto {
   @ApiProperty()
   @IsName()
   name: string;
+
+  @ApiProperty()
+  @IsImage()
+  image: string;
+
+  @ApiProperty()
+  @IsOptionalDescription()
+  description: string;
 
   @ApiProperty()
   @IsCoordinate()

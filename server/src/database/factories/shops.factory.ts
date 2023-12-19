@@ -9,6 +9,8 @@ import {
 define(Shop, (faker: Faker) => {
   const shop = new Shop();
   shop.name = faker.address.city();
+  shop.image = '';
+  shop.description = '';
   shop.x =
     Math.floor(
       Math.random() * (MAX_COORDINATE_VALUE - MIN_COORDINATE_VALUE + 1),

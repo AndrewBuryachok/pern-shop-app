@@ -109,6 +109,8 @@ export class ShopsService {
       const shop = this.shopsRepository.create({
         userId: dto.userId,
         name: dto.name,
+        image: dto.image,
+        description: dto.description,
         x: dto.x,
         y: dto.y,
       });
@@ -121,6 +123,8 @@ export class ShopsService {
   private async edit(shop: Shop, dto: ExtEditShopDto): Promise<void> {
     try {
       shop.name = dto.name;
+      shop.image = dto.image;
+      shop.description = dto.description;
       shop.x = dto.x;
       shop.y = dto.y;
       await this.shopsRepository.save(shop);
@@ -182,6 +186,8 @@ export class ShopsService {
         'ownerUser.id',
         'ownerUser.nick',
         'shop.name',
+        'shop.image',
+        'shop.description',
         'shop.x',
         'shop.y',
       ]);
