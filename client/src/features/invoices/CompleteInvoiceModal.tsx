@@ -73,7 +73,7 @@ export default function CompleteInvoiceModal({
         label={t('columns.receiver')}
         icon={<CustomAvatar {...invoice.receiverUser} />}
         iconWidth={48}
-        value={invoice.receiverUser.name}
+        value={invoice.receiverUser.nick}
         disabled
       />
       <TextInput label={t('columns.sum')} value={`${invoice.sum}$`} disabled />

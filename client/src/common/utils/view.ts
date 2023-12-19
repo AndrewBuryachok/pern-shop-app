@@ -20,9 +20,9 @@ export const viewUsers = (users: SmUser[]) =>
   users.map((user) => ({
     ...user,
     userid: user.id,
-    username: user.name,
+    nick: user.nick,
     value: `${user.id}`,
-    label: user.name,
+    label: user.nick,
     disabled: true,
   }));
 
@@ -30,7 +30,7 @@ export const viewCards = (cards: SmCard[], user: SmUser) =>
   cards.map((card) => ({
     ...card,
     userid: user.id,
-    username: user.name,
+    nick: user.nick,
     color: `${card.color}`,
     value: `${card.id}`,
     label: card.name,

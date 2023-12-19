@@ -20,7 +20,7 @@ export default function ViewPlaintModal({ data: plaint }: Props) {
         label={t('columns.sender')}
         icon={<CustomAvatar {...plaint.senderUser} />}
         iconWidth={48}
-        value={plaint.senderUser.name}
+        value={plaint.senderUser.nick}
         disabled
       />
       <Textarea
@@ -32,7 +32,7 @@ export default function ViewPlaintModal({ data: plaint }: Props) {
         label={t('columns.receiver')}
         icon={<CustomAvatar {...plaint.receiverUser} />}
         iconWidth={48}
-        value={plaint.receiverUser.name}
+        value={plaint.receiverUser.nick}
         disabled
       />
       <Textarea
@@ -44,7 +44,7 @@ export default function ViewPlaintModal({ data: plaint }: Props) {
         label={t('columns.executor')}
         icon={plaint.executorUser && <CustomAvatar {...plaint.executorUser} />}
         iconWidth={48}
-        value={plaint.executorUser ? plaint.executorUser.name : '-'}
+        value={plaint.executorUser ? plaint.executorUser.nick : '-'}
         disabled
       />
       <Textarea

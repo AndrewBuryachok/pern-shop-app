@@ -192,8 +192,9 @@
     "friends": "Друзі",
     "mode": "Режим",
     "category": "Категорія",
-    "name": "Ім'я",
+    "nick": "Нік",
     "password": "Пароль",
+    "name": "Назва",
     "oldpassword": "Старий Пароль",
     "newpassword": "Новий Пароль",
     "rent": "Оренда"

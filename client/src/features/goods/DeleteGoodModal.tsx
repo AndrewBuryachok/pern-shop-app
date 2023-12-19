@@ -40,7 +40,7 @@ export default function DeleteGoodModal({ data: good }: Props) {
         label={t('columns.seller')}
         icon={<CustomAvatar {...good.shop.user} />}
         iconWidth={48}
-        value={good.shop.user.name}
+        value={good.shop.user.nick}
         disabled
       />
       <TextInput

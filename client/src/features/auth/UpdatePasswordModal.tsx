@@ -6,7 +6,10 @@ import { openModal } from '@mantine/modals';
 import { useUpdatePasswordMutation } from './auth.api';
 import { UpdatePasswordDto } from './auth.dto';
 import CustomForm from '../../common/components/CustomForm';
-import { MAX_TEXT_LENGTH, MIN_TEXT_LENGTH } from '../../common/constants';
+import {
+  MAX_PASSWORD_LENGTH,
+  MIN_PASSWORD_LENGTH,
+} from '../../common/constants';
 
 export default function UpdatePasswordModal() {
   const [t] = useTranslation();
@@ -34,16 +37,16 @@ export default function UpdatePasswordModal() {
         label={t('columns.oldpassword')}
         placeholder={t('columns.oldpassword')}
         required
-        minLength={MIN_TEXT_LENGTH}
-        maxLength={MAX_TEXT_LENGTH}
+        minLength={MIN_PASSWORD_LENGTH}
+        maxLength={MAX_PASSWORD_LENGTH}
         {...form.getInputProps('oldPassword')}
       />
       <PasswordInput
         label={t('columns.newpassword')}
         placeholder={t('columns.newpassword')}
         required
-        minLength={MIN_TEXT_LENGTH}
-        maxLength={MAX_TEXT_LENGTH}
+        minLength={MIN_PASSWORD_LENGTH}
+        maxLength={MAX_PASSWORD_LENGTH}
         {...form.getInputProps('newPassword')}
       />
     </CustomForm>

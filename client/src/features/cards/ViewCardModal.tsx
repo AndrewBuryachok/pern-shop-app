@@ -21,7 +21,7 @@ export default function ViewCardModal({ data: card }: Props) {
         label={t('columns.owner')}
         icon={<CustomAvatar {...card.user} />}
         iconWidth={48}
-        value={card.user.name}
+        value={card.user.nick}
         disabled
       />
       <TextInput label={t('columns.card')} value={card.name} disabled />

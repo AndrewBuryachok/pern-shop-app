@@ -20,14 +20,14 @@ export default function ViewFriendModal({ data: friend }: Props) {
         label={t('columns.sender')}
         icon={<CustomAvatar {...friend.senderUser} />}
         iconWidth={48}
-        value={friend.senderUser.name}
+        value={friend.senderUser.nick}
         disabled
       />
       <TextInput
         label={t('columns.receiver')}
         icon={<CustomAvatar {...friend.receiverUser} />}
         iconWidth={48}
-        value={friend.receiverUser.name}
+        value={friend.receiverUser.nick}
         disabled
       />
       <TextInput

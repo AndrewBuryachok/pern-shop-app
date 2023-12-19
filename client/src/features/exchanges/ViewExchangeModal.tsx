@@ -20,7 +20,7 @@ export default function ViewExchangeModal({ data: exchange }: Props) {
         label={t('columns.executor')}
         icon={<CustomAvatar {...exchange.executorUser} />}
         iconWidth={48}
-        value={exchange.executorUser.name}
+        value={exchange.executorUser.nick}
         disabled
       />
       <TextInput

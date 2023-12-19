@@ -20,14 +20,14 @@ export default function ViewVoteModal({ data: vote }: Props) {
         label={t('columns.voter')}
         icon={<CustomAvatar {...vote.user} />}
         iconWidth={48}
-        value={vote.user.name}
+        value={vote.user.nick}
         disabled
       />
       <TextInput
         label={t('columns.poller')}
         icon={<CustomAvatar {...vote.poll.user} />}
         iconWidth={48}
-        value={vote.poll.user.name}
+        value={vote.poll.user.nick}
         disabled
       />
       <Textarea

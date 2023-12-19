@@ -38,7 +38,7 @@ export default function DeletePlaintModal({ data: plaint }: Props) {
         label={t('columns.sender')}
         icon={<CustomAvatar {...plaint.senderUser} />}
         iconWidth={48}
-        value={plaint.senderUser.name}
+        value={plaint.senderUser.nick}
         disabled
       />
       <Textarea
@@ -50,7 +50,7 @@ export default function DeletePlaintModal({ data: plaint }: Props) {
         label={t('columns.receiver')}
         icon={<CustomAvatar {...plaint.receiverUser} />}
         iconWidth={48}
-        value={plaint.receiverUser.name}
+        value={plaint.receiverUser.nick}
         disabled
       />
     </CustomForm>

@@ -39,7 +39,7 @@ export default function VotePollModal({ data: poll }: Props) {
         label={t('columns.poller')}
         icon={<CustomAvatar {...poll.user} />}
         iconWidth={48}
-        value={poll.user.name}
+        value={poll.user.nick}
         disabled
       />
       <Textarea

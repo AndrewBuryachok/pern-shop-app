@@ -25,16 +25,16 @@ export const selectUsers = (users?: SmUser[]) =>
   users?.map((user) => ({
     ...user,
     userid: user.id,
-    username: user.name,
+    nick: user.nick,
     value: `${user.id}`,
-    label: user.name,
+    label: user.nick,
   })) || [];
 
 export const selectCards = (cards?: MdCard[]) =>
   cards?.map(({ user, ...card }) => ({
     ...card,
     userid: user.id,
-    username: user.name,
+    nick: user.nick,
     color: `${card.color}`,
     value: `${card.id}`,
     label: card.name,
@@ -44,7 +44,7 @@ export const selectCardsWithBalance = (cards?: MdCardWithBalance[]) =>
   cards?.map(({ user, ...card }) => ({
     ...card,
     userid: user.id,
-    username: user.name,
+    nick: user.nick,
     color: `${card.color}`,
     value: `${card.id}`,
     label: `${card.name} ${card.balance}$`,

@@ -30,7 +30,7 @@ export default function ViewInvoiceModal({ data: invoice }: Props) {
         value={
           invoice.receiverCard
             ? parseCard(invoice.receiverCard)
-            : invoice.receiverUser.name
+            : invoice.receiverUser.nick
         }
         disabled
       />

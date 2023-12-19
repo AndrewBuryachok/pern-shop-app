@@ -11,8 +11,8 @@ import CustomForm from '../../common/components/CustomForm';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import {
   Color,
-  MAX_TEXT_LENGTH,
-  MIN_TEXT_LENGTH,
+  MAX_PASSWORD_LENGTH,
+  MIN_PASSWORD_LENGTH,
 } from '../../common/constants';
 
 type Props = IModal<User>;
@@ -45,15 +45,15 @@ export default function EditUserPasswordModal({ data: user }: Props) {
         label={t('columns.user')}
         icon={<CustomAvatar {...user} />}
         iconWidth={48}
-        value={user.name}
+        value={user.nick}
         disabled
       />
       <PasswordInput
         label={t('columns.password')}
         placeholder={t('columns.password')}
         required
-        minLength={MIN_TEXT_LENGTH}
-        maxLength={MAX_TEXT_LENGTH}
+        minLength={MIN_PASSWORD_LENGTH}
+        maxLength={MAX_PASSWORD_LENGTH}
         {...form.getInputProps('password')}
       />
     </CustomForm>

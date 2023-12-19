@@ -30,7 +30,7 @@ export const parseTime = (date?: Date) => {
   return `${result.date} ${result.time}`;
 };
 
-export const parseCard = (card: MdCard) => `${card.user.name} - ${card.name}`;
+export const parseCard = (card: MdCard) => `${card.user.nick} - ${card.name}`;
 
 export const parsePlace = (place: Place) =>
   `${place.name} (${place.x} ${place.y})`;

@@ -39,14 +39,14 @@ export default function UserProfile({ data: user }: Props) {
           size={128}
           src={`${import.meta.env.VITE_AVATAR_URL}${
             import.meta.env.VITE_BUST_ROUTE
-          }${user.name}`}
-          alt={user.name}
+          }${user.nick}`}
+          alt={user.nick}
         >
-          {user.name.toUpperCase().slice(0, 2)}
+          {user.nick.toUpperCase().slice(0, 2)}
         </Avatar>
       </CustomIndicator>
       <Text size='xl' weight='bold'>
-        {user.name}
+        {user.nick}
       </Text>
       <RolesBadge roles={user.roles} />
       <Group spacing={8}>

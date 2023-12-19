@@ -12,9 +12,9 @@ import CustomForm from '../../common/components/CustomForm';
 import {
   Color,
   MAX_COORDINATE_VALUE,
-  MAX_TEXT_LENGTH,
+  MAX_NAME_LENGTH,
   MIN_COORDINATE_VALUE,
-  MIN_TEXT_LENGTH,
+  MIN_NAME_LENGTH,
 } from '../../common/constants';
 
 type Props = IModal<City>;
@@ -48,8 +48,8 @@ export default function EditCityModal({ data: city }: Props) {
         label={t('columns.name')}
         placeholder={t('columns.name')}
         required
-        minLength={MIN_TEXT_LENGTH}
-        maxLength={MAX_TEXT_LENGTH}
+        minLength={MIN_NAME_LENGTH}
+        maxLength={MAX_NAME_LENGTH}
         {...form.getInputProps('name')}
       />
       <NumberInput

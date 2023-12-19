@@ -39,7 +39,7 @@ export default function DeleteTaskModal({ data: task }: Props) {
         label={t('columns.customer')}
         icon={<CustomAvatar {...task.customerUser} />}
         iconWidth={48}
-        value={task.customerUser.name}
+        value={task.customerUser.nick}
         disabled
       />
       <Textarea

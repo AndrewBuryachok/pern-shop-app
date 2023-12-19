@@ -13,7 +13,7 @@ export default function SingleUser() {
 
   const { data: user, isFetching } = useGetSingleUserQuery(+userId!);
 
-  useDocumentTitle(t('navbar.user') + ' ' + (user?.name || ''));
+  useDocumentTitle(t('navbar.user') + ' ' + (user?.nick || ''));
 
   return user && !isFetching ? (
     <UserProfile data={user} />

@@ -21,7 +21,7 @@ export default function ViewShopModal({ data: shop }: Props) {
         label={t('columns.owner')}
         icon={<CustomAvatar {...shop.user} />}
         iconWidth={48}
-        value={shop.user.name}
+        value={shop.user.nick}
         disabled
       />
       <TextInput label={t('columns.shop')} value={shop.name} disabled />

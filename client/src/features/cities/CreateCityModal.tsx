@@ -16,9 +16,9 @@ import { UsersItem } from '../../common/components/UsersItem';
 import { selectUsers } from '../../common/utils';
 import {
   MAX_COORDINATE_VALUE,
-  MAX_TEXT_LENGTH,
+  MAX_NAME_LENGTH,
   MIN_COORDINATE_VALUE,
-  MIN_TEXT_LENGTH,
+  MIN_NAME_LENGTH,
 } from '../../common/constants';
 
 type Props = { hasRole: boolean };
@@ -76,8 +76,8 @@ export default function CreateCityModal({ hasRole }: Props) {
         label={t('columns.name')}
         placeholder={t('columns.name')}
         required
-        minLength={MIN_TEXT_LENGTH}
-        maxLength={MAX_TEXT_LENGTH}
+        minLength={MIN_NAME_LENGTH}
+        maxLength={MAX_NAME_LENGTH}
         {...form.getInputProps('name')}
       />
       <NumberInput

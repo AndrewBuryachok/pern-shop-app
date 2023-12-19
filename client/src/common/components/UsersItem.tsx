@@ -3,13 +3,13 @@ import CustomAvatarWithText from './CustomAvatarWithText';
 
 interface Props extends React.ComponentPropsWithoutRef<'div'> {
   userid: number;
-  username: string;
+  nick: string;
 }
 
 export const UsersItem = forwardRef<HTMLDivElement, Props>(
   (props: Props, ref) => (
     <div ref={ref} {...props}>
-      <CustomAvatarWithText id={props.userid} name={props.username} />
+      <CustomAvatarWithText id={props.userid} nick={props.nick} />
     </div>
   ),
 );

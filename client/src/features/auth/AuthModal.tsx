@@ -10,7 +10,12 @@ import { AuthDto } from './auth.dto';
 import { addCurrentUser } from './auth.slice';
 import { subscribe } from '../mqtt/mqtt.slice';
 import CustomForm from '../../common/components/CustomForm';
-import { MAX_TEXT_LENGTH, MIN_TEXT_LENGTH } from '../../common/constants';
+import {
+  MAX_NICK_LENGTH,
+  MAX_PASSWORD_LENGTH,
+  MIN_NICK_LENGTH,
+  MIN_PASSWORD_LENGTH,
+} from '../../common/constants';
 
 export default function AuthModal() {
   const [t] = useTranslation();
@@ -21,7 +26,7 @@ export default function AuthModal() {
 
   const form = useForm({
     initialValues: {
-      name: '',
+      nick: '',
       password: '',
     },
   });
@@ -44,19 +49,19 @@ export default function AuthModal() {
       isLoading={type === 'login' ? isLoginLoading : isRegisterLoading}
     >
       <TextInput
-        label={t('columns.name')}
-        placeholder={t('columns.name')}
+        label={t('columns.nick')}
+        placeholder={t('columns.nick')}
         required
-        minLength={MIN_TEXT_LENGTH}
-        maxLength={MAX_TEXT_LENGTH}
-        {...form.getInputProps('name')}
+        minLength={MIN_NICK_LENGTH}
+        maxLength={MAX_NICK_LENGTH}
+        {...form.getInputProps('nick')}
       />
       <PasswordInput
         label={t('columns.password')}
         placeholder={t('columns.password')}
         required
-        minLength={MIN_TEXT_LENGTH}
-        maxLength={MAX_TEXT_LENGTH}
+        minLength={MIN_PASSWORD_LENGTH}
+        maxLength={MAX_PASSWORD_LENGTH}
         {...form.getInputProps('password')}
       />
       <Text size='xs'>

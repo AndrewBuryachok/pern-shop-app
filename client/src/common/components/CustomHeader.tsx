@@ -69,7 +69,7 @@ export default function CustomHeader(props: Props) {
         <Menu offset={4} position='bottom-end'>
           <Menu.Target>
             <Tooltip
-              label={user?.name}
+              label={user?.nick}
               hidden={!user}
               position='left'
               withArrow
@@ -77,15 +77,15 @@ export default function CustomHeader(props: Props) {
               <Avatar
                 size={32}
                 src={
-                  user?.name &&
+                  user?.nick &&
                   `${import.meta.env.VITE_AVATAR_URL}${
                     import.meta.env.VITE_HEAD_ROUTE
-                  }${user.name}`
+                  }${user.nick}`
                 }
-                alt={user?.name}
+                alt={user?.nick}
                 style={{ cursor: 'pointer' }}
               >
-                {user?.name.toUpperCase().slice(0, 2)}
+                {user?.nick.toUpperCase().slice(0, 2)}
               </Avatar>
             </Tooltip>
           </Menu.Target>

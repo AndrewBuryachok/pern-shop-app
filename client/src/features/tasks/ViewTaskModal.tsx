@@ -21,7 +21,7 @@ export default function ViewTaskModal({ data: task }: Props) {
         label={t('columns.customer')}
         icon={<CustomAvatar {...task.customerUser} />}
         iconWidth={48}
-        value={task.customerUser.name}
+        value={task.customerUser.nick}
         disabled
       />
       <Textarea
@@ -40,7 +40,7 @@ export default function ViewTaskModal({ data: task }: Props) {
         label={t('columns.executor')}
         icon={task.executorUser && <CustomAvatar {...task.executorUser} />}
         iconWidth={48}
-        value={task.executorUser ? task.executorUser.name : '-'}
+        value={task.executorUser ? task.executorUser.nick : '-'}
         disabled
       />
       <TextInput
@@ -57,7 +57,7 @@ export default function ViewTaskModal({ data: task }: Props) {
         label={t('columns.owner')}
         icon={<CustomAvatar {...task.city.user} />}
         iconWidth={48}
-        value={task.city.user.name}
+        value={task.city.user.nick}
         disabled
       />
       <TextInput

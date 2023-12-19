@@ -192,8 +192,9 @@
     "friends": "Friends",
     "mode": "Mode",
     "category": "Category",
-    "name": "Name",
+    "nick": "Nick",
     "password": "Password",
+    "name": "Name",
     "oldpassword": "Old Password",
     "newpassword": "New Password",
     "rent": "Rent"

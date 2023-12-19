@@ -5,7 +5,7 @@ import SingleText from './SingleText';
 
 interface Props extends React.ComponentPropsWithoutRef<'div'> {
   userid: number;
-  username: string;
+  nick: string;
   name: string;
   color: string;
   balance?: number;
@@ -15,9 +15,9 @@ export const CardsItem = forwardRef<HTMLDivElement, Props>(
   (props: Props, ref) => (
     <div ref={ref} {...props}>
       <Group spacing={8}>
-        <CustomAvatar id={props.userid} name={props.username} />
+        <CustomAvatar id={props.userid} nick={props.nick} />
         <div>
-          <SingleText text={props.username} />
+          <SingleText text={props.nick} />
           <Group spacing={8}>
             <SingleText text={props.name} color={+props.color} />
             {props.balance !== undefined && (

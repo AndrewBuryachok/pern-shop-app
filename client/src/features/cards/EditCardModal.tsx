@@ -13,8 +13,8 @@ import { ColorsItem } from '../../common/components/ColorsItem';
 import { selectColors } from '../../common/utils';
 import {
   Color,
-  MAX_TEXT_LENGTH,
-  MIN_TEXT_LENGTH,
+  MAX_NAME_LENGTH,
+  MIN_NAME_LENGTH,
 } from '../../common/constants';
 
 type Props = IModal<Card>;
@@ -48,8 +48,8 @@ export default function EditCardModal({ data: card }: Props) {
         label={t('columns.name')}
         placeholder={t('columns.name')}
         required
-        minLength={MIN_TEXT_LENGTH}
-        maxLength={MAX_TEXT_LENGTH}
+        minLength={MIN_NAME_LENGTH}
+        maxLength={MAX_NAME_LENGTH}
         {...form.getInputProps('name')}
       />
       <Select

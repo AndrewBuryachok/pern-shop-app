@@ -14,10 +14,10 @@ export default function LinkedAvatar(props: Props) {
         size={32}
         src={`${import.meta.env.VITE_AVATAR_URL}${
           import.meta.env.VITE_HEAD_ROUTE
-        }${props.name}`}
-        alt={props.name}
+        }${props.nick}`}
+        alt={props.nick}
       >
-        {props.name.toUpperCase().slice(0, 2)}
+        {props.nick.toUpperCase().slice(0, 2)}
       </Avatar>
     </CustomIndicator>
   );

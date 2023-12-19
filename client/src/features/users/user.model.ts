@@ -3,7 +3,7 @@ import { SmCard } from '../cards/card.model';
 
 export interface SmUser {
   id: number;
-  name: string;
+  nick: string;
 }
 
 export interface MdUser extends SmUser {

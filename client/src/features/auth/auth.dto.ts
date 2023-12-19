@@ -1,5 +1,5 @@
 export interface AuthDto {
-  name: string;
+  nick: string;
   password: string;
 }
 

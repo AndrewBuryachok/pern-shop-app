@@ -15,7 +15,7 @@ import CustomAvatar from '../../common/components/CustomAvatar';
 import { UsersItem } from '../../common/components/UsersItem';
 import { ColorsItem } from '../../common/components/ColorsItem';
 import { selectColors, selectUsers } from '../../common/utils';
-import { MAX_TEXT_LENGTH, MIN_TEXT_LENGTH } from '../../common/constants';
+import { MAX_NAME_LENGTH, MIN_NAME_LENGTH } from '../../common/constants';
 
 type Props = { hasRole: boolean };
 
@@ -75,8 +75,8 @@ export default function CreateCardModal({ hasRole }: Props) {
         label={t('columns.name')}
         placeholder={t('columns.name')}
         required
-        minLength={MIN_TEXT_LENGTH}
-        maxLength={MAX_TEXT_LENGTH}
+        minLength={MIN_NAME_LENGTH}
+        maxLength={MAX_NAME_LENGTH}
         {...form.getInputProps('name')}
       />
       <Select

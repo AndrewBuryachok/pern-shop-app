@@ -11,7 +11,7 @@ export default function AvatarWithDoubleText(props: Props) {
       <LinkedAvatar {...props.user} />
       <div>
         <DoubleText
-          text={props.user.name}
+          text={props.user.nick}
           subtext={props.name}
           color={props.color}
         />

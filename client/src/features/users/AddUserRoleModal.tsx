@@ -42,7 +42,7 @@ export default function AddUserRoleModal({ data: user }: Props) {
         label={t('columns.user')}
         icon={<CustomAvatar {...user} />}
         iconWidth={48}
-        value={user.name}
+        value={user.nick}
         disabled
       />
       <Select
