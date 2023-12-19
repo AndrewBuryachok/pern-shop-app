@@ -1,6 +1,4 @@
-import { Text } from '@mantine/core';
 import SingleText from './SingleText';
-import { colors } from '../constants';
 
 type Props = {
   text: string;
@@ -12,9 +10,10 @@ export default function DoubleText(props: Props) {
   return (
     <>
       <SingleText text={props.text} />
-      <Text size='xs' color={props.color ? colors[props.color - 1] : undefined}>
-        {props.subtext}
-      </Text>
+      <SingleText
+        text={props.subtext}
+        color={props.color ? props.color : undefined}
+      />
     </>
   );
 }
