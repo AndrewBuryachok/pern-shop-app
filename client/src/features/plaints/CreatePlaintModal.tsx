@@ -19,7 +19,7 @@ export default function CreatePlaintModal() {
   const form = useForm({
     initialValues: {
       user: '',
-      description: '-',
+      description: '',
     },
     transformValues: ({ user, ...rest }) => ({
       ...rest,

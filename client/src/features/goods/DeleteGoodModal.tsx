@@ -52,7 +52,7 @@ export default function DeleteGoodModal({ data: good }: Props) {
       />
       <Textarea
         label={t('columns.description')}
-        value={good.description}
+        value={good.description || '-'}
         disabled
       />
       <TextInput

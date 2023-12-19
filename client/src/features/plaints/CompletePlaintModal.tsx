@@ -19,7 +19,7 @@ export default function CompletePlaintModal({ data: plaint }: Props) {
   const form = useForm({
     initialValues: {
       plaintId: plaint.id,
-      description: '-',
+      description: '',
     },
   });
 

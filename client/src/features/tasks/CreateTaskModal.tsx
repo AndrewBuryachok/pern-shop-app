@@ -15,7 +15,7 @@ export default function CreateTaskModal() {
 
   const form = useForm({
     initialValues: {
-      description: '-',
+      description: '',
       priority: '',
     },
     transformValues: ({ priority, ...rest }) => ({

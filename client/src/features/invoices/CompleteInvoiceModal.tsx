@@ -79,7 +79,7 @@ export default function CompleteInvoiceModal({
       <TextInput label={t('columns.sum')} value={`${invoice.sum}$`} disabled />
       <Textarea
         label={t('columns.description')}
-        value={invoice.description}
+        value={invoice.description || '-'}
         disabled
       />
       <Select

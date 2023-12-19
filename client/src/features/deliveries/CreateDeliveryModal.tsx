@@ -17,7 +17,7 @@ import RefetchAction from '../../common/components/RefetchAction';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import ThingImage from '../../common/components/ThingImage';
 import { UsersItem } from '../../common/components/UsersItem';
-import { ThingsItem } from '../../common/components/ThingItem';
+import { ThingsItem } from '../../common/components/ThingsItem';
 import { CardsItem } from '../../common/components/CardsItem';
 import { PlacesItem } from '../../common/components/PlacesItem';
 import {
@@ -53,7 +53,7 @@ export default function CreateDeliveryModal({ hasRole }: Props) {
       card: '',
       category: '',
       item: '',
-      description: '-',
+      description: '',
       amount: 1,
       intake: 1,
       kit: '',
@@ -192,7 +192,6 @@ export default function CreateDeliveryModal({ hasRole }: Props) {
       <Textarea
         label={t('columns.description')}
         placeholder={t('columns.description')}
-        required
         maxLength={MAX_DESCRIPTION_LENGTH}
         {...form.getInputProps('description')}
       />

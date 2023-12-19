@@ -37,7 +37,7 @@ export default function ViewInvoiceModal({ data: invoice }: Props) {
       <TextInput label={t('columns.sum')} value={`${invoice.sum}$`} disabled />
       <Textarea
         label={t('columns.description')}
-        value={invoice.description}
+        value={invoice.description || '-'}
         disabled
       />
       <TextInput

@@ -52,7 +52,7 @@ export default function CompleteProductModal({ data: product }: Props) {
       />
       <Textarea
         label={t('columns.description')}
-        value={product.description}
+        value={product.description || '-'}
         disabled
       />
       <TextInput

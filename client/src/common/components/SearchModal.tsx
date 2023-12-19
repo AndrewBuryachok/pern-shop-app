@@ -32,7 +32,7 @@ import RefetchAction from './RefetchAction';
 import CustomAvatar from './CustomAvatar';
 import { UsersItem } from './UsersItem';
 import ThingImage from './ThingImage';
-import { ThingsItem } from './ThingItem';
+import { ThingsItem } from './ThingsItem';
 import { CardsItem } from './CardsItem';
 import { PlacesItem } from './PlacesItem';
 import { ColorsItem } from './ColorsItem';

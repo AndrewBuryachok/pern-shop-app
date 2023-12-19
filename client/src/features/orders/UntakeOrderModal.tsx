@@ -52,7 +52,7 @@ export default function UntakeOrderModal({ data: order }: Props) {
       />
       <Textarea
         label={t('columns.description')}
-        value={order.description}
+        value={order.description || '-'}
         disabled
       />
       <TextInput

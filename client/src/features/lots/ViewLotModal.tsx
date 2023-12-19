@@ -41,7 +41,7 @@ export default function ViewLotModal({ data: lot }: Props) {
       />
       <Textarea
         label={t('columns.description')}
-        value={lot.description}
+        value={lot.description || '-'}
         disabled
       />
       <TextInput

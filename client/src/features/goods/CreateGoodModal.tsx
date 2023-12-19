@@ -13,7 +13,7 @@ import { CreateGoodDto } from './good.dto';
 import CustomForm from '../../common/components/CustomForm';
 import RefetchAction from '../../common/components/RefetchAction';
 import ThingImage from '../../common/components/ThingImage';
-import { ThingsItem } from '../../common/components/ThingItem';
+import { ThingsItem } from '../../common/components/ThingsItem';
 import { PlacesItem } from '../../common/components/PlacesItem';
 import {
   selectCategories,
@@ -38,7 +38,7 @@ export default function CreateGoodModal({ hasRole }: Props) {
       shop: '',
       category: '',
       item: '',
-      description: '-',
+      description: '',
       amount: 1,
       intake: 1,
       kit: '',
@@ -105,7 +105,6 @@ export default function CreateGoodModal({ hasRole }: Props) {
       <Textarea
         label={t('columns.description')}
         placeholder={t('columns.description')}
-        required
         maxLength={MAX_DESCRIPTION_LENGTH}
         {...form.getInputProps('description')}
       />

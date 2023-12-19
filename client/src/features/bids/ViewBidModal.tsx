@@ -46,7 +46,7 @@ export default function ViewBidModal({ data: bid }: Props) {
       />
       <Textarea
         label={t('columns.description')}
-        value={bid.lot.description}
+        value={bid.lot.description || '-'}
         disabled
       />
       <TextInput

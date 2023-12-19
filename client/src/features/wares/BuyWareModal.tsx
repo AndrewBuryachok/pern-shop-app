@@ -84,7 +84,7 @@ export default function BuyWareModal({ data: ware, hasRole }: Props) {
       />
       <Textarea
         label={t('columns.description')}
-        value={ware.description}
+        value={ware.description || '-'}
         disabled
       />
       <TextInput

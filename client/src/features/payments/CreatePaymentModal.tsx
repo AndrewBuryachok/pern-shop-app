@@ -37,7 +37,7 @@ export default function CreatePaymentModal({ hasRole }: Props) {
       receiverUser: '',
       receiverCard: '',
       sum: 1,
-      description: '-',
+      description: '',
     },
     transformValues: ({ senderCard, receiverCard, ...rest }) => ({
       ...rest,
@@ -164,7 +164,6 @@ export default function CreatePaymentModal({ hasRole }: Props) {
       <Textarea
         label={t('columns.description')}
         placeholder={t('columns.description')}
-        required
         maxLength={MAX_DESCRIPTION_LENGTH}
         {...form.getInputProps('description')}
       />

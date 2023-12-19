@@ -30,7 +30,7 @@ export default function CreateInvoiceModal({ hasRole }: Props) {
       senderCard: '',
       receiverUser: '',
       sum: 1,
-      description: '-',
+      description: '',
     },
     transformValues: ({ senderCard, receiverUser, ...rest }) => ({
       ...rest,
@@ -126,7 +126,6 @@ export default function CreateInvoiceModal({ hasRole }: Props) {
       <Textarea
         label={t('columns.description')}
         placeholder={t('columns.description')}
-        required
         maxLength={MAX_DESCRIPTION_LENGTH}
         {...form.getInputProps('description')}
       />

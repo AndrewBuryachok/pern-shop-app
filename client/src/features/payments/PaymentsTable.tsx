@@ -43,7 +43,7 @@ export default function PaymentsTable({ actions = [], ...props }: Props) {
             />
           </td>
           <td>
-            <SingleText text={payment.description} />
+            <SingleText text={payment.description || '-'} />
           </td>
           <td>
             <DateText date={payment.createdAt} />

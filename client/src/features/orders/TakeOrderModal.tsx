@@ -80,7 +80,7 @@ export default function TakeOrderModal({ data: order, hasRole }: Props) {
       />
       <Textarea
         label={t('columns.description')}
-        value={order.description}
+        value={order.description || '-'}
         disabled
       />
       <TextInput

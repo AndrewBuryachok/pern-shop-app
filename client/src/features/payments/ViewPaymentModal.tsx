@@ -33,7 +33,7 @@ export default function ViewPaymentModal({ data: payment }: Props) {
       <TextInput label={t('columns.sum')} value={`${payment.sum}$`} disabled />
       <Textarea
         label={t('columns.description')}
-        value={payment.description}
+        value={payment.description || '-'}
         disabled
       />
       <TextInput

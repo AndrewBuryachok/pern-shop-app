@@ -6,7 +6,7 @@ import { IModal } from '../../common/interfaces';
 import { ExtPlace } from './place.model';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import { UsersItem } from '../../common/components/UsersItem';
-import { ThingsItem } from '../../common/components/ThingItem';
+import { ThingsItem } from '../../common/components/ThingsItem';
 import { parseCard } from '../../common/utils';
 
 type Props = IModal<ExtPlace>;

@@ -5,7 +5,7 @@ import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { Rent } from './rent.model';
 import CustomAvatar from '../../common/components/CustomAvatar';
-import { ThingsItem } from '../../common/components/ThingItem';
+import { ThingsItem } from '../../common/components/ThingsItem';
 import {
   parseCard,
   parseStore,

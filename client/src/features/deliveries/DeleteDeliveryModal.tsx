@@ -52,7 +52,7 @@ export default function DeleteDeliveryModal({ data: delivery }: Props) {
       />
       <Textarea
         label={t('columns.description')}
-        value={delivery.description}
+        value={delivery.description || '-'}
         disabled
       />
       <TextInput

@@ -15,7 +15,7 @@ export default function ThingImageWithText(props: Props) {
   return (
     <Group spacing={8}>
       <ThingImage {...props} />
-      {!props.description || props.description === '-' ? (
+      {!props.description ? (
         <SingleText text={text} />
       ) : (
         <div>

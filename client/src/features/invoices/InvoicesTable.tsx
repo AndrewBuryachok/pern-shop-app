@@ -48,7 +48,7 @@ export default function InvoicesTable({ actions = [], ...props }: Props) {
             />
           </td>
           <td>
-            <SingleText text={invoice.description} />
+            <SingleText text={invoice.description || '-'} />
           </td>
           <td>
             <DateText date={invoice.completedAt} />

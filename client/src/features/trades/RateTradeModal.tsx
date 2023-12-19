@@ -53,7 +53,7 @@ export default function RateTradeModal({ data: trade }: Props) {
       />
       <Textarea
         label={t('columns.description')}
-        value={trade.ware.description}
+        value={trade.ware.description || '-'}
         disabled
       />
       <TextInput

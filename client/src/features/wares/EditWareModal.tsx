@@ -59,7 +59,7 @@ export default function EditWareModal({ data: ware }: Props) {
       />
       <Textarea
         label={t('columns.description')}
-        value={ware.description}
+        value={ware.description || '-'}
         disabled
       />
       <TextInput

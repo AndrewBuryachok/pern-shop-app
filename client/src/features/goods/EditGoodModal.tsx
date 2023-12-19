@@ -10,7 +10,7 @@ import { useEditGoodMutation } from './goods.api';
 import { EditGoodDto } from './good.dto';
 import CustomForm from '../../common/components/CustomForm';
 import ThingImage from '../../common/components/ThingImage';
-import { ThingsItem } from '../../common/components/ThingItem';
+import { ThingsItem } from '../../common/components/ThingsItem';
 import { selectCategories, selectItems, selectKits } from '../../common/utils';
 import {
   Color,
@@ -84,7 +84,6 @@ export default function EditGoodModal({ data: good }: Props) {
       <Textarea
         label={t('columns.description')}
         placeholder={t('columns.description')}
-        required
         maxLength={MAX_DESCRIPTION_LENGTH}
         {...form.getInputProps('description')}
       />
