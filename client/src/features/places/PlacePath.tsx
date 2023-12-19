@@ -10,6 +10,7 @@ type Props = {
 
 export default function PlacePath({ data: place }: Props) {
   const theme = useMantineTheme();
+
   const color = parseCoordinates(place);
   const vertical = [Color.RED, Color.YELLOW].includes(color);
   const divider = MAX_COORDINATE_VALUE / 50;
@@ -17,6 +18,7 @@ export default function PlacePath({ data: place }: Props) {
   const x2 = 50 + place.x / divider + '%';
   const y1 = 50 - (vertical ? place.y / divider : 0) + '%';
   const y2 = 50 - place.y / divider + '%';
+  const fill = theme.colors[colors[color - 1]][7];
 
   return (
     <>
@@ -25,7 +27,7 @@ export default function PlacePath({ data: place }: Props) {
         x2={x2}
         y1={y1}
         y2={y2}
-        stroke={theme.colors[colors[color - 1]][7]}
+        stroke={fill}
         strokeWidth='2'
       ></line>
       {!place.type ? (
@@ -33,7 +35,7 @@ export default function PlacePath({ data: place }: Props) {
           cx={x2}
           cy={y2}
           r='4'
-          fill={theme.colors[colors[color - 1]][7]}
+          fill={fill}
           cursor='pointer'
           onClick={() => openPlaceModal(place)}
         >
@@ -46,7 +48,7 @@ export default function PlacePath({ data: place }: Props) {
           width='8'
           height='8'
           transform='translate(-4,-4)'
-          fill={theme.colors[colors[color - 1]][7]}
+          fill={fill}
           cursor='pointer'
           onClick={() => openPlaceModal(place)}
         >
