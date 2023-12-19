@@ -1,10 +1,11 @@
 import { t } from 'i18next';
 import { useTranslation } from 'react-i18next';
-import { Select, Stack, TextInput } from '@mantine/core';
+import { Input, Select, Stack, TextInput, Textarea } from '@mantine/core';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { Storage } from './storage.model';
 import CustomAvatar from '../../common/components/CustomAvatar';
+import CustomImage from '../../common/components/CustomImage';
 import { StatesItem } from '../../common/components/StatesItem';
 import { parseCard, viewContainers, viewStates } from '../../common/utils';
 import { Color } from '../../common/constants';
@@ -25,6 +26,14 @@ export default function ViewStorageModal({ data: storage }: Props) {
         disabled
       />
       <TextInput label={t('columns.storage')} value={storage.name} disabled />
+      <Input.Wrapper label={t('columns.image')}>
+        <CustomImage {...storage} />
+      </Input.Wrapper>
+      <Textarea
+        label={t('columns.description')}
+        value={storage.description || '-'}
+        disabled
+      />
       <TextInput label={t('columns.x')} value={storage.x} disabled />
       <TextInput label={t('columns.y')} value={storage.y} disabled />
       <TextInput

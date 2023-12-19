@@ -1,10 +1,11 @@
 import { t } from 'i18next';
 import { useTranslation } from 'react-i18next';
-import { Select, Stack, TextInput } from '@mantine/core';
+import { Input, Select, Stack, TextInput, Textarea } from '@mantine/core';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { Shop } from './shop.model';
 import CustomAvatar from '../../common/components/CustomAvatar';
+import CustomImage from '../../common/components/CustomImage';
 import { ThingsItem } from '../../common/components/ThingsItem';
 import { viewThings } from '../../common/utils';
 import { Color } from '../../common/constants';
@@ -25,6 +26,14 @@ export default function ViewShopModal({ data: shop }: Props) {
         disabled
       />
       <TextInput label={t('columns.shop')} value={shop.name} disabled />
+      <Input.Wrapper label={t('columns.image')}>
+        <CustomImage {...shop} />
+      </Input.Wrapper>
+      <Textarea
+        label={t('columns.description')}
+        value={shop.description || '-'}
+        disabled
+      />
       <TextInput label={t('columns.x')} value={shop.x} disabled />
       <TextInput label={t('columns.y')} value={shop.y} disabled />
       <Select

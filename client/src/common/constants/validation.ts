@@ -5,6 +5,7 @@ export const MAX_PASSWORD_LENGTH = 16;
 export const MIN_NAME_LENGTH = 4;
 export const MAX_NAME_LENGTH = 16;
 export const MAX_DESCRIPTION_LENGTH = 32;
+export const MAX_IMAGE_LENGTH = 256;
 export const MAX_SUM_VALUE = 30000;
 export const MIN_COORDINATE_VALUE = -1000;
 export const MAX_COORDINATE_VALUE = 1000;

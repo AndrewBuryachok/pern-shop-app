@@ -1,5 +1,7 @@
 export interface CreatePlaceDto {
   name: string;
+  image: string;
+  description: string;
   x: number;
   y: number;
 }

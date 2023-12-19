@@ -1,7 +1,8 @@
 import { t } from 'i18next';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { NumberInput, Select, TextInput } from '@mantine/core';
+import { NumberInput, Select, TextInput, Textarea } from '@mantine/core';
+import { useDebouncedValue } from '@mantine/hooks';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { useCreateStorageMutation } from './storages.api';
@@ -14,11 +15,14 @@ import { CreateStorageDto } from './storage.dto';
 import CustomForm from '../../common/components/CustomForm';
 import RefetchAction from '../../common/components/RefetchAction';
 import CustomAvatar from '../../common/components/CustomAvatar';
+import CustomImage from '../../common/components/CustomImage';
 import { UsersItem } from '../../common/components/UsersItem';
 import { CardsItem } from '../../common/components/CardsItem';
 import { selectCardsWithBalance, selectUsers } from '../../common/utils';
 import {
   MAX_COORDINATE_VALUE,
+  MAX_DESCRIPTION_LENGTH,
+  MAX_IMAGE_LENGTH,
   MAX_NAME_LENGTH,
   MAX_PRICE_VALUE,
   MIN_COORDINATE_VALUE,
@@ -35,12 +39,16 @@ export default function CreateStorageModal({ hasRole }: Props) {
       user: '',
       card: '',
       name: '',
+      image: '',
+      description: '',
       x: 0,
       y: 0,
       price: 1,
     },
     transformValues: ({ card, ...rest }) => ({ ...rest, cardId: +card }),
   });
+
+  const [image] = useDebouncedValue(form.values.image, 500);
 
   useEffect(() => form.setFieldValue('card', ''), [form.values.user]);
 
@@ -106,6 +114,19 @@ export default function CreateStorageModal({ hasRole }: Props) {
         minLength={MIN_NAME_LENGTH}
         maxLength={MAX_NAME_LENGTH}
         {...form.getInputProps('name')}
+      />
+      <Textarea
+        label={t('columns.image')}
+        placeholder={t('columns.image')}
+        maxLength={MAX_IMAGE_LENGTH}
+        {...form.getInputProps('image')}
+      />
+      <CustomImage image={image} />
+      <Textarea
+        label={t('columns.description')}
+        placeholder={t('columns.description')}
+        maxLength={MAX_DESCRIPTION_LENGTH}
+        {...form.getInputProps('description')}
       />
       <NumberInput
         label={t('columns.x')}

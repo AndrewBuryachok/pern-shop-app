@@ -11,6 +11,8 @@ export interface SmStorageWithPrice extends SmStorage {
 export interface MdStorage extends PlaceWithCard {}
 
 export interface Storage extends MdStorage {
+  image: string;
+  description: string;
   states: State[];
   cells: SmCell[];
 }

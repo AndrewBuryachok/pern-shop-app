@@ -7,6 +7,8 @@ export interface SmMarket extends Place {}
 export interface MdMarket extends PlaceWithCard {}
 
 export interface Market extends MdMarket {
+  image: string;
+  description: string;
   states: State[];
   stores: SmStore[];
 }

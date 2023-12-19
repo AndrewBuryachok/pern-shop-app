@@ -6,5 +6,7 @@ export interface SmShop extends Place {}
 export interface MdShop extends PlaceWithUser {}
 
 export interface Shop extends MdShop {
+  image: string;
+  description: string;
   goods: SmGood[];
 }
