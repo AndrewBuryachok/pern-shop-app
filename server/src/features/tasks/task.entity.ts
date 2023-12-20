@@ -31,7 +31,10 @@ export class Task {
   customerUser: User;
 
   @Column()
-  description: string;
+  title: string;
+
+  @Column()
+  text: string;
 
   @Column({
     type: 'enum',

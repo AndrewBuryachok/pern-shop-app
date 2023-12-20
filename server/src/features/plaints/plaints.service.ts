@@ -131,9 +131,10 @@ export class PlaintsService {
   private async create(dto: ExtCreatePlaintDto): Promise<void> {
     try {
       const plaint = this.plaintsRepository.create({
+        title: dto.title,
         senderUserId: dto.myId,
         receiverUserId: dto.userId,
-        senderDescription: dto.description,
+        senderText: dto.text,
       });
       await this.plaintsRepository.save(plaint);
     } catch (error) {
@@ -146,7 +147,7 @@ export class PlaintsService {
     dto: ExtUpdatePlaintDto,
   ): Promise<void> {
     try {
-      plaint.receiverDescription = dto.description;
+      plaint.receiverText = dto.text;
       plaint.executedAt = new Date();
       await this.plaintsRepository.save(plaint);
     } catch (error) {
@@ -160,7 +161,7 @@ export class PlaintsService {
   ): Promise<void> {
     try {
       plaint.executorUserId = dto.myId;
-      plaint.executorDescription = dto.description;
+      plaint.executorText = dto.text;
       plaint.completedAt = new Date();
       await this.plaintsRepository.save(plaint);
     } catch (error) {
@@ -218,6 +219,13 @@ export class PlaintsService {
       .andWhere(
         new Brackets((qb) =>
           qb
+            .where(`${!req.title}`)
+            .orWhere('plaint.title ILIKE :title', { title: req.title }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
             .where(`${!req.minDate}`)
             .orWhere('plaint.createdAt >= :minDate', { minDate: req.minDate }),
         ),
@@ -234,15 +242,16 @@ export class PlaintsService {
       .take(req.take)
       .select([
         'plaint.id',
+        'plaint.title',
         'senderUser.id',
         'senderUser.nick',
-        'plaint.senderDescription',
+        'plaint.senderText',
         'receiverUser.id',
         'receiverUser.nick',
-        'plaint.receiverDescription',
+        'plaint.receiverText',
         'executorUser.id',
         'executorUser.nick',
-        'plaint.executorDescription',
+        'plaint.executorText',
         'plaint.createdAt',
         'plaint.executedAt',
         'plaint.completedAt',

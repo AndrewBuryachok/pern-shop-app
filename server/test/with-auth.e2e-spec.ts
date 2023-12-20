@@ -1496,7 +1496,7 @@ describe('With Auth', () => {
       return request(app.getHttpServer())
         .post('/polls')
         .set('Authorization', `Bearer ${user.access}`)
-        .send({ description: 'poll description' })
+        .send({ title: 'poll title', text: 'poll text' })
         .expect('');
     });
 
@@ -1504,7 +1504,7 @@ describe('With Auth', () => {
       return request(app.getHttpServer())
         .post('/polls')
         .set('Authorization', `Bearer ${user.access}`)
-        .send({ description: 'poll description' })
+        .send({ title: 'poll title', text: 'poll text' })
         .expect('');
     });
 
@@ -1688,7 +1688,7 @@ describe('With Auth', () => {
       return request(app.getHttpServer())
         .post('/tasks')
         .set('Authorization', `Bearer ${user.access}`)
-        .send({ description: 'task description', priority: 1 })
+        .send({ title: 'task title', text: 'task text', priority: 1 })
         .expect('');
     });
 
@@ -1696,7 +1696,7 @@ describe('With Auth', () => {
       return request(app.getHttpServer())
         .post('/tasks')
         .set('Authorization', `Bearer ${user.access}`)
-        .send({ description: 'task description', priority: 1 })
+        .send({ title: 'task title', text: 'task text', priority: 1 })
         .expect('');
     });
 
@@ -1786,7 +1786,11 @@ describe('With Auth', () => {
       return request(app.getHttpServer())
         .post('/plaints')
         .set('Authorization', `Bearer ${user.access}`)
-        .send({ userId: user.id, description: 'plaint description' })
+        .send({
+          title: 'plaint title',
+          userId: user.id,
+          text: 'sender text',
+        })
         .expect('');
     });
 
@@ -1794,7 +1798,11 @@ describe('With Auth', () => {
       return request(app.getHttpServer())
         .post('/plaints')
         .set('Authorization', `Bearer ${user.access}`)
-        .send({ userId: user.id, description: 'plaint description' })
+        .send({
+          title: 'plaint title',
+          userId: user.id,
+          text: 'sender text',
+        })
         .expect('');
     });
 
@@ -1830,7 +1838,7 @@ describe('With Auth', () => {
       return request(app.getHttpServer())
         .post(`/plaints/${plaintsId[0]}/execute`)
         .set('Authorization', `Bearer ${user.access}`)
-        .send({ description: 'plaint description' })
+        .send({ text: 'received text' })
         .expect('');
     });
 
@@ -1838,7 +1846,7 @@ describe('With Auth', () => {
       return request(app.getHttpServer())
         .post(`/plaints/${plaintsId[0]}`)
         .set('Authorization', `Bearer ${judge.access}`)
-        .send({ description: 'plaint description' })
+        .send({ text: 'executor text' })
         .expect('');
     });
 

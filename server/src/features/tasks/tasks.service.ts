@@ -154,7 +154,8 @@ export class TasksService {
       const task = this.tasksRepository.create({
         cityId: dto.cityId,
         customerUserId: dto.myId,
-        description: dto.description,
+        title: dto.title,
+        text: dto.text,
         priority: dto.priority,
       });
       await this.tasksRepository.save(task);
@@ -260,10 +261,8 @@ export class TasksService {
       .andWhere(
         new Brackets((qb) =>
           qb
-            .where(`${!req.description}`)
-            .orWhere('task.description ILIKE :description', {
-              description: req.description,
-            }),
+            .where(`${!req.title}`)
+            .orWhere('task.title ILIKE :title', { title: req.title }),
         ),
       )
       .andWhere(
@@ -307,7 +306,8 @@ export class TasksService {
         'city.y',
         'customerUser.id',
         'customerUser.nick',
-        'task.description',
+        'task.title',
+        'task.text',
         'task.priority',
         'task.createdAt',
         'executorUser.id',

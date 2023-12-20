@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Validate } from 'class-validator';
 import { Type } from 'class-transformer';
-import { IsId, IsRequiredDescription } from '../../common/decorators';
+import { IsId, IsText, IsTitle } from '../../common/decorators';
 import { IsPlaintExists, IsUserExists } from '../../common/constraints';
 
 export class PlaintIdDto {
@@ -14,8 +14,8 @@ export class PlaintIdDto {
 
 export class UpdatePlaintDto {
   @ApiProperty()
-  @IsRequiredDescription()
-  description: string;
+  @IsText()
+  text: string;
 }
 
 export class ExtUpdatePlaintDto extends UpdatePlaintDto {
@@ -24,6 +24,10 @@ export class ExtUpdatePlaintDto extends UpdatePlaintDto {
 }
 
 export class CreatePlaintDto extends UpdatePlaintDto {
+  @ApiProperty()
+  @IsTitle()
+  title: string;
+
   @ApiProperty()
   @IsId()
   @Validate(IsUserExists)

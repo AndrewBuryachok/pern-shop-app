@@ -23,7 +23,10 @@ export class Poll {
   user: User;
 
   @Column()
-  description: string;
+  title: string;
+
+  @Column()
+  text: string;
 
   @CreateDateColumn({ type: 'timestamptz', name: 'created_at' })
   createdAt: Date;

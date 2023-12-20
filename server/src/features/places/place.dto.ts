@@ -2,10 +2,10 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Validate } from 'class-validator';
 import {
   IsCoordinate,
+  IsDescription,
   IsId,
   IsImage,
   IsName,
-  IsOptionalDescription,
   IsPrice,
 } from '../../common/decorators';
 import { IsCardExists } from '../../common/constraints';
@@ -20,7 +20,7 @@ export abstract class CreatePlaceDto {
   image: string;
 
   @ApiProperty()
-  @IsOptionalDescription()
+  @IsDescription()
   description: string;
 
   @ApiProperty()

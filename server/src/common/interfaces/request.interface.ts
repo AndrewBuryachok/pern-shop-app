@@ -104,6 +104,12 @@ export class Request {
   @IsOptional()
   @IsString()
   @Transform(({ value }) => value && `%${value}%`)
+  title?: string;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsString()
+  @Transform(({ value }) => value && `%${value}%`)
   description?: string;
 
   @ApiProperty({ required: false })

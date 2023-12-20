@@ -91,7 +91,8 @@ export class PollsService {
     try {
       const poll = this.pollsRepository.create({
         userId: dto.myId,
-        description: dto.description,
+        title: dto.title,
+        text: dto.text,
       });
       await this.pollsRepository.save(poll);
     } catch (error) {
@@ -154,10 +155,8 @@ export class PollsService {
       .andWhere(
         new Brackets((qb) =>
           qb
-            .where(`${!req.description}`)
-            .orWhere('poll.description ILIKE :description', {
-              description: req.description,
-            }),
+            .where(`${!req.title}`)
+            .orWhere('poll.title ILIKE :title', { title: req.title }),
         ),
       )
       .andWhere(
@@ -181,7 +180,8 @@ export class PollsService {
         'poll.id',
         'pollerUser.id',
         'pollerUser.nick',
-        'poll.description',
+        'poll.title',
+        'poll.text',
         'poll.createdAt',
         'poll.completedAt',
         'myVote.id',

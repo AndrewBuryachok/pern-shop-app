@@ -30,6 +30,8 @@ import {
   MAX_RATE_VALUE,
   MAX_ROLE_VALUE,
   MAX_SUM_VALUE,
+  MAX_TEXT_LENGTH,
+  MAX_TITLE_LENGTH,
   MIN_COORDINATE_VALUE,
   MIN_NAME_LENGTH,
   MIN_NICK_LENGTH,
@@ -57,17 +59,23 @@ export const IsName = () => (target: object, key: string) => {
   MaxLength(MAX_NAME_LENGTH)(target, key);
 };
 
-export const IsRequiredDescription = () => (target: object, key: string) => {
+export const IsTitle = () => (target: object, key: string) => {
+  IsNotEmpty()(target, key);
+  IsString()(target, key);
+  MaxLength(MAX_TITLE_LENGTH)(target, key);
+};
+
+export const IsDescription = () => (target: object, key: string) => {
+  ValidateIf((_, value) => value !== '')(target, key);
   IsNotEmpty()(target, key);
   IsString()(target, key);
   MaxLength(MAX_DESCRIPTION_LENGTH)(target, key);
 };
 
-export const IsOptionalDescription = () => (target: object, key: string) => {
-  ValidateIf((_, value) => value !== '')(target, key);
+export const IsText = () => (target: object, key: string) => {
   IsNotEmpty()(target, key);
   IsString()(target, key);
-  MaxLength(MAX_DESCRIPTION_LENGTH)(target, key);
+  MaxLength(MAX_TEXT_LENGTH)(target, key);
 };
 
 export const IsImage = () => (target: object, key: string) => {

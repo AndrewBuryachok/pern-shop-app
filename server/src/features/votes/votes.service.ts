@@ -124,10 +124,8 @@ export class VotesService {
       .andWhere(
         new Brackets((qb) =>
           qb
-            .where(`${!req.description}`)
-            .orWhere('poll.description ILIKE :description', {
-              description: req.description,
-            }),
+            .where(`${!req.title}`)
+            .orWhere('poll.title ILIKE :title', { title: req.title }),
         ),
       )
       .andWhere(
@@ -159,7 +157,8 @@ export class VotesService {
         'poll.id',
         'pollerUser.id',
         'pollerUser.nick',
-        'poll.description',
+        'poll.title',
+        'poll.text',
         'voterUser.id',
         'voterUser.nick',
         'vote.type',

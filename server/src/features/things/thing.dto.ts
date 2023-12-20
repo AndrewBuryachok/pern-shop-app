@@ -5,7 +5,7 @@ import {
   IsAmount,
   IsIntake,
   IsKit,
-  IsOptionalDescription,
+  IsDescription,
 } from '../../common/decorators';
 
 export abstract class CreateThingDto {
@@ -14,7 +14,7 @@ export abstract class CreateThingDto {
   item: number;
 
   @ApiProperty()
-  @IsOptionalDescription()
+  @IsDescription()
   description: string;
 
   @ApiProperty()
