@@ -45,11 +45,8 @@ export default function TakeTaskModal({ data: task }: Props) {
         value={task.customerUser.nick}
         disabled
       />
-      <Textarea
-        label={t('columns.description')}
-        value={task.description}
-        disabled
-      />
+      <TextInput label={t('columns.title')} value={task.title} disabled />
+      <Textarea label={t('columns.text')} value={task.text} disabled />
       <TextInput
         label={t('columns.priority')}
         icon={<PriorityIcon {...task} />}

@@ -1,19 +1,20 @@
 import { t } from 'i18next';
 import { useTranslation } from 'react-i18next';
-import { Textarea } from '@mantine/core';
+import { TextInput, Textarea } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { useCreatePollMutation } from './polls.api';
 import { CreatePollDto } from './poll.dto';
 import CustomForm from '../../common/components/CustomForm';
-import { MAX_DESCRIPTION_LENGTH } from '../../common/constants';
+import { MAX_TEXT_LENGTH, MAX_TITLE_LENGTH } from '../../common/constants';
 
 export default function CreatePollModal() {
   const [t] = useTranslation();
 
   const form = useForm({
     initialValues: {
-      description: '',
+      title: '',
+      text: '',
     },
   });
 
@@ -29,12 +30,19 @@ export default function CreatePollModal() {
       isLoading={isLoading}
       text={t('actions.create') + ' ' + t('modals.poll')}
     >
-      <Textarea
-        label={t('columns.description')}
-        placeholder={t('columns.description')}
+      <TextInput
+        label={t('columns.title')}
+        placeholder={t('columns.title')}
         required
-        maxLength={MAX_DESCRIPTION_LENGTH}
-        {...form.getInputProps('description')}
+        maxLength={MAX_TITLE_LENGTH}
+        {...form.getInputProps('title')}
+      />
+      <Textarea
+        label={t('columns.text')}
+        placeholder={t('columns.text')}
+        required
+        maxLength={MAX_TEXT_LENGTH}
+        {...form.getInputProps('text')}
       />
     </CustomForm>
   );

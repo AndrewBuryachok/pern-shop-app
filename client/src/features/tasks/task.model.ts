@@ -5,7 +5,8 @@ export interface Task {
   id: number;
   city: MdCity;
   customerUser: SmUser;
-  description: string;
+  title: string;
+  text: string;
   priority: number;
   createdAt: Date;
   executorUser?: SmUser;

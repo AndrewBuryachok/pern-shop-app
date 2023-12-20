@@ -1,5 +1,6 @@
 export interface CreateTaskDto {
-  description: string;
+  title: string;
+  text: string;
   priority: number;
 }
 

@@ -42,11 +42,8 @@ export default function VotePollModal({ data: poll }: Props) {
         value={poll.user.nick}
         disabled
       />
-      <Textarea
-        label={t('columns.description')}
-        value={poll.description}
-        disabled
-      />
+      <TextInput label={t('columns.title')} value={poll.title} disabled />
+      <Textarea label={t('columns.text')} value={poll.text} disabled />
       <TextInput
         label={t('columns.vote')}
         value={poll.type ? t('columns.up') : t('columns.down')}

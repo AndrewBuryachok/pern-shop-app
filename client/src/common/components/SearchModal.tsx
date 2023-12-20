@@ -13,6 +13,7 @@ import {
   Rating,
   Select,
   Slider,
+  TextInput,
   Textarea,
 } from '@mantine/core';
 import { DatePicker } from '@mantine/dates';
@@ -374,6 +375,13 @@ export default function SearchModal(props: Props) {
             {...form.getInputProps('item')}
           />
         </>
+      )}
+      {props.search.title !== undefined && (
+        <TextInput
+          label={t('columns.title')}
+          placeholder={t('columns.title')}
+          {...form.getInputProps('title')}
+        />
       )}
       {props.search.description !== undefined && (
         <Textarea

@@ -19,7 +19,7 @@ export default function MyVotes() {
     user: searchParams.get('user'),
     modes: [Mode.VOTER, Mode.POLLER],
     mode: searchParams.get('mode') as Mode,
-    description: searchParams.get('description') || '',
+    title: searchParams.get('title') || '',
     type: searchParams.get('type'),
     minDate: searchParams.get('minDate'),
     maxDate: searchParams.get('maxDate'),

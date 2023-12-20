@@ -21,7 +21,7 @@ export default function PollsTable({ actions = [], ...props }: Props) {
       minWidth={1000}
       columns={[
         t('columns.poller'),
-        t('columns.description'),
+        t('columns.title'),
         t('columns.vote'),
         t('columns.results'),
         t('columns.completed'),
@@ -35,7 +35,7 @@ export default function PollsTable({ actions = [], ...props }: Props) {
             <AvatarWithSingleText {...poll.user} />
           </td>
           <td>
-            <SingleText text={poll.description} />
+            <SingleText text={poll.title} />
           </td>
           <td>
             <CustomBadge

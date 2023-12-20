@@ -34,6 +34,7 @@ export default function DeletePlaintModal({ data: plaint }: Props) {
       isLoading={isLoading}
       text={t('actions.delete') + ' ' + t('modals.plaint')}
     >
+      <TextInput label={t('columns.title')} value={plaint.title} disabled />
       <TextInput
         label={t('columns.sender')}
         icon={<CustomAvatar {...plaint.senderUser} />}
@@ -41,11 +42,7 @@ export default function DeletePlaintModal({ data: plaint }: Props) {
         value={plaint.senderUser.nick}
         disabled
       />
-      <Textarea
-        label={t('columns.description')}
-        value={plaint.senderDescription}
-        disabled
-      />
+      <Textarea label={t('columns.text')} value={plaint.senderText} disabled />
       <TextInput
         label={t('columns.receiver')}
         icon={<CustomAvatar {...plaint.receiverUser} />}

@@ -1,5 +1,6 @@
 export interface CreatePollDto {
-  description: string;
+  title: string;
+  text: string;
 }
 
 export interface CompletePollDto {

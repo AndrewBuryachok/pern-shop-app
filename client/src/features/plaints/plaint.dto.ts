@@ -1,6 +1,7 @@
 export interface CreatePlaintDto {
-  description: string;
+  title: string;
   userId: number;
+  text: string;
 }
 
 export interface DeletePlaintDto {
@@ -8,5 +9,5 @@ export interface DeletePlaintDto {
 }
 
 export interface UpdatePlaintDto extends DeletePlaintDto {
-  description: string;
+  text: string;
 }

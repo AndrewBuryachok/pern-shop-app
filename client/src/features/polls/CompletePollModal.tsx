@@ -41,11 +41,8 @@ export default function CompletePollModal({ data: poll }: Props) {
         value={poll.user.nick}
         disabled
       />
-      <Textarea
-        label={t('columns.description')}
-        value={poll.description}
-        disabled
-      />
+      <TextInput label={t('columns.title')} value={poll.title} disabled />
+      <Textarea label={t('columns.text')} value={poll.text} disabled />
     </CustomForm>
   );
 }

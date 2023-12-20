@@ -19,7 +19,7 @@ export default function AllTasks() {
     modes: [Mode.CUSTOMER, Mode.EXECUTOR, Mode.OWNER],
     mode: searchParams.get('mode') as Mode,
     city: searchParams.get('city'),
-    description: searchParams.get('description') || '',
+    title: searchParams.get('title') || '',
     minDate: searchParams.get('minDate'),
     maxDate: searchParams.get('maxDate'),
     priority: searchParams.get('priority'),

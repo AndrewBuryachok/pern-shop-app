@@ -9,7 +9,7 @@ import { useCompletePlaintMutation } from './plaints.api';
 import { UpdatePlaintDto } from './plaint.dto';
 import CustomForm from '../../common/components/CustomForm';
 import CustomAvatar from '../../common/components/CustomAvatar';
-import { Color, MAX_DESCRIPTION_LENGTH } from '../../common/constants';
+import { Color, MAX_TEXT_LENGTH } from '../../common/constants';
 
 type Props = IModal<Plaint>;
 
@@ -19,7 +19,7 @@ export default function CompletePlaintModal({ data: plaint }: Props) {
   const form = useForm({
     initialValues: {
       plaintId: plaint.id,
-      description: '',
+      text: '',
     },
   });
 
@@ -35,6 +35,7 @@ export default function CompletePlaintModal({ data: plaint }: Props) {
       isLoading={isLoading}
       text={t('actions.complete') + ' ' + t('modals.plaint')}
     >
+      <TextInput label={t('columns.title')} value={plaint.title} disabled />
       <TextInput
         label={t('columns.sender')}
         icon={<CustomAvatar {...plaint.senderUser} />}
@@ -42,11 +43,7 @@ export default function CompletePlaintModal({ data: plaint }: Props) {
         value={plaint.senderUser.nick}
         disabled
       />
-      <Textarea
-        label={t('columns.description')}
-        value={plaint.senderDescription}
-        disabled
-      />
+      <Textarea label={t('columns.text')} value={plaint.senderText} disabled />
       <TextInput
         label={t('columns.receiver')}
         icon={<CustomAvatar {...plaint.receiverUser} />}
@@ -55,16 +52,16 @@ export default function CompletePlaintModal({ data: plaint }: Props) {
         disabled
       />
       <Textarea
-        label={t('columns.description')}
-        value={plaint.senderDescription}
+        label={t('columns.text')}
+        value={plaint.receiverText}
         disabled
       />
       <Textarea
-        label={t('columns.description')}
-        placeholder={t('columns.description')}
+        label={t('columns.text')}
+        placeholder={t('columns.text')}
         required
-        maxLength={MAX_DESCRIPTION_LENGTH}
-        {...form.getInputProps('description')}
+        maxLength={MAX_TEXT_LENGTH}
+        {...form.getInputProps('text')}
       />
     </CustomForm>
   );

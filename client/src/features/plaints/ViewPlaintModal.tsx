@@ -16,6 +16,7 @@ export default function ViewPlaintModal({ data: plaint }: Props) {
   return (
     <Stack spacing={8}>
       <TextInput label={t('columns.id')} value={plaint.id} disabled />
+      <TextInput label={t('columns.title')} value={plaint.title} disabled />
       <TextInput
         label={t('columns.sender')}
         icon={<CustomAvatar {...plaint.senderUser} />}
@@ -23,11 +24,7 @@ export default function ViewPlaintModal({ data: plaint }: Props) {
         value={plaint.senderUser.nick}
         disabled
       />
-      <Textarea
-        label={t('columns.description')}
-        value={plaint.senderDescription}
-        disabled
-      />
+      <Textarea label={t('columns.text')} value={plaint.senderText} disabled />
       <TextInput
         label={t('columns.receiver')}
         icon={<CustomAvatar {...plaint.receiverUser} />}
@@ -36,8 +33,8 @@ export default function ViewPlaintModal({ data: plaint }: Props) {
         disabled
       />
       <Textarea
-        label={t('columns.description')}
-        value={plaint.receiverDescription || '-'}
+        label={t('columns.text')}
+        value={plaint.receiverText || '-'}
         disabled
       />
       <TextInput
@@ -48,8 +45,8 @@ export default function ViewPlaintModal({ data: plaint }: Props) {
         disabled
       />
       <Textarea
-        label={t('columns.description')}
-        value={plaint.executorDescription || '-'}
+        label={t('columns.text')}
+        value={plaint.executorText || '-'}
         disabled
       />
       <TextInput

@@ -43,6 +43,9 @@ export const getQuery = ({ page, search }: IRequest) => {
   if (search?.item) {
     query.append('item', search.item);
   }
+  if (search?.title) {
+    query.append('title', search.title);
+  }
   if (search?.description) {
     query.append('description', search.description);
   }

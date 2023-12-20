@@ -30,11 +30,8 @@ export default function ViewVoteModal({ data: vote }: Props) {
         value={vote.poll.user.nick}
         disabled
       />
-      <Textarea
-        label={t('columns.description')}
-        value={vote.poll.description}
-        disabled
-      />
+      <TextInput label={t('columns.title')} value={vote.poll.title} disabled />
+      <Textarea label={t('columns.text')} value={vote.poll.text} disabled />
       <TextInput
         label={t('columns.vote')}
         value={vote.type ? t('columns.up') : t('columns.down')}

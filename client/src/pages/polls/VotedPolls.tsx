@@ -16,7 +16,7 @@ export default function VotedPolls() {
   const [search, setSearch] = useState<ISearch>({
     id: +(searchParams.get('id') || 0) || null,
     user: searchParams.get('user'),
-    description: searchParams.get('description') || '',
+    title: searchParams.get('title') || '',
     minDate: searchParams.get('minDate'),
     maxDate: searchParams.get('maxDate'),
   });

@@ -20,7 +20,7 @@ export default function TasksTable({ actions = [], ...props }: Props) {
       minWidth={1000}
       columns={[
         t('columns.customer'),
-        t('columns.description'),
+        t('columns.title'),
         t('columns.priority'),
         t('columns.status'),
         t('columns.city'),
@@ -34,7 +34,7 @@ export default function TasksTable({ actions = [], ...props }: Props) {
             <AvatarWithSingleText {...task.customerUser} />
           </td>
           <td>
-            <SingleText text={task.description} />
+            <SingleText text={task.title} />
           </td>
           <td>
             <PriorityIconWithText {...task} />

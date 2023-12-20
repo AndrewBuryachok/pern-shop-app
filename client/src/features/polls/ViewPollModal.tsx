@@ -28,11 +28,8 @@ export default function ViewPollModal({ data: poll }: Props) {
         value={poll.user.nick}
         disabled
       />
-      <Textarea
-        label={t('columns.description')}
-        value={poll.description}
-        disabled
-      />
+      <TextInput label={t('columns.title')} value={poll.title} disabled />
+      <Textarea label={t('columns.text')} value={poll.text} disabled />
       <TextInput label={t('columns.up')} value={votes[0]} disabled />
       <TextInput label={t('columns.down')} value={votes[1]} disabled />
       <TextInput

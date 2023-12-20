@@ -4,7 +4,8 @@ import { SmVote } from '../votes/vote.model';
 export interface SmPoll {
   id: number;
   user: SmUser;
-  description: string;
+  title: string;
+  text: string;
 }
 
 export interface Poll extends SmPoll {

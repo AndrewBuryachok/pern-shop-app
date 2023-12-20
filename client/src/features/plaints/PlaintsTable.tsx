@@ -19,7 +19,7 @@ export default function PlaintsTable({ actions = [], ...props }: Props) {
       columns={[
         t('columns.sender'),
         t('columns.receiver'),
-        t('columns.description'),
+        t('columns.title'),
         t('columns.executor'),
         t('columns.completed'),
         t('columns.action'),
@@ -35,7 +35,7 @@ export default function PlaintsTable({ actions = [], ...props }: Props) {
             <AvatarWithSingleText {...plaint.receiverUser} />
           </td>
           <td>
-            <SingleText text={plaint.senderDescription} />
+            <SingleText text={plaint.title} />
           </td>
           <td>
             {plaint.executorUser ? (

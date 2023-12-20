@@ -21,7 +21,7 @@ export default function VotesTable({ actions = [], ...props }: Props) {
       columns={[
         t('columns.voter'),
         t('columns.poller'),
-        t('columns.description'),
+        t('columns.title'),
         t('columns.vote'),
         t('columns.created'),
         t('columns.action'),
@@ -37,7 +37,7 @@ export default function VotesTable({ actions = [], ...props }: Props) {
             <AvatarWithSingleText {...vote.poll.user} />
           </td>
           <td>
-            <SingleText text={vote.poll.description} />
+            <SingleText text={vote.poll.title} />
           </td>
           <td>
             <CustomBadge

@@ -2,12 +2,13 @@ import { SmUser } from '../users/user.model';
 
 export interface Plaint {
   id: number;
+  title: string;
   senderUser: SmUser;
-  senderDescription: string;
+  senderText: string;
   receiverUser: SmUser;
-  receiverDescription?: string;
+  receiverText?: string;
   executorUser?: SmUser;
-  executorDescription?: string;
+  executorText?: string;
   createdAt: Date;
   executedAt?: Date;
   completedAt?: Date;
