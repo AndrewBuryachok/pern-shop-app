@@ -66,7 +66,7 @@ export default function CustomHeader(props: Props) {
           <Burger opened={props.opened} onClick={props.toggle} size='sm' />
         </MediaQuery>
         <Title order={1}>{t('header.title')}</Title>
-        <Menu offset={4} position='bottom-end'>
+        <Menu offset={4} position='bottom-end' trigger='hover'>
           <Menu.Target>
             <Tooltip
               label={user?.nick}

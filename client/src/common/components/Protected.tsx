@@ -23,7 +23,7 @@ export default function Protected({ children, role }: Props) {
     if (!role) {
       return (
         <Modal
-          title={t('header.menu.account.login')}
+          title={t('modals.auth')}
           opened={opened}
           onClose={() => {
             close();
