@@ -140,10 +140,11 @@ export const selectItems = (category: string) =>
     .map((item, index) => ({
       item: index + 1,
       category: item.split(': ')[0],
+      group: t('constants.categories.' + categories[+item.split(': ')[0][0]]),
       value: `${index + 1}`,
       label: t('constants.items.' + item.split(': ')[1]),
     }))
-    .filter((item) => item.category.includes(category));
+    .filter((item) => item.category.includes(category || ''));
 
 export const selectKits = () =>
   kits.map((kit, index) => ({

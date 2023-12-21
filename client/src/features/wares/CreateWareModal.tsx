@@ -87,7 +87,7 @@ export default function CreateWareModal({ hasRole }: Props) {
         placeholder={t('columns.category')}
         data={selectCategories()}
         searchable
-        required
+        allowDeselect
         {...form.getInputProps('category')}
       />
       <Select

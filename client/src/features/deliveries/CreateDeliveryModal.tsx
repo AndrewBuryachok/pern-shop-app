@@ -174,7 +174,7 @@ export default function CreateDeliveryModal({ hasRole }: Props) {
         placeholder={t('columns.category')}
         data={selectCategories()}
         searchable
-        required
+        allowDeselect
         {...form.getInputProps('category')}
       />
       <Select
