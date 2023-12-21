@@ -4,4 +4,7 @@ export enum PollError {
   CREATE_FAILED = '500: Failed to create poll',
   COMPLETE_FAILED = '500: Failed to complete poll',
   DELETE_FAILED = '500: Failed to delete poll',
+  ADD_VOTE_FAILED = '500: Failed to add vote',
+  UPDATE_VOTE_FAILED = '500: Failed to update vote',
+  REMOVE_VOTE_FAILED = '500: Failed to remove vote',
 }

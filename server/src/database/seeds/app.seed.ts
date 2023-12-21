@@ -27,7 +27,7 @@ import { Trade } from '../../features/trades/trade.entity';
 import { Sale } from '../../features/sales/sale.entity';
 import { Bid } from '../../features/bids/bid.entity';
 import { Poll } from '../../features/polls/poll.entity';
-import { Vote } from '../../features/votes/vote.entity';
+import { Vote } from '../../features/polls/vote.entity';
 import { Friend } from '../../features/friends/friend.entity';
 import { Rating } from '../../features/ratings/rating.entity';
 import { Task } from '../../features/tasks/task.entity';

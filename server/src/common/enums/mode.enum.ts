@@ -7,6 +7,4 @@ export enum Mode {
   RENTER = 'renter',
   SELLER = 'seller',
   BUYER = 'buyer',
-  VOTER = 'voter',
-  POLLER = 'poller',
 }

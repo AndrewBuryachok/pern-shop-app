@@ -10,9 +10,9 @@ import {
 import { ApiTags } from '@nestjs/swagger';
 import { PollsService } from './polls.service';
 import { Poll } from './poll.entity';
-import { CreatePollDto, PollIdDto } from './poll.dto';
+import { CreatePollDto, PollIdDto, VotePollDto } from './poll.dto';
 import { Request, Response } from '../../common/interfaces';
-import { HasRole, MyId, Roles } from '../../common/decorators';
+import { HasRole, MyId, Public, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
 
 @ApiTags('polls')
@@ -20,12 +20,10 @@ import { Role } from '../users/role.enum';
 export class PollsController {
   constructor(private pollsService: PollsService) {}
 
+  @Public()
   @Get()
-  getMainPolls(
-    @MyId() myId: number,
-    @Query() req: Request,
-  ): Promise<Response<Poll>> {
-    return this.pollsService.getMainPolls(myId, req);
+  getMainPolls(@Query() req: Request): Promise<Response<Poll>> {
+    return this.pollsService.getMainPolls(req);
   }
 
   @Get('my')
@@ -46,11 +44,8 @@ export class PollsController {
 
   @Roles(Role.ADMIN)
   @Get('all')
-  getAllPolls(
-    @MyId() myId: number,
-    @Query() req: Request,
-  ): Promise<Response<Poll>> {
-    return this.pollsService.getAllPolls(myId, req);
+  getAllPolls(@Query() req: Request): Promise<Response<Poll>> {
+    return this.pollsService.getAllPolls(req);
   }
 
   @Post()
@@ -74,5 +69,14 @@ export class PollsController {
     @Param() { pollId }: PollIdDto,
   ): Promise<void> {
     return this.pollsService.deletePoll({ pollId, myId, hasRole });
+  }
+
+  @Post(':pollId/votes')
+  votePoll(
+    @MyId() myId: number,
+    @Param() { pollId }: PollIdDto,
+    @Body() dto: VotePollDto,
+  ): Promise<void> {
+    return this.pollsService.votePoll({ ...dto, pollId, myId });
   }
 }

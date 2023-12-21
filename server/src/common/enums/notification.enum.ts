@@ -21,7 +21,6 @@ export enum Notification {
   CREATED_SALE = 'Created sale',
   RATED_SALE = 'Rated sale',
   CREATED_BID = 'Created bid',
-  CREATED_VOTE = 'Created vote',
   CREATED_FRIEND = 'Created friend',
   ADDED_FRIEND = 'Added friend',
   REMOVED_FRIEND = 'Removed friend',

@@ -25,7 +25,6 @@ import { TradesModule } from './features/trades/trades.module';
 import { SalesModule } from './features/sales/sales.module';
 import { BidsModule } from './features/bids/bids.module';
 import { PollsModule } from './features/polls/polls.module';
-import { VotesModule } from './features/votes/votes.module';
 import { FriendsModule } from './features/friends/friends.module';
 import { RatingsModule } from './features/ratings/ratings.module';
 import { TasksModule } from './features/tasks/tasks.module';
@@ -73,7 +72,6 @@ import { PlaintsModule } from './features/plaints/plaints.module';
     SalesModule,
     BidsModule,
     PollsModule,
-    VotesModule,
     FriendsModule,
     RatingsModule,
     TasksModule,

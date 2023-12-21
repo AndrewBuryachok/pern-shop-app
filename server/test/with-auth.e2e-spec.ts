@@ -1511,7 +1511,6 @@ describe('With Auth', () => {
     it('GET /polls', async () => {
       return request(app.getHttpServer())
         .get('/polls')
-        .set('Authorization', `Bearer ${user.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
 
@@ -1523,19 +1522,19 @@ describe('With Auth', () => {
         .then((res) => (pollsId = res.body.result.map((p) => p.id)));
     });
 
-    it('POST /votes', async () => {
+    it('POST /polls/:pollId/votes', async () => {
       return request(app.getHttpServer())
-        .post('/votes')
+        .post(`/polls/${pollsId[0]}/votes`)
         .set('Authorization', `Bearer ${user.access}`)
-        .send({ pollId: pollsId[0], type: true })
+        .send({ type: true })
         .expect('');
     });
 
-    it('POST /votes', async () => {
+    it('POST /polls/:pollId/votes', async () => {
       return request(app.getHttpServer())
-        .post('/votes')
+        .post(`/polls/${pollsId[1]}/votes`)
         .set('Authorization', `Bearer ${user.access}`)
-        .send({ pollId: pollsId[1], type: false })
+        .send({ type: false })
         .expect('');
     });
 
@@ -1565,29 +1564,6 @@ describe('With Auth', () => {
         .post(`/polls/${pollsId[0]}`)
         .set('Authorization', `Bearer ${user.access}`)
         .expect('');
-    });
-  });
-
-  describe('Votes', () => {
-    it('GET /votes/my', async () => {
-      return request(app.getHttpServer())
-        .get('/votes/my')
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
-    });
-
-    it('GET /votes/polled', async () => {
-      return request(app.getHttpServer())
-        .get('/votes/polled')
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
-    });
-
-    it('GET /votes/all', async () => {
-      return request(app.getHttpServer())
-        .get('/votes/all')
-        .set('Authorization', `Bearer ${admin.access}`)
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
   });
 

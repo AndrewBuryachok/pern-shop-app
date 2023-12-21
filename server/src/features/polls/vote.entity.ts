@@ -6,7 +6,7 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Poll } from '../polls/poll.entity';
+import { Poll } from './poll.entity';
 import { User } from '../users/user.entity';
 
 @Entity('votes')

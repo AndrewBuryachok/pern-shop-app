@@ -462,10 +462,6 @@ describe('Without Auth', () => {
   });
 
   describe('Polls', () => {
-    it('GET /polls', async () => {
-      return request(app.getHttpServer()).get('/polls').expect(401);
-    });
-
     it('GET /polls/my', async () => {
       return request(app.getHttpServer()).get('/polls/my').expect(401);
     });
@@ -477,23 +473,6 @@ describe('Without Auth', () => {
     it('GET /polls/all', async () => {
       return request(app.getHttpServer())
         .get('/polls/all')
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect(403);
-    });
-  });
-
-  describe('Votes', () => {
-    it('GET /votes/my', async () => {
-      return request(app.getHttpServer()).get('/votes/my').expect(401);
-    });
-
-    it('GET /votes/polled', async () => {
-      return request(app.getHttpServer()).get('/votes/polled').expect(401);
-    });
-
-    it('GET /votes/all', async () => {
-      return request(app.getHttpServer())
-        .get('/votes/all')
         .set('Authorization', `Bearer ${user.access}`)
         .expect(403);
     });
