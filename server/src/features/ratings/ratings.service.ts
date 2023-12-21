@@ -28,7 +28,7 @@ export class RatingsService {
     return { result, count };
   }
 
-  async getPolledRatings(
+  async getReceivedRatings(
     myId: number,
     req: Request,
   ): Promise<Response<Rating>> {

@@ -29,12 +29,12 @@ export class RatingsController {
     return this.ratingsService.getMyRatings(myId, req);
   }
 
-  @Get('polled')
-  getPolledRatings(
+  @Get('received')
+  getReceivedRatings(
     @MyId() myId: number,
     @Query() req: Request,
   ): Promise<Response<Rating>> {
-    return this.ratingsService.getPolledRatings(myId, req);
+    return this.ratingsService.getReceivedRatings(myId, req);
   }
 
   @Roles(Role.ADMIN)

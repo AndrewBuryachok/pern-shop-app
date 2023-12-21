@@ -496,8 +496,8 @@ describe('Without Auth', () => {
       return request(app.getHttpServer()).get('/ratings/my').expect(401);
     });
 
-    it('GET /ratings/polled', async () => {
-      return request(app.getHttpServer()).get('/ratings/polled').expect(401);
+    it('GET /ratings/received', async () => {
+      return request(app.getHttpServer()).get('/ratings/received').expect(401);
     });
 
     it('GET /ratings/all', async () => {

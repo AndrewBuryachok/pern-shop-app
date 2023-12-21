@@ -1630,9 +1630,9 @@ describe('With Auth', () => {
         .then((res) => (ratingId = res.body.result[0].id));
     });
 
-    it('GET /ratings/polled', async () => {
+    it('GET /ratings/received', async () => {
       return request(app.getHttpServer())
-        .get('/ratings/polled')
+        .get('/ratings/received')
         .set('Authorization', `Bearer ${user.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
