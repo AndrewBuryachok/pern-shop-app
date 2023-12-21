@@ -3,11 +3,11 @@ import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
 import { ISearch } from '../../common/interfaces';
 import { Mode } from '../../common/enums';
-import { useGetPolledRatingsQuery } from '../../features/ratings/ratings.api';
+import { useGetReceivedRatingsQuery } from '../../features/ratings/ratings.api';
 import RatingsTable from '../../features/ratings/RatingsTable';
 import { Role } from '../../common/constants';
 
-export default function PolledRatings() {
+export default function ReceivedRatings() {
   const [t] = useTranslation();
 
   const [searchParams] = useSearchParams();
@@ -24,7 +24,7 @@ export default function PolledRatings() {
     rate: +(searchParams.get('rate') || 0) || null,
   });
 
-  const response = useGetPolledRatingsQuery({ page, search });
+  const response = useGetReceivedRatingsQuery({ page, search });
 
   const links = [
     { label: t('pages.my'), to: '../my' },
@@ -34,7 +34,7 @@ export default function PolledRatings() {
   return (
     <RatingsTable
       {...response}
-      title={t('pages.polled') + ' ' + t('navbar.ratings')}
+      title={t('pages.received') + ' ' + t('navbar.ratings')}
       page={page}
       setPage={setPage}
       search={search}

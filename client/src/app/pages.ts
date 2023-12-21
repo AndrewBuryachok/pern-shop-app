@@ -90,7 +90,7 @@ const MainFriends = lazy(() => import('../pages/friends/MainFriends'));
 const MyFriends = lazy(() => import('../pages/friends/MyFriends'));
 const AllFriends = lazy(() => import('../pages/friends/AllFriends'));
 const MyRatings = lazy(() => import('../pages/ratings/MyRatings'));
-const PolledRatings = lazy(() => import('../pages/ratings/PolledRatings'));
+const ReceivedRatings = lazy(() => import('../pages/ratings/ReceivedRatings'));
 const AllRatings = lazy(() => import('../pages/ratings/AllRatings'));
 const MainTasks = lazy(() => import('../pages/tasks/MainTasks'));
 const MyTasks = lazy(() => import('../pages/tasks/MyTasks'));
@@ -315,7 +315,7 @@ export const pages = [
     path: 'ratings',
     nested: [
       { path: 'my', element: MyRatings },
-      { path: 'polled', element: PolledRatings },
+      { path: 'received', element: ReceivedRatings },
       { path: 'all', element: AllRatings, role: Role.ADMIN },
     ],
   },

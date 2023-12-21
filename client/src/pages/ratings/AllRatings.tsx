@@ -27,7 +27,7 @@ export default function AllRatings() {
 
   const links = [
     { label: t('pages.my'), to: '../my' },
-    { label: t('pages.polled'), to: '../polled' },
+    { label: t('pages.received'), to: '../received' },
   ];
 
   return (

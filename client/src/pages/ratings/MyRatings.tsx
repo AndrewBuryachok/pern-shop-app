@@ -30,7 +30,7 @@ export default function MyRatings() {
   const response = useGetMyRatingsQuery({ page, search });
 
   const links = [
-    { label: t('pages.polled'), to: '../polled' },
+    { label: t('pages.received'), to: '../received' },
     { label: t('pages.all'), to: '../all', role: Role.ADMIN },
   ];
 

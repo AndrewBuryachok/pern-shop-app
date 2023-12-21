@@ -12,9 +12,9 @@ export const ratingsApi = emptyApi.injectEndpoints({
       }),
       providesTags: ['Auth', 'Rating'],
     }),
-    getPolledRatings: build.query<IResponse<Rating>, IRequest>({
+    getReceivedRatings: build.query<IResponse<Rating>, IRequest>({
       query: (req) => ({
-        url: `/ratings/polled?${getQuery(req)}`,
+        url: `/ratings/received?${getQuery(req)}`,
       }),
       providesTags: ['Auth', 'Rating'],
     }),
@@ -52,7 +52,7 @@ export const ratingsApi = emptyApi.injectEndpoints({
 
 export const {
   useGetMyRatingsQuery,
-  useGetPolledRatingsQuery,
+  useGetReceivedRatingsQuery,
   useGetAllRatingsQuery,
   useCreateRatingMutation,
   useEditRatingMutation,
