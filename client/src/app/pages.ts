@@ -86,9 +86,6 @@ const MainPolls = lazy(() => import('../pages/polls/MainPolls'));
 const MyPolls = lazy(() => import('../pages/polls/MyPolls'));
 const VotedPolls = lazy(() => import('../pages/polls/VotedPolls'));
 const AllPolls = lazy(() => import('../pages/polls/AllPolls'));
-const MyVotes = lazy(() => import('../pages/votes/MyVotes'));
-const PolledVotes = lazy(() => import('../pages/votes/PolledVotes'));
-const AllVotes = lazy(() => import('../pages/votes/AllVotes'));
 const MainFriends = lazy(() => import('../pages/friends/MainFriends'));
 const MyFriends = lazy(() => import('../pages/friends/MyFriends'));
 const AllFriends = lazy(() => import('../pages/friends/AllFriends'));
@@ -300,14 +297,6 @@ export const pages = [
       { path: 'my', element: MyPolls },
       { path: 'voted', element: VotedPolls },
       { path: 'all', element: AllPolls, role: Role.ADMIN },
-    ],
-  },
-  {
-    path: 'votes',
-    nested: [
-      { path: 'my', element: MyVotes },
-      { path: 'polled', element: PolledVotes },
-      { path: 'all', element: AllVotes, role: Role.ADMIN },
     ],
   },
   {

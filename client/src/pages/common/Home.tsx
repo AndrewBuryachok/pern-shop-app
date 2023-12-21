@@ -29,7 +29,6 @@ import {
   IconGardenCart,
   IconGavel,
   IconMap,
-  IconNotes,
   IconPaperBag,
   IconReportMoney,
   IconScale,
@@ -154,11 +153,6 @@ export default function Home() {
     {
       title: 'polls',
       icon: IconChartBar,
-    },
-    {
-      title: 'votes',
-      icon: IconNotes,
-      my: true,
     },
     {
       title: 'friends',

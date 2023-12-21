@@ -3,9 +3,9 @@ import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
 import { ISearch } from '../../common/interfaces';
 import { useGetAllPollsQuery } from '../../features/polls/polls.api';
+import PollsTable from '../../features/polls/PollsTable';
 import { completePollAction } from '../../features/polls/CompletePollModal';
 import { deletePollAction } from '../../features/polls/DeletePollModal';
-import PollsTable from '../../features/polls/PollsTable';
 
 export default function AllPolls() {
   const [t] = useTranslation();

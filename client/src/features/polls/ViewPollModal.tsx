@@ -1,11 +1,13 @@
 import { t } from 'i18next';
 import { useTranslation } from 'react-i18next';
-import { Stack, Textarea, TextInput } from '@mantine/core';
+import { Select, Stack, Textarea, TextInput } from '@mantine/core';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { Poll } from './poll.model';
+import { getCurrentUser } from '../auth/auth.slice';
 import CustomAvatar from '../../common/components/CustomAvatar';
-import { parseTime } from '../../common/utils';
+import { UsersItem } from '../../common/components/UsersItem';
+import { parseTime, viewUsers } from '../../common/utils';
 import { Color } from '../../common/constants';
 
 type Props = IModal<Poll>;
@@ -13,16 +15,21 @@ type Props = IModal<Poll>;
 export default function ViewPollModal({ data: poll }: Props) {
   const [t] = useTranslation();
 
-  const total = poll.upVotes + poll.downVotes;
-  const votes = [poll.upVotes, poll.downVotes].map(
-    (value) => `${value} (${total && Math.round((value * 100) / total)}%)`,
-  );
+  const user = getCurrentUser();
+
+  const myVote = user && poll.votes.find((vote) => vote.user.id === user.id);
+  const upVotes = poll.votes
+    .filter((vote) => vote.type)
+    .map((vote) => vote.user);
+  const downVotes = poll.votes
+    .filter((vote) => !vote.type)
+    .map((vote) => vote.user);
 
   return (
     <Stack spacing={8}>
       <TextInput label={t('columns.id')} value={poll.id} disabled />
       <TextInput
-        label={t('columns.poller')}
+        label={t('columns.owner')}
         icon={<CustomAvatar {...poll.user} />}
         iconWidth={48}
         value={poll.user.nick}
@@ -30,18 +37,28 @@ export default function ViewPollModal({ data: poll }: Props) {
       />
       <TextInput label={t('columns.title')} value={poll.title} disabled />
       <Textarea label={t('columns.text')} value={poll.text} disabled />
-      <TextInput label={t('columns.up')} value={votes[0]} disabled />
-      <TextInput label={t('columns.down')} value={votes[1]} disabled />
       <TextInput
         label={t('columns.my')}
         value={
-          poll.myVote
-            ? poll.myVote.type
-              ? t('columns.up')
-              : t('columns.down')
-            : '-'
+          myVote ? (myVote.type ? t('columns.up') : t('columns.down')) : '-'
         }
         disabled
+      />
+      <Select
+        label={t('columns.up')}
+        placeholder={`${t('components.total')}: ${upVotes.length}`}
+        itemComponent={UsersItem}
+        data={viewUsers(upVotes)}
+        limit={20}
+        searchable
+      />
+      <Select
+        label={t('columns.down')}
+        placeholder={`${t('components.total')}: ${downVotes.length}`}
+        itemComponent={UsersItem}
+        data={viewUsers(downVotes)}
+        limit={20}
+        searchable
       />
       <TextInput
         label={t('columns.created')}

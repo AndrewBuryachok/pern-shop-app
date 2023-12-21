@@ -6,7 +6,7 @@ import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { Poll } from './poll.model';
 import { useCompletePollMutation } from './polls.api';
-import { CompletePollDto } from './poll.dto';
+import { PollIdDto } from './poll.dto';
 import CustomForm from '../../common/components/CustomForm';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import { Color } from '../../common/constants';
@@ -24,7 +24,7 @@ export default function CompletePollModal({ data: poll }: Props) {
 
   const [completePoll, { isLoading }] = useCompletePollMutation();
 
-  const handleSubmit = async (dto: CompletePollDto) => {
+  const handleSubmit = async (dto: PollIdDto) => {
     await completePoll(dto);
   };
 
@@ -35,7 +35,7 @@ export default function CompletePollModal({ data: poll }: Props) {
       text={t('actions.complete') + ' ' + t('modals.poll')}
     >
       <TextInput
-        label={t('columns.poller')}
+        label={t('columns.owner')}
         icon={<CustomAvatar {...poll.user} />}
         iconWidth={48}
         value={poll.user.nick}

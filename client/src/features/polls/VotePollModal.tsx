@@ -5,8 +5,8 @@ import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { Poll } from './poll.model';
-import { useCreateVoteMutation } from '../votes/votes.api';
-import { CreateVoteDto } from '../votes/vote.dto';
+import { useVotePollMutation } from './polls.api';
+import { VotePollDto } from './poll.dto';
 import CustomForm from '../../common/components/CustomForm';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import { Color } from '../../common/constants';
@@ -23,10 +23,10 @@ export default function VotePollModal({ data: poll }: Props) {
     },
   });
 
-  const [createVote, { isLoading }] = useCreateVoteMutation();
+  const [votePoll, { isLoading }] = useVotePollMutation();
 
-  const handleSubmit = async (dto: CreateVoteDto) => {
-    await createVote(dto);
+  const handleSubmit = async (dto: VotePollDto) => {
+    await votePoll(dto);
   };
 
   return (
@@ -36,7 +36,7 @@ export default function VotePollModal({ data: poll }: Props) {
       text={t('actions.vote') + ' ' + t('modals.poll')}
     >
       <TextInput
-        label={t('columns.poller')}
+        label={t('columns.owner')}
         icon={<CustomAvatar {...poll.user} />}
         iconWidth={48}
         value={poll.user.nick}
@@ -59,10 +59,10 @@ export const votePollFactory = (vote: boolean) => ({
       title: t('actions.vote') + ' ' + t('modals.poll'),
       children: <VotePollModal data={{ ...poll, type: vote }} />,
     }),
-  disable: () => false,
+  disable: (poll: Poll) => !!poll.completedAt,
   color: vote ? Color.GREEN : Color.RED,
 });
 
-export const createUpVoteAction = votePollFactory(true);
+export const upVotePollAction = votePollFactory(true);
 
-export const createDownVoteAction = votePollFactory(false);
+export const downVotePollAction = votePollFactory(false);

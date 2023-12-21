@@ -3,10 +3,10 @@ export interface CreatePollDto {
   text: string;
 }
 
-export interface CompletePollDto {
+export interface PollIdDto {
   pollId: number;
 }
 
-export interface DeletePollDto {
-  pollId: number;
+export interface VotePollDto extends PollIdDto {
+  type: boolean;
 }

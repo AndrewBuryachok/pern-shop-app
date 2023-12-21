@@ -1,17 +1,12 @@
 import { SmUser } from '../users/user.model';
-import { SmVote } from '../votes/vote.model';
+import { Vote } from './vote.model';
 
-export interface SmPoll {
+export interface Poll {
   id: number;
   user: SmUser;
   title: string;
   text: string;
-}
-
-export interface Poll extends SmPoll {
-  upVotes: number;
-  downVotes: number;
-  myVote?: SmVote;
   createdAt: Date;
   completedAt?: Date;
+  votes: Vote[];
 }

@@ -5,8 +5,8 @@ import { ISearch } from '../../common/interfaces';
 import { useGetMainPollsQuery } from '../../features/polls/polls.api';
 import PollsTable from '../../features/polls/PollsTable';
 import {
-  createDownVoteAction,
-  createUpVoteAction,
+  downVotePollAction,
+  upVotePollAction,
 } from '../../features/polls/VotePollModal';
 import { Role } from '../../common/constants';
 
@@ -33,7 +33,7 @@ export default function MainPolls() {
     { label: t('pages.all'), to: 'all', role: Role.ADMIN },
   ];
 
-  const actions = [createUpVoteAction, createDownVoteAction];
+  const actions = [upVotePollAction, downVotePollAction];
 
   return (
     <PollsTable

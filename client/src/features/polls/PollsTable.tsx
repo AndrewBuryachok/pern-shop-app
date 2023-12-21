@@ -4,12 +4,11 @@ import { Poll } from './poll.model';
 import CustomTable from '../../common/components/CustomTable';
 import AvatarWithSingleText from '../../common/components/AvatarWithSingleText';
 import SingleText from '../../common/components/SingleText';
-import CustomBadge from '../../common/components/CustomBadge';
+import VoteBadge from '../../common/components/VoteBadge';
 import CustomProgress from '../../common/components/CustomProgress';
 import DateText from '../../common/components/DateText';
 import CustomActions from '../../common/components/CustomActions';
 import { viewPollAction } from './ViewPollModal';
-import { Color } from '../../common/constants';
 
 type Props = ITableWithActions<Poll>;
 
@@ -20,7 +19,7 @@ export default function PollsTable({ actions = [], ...props }: Props) {
     <CustomTable
       minWidth={1000}
       columns={[
-        t('columns.poller'),
+        t('columns.owner'),
         t('columns.title'),
         t('columns.vote'),
         t('columns.results'),
@@ -38,15 +37,7 @@ export default function PollsTable({ actions = [], ...props }: Props) {
             <SingleText text={poll.title} />
           </td>
           <td>
-            <CustomBadge
-              color={
-                poll.myVote && (poll.myVote.type ? Color.GREEN : Color.RED)
-              }
-              text={
-                poll.myVote &&
-                (poll.myVote.type ? t('columns.up') : t('columns.down'))
-              }
-            />
+            <VoteBadge {...poll} />
           </td>
           <td>
             <CustomProgress {...poll} />

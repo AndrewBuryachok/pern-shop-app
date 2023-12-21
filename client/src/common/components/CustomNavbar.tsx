@@ -11,7 +11,6 @@ import {
   IconFriends,
   IconHome,
   IconMap,
-  IconNotes,
   IconReceipt,
   IconScale,
   IconStar,
@@ -81,11 +80,6 @@ export default function CustomNavbar(props: Props) {
     {
       route: 'polls',
       icon: IconChartBar,
-    },
-    {
-      route: 'votes',
-      icon: IconNotes,
-      my: true,
     },
     {
       route: 'friends',

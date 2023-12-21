@@ -4,6 +4,10 @@ import { useSearchParams } from 'react-router-dom';
 import { ISearch } from '../../common/interfaces';
 import { useGetVotedPollsQuery } from '../../features/polls/polls.api';
 import PollsTable from '../../features/polls/PollsTable';
+import {
+  downVotePollAction,
+  upVotePollAction,
+} from '../../features/polls/VotePollModal';
 import { Role } from '../../common/constants';
 
 export default function VotedPolls() {
@@ -29,6 +33,8 @@ export default function VotedPolls() {
     { label: t('pages.all'), to: '../all', role: Role.ADMIN },
   ];
 
+  const actions = [upVotePollAction, downVotePollAction];
+
   return (
     <PollsTable
       {...response}
@@ -38,6 +44,7 @@ export default function VotedPolls() {
       search={search}
       setSearch={setSearch}
       links={links}
+      actions={actions}
     />
   );
 }
