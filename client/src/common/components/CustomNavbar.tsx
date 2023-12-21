@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { Link, useLocation } from 'react-router-dom';
 import { Navbar, NavLink, ScrollArea } from '@mantine/core';
 import {
+  IconArticle,
   IconBasket,
   IconBoxSeam,
   IconBuildingCommunity,
@@ -97,6 +98,10 @@ export default function CustomNavbar(props: Props) {
     {
       route: 'plaints',
       icon: IconScale,
+    },
+    {
+      route: 'articles',
+      icon: IconArticle,
     },
   ];
 

@@ -61,7 +61,8 @@
     "friends": "Friends",
     "ratings": "Ratings",
     "tasks": "Tasks",
-    "plaints": "Plaints"
+    "plaints": "Plaints",
+    "articles": "Articles"
   },
   "home": {
     "title": "Online shop",
@@ -82,7 +83,8 @@
     "selled": "Selled",
     "taken": "Taken",
     "voted": "Voted",
-    "polled": "Polled"
+    "polled": "Polled",
+    "liked": "Liked"
   },
   "actions": {
     "create": "Create",
@@ -99,6 +101,7 @@
     "remove": "Remove",
     "untake": "Untake",
     "vote": "Vote",
+    "like": "Like",
     "view": "View",
     "created": "Created",
     "added": "Added",
@@ -197,7 +200,8 @@
     "name": "Name",
     "oldpassword": "Old Password",
     "newpassword": "New Password",
-    "rent": "Rent"
+    "rent": "Rent",
+    "likes": "Likes"
   },
   "modals": {
     "auth": "Auth",
@@ -236,7 +240,9 @@
     "friends": "Friends",
     "rating": "Rating",
     "task": "Task",
-    "plaint": "Plaint"
+    "plaint": "Plaint",
+    "article": "Article",
+    "likes": "Likes"
   },
   "errors": {
     "not_enough_balance": "Not enough balance"

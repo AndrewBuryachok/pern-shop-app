@@ -101,6 +101,10 @@ const MainPlaints = lazy(() => import('../pages/plaints/MainPlaints'));
 const MyPlaints = lazy(() => import('../pages/plaints/MyPlaints'));
 const ReceivedPlaints = lazy(() => import('../pages/plaints/ReceivedPlaints'));
 const AllPlaints = lazy(() => import('../pages/plaints/AllPlaints'));
+const MainArticles = lazy(() => import('../pages/articles/MainArticles'));
+const MyArticles = lazy(() => import('../pages/articles/MyArticles'));
+const LikedArticles = lazy(() => import('../pages/articles/LikedArticles'));
+const AllArticles = lazy(() => import('../pages/articles/AllArticles'));
 import { Role } from '../common/constants';
 
 export const pages = [
@@ -332,6 +336,15 @@ export const pages = [
       { path: 'my', element: MyPlaints },
       { path: 'received', element: ReceivedPlaints },
       { path: 'all', element: AllPlaints, role: Role.JUDGE },
+    ],
+  },
+  {
+    path: 'articles',
+    nested: [
+      { index: true, element: MainArticles },
+      { path: 'my', element: MyArticles },
+      { path: 'liked', element: LikedArticles },
+      { path: 'all', element: AllArticles, role: Role.ADMIN },
     ],
   },
   { path: '*', element: NotFound },

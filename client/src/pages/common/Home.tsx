@@ -11,6 +11,7 @@ import {
 } from '@mantine/core';
 import { useDocumentTitle } from '@mantine/hooks';
 import {
+  IconArticle,
   IconBasket,
   IconBoxModel,
   IconBuildingCircus,
@@ -170,6 +171,10 @@ export default function Home() {
     {
       title: 'plaints',
       icon: IconScale,
+    },
+    {
+      title: 'articles',
+      icon: IconArticle,
     },
   ];
 
