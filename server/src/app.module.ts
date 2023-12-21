@@ -29,6 +29,7 @@ import { FriendsModule } from './features/friends/friends.module';
 import { RatingsModule } from './features/ratings/ratings.module';
 import { TasksModule } from './features/tasks/tasks.module';
 import { PlaintsModule } from './features/plaints/plaints.module';
+import { ArticlesModule } from './features/articles/articles.module';
 
 @Module({
   imports: [
@@ -76,6 +77,7 @@ import { PlaintsModule } from './features/plaints/plaints.module';
     RatingsModule,
     TasksModule,
     PlaintsModule,
+    ArticlesModule,
   ],
 })
 export class AppModule {}

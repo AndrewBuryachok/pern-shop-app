@@ -549,4 +549,21 @@ describe('Without Auth', () => {
         .expect(403);
     });
   });
+
+  describe('Articles', () => {
+    it('GET /articles/my', async () => {
+      return request(app.getHttpServer()).get('/articles/my').expect(401);
+    });
+
+    it('GET /articles/liked', async () => {
+      return request(app.getHttpServer()).get('/articles/liked').expect(401);
+    });
+
+    it('GET /articles/all', async () => {
+      return request(app.getHttpServer())
+        .get('/articles/all')
+        .set('Authorization', `Bearer ${user.access}`)
+        .expect(403);
+    });
+  });
 });

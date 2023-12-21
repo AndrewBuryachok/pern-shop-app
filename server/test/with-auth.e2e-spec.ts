@@ -41,6 +41,7 @@ describe('With Auth', () => {
   let ratingId: number;
   let tasksId: number;
   let plaintsId: number;
+  let articlesId: number;
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -1829,6 +1830,81 @@ describe('With Auth', () => {
     it('DELETE /plaints/:plaintId', async () => {
       return request(app.getHttpServer())
         .delete(`/plaints/${plaintsId[1]}`)
+        .set('Authorization', `Bearer ${user.access}`)
+        .expect('');
+    });
+  });
+
+  describe('Articles', () => {
+    it('POST /articles', async () => {
+      return request(app.getHttpServer())
+        .post('/articles')
+        .set('Authorization', `Bearer ${user.access}`)
+        .send({ text: 'article text', image: '' })
+        .expect('');
+    });
+
+    it('POST /articles', async () => {
+      return request(app.getHttpServer())
+        .post('/articles')
+        .set('Authorization', `Bearer ${user.access}`)
+        .send({ text: 'article text', image: '' })
+        .expect('');
+    });
+
+    it('GET /articles', async () => {
+      return request(app.getHttpServer())
+        .get('/articles')
+        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
+    });
+
+    it('GET /articles/my', async () => {
+      return request(app.getHttpServer())
+        .get('/articles/my')
+        .set('Authorization', `Bearer ${user.access}`)
+        .expect((res) => expect(res.body.count).toBeGreaterThan(0))
+        .then((res) => (articlesId = res.body.result.map((p) => p.id)));
+    });
+
+    it('POST /articles/:articleId/likes', async () => {
+      return request(app.getHttpServer())
+        .post(`/articles/${articlesId[0]}/likes`)
+        .set('Authorization', `Bearer ${user.access}`)
+        .expect('');
+    });
+
+    it('POST /articles/:articleId/likes', async () => {
+      return request(app.getHttpServer())
+        .post(`/articles/${articlesId[1]}/likes`)
+        .set('Authorization', `Bearer ${user.access}`)
+        .expect('');
+    });
+
+    it('GET /articles/liked', async () => {
+      return request(app.getHttpServer())
+        .get('/articles/liked')
+        .set('Authorization', `Bearer ${user.access}`)
+        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
+    });
+
+    it('GET /articles/all', async () => {
+      return request(app.getHttpServer())
+        .get('/articles/all')
+        .set('Authorization', `Bearer ${admin.access}`)
+        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
+    });
+
+    it('PATCH /articles/:articleId', async () => {
+      return request(app.getHttpServer())
+        .patch(`/articles/${articlesId[0]}`)
+        .set('Authorization', `Bearer ${user.access}`)
+        .send({ text: 'article text', image: '' })
+        .expect('');
+    });
+
+    it('DELETE /articles/:articleId', async () => {
+      return request(app.getHttpServer())
+        .delete(`/articles/${articlesId[1]}`)
         .set('Authorization', `Bearer ${user.access}`)
         .expect('');
     });

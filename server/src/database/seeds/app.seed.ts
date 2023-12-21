@@ -32,6 +32,8 @@ import { Friend } from '../../features/friends/friend.entity';
 import { Rating } from '../../features/ratings/rating.entity';
 import { Task } from '../../features/tasks/task.entity';
 import { Plaint } from '../../features/plaints/plaint.entity';
+import { Article } from '../../features/articles/article.entity';
+import { Like } from '../../features/articles/like.entity';
 import { TransportationStatus } from '../../features/transportations/transportation-status.enum';
 import { Kind } from '../../features/leases/kind.enum';
 import { hashData } from '../../common/utils';
@@ -446,6 +448,27 @@ export default class AppSeed implements Seeder {
         return plaint;
       })
       .createMany(20);
+    const articles = await factory(Article)()
+      .map(async (article) => {
+        article.user = faker.helpers.arrayElement(users);
+        return article;
+      })
+      .createMany(20);
+    const allLikes = articles.reduce(
+      (prev, article) => [...prev, ...users.map((user) => ({ article, user }))],
+      [],
+    );
+    const randomLikes = [...Array(allLikes.length).keys()];
+    randomLikes.sort(() => Math.random() - 0.5);
+    let likeId = 0;
+    const likes = await factory(Like)()
+      .map(async (like) => {
+        like.article = allLikes[randomLikes[likeId]].article;
+        like.user = allLikes[randomLikes[likeId]].user;
+        likeId++;
+        return like;
+      })
+      .createMany(80);
     let id = 0;
     await factory(Card)()
       .map(async () => cards[id++])
