@@ -8,7 +8,7 @@ import { ExtCreateTaskDto, ExtTaskIdDto } from './task.dto';
 import { Request, Response } from '../../common/interfaces';
 import { AppException } from '../../common/exceptions';
 import { TaskError } from './task-error.enum';
-import { TransportationStatus } from '../transportations/transportation-status.enum';
+import { Status } from '../transportations/status.enum';
 import { Mode, Notification } from '../../common/enums';
 
 @Injectable()
@@ -25,7 +25,7 @@ export class TasksService {
       .leftJoin('city.users', 'cityUsers')
       .andWhere('cityUsers.id = :myId', { myId })
       .andWhere('task.status = :status', {
-        status: TransportationStatus.CREATED,
+        status: Status.CREATED,
       })
       .getManyAndCount();
     return { result, count };
@@ -69,7 +69,7 @@ export class TasksService {
       id: dto.taskId,
     });
     await this.citiesService.checkCityUser(dto.myId, task.cityId);
-    if (task.status !== TransportationStatus.CREATED) {
+    if (task.status !== Status.CREATED) {
       throw new AppException(TaskError.NOT_CREATED);
     }
     await this.take(task, dto.myId);
@@ -81,7 +81,7 @@ export class TasksService {
 
   async untakeTask(dto: ExtTaskIdDto): Promise<void> {
     const task = await this.checkTaskExecutor(dto.taskId, dto.myId);
-    if (task.status !== TransportationStatus.TAKEN) {
+    if (task.status !== Status.TAKEN) {
       throw new AppException(TaskError.NOT_TAKEN);
     }
     await this.untake(task);
@@ -93,7 +93,7 @@ export class TasksService {
 
   async executeTask(dto: ExtTaskIdDto): Promise<void> {
     const task = await this.checkTaskExecutor(dto.taskId, dto.myId);
-    if (task.status !== TransportationStatus.TAKEN) {
+    if (task.status !== Status.TAKEN) {
       throw new AppException(TaskError.NOT_TAKEN);
     }
     await this.execute(task);
@@ -105,7 +105,7 @@ export class TasksService {
 
   async completeTask(dto: ExtTaskIdDto): Promise<void> {
     const task = await this.checkTaskCustomer(dto.taskId, dto.myId);
-    if (task.status !== TransportationStatus.EXECUTED) {
+    if (task.status !== Status.EXECUTED) {
       throw new AppException(TaskError.NOT_EXECUTED);
     }
     await this.complete(task);
@@ -117,7 +117,7 @@ export class TasksService {
 
   async deleteTask(dto: ExtTaskIdDto): Promise<void> {
     const task = await this.checkTaskCustomer(dto.taskId, dto.myId);
-    if (task.status !== TransportationStatus.CREATED) {
+    if (task.status !== Status.CREATED) {
       throw new AppException(TaskError.NOT_CREATED);
     }
     await this.delete(task);
@@ -167,7 +167,7 @@ export class TasksService {
   private async take(task: Task, userId: number): Promise<void> {
     try {
       task.executorUserId = userId;
-      task.status = TransportationStatus.TAKEN;
+      task.status = Status.TAKEN;
       await this.tasksRepository.save(task);
     } catch (error) {
       throw new AppException(TaskError.TAKE_FAILED);
@@ -177,7 +177,7 @@ export class TasksService {
   private async untake(task: Task): Promise<void> {
     try {
       task.executorUserId = null;
-      task.status = TransportationStatus.CREATED;
+      task.status = Status.CREATED;
       await this.tasksRepository.save(task);
     } catch (error) {
       throw new AppException(TaskError.UNTAKE_FAILED);
@@ -186,7 +186,7 @@ export class TasksService {
 
   private async execute(task: Task): Promise<void> {
     try {
-      task.status = TransportationStatus.EXECUTED;
+      task.status = Status.EXECUTED;
       await this.tasksRepository.save(task);
     } catch (error) {
       throw new AppException(TaskError.EXECUTE_FAILED);
@@ -196,7 +196,7 @@ export class TasksService {
   private async complete(task: Task): Promise<void> {
     try {
       task.completedAt = new Date();
-      task.status = TransportationStatus.COMPLETED;
+      task.status = Status.COMPLETED;
       await this.tasksRepository.save(task);
     } catch (error) {
       throw new AppException(TaskError.COMPLETE_FAILED);
@@ -230,21 +230,21 @@ export class TasksService {
             .orWhere(
               new Brackets((qb) =>
                 qb
-                  .where(`${!req.mode || req.mode == Mode.CUSTOMER}`)
+                  .where(`${!req.mode || req.mode === Mode.CUSTOMER}`)
                   .andWhere('customerUser.id = :userId'),
               ),
             )
             .orWhere(
               new Brackets((qb) =>
                 qb
-                  .where(`${!req.mode || req.mode == Mode.EXECUTOR}`)
+                  .where(`${!req.mode || req.mode === Mode.EXECUTOR}`)
                   .andWhere('executorUser.id = :userId'),
               ),
             )
             .orWhere(
               new Brackets((qb) =>
                 qb
-                  .where(`${!req.mode || req.mode == Mode.OWNER}`)
+                  .where(`${!req.mode || req.mode === Mode.OWNER}`)
                   .andWhere('ownerUser.id = :userId'),
               ),
             ),
@@ -268,20 +268,6 @@ export class TasksService {
       .andWhere(
         new Brackets((qb) =>
           qb
-            .where(`${!req.minDate}`)
-            .orWhere('task.createdAt >= :minDate', { minDate: req.minDate }),
-        ),
-      )
-      .andWhere(
-        new Brackets((qb) =>
-          qb
-            .where(`${!req.maxDate}`)
-            .orWhere('task.createdAt <= :maxDate', { maxDate: req.maxDate }),
-        ),
-      )
-      .andWhere(
-        new Brackets((qb) =>
-          qb
             .where(`${!req.priority}`)
             .orWhere('task.priority = :priority', { priority: req.priority }),
         ),
@@ -291,6 +277,20 @@ export class TasksService {
           qb
             .where(`${!req.status}`)
             .orWhere('task.status = :status', { status: req.status }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.minDate}`)
+            .orWhere('task.createdAt >= :minDate', { minDate: req.minDate }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.maxDate}`)
+            .orWhere('task.createdAt <= :maxDate', { maxDate: req.maxDate }),
         ),
       )
       .orderBy('task.id', 'DESC')
@@ -309,11 +309,11 @@ export class TasksService {
         'task.title',
         'task.text',
         'task.priority',
+        'task.status',
         'task.createdAt',
         'executorUser.id',
         'executorUser.nick',
         'task.completedAt',
-        'task.status',
       ]);
   }
 }

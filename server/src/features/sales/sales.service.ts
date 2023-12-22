@@ -160,21 +160,21 @@ export class SalesService {
             .orWhere(
               new Brackets((qb) =>
                 qb
-                  .where(`${!req.mode || req.mode == Mode.BUYER}`)
+                  .where(`${!req.mode || req.mode === Mode.BUYER}`)
                   .andWhere('buyerUser.id = :userId'),
               ),
             )
             .orWhere(
               new Brackets((qb) =>
                 qb
-                  .where(`${!req.mode || req.mode == Mode.SELLER}`)
+                  .where(`${!req.mode || req.mode === Mode.SELLER}`)
                   .andWhere('sellerUser.id = :userId'),
               ),
             )
             .orWhere(
               new Brackets((qb) =>
                 qb
-                  .where(`${!req.mode || req.mode == Mode.OWNER}`)
+                  .where(`${!req.mode || req.mode === Mode.OWNER}`)
                   .andWhere('ownerUser.id = :userId'),
               ),
             ),
@@ -188,21 +188,21 @@ export class SalesService {
             .orWhere(
               new Brackets((qb) =>
                 qb
-                  .where(`${!req.mode || req.mode == Mode.BUYER}`)
+                  .where(`${!req.mode || req.mode === Mode.BUYER}`)
                   .andWhere('buyerCard.id = :cardId'),
               ),
             )
             .orWhere(
               new Brackets((qb) =>
                 qb
-                  .where(`${!req.mode || req.mode == Mode.SELLER}`)
+                  .where(`${!req.mode || req.mode === Mode.SELLER}`)
                   .andWhere('sellerCard.id = :cardId'),
               ),
             )
             .orWhere(
               new Brackets((qb) =>
                 qb
-                  .where(`${!req.mode || req.mode == Mode.OWNER}`)
+                  .where(`${!req.mode || req.mode === Mode.OWNER}`)
                   .andWhere('ownerCard.id = :cardId'),
               ),
             ),
@@ -295,6 +295,13 @@ export class SalesService {
       .andWhere(
         new Brackets((qb) =>
           qb
+            .where(`${!req.rate}`)
+            .orWhere('sale.rate = :rate', { rate: req.rate }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
             .where(`${!req.minDate}`)
             .orWhere('sale.createdAt >= :minDate', { minDate: req.minDate }),
         ),
@@ -304,13 +311,6 @@ export class SalesService {
           qb
             .where(`${!req.maxDate}`)
             .orWhere('sale.createdAt <= :maxDate', { maxDate: req.maxDate }),
-        ),
-      )
-      .andWhere(
-        new Brackets((qb) =>
-          qb
-            .where(`${!req.rate}`)
-            .orWhere('sale.rate = :rate', { rate: req.rate }),
         ),
       )
       .orderBy('sale.id', 'DESC')

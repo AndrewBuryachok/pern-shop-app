@@ -9,7 +9,7 @@ import {
 import { City } from '../cities/city.entity';
 import { User } from '../users/user.entity';
 import { Priority } from './priority.enum';
-import { TransportationStatus } from '../transportations/transportation-status.enum';
+import { Status } from '../transportations/status.enum';
 
 @Entity('tasks')
 export class Task {
@@ -43,6 +43,13 @@ export class Task {
   })
   priority: Priority;
 
+  @Column({
+    type: 'enum',
+    enum: Status,
+    default: Status.CREATED,
+  })
+  status: Status;
+
   @CreateDateColumn({ type: 'timestamptz', name: 'created_at' })
   createdAt: Date;
 
@@ -55,11 +62,4 @@ export class Task {
 
   @Column({ type: 'timestamptz', name: 'completed_at', nullable: true })
   completedAt?: Date;
-
-  @Column({
-    type: 'enum',
-    enum: TransportationStatus,
-    default: TransportationStatus.CREATED,
-  })
-  status: TransportationStatus;
 }

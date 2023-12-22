@@ -34,7 +34,7 @@ import { Task } from '../../features/tasks/task.entity';
 import { Plaint } from '../../features/plaints/plaint.entity';
 import { Article } from '../../features/articles/article.entity';
 import { Like } from '../../features/articles/like.entity';
-import { TransportationStatus } from '../../features/transportations/transportation-status.enum';
+import { Status } from '../../features/transportations/status.enum';
 import { Kind } from '../../features/leases/kind.enum';
 import { hashData } from '../../common/utils';
 
@@ -256,10 +256,10 @@ export default class AppSeed implements Seeder {
         order.lease = leases[leaseId++];
         order.lease.kind = Kind.ORDER;
         order.lease.card.balance -= order.price;
-        if (order.status !== TransportationStatus.CREATED) {
+        if (order.status !== Status.CREATED) {
           order.executorCard = faker.helpers.arrayElement(cards);
         }
-        if (order.status === TransportationStatus.COMPLETED) {
+        if (order.status === Status.COMPLETED) {
           order.completedAt = new Date();
           const payment = await factory(Payment)().make({
             senderCard: order.lease.card,
@@ -280,10 +280,10 @@ export default class AppSeed implements Seeder {
         delivery.toLease = leases[leaseId++];
         delivery.toLease.kind = Kind.DELIVERY;
         delivery.fromLease.card.balance -= delivery.price;
-        if (delivery.status !== TransportationStatus.CREATED) {
+        if (delivery.status !== Status.CREATED) {
           delivery.executorCard = faker.helpers.arrayElement(cards);
         }
-        if (delivery.status === TransportationStatus.COMPLETED) {
+        if (delivery.status === Status.COMPLETED) {
           delivery.completedAt = new Date();
           const payment = await factory(Payment)().make({
             senderCard: delivery.fromLease.card,
@@ -429,10 +429,10 @@ export default class AppSeed implements Seeder {
       .map(async (task) => {
         task.city = faker.helpers.arrayElement(cities);
         task.customerUser = faker.helpers.arrayElement(users);
-        if (task.status !== TransportationStatus.CREATED) {
+        if (task.status !== Status.CREATED) {
           task.executorUser = faker.helpers.arrayElement(users);
         }
-        if (task.status === TransportationStatus.COMPLETED) {
+        if (task.status === Status.COMPLETED) {
           task.completedAt = new Date();
         }
         return task;

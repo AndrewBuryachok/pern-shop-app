@@ -10,8 +10,8 @@ import {
 import { Transform, Type } from 'class-transformer';
 import { Role } from '../../features/users/role.enum';
 import { Kind } from '../../features/leases/kind.enum';
-import { TransportationStatus } from '../../features/transportations/transportation-status.enum';
 import { Priority } from '../../features/tasks/priority.enum';
+import { Status } from '../../features/transportations/status.enum';
 import { Mode } from '../enums';
 
 export class Request {
@@ -174,27 +174,9 @@ export class Request {
 
   @ApiProperty({ required: false })
   @IsOptional()
-  @IsDate()
-  @Type(() => Date)
-  minDate?: Date;
-
-  @ApiProperty({ required: false })
-  @IsOptional()
-  @IsDate()
-  @Type(() => Date)
-  maxDate?: Date;
-
-  @ApiProperty({ required: false })
-  @IsOptional()
   @IsEnum(Kind)
   @Type(() => Number)
   kind?: Kind;
-
-  @ApiProperty({ required: false })
-  @IsOptional()
-  @IsEnum(TransportationStatus)
-  @Type(() => Number)
-  status?: TransportationStatus;
 
   @ApiProperty({ required: false })
   @IsOptional()
@@ -204,7 +186,25 @@ export class Request {
 
   @ApiProperty({ required: false })
   @IsOptional()
+  @IsEnum(Status)
+  @Type(() => Number)
+  status?: Status;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
   @IsInt()
   @Type(() => Number)
   rate?: number;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsDate()
+  @Type(() => Date)
+  minDate?: Date;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsDate()
+  @Type(() => Date)
+  maxDate?: Date;
 }

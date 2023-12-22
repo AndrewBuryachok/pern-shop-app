@@ -87,14 +87,14 @@ export class ExchangesService {
             .orWhere(
               new Brackets((qb) =>
                 qb
-                  .where(`${!req.mode || req.mode == Mode.EXECUTOR}`)
+                  .where(`${!req.mode || req.mode === Mode.EXECUTOR}`)
                   .andWhere('executorUser.id = :userId'),
               ),
             )
             .orWhere(
               new Brackets((qb) =>
                 qb
-                  .where(`${!req.mode || req.mode == Mode.CUSTOMER}`)
+                  .where(`${!req.mode || req.mode === Mode.CUSTOMER}`)
                   .andWhere('customerUser.id = :userId'),
               ),
             ),

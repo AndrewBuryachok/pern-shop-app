@@ -180,14 +180,14 @@ export class RentsService {
             .orWhere(
               new Brackets((qb) =>
                 qb
-                  .where(`${!req.mode || req.mode == Mode.RENTER}`)
+                  .where(`${!req.mode || req.mode === Mode.RENTER}`)
                   .andWhere('renterUser.id = :userId'),
               ),
             )
             .orWhere(
               new Brackets((qb) =>
                 qb
-                  .where(`${!req.mode || req.mode == Mode.OWNER}`)
+                  .where(`${!req.mode || req.mode === Mode.OWNER}`)
                   .andWhere('ownerUser.id = :userId'),
               ),
             ),
@@ -201,14 +201,14 @@ export class RentsService {
             .orWhere(
               new Brackets((qb) =>
                 qb
-                  .where(`${!req.mode || req.mode == Mode.RENTER}`)
+                  .where(`${!req.mode || req.mode === Mode.RENTER}`)
                   .andWhere('renterCard.id = :cardId'),
               ),
             )
             .orWhere(
               new Brackets((qb) =>
                 qb
-                  .where(`${!req.mode || req.mode == Mode.OWNER}`)
+                  .where(`${!req.mode || req.mode === Mode.OWNER}`)
                   .andWhere('ownerCard.id = :cardId'),
               ),
             ),

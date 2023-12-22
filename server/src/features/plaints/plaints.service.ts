@@ -195,21 +195,21 @@ export class PlaintsService {
             .orWhere(
               new Brackets((qb) =>
                 qb
-                  .where(`${!req.mode || req.mode == Mode.SENDER}`)
+                  .where(`${!req.mode || req.mode === Mode.SENDER}`)
                   .andWhere('senderUser.id = :userId'),
               ),
             )
             .orWhere(
               new Brackets((qb) =>
                 qb
-                  .where(`${!req.mode || req.mode == Mode.RECEIVER}`)
+                  .where(`${!req.mode || req.mode === Mode.RECEIVER}`)
                   .andWhere('receiverUser.id = :userId'),
               ),
             )
             .orWhere(
               new Brackets((qb) =>
                 qb
-                  .where(`${!req.mode || req.mode == Mode.EXECUTOR}`)
+                  .where(`${!req.mode || req.mode === Mode.EXECUTOR}`)
                   .andWhere('executorUser.id = :userId'),
               ),
             ),

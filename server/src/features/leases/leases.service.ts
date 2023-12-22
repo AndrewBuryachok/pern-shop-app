@@ -185,14 +185,14 @@ export class LeasesService {
             .orWhere(
               new Brackets((qb) =>
                 qb
-                  .where(`${!req.mode || req.mode == Mode.RENTER}`)
+                  .where(`${!req.mode || req.mode === Mode.RENTER}`)
                   .andWhere('renterUser.id = :userId'),
               ),
             )
             .orWhere(
               new Brackets((qb) =>
                 qb
-                  .where(`${!req.mode || req.mode == Mode.OWNER}`)
+                  .where(`${!req.mode || req.mode === Mode.OWNER}`)
                   .andWhere('ownerUser.id = :userId'),
               ),
             ),
@@ -206,14 +206,14 @@ export class LeasesService {
             .orWhere(
               new Brackets((qb) =>
                 qb
-                  .where(`${!req.mode || req.mode == Mode.RENTER}`)
+                  .where(`${!req.mode || req.mode === Mode.RENTER}`)
                   .andWhere('renterCard.id = :cardId'),
               ),
             )
             .orWhere(
               new Brackets((qb) =>
                 qb
-                  .where(`${!req.mode || req.mode == Mode.OWNER}`)
+                  .where(`${!req.mode || req.mode === Mode.OWNER}`)
                   .andWhere('ownerCard.id = :cardId'),
               ),
             ),
@@ -251,6 +251,13 @@ export class LeasesService {
       .andWhere(
         new Brackets((qb) =>
           qb
+            .where(`${!req.kind}`)
+            .orWhere('lease.kind = :kind', { kind: req.kind }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
             .where(`${!req.minDate}`)
             .orWhere('lease.createdAt >= :minDate', { minDate: req.minDate }),
         ),
@@ -260,13 +267,6 @@ export class LeasesService {
           qb
             .where(`${!req.maxDate}`)
             .orWhere('lease.createdAt <= :maxDate', { maxDate: req.maxDate }),
-        ),
-      )
-      .andWhere(
-        new Brackets((qb) =>
-          qb
-            .where(`${!req.kind}`)
-            .orWhere('lease.kind = :kind', { kind: req.kind }),
         ),
       )
       .orderBy('lease.id', 'DESC')
@@ -291,8 +291,8 @@ export class LeasesService {
         'renterUser.nick',
         'renterCard.name',
         'renterCard.color',
-        'lease.createdAt',
         'lease.kind',
+        'lease.createdAt',
         'lease.completedAt',
       ]);
   }

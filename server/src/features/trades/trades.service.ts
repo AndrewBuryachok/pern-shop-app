@@ -158,21 +158,21 @@ export class TradesService {
             .orWhere(
               new Brackets((qb) =>
                 qb
-                  .where(`${!req.mode || req.mode == Mode.BUYER}`)
+                  .where(`${!req.mode || req.mode === Mode.BUYER}`)
                   .andWhere('buyerUser.id = :userId'),
               ),
             )
             .orWhere(
               new Brackets((qb) =>
                 qb
-                  .where(`${!req.mode || req.mode == Mode.SELLER}`)
+                  .where(`${!req.mode || req.mode === Mode.SELLER}`)
                   .andWhere('sellerUser.id = :userId'),
               ),
             )
             .orWhere(
               new Brackets((qb) =>
                 qb
-                  .where(`${!req.mode || req.mode == Mode.OWNER}`)
+                  .where(`${!req.mode || req.mode === Mode.OWNER}`)
                   .andWhere('ownerUser.id = :userId'),
               ),
             ),
@@ -186,21 +186,21 @@ export class TradesService {
             .orWhere(
               new Brackets((qb) =>
                 qb
-                  .where(`${!req.mode || req.mode == Mode.BUYER}`)
+                  .where(`${!req.mode || req.mode === Mode.BUYER}`)
                   .andWhere('buyerCard.id = :cardId'),
               ),
             )
             .orWhere(
               new Brackets((qb) =>
                 qb
-                  .where(`${!req.mode || req.mode == Mode.SELLER}`)
+                  .where(`${!req.mode || req.mode === Mode.SELLER}`)
                   .andWhere('sellerCard.id = :cardId'),
               ),
             )
             .orWhere(
               new Brackets((qb) =>
                 qb
-                  .where(`${!req.mode || req.mode == Mode.OWNER}`)
+                  .where(`${!req.mode || req.mode === Mode.OWNER}`)
                   .andWhere('ownerCard.id = :cardId'),
               ),
             ),
@@ -294,15 +294,15 @@ export class TradesService {
       .andWhere(
         new Brackets((qb) =>
           qb
-            .where(`${!req.maxDate}`)
-            .orWhere('trade.createdAt <= :maxDate', { maxDate: req.maxDate }),
+            .where(`${!req.rate}`)
+            .orWhere('trade.rate = :rate', { rate: req.rate }),
         ),
       )
       .andWhere(
         new Brackets((qb) =>
           qb
-            .where(`${!req.rate}`)
-            .orWhere('trade.rate = :rate', { rate: req.rate }),
+            .where(`${!req.maxDate}`)
+            .orWhere('trade.createdAt <= :maxDate', { maxDate: req.maxDate }),
         ),
       )
       .orderBy('trade.id', 'DESC')

@@ -16,7 +16,7 @@ import { Request, Response } from '../../common/interfaces';
 import { getDateWeekAgo } from '../../common/utils';
 import { AppException } from '../../common/exceptions';
 import { DeliveryError } from './delivery-error.enum';
-import { TransportationStatus } from '../transportations/transportation-status.enum';
+import { Status } from '../transportations/status.enum';
 import { Kind } from '../leases/kind.enum';
 import { Mode, Notification } from '../../common/enums';
 
@@ -35,7 +35,7 @@ export class DeliveriesService {
     const [result, count] = await this.getDeliveriesQueryBuilder(req)
       .andWhere('delivery.createdAt > :date', { date: getDateWeekAgo() })
       .andWhere('delivery.status = :status', {
-        status: TransportationStatus.CREATED,
+        status: Status.CREATED,
       })
       .getManyAndCount();
     return { result, count };
@@ -117,7 +117,7 @@ export class DeliveriesService {
     if (delivery.createdAt < getDateWeekAgo()) {
       throw new AppException(DeliveryError.ALREADY_EXPIRED);
     }
-    if (delivery.status !== TransportationStatus.CREATED) {
+    if (delivery.status !== Status.CREATED) {
       throw new AppException(DeliveryError.NOT_CREATED);
     }
     await this.take(delivery, dto.cardId);
@@ -133,7 +133,7 @@ export class DeliveriesService {
       dto.myId,
       dto.hasRole,
     );
-    if (delivery.status !== TransportationStatus.TAKEN) {
+    if (delivery.status !== Status.TAKEN) {
       throw new AppException(DeliveryError.NOT_TAKEN);
     }
     await this.untake(delivery);
@@ -149,7 +149,7 @@ export class DeliveriesService {
       dto.myId,
       dto.hasRole,
     );
-    if (delivery.status !== TransportationStatus.TAKEN) {
+    if (delivery.status !== Status.TAKEN) {
       throw new AppException(DeliveryError.NOT_TAKEN);
     }
     await this.execute(delivery);
@@ -165,7 +165,7 @@ export class DeliveriesService {
       dto.myId,
       dto.hasRole,
     );
-    if (delivery.status !== TransportationStatus.EXECUTED) {
+    if (delivery.status !== Status.EXECUTED) {
       throw new AppException(DeliveryError.NOT_EXECUTED);
     }
     await this.cardsService.increaseCardBalance({
@@ -193,7 +193,7 @@ export class DeliveriesService {
       dto.myId,
       dto.hasRole,
     );
-    if (delivery.status !== TransportationStatus.CREATED) {
+    if (delivery.status !== Status.CREATED) {
       throw new AppException(DeliveryError.NOT_CREATED);
     }
     await this.cardsService.increaseCardBalance({
@@ -209,7 +209,7 @@ export class DeliveriesService {
       dto.myId,
       dto.hasRole,
     );
-    if (delivery.status !== TransportationStatus.COMPLETED) {
+    if (delivery.status !== Status.COMPLETED) {
       throw new AppException(DeliveryError.NOT_COMPLETED);
     }
     await this.rate(delivery, dto.rate);
@@ -290,7 +290,7 @@ export class DeliveriesService {
   private async take(delivery: Delivery, cardId: number): Promise<void> {
     try {
       delivery.executorCardId = cardId;
-      delivery.status = TransportationStatus.TAKEN;
+      delivery.status = Status.TAKEN;
       await this.deliveriesRepository.save(delivery);
     } catch (error) {
       throw new AppException(DeliveryError.TAKE_FAILED);
@@ -301,7 +301,7 @@ export class DeliveriesService {
     try {
       delivery.executorCard = null;
       delivery.executorCardId = null;
-      delivery.status = TransportationStatus.CREATED;
+      delivery.status = Status.CREATED;
       await this.deliveriesRepository.save(delivery);
     } catch (error) {
       throw new AppException(DeliveryError.UNTAKE_FAILED);
@@ -310,7 +310,7 @@ export class DeliveriesService {
 
   private async execute(delivery: Delivery): Promise<void> {
     try {
-      delivery.status = TransportationStatus.EXECUTED;
+      delivery.status = Status.EXECUTED;
       await this.deliveriesRepository.save(delivery);
     } catch (error) {
       throw new AppException(DeliveryError.EXECUTE_FAILED);
@@ -320,7 +320,7 @@ export class DeliveriesService {
   private async complete(delivery: Delivery): Promise<void> {
     try {
       delivery.completedAt = new Date();
-      delivery.status = TransportationStatus.COMPLETED;
+      delivery.status = Status.COMPLETED;
       await this.deliveriesRepository.save(delivery);
     } catch (error) {
       throw new AppException(DeliveryError.COMPLETE_FAILED);
@@ -330,7 +330,7 @@ export class DeliveriesService {
   private async delete(delivery: Delivery): Promise<void> {
     try {
       delivery.completedAt = new Date();
-      delivery.status = TransportationStatus.COMPLETED;
+      delivery.status = Status.COMPLETED;
       await this.deliveriesRepository.save(delivery);
     } catch (error) {
       throw new AppException(DeliveryError.DELETE_FAILED);
@@ -377,21 +377,21 @@ export class DeliveriesService {
             .orWhere(
               new Brackets((qb) =>
                 qb
-                  .where(`${!req.mode || req.mode == Mode.CUSTOMER}`)
+                  .where(`${!req.mode || req.mode === Mode.CUSTOMER}`)
                   .andWhere('customerUser.id = :userId'),
               ),
             )
             .orWhere(
               new Brackets((qb) =>
                 qb
-                  .where(`${!req.mode || req.mode == Mode.EXECUTOR}`)
+                  .where(`${!req.mode || req.mode === Mode.EXECUTOR}`)
                   .andWhere('executorUser.id = :userId'),
               ),
             )
             .orWhere(
               new Brackets((qb) =>
                 qb
-                  .where(`${!req.mode || req.mode == Mode.OWNER}`)
+                  .where(`${!req.mode || req.mode === Mode.OWNER}`)
                   .andWhere(
                     'fromOwnerUser.id = :userId OR toOwnerUser.id = :userId',
                   ),
@@ -407,21 +407,21 @@ export class DeliveriesService {
             .orWhere(
               new Brackets((qb) =>
                 qb
-                  .where(`${!req.mode || req.mode == Mode.CUSTOMER}`)
+                  .where(`${!req.mode || req.mode === Mode.CUSTOMER}`)
                   .andWhere('customerCard.id = :cardId'),
               ),
             )
             .orWhere(
               new Brackets((qb) =>
                 qb
-                  .where(`${!req.mode || req.mode == Mode.EXECUTOR}`)
+                  .where(`${!req.mode || req.mode === Mode.EXECUTOR}`)
                   .andWhere('executorCard.id = :cardId'),
               ),
             )
             .orWhere(
               new Brackets((qb) =>
                 qb
-                  .where(`${!req.mode || req.mode == Mode.OWNER}`)
+                  .where(`${!req.mode || req.mode === Mode.OWNER}`)
                   .andWhere(
                     'fromOwnerCard.id = :cardId OR toOwnerCard.id = :cardId',
                   ),
@@ -522,6 +522,20 @@ export class DeliveriesService {
       .andWhere(
         new Brackets((qb) =>
           qb
+            .where(`${!req.status}`)
+            .orWhere('delivery.status = :status', { status: req.status }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.rate}`)
+            .orWhere('delivery.rate = :rate', { rate: req.rate }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
             .where(`${!req.minDate}`)
             .orWhere('delivery.createdAt >= :minDate', {
               minDate: req.minDate,
@@ -535,20 +549,6 @@ export class DeliveriesService {
             .orWhere('delivery.createdAt <= :maxDate', {
               maxDate: req.maxDate,
             }),
-        ),
-      )
-      .andWhere(
-        new Brackets((qb) =>
-          qb
-            .where(`${!req.status}`)
-            .orWhere('delivery.status = :status', { status: req.status }),
-        ),
-      )
-      .andWhere(
-        new Brackets((qb) =>
-          qb
-            .where(`${!req.rate}`)
-            .orWhere('delivery.rate = :rate', { rate: req.rate }),
         ),
       )
       .orderBy('delivery.id', 'DESC')
@@ -591,6 +591,7 @@ export class DeliveriesService {
         'delivery.intake',
         'delivery.kit',
         'delivery.price',
+        'delivery.status',
         'delivery.createdAt',
         'executorCard.id',
         'executorUser.id',
@@ -598,7 +599,6 @@ export class DeliveriesService {
         'executorCard.name',
         'executorCard.color',
         'delivery.completedAt',
-        'delivery.status',
         'delivery.rate',
       ]);
   }

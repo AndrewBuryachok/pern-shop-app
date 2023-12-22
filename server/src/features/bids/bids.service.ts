@@ -95,21 +95,21 @@ export class BidsService {
             .orWhere(
               new Brackets((qb) =>
                 qb
-                  .where(`${!req.mode || req.mode == Mode.BUYER}`)
+                  .where(`${!req.mode || req.mode === Mode.BUYER}`)
                   .andWhere('buyerUser.id = :userId'),
               ),
             )
             .orWhere(
               new Brackets((qb) =>
                 qb
-                  .where(`${!req.mode || req.mode == Mode.SELLER}`)
+                  .where(`${!req.mode || req.mode === Mode.SELLER}`)
                   .andWhere('sellerUser.id = :userId'),
               ),
             )
             .orWhere(
               new Brackets((qb) =>
                 qb
-                  .where(`${!req.mode || req.mode == Mode.OWNER}`)
+                  .where(`${!req.mode || req.mode === Mode.OWNER}`)
                   .andWhere('ownerUser.id = :userId'),
               ),
             ),
@@ -123,21 +123,21 @@ export class BidsService {
             .orWhere(
               new Brackets((qb) =>
                 qb
-                  .where(`${!req.mode || req.mode == Mode.BUYER}`)
+                  .where(`${!req.mode || req.mode === Mode.BUYER}`)
                   .andWhere('buyerCard.id = :cardId'),
               ),
             )
             .orWhere(
               new Brackets((qb) =>
                 qb
-                  .where(`${!req.mode || req.mode == Mode.SELLER}`)
+                  .where(`${!req.mode || req.mode === Mode.SELLER}`)
                   .andWhere('sellerCard.id = :cardId'),
               ),
             )
             .orWhere(
               new Brackets((qb) =>
                 qb
-                  .where(`${!req.mode || req.mode == Mode.OWNER}`)
+                  .where(`${!req.mode || req.mode === Mode.OWNER}`)
                   .andWhere('ownerCard.id = :cardId'),
               ),
             ),

@@ -16,7 +16,7 @@ import { Request, Response } from '../../common/interfaces';
 import { getDateWeekAgo } from '../../common/utils';
 import { AppException } from '../../common/exceptions';
 import { OrderError } from './order-error.enum';
-import { TransportationStatus } from '../transportations/transportation-status.enum';
+import { Status } from '../transportations/status.enum';
 import { Kind } from '../leases/kind.enum';
 import { Mode, Notification } from '../../common/enums';
 
@@ -35,7 +35,7 @@ export class OrdersService {
     const [result, count] = await this.getOrdersQueryBuilder(req)
       .andWhere('order.createdAt > :date', { date: getDateWeekAgo() })
       .andWhere('order.status = :status', {
-        status: TransportationStatus.CREATED,
+        status: Status.CREATED,
       })
       .getManyAndCount();
     return { result, count };
@@ -90,7 +90,7 @@ export class OrdersService {
     if (order.createdAt < getDateWeekAgo()) {
       throw new AppException(OrderError.ALREADY_EXPIRED);
     }
-    if (order.status !== TransportationStatus.CREATED) {
+    if (order.status !== Status.CREATED) {
       throw new AppException(OrderError.NOT_CREATED);
     }
     await this.take(order, dto.cardId);
@@ -106,7 +106,7 @@ export class OrdersService {
       dto.myId,
       dto.hasRole,
     );
-    if (order.status !== TransportationStatus.TAKEN) {
+    if (order.status !== Status.TAKEN) {
       throw new AppException(OrderError.NOT_TAKEN);
     }
     await this.untake(order);
@@ -122,7 +122,7 @@ export class OrdersService {
       dto.myId,
       dto.hasRole,
     );
-    if (order.status !== TransportationStatus.TAKEN) {
+    if (order.status !== Status.TAKEN) {
       throw new AppException(OrderError.NOT_TAKEN);
     }
     await this.execute(order);
@@ -138,7 +138,7 @@ export class OrdersService {
       dto.myId,
       dto.hasRole,
     );
-    if (order.status !== TransportationStatus.EXECUTED) {
+    if (order.status !== Status.EXECUTED) {
       throw new AppException(OrderError.NOT_EXECUTED);
     }
     await this.cardsService.increaseCardBalance({
@@ -166,7 +166,7 @@ export class OrdersService {
       dto.myId,
       dto.hasRole,
     );
-    if (order.status !== TransportationStatus.CREATED) {
+    if (order.status !== Status.CREATED) {
       throw new AppException(OrderError.NOT_CREATED);
     }
     await this.cardsService.increaseCardBalance({
@@ -182,7 +182,7 @@ export class OrdersService {
       dto.myId,
       dto.hasRole,
     );
-    if (order.status !== TransportationStatus.COMPLETED) {
+    if (order.status !== Status.COMPLETED) {
       throw new AppException(OrderError.NOT_COMPLETED);
     }
     await this.rate(order, dto.rate);
@@ -252,7 +252,7 @@ export class OrdersService {
   private async take(order: Order, cardId: number): Promise<void> {
     try {
       order.executorCardId = cardId;
-      order.status = TransportationStatus.TAKEN;
+      order.status = Status.TAKEN;
       await this.ordersRepository.save(order);
     } catch (error) {
       throw new AppException(OrderError.TAKE_FAILED);
@@ -263,7 +263,7 @@ export class OrdersService {
     try {
       order.executorCard = null;
       order.executorCardId = null;
-      order.status = TransportationStatus.CREATED;
+      order.status = Status.CREATED;
       await this.ordersRepository.save(order);
     } catch (error) {
       throw new AppException(OrderError.UNTAKE_FAILED);
@@ -272,7 +272,7 @@ export class OrdersService {
 
   private async execute(order: Order): Promise<void> {
     try {
-      order.status = TransportationStatus.EXECUTED;
+      order.status = Status.EXECUTED;
       await this.ordersRepository.save(order);
     } catch (error) {
       throw new AppException(OrderError.EXECUTE_FAILED);
@@ -282,7 +282,7 @@ export class OrdersService {
   private async complete(order: Order): Promise<void> {
     try {
       order.completedAt = new Date();
-      order.status = TransportationStatus.COMPLETED;
+      order.status = Status.COMPLETED;
       await this.ordersRepository.save(order);
     } catch (error) {
       throw new AppException(OrderError.COMPLETE_FAILED);
@@ -292,7 +292,7 @@ export class OrdersService {
   private async delete(order: Order): Promise<void> {
     try {
       order.completedAt = new Date();
-      order.status = TransportationStatus.COMPLETED;
+      order.status = Status.COMPLETED;
       await this.ordersRepository.save(order);
     } catch (error) {
       throw new AppException(OrderError.DELETE_FAILED);
@@ -332,21 +332,21 @@ export class OrdersService {
             .orWhere(
               new Brackets((qb) =>
                 qb
-                  .where(`${!req.mode || req.mode == Mode.CUSTOMER}`)
+                  .where(`${!req.mode || req.mode === Mode.CUSTOMER}`)
                   .andWhere('customerUser.id = :userId'),
               ),
             )
             .orWhere(
               new Brackets((qb) =>
                 qb
-                  .where(`${!req.mode || req.mode == Mode.EXECUTOR}`)
+                  .where(`${!req.mode || req.mode === Mode.EXECUTOR}`)
                   .andWhere('executorUser.id = :userId'),
               ),
             )
             .orWhere(
               new Brackets((qb) =>
                 qb
-                  .where(`${!req.mode || req.mode == Mode.OWNER}`)
+                  .where(`${!req.mode || req.mode === Mode.OWNER}`)
                   .andWhere('ownerUser.id = :userId'),
               ),
             ),
@@ -360,21 +360,21 @@ export class OrdersService {
             .orWhere(
               new Brackets((qb) =>
                 qb
-                  .where(`${!req.mode || req.mode == Mode.CUSTOMER}`)
+                  .where(`${!req.mode || req.mode === Mode.CUSTOMER}`)
                   .andWhere('customerCard.id = :cardId'),
               ),
             )
             .orWhere(
               new Brackets((qb) =>
                 qb
-                  .where(`${!req.mode || req.mode == Mode.EXECUTOR}`)
+                  .where(`${!req.mode || req.mode === Mode.EXECUTOR}`)
                   .andWhere('executorCard.id = :cardId'),
               ),
             )
             .orWhere(
               new Brackets((qb) =>
                 qb
-                  .where(`${!req.mode || req.mode == Mode.OWNER}`)
+                  .where(`${!req.mode || req.mode === Mode.OWNER}`)
                   .andWhere('ownerCard.id = :cardId'),
               ),
             ),
@@ -461,20 +461,6 @@ export class OrdersService {
       .andWhere(
         new Brackets((qb) =>
           qb
-            .where(`${!req.minDate}`)
-            .orWhere('order.createdAt >= :minDate', { minDate: req.minDate }),
-        ),
-      )
-      .andWhere(
-        new Brackets((qb) =>
-          qb
-            .where(`${!req.maxDate}`)
-            .orWhere('order.createdAt <= :maxDate', { maxDate: req.maxDate }),
-        ),
-      )
-      .andWhere(
-        new Brackets((qb) =>
-          qb
             .where(`${!req.status}`)
             .orWhere('order.status = :status', { status: req.status }),
         ),
@@ -484,6 +470,20 @@ export class OrdersService {
           qb
             .where(`${!req.rate}`)
             .orWhere('order.rate = :rate', { rate: req.rate }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.minDate}`)
+            .orWhere('order.createdAt >= :minDate', { minDate: req.minDate }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.maxDate}`)
+            .orWhere('order.createdAt <= :maxDate', { maxDate: req.maxDate }),
         ),
       )
       .orderBy('order.id', 'DESC')
@@ -514,6 +514,7 @@ export class OrdersService {
         'order.intake',
         'order.kit',
         'order.price',
+        'order.status',
         'order.createdAt',
         'executorCard.id',
         'executorUser.id',
@@ -521,7 +522,6 @@ export class OrdersService {
         'executorCard.name',
         'executorCard.color',
         'order.completedAt',
-        'order.status',
         'order.rate',
       ]);
   }

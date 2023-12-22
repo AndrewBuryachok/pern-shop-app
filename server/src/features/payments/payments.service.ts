@@ -96,14 +96,14 @@ export class PaymentsService {
             .orWhere(
               new Brackets((qb) =>
                 qb
-                  .where(`${!req.mode || req.mode == Mode.SENDER}`)
+                  .where(`${!req.mode || req.mode === Mode.SENDER}`)
                   .andWhere('senderUser.id = :userId'),
               ),
             )
             .orWhere(
               new Brackets((qb) =>
                 qb
-                  .where(`${!req.mode || req.mode == Mode.RECEIVER}`)
+                  .where(`${!req.mode || req.mode === Mode.RECEIVER}`)
                   .andWhere('receiverUser.id = :userId'),
               ),
             ),
@@ -117,14 +117,14 @@ export class PaymentsService {
             .orWhere(
               new Brackets((qb) =>
                 qb
-                  .where(`${!req.mode || req.mode == Mode.SENDER}`)
+                  .where(`${!req.mode || req.mode === Mode.SENDER}`)
                   .andWhere('senderCard.id = :cardId'),
               ),
             )
             .orWhere(
               new Brackets((qb) =>
                 qb
-                  .where(`${!req.mode || req.mode == Mode.RECEIVER}`)
+                  .where(`${!req.mode || req.mode === Mode.RECEIVER}`)
                   .andWhere('receiverCard.id = :cardId'),
               ),
             ),
