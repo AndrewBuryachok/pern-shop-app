@@ -1,17 +1,9 @@
-import {
-  ActionIcon,
-  Anchor,
-  Group,
-  Paper,
-  Skeleton,
-  Stack,
-  Text,
-} from '@mantine/core';
+import { ActionIcon, Anchor, Group, Paper, Stack, Text } from '@mantine/core';
 import { IconHeart } from '@tabler/icons';
 import { ITableWithActions } from '../../common/interfaces';
 import { Article } from './article.model';
 import { getCurrentUser } from '../auth/auth.slice';
-import CustomPage from '../../common/components/CustomPage';
+import CustomsList from '../../common/components/CustomList';
 import AvatarWithDateText from '../../common/components/AvatarWithDateText';
 import CustomImage from '../../common/components/CustomImage';
 import CustomActions from '../../common/components/CustomActions';
@@ -25,15 +17,7 @@ export default function ArticlesList({ actions = [], ...props }: Props) {
   const user = getCurrentUser();
 
   return (
-    <CustomPage {...props}>
-      {!props.data && props.isFetching && (
-        <Paper p='md' withBorder>
-          <Stack spacing={8}>
-            <Skeleton h={32} w={128} />
-            <Skeleton h={200} />
-          </Stack>
-        </Paper>
-      )}
+    <CustomsList {...props}>
       {props.data?.result.map((article) => (
         <Paper key={article.id} p='md' withBorder>
           <Stack spacing={8}>
@@ -71,6 +55,6 @@ export default function ArticlesList({ actions = [], ...props }: Props) {
           </Stack>
         </Paper>
       ))}
-    </CustomPage>
+    </CustomsList>
   );
 }

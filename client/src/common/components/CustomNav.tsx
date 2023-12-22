@@ -1,7 +1,8 @@
 import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { Button, Group } from '@mantine/core';
-import { IconExternalLink, IconPlus } from '@tabler/icons';
+import { IconPlus } from '@tabler/icons';
+import { pages } from '../../app/pages';
 import { INav } from '../interfaces';
 import { isUserNotHasRole } from '../utils';
 
@@ -10,18 +11,29 @@ type Props = INav;
 export default function CustomNav(props: Props) {
   const [t] = useTranslation();
 
+  const active = useLocation().pathname.split('/');
+
+  const tab = active[2] || 'main';
+
+  const links = pages
+    .find((page) => page.path === active[1])!
+    .nested!.map(({ index, ...route }) => ({
+      ...route,
+      path: index ? 'main' : route.path,
+    }));
+
   return (
     <Group spacing={8}>
-      {props.links.map((link) => (
+      {links.map((link) => (
         <Button
-          key={link.label}
+          key={link.path}
           component={Link}
-          to={link.to}
-          leftIcon={<IconExternalLink size={16} />}
-          disabled={isUserNotHasRole(link.role)}
+          to={`/${active[1]}/${link.path}`.replace('/main', '')}
+          color={link.path === tab ? 'violet' : 'gray'}
+          disabled={link.path !== 'main' && isUserNotHasRole(link.role)}
           compact
         >
-          {link.label}
+          {t('pages.' + link.path)}
         </Button>
       ))}
       {props.button && (

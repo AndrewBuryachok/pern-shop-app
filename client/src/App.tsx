@@ -86,10 +86,10 @@ export default function App() {
                             element={
                               (route.index && page.path !== 'tasks') ||
                               (route.path && route.path === ':userId') ? (
-                                <route.element />
+                                <page.element />
                               ) : (
                                 <Protected role={route.role}>
-                                  <route.element />
+                                  <page.element />
                                 </Protected>
                               )
                             }

@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import i18next from 'i18next';
-import { I18nextProvider } from 'react-i18next';
+import { I18nextProvider, initReactI18next } from 'react-i18next';
 import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
 import { store } from './app/store';
@@ -9,7 +9,7 @@ import App from './App';
 import globalEN from './translations/en/global.json';
 import globalUK from './translations/uk/global.json';
 
-i18next.init({
+i18next.use(initReactI18next).init({
   defaultNS: 'global',
   interpolation: { escapeValue: false },
   lng: localStorage.getItem('lang') || navigator.language.split('-')[0],

@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Stack } from '@mantine/core';
 import { IPage } from '../interfaces';
@@ -12,8 +11,6 @@ type Props<T> = IPage<T>;
 
 export default function CustomPage<T>(props: Props<T>) {
   const active = useLocation().pathname.split('/');
-
-  useEffect(() => props.setPage(1), [props.search]);
 
   return (
     <Stack spacing={8}>
