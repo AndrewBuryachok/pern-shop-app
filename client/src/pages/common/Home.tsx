@@ -182,12 +182,13 @@ export default function Home() {
     <Stack align='center'>
       <Title order={1}>{t('home.title')}</Title>
       <SimpleGrid
-        cols={5}
+        cols={6}
         spacing={8}
         breakpoints={[
-          { maxWidth: 'xl', cols: 4 },
-          { maxWidth: 'lg', cols: 3 },
-          { maxWidth: 'md', cols: 2 },
+          { maxWidth: 'xl', cols: 5 },
+          { maxWidth: 'lg', cols: 4 },
+          { maxWidth: 'md', cols: 3 },
+          { maxWidth: 'sm', cols: 2 },
           { maxWidth: 'xs', cols: 1 },
         ]}
       >
