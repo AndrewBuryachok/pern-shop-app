@@ -35,10 +35,10 @@ export default function MyDeliveries() {
     kit: searchParams.get('kit'),
     minPrice: +(searchParams.get('minPrice') || 0) || null,
     maxPrice: +(searchParams.get('maxPrice') || 0) || null,
-    minDate: searchParams.get('minDate'),
-    maxDate: searchParams.get('maxDate'),
     status: searchParams.get('status'),
     rate: +(searchParams.get('rate') || 0) || null,
+    minDate: searchParams.get('minDate'),
+    maxDate: searchParams.get('maxDate'),
   });
 
   const response = useGetMyDeliveriesQuery({ page, search });

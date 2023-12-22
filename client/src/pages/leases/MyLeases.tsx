@@ -25,9 +25,9 @@ export default function MyLeases() {
     cell: searchParams.get('cell'),
     minPrice: +(searchParams.get('minPrice') || 0) || null,
     maxPrice: +(searchParams.get('maxPrice') || 0) || null,
+    kind: searchParams.get('kind'),
     minDate: searchParams.get('minDate'),
     maxDate: searchParams.get('maxDate'),
-    kind: searchParams.get('kind'),
   });
 
   const response = useGetMyLeasesQuery({ page, search });

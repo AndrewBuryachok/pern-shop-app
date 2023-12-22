@@ -32,9 +32,9 @@ export default function MySales() {
     kit: searchParams.get('kit'),
     minPrice: +(searchParams.get('minPrice') || 0) || null,
     maxPrice: +(searchParams.get('maxPrice') || 0) || null,
+    rate: +(searchParams.get('rate') || 0) || null,
     minDate: searchParams.get('minDate'),
     maxDate: searchParams.get('maxDate'),
-    rate: +(searchParams.get('rate') || 0) || null,
   });
 
   const response = useGetMySalesQuery({ page, search });

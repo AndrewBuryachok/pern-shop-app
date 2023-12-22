@@ -24,10 +24,10 @@ export default function MyTasks() {
     mode: searchParams.get('mode') as Mode,
     city: searchParams.get('city'),
     title: searchParams.get('title') || '',
-    minDate: searchParams.get('minDate'),
-    maxDate: searchParams.get('maxDate'),
     priority: searchParams.get('priority'),
     status: searchParams.get('status'),
+    minDate: searchParams.get('minDate'),
+    maxDate: searchParams.get('maxDate'),
   });
 
   const response = useGetMyTasksQuery({ page, search });

@@ -121,17 +121,17 @@ export default function SearchModal(props: Props) {
   }, [form.values.id]);
 
   useEffect(() => {
+    if (form.values.card !== undefined) {
+      form.setFieldValue('card', null);
+    }
+  }, [form.values.user]);
+
+  useEffect(() => {
     const roles = form.values.roles?.slice(0).sort();
     if (form.values.roles?.toString() !== roles?.toString()) {
       form.setFieldValue('roles', roles);
     }
   }, [form.values.roles]);
-
-  useEffect(() => {
-    if (form.values.card !== undefined) {
-      form.setFieldValue('card', null);
-    }
-  }, [form.values.user]);
 
   useEffect(() => {
     if (form.values.store !== undefined) {
@@ -241,16 +241,6 @@ export default function SearchModal(props: Props) {
           {...form.getInputProps('card')}
         />
       )}
-      {props.search.roles && (
-        <MultiSelect
-          label={t('columns.roles')}
-          placeholder={t('columns.roles')}
-          itemComponent={ColorsItem}
-          data={selectRoles()}
-          searchable
-          {...form.getInputProps('roles')}
-        />
-      )}
       {props.search.modes && (
         <Radio.Group
           label={t('columns.mode')}
@@ -266,6 +256,16 @@ export default function SearchModal(props: Props) {
             onClick={() => form.setFieldValue('mode', null)}
           />
         </Radio.Group>
+      )}
+      {props.search.roles && (
+        <MultiSelect
+          label={t('columns.roles')}
+          placeholder={t('columns.roles')}
+          itemComponent={ColorsItem}
+          data={selectRoles()}
+          searchable
+          {...form.getInputProps('roles')}
+        />
       )}
       {props.search.city !== undefined && (
         <Select
@@ -483,6 +483,51 @@ export default function SearchModal(props: Props) {
           />
         </Input.Wrapper>
       )}
+      {props.search.kind !== undefined && (
+        <Select
+          label={t('columns.kind')}
+          placeholder={t('columns.kind')}
+          itemComponent={ColorsItem}
+          data={selectKinds()}
+          searchable
+          allowDeselect
+          {...form.getInputProps('kind')}
+        />
+      )}
+      {props.search.priority !== undefined && (
+        <Select
+          label={t('columns.priority')}
+          placeholder={t('columns.priority')}
+          itemComponent={PrioritiesItem}
+          data={selectPriorities()}
+          searchable
+          allowDeselect
+          {...form.getInputProps('priority')}
+        />
+      )}
+      {props.search.status !== undefined && (
+        <Select
+          label={t('columns.status')}
+          placeholder={t('columns.status')}
+          itemComponent={ColorsItem}
+          data={selectStatuses()}
+          searchable
+          allowDeselect
+          {...form.getInputProps('status')}
+        />
+      )}
+      {props.search.rate !== undefined && (
+        <Input.Wrapper label={t('columns.rate')}>
+          <Group spacing={8}>
+            <Rating {...form.getInputProps('rate')} />
+            <CloseButton
+              size={24}
+              iconSize={16}
+              onClick={() => form.setFieldValue('rate', null)}
+            />
+          </Group>
+        </Input.Wrapper>
+      )}
       {props.search.minDate !== undefined && (
         <DatePicker
           label={t('columns.created') + ' ' + t('columns.after')}
@@ -498,51 +543,6 @@ export default function SearchModal(props: Props) {
           locale={i18n.language}
           {...form.getInputProps('maxDate')}
         />
-      )}
-      {props.search.kind !== undefined && (
-        <Select
-          label={t('columns.kind')}
-          placeholder={t('columns.kind')}
-          itemComponent={ColorsItem}
-          data={selectKinds()}
-          searchable
-          allowDeselect
-          {...form.getInputProps('kind')}
-        />
-      )}
-      {props.search.status !== undefined && (
-        <Select
-          label={t('columns.status')}
-          placeholder={t('columns.status')}
-          itemComponent={ColorsItem}
-          data={selectStatuses()}
-          searchable
-          allowDeselect
-          {...form.getInputProps('status')}
-        />
-      )}
-      {props.search.priority !== undefined && (
-        <Select
-          label={t('columns.priority')}
-          placeholder={t('columns.priority')}
-          itemComponent={PrioritiesItem}
-          data={selectPriorities()}
-          searchable
-          allowDeselect
-          {...form.getInputProps('priority')}
-        />
-      )}
-      {props.search.rate !== undefined && (
-        <Input.Wrapper label={t('columns.rate')}>
-          <Group spacing={8}>
-            <Rating {...form.getInputProps('rate')} />
-            <CloseButton
-              size={24}
-              iconSize={16}
-              onClick={() => form.setFieldValue('rate', null)}
-            />
-          </Group>
-        </Input.Wrapper>
       )}
     </CustomForm>
   );

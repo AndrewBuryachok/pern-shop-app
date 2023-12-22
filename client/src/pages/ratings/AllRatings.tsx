@@ -18,9 +18,9 @@ export default function AllRatings() {
     user: searchParams.get('user'),
     modes: [Mode.SENDER, Mode.RECEIVER],
     mode: searchParams.get('mode') as Mode,
+    rate: +(searchParams.get('rate') || 0) || null,
     minDate: searchParams.get('minDate'),
     maxDate: searchParams.get('maxDate'),
-    rate: +(searchParams.get('rate') || 0) || null,
   });
 
   const response = useGetAllRatingsQuery({ page, search });

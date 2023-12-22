@@ -16,11 +16,11 @@ export const getQuery = ({ page, search }: IRequest) => {
   if (search?.card) {
     query.append('card', search.card);
   }
-  if (search?.roles?.length) {
-    query.append('roles', search.roles.join());
-  }
   if (search?.mode) {
     query.append('mode', search.mode);
+  }
+  if (search?.roles?.length) {
+    query.append('roles', search.roles.join());
   }
   if (search?.city) {
     query.append('city', search.city);
@@ -79,23 +79,23 @@ export const getQuery = ({ page, search }: IRequest) => {
   if (search?.maxPrice) {
     query.append('maxPrice', `${search.maxPrice}`);
   }
+  if (search?.kind) {
+    query.append('kind', search.kind);
+  }
+  if (search?.priority) {
+    query.append('priority', search.priority);
+  }
+  if (search?.status) {
+    query.append('status', search.status);
+  }
+  if (search?.rate) {
+    query.append('rate', `${search.rate}`);
+  }
   if (search?.minDate) {
     query.append('minDate', search.minDate);
   }
   if (search?.maxDate) {
     query.append('maxDate', search.maxDate);
-  }
-  if (search?.kind) {
-    query.append('kind', search.kind);
-  }
-  if (search?.status) {
-    query.append('status', search.status);
-  }
-  if (search?.priority) {
-    query.append('priority', search.priority);
-  }
-  if (search?.rate) {
-    query.append('rate', `${search.rate}`);
   }
   return query.toString();
 };
