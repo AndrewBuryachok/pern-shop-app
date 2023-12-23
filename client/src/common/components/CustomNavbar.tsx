@@ -38,6 +38,20 @@ export default function CustomNavbar(props: Props) {
       icon: IconUsers,
     },
     {
+      route: 'friends',
+      icon: IconFriends,
+      my: true,
+    },
+    {
+      route: 'followings',
+      icon: IconMail,
+      my: true,
+    },
+    {
+      route: 'articles',
+      icon: IconArticle,
+    },
+    {
       route: 'wallet',
       icon: IconWallet,
       nested: ['cards', 'payments', 'exchanges', 'invoices'],
@@ -80,25 +94,6 @@ export default function CustomNavbar(props: Props) {
       my: true,
     },
     {
-      route: 'polls',
-      icon: IconChartBar,
-    },
-    {
-      route: 'friends',
-      icon: IconFriends,
-      my: true,
-    },
-    {
-      route: 'followings',
-      icon: IconMail,
-      my: true,
-    },
-    {
-      route: 'ratings',
-      icon: IconStar,
-      my: true,
-    },
-    {
       route: 'tasks',
       icon: IconChecklist,
     },
@@ -107,8 +102,13 @@ export default function CustomNavbar(props: Props) {
       icon: IconScale,
     },
     {
-      route: 'articles',
-      icon: IconArticle,
+      route: 'polls',
+      icon: IconChartBar,
+    },
+    {
+      route: 'ratings',
+      icon: IconStar,
+      my: true,
     },
   ];
 

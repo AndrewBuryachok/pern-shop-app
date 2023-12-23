@@ -4,6 +4,9 @@ const NotFound = lazy(() => import('../pages/common/NotFound'));
 const Map = lazy(() => import('../pages/map/Map'));
 const UsersPage = lazy(() => import('../pages/users/UsersPage'));
 const SingleUser = lazy(() => import('../pages/users/SingleUser'));
+const FriendsPage = lazy(() => import('../pages/friends/FriendsPage'));
+const FollowingsPage = lazy(() => import('../pages/followings/FollowingsPage'));
+const ArticlesPage = lazy(() => import('../pages/articles/ArticlesPage'));
 const CardsPage = lazy(() => import('../pages/cards/CardsPage'));
 const ExchangesPage = lazy(() => import('../pages/exchanges/ExchangesPage'));
 const PaymentsPage = lazy(() => import('../pages/payments/PaymentsPage'));
@@ -25,13 +28,10 @@ const DeliveriesPage = lazy(() => import('../pages/deliveries/DeliveriesPage'));
 const TradesPage = lazy(() => import('../pages/trades/TradesPage'));
 const SalesPage = lazy(() => import('../pages/sales/SalesPage'));
 const BidsPage = lazy(() => import('../pages/bids/BidsPage'));
-const PollsPage = lazy(() => import('../pages/polls/PollsPage'));
-const FriendsPage = lazy(() => import('../pages/friends/FriendsPage'));
-const FollowingsPage = lazy(() => import('../pages/followings/FollowingsPage'));
-const RatingsPage = lazy(() => import('../pages/ratings/RatingsPage'));
 const TasksPage = lazy(() => import('../pages/tasks/TasksPage'));
 const PlaintsPage = lazy(() => import('../pages/plaints/PlaintsPage'));
-const ArticlesPage = lazy(() => import('../pages/articles/ArticlesPage'));
+const PollsPage = lazy(() => import('../pages/polls/PollsPage'));
+const RatingsPage = lazy(() => import('../pages/ratings/RatingsPage'));
 import { Role } from '../common/constants';
 
 export const pages = [
@@ -47,6 +47,27 @@ export const pages = [
     ],
   },
   { path: 'users/:userId', element: SingleUser },
+  {
+    path: 'friends',
+    element: FriendsPage,
+    nested: [{ path: 'my' }, { path: 'received' }],
+  },
+  {
+    path: 'followings',
+    element: FollowingsPage,
+    nested: [{ path: 'my' }, { path: 'received' }],
+  },
+  {
+    path: 'articles',
+    element: ArticlesPage,
+    nested: [
+      { index: true },
+      { path: 'my' },
+      { path: 'liked' },
+      { path: 'followed' },
+      { path: 'all', role: Role.ADMIN },
+    ],
+  },
   {
     path: 'cards',
     element: CardsPage,
@@ -235,35 +256,6 @@ export const pages = [
     ],
   },
   {
-    path: 'polls',
-    element: PollsPage,
-    nested: [
-      { index: true },
-      { path: 'my' },
-      { path: 'voted' },
-      { path: 'all', role: Role.ADMIN },
-    ],
-  },
-  {
-    path: 'friends',
-    element: FriendsPage,
-    nested: [{ path: 'my' }, { path: 'received' }],
-  },
-  {
-    path: 'followings',
-    element: FollowingsPage,
-    nested: [{ path: 'my' }, { path: 'received' }],
-  },
-  {
-    path: 'ratings',
-    element: RatingsPage,
-    nested: [
-      { path: 'my' },
-      { path: 'received' },
-      { path: 'all', role: Role.ADMIN },
-    ],
-  },
-  {
     path: 'tasks',
     element: TasksPage,
     nested: [
@@ -285,13 +277,21 @@ export const pages = [
     ],
   },
   {
-    path: 'articles',
-    element: ArticlesPage,
+    path: 'polls',
+    element: PollsPage,
     nested: [
       { index: true },
       { path: 'my' },
-      { path: 'liked' },
-      { path: 'followed' },
+      { path: 'voted' },
+      { path: 'all', role: Role.ADMIN },
+    ],
+  },
+  {
+    path: 'ratings',
+    element: RatingsPage,
+    nested: [
+      { path: 'my' },
+      { path: 'received' },
       { path: 'all', role: Role.ADMIN },
     ],
   },

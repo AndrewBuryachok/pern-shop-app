@@ -56,6 +56,20 @@ export default function Home() {
       icon: IconUsers,
     },
     {
+      title: 'friends',
+      icon: IconFriends,
+      my: true,
+    },
+    {
+      title: 'followings',
+      icon: IconMail,
+      my: true,
+    },
+    {
+      title: 'articles',
+      icon: IconArticle,
+    },
+    {
       title: 'cards',
       icon: IconCreditCard,
       my: true,
@@ -153,25 +167,6 @@ export default function Home() {
       my: true,
     },
     {
-      title: 'polls',
-      icon: IconChartBar,
-    },
-    {
-      title: 'friends',
-      icon: IconFriends,
-      my: true,
-    },
-    {
-      title: 'followings',
-      icon: IconMail,
-      my: true,
-    },
-    {
-      title: 'ratings',
-      icon: IconStar,
-      my: true,
-    },
-    {
       title: 'tasks',
       icon: IconChecklist,
     },
@@ -180,8 +175,13 @@ export default function Home() {
       icon: IconScale,
     },
     {
-      title: 'articles',
-      icon: IconArticle,
+      title: 'polls',
+      icon: IconChartBar,
+    },
+    {
+      title: 'ratings',
+      icon: IconStar,
+      my: true,
     },
   ];
 
