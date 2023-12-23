@@ -37,7 +37,6 @@ describe('With Auth', () => {
   let ordersId: number;
   let deliveriesId: number;
   let pollsId: number;
-  let friendId: number;
   let ratingId: number;
   let tasksId: number;
   let plaintsId: number;
@@ -1569,11 +1568,10 @@ describe('With Auth', () => {
   });
 
   describe('Friends', () => {
-    it('POST /friends', async () => {
+    it('POST /friends/:friendId', async () => {
       return request(app.getHttpServer())
-        .post('/friends')
+        .post(`/friends/${user.id}`)
         .set('Authorization', `Bearer ${user.access}`)
-        .send({ userId: user.id })
         .expect('');
     });
 
@@ -1581,33 +1579,19 @@ describe('With Auth', () => {
       return request(app.getHttpServer())
         .get('/friends/my')
         .set('Authorization', `Bearer ${user.access}`)
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0))
-        .then((res) => (friendId = res.body.result[0].id));
-    });
-
-    it('POST /friends/:friendId', async () => {
-      return request(app.getHttpServer())
-        .post(`/friends/${friendId}`)
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect('');
-    });
-
-    it('GET /friends', async () => {
-      return request(app.getHttpServer())
-        .get('/friends')
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
 
-    it('GET /friends/all', async () => {
+    it('GET /friends/received', async () => {
       return request(app.getHttpServer())
-        .get('/friends/all')
-        .set('Authorization', `Bearer ${admin.access}`)
+        .get('/friends/received')
+        .set('Authorization', `Bearer ${user.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
 
     it('DELETE /friends/:friendId', async () => {
       return request(app.getHttpServer())
-        .delete(`/friends/${friendId}`)
+        .delete(`/friends/${user.id}`)
         .set('Authorization', `Bearer ${user.access}`)
         .expect('');
     });

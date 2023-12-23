@@ -7,6 +7,7 @@ import {
   CreateUserDto,
   ExtEditUserPasswordDto,
   ExtUpdateUserRoleDto,
+  UpdateUserFriendDto,
   UpdateUserTokenDto,
 } from './user.dto';
 import { Request, Response } from '../../common/interfaces';
@@ -27,7 +28,7 @@ export class UsersService {
     const [result, count] = await this.getUsersQueryBuilder(
       req,
     ).getManyAndCount();
-    await this.loadCards(result);
+    await this.loadFriends(result);
     return { result, count };
   }
 
@@ -36,7 +37,7 @@ export class UsersService {
       .leftJoin('city.users', 'cityUsers')
       .andWhere('cityUsers.id = :myId', { myId })
       .getManyAndCount();
-    await this.loadCards(result);
+    await this.loadFriends(result);
     return { result, count };
   }
 
@@ -44,7 +45,38 @@ export class UsersService {
     const [result, count] = await this.getUsersQueryBuilder(
       req,
     ).getManyAndCount();
-    await this.loadCards(result);
+    await this.loadFriends(result);
+    return { result, count };
+  }
+
+  async getMyFriends(myId: number, req: Request): Promise<Response<User>> {
+    const [result, count] = await this.getUsersQueryBuilder(req)
+      .leftJoinAndMapMany(
+        'user.friends',
+        'friends',
+        'friend',
+        'user.id = friend.receiver_user_id',
+      )
+      .andWhere('friend.sender_user_id = :myId', { myId })
+      .getManyAndCount();
+    await this.loadFriends(result);
+    return { result, count };
+  }
+
+  async getReceivedFriends(
+    myId: number,
+    req: Request,
+  ): Promise<Response<User>> {
+    const [result, count] = await this.getUsersQueryBuilder(req)
+      .leftJoinAndMapMany(
+        'user.friends',
+        'friends',
+        'friend',
+        'user.id = friend.sender_user_id',
+      )
+      .andWhere('friend.receiver_user_id = :myId', { myId })
+      .getManyAndCount();
+    await this.loadFriends(result);
     return { result, count };
   }
 
@@ -59,39 +91,28 @@ export class UsersService {
   }
 
   async selectNotFriendsUsers(myId: number): Promise<User[]> {
-    const user = await this.usersRepository
-      .createQueryBuilder('user')
-      .leftJoinAndMapMany(
-        'user.friends',
-        'friends',
-        'friend',
-        'user.id = friend.senderUserId OR user.id = friend.receiverUserId',
-      )
-      .where('user.id = :myId', { myId })
-      .select([
-        'user.id',
-        'friend.senderUserId',
-        'friend.receiverUserId',
-        'friend.type',
-      ])
-      .getOne();
-    const friends = user['friends']
-      .filter((friend) => friend.senderUserId === myId || friend.type)
-      .map((friend) =>
-        friend.senderUserId === myId
-          ? friend.receiverUserId
-          : friend.senderUserId,
-      );
+    const friends = (
+      await this.selectUsersQueryBuilder()
+        .leftJoinAndMapMany(
+          'user.friends',
+          'friends',
+          'friend',
+          'user.id = friend.receiver_user_id',
+        )
+        .where('friend.sender_user_id = :myId', { myId })
+        .getMany()
+    ).map((friend) => friend.id);
     const users = await this.selectUsersQueryBuilder().getMany();
     return users.filter((user) => !friends.includes(user.id));
   }
 
   async selectNotRatedUsers(myId: number): Promise<User[]> {
-    const rated = await this.selectUsersQueryBuilder()
-      .innerJoin('user.ratings', 'rating')
-      .where('rating.senderUserId = :myId', { myId })
-      .getMany();
-    const ratings = rated.map((user) => user.id);
+    const ratings = (
+      await this.selectUsersQueryBuilder()
+        .innerJoin('user.ratings', 'rating')
+        .where('rating.senderUserId = :myId', { myId })
+        .getMany()
+    ).map((user) => user.id);
     const users = await this.selectUsersQueryBuilder().getMany();
     return users.filter((user) => !ratings.includes(user.id));
   }
@@ -143,6 +164,28 @@ export class UsersService {
       throw new AppException(UserError.NOT_HAS_ROLE);
     }
     await this.removeRole(user, dto.role);
+  }
+
+  async addUserFriend(dto: UpdateUserFriendDto): Promise<void> {
+    const user = await this.usersRepository.findOne({
+      relations: ['friends'],
+      where: { id: dto.myId },
+    });
+    if (user.friends.find((friend) => friend.id === dto.userId)) {
+      throw new AppException(UserError.ALREADY_HAS_FRIEND);
+    }
+    await this.addFriend(user, dto.userId);
+  }
+
+  async removeUserFriend(dto: UpdateUserFriendDto): Promise<void> {
+    const user = await this.usersRepository.findOne({
+      relations: ['friends'],
+      where: { id: dto.myId },
+    });
+    if (!user.friends.find((friend) => friend.id === dto.userId)) {
+      throw new AppException(UserError.NOT_HAS_FRIEND);
+    }
+    await this.removeFriend(user, dto.userId);
   }
 
   async checkUserExists(id: number): Promise<void> {
@@ -224,6 +267,26 @@ export class UsersService {
     }
   }
 
+  private async addFriend(user: User, userId: number): Promise<void> {
+    try {
+      const friend = new User();
+      friend.id = userId;
+      user.friends.push(friend);
+      await this.usersRepository.save(user);
+    } catch (error) {
+      throw new AppException(UserError.ADD_FRIEND_FAILED);
+    }
+  }
+
+  private async removeFriend(user: User, userId: number): Promise<void> {
+    try {
+      user.friends = user.friends.filter((user) => user.id !== userId);
+      await this.usersRepository.save(user);
+    } catch (error) {
+      throw new AppException(UserError.REMOVE_FRIEND_FAILED);
+    }
+  }
+
   private selectUsersQueryBuilder(): SelectQueryBuilder<User> {
     return this.usersRepository
       .createQueryBuilder('user')
@@ -231,17 +294,17 @@ export class UsersService {
       .select(['user.id', 'user.nick']);
   }
 
-  private async loadCards(users: User[]): Promise<void> {
+  private async loadFriends(users: User[]): Promise<void> {
     const promises = users.map(async (user) => {
-      user.cards = (
+      user.friends = (
         await this.usersRepository
           .createQueryBuilder('user')
-          .leftJoin('user.cards', 'card')
+          .leftJoin('user.friends', 'friend')
           .where('user.id = :userId', { userId: user.id })
-          .orderBy('card.name', 'ASC')
-          .select(['user.id', 'card.id', 'card.name', 'card.color'])
+          .orderBy('friend.nick', 'ASC')
+          .select(['user.id', 'friend.id', 'friend.nick'])
           .getOne()
-      ).cards;
+      ).friends;
     });
     await Promise.all(promises);
   }
@@ -316,40 +379,8 @@ export class UsersService {
   }
 
   private async getUserProfile(userId: number): Promise<User> {
-    const user = await this.usersRepository
-      .createQueryBuilder('user')
-      .leftJoin('user.city', 'city')
-      .leftJoinAndMapMany(
-        'user.friends',
-        'friends',
-        'friend',
-        'user.id = friend.senderUserId OR user.id = friend.receiverUserId',
-      )
-      .where('user.id = :userId', { userId })
-      .select([
-        'user.id',
-        'user.nick',
-        'user.roles',
-        'user.createdAt',
-        'city.id',
-        'city.name',
-        'city.x',
-        'city.y',
-        'friend.senderUserId',
-        'friend.receiverUserId',
-        'friend.type',
-      ])
-      .getOne();
-    await this.loadCards([user]);
-    const friends = user['friends']
-      .filter((friend) => friend.type)
-      .map((friend) =>
-        friend.senderUserId === userId
-          ? friend.receiverUserId
-          : friend.senderUserId,
-      );
-    const users = await this.selectUsersQueryBuilder().getMany();
-    user['friends'] = users.filter((user) => friends.includes(user.id));
+    const user = await this.getUsersQueryBuilder({ id: userId }).getOne();
+    await this.loadFriends([user]);
     return user;
   }
 

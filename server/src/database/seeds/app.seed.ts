@@ -28,7 +28,6 @@ import { Sale } from '../../features/sales/sale.entity';
 import { Bid } from '../../features/bids/bid.entity';
 import { Poll } from '../../features/polls/poll.entity';
 import { Vote } from '../../features/polls/vote.entity';
-import { Friend } from '../../features/friends/friend.entity';
 import { Rating } from '../../features/ratings/rating.entity';
 import { Task } from '../../features/tasks/task.entity';
 import { Plaint } from '../../features/plaints/plaint.entity';
@@ -386,25 +385,6 @@ export default class AppSeed implements Seeder {
         vote.user = allVotes[randomVotes[voteId]].user;
         voteId++;
         return vote;
-      })
-      .createMany(80);
-    const allFriends = users.reduce(
-      (prev, senderUser) => [
-        ...prev,
-        ...users.map((receiverUser) => ({ senderUser, receiverUser })),
-      ],
-      [],
-    );
-    const randomFriends = [...Array(allFriends.length).keys()];
-    randomFriends.sort(() => Math.random() - 0.5);
-    let friendId = 0;
-    const friends = await factory(Friend)()
-      .map(async (friend) => {
-        friend.senderUser = allFriends[randomFriends[friendId]].senderUser;
-        friend.receiverUser = allFriends[randomFriends[friendId]].receiverUser;
-        friend.type = friend.type || friend.senderUser === friend.receiverUser;
-        friendId++;
-        return friend;
       })
       .createMany(80);
     const allRatings = users.reduce(

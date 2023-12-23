@@ -483,11 +483,8 @@ describe('Without Auth', () => {
       return request(app.getHttpServer()).get('/friends/my').expect(401);
     });
 
-    it('GET /friends/all', async () => {
-      return request(app.getHttpServer())
-        .get('/friends/all')
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect(403);
+    it('GET /friends/received', async () => {
+      return request(app.getHttpServer()).get('/friends/received').expect(401);
     });
   });
 

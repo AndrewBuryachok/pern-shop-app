@@ -3,6 +3,8 @@ import {
   CreateDateColumn,
   Entity,
   JoinColumn,
+  JoinTable,
+  ManyToMany,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -42,6 +44,14 @@ export class User {
   @ManyToOne(() => City, { nullable: true })
   @JoinColumn({ name: 'city_id' })
   city?: City;
+
+  @ManyToMany(() => User)
+  @JoinTable({
+    name: 'friends',
+    joinColumn: { name: 'sender_user_id' },
+    inverseJoinColumn: { name: 'receiver_user_id' },
+  })
+  friends: User[];
 
   @OneToMany(() => Shop, (shop) => shop.user)
   shops: Shop[];
