@@ -8,7 +8,6 @@ import DateText from '../../common/components/DateText';
 import FriendChip from '../../common/components/FriendChip';
 import CustomRating from '../../common/components/CustomRating';
 import PlaceText from '../../common/components/PlaceText';
-import { colors } from '../../common/constants';
 
 type Props = {
   data: ExtUser;
@@ -65,17 +64,6 @@ export default function UserProfile({ data: user }: Props) {
       )}
       <FriendChip data={user} />
       <CustomRating value={user.rating} />
-      {!!user.cards.length && (
-        <Group spacing={8}>
-          {user.cards.map((card) => (
-            <Paper key={card.id} p={8} withBorder>
-              <Text size='sm' color={colors[card.color - 1]}>
-                {card.name}
-              </Text>
-            </Paper>
-          ))}
-        </Group>
-      )}
       <SimpleGrid
         cols={5}
         spacing={8}

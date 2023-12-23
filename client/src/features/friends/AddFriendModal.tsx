@@ -1,27 +1,32 @@
 import { t } from 'i18next';
 import { useTranslation } from 'react-i18next';
-import { TextInput } from '@mantine/core';
+import { Select } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
-import { IModal } from '../../common/interfaces';
-import { Friend } from './friend.model';
-import { getCurrentUser } from '../auth/auth.slice';
 import { useAddFriendMutation } from './friends.api';
+import { useSelectNotFriendsUsersQuery } from '../users/users.api';
 import { UpdateFriendDto } from './friend.dto';
 import CustomForm from '../../common/components/CustomForm';
+import RefetchAction from '../../common/components/RefetchAction';
 import CustomAvatar from '../../common/components/CustomAvatar';
-import { Color } from '../../common/constants';
+import { UsersItem } from '../../common/components/UsersItem';
+import { selectUsers } from '../../common/utils';
 
-type Props = IModal<Friend>;
-
-export default function AddFriendModal({ data: friend }: Props) {
+export default function AddFriendModal() {
   const [t] = useTranslation();
 
   const form = useForm({
     initialValues: {
-      friendId: friend.id,
+      user: '',
     },
+    transformValues: ({ user }) => ({
+      userId: +user,
+    }),
   });
+
+  const { data: users, ...usersResponse } = useSelectNotFriendsUsersQuery();
+
+  const user = users?.find((user) => user.id === +form.values.user);
 
   const [addFriend, { isLoading }] = useAddFriendMutation();
 
@@ -35,33 +40,29 @@ export default function AddFriendModal({ data: friend }: Props) {
       isLoading={isLoading}
       text={t('actions.add') + ' ' + t('modals.friend')}
     >
-      <TextInput
-        label={t('columns.sender')}
-        icon={<CustomAvatar {...friend.senderUser} />}
+      <Select
+        label={t('columns.user')}
+        placeholder={t('columns.user')}
+        icon={user && <CustomAvatar {...user} />}
         iconWidth={48}
-        value={friend.senderUser.nick}
-        disabled
-      />
-      <TextInput
-        label={t('columns.receiver')}
-        icon={<CustomAvatar {...friend.receiverUser} />}
-        iconWidth={48}
-        value={friend.receiverUser.nick}
-        disabled
+        rightSection={<RefetchAction {...usersResponse} />}
+        itemComponent={UsersItem}
+        data={selectUsers(users)}
+        limit={20}
+        searchable
+        required
+        disabled={usersResponse.isFetching}
+        {...form.getInputProps('user')}
       />
     </CustomForm>
   );
 }
 
-export const addFriendAction = {
-  open: (friend: Friend) =>
+export const addFriendButton = {
+  label: 'add',
+  open: () =>
     openModal({
       title: t('actions.add') + ' ' + t('modals.friend'),
-      children: <AddFriendModal data={friend} />,
+      children: <AddFriendModal />,
     }),
-  disable: (friend: Friend) => {
-    const user = getCurrentUser()!;
-    return friend.senderUser.id === user.id || friend.type;
-  },
-  color: Color.GREEN,
 };

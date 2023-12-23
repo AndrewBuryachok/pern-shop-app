@@ -4,21 +4,21 @@ import { TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
-import { Friend } from './friend.model';
+import { User } from '../users/user.model';
 import { useRemoveFriendMutation } from './friends.api';
 import { UpdateFriendDto } from './friend.dto';
 import CustomForm from '../../common/components/CustomForm';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import { Color } from '../../common/constants';
 
-type Props = IModal<Friend>;
+type Props = IModal<User>;
 
-export default function RemoveFriendModal({ data: friend }: Props) {
+export default function RemoveFriendModal({ data: user }: Props) {
   const [t] = useTranslation();
 
   const form = useForm({
     initialValues: {
-      friendId: friend.id,
+      userId: user.id,
     },
   });
 
@@ -35,17 +35,10 @@ export default function RemoveFriendModal({ data: friend }: Props) {
       text={t('actions.remove') + ' ' + t('modals.friend')}
     >
       <TextInput
-        label={t('columns.sender')}
-        icon={<CustomAvatar {...friend.senderUser} />}
+        label={t('columns.user')}
+        icon={<CustomAvatar {...user} />}
         iconWidth={48}
-        value={friend.senderUser.nick}
-        disabled
-      />
-      <TextInput
-        label={t('columns.receiver')}
-        icon={<CustomAvatar {...friend.receiverUser} />}
-        iconWidth={48}
-        value={friend.receiverUser.nick}
+        value={user.nick}
         disabled
       />
     </CustomForm>
@@ -53,10 +46,10 @@ export default function RemoveFriendModal({ data: friend }: Props) {
 }
 
 export const removeFriendAction = {
-  open: (friend: Friend) =>
+  open: (user: User) =>
     openModal({
       title: t('actions.remove') + ' ' + t('modals.friend'),
-      children: <RemoveFriendModal data={friend} />,
+      children: <RemoveFriendModal data={user} />,
     }),
   disable: () => false,
   color: Color.RED,

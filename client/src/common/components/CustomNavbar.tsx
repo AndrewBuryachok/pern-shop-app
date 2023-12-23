@@ -85,6 +85,7 @@ export default function CustomNavbar(props: Props) {
     {
       route: 'friends',
       icon: IconFriends,
+      my: true,
     },
     {
       route: 'ratings',

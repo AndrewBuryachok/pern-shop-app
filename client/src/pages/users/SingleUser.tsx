@@ -33,11 +33,6 @@ export default function SingleUser() {
       <Skeleton h={40} w={96} />
       <Chip disabled>{t('components.friend')}</Chip>
       <CustomRating />
-      <Group spacing={8}>
-        {[...Array(3).keys()].map((key) => (
-          <Skeleton key={key} h={32} w={64} />
-        ))}
-      </Group>
       <SimpleGrid
         cols={5}
         spacing={8}

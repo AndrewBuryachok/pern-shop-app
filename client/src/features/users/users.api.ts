@@ -10,19 +10,19 @@ export const usersApi = emptyApi.injectEndpoints({
       query: (req) => ({
         url: `/users?${getQuery(req)}`,
       }),
-      providesTags: ['User', 'City'],
+      providesTags: ['User', 'City', 'Friend'],
     }),
     getMyUsers: build.query<IResponse<User>, IRequest>({
       query: (req) => ({
         url: `/users/my?${getQuery(req)}`,
       }),
-      providesTags: ['Auth', 'User', 'City'],
+      providesTags: ['Auth', 'User', 'City', 'Friend'],
     }),
     getAllUsers: build.query<IResponse<User>, IRequest>({
       query: (req) => ({
         url: `/users/all?${getQuery(req)}`,
       }),
-      providesTags: ['Auth', 'User', 'City'],
+      providesTags: ['Auth', 'User', 'City', 'Friend'],
     }),
     selectAllUsers: build.query<SmUser[], void>({
       query: () => ({
@@ -52,7 +52,7 @@ export const usersApi = emptyApi.injectEndpoints({
       query: (userId) => ({
         url: `/users/${userId}`,
       }),
-      providesTags: ['User', 'City'],
+      providesTags: ['User', 'City', 'Friend'],
     }),
     editUserPassword: build.mutation<void, EditUserPasswordDto>({
       query: ({ userId, ...dto }) => ({

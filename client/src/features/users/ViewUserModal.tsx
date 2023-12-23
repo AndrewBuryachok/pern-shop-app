@@ -10,8 +10,8 @@ import { CardsItem } from '../../common/components/CardsItem';
 import {
   parsePlace,
   parseTime,
-  viewCards,
   viewRoles,
+  viewUsers,
 } from '../../common/utils';
 import { Color } from '../../common/constants';
 
@@ -43,10 +43,10 @@ export default function ViewUserModal({ data: user }: Props) {
         disabled
       />
       <Select
-        label={t('columns.cards')}
-        placeholder={`${t('components.total')}: ${user.cards.length}`}
+        label={t('columns.friends')}
+        placeholder={`${t('components.total')}: ${user.friends.length}`}
         itemComponent={CardsItem}
-        data={viewCards(user.cards, user)}
+        data={viewUsers(user.friends)}
         limit={20}
         searchable
       />

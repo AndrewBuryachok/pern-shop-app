@@ -1,6 +1,5 @@
 import { t } from 'i18next';
 import { SmUser } from '../../features/users/user.model';
-import { SmCard } from '../../features/cards/card.model';
 import { Container } from '../../features/containers/container.model';
 import { SmThing } from '../../features/things/thing.model';
 import { State } from '../../features/states/state.model';
@@ -23,17 +22,6 @@ export const viewUsers = (users: SmUser[]) =>
     nick: user.nick,
     value: `${user.id}`,
     label: user.nick,
-    disabled: true,
-  }));
-
-export const viewCards = (cards: SmCard[], user: SmUser) =>
-  cards.map((card) => ({
-    ...card,
-    userid: user.id,
-    nick: user.nick,
-    color: `${card.color}`,
-    value: `${card.id}`,
-    label: card.name,
     disabled: true,
   }));
 

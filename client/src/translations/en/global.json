@@ -135,7 +135,7 @@
     "roles": "Roles",
     "owner": "Owner",
     "city": "City",
-    "cards": "Cards",
+    "friends": "Friends",
     "created": "Created",
     "after": "After",
     "before": "Before",
@@ -191,7 +191,6 @@
     "up": "Up",
     "down": "Down",
     "my": "My",
-    "friends": "Friends",
     "mode": "Mode",
     "category": "Category",
     "nick": "Nick",
@@ -255,8 +254,6 @@
   "constants": {
     "increase": "Increase",
     "decrease": "Decrease",
-    "confirmed": "Confirmed",
-    "unconfirmed": "Unconfirmed",
     "roles": {
       "admin": "Admin",
       "banker": "Banker",

@@ -1,5 +1,4 @@
 import { MdCity } from '../cities/city.model';
-import { SmCard } from '../cards/card.model';
 
 export interface SmUser {
   id: number;
@@ -13,7 +12,7 @@ export interface MdUser extends SmUser {
 export interface User extends MdUser {
   createdAt: Date;
   city?: MdCity;
-  cards: SmCard[];
+  friends: SmUser[];
 }
 
 export interface ExtUser extends User {

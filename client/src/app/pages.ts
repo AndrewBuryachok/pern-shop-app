@@ -246,11 +246,7 @@ export const pages = [
   {
     path: 'friends',
     element: FriendsPage,
-    nested: [
-      { index: true },
-      { path: 'my' },
-      { path: 'all', role: Role.ADMIN },
-    ],
+    nested: [{ path: 'my' }, { path: 'received' }],
   },
   {
     path: 'ratings',

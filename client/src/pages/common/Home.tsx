@@ -158,6 +158,7 @@ export default function Home() {
     {
       title: 'friends',
       icon: IconFriends,
+      my: true,
     },
     {
       title: 'ratings',

@@ -1,15 +1,12 @@
 import { useState } from 'react';
 import { useLocation, useSearchParams } from 'react-router-dom';
 import { ISearch } from '../../common/interfaces';
-import { Mode } from '../../common/enums';
 import {
-  useGetAllFriendsQuery,
-  useGetMainFriendsQuery,
   useGetMyFriendsQuery,
+  useGetReceivedFriendsQuery,
 } from '../../features/friends/friends.api';
-import FriendsTable from '../../features/friends/FriendsTable';
-import { createFriendButton } from '../../features/friends/CreateFriendModal';
-import { addFriendAction } from '../../features/friends/AddFriendModal';
+import UsersTable from '../../features/users/UsersTable';
+import { addFriendButton } from '../../features/friends/AddFriendModal';
 import { removeFriendAction } from '../../features/friends/RemoveFriendModal';
 
 export default function MyFriends() {
@@ -22,25 +19,24 @@ export default function MyFriends() {
   const [search, setSearch] = useState<ISearch>({
     id: +(searchParams.get('id') || 0) || null,
     user: searchParams.get('user'),
-    modes: [Mode.SENDER, Mode.RECEIVER],
-    mode: searchParams.get('mode') as Mode,
+    roles: searchParams.get('roles')?.split(',') || [],
+    city: searchParams.get('city'),
     type: searchParams.get('type'),
     minDate: searchParams.get('minDate'),
     maxDate: searchParams.get('maxDate'),
   });
 
   const response = {
-    main: useGetMainFriendsQuery,
     my: useGetMyFriendsQuery,
-    all: useGetAllFriendsQuery,
+    received: useGetReceivedFriendsQuery,
   }[tab]!({ page, search });
 
-  const button = { my: createFriendButton }[tab];
+  const button = { my: addFriendButton }[tab];
 
-  const actions = { my: [addFriendAction, removeFriendAction] }[tab];
+  const actions = { my: [removeFriendAction] }[tab];
 
   return (
-    <FriendsTable
+    <UsersTable
       {...response}
       page={page}
       setPage={setPage}
