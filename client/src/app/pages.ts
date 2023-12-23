@@ -27,6 +27,7 @@ const SalesPage = lazy(() => import('../pages/sales/SalesPage'));
 const BidsPage = lazy(() => import('../pages/bids/BidsPage'));
 const PollsPage = lazy(() => import('../pages/polls/PollsPage'));
 const FriendsPage = lazy(() => import('../pages/friends/FriendsPage'));
+const FollowingsPage = lazy(() => import('../pages/followings/FollowingsPage'));
 const RatingsPage = lazy(() => import('../pages/ratings/RatingsPage'));
 const TasksPage = lazy(() => import('../pages/tasks/TasksPage'));
 const PlaintsPage = lazy(() => import('../pages/plaints/PlaintsPage'));
@@ -249,6 +250,11 @@ export const pages = [
     nested: [{ path: 'my' }, { path: 'received' }],
   },
   {
+    path: 'followings',
+    element: FollowingsPage,
+    nested: [{ path: 'my' }, { path: 'received' }],
+  },
+  {
     path: 'ratings',
     element: RatingsPage,
     nested: [
@@ -285,6 +291,7 @@ export const pages = [
       { index: true },
       { path: 'my' },
       { path: 'liked' },
+      { path: 'followed' },
       { path: 'all', role: Role.ADMIN },
     ],
   },

@@ -29,6 +29,12 @@ export const articlesApi = emptyApi.injectEndpoints({
       }),
       providesTags: ['Auth', 'Article', 'Like'],
     }),
+    getFollowedArticles: build.query<IResponse<Article>, IRequest>({
+      query: (req) => ({
+        url: `/articles/followed?${getQuery(req)}`,
+      }),
+      providesTags: ['Auth', 'Article', 'Like', 'Following'],
+    }),
     getAllArticles: build.query<IResponse<Article>, IRequest>({
       query: (req) => ({
         url: `/articles/all?${getQuery(req)}`,
@@ -72,6 +78,7 @@ export const {
   useGetMainArticlesQuery,
   useGetMyArticlesQuery,
   useGetLikedArticlesQuery,
+  useGetFollowedArticlesQuery,
   useGetAllArticlesQuery,
   useCreateArticleMutation,
   useEditArticleMutation,

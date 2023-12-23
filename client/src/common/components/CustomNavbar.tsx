@@ -11,6 +11,7 @@ import {
   IconContainer,
   IconFriends,
   IconHome,
+  IconMail,
   IconMap,
   IconReceipt,
   IconScale,
@@ -85,6 +86,11 @@ export default function CustomNavbar(props: Props) {
     {
       route: 'friends',
       icon: IconFriends,
+      my: true,
+    },
+    {
+      route: 'followings',
+      icon: IconMail,
       my: true,
     },
     {

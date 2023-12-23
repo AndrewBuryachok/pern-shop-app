@@ -59,6 +59,7 @@
     "leases": "Leases",
     "polls": "Polls",
     "friends": "Friends",
+    "followings": "Followings",
     "ratings": "Ratings",
     "tasks": "Tasks",
     "plaints": "Plaints",
@@ -83,7 +84,8 @@
     "selled": "Selled",
     "taken": "Taken",
     "voted": "Voted",
-    "liked": "Liked"
+    "liked": "Liked",
+    "followed": "Followed"
   },
   "actions": {
     "create": "Create",
@@ -236,6 +238,7 @@
     "poll": "Poll",
     "friend": "Friend",
     "friends": "Friends",
+    "following": "Following",
     "rating": "Rating",
     "task": "Task",
     "plaint": "Plaint",

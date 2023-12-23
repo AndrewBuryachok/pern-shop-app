@@ -29,6 +29,7 @@ import {
   IconFriends,
   IconGardenCart,
   IconGavel,
+  IconMail,
   IconMap,
   IconPaperBag,
   IconReportMoney,
@@ -158,6 +159,11 @@ export default function Home() {
     {
       title: 'friends',
       icon: IconFriends,
+      my: true,
+    },
+    {
+      title: 'followings',
+      icon: IconMail,
       my: true,
     },
     {

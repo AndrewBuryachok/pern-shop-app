@@ -30,6 +30,7 @@ export const emptyApi = createApi({
     'Poll',
     'Vote',
     'Friend',
+    'Following',
     'Rating',
     'Task',
     'Plaint',

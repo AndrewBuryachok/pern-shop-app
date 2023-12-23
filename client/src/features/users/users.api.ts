@@ -42,6 +42,12 @@ export const usersApi = emptyApi.injectEndpoints({
       }),
       providesTags: ['Auth', 'User', 'Friend'],
     }),
+    selectNotFollowingsUsers: build.query<SmUser[], void>({
+      query: () => ({
+        url: '/users/not-followings/select',
+      }),
+      providesTags: ['Auth', 'User', 'Following'],
+    }),
     selectNotRatedUsers: build.query<SmUser[], void>({
       query: () => ({
         url: '/users/not-rated/select',
@@ -87,6 +93,7 @@ export const {
   useSelectAllUsersQuery,
   useSelectNotCitizensUsersQuery,
   useSelectNotFriendsUsersQuery,
+  useSelectNotFollowingsUsersQuery,
   useSelectNotRatedUsersQuery,
   useGetSingleUserQuery,
   useEditUserPasswordMutation,

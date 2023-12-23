@@ -3,6 +3,7 @@ import { useLocation, useSearchParams } from 'react-router-dom';
 import { ISearch } from '../../common/interfaces';
 import {
   useGetAllArticlesQuery,
+  useGetFollowedArticlesQuery,
   useGetLikedArticlesQuery,
   useGetMainArticlesQuery,
   useGetMyArticlesQuery,
@@ -30,6 +31,7 @@ export default function MyArticles() {
     main: useGetMainArticlesQuery,
     my: useGetMyArticlesQuery,
     liked: useGetLikedArticlesQuery,
+    followed: useGetFollowedArticlesQuery,
     all: useGetAllArticlesQuery,
   }[tab]!({ page, search });
 
