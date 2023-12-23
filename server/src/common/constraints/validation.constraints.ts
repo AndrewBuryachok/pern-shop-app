@@ -4,6 +4,7 @@ import {
   ValidatorConstraintInterface,
 } from 'class-validator';
 import { UsersService } from '../../features/users/users.service';
+import { ArticlesService } from '../../features/articles/articles.service';
 import { CardsService } from '../../features/cards/cards.service';
 import { InvoicesService } from '../../features/invoices/invoices.service';
 import { CitiesService } from '../../features/cities/cities.service';
@@ -21,11 +22,10 @@ import { TradesService } from '../../features/trades/trades.service';
 import { SalesService } from '../../features/sales/sales.service';
 import { OrdersService } from '../../features/orders/orders.service';
 import { DeliveriesService } from '../../features/deliveries/deliveries.service';
-import { PollsService } from '../../features/polls/polls.service';
-import { RatingsService } from '../../features/ratings/ratings.service';
 import { TasksService } from '../../features/tasks/tasks.service';
 import { PlaintsService } from '../../features/plaints/plaints.service';
-import { ArticlesService } from '../../features/articles/articles.service';
+import { PollsService } from '../../features/polls/polls.service';
+import { RatingsService } from '../../features/ratings/ratings.service';
 
 @Injectable()
 @ValidatorConstraint({ name: 'isUserExists', async: true })
@@ -43,6 +43,25 @@ export class IsUserExists implements ValidatorConstraintInterface {
 
   defaultMessage(): string {
     return 'Unknown user';
+  }
+}
+
+@Injectable()
+@ValidatorConstraint({ name: 'isArticleExists', async: true })
+export class IsArticleExists implements ValidatorConstraintInterface {
+  constructor(private articlesService: ArticlesService) {}
+
+  async validate(value: number): Promise<boolean> {
+    try {
+      await this.articlesService.checkArticleExists(value);
+    } catch (error) {
+      return false;
+    }
+    return true;
+  }
+
+  defaultMessage(): string {
+    return 'Unknown article';
   }
 }
 
@@ -370,44 +389,6 @@ export class IsDeliveryExists implements ValidatorConstraintInterface {
 }
 
 @Injectable()
-@ValidatorConstraint({ name: 'isPollExists', async: true })
-export class IsPollExists implements ValidatorConstraintInterface {
-  constructor(private pollsService: PollsService) {}
-
-  async validate(value: number): Promise<boolean> {
-    try {
-      await this.pollsService.checkPollExists(value);
-    } catch (error) {
-      return false;
-    }
-    return true;
-  }
-
-  defaultMessage(): string {
-    return 'Unknown poll';
-  }
-}
-
-@Injectable()
-@ValidatorConstraint({ name: 'isRatingExists', async: true })
-export class IsRatingExists implements ValidatorConstraintInterface {
-  constructor(private ratingsService: RatingsService) {}
-
-  async validate(value: number): Promise<boolean> {
-    try {
-      await this.ratingsService.checkRatingExists(value);
-    } catch (error) {
-      return false;
-    }
-    return true;
-  }
-
-  defaultMessage(): string {
-    return 'Unknown rating';
-  }
-}
-
-@Injectable()
 @ValidatorConstraint({ name: 'isTaskExists', async: true })
 export class IsTaskExists implements ValidatorConstraintInterface {
   constructor(private tasksService: TasksService) {}
@@ -446,13 +427,13 @@ export class IsPlaintExists implements ValidatorConstraintInterface {
 }
 
 @Injectable()
-@ValidatorConstraint({ name: 'isArticleExists', async: true })
-export class IsArticleExists implements ValidatorConstraintInterface {
-  constructor(private articlesService: ArticlesService) {}
+@ValidatorConstraint({ name: 'isPollExists', async: true })
+export class IsPollExists implements ValidatorConstraintInterface {
+  constructor(private pollsService: PollsService) {}
 
   async validate(value: number): Promise<boolean> {
     try {
-      await this.articlesService.checkArticleExists(value);
+      await this.pollsService.checkPollExists(value);
     } catch (error) {
       return false;
     }
@@ -460,6 +441,25 @@ export class IsArticleExists implements ValidatorConstraintInterface {
   }
 
   defaultMessage(): string {
-    return 'Unknown article';
+    return 'Unknown poll';
+  }
+}
+
+@Injectable()
+@ValidatorConstraint({ name: 'isRatingExists', async: true })
+export class IsRatingExists implements ValidatorConstraintInterface {
+  constructor(private ratingsService: RatingsService) {}
+
+  async validate(value: number): Promise<boolean> {
+    try {
+      await this.ratingsService.checkRatingExists(value);
+    } catch (error) {
+      return false;
+    }
+    return true;
+  }
+
+  defaultMessage(): string {
+    return 'Unknown rating';
   }
 }

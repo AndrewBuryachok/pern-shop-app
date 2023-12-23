@@ -1,6 +1,8 @@
 import { faker } from '@faker-js/faker';
 import { Factory, Seeder } from 'typeorm-seeding';
 import { User } from '../../features/users/user.entity';
+import { Article } from '../../features/articles/article.entity';
+import { Like } from '../../features/articles/like.entity';
 import { Card } from '../../features/cards/card.entity';
 import { Exchange } from '../../features/exchanges/exchange.entity';
 import { Payment } from '../../features/payments/payment.entity';
@@ -26,13 +28,11 @@ import { Delivery } from '../../features/deliveries/delivery.entity';
 import { Trade } from '../../features/trades/trade.entity';
 import { Sale } from '../../features/sales/sale.entity';
 import { Bid } from '../../features/bids/bid.entity';
+import { Task } from '../../features/tasks/task.entity';
+import { Plaint } from '../../features/plaints/plaint.entity';
 import { Poll } from '../../features/polls/poll.entity';
 import { Vote } from '../../features/polls/vote.entity';
 import { Rating } from '../../features/ratings/rating.entity';
-import { Task } from '../../features/tasks/task.entity';
-import { Plaint } from '../../features/plaints/plaint.entity';
-import { Article } from '../../features/articles/article.entity';
-import { Like } from '../../features/articles/like.entity';
 import { Status } from '../../features/transportations/status.enum';
 import { Kind } from '../../features/leases/kind.enum';
 import { hashData } from '../../common/utils';
@@ -45,16 +45,27 @@ export default class AppSeed implements Seeder {
         return user;
       })
       .createMany(20);
-    let citizens = users.sort(() => 0.5 - Math.random());
-    const cities = await factory(City)()
-      .map(async (city) => {
-        const count = Math.floor(Math.random() * 2) + 1;
-        city.users = citizens.slice(0, count);
-        city.user = city.users[0];
-        citizens = citizens.slice(count);
-        return city;
+    const articles = await factory(Article)()
+      .map(async (article) => {
+        article.user = faker.helpers.arrayElement(users);
+        return article;
       })
-      .createMany(10);
+      .createMany(20);
+    const allLikes = articles.reduce(
+      (prev, article) => [...prev, ...users.map((user) => ({ article, user }))],
+      [],
+    );
+    const randomLikes = [...Array(allLikes.length).keys()];
+    randomLikes.sort(() => Math.random() - 0.5);
+    let likeId = 0;
+    const likes = await factory(Like)()
+      .map(async (like) => {
+        like.article = allLikes[randomLikes[likeId]].article;
+        like.user = allLikes[randomLikes[likeId]].user;
+        likeId++;
+        return like;
+      })
+      .createMany(80);
     const cards = await factory(Card)()
       .map(async (card) => {
         const count = Math.floor(Math.random() * 2) + 1;
@@ -113,6 +124,16 @@ export default class AppSeed implements Seeder {
         return invoice;
       })
       .makeMany(20);
+    let citizens = users.sort(() => 0.5 - Math.random());
+    const cities = await factory(City)()
+      .map(async (city) => {
+        const count = Math.floor(Math.random() * 2) + 1;
+        city.users = citizens.slice(0, count);
+        city.user = city.users[0];
+        citizens = citizens.slice(count);
+        return city;
+      })
+      .createMany(10);
     const shops = await factory(Shop)()
       .map(async (shop) => {
         shop.user = faker.helpers.arrayElement(users);
@@ -366,6 +387,29 @@ export default class AppSeed implements Seeder {
         return bid;
       })
       .makeMany(20);
+    const tasks = await factory(Task)()
+      .map(async (task) => {
+        task.city = faker.helpers.arrayElement(cities);
+        task.customerUser = faker.helpers.arrayElement(users);
+        if (task.status !== Status.CREATED) {
+          task.executorUser = faker.helpers.arrayElement(users);
+        }
+        if (task.status === Status.COMPLETED) {
+          task.completedAt = new Date();
+        }
+        return task;
+      })
+      .createMany(40);
+    const plaints = await factory(Plaint)()
+      .map(async (plaint) => {
+        plaint.senderUser = faker.helpers.arrayElement(users);
+        plaint.receiverUser = faker.helpers.arrayElement(users);
+        if (plaint.completedAt) {
+          plaint.executorUser = faker.helpers.arrayElement(users);
+        }
+        return plaint;
+      })
+      .createMany(20);
     const polls = await factory(Poll)()
       .map(async (poll) => {
         poll.user = faker.helpers.arrayElement(users);
@@ -403,50 +447,6 @@ export default class AppSeed implements Seeder {
         rating.receiverUser = allRatings[randomRatings[ratingId]].receiverUser;
         ratingId++;
         return rating;
-      })
-      .createMany(80);
-    const tasks = await factory(Task)()
-      .map(async (task) => {
-        task.city = faker.helpers.arrayElement(cities);
-        task.customerUser = faker.helpers.arrayElement(users);
-        if (task.status !== Status.CREATED) {
-          task.executorUser = faker.helpers.arrayElement(users);
-        }
-        if (task.status === Status.COMPLETED) {
-          task.completedAt = new Date();
-        }
-        return task;
-      })
-      .createMany(40);
-    const plaints = await factory(Plaint)()
-      .map(async (plaint) => {
-        plaint.senderUser = faker.helpers.arrayElement(users);
-        plaint.receiverUser = faker.helpers.arrayElement(users);
-        if (plaint.completedAt) {
-          plaint.executorUser = faker.helpers.arrayElement(users);
-        }
-        return plaint;
-      })
-      .createMany(20);
-    const articles = await factory(Article)()
-      .map(async (article) => {
-        article.user = faker.helpers.arrayElement(users);
-        return article;
-      })
-      .createMany(20);
-    const allLikes = articles.reduce(
-      (prev, article) => [...prev, ...users.map((user) => ({ article, user }))],
-      [],
-    );
-    const randomLikes = [...Array(allLikes.length).keys()];
-    randomLikes.sort(() => Math.random() - 0.5);
-    let likeId = 0;
-    const likes = await factory(Like)()
-      .map(async (like) => {
-        like.article = allLikes[randomLikes[likeId]].article;
-        like.user = allLikes[randomLikes[likeId]].user;
-        likeId++;
-        return like;
       })
       .createMany(80);
     let id = 0;

@@ -21,8 +21,6 @@ export enum Notification {
   CREATED_SALE = 'Created sale',
   RATED_SALE = 'Rated sale',
   CREATED_BID = 'Created bid',
-  CREATED_RATING = 'Created rating',
-  EDITED_RATING = 'Edited rating',
   TAKEN_TASK = 'Taken task',
   UNTAKEN_TASK = 'Untaken task',
   EXECUTED_TASK = 'Executed task',
@@ -30,4 +28,6 @@ export enum Notification {
   CREATED_PLAINT = 'Created plaint',
   EXECUTED_PLAINT = 'Executed plaint',
   COMPLETED_PLAINT = 'Completed plaint',
+  CREATED_RATING = 'Created rating',
+  EDITED_RATING = 'Edited rating',
 }

@@ -19,6 +19,7 @@ describe('With Auth', () => {
   let banker: Tokens;
   let manager: Tokens;
   let judge: Tokens;
+  let articlesId: number;
   let cardId: number;
   let invoicesId: number;
   let cityId: number;
@@ -36,11 +37,10 @@ describe('With Auth', () => {
   let saleId: number;
   let ordersId: number;
   let deliveriesId: number;
-  let pollsId: number;
-  let ratingId: number;
   let tasksId: number;
   let plaintsId: number;
-  let articlesId: number;
+  let pollsId: number;
+  let ratingId: number;
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -141,7 +141,7 @@ describe('With Auth', () => {
     });
   });
 
-  describe('Cities', () => {
+  describe('Users', () => {
     it('POST /cities', async () => {
       return request(app.getHttpServer())
         .post('/cities')
@@ -150,66 +150,6 @@ describe('With Auth', () => {
         .expect('');
     });
 
-    it('GET /cities', async () => {
-      return request(app.getHttpServer())
-        .get('/cities')
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
-    });
-
-    it('GET /cities/my', async () => {
-      return request(app.getHttpServer())
-        .get('/cities/my')
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0))
-        .then((res) => (cityId = res.body.result[0].id));
-    });
-
-    it('GET /cities/all', async () => {
-      return request(app.getHttpServer())
-        .get('/cities/all')
-        .set('Authorization', `Bearer ${admin.access}`)
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
-    });
-
-    it('GET /cities/all/select', async () => {
-      return request(app.getHttpServer())
-        .get('/cities/all/select')
-        .expect((res) => expect(res.body.length).toBeGreaterThan(0));
-    });
-
-    it('GET /cities/my/select', async () => {
-      return request(app.getHttpServer())
-        .get('/cities/my/select')
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect((res) => expect(res.body.length).toBeGreaterThan(0));
-    });
-
-    it('PATCH /cities/:cityId', async () => {
-      return request(app.getHttpServer())
-        .patch(`/cities/${cityId}`)
-        .set('Authorization', `Bearer ${user.access}`)
-        .send({ name: 'My City', image: '', description: '', x: 500, y: 500 })
-        .expect('');
-    });
-
-    it('POST /cities/:cityId/users', async () => {
-      return request(app.getHttpServer())
-        .post(`/cities/${cityId}/users`)
-        .set('Authorization', `Bearer ${user.access}`)
-        .send({ userId: admin.id })
-        .expect('');
-    });
-
-    it('DELETE /cities/:cityId/users', async () => {
-      return request(app.getHttpServer())
-        .delete(`/cities/${cityId}/users`)
-        .set('Authorization', `Bearer ${user.access}`)
-        .send({ userId: admin.id })
-        .expect('');
-    });
-  });
-
-  describe('Users', () => {
     it('GET /users', async () => {
       return request(app.getHttpServer())
         .get('/users')
@@ -284,6 +224,148 @@ describe('With Auth', () => {
         .delete(`/users/${user.id}/roles`)
         .set('Authorization', `Bearer ${admin.access}`)
         .send({ userId: user.id, role: 1 })
+        .expect('');
+    });
+  });
+
+  describe('Friends', () => {
+    it('POST /friends/:friendId', async () => {
+      return request(app.getHttpServer())
+        .post(`/friends/${user.id}`)
+        .set('Authorization', `Bearer ${user.access}`)
+        .expect('');
+    });
+
+    it('GET /friends/my', async () => {
+      return request(app.getHttpServer())
+        .get('/friends/my')
+        .set('Authorization', `Bearer ${user.access}`)
+        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
+    });
+
+    it('GET /friends/received', async () => {
+      return request(app.getHttpServer())
+        .get('/friends/received')
+        .set('Authorization', `Bearer ${user.access}`)
+        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
+    });
+
+    it('DELETE /friends/:friendId', async () => {
+      return request(app.getHttpServer())
+        .delete(`/friends/${user.id}`)
+        .set('Authorization', `Bearer ${user.access}`)
+        .expect('');
+    });
+  });
+
+  describe('Followings', () => {
+    it('POST /followings/:followingId', async () => {
+      return request(app.getHttpServer())
+        .post(`/followings/${user.id}`)
+        .set('Authorization', `Bearer ${user.access}`)
+        .expect('');
+    });
+
+    it('GET /followings/my', async () => {
+      return request(app.getHttpServer())
+        .get('/followings/my')
+        .set('Authorization', `Bearer ${user.access}`)
+        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
+    });
+
+    it('GET /followings/received', async () => {
+      return request(app.getHttpServer())
+        .get('/followings/received')
+        .set('Authorization', `Bearer ${user.access}`)
+        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
+    });
+
+    it('POST /articles', async () => {
+      return request(app.getHttpServer())
+        .post('/articles')
+        .set('Authorization', `Bearer ${user.access}`)
+        .send({ text: 'article text', image: '' })
+        .expect('');
+    });
+
+    it('GET /articles/followed', async () => {
+      return request(app.getHttpServer())
+        .get('/articles/followed')
+        .set('Authorization', `Bearer ${user.access}`)
+        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
+    });
+
+    it('DELETE /followings/:followingId', async () => {
+      return request(app.getHttpServer())
+        .delete(`/followings/${user.id}`)
+        .set('Authorization', `Bearer ${user.access}`)
+        .expect('');
+    });
+  });
+
+  describe('Articles', () => {
+    it('POST /articles', async () => {
+      return request(app.getHttpServer())
+        .post('/articles')
+        .set('Authorization', `Bearer ${user.access}`)
+        .send({ text: 'article text', image: '' })
+        .expect('');
+    });
+
+    it('GET /articles', async () => {
+      return request(app.getHttpServer())
+        .get('/articles')
+        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
+    });
+
+    it('GET /articles/my', async () => {
+      return request(app.getHttpServer())
+        .get('/articles/my')
+        .set('Authorization', `Bearer ${user.access}`)
+        .expect((res) => expect(res.body.count).toBeGreaterThan(0))
+        .then((res) => (articlesId = res.body.result.map((p) => p.id)));
+    });
+
+    it('POST /articles/:articleId/likes', async () => {
+      return request(app.getHttpServer())
+        .post(`/articles/${articlesId[0]}/likes`)
+        .set('Authorization', `Bearer ${user.access}`)
+        .expect('');
+    });
+
+    it('POST /articles/:articleId/likes', async () => {
+      return request(app.getHttpServer())
+        .post(`/articles/${articlesId[1]}/likes`)
+        .set('Authorization', `Bearer ${user.access}`)
+        .expect('');
+    });
+
+    it('GET /articles/liked', async () => {
+      return request(app.getHttpServer())
+        .get('/articles/liked')
+        .set('Authorization', `Bearer ${user.access}`)
+        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
+    });
+
+    it('GET /articles/all', async () => {
+      return request(app.getHttpServer())
+        .get('/articles/all')
+        .set('Authorization', `Bearer ${admin.access}`)
+        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
+    });
+
+    it('PATCH /articles/:articleId', async () => {
+      return request(app.getHttpServer())
+        .patch(`/articles/${articlesId[0]}`)
+        .set('Authorization', `Bearer ${user.access}`)
+        .send({ text: 'article text', image: '' })
+        .expect('');
+    });
+
+    it('DELETE /articles/:articleId', async () => {
+      return request(app.getHttpServer())
+        .delete(`/articles/${articlesId[1]}`)
+        .set('Authorization', `Bearer ${user.access}`)
         .expect('');
     });
   });
@@ -471,6 +553,66 @@ describe('With Auth', () => {
         .post(`/invoices/${invoicesId[1]}`)
         .set('Authorization', `Bearer ${user.access}`)
         .send({ cardId })
+        .expect('');
+    });
+  });
+
+  describe('Cities', () => {
+    it('GET /cities', async () => {
+      return request(app.getHttpServer())
+        .get('/cities')
+        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
+    });
+
+    it('GET /cities/my', async () => {
+      return request(app.getHttpServer())
+        .get('/cities/my')
+        .set('Authorization', `Bearer ${user.access}`)
+        .expect((res) => expect(res.body.count).toBeGreaterThan(0))
+        .then((res) => (cityId = res.body.result[0].id));
+    });
+
+    it('GET /cities/all', async () => {
+      return request(app.getHttpServer())
+        .get('/cities/all')
+        .set('Authorization', `Bearer ${admin.access}`)
+        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
+    });
+
+    it('GET /cities/all/select', async () => {
+      return request(app.getHttpServer())
+        .get('/cities/all/select')
+        .expect((res) => expect(res.body.length).toBeGreaterThan(0));
+    });
+
+    it('GET /cities/my/select', async () => {
+      return request(app.getHttpServer())
+        .get('/cities/my/select')
+        .set('Authorization', `Bearer ${user.access}`)
+        .expect((res) => expect(res.body.length).toBeGreaterThan(0));
+    });
+
+    it('PATCH /cities/:cityId', async () => {
+      return request(app.getHttpServer())
+        .patch(`/cities/${cityId}`)
+        .set('Authorization', `Bearer ${user.access}`)
+        .send({ name: 'My City', image: '', description: '', x: 500, y: 500 })
+        .expect('');
+    });
+
+    it('POST /cities/:cityId/users', async () => {
+      return request(app.getHttpServer())
+        .post(`/cities/${cityId}/users`)
+        .set('Authorization', `Bearer ${user.access}`)
+        .send({ userId: admin.id })
+        .expect('');
+    });
+
+    it('DELETE /cities/:cityId/users', async () => {
+      return request(app.getHttpServer())
+        .delete(`/cities/${cityId}/users`)
+        .set('Authorization', `Bearer ${user.access}`)
+        .send({ userId: admin.id })
         .expect('');
     });
   });
@@ -1505,204 +1647,6 @@ describe('With Auth', () => {
     });
   });
 
-  describe('Polls', () => {
-    it('POST /polls', async () => {
-      return request(app.getHttpServer())
-        .post('/polls')
-        .set('Authorization', `Bearer ${user.access}`)
-        .send({ title: 'poll title', text: 'poll text' })
-        .expect('');
-    });
-
-    it('POST /polls', async () => {
-      return request(app.getHttpServer())
-        .post('/polls')
-        .set('Authorization', `Bearer ${user.access}`)
-        .send({ title: 'poll title', text: 'poll text' })
-        .expect('');
-    });
-
-    it('GET /polls', async () => {
-      return request(app.getHttpServer())
-        .get('/polls')
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
-    });
-
-    it('GET /polls/my', async () => {
-      return request(app.getHttpServer())
-        .get('/polls/my')
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0))
-        .then((res) => (pollsId = res.body.result.map((p) => p.id)));
-    });
-
-    it('POST /polls/:pollId/votes', async () => {
-      return request(app.getHttpServer())
-        .post(`/polls/${pollsId[0]}/votes`)
-        .set('Authorization', `Bearer ${user.access}`)
-        .send({ type: true })
-        .expect('');
-    });
-
-    it('POST /polls/:pollId/votes', async () => {
-      return request(app.getHttpServer())
-        .post(`/polls/${pollsId[1]}/votes`)
-        .set('Authorization', `Bearer ${user.access}`)
-        .send({ type: false })
-        .expect('');
-    });
-
-    it('GET /polls/voted', async () => {
-      return request(app.getHttpServer())
-        .get('/polls/voted')
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
-    });
-
-    it('GET /polls/all', async () => {
-      return request(app.getHttpServer())
-        .get('/polls/all')
-        .set('Authorization', `Bearer ${admin.access}`)
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
-    });
-
-    it('DELETE /polls/:pollId', async () => {
-      return request(app.getHttpServer())
-        .delete(`/polls/${pollsId[1]}`)
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect('');
-    });
-
-    it('POST /polls/:pollId', async () => {
-      return request(app.getHttpServer())
-        .post(`/polls/${pollsId[0]}`)
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect('');
-    });
-  });
-
-  describe('Friends', () => {
-    it('POST /friends/:friendId', async () => {
-      return request(app.getHttpServer())
-        .post(`/friends/${user.id}`)
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect('');
-    });
-
-    it('GET /friends/my', async () => {
-      return request(app.getHttpServer())
-        .get('/friends/my')
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
-    });
-
-    it('GET /friends/received', async () => {
-      return request(app.getHttpServer())
-        .get('/friends/received')
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
-    });
-
-    it('DELETE /friends/:friendId', async () => {
-      return request(app.getHttpServer())
-        .delete(`/friends/${user.id}`)
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect('');
-    });
-  });
-
-  describe('Followings', () => {
-    it('POST /followings/:followingId', async () => {
-      return request(app.getHttpServer())
-        .post(`/followings/${user.id}`)
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect('');
-    });
-
-    it('GET /followings/my', async () => {
-      return request(app.getHttpServer())
-        .get('/followings/my')
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
-    });
-
-    it('GET /followings/received', async () => {
-      return request(app.getHttpServer())
-        .get('/followings/received')
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
-    });
-
-    it('POST /articles', async () => {
-      return request(app.getHttpServer())
-        .post('/articles')
-        .set('Authorization', `Bearer ${user.access}`)
-        .send({ text: 'article text', image: '' })
-        .expect('');
-    });
-
-    it('GET /articles/followed', async () => {
-      return request(app.getHttpServer())
-        .get('/articles/followed')
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
-    });
-
-    it('DELETE /followings/:followingId', async () => {
-      return request(app.getHttpServer())
-        .delete(`/followings/${user.id}`)
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect('');
-    });
-  });
-
-  describe('Ratings', () => {
-    it('POST /ratings', async () => {
-      return request(app.getHttpServer())
-        .post('/ratings')
-        .set('Authorization', `Bearer ${user.access}`)
-        .send({ userId: user.id, rate: 5 })
-        .expect('');
-    });
-
-    it('GET /ratings/my', async () => {
-      return request(app.getHttpServer())
-        .get('/ratings/my')
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0))
-        .then((res) => (ratingId = res.body.result[0].id));
-    });
-
-    it('GET /ratings/received', async () => {
-      return request(app.getHttpServer())
-        .get('/ratings/received')
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
-    });
-
-    it('GET /ratings/all', async () => {
-      return request(app.getHttpServer())
-        .get('/ratings/all')
-        .set('Authorization', `Bearer ${admin.access}`)
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
-    });
-
-    it('PATCH /ratings/:ratingId', async () => {
-      return request(app.getHttpServer())
-        .patch(`/ratings/${ratingId}`)
-        .set('Authorization', `Bearer ${user.access}`)
-        .send({ rate: 5 })
-        .expect('');
-    });
-
-    it('DELETE /ratings/:ratingId', async () => {
-      return request(app.getHttpServer())
-        .delete(`/ratings/${ratingId}`)
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect('');
-    });
-  });
-
   describe('Tasks', () => {
     it('POST /tasks', async () => {
       return request(app.getHttpServer())
@@ -1878,68 +1822,124 @@ describe('With Auth', () => {
     });
   });
 
-  describe('Articles', () => {
-    it('POST /articles', async () => {
+  describe('Polls', () => {
+    it('POST /polls', async () => {
       return request(app.getHttpServer())
-        .post('/articles')
+        .post('/polls')
         .set('Authorization', `Bearer ${user.access}`)
-        .send({ text: 'article text', image: '' })
+        .send({ title: 'poll title', text: 'poll text' })
         .expect('');
     });
 
-    it('GET /articles', async () => {
+    it('POST /polls', async () => {
       return request(app.getHttpServer())
-        .get('/articles')
+        .post('/polls')
+        .set('Authorization', `Bearer ${user.access}`)
+        .send({ title: 'poll title', text: 'poll text' })
+        .expect('');
+    });
+
+    it('GET /polls', async () => {
+      return request(app.getHttpServer())
+        .get('/polls')
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
 
-    it('GET /articles/my', async () => {
+    it('GET /polls/my', async () => {
       return request(app.getHttpServer())
-        .get('/articles/my')
+        .get('/polls/my')
         .set('Authorization', `Bearer ${user.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0))
-        .then((res) => (articlesId = res.body.result.map((p) => p.id)));
+        .then((res) => (pollsId = res.body.result.map((p) => p.id)));
     });
 
-    it('POST /articles/:articleId/likes', async () => {
+    it('POST /polls/:pollId/votes', async () => {
       return request(app.getHttpServer())
-        .post(`/articles/${articlesId[0]}/likes`)
+        .post(`/polls/${pollsId[0]}/votes`)
         .set('Authorization', `Bearer ${user.access}`)
+        .send({ type: true })
         .expect('');
     });
 
-    it('POST /articles/:articleId/likes', async () => {
+    it('POST /polls/:pollId/votes', async () => {
       return request(app.getHttpServer())
-        .post(`/articles/${articlesId[1]}/likes`)
+        .post(`/polls/${pollsId[1]}/votes`)
         .set('Authorization', `Bearer ${user.access}`)
+        .send({ type: false })
         .expect('');
     });
 
-    it('GET /articles/liked', async () => {
+    it('GET /polls/voted', async () => {
       return request(app.getHttpServer())
-        .get('/articles/liked')
+        .get('/polls/voted')
         .set('Authorization', `Bearer ${user.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
 
-    it('GET /articles/all', async () => {
+    it('GET /polls/all', async () => {
       return request(app.getHttpServer())
-        .get('/articles/all')
+        .get('/polls/all')
         .set('Authorization', `Bearer ${admin.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
 
-    it('PATCH /articles/:articleId', async () => {
+    it('DELETE /polls/:pollId', async () => {
       return request(app.getHttpServer())
-        .patch(`/articles/${articlesId[0]}`)
+        .delete(`/polls/${pollsId[1]}`)
         .set('Authorization', `Bearer ${user.access}`)
-        .send({ text: 'article text', image: '' })
         .expect('');
     });
 
-    it('DELETE /articles/:articleId', async () => {
+    it('POST /polls/:pollId', async () => {
       return request(app.getHttpServer())
-        .delete(`/articles/${articlesId[1]}`)
+        .post(`/polls/${pollsId[0]}`)
+        .set('Authorization', `Bearer ${user.access}`)
+        .expect('');
+    });
+  });
+
+  describe('Ratings', () => {
+    it('POST /ratings', async () => {
+      return request(app.getHttpServer())
+        .post('/ratings')
+        .set('Authorization', `Bearer ${user.access}`)
+        .send({ userId: user.id, rate: 5 })
+        .expect('');
+    });
+
+    it('GET /ratings/my', async () => {
+      return request(app.getHttpServer())
+        .get('/ratings/my')
+        .set('Authorization', `Bearer ${user.access}`)
+        .expect((res) => expect(res.body.count).toBeGreaterThan(0))
+        .then((res) => (ratingId = res.body.result[0].id));
+    });
+
+    it('GET /ratings/received', async () => {
+      return request(app.getHttpServer())
+        .get('/ratings/received')
+        .set('Authorization', `Bearer ${user.access}`)
+        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
+    });
+
+    it('GET /ratings/all', async () => {
+      return request(app.getHttpServer())
+        .get('/ratings/all')
+        .set('Authorization', `Bearer ${admin.access}`)
+        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
+    });
+
+    it('PATCH /ratings/:ratingId', async () => {
+      return request(app.getHttpServer())
+        .patch(`/ratings/${ratingId}`)
+        .set('Authorization', `Bearer ${user.access}`)
+        .send({ rate: 5 })
+        .expect('');
+    });
+
+    it('DELETE /ratings/:ratingId', async () => {
+      return request(app.getHttpServer())
+        .delete(`/ratings/${ratingId}`)
         .set('Authorization', `Bearer ${user.access}`)
         .expect('');
     });

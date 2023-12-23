@@ -3,6 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './features/auth/auth.module';
 import { UsersModule } from './features/users/users.module';
+import { ArticlesModule } from './features/articles/articles.module';
 import { CardsModule } from './features/cards/cards.module';
 import { ExchangesModule } from './features/exchanges/exchanges.module';
 import { PaymentsModule } from './features/payments/payments.module';
@@ -24,11 +25,10 @@ import { DeliveriesModule } from './features/deliveries/deliveries.module';
 import { TradesModule } from './features/trades/trades.module';
 import { SalesModule } from './features/sales/sales.module';
 import { BidsModule } from './features/bids/bids.module';
-import { PollsModule } from './features/polls/polls.module';
-import { RatingsModule } from './features/ratings/ratings.module';
 import { TasksModule } from './features/tasks/tasks.module';
 import { PlaintsModule } from './features/plaints/plaints.module';
-import { ArticlesModule } from './features/articles/articles.module';
+import { PollsModule } from './features/polls/polls.module';
+import { RatingsModule } from './features/ratings/ratings.module';
 
 @Module({
   imports: [
@@ -50,6 +50,7 @@ import { ArticlesModule } from './features/articles/articles.module';
     }),
     AuthModule,
     UsersModule,
+    ArticlesModule,
     CardsModule,
     ExchangesModule,
     PaymentsModule,
@@ -71,11 +72,10 @@ import { ArticlesModule } from './features/articles/articles.module';
     TradesModule,
     SalesModule,
     BidsModule,
-    PollsModule,
-    RatingsModule,
     TasksModule,
     PlaintsModule,
-    ArticlesModule,
+    PollsModule,
+    RatingsModule,
   ],
 })
 export class AppModule {}
