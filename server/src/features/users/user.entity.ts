@@ -53,6 +53,14 @@ export class User {
   })
   friends: User[];
 
+  @ManyToMany(() => User)
+  @JoinTable({
+    name: 'followings',
+    joinColumn: { name: 'sender_user_id' },
+    inverseJoinColumn: { name: 'receiver_user_id' },
+  })
+  followings: User[];
+
   @OneToMany(() => Shop, (shop) => shop.user)
   shops: Shop[];
 

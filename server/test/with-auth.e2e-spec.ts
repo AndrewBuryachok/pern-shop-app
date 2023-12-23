@@ -249,6 +249,20 @@ describe('With Auth', () => {
         .expect((res) => expect(res.body.length).toBeGreaterThan(0));
     });
 
+    it('GET /users/not-followings/select', async () => {
+      return request(app.getHttpServer())
+        .get('/users/not-followings/select')
+        .set('Authorization', `Bearer ${user.access}`)
+        .expect((res) => expect(res.body.length).toBeGreaterThan(0));
+    });
+
+    it('GET /users/not-rated/select', async () => {
+      return request(app.getHttpServer())
+        .get('/users/not-rated/select')
+        .set('Authorization', `Bearer ${user.access}`)
+        .expect((res) => expect(res.body.length).toBeGreaterThan(0));
+    });
+
     it('PATCH /users/:userId/password', async () => {
       return request(app.getHttpServer())
         .patch(`/users/${user.id}/password`)
@@ -1597,6 +1611,51 @@ describe('With Auth', () => {
     });
   });
 
+  describe('Followings', () => {
+    it('POST /followings/:followingId', async () => {
+      return request(app.getHttpServer())
+        .post(`/followings/${user.id}`)
+        .set('Authorization', `Bearer ${user.access}`)
+        .expect('');
+    });
+
+    it('GET /followings/my', async () => {
+      return request(app.getHttpServer())
+        .get('/followings/my')
+        .set('Authorization', `Bearer ${user.access}`)
+        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
+    });
+
+    it('GET /followings/received', async () => {
+      return request(app.getHttpServer())
+        .get('/followings/received')
+        .set('Authorization', `Bearer ${user.access}`)
+        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
+    });
+
+    it('POST /articles', async () => {
+      return request(app.getHttpServer())
+        .post('/articles')
+        .set('Authorization', `Bearer ${user.access}`)
+        .send({ text: 'article text', image: '' })
+        .expect('');
+    });
+
+    it('GET /articles/followed', async () => {
+      return request(app.getHttpServer())
+        .get('/articles/followed')
+        .set('Authorization', `Bearer ${user.access}`)
+        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
+    });
+
+    it('DELETE /followings/:followingId', async () => {
+      return request(app.getHttpServer())
+        .delete(`/followings/${user.id}`)
+        .set('Authorization', `Bearer ${user.access}`)
+        .expect('');
+    });
+  });
+
   describe('Ratings', () => {
     it('POST /ratings', async () => {
       return request(app.getHttpServer())
@@ -1820,14 +1879,6 @@ describe('With Auth', () => {
   });
 
   describe('Articles', () => {
-    it('POST /articles', async () => {
-      return request(app.getHttpServer())
-        .post('/articles')
-        .set('Authorization', `Bearer ${user.access}`)
-        .send({ text: 'article text', image: '' })
-        .expect('');
-    });
-
     it('POST /articles', async () => {
       return request(app.getHttpServer())
         .post('/articles')

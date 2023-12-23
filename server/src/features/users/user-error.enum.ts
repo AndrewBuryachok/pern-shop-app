@@ -4,6 +4,8 @@ export enum UserError {
   NOT_HAS_ROLE = '400: User has not role',
   ALREADY_HAS_FRIEND = '400: User already has friend',
   NOT_HAS_FRIEND = '400: User has not friend',
+  ALREADY_HAS_FOLLOWING = '400: User already has following',
+  NOT_HAS_FOLLOWING = '400: User has not following',
   CREATE_FAILED = '500: Failed to create user',
   ADD_TOKEN_FAILED = '500: Failed to add user token',
   REMOVE_TOKEN_FAILED = '500: Failed to remove user token',
@@ -12,4 +14,6 @@ export enum UserError {
   REMOVE_ROLE_FAILED = '500: Failed to remove user role',
   ADD_FRIEND_FAILED = '500: Failed to add user friend',
   REMOVE_FRIEND_FAILED = '500: Failed to remove user friend',
+  ADD_FOLLOWING_FAILED = '500: Failed to add user following',
+  REMOVE_FOLLOWING_FAILED = '500: Failed to remove user following',
 }

@@ -58,6 +58,11 @@ export class UsersController {
     return this.usersService.selectNotFriendsUsers(myId);
   }
 
+  @Get('not-followings/select')
+  selectNotFollowingsUsers(@MyId() myId: number): Promise<User[]> {
+    return this.usersService.selectNotFollowingsUsers(myId);
+  }
+
   @Get('not-rated/select')
   selectNotRatedUsers(@MyId() myId: number): Promise<User[]> {
     return this.usersService.selectNotRatedUsers(myId);

@@ -45,3 +45,7 @@ export class ExtUpdateUserRoleDto extends UpdateUserRoleDto {
 export class UpdateUserFriendDto extends UserIdDto {
   myId: number;
 }
+
+export class UpdateUserFollowingDto extends UserIdDto {
+  myId: number;
+}

@@ -43,6 +43,14 @@ export class ArticlesController {
     return this.articlesService.getLikedArticles(myId, req);
   }
 
+  @Get('followed')
+  getFollowedArticles(
+    @MyId() myId: number,
+    @Query() req: Request,
+  ): Promise<Response<Article>> {
+    return this.articlesService.getFollowedArticles(myId, req);
+  }
+
   @Roles(Role.ADMIN)
   @Get('all')
   getAllArticles(@Query() req: Request): Promise<Response<Article>> {
