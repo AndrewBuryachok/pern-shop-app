@@ -47,6 +47,7 @@ export class UpdateUserFriendDto {
   receiverUserId: number;
 }
 
-export class UpdateUserFollowingDto extends UserIdDto {
-  myId: number;
+export class UpdateUserFollowingDto {
+  senderUserId: number;
+  receiverUserId: number;
 }

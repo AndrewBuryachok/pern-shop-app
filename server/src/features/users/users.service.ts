@@ -239,23 +239,23 @@ export class UsersService {
   async addUserFollowing(dto: UpdateUserFollowingDto): Promise<void> {
     const user = await this.usersRepository.findOne({
       relations: ['followings'],
-      where: { id: dto.myId },
+      where: { id: dto.senderUserId },
     });
-    if (user.followings.find((friend) => friend.id === dto.userId)) {
+    if (user.followings.find((friend) => friend.id === dto.receiverUserId)) {
       throw new AppException(UserError.ALREADY_HAS_FRIEND);
     }
-    await this.addFollowing(user, dto.userId);
+    await this.addFollowing(user, dto.receiverUserId);
   }
 
   async removeUserFollowing(dto: UpdateUserFollowingDto): Promise<void> {
     const user = await this.usersRepository.findOne({
       relations: ['followings'],
-      where: { id: dto.myId },
+      where: { id: dto.senderUserId },
     });
-    if (!user.followings.find((friend) => friend.id === dto.userId)) {
+    if (!user.followings.find((friend) => friend.id === dto.receiverUserId)) {
       throw new AppException(UserError.NOT_HAS_FRIEND);
     }
-    await this.removeFollowing(user, dto.userId);
+    await this.removeFollowing(user, dto.receiverUserId);
   }
 
   async checkUserExists(id: number): Promise<void> {
