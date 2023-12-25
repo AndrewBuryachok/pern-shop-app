@@ -11,7 +11,6 @@ import {
 } from 'typeorm';
 import { Role } from './role.enum';
 import { City } from '../cities/city.entity';
-import { Shop } from '../shops/shop.entity';
 import { Card } from '../cards/card.entity';
 import { Rating } from '../ratings/rating.entity';
 
@@ -60,9 +59,6 @@ export class User {
     inverseJoinColumn: { name: 'receiver_user_id' },
   })
   followings: User[];
-
-  @OneToMany(() => Shop, (shop) => shop.user)
-  shops: Shop[];
 
   @OneToMany(() => Card, (card) => card.user)
   cards: Card[];

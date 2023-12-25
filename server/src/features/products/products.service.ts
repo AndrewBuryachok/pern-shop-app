@@ -12,7 +12,7 @@ import {
   ExtCreateProductDto,
   ExtEditProductDto,
 } from './product.dto';
-import { Request, Response, Stats } from '../../common/interfaces';
+import { Request, Response } from '../../common/interfaces';
 import { getDateMonthAgo, getDateWeekAgo } from '../../common/utils';
 import { AppException } from '../../common/exceptions';
 import { ProductError } from './product-error.enum';
@@ -31,20 +31,13 @@ export class ProductsService {
     private mqttService: MqttService,
   ) {}
 
-  async getProductsStats(): Promise<Stats> {
-    const current = await this.productsRepository
+  getProductsStats(): Promise<number> {
+    return this.productsRepository
       .createQueryBuilder('product')
-      .where('product.createdAt >= :currentMonth', {
-        currentMonth: getDateMonthAgo(1),
+      .where('product.createdAt >= :createdAt', {
+        createdAt: getDateMonthAgo(),
       })
       .getCount();
-    const previous = await this.productsRepository
-      .createQueryBuilder('product')
-      .where('product.createdAt >= :previousMonth', {
-        previousMonth: getDateMonthAgo(2),
-      })
-      .getCount();
-    return { current, previous: previous - current };
   }
 
   async getMainProducts(req: Request): Promise<Response<Product>> {

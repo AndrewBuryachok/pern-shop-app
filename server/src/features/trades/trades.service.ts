@@ -5,7 +5,7 @@ import { Trade } from './trade.entity';
 import { WaresService } from '../wares/wares.service';
 import { MqttService } from '../mqtt/mqtt.service';
 import { ExtCreateTradeDto, ExtRateTradeDto } from './trade.dto';
-import { Request, Response, Stats } from '../../common/interfaces';
+import { Request, Response } from '../../common/interfaces';
 import { getDateMonthAgo } from '../../common/utils';
 import { AppException } from '../../common/exceptions';
 import { TradeError } from './trade-error.enum';
@@ -20,20 +20,13 @@ export class TradesService {
     private mqttService: MqttService,
   ) {}
 
-  async getTradesStats(): Promise<Stats> {
-    const current = await this.tradesRepository
+  getTradesStats(): Promise<number> {
+    return this.tradesRepository
       .createQueryBuilder('trade')
-      .where('trade.createdAt >= :currentMonth', {
-        currentMonth: getDateMonthAgo(1),
+      .where('trade.createdAt >= :createdAt', {
+        createdAt: getDateMonthAgo(),
       })
       .getCount();
-    const previous = await this.tradesRepository
-      .createQueryBuilder('trade')
-      .where('trade.createdAt >= :previousMonth', {
-        previousMonth: getDateMonthAgo(2),
-      })
-      .getCount();
-    return { current, previous: previous - current };
   }
 
   async getMyTrades(myId: number, req: Request): Promise<Response<Trade>> {

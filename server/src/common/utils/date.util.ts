@@ -4,8 +4,8 @@ export const getDateWeekAgo = () => {
   return date;
 };
 
-export const getDateMonthAgo = (month: number) => {
+export const getDateMonthAgo = () => {
   const date = new Date();
-  date.setMonth(date.getMonth() - month);
+  date.setMonth(date.getMonth() - 1);
   return date;
 };

@@ -4,8 +4,7 @@ import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { Good } from './good.entity';
 import { ShopsService } from '../shops/shops.service';
 import { DeleteGoodDto, ExtCreateGoodDto, ExtEditGoodDto } from './good.dto';
-import { Request, Response, Stats } from '../../common/interfaces';
-import { getDateMonthAgo } from '../../common/utils';
+import { Request, Response } from '../../common/interfaces';
 import { AppException } from '../../common/exceptions';
 import { GoodError } from './good-error.enum';
 
@@ -16,22 +15,6 @@ export class GoodsService {
     private goodsRepository: Repository<Good>,
     private shopsService: ShopsService,
   ) {}
-
-  async getGoodsStats(): Promise<Stats> {
-    const current = await this.goodsRepository
-      .createQueryBuilder('good')
-      .where('good.createdAt >= :currentMonth', {
-        currentMonth: getDateMonthAgo(1),
-      })
-      .getCount();
-    const previous = await this.goodsRepository
-      .createQueryBuilder('good')
-      .where('good.createdAt >= :previousMonth', {
-        previousMonth: getDateMonthAgo(2),
-      })
-      .getCount();
-    return { current, previous: previous - current };
-  }
 
   async getMainGoods(req: Request): Promise<Response<Good>> {
     const [result, count] = await this.getGoodsQueryBuilder(
