@@ -1,22 +1,22 @@
 import { Controller, Delete, Get, Param, Post, Query } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { UsersService } from './users.service';
-import { User } from './user.entity';
-import { UserIdDto } from './user.dto';
+import { FriendsService } from './friends.service';
+import { User } from '../users/user.entity';
+import { UserIdDto } from '../users/user.dto';
 import { Request, Response } from '../../common/interfaces';
 import { MyId } from '../../common/decorators';
 
 @ApiTags('friends')
 @Controller('friends')
 export class FriendsController {
-  constructor(private usersService: UsersService) {}
+  constructor(private friendsService: FriendsService) {}
 
   @Get('my')
   getMyFriends(
     @MyId() myId: number,
     @Query() req: Request,
   ): Promise<Response<User>> {
-    return this.usersService.getMyFriends(myId, req);
+    return this.friendsService.getMyFriends(myId, req);
   }
 
   @Get('received')
@@ -24,19 +24,16 @@ export class FriendsController {
     @MyId() myId: number,
     @Query() req: Request,
   ): Promise<Response<User>> {
-    return this.usersService.getReceivedFriends(myId, req);
+    return this.friendsService.getReceivedFriends(myId, req);
   }
 
   @Post(':userId')
-  addUserFriend(@MyId() myId, @Param() { userId }: UserIdDto): Promise<void> {
-    return this.usersService.addUserFriend({ userId, myId });
+  addFriend(@MyId() myId, @Param() { userId }: UserIdDto): Promise<void> {
+    return this.friendsService.addFriend({ userId, myId });
   }
 
   @Delete(':userId')
-  removeUserFriend(
-    @MyId() myId,
-    @Param() { userId }: UserIdDto,
-  ): Promise<void> {
-    return this.usersService.removeUserFriend({ userId, myId });
+  removeFriend(@MyId() myId, @Param() { userId }: UserIdDto): Promise<void> {
+    return this.friendsService.removeFriend({ userId, myId });
   }
 }
