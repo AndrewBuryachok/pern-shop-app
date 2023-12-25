@@ -19,6 +19,14 @@ export class FriendsController {
     return this.friendsService.getMyFriends(myId, req);
   }
 
+  @Get('sent')
+  getSentFriends(
+    @MyId() myId: number,
+    @Query() req: Request,
+  ): Promise<Response<User>> {
+    return this.friendsService.getSentFriends(myId, req);
+  }
+
   @Get('received')
   getReceivedFriends(
     @MyId() myId: number,

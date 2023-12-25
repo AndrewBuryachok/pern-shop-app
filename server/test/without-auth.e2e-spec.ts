@@ -87,6 +87,10 @@ describe('Without Auth', () => {
       return request(app.getHttpServer()).get('/friends/my').expect(401);
     });
 
+    it('GET /friends/sent', async () => {
+      return request(app.getHttpServer()).get('/friends/sent').expect(401);
+    });
+
     it('GET /friends/received', async () => {
       return request(app.getHttpServer()).get('/friends/received').expect(401);
     });

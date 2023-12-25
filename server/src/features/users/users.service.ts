@@ -52,13 +52,22 @@ export class UsersService {
 
   async getMyFriends(myId: number, req: Request): Promise<Response<User>> {
     const [result, count] = await this.getUsersQueryBuilder(req)
+      .leftJoin('user.friends', 'friend')
+      .andWhere('friend.id = :myId', { myId })
+      .getManyAndCount();
+    await this.loadFriends(result);
+    return { result, count };
+  }
+
+  async getSentFriends(myId: number, req: Request): Promise<Response<User>> {
+    const [result, count] = await this.getUsersQueryBuilder(req)
       .leftJoinAndMapMany(
-        'user.friends',
-        'friends',
-        'friend',
-        'user.id = friend.receiver_user_id',
+        'user.invitations',
+        'invitations',
+        'invitation',
+        'user.id = invitation.receiverUserId',
       )
-      .andWhere('friend.sender_user_id = :myId', { myId })
+      .andWhere('invitation.senderUserId = :myId', { myId })
       .getManyAndCount();
     await this.loadFriends(result);
     return { result, count };
@@ -70,12 +79,12 @@ export class UsersService {
   ): Promise<Response<User>> {
     const [result, count] = await this.getUsersQueryBuilder(req)
       .leftJoinAndMapMany(
-        'user.friends',
-        'friends',
-        'friend',
-        'user.id = friend.sender_user_id',
+        'user.invitations',
+        'invitations',
+        'invitation',
+        'user.id = invitation.senderUserId',
       )
-      .andWhere('friend.receiver_user_id = :myId', { myId })
+      .andWhere('invitation.receiverUserId = :myId', { myId })
       .getManyAndCount();
     await this.loadFriends(result);
     return { result, count };
@@ -260,6 +269,20 @@ export class UsersService {
 
   async checkUserExists(id: number): Promise<void> {
     await this.usersRepository.findOneByOrFail({ id });
+  }
+
+  async checkNotFriends(
+    senderUserId: number,
+    receiverUserId: number,
+  ): Promise<User> {
+    const user = await this.usersRepository.findOne({
+      relations: ['friends'],
+      where: { id: senderUserId, friends: [{ id: receiverUserId }] },
+    });
+    if (user) {
+      throw new AppException(UserError.ALREADY_HAS_FRIEND);
+    }
+    return user;
   }
 
   findUserById(id: number): Promise<User> {

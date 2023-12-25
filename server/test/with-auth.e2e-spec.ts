@@ -236,9 +236,9 @@ describe('With Auth', () => {
         .expect('');
     });
 
-    it('GET /friends/my', async () => {
+    it('GET /friends/sent', async () => {
       return request(app.getHttpServer())
-        .get('/friends/my')
+        .get('/friends/sent')
         .set('Authorization', `Bearer ${user.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
@@ -246,6 +246,20 @@ describe('With Auth', () => {
     it('GET /friends/received', async () => {
       return request(app.getHttpServer())
         .get('/friends/received')
+        .set('Authorization', `Bearer ${user.access}`)
+        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
+    });
+
+    it('POST /friends/:friendId', async () => {
+      return request(app.getHttpServer())
+        .post(`/friends/${user.id}`)
+        .set('Authorization', `Bearer ${user.access}`)
+        .expect('');
+    });
+
+    it('GET /friends/my', async () => {
+      return request(app.getHttpServer())
+        .get('/friends/my')
         .set('Authorization', `Bearer ${user.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
