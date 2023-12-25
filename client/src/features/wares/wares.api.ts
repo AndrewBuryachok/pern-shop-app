@@ -1,12 +1,12 @@
 import { emptyApi } from '../../app/empty.api';
-import { IRequest, IResponse, IStats } from '../../common/interfaces';
+import { IRequest, IResponse } from '../../common/interfaces';
 import { Ware } from './ware.model';
 import { CompleteWareDto, CreateWareDto, EditWareDto } from './ware.dto';
 import { getQuery } from '../../common/utils';
 
 export const waresApi = emptyApi.injectEndpoints({
   endpoints: (build) => ({
-    getWaresStats: build.query<IStats, void>({
+    getWaresStats: build.query<number, void>({
       query: () => ({
         url: '/wares/stats',
       }),

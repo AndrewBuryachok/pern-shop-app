@@ -19,7 +19,7 @@ export default function ArticlesList({ actions = [], ...props }: Props) {
   return (
     <CustomsList {...props}>
       {props.data?.result.map((article) => (
-        <Paper key={article.id} p='md' withBorder>
+        <Paper key={article.id} p='md'>
           <Stack spacing={8}>
             <Group spacing={0} position='apart'>
               <AvatarWithDateText {...article} />

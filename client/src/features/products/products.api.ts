@@ -1,5 +1,5 @@
 import { emptyApi } from '../../app/empty.api';
-import { IRequest, IResponse, IStats } from '../../common/interfaces';
+import { IRequest, IResponse } from '../../common/interfaces';
 import { Product } from './product.model';
 import {
   CompleteProductDto,
@@ -10,7 +10,7 @@ import { getQuery } from '../../common/utils';
 
 export const productsApi = emptyApi.injectEndpoints({
   endpoints: (build) => ({
-    getProductsStats: build.query<IStats, void>({
+    getProductsStats: build.query<number, void>({
       query: () => ({
         url: '/products/stats',
       }),

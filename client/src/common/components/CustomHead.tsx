@@ -18,7 +18,7 @@ export default function CustomHead(props: Props) {
   useDocumentTitle(t('pages.' + (active[2] || 'main')) + ' ' + page);
 
   return (
-    <Group position='apart' spacing={8}>
+    <Group spacing={0} position='apart'>
       <Title order={3}>{page}</Title>
       <Button
         leftIcon={<IconRefresh size={16} />}

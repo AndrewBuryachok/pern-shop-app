@@ -1,12 +1,12 @@
 import { emptyApi } from '../../app/empty.api';
-import { IRequest, IResponse, IStats } from '../../common/interfaces';
+import { IRequest, IResponse } from '../../common/interfaces';
 import { Sale } from './sale.model';
 import { CreateSaleDto, RateSaleDto } from './sale.dto';
 import { getQuery } from '../../common/utils';
 
 export const salesApi = emptyApi.injectEndpoints({
   endpoints: (build) => ({
-    getSalesStats: build.query<IStats, void>({
+    getSalesStats: build.query<number, void>({
       query: () => ({
         url: '/sales/stats',
       }),

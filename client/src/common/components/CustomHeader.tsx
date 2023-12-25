@@ -61,7 +61,7 @@ export default function CustomHeader(props: Props) {
 
   return (
     <Header height={60} px='md'>
-      <Group sx={{ height: '100%' }} position='apart'>
+      <Group h='100%' spacing={0} position='apart'>
         <MediaQuery largerThan='sm' styles={{ display: 'none' }}>
           <Burger opened={props.opened} onClick={props.toggle} size='sm' />
         </MediaQuery>

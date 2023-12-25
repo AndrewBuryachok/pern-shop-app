@@ -6,6 +6,7 @@ import {
   SimpleGrid,
   Stack,
   Text,
+  ThemeIcon,
   Title,
   useMantineTheme,
 } from '@mantine/core';
@@ -200,9 +201,11 @@ export default function Home() {
         ]}
       >
         {features.map((feature) => (
-          <Paper key={feature.title} p='md' withBorder>
+          <Paper key={feature.title} p='md'>
             <Stack spacing={0}>
-              <feature.icon size={48} color={theme.fn.primaryColor()} />
+              <ThemeIcon size={48}>
+                <feature.icon size={32} />
+              </ThemeIcon>
               <Text size='lg' weight='bold'>
                 {t('navbar.' + feature.title)}
               </Text>

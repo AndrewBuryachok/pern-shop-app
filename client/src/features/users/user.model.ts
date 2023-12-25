@@ -16,15 +16,13 @@ export interface User extends MdUser {
 }
 
 export interface ExtUser extends User {
-  goods: number;
-  wares: number;
-  products: number;
-  orders: number;
-  deliveries: number;
-  tradesRate: number;
-  salesRate: number;
+  waresCount: number;
+  productsCount: number;
+  ordersCount: number;
+  deliveriesCount: number;
+  waresRate: number;
+  productsRate: number;
   ordersRate: number;
   deliveriesRate: number;
-  friends: SmUser[];
   rating: number;
 }

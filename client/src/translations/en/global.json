@@ -120,8 +120,6 @@
     "refresh": "Refresh",
     "search": "Search",
     "new": "New",
-    "stats": "For previous month",
-    "friend": "Friend",
     "pagination": {
       "from": "Showing from ",
       "to": " to ",
@@ -139,6 +137,7 @@
     "owner": "Owner",
     "city": "City",
     "friends": "Friends",
+    "rating": "Rating",
     "created": "Created",
     "after": "After",
     "before": "Before",

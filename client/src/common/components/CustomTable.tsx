@@ -11,7 +11,7 @@ export default function CustomTable<T>(props: Props<T>) {
 
   return (
     <CustomPage {...props}>
-      <Paper withBorder>
+      <Paper>
         <ScrollArea>
           <Table
             miw={props.minWidth}
