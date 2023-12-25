@@ -4,9 +4,11 @@ import { ISearch } from '../../common/interfaces';
 import {
   useGetMyFriendsQuery,
   useGetReceivedFriendsQuery,
+  useGetSentFriendsQuery,
 } from '../../features/friends/friends.api';
 import UsersTable from '../../features/users/UsersTable';
-import { addFriendButton } from '../../features/friends/AddFriendModal';
+import { createFriendButton } from '../../features/friends/CreateFriendModal';
+import { addFriendAction } from '../../features/friends/AddFriendModal';
 import { removeFriendAction } from '../../features/friends/RemoveFriendModal';
 
 export default function MyFriends() {
@@ -28,12 +30,17 @@ export default function MyFriends() {
 
   const response = {
     my: useGetMyFriendsQuery,
+    sent: useGetSentFriendsQuery,
     received: useGetReceivedFriendsQuery,
   }[tab]!({ page, search });
 
-  const button = { my: addFriendButton }[tab];
+  const button = { my: createFriendButton }[tab];
 
-  const actions = { my: [removeFriendAction] }[tab];
+  const actions = {
+    my: [removeFriendAction],
+    sent: [removeFriendAction],
+    received: [addFriendAction, removeFriendAction],
+  }[tab];
 
   return (
     <UsersTable

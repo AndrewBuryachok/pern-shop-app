@@ -50,7 +50,7 @@ export const pages = [
   {
     path: 'friends',
     element: FriendsPage,
-    nested: [{ path: 'my' }, { path: 'received' }],
+    nested: [{ path: 'my' }, { path: 'sent' }, { path: 'received' }],
   },
   {
     path: 'followings',

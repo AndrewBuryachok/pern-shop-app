@@ -1,32 +1,26 @@
 import { t } from 'i18next';
 import { useTranslation } from 'react-i18next';
-import { Select } from '@mantine/core';
+import { TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
+import { IModal } from '../../common/interfaces';
+import { User } from '../users/user.model';
 import { useAddFriendMutation } from './friends.api';
-import { useSelectNotFriendsUsersQuery } from '../users/users.api';
 import { UpdateFriendDto } from './friend.dto';
 import CustomForm from '../../common/components/CustomForm';
-import RefetchAction from '../../common/components/RefetchAction';
 import CustomAvatar from '../../common/components/CustomAvatar';
-import { UsersItem } from '../../common/components/UsersItem';
-import { selectUsers } from '../../common/utils';
+import { Color } from '../../common/constants';
 
-export default function AddFriendModal() {
+type Props = IModal<User>;
+
+export default function AddFriendModal({ data: user }: Props) {
   const [t] = useTranslation();
 
   const form = useForm({
     initialValues: {
-      user: '',
+      userId: user.id,
     },
-    transformValues: ({ user }) => ({
-      userId: +user,
-    }),
   });
-
-  const { data: users, ...usersResponse } = useSelectNotFriendsUsersQuery();
-
-  const user = users?.find((user) => user.id === +form.values.user);
 
   const [addFriend, { isLoading }] = useAddFriendMutation();
 
@@ -40,29 +34,23 @@ export default function AddFriendModal() {
       isLoading={isLoading}
       text={t('actions.add') + ' ' + t('modals.friend')}
     >
-      <Select
+      <TextInput
         label={t('columns.user')}
-        placeholder={t('columns.user')}
-        icon={user && <CustomAvatar {...user} />}
+        icon={<CustomAvatar {...user} />}
         iconWidth={48}
-        rightSection={<RefetchAction {...usersResponse} />}
-        itemComponent={UsersItem}
-        data={selectUsers(users)}
-        limit={20}
-        searchable
-        required
-        disabled={usersResponse.isFetching}
-        {...form.getInputProps('user')}
+        value={user.nick}
+        disabled
       />
     </CustomForm>
   );
 }
 
-export const addFriendButton = {
-  label: 'add',
-  open: () =>
+export const addFriendAction = {
+  open: (user: User) =>
     openModal({
       title: t('actions.add') + ' ' + t('modals.friend'),
-      children: <AddFriendModal />,
+      children: <AddFriendModal data={user} />,
     }),
+  disable: () => false,
+  color: Color.GREEN,
 };
