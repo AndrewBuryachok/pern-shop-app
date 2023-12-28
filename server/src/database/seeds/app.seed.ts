@@ -389,7 +389,6 @@ export default class AppSeed implements Seeder {
       .makeMany(20);
     const tasks = await factory(Task)()
       .map(async (task) => {
-        task.city = faker.helpers.arrayElement(cities);
         task.customerUser = faker.helpers.arrayElement(users);
         if (task.status !== Status.CREATED) {
           task.executorUser = faker.helpers.arrayElement(users);

@@ -521,20 +521,12 @@ describe('Without Auth', () => {
   });
 
   describe('Tasks', () => {
-    it('GET /tasks', async () => {
-      return request(app.getHttpServer()).get('/tasks').expect(401);
-    });
-
     it('GET /tasks/my', async () => {
       return request(app.getHttpServer()).get('/tasks/my').expect(401);
     });
 
     it('GET /tasks/taken', async () => {
       return request(app.getHttpServer()).get('/tasks/taken').expect(401);
-    });
-
-    it('GET /tasks/placed', async () => {
-      return request(app.getHttpServer()).get('/tasks/placed').expect(401);
     });
 
     it('GET /tasks/all', async () => {

@@ -12,7 +12,7 @@ import { TasksService } from './tasks.service';
 import { Task } from './task.entity';
 import { CreateTaskDto, TaskIdDto } from './task.dto';
 import { Request, Response } from '../../common/interfaces';
-import { MyId, Roles } from '../../common/decorators';
+import { MyId, Public, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
 
 @ApiTags('tasks')
@@ -20,12 +20,10 @@ import { Role } from '../users/role.enum';
 export class TasksController {
   constructor(private tasksService: TasksService) {}
 
+  @Public()
   @Get()
-  getMainTasks(
-    @MyId() myId: number,
-    @Query() req: Request,
-  ): Promise<Response<Task>> {
-    return this.tasksService.getMainTasks(myId, req);
+  getMainTasks(@Query() req: Request): Promise<Response<Task>> {
+    return this.tasksService.getMainTasks(req);
   }
 
   @Get('my')
@@ -42,14 +40,6 @@ export class TasksController {
     @Query() req: Request,
   ): Promise<Response<Task>> {
     return this.tasksService.getTakenTasks(myId, req);
-  }
-
-  @Get('placed')
-  getPlacedTasks(
-    @MyId() myId: number,
-    @Query() req: Request,
-  ): Promise<Response<Task>> {
-    return this.tasksService.getPlacedTasks(myId, req);
   }
 
   @Roles(Role.ADMIN)

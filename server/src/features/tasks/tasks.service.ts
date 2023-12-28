@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { Task } from './task.entity';
-import { CitiesService } from '../cities/cities.service';
 import { MqttService } from '../mqtt/mqtt.service';
 import { ExtCreateTaskDto, ExtTaskIdDto } from './task.dto';
 import { Request, Response } from '../../common/interfaces';
@@ -16,14 +15,11 @@ export class TasksService {
   constructor(
     @InjectRepository(Task)
     private tasksRepository: Repository<Task>,
-    private citiesService: CitiesService,
     private mqttService: MqttService,
   ) {}
 
-  async getMainTasks(myId: number, req: Request): Promise<Response<Task>> {
+  async getMainTasks(req: Request): Promise<Response<Task>> {
     const [result, count] = await this.getTasksQueryBuilder(req)
-      .leftJoin('city.users', 'cityUsers')
-      .andWhere('cityUsers.id = :myId', { myId })
       .andWhere('task.status = :status', {
         status: Status.CREATED,
       })
@@ -45,13 +41,6 @@ export class TasksService {
     return { result, count };
   }
 
-  async getPlacedTasks(myId: number, req: Request): Promise<Response<Task>> {
-    const [result, count] = await this.getTasksQueryBuilder(req)
-      .andWhere('ownerUser.id = :myId', { myId })
-      .getManyAndCount();
-    return { result, count };
-  }
-
   async getAllTasks(req: Request): Promise<Response<Task>> {
     const [result, count] = await this.getTasksQueryBuilder(
       req,
@@ -60,15 +49,13 @@ export class TasksService {
   }
 
   async createTask(dto: ExtCreateTaskDto): Promise<void> {
-    const city = await this.citiesService.checkCityUser(dto.myId);
-    await this.create({ ...dto, cityId: city.id });
+    await this.create(dto);
   }
 
   async takeTask(dto: ExtTaskIdDto): Promise<void> {
     const task = await this.tasksRepository.findOneBy({
       id: dto.taskId,
     });
-    await this.citiesService.checkCityUser(dto.myId, task.cityId);
     if (task.status !== Status.CREATED) {
       throw new AppException(TaskError.NOT_CREATED);
     }
@@ -152,7 +139,6 @@ export class TasksService {
   private async create(dto: ExtCreateTaskDto): Promise<void> {
     try {
       const task = this.tasksRepository.create({
-        cityId: dto.cityId,
         customerUserId: dto.myId,
         title: dto.title,
         text: dto.text,
@@ -214,8 +200,6 @@ export class TasksService {
   private getTasksQueryBuilder(req: Request): SelectQueryBuilder<Task> {
     return this.tasksRepository
       .createQueryBuilder('task')
-      .leftJoin('task.city', 'city')
-      .leftJoin('city.user', 'ownerUser')
       .innerJoin('task.customerUser', 'customerUser')
       .leftJoin('task.executorUser', 'executorUser')
       .where(
@@ -240,23 +224,9 @@ export class TasksService {
                   .where(`${!req.mode || req.mode === Mode.EXECUTOR}`)
                   .andWhere('executorUser.id = :userId'),
               ),
-            )
-            .orWhere(
-              new Brackets((qb) =>
-                qb
-                  .where(`${!req.mode || req.mode === Mode.OWNER}`)
-                  .andWhere('ownerUser.id = :userId'),
-              ),
             ),
         ),
         { userId: req.user },
-      )
-      .andWhere(
-        new Brackets((qb) =>
-          qb
-            .where(`${!req.city}`, { cityId: req.city })
-            .orWhere('city.id = :cityId'),
-        ),
       )
       .andWhere(
         new Brackets((qb) =>
@@ -298,12 +268,6 @@ export class TasksService {
       .take(req.take)
       .select([
         'task.id',
-        'city.id',
-        'ownerUser.id',
-        'ownerUser.nick',
-        'city.name',
-        'city.x',
-        'city.y',
         'customerUser.id',
         'customerUser.nick',
         'task.title',

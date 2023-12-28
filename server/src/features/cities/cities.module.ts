@@ -9,6 +9,5 @@ import { IsCityExists } from '../../common/constraints';
   imports: [TypeOrmModule.forFeature([City])],
   controllers: [CitiesController],
   providers: [CitiesService, IsCityExists],
-  exports: [CitiesService],
 })
 export class CitiesModule {}

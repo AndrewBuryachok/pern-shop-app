@@ -1681,7 +1681,6 @@ describe('With Auth', () => {
     it('GET /tasks', async () => {
       return request(app.getHttpServer())
         .get('/tasks')
-        .set('Authorization', `Bearer ${user.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
 
@@ -1704,13 +1703,6 @@ describe('With Auth', () => {
     it('GET /tasks/taken', async () => {
       return request(app.getHttpServer())
         .get('/tasks/taken')
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
-    });
-
-    it('GET /tasks/placed', async () => {
-      return request(app.getHttpServer())
-        .get('/tasks/placed')
         .set('Authorization', `Bearer ${user.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
