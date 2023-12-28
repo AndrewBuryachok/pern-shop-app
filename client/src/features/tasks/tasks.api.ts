@@ -24,12 +24,6 @@ export const tasksApi = emptyApi.injectEndpoints({
       }),
       providesTags: ['Auth', 'Task'],
     }),
-    getPlacedTasks: build.query<IResponse<Task>, IRequest>({
-      query: (req) => ({
-        url: `/tasks/placed?${getQuery(req)}`,
-      }),
-      providesTags: ['Auth', 'Task'],
-    }),
     getAllTasks: build.query<IResponse<Task>, IRequest>({
       query: (req) => ({
         url: `/tasks/all?${getQuery(req)}`,
@@ -87,7 +81,6 @@ export const {
   useGetMainTasksQuery,
   useGetMyTasksQuery,
   useGetTakenTasksQuery,
-  useGetPlacedTasksQuery,
   useGetAllTasksQuery,
   useCreateTaskMutation,
   useTakeTaskMutation,

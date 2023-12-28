@@ -262,7 +262,6 @@ export const pages = [
       { index: true },
       { path: 'my' },
       { path: 'taken' },
-      { path: 'placed' },
       { path: 'all', role: Role.ADMIN },
     ],
   },

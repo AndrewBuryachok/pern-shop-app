@@ -6,7 +6,6 @@ import {
   useGetAllTasksQuery,
   useGetMainTasksQuery,
   useGetMyTasksQuery,
-  useGetPlacedTasksQuery,
   useGetTakenTasksQuery,
 } from '../../features/tasks/tasks.api';
 import TasksTable from '../../features/tasks/TasksTable';
@@ -27,9 +26,8 @@ export default function MyTasks() {
   const [search, setSearch] = useState<ISearch>({
     id: +(searchParams.get('id') || 0) || null,
     user: searchParams.get('user'),
-    modes: [Mode.CUSTOMER, Mode.EXECUTOR, Mode.OWNER],
+    modes: [Mode.CUSTOMER, Mode.EXECUTOR],
     mode: searchParams.get('mode') as Mode,
-    city: searchParams.get('city'),
     title: searchParams.get('title') || '',
     priority: searchParams.get('priority'),
     status: searchParams.get('status'),
@@ -41,7 +39,6 @@ export default function MyTasks() {
     main: useGetMainTasksQuery,
     my: useGetMyTasksQuery,
     taken: useGetTakenTasksQuery,
-    placed: useGetPlacedTasksQuery,
     all: useGetAllTasksQuery,
   }[tab]!({ page, search });
 

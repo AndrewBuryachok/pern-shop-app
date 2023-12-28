@@ -6,7 +6,7 @@ import { IModal } from '../../common/interfaces';
 import { Task } from './task.model';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import PriorityIcon from '../../common/components/PriorityIcon';
-import { parsePlace, parseStatus, parseTime } from '../../common/utils';
+import { parseStatus, parseTime } from '../../common/utils';
 import { Color, priorities } from '../../common/constants';
 
 type Props = IModal<Task>;
@@ -43,18 +43,6 @@ export default function ViewTaskModal({ data: task }: Props) {
       <TextInput
         label={t('columns.status')}
         value={parseStatus(task.status)}
-        disabled
-      />
-      <TextInput
-        label={t('columns.city')}
-        value={parsePlace(task.city)}
-        disabled
-      />
-      <TextInput
-        label={t('columns.owner')}
-        icon={<CustomAvatar {...task.city.user} />}
-        iconWidth={48}
-        value={task.city.user.nick}
         disabled
       />
       <TextInput
