@@ -17,14 +17,14 @@ export const logger: Middleware =
     ) {
       closeAllModals();
       showNotification({
-        title: t('notifications.success'),
+        title: t('notifications.system'),
         message: t('notifications.message'),
         color: 'green',
       });
     }
     if (isRejectedWithValue(action)) {
       showNotification({
-        title: t('notifications.error'),
+        title: t('notifications.system'),
         message: action.payload.data.message,
         color: 'red',
       });

@@ -42,7 +42,7 @@ export default function ViewUserModal({ data: user }: Props) {
         readOnly
       />
       <TextInput
-        label={t('columns.created')}
+        label={t('columns.registered')}
         value={parseTime(user.createdAt)}
         readOnly
       />

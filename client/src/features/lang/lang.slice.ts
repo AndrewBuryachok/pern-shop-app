@@ -6,7 +6,7 @@ export const langSlice = createSlice({
   initialState: {},
   reducers: {
     toggleCurrentLanguage: () => {
-      const lang = i18next.language === 'uk' ? 'en' : 'uk';
+      const lang = i18next.language === 'uk' ? 'ru' : 'uk';
       i18next.changeLanguage(lang);
       localStorage.setItem('lang', lang);
     },
