@@ -60,6 +60,6 @@ export const deletePlaintAction = {
       title: t('actions.delete') + ' ' + t('modals.plaint'),
       children: <DeletePlaintModal data={plaint} />,
     }),
-  disable: (plaint: Plaint) => !!plaint.executedAt,
+  disable: (plaint: Plaint) => !!plaint.executedAt || !!plaint.completedAt,
   color: Color.RED,
 };

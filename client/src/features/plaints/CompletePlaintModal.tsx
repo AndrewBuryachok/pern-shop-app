@@ -73,6 +73,6 @@ export const completePlaintAction = {
       title: t('actions.complete') + ' ' + t('modals.plaint'),
       children: <CompletePlaintModal data={plaint} />,
     }),
-  disable: (plaint: Plaint) => !plaint.executedAt || !!plaint.completedAt,
+  disable: (plaint: Plaint) => !!plaint.completedAt,
   color: Color.GREEN,
 };
