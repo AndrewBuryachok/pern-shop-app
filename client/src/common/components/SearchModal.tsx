@@ -1,3 +1,4 @@
+import 'dayjs/locale/ru';
 import 'dayjs/locale/uk';
 import { useEffect } from 'react';
 import { t } from 'i18next';

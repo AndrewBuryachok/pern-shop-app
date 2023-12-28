@@ -231,7 +231,7 @@ export default function UserProfile({ data: user }: Props) {
               </div>
               <div>
                 <Text size='sm' weight='bold'>
-                  {t('columns.created')}
+                  {t('columns.registered')}
                 </Text>
                 <Group spacing={8}>
                   <IconClock size={32} />

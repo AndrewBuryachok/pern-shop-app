@@ -24,7 +24,7 @@ export default function UsersTable({ actions = [], ...props }: Props) {
         'city',
         props.column,
         'online',
-        'created',
+        'registered',
         'action',
       ]}
       {...props}
