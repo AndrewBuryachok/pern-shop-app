@@ -17,6 +17,15 @@ export default function CustomNav(props: Props) {
 
   const tab = active[2] || 'main';
 
+  const color = {
+    server: 'red',
+    site: 'yellow',
+    status: 'blue',
+    spawn: 'teal',
+    hub: 'pink',
+    end: 'violet',
+  }[tab];
+
   const links = pages
     .find((page) => page.path === active[1])!
     .nested!.map(({ index, ...route }) => ({
@@ -31,7 +40,7 @@ export default function CustomNav(props: Props) {
           key={link.path}
           component={Link}
           to={`/${active[1]}/${link.path}`.replace('/main', '')}
-          color={link.path === tab ? 'violet' : 'gray'}
+          color={link.path === tab ? color || 'pink' : 'gray'}
           disabled={
             link.path !== 'main' &&
             !tabs.includes(link.path!) &&

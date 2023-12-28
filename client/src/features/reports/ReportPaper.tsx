@@ -78,21 +78,9 @@ export default function ReportPaper({ report, ...props }: Props) {
         {report.video && <CustomVideo video={report.video} />}
         <Group spacing={8}>
           <ActionIcon
-            ref={ref}
-            size={24}
-            loading={props.isViewedLoading}
-            onClick={() => openViewReportViewsModal(report)}
-          >
-            <IconEye size={16} />
-          </ActionIcon>
-          <CustomAnchor
-            text={`${report.views}`}
-            open={() => openViewReportViewsModal(report)}
-          />
-          <ActionIcon
             size={24}
             variant={report.upAttituded && 'filled'}
-            color={report.upAttituded && 'violet'}
+            color={report.upAttituded && 'pink'}
             loading={props.isAttitutedLoading}
             onClick={() =>
               user
@@ -112,7 +100,7 @@ export default function ReportPaper({ report, ...props }: Props) {
           <ActionIcon
             size={24}
             variant={report.downAttituded && 'filled'}
-            color={report.downAttituded && 'violet'}
+            color={report.downAttituded && 'pink'}
             loading={props.isAttitutedLoading}
             onClick={() =>
               user
@@ -140,6 +128,18 @@ export default function ReportPaper({ report, ...props }: Props) {
           <CustomAnchor
             text={`${report.annotations}`}
             open={() => openViewReportAnnotationsModal(report)}
+          />
+          <ActionIcon
+            ref={ref}
+            size={24}
+            loading={props.isViewedLoading}
+            onClick={() => openViewReportViewsModal(report)}
+          >
+            <IconEye size={16} />
+          </ActionIcon>
+          <CustomAnchor
+            text={`${report.views}`}
+            open={() => openViewReportViewsModal(report)}
           />
         </Group>
       </Stack>

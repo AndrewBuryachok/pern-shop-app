@@ -79,21 +79,9 @@ export default function PollPaper({ poll, ...props }: Props) {
         {poll.video && <CustomVideo video={poll.video} />}
         <Group spacing={8}>
           <ActionIcon
-            ref={ref}
-            size={24}
-            loading={props.isViewedLoading}
-            onClick={() => openViewPollViewsModal(poll)}
-          >
-            <IconEye size={16} />
-          </ActionIcon>
-          <CustomAnchor
-            text={`${poll.views}`}
-            open={() => openViewPollViewsModal(poll)}
-          />
-          <ActionIcon
             size={24}
             variant={poll.upVoted && 'filled'}
-            color={poll.upVoted && 'violet'}
+            color={poll.upVoted && 'pink'}
             loading={props.isVotedLoading}
             onClick={() =>
               user
@@ -110,7 +98,7 @@ export default function PollPaper({ poll, ...props }: Props) {
           <ActionIcon
             size={24}
             variant={poll.downVoted && 'filled'}
-            color={poll.downVoted && 'violet'}
+            color={poll.downVoted && 'pink'}
             loading={props.isVotedLoading}
             onClick={() =>
               user
@@ -135,6 +123,18 @@ export default function PollPaper({ poll, ...props }: Props) {
           <CustomAnchor
             text={`${poll.discussions}`}
             open={() => openViewPollDiscussionsModal(poll)}
+          />
+          <ActionIcon
+            ref={ref}
+            size={24}
+            loading={props.isViewedLoading}
+            onClick={() => openViewPollViewsModal(poll)}
+          >
+            <IconEye size={16} />
+          </ActionIcon>
+          <CustomAnchor
+            text={`${poll.views}`}
+            open={() => openViewPollViewsModal(poll)}
           />
         </Group>
       </Stack>

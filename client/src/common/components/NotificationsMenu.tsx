@@ -25,7 +25,7 @@ export default function NotificationsMenu() {
           size={16}
           color='red'
         >
-          <ActionIcon size={32} variant='filled' color='violet'>
+          <ActionIcon size={32} variant='filled' color='yellow'>
             <IconBell size={24} />
           </ActionIcon>
         </Indicator>

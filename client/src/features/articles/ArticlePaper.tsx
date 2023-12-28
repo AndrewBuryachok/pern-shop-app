@@ -96,7 +96,7 @@ export default function ArticlePaper({ article, ...props }: Props) {
           <Group spacing={8}>
             <AvatarWithDateText {...article} />
             <Button
-              color={article.subscribed ? 'gray' : 'violet'}
+              color={article.subscribed ? 'gray' : 'pink'}
               loading={props.isSubscribersLoading}
               loaderPosition='center'
               onClick={() =>
@@ -138,21 +138,9 @@ export default function ArticlePaper({ article, ...props }: Props) {
         {article.video && <CustomVideo video={article.video} />}
         <Group spacing={8}>
           <ActionIcon
-            ref={ref}
-            size={24}
-            loading={props.isViewedLoading}
-            onClick={() => openViewArticleViewsModal(article)}
-          >
-            <IconEye size={16} />
-          </ActionIcon>
-          <CustomAnchor
-            text={`${article.views}`}
-            open={() => openViewArticleViewsModal(article)}
-          />
-          <ActionIcon
             size={24}
             variant={article.upLiked && 'filled'}
-            color={article.upLiked && 'violet'}
+            color={article.upLiked && 'pink'}
             loading={props.isLikedLoading}
             onClick={() =>
               user
@@ -169,7 +157,7 @@ export default function ArticlePaper({ article, ...props }: Props) {
           <ActionIcon
             size={24}
             variant={article.downLiked && 'filled'}
-            color={article.downLiked && 'violet'}
+            color={article.downLiked && 'pink'}
             loading={props.isLikedLoading}
             onClick={() =>
               user
@@ -194,6 +182,18 @@ export default function ArticlePaper({ article, ...props }: Props) {
           <CustomAnchor
             text={`${article.comments}`}
             open={() => openViewArticleCommentsModal(article)}
+          />
+          <ActionIcon
+            ref={ref}
+            size={24}
+            loading={props.isViewedLoading}
+            onClick={() => openViewArticleViewsModal(article)}
+          >
+            <IconEye size={16} />
+          </ActionIcon>
+          <CustomAnchor
+            text={`${article.views}`}
+            open={() => openViewArticleViewsModal(article)}
           />
         </Group>
       </Stack>
