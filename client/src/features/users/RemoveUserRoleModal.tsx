@@ -36,9 +36,7 @@ export default function RemoveUserRoleModal({ data: user }: Props) {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={
-        t('actions.remove') + ' ' + t('columns.role') + ' ' + t('modals.user')
-      }
+      text={t('actions.remove') + ' ' + t('columns.role')}
     >
       <TextInput
         label={t('columns.user')}
@@ -63,8 +61,7 @@ export default function RemoveUserRoleModal({ data: user }: Props) {
 export const removeUserRoleAction = {
   open: (user: User) =>
     openModal({
-      title:
-        t('actions.remove') + ' ' + t('columns.role') + ' ' + t('modals.user'),
+      title: t('actions.remove') + ' ' + t('columns.role'),
       children: <RemoveUserRoleModal data={user} />,
     }),
   disable: (user: User) => user.roles.length === 0,

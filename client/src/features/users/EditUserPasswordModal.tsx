@@ -37,9 +37,7 @@ export default function EditUserPasswordModal({ data: user }: Props) {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={
-        t('actions.edit') + ' ' + t('columns.password') + ' ' + t('modals.user')
-      }
+      text={t('actions.edit') + ' ' + t('columns.password')}
     >
       <TextInput
         label={t('columns.user')}
@@ -63,12 +61,7 @@ export default function EditUserPasswordModal({ data: user }: Props) {
 export const editUserPasswordAction = {
   open: (user: User) =>
     openModal({
-      title:
-        t('actions.edit') +
-        ' ' +
-        t('columns.password') +
-        ' ' +
-        t('modals.user'),
+      title: t('actions.edit') + ' ' + t('columns.password'),
       children: <EditUserPasswordModal data={user} />,
     }),
   disable: () => false,

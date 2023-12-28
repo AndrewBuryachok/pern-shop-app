@@ -39,9 +39,11 @@ export default function RateOrderModal({ data: order }: Props) {
     >
       <TextInput
         label={t('columns.executor')}
-        icon={<CustomAvatar {...order.executorCard!.user} />}
+        icon={
+          order.executorCard && <CustomAvatar {...order.executorCard.user} />
+        }
         iconWidth={48}
-        value={parseCard(order.executorCard!)}
+        value={order.executorCard ? parseCard(order.executorCard) : '-'}
         disabled
       />
       <TextInput

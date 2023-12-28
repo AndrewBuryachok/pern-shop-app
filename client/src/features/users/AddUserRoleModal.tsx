@@ -36,7 +36,7 @@ export default function AddUserRoleModal({ data: user }: Props) {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={t('actions.add') + ' ' + t('columns.role') + ' ' + t('modals.user')}
+      text={t('actions.add') + ' ' + t('columns.role')}
     >
       <TextInput
         label={t('columns.user')}
@@ -61,8 +61,7 @@ export default function AddUserRoleModal({ data: user }: Props) {
 export const addUserRoleAction = {
   open: (user: User) =>
     openModal({
-      title:
-        t('actions.add') + ' ' + t('columns.role') + ' ' + t('modals.user'),
+      title: t('actions.add') + ' ' + t('columns.role'),
       children: <AddUserRoleModal data={user} />,
     }),
   disable: (user: User) => user.roles.length === roles.length,

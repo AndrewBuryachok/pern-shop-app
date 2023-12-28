@@ -28,7 +28,6 @@ export default function ViewUserFriendsModal({ data: user }: Props) {
 
 export const openViewUserFriendsModal = (user: ExtUser) =>
   openModal({
-    title:
-      t('actions.view') + ' ' + t('modals.friends') + ' ' + t('modals.user'),
+    title: t('actions.view') + ' ' + t('modals.friends'),
     children: <ViewUserFriendsModal data={user} />,
   });

@@ -43,7 +43,7 @@ export default function AddCardUserModal({ data: card }: Props) {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={t('actions.add') + ' ' + t('modals.card') + ' ' + t('modals.user')}
+      text={t('actions.add') + ' ' + t('modals.user')}
     >
       <TextInput label={t('columns.card')} value={card.name} disabled />
       <Select
@@ -69,7 +69,7 @@ export default function AddCardUserModal({ data: card }: Props) {
 export const addCardUserFactory = (hasRole: boolean) => ({
   open: (card: Card) =>
     openModal({
-      title: t('actions.add') + ' ' + t('modals.card') + ' ' + t('modals.user'),
+      title: t('actions.add') + ' ' + t('modals.user'),
       children: <AddCardUserModal data={card} />,
     }),
   disable: (card: Card) => {

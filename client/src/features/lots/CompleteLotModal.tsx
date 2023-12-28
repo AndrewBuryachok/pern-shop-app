@@ -72,7 +72,7 @@ export const completeLotFactory = (hasRole: boolean) => ({
       children: <CompleteLotModal data={lot} />,
     }),
   disable: (lot: Lot) => !!lot.completedAt,
-  color: hasRole ? Color.GREEN : Color.RED,
+  color: hasRole ? Color.RED : Color.GREEN,
 });
 
 export const completeMyLotAction = completeLotFactory(false);
