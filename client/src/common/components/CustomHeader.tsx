@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import {
-  Anchor,
+  ActionIcon,
   Avatar,
   Burger,
   Group,
@@ -9,6 +9,7 @@ import {
   MediaQuery,
   Title,
 } from '@mantine/core';
+import { IconCoin } from '@tabler/icons';
 import SettingsMenu from './SettingsMenu';
 import NotificationsMenu from './NotificationsMenu';
 import AccountMenu from './AccountMenu';
@@ -28,15 +29,22 @@ export default function CustomHeader(props: Props) {
           <MediaQuery largerThan='sm' styles={{ display: 'none' }}>
             <Burger opened={props.opened} onClick={props.toggle} size='sm' />
           </MediaQuery>
-          <Avatar component={Link} to='/' size={32} src='/logo.svg' />
+          <Avatar component={Link} to='/' size={32} src='/logo.png' />
           <MediaQuery smallerThan='sm' styles={{ display: 'none' }}>
-            <Anchor component={Link} to='/' underline={false}>
-              <Title order={1}>{t('header.title')}</Title>
-            </Anchor>
+            <Title order={1}>{t('header.title')}</Title>
           </MediaQuery>
         </Group>
         <Group spacing={8}>
           <SettingsMenu />
+          <ActionIcon
+            size={32}
+            variant='filled'
+            color='green'
+            component={Link}
+            to='/donate'
+          >
+            <IconCoin size={24} />
+          </ActionIcon>
           <NotificationsMenu />
           <AccountMenu />
         </Group>

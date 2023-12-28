@@ -1,5 +1,5 @@
 import { Suspense, useEffect } from 'react';
-import { Route, Routes } from 'react-router-dom';
+import { Navigate, Route, Routes } from 'react-router-dom';
 import {
   AppShell,
   ColorScheme,
@@ -96,7 +96,7 @@ export default function App() {
       toggleColorScheme={toggleColorScheme}
     >
       <MantineProvider
-        theme={{ colorScheme, primaryColor: 'violet' }}
+        theme={{ colorScheme, primaryColor: 'pink' }}
         withGlobalStyles
         withNormalizeCSS
       >
@@ -118,6 +118,7 @@ export default function App() {
             >
               <Suspense fallback={<CustomLoader />}>
                 <Routes>
+                  <Route index element={<Navigate to='/reports' replace />} />
                   {pages.map((page) =>
                     page.nested ? (
                       <Route key={page.path} path={page.path}>
@@ -139,7 +140,7 @@ export default function App() {
                       </Route>
                     ) : (
                       <Route
-                        key={page.path || 'home'}
+                        key={page.path}
                         {...page}
                         element={<page.element />}
                       />

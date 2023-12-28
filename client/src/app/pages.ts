@@ -1,7 +1,8 @@
 import { lazy } from 'react';
-const Home = lazy(() => import('../pages/common/Home'));
 const NotFound = lazy(() => import('../pages/common/NotFound'));
+const Donate = lazy(() => import('../pages/common/Donate'));
 const Map = lazy(() => import('../pages/map/Map'));
+const Dynmap = lazy(() => import('../pages/map/Dynmap'));
 const UsersPage = lazy(() => import('../pages/users/UsersPage'));
 const SingleUser = lazy(() => import('../pages/users/SingleUser'));
 const FriendsPage = lazy(() => import('../pages/friends/FriendsPage'));
@@ -41,15 +42,16 @@ import { Role } from '../common/constants';
 export const tabs = ['top', 'server', 'site', 'status', 'spawn', 'hub', 'end'];
 
 export const pages = [
-  { index: true, element: Home },
+  { path: 'donate', element: Donate },
   { path: 'map', element: Map },
+  { path: 'dynmap', element: Dynmap },
   {
     path: 'users',
     element: UsersPage,
     nested: [
       { index: true },
       { path: 'top' },
-      { path: 'my' },
+      { path: 'city' },
       { path: 'all', role: Role.ADMIN },
     ],
   },

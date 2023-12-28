@@ -1,25 +1,31 @@
 import { useTranslation } from 'react-i18next';
 import { Link, useLocation } from 'react-router-dom';
-import { Navbar, NavLink, ScrollArea } from '@mantine/core';
+import {
+  ActionIcon,
+  Group,
+  Navbar,
+  NavLink,
+  ScrollArea,
+  Tooltip,
+} from '@mantine/core';
 import { hideNotification } from '@mantine/notifications';
 import {
   IconArticle,
-  IconBasket,
-  IconBoxSeam,
-  IconBuildingCommunity,
-  IconChartBar,
+  IconBrandDiscord,
+  IconBrandTelegram,
+  IconBrandTiktok,
+  IconBrandVk,
+  IconBrandYoutube,
+  IconBuildingSkyscraper,
+  IconBuildingStadium,
+  IconBuildingStore,
+  IconBuildingWarehouse,
+  IconBulb,
   IconChecklist,
-  IconContainer,
-  IconFriends,
-  IconHome,
-  IconMail,
-  IconMailOff,
   IconMap,
   IconNews,
-  IconReceipt,
-  IconScale,
+  IconPackage,
   IconStar,
-  IconTags,
   IconUsers,
   IconWallet,
 } from '@tabler/icons';
@@ -37,29 +43,6 @@ export default function CustomNavbar(props: Props) {
 
   const links = [
     {
-      route: 'home',
-      icon: IconHome,
-    },
-    {
-      route: 'users',
-      icon: IconUsers,
-    },
-    {
-      route: 'friends',
-      icon: IconFriends,
-      sub: '/top',
-    },
-    {
-      route: 'subscribers',
-      icon: IconMail,
-      sub: '/top',
-    },
-    {
-      route: 'ignorers',
-      icon: IconMailOff,
-      sub: '/top',
-    },
-    {
       route: 'reports',
       icon: IconNews,
     },
@@ -68,66 +51,93 @@ export default function CustomNavbar(props: Props) {
       icon: IconArticle,
     },
     {
-      route: 'wallet',
-      icon: IconWallet,
-      nested: ['cards', 'payments', 'exchanges', 'invoices'],
-      sub: '/my',
-    },
-    {
-      route: 'things',
-      icon: IconBasket,
-      nested: ['goods', 'wares', 'products', 'lots'],
-    },
-    {
-      route: 'purchases',
-      icon: IconTags,
-      nested: ['trades', 'sales', 'bids'],
-      sub: '/my',
-    },
-    {
-      route: 'transportations',
-      icon: IconBoxSeam,
-      nested: ['orders', 'deliveries'],
-    },
-    {
-      route: 'map',
-      icon: IconMap,
-    },
-    {
-      route: 'places',
-      icon: IconBuildingCommunity,
-      nested: ['cities', 'shops', 'markets', 'storages'],
-    },
-    {
-      route: 'containers',
-      icon: IconContainer,
-      nested: ['stores', 'cells'],
-    },
-    {
-      route: 'receipts',
-      icon: IconReceipt,
-      nested: ['rents', 'leases'],
-    },
-    {
       route: 'tasks',
       icon: IconChecklist,
-    },
-    {
-      route: 'plaints',
-      icon: IconScale,
-    },
-    {
-      route: 'polls',
-      icon: IconChartBar,
     },
     {
       route: 'ratings',
       icon: IconStar,
       sub: '/top',
     },
+    {
+      route: 'polls',
+      icon: IconBulb,
+    },
+    {
+      route: 'map',
+      icon: IconMap,
+      nested: ['map', 'dynmap'],
+    },
+    {
+      route: 'cities',
+      icon: IconBuildingSkyscraper,
+    },
+    {
+      route: 'wallet',
+      icon: IconWallet,
+      nested: ['cards/my', 'payments/my', 'exchanges/my', 'invoices/my'],
+    },
+    {
+      route: 'trading',
+      icon: IconBuildingStore,
+      nested: ['goods', 'shops'],
+    },
+    {
+      route: 'market',
+      icon: IconBuildingStadium,
+      nested: ['wares', 'trades/my', 'rents', 'stores', 'markets'],
+    },
+    {
+      route: 'storage',
+      icon: IconBuildingWarehouse,
+      nested: [
+        'products',
+        'sales/my',
+        'lots',
+        'bids/my',
+        'orders',
+        'deliveries',
+        'leases',
+        'cells',
+        'storages',
+      ],
+    },
+    {
+      route: 'users',
+      icon: IconUsers,
+    },
   ];
 
-  const active = useLocation().pathname.split('/')[1] || 'home';
+  const contacts = [
+    {
+      label: 'resourcepack',
+      icon: IconPackage,
+      to: 'https://www.dropbox.com/scl/fo/posgmqxx736wtzel7192p/h?rlkey=6ogoxj1ywom9d0vhpb4c3dou8&dl=1',
+    },
+    {
+      label: 'discord',
+      icon: IconBrandDiscord,
+      to: 'https://discord.com/channels/720586627340304475/955064787425984562',
+    },
+    { label: 'vk', icon: IconBrandVk, to: 'https://vk.com/mine_square' },
+    {
+      label: 'telegram',
+      icon: IconBrandTelegram,
+      to: 'https://t.me/minesquare',
+    },
+    {
+      label: 'youtube',
+      icon: IconBrandYoutube,
+      to: 'https://www.youtube.com/@MineSquareNET',
+    },
+    {
+      label: 'tiktok',
+      icon: IconBrandTiktok,
+      to: 'https://www.tiktok.com/@minesquare.net',
+    },
+  ];
+
+  const active = useLocation().pathname.split('/')[1];
 
   return (
     <Navbar
@@ -145,21 +155,23 @@ export default function CustomNavbar(props: Props) {
               label={t(`navbar.${link.route}`)}
               icon={
                 <NotificationBadge
-                  pages={link.nested}
+                  pages={link.nested.map((route) => route.split('/')[0])}
                   icon={<link.icon size={16} />}
                 />
               }
-              active={link.nested.includes(active)}
+              active={link.nested
+                .map((route) => route.split('/')[0])
+                .includes(active)}
               childrenOffset={28}
             >
               {link.nested.map((route) => (
                 <NavLink
                   key={route}
-                  label={t(`navbar.${route}`)}
-                  icon={<NotificationBadge pages={[route]} />}
+                  label={t(`navbar.${route.split('/')[0]}`)}
+                  icon={<NotificationBadge pages={[route.split('/')[0]]} />}
                   component={Link}
-                  to={`${route}${link.sub || ''}`}
-                  active={route === active}
+                  to={route}
+                  active={route.split('/')[0] === active}
                   onClick={() =>
                     notifications
                       .filter((notification) => notification.page === route)
@@ -181,9 +193,7 @@ export default function CustomNavbar(props: Props) {
                 />
               }
               component={Link}
-              to={`/${link.route === 'home' ? '' : link.route}${
-                link.sub || ''
-              }`}
+              to={`/${link.route}${link.sub || ''}`}
               active={link.route === active}
               onClick={() =>
                 notifications
@@ -193,6 +203,26 @@ export default function CustomNavbar(props: Props) {
             />
           ),
         )}
+      </Navbar.Section>
+      <Navbar.Section>
+        <Group spacing={0} position='center' mr={-1}>
+          {contacts.map((contact) => (
+            <Tooltip
+              key={contact.label}
+              label={t(`footer.links.${contact.label}`)}
+              withArrow
+            >
+              <ActionIcon
+                size={24}
+                component='a'
+                href={contact.to}
+                target='_blank'
+              >
+                {<contact.icon size={16} />}
+              </ActionIcon>
+            </Tooltip>
+          ))}
+        </Group>
       </Navbar.Section>
     </Navbar>
   );

@@ -28,7 +28,7 @@ export default function SettingsMenu() {
   return (
     <Menu offset={4} position='bottom-end' trigger='hover'>
       <Menu.Target>
-        <ActionIcon size={32} variant='filled' color='violet'>
+        <ActionIcon size={32} variant='filled' color='pink'>
           <IconSettings size={24} />
         </ActionIcon>
       </Menu.Target>

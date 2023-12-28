@@ -34,14 +34,14 @@ export default function UsersPage() {
   const response = {
     main: useGetMainUsersQuery,
     top: useGetTopUsersQuery,
-    my: useGetMyUsersQuery,
+    city: useGetMyUsersQuery,
     all: useGetAllUsersQuery,
   }[tab]!({ page, search });
 
-  const button = { my: addUserCityButton }[tab];
+  const button = { city: addUserCityButton }[tab];
 
   const actions = {
-    my: [removeUserCityAction],
+    city: [removeUserCityAction],
     all: [editUserPasswordAction, addUserRoleAction, removeUserRoleAction],
   }[tab];
 
