@@ -12,7 +12,7 @@ define(Plaint, (faker: Faker) => {
     plaint.executedAt = new Date();
   }
   const completed = !!Math.floor(Math.random() * 2);
-  if (executed && completed) {
+  if (completed) {
     plaint.executorText = faker.lorem.sentence(7);
     plaint.completedAt = new Date();
   }

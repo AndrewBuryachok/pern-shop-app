@@ -63,7 +63,10 @@ export class PlaintsService {
   async executePlaint(dto: ExtUpdatePlaintDto): Promise<void> {
     const plaint = await this.checkPlaintReceiver(dto.plaintId, dto.myId);
     if (plaint.executedAt) {
-      throw new AppException(PlaintError.NOT_CREATED);
+      throw new AppException(PlaintError.ALREADY_EXECUTED);
+    }
+    if (plaint.completedAt) {
+      throw new AppException(PlaintError.ALREADY_COMPLETED);
     }
     await this.execute(plaint, dto);
     this.mqttService.publishNotificationMessage(
@@ -74,8 +77,8 @@ export class PlaintsService {
 
   async completePlaint(dto: ExtUpdatePlaintDto): Promise<void> {
     const plaint = await this.plaintsRepository.findOneBy({ id: dto.plaintId });
-    if (!plaint.executedAt || plaint.completedAt) {
-      throw new AppException(PlaintError.NOT_EXECUTED);
+    if (plaint.completedAt) {
+      throw new AppException(PlaintError.ALREADY_COMPLETED);
     }
     await this.complete(plaint, dto);
     this.mqttService.publishNotificationMessage(
@@ -91,7 +94,10 @@ export class PlaintsService {
   async deletePlaint(dto: DeletePlaintDto): Promise<void> {
     const plaint = await this.checkPlaintSender(dto.plaintId, dto.myId);
     if (plaint.executedAt) {
-      throw new AppException(PlaintError.NOT_CREATED);
+      throw new AppException(PlaintError.ALREADY_EXECUTED);
+    }
+    if (plaint.executedAt) {
+      throw new AppException(PlaintError.ALREADY_COMPLETED);
     }
     await this.delete(plaint);
   }

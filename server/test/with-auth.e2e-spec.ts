@@ -1808,7 +1808,7 @@ describe('With Auth', () => {
       return request(app.getHttpServer())
         .post(`/plaints/${plaintsId[0]}/execute`)
         .set('Authorization', `Bearer ${user.access}`)
-        .send({ text: 'received text' })
+        .send({ text: 'receiver text' })
         .expect('');
     });
 
