@@ -26,7 +26,7 @@ export class ArticlesService {
     const [result, count] = await this.getArticlesQueryBuilder(
       req,
     ).getManyAndCount();
-    await this.loadLikes(result);
+    await this.loadLikesAndComments(result);
     return { result, count };
   }
 
@@ -34,24 +34,7 @@ export class ArticlesService {
     const [result, count] = await this.getArticlesQueryBuilder(req)
       .andWhere('ownerUser.id = :myId', { myId })
       .getManyAndCount();
-    await this.loadLikes(result);
-    return { result, count };
-  }
-
-  async getLikedArticles(
-    myId: number,
-    req: Request,
-  ): Promise<Response<Article>> {
-    const [result, count] = await this.getArticlesQueryBuilder(req)
-      .innerJoinAndMapOne(
-        'article.myLike',
-        'article.likes',
-        'myLike',
-        'myLike.userId = :myId',
-        { myId },
-      )
-      .getManyAndCount();
-    await this.loadLikes(result);
+    await this.loadLikesAndComments(result);
     return { result, count };
   }
 
@@ -68,7 +51,41 @@ export class ArticlesService {
       )
       .andWhere('following.sender_user_id = :myId', { myId })
       .getManyAndCount();
-    await this.loadLikes(result);
+    await this.loadLikesAndComments(result);
+    return { result, count };
+  }
+
+  async getLikedArticles(
+    myId: number,
+    req: Request,
+  ): Promise<Response<Article>> {
+    const [result, count] = await this.getArticlesQueryBuilder(req)
+      .innerJoinAndMapOne(
+        'article.myLike',
+        'article.likes',
+        'myLike',
+        'myLike.userId = :myId',
+        { myId },
+      )
+      .getManyAndCount();
+    await this.loadLikesAndComments(result);
+    return { result, count };
+  }
+
+  async getCommentedArticles(
+    myId: number,
+    req: Request,
+  ): Promise<Response<Article>> {
+    const [result, count] = await this.getArticlesQueryBuilder(req)
+      .innerJoinAndMapOne(
+        'article.myComment',
+        'article.comments',
+        'myComment',
+        'myComment.userId = :myId',
+        { myId },
+      )
+      .getManyAndCount();
+    await this.loadLikesAndComments(result);
     return { result, count };
   }
 
@@ -76,7 +93,7 @@ export class ArticlesService {
     const [result, count] = await this.getArticlesQueryBuilder(
       req,
     ).getManyAndCount();
-    await this.loadLikes(result);
+    await this.loadLikesAndComments(result);
     return { result, count };
   }
 
@@ -181,18 +198,32 @@ export class ArticlesService {
     }
   }
 
-  private async loadLikes(articles: Article[]): Promise<void> {
+  private async loadLikesAndComments(articles: Article[]): Promise<void> {
     const promises = articles.map(async (article) => {
-      article.likes = (
-        await this.articlesRepository
-          .createQueryBuilder('article')
-          .leftJoin('article.likes', 'like')
-          .leftJoin('like.user', 'user')
-          .where('article.id = :articleId', { articleId: article.id })
-          .orderBy('like.id', 'DESC')
-          .select(['article.id', 'like.id', 'user.id', 'user.nick'])
-          .getOne()
-      ).likes;
+      const result = await this.articlesRepository
+        .createQueryBuilder('article')
+        .leftJoin('article.likes', 'like')
+        .leftJoin('like.user', 'liker')
+        .leftJoin('article.comments', 'comment')
+        .leftJoin('comment.user', 'commenter')
+        .where('article.id = :articleId', { articleId: article.id })
+        .orderBy('like.id', 'DESC')
+        .addOrderBy('comment.id', 'DESC')
+        .select([
+          'article.id',
+          'like.id',
+          'liker.id',
+          'liker.nick',
+          'like.createdAt',
+          'comment.id',
+          'commenter.id',
+          'commenter.nick',
+          'comment.text',
+          'comment.createdAt',
+        ])
+        .getOne();
+      article.likes = result.likes;
+      article.comments = result.comments;
     });
     await Promise.all(promises);
   }

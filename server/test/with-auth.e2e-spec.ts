@@ -20,6 +20,7 @@ describe('With Auth', () => {
   let manager: Tokens;
   let judge: Tokens;
   let articlesId: number;
+  let commentId: number;
   let cardId: number;
   let invoicesId: number;
   let cityId: number;
@@ -340,6 +341,14 @@ describe('With Auth', () => {
         .then((res) => (articlesId = res.body.result.map((p) => p.id)));
     });
 
+    it('POST /comments', async () => {
+      return request(app.getHttpServer())
+        .post('/comments')
+        .set('Authorization', `Bearer ${user.access}`)
+        .send({ articleId: articlesId[0], text: 'comment text' })
+        .expect('');
+    });
+
     it('POST /articles/:articleId/likes', async () => {
       return request(app.getHttpServer())
         .post(`/articles/${articlesId[0]}/likes`)
@@ -357,6 +366,14 @@ describe('With Auth', () => {
     it('GET /articles/liked', async () => {
       return request(app.getHttpServer())
         .get('/articles/liked')
+        .set('Authorization', `Bearer ${user.access}`)
+        .expect((res) => expect(res.body.count).toBeGreaterThan(0))
+        .then((res) => (commentId = res.body.result[0].comments[0].id));
+    });
+
+    it('GET /articles/commented', async () => {
+      return request(app.getHttpServer())
+        .get('/articles/commented')
         .set('Authorization', `Bearer ${user.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
@@ -379,6 +396,23 @@ describe('With Auth', () => {
     it('DELETE /articles/:articleId', async () => {
       return request(app.getHttpServer())
         .delete(`/articles/${articlesId[1]}`)
+        .set('Authorization', `Bearer ${user.access}`)
+        .expect('');
+    });
+  });
+
+  describe('Comments', () => {
+    it('PATCH /comments/:commentId', async () => {
+      return request(app.getHttpServer())
+        .patch(`/comments/${commentId}`)
+        .set('Authorization', `Bearer ${user.access}`)
+        .send({ text: 'comment text' })
+        .expect('');
+    });
+
+    it('DELETE /comments/:commentId', async () => {
+      return request(app.getHttpServer())
+        .delete(`/comments/${commentId}`)
         .set('Authorization', `Bearer ${user.access}`)
         .expect('');
     });

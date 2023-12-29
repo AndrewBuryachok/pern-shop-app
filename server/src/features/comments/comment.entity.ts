@@ -4,17 +4,22 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
-  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { Article } from '../articles/article.entity';
 import { User } from '../users/user.entity';
-import { Like } from './like.entity';
-import { Comment } from '../comments/comment.entity';
 
-@Entity('articles')
-export class Article {
+@Entity('comments')
+export class Comment {
   @PrimaryGeneratedColumn()
   id: number;
+
+  @Column({ name: 'article_id' })
+  articleId: number;
+
+  @ManyToOne(() => Article, { nullable: false, onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'article_id' })
+  article: Article;
 
   @Column({ name: 'user_id' })
   userId: number;
@@ -26,15 +31,6 @@ export class Article {
   @Column()
   text: string;
 
-  @Column()
-  image: string;
-
   @CreateDateColumn({ type: 'timestamptz', name: 'created_at' })
   createdAt: Date;
-
-  @OneToMany(() => Like, (like) => like.article)
-  likes: Like[];
-
-  @OneToMany(() => Comment, (comment) => comment.article)
-  comments: Comment[];
 }

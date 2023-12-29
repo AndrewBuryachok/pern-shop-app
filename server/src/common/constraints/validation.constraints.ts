@@ -5,6 +5,7 @@ import {
 } from 'class-validator';
 import { UsersService } from '../../features/users/users.service';
 import { ArticlesService } from '../../features/articles/articles.service';
+import { CommentsService } from '../../features/comments/comments.service';
 import { CardsService } from '../../features/cards/cards.service';
 import { InvoicesService } from '../../features/invoices/invoices.service';
 import { CitiesService } from '../../features/cities/cities.service';
@@ -62,6 +63,25 @@ export class IsArticleExists implements ValidatorConstraintInterface {
 
   defaultMessage(): string {
     return 'Unknown article';
+  }
+}
+
+@Injectable()
+@ValidatorConstraint({ name: 'isCommentExists', async: true })
+export class IsCommentExists implements ValidatorConstraintInterface {
+  constructor(private commentsService: CommentsService) {}
+
+  async validate(value: number): Promise<boolean> {
+    try {
+      await this.commentsService.checkCommentExists(value);
+    } catch (error) {
+      return false;
+    }
+    return true;
+  }
+
+  defaultMessage(): string {
+    return 'Unknown comment';
   }
 }
 

@@ -3,6 +3,7 @@ import { Factory, Seeder } from 'typeorm-seeding';
 import { User } from '../../features/users/user.entity';
 import { Article } from '../../features/articles/article.entity';
 import { Like } from '../../features/articles/like.entity';
+import { Comment } from '../../features/comments/comment.entity';
 import { Card } from '../../features/cards/card.entity';
 import { Exchange } from '../../features/exchanges/exchange.entity';
 import { Payment } from '../../features/payments/payment.entity';
@@ -66,6 +67,13 @@ export default class AppSeed implements Seeder {
         return like;
       })
       .createMany(80);
+    const comments = await factory(Comment)()
+      .map(async (comment) => {
+        comment.article = faker.helpers.arrayElement(articles);
+        comment.user = faker.helpers.arrayElement(users);
+        return comment;
+      })
+      .createMany(40);
     const cards = await factory(Card)()
       .map(async (card) => {
         const count = Math.floor(Math.random() * 2) + 1;

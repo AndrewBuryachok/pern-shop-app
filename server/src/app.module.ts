@@ -6,6 +6,7 @@ import { UsersModule } from './features/users/users.module';
 import { FriendsModule } from './features/friends/friends.module';
 import { FollowingsModule } from './features/followings/followings.module';
 import { ArticlesModule } from './features/articles/articles.module';
+import { CommentsModule } from './features/comments/comments.module';
 import { CardsModule } from './features/cards/cards.module';
 import { ExchangesModule } from './features/exchanges/exchanges.module';
 import { PaymentsModule } from './features/payments/payments.module';
@@ -55,6 +56,7 @@ import { RatingsModule } from './features/ratings/ratings.module';
     FriendsModule,
     FollowingsModule,
     ArticlesModule,
+    CommentsModule,
     CardsModule,
     ExchangesModule,
     PaymentsModule,

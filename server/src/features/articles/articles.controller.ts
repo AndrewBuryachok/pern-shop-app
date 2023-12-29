@@ -35,6 +35,14 @@ export class ArticlesController {
     return this.articlesService.getMyArticles(myId, req);
   }
 
+  @Get('followed')
+  getFollowedArticles(
+    @MyId() myId: number,
+    @Query() req: Request,
+  ): Promise<Response<Article>> {
+    return this.articlesService.getFollowedArticles(myId, req);
+  }
+
   @Get('liked')
   getLikedArticles(
     @MyId() myId: number,
@@ -43,12 +51,12 @@ export class ArticlesController {
     return this.articlesService.getLikedArticles(myId, req);
   }
 
-  @Get('followed')
-  getFollowedArticles(
+  @Get('commented')
+  getCommentedArticles(
     @MyId() myId: number,
     @Query() req: Request,
   ): Promise<Response<Article>> {
-    return this.articlesService.getFollowedArticles(myId, req);
+    return this.articlesService.getCommentedArticles(myId, req);
   }
 
   @Roles(Role.ADMIN)

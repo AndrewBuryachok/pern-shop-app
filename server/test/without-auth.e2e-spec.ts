@@ -113,12 +113,18 @@ describe('Without Auth', () => {
       return request(app.getHttpServer()).get('/articles/my').expect(401);
     });
 
+    it('GET /articles/followed', async () => {
+      return request(app.getHttpServer()).get('/articles/followed').expect(401);
+    });
+
     it('GET /articles/liked', async () => {
       return request(app.getHttpServer()).get('/articles/liked').expect(401);
     });
 
-    it('GET /articles/followed', async () => {
-      return request(app.getHttpServer()).get('/articles/followed').expect(401);
+    it('GET /articles/commented', async () => {
+      return request(app.getHttpServer())
+        .get('/articles/commented')
+        .expect(401);
     });
 
     it('GET /articles/all', async () => {
