@@ -11,7 +11,10 @@ const audio = new Audio('/sound.mp3');
 const client = connect(import.meta.env.VITE_BROKER_URL);
 
 client.on('connect', () =>
-  client.subscribe(import.meta.env.VITE_BROKER_TOPIC + 'users/#'),
+  client.subscribe([
+    import.meta.env.VITE_BROKER_TOPIC + 'users/#',
+    import.meta.env.VITE_BROKER_TOPIC + 'notifications/0',
+  ]),
 );
 
 client.on('message', (topic, message) => {

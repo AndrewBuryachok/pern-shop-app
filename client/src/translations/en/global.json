@@ -134,7 +134,7 @@
     "delete": "Delete",
     "remove": "Remove",
     "untake": "Untake",
-    "vote": "Vote To",
+    "vote": "Vote to",
     "like": "Like",
     "view": "View",
     "created": "Created",
@@ -145,7 +145,11 @@
     "edited": "Edited",
     "rated": "Rated",
     "removed": "Removed",
-    "untaken": "Untaken"
+    "untaken": "Untaken",
+    "deleted": "Deleted",
+    "liked": "Liked",
+    "commented": "Commented",
+    "voted": "Voted to"
   },
   "components": {
     "submit": "Submit",
