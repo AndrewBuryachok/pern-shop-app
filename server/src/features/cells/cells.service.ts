@@ -65,6 +65,7 @@ export class CellsService {
     );
     const name = await this.checkHasNotEnough(dto.storageId);
     await this.create({ ...dto, name });
+    this.mqttService.publishNotificationMessage(0, Notification.CREATED_CELL);
   }
 
   async reserveCell(dto: ReserveCellDto): Promise<number> {
@@ -86,8 +87,15 @@ export class CellsService {
   }
 
   async unreserveCell(id: number): Promise<void> {
-    const cell = await this.cellsRepository.findOneBy({ id });
+    const cell = await this.cellsRepository.findOne({
+      relations: ['storage', 'storage.card'],
+      where: { id },
+    });
     await this.unreserve(cell);
+    this.mqttService.publishNotificationMessage(
+      cell.storage.card.userId,
+      Notification.COMPLETED_LEASE,
+    );
   }
 
   private async checkHasNotEnough(storageId: number): Promise<number> {

@@ -4,11 +4,13 @@ import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { Market } from './market.entity';
 import { MarketState } from './market-state.entity';
 import { CardsService } from '../cards/cards.service';
+import { MqttService } from '../mqtt/mqtt.service';
 import { ExtCreateMarketDto, ExtEditMarketDto } from './market.dto';
 import { Request, Response } from '../../common/interfaces';
 import { MAX_MARKETS_NUMBER } from '../../common/constants';
 import { AppException } from '../../common/exceptions';
 import { MarketError } from './market-error.enum';
+import { Notification } from '../../common/enums';
 
 @Injectable()
 export class MarketsService {
@@ -18,6 +20,7 @@ export class MarketsService {
     @InjectRepository(MarketState)
     private marketsStatesRepository: Repository<MarketState>,
     private cardsService: CardsService,
+    private mqttService: MqttService,
   ) {}
 
   async getMainMarkets(req: Request): Promise<Response<Market>> {
@@ -70,6 +73,7 @@ export class MarketsService {
     await this.checkNameNotUsed(dto.name);
     await this.checkCoordinatesNotUsed(dto.x, dto.y);
     await this.create(dto);
+    this.mqttService.publishNotificationMessage(0, Notification.CREATED_MARKET);
   }
 
   async editMarket(dto: ExtEditMarketDto): Promise<void> {

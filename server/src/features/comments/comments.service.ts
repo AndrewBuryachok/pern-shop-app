@@ -2,6 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Comment } from './comment.entity';
+import { ArticlesService } from '../articles/articles.service';
+import { MqttService } from '../mqtt/mqtt.service';
 import {
   DeleteCommentDto,
   ExtCreateCommentDto,
@@ -9,16 +11,24 @@ import {
 } from './comment.dto';
 import { AppException } from '../../common/exceptions';
 import { CommentError } from './comment-error.enum';
+import { Notification } from '../../common/enums';
 
 @Injectable()
 export class CommentsService {
   constructor(
     @InjectRepository(Comment)
     private commentsRepository: Repository<Comment>,
+    private articlesService: ArticlesService,
+    private mqttService: MqttService,
   ) {}
 
   async createComment(dto: ExtCreateCommentDto): Promise<void> {
     await this.create(dto);
+    const article = await this.articlesService.findArticleById(dto.articleId);
+    this.mqttService.publishNotificationMessage(
+      article.userId,
+      Notification.COMMENTED_ARTICLE,
+    );
   }
 
   async editComment(dto: ExtEditCommentDto): Promise<void> {

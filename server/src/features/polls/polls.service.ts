@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { Poll } from './poll.entity';
 import { Vote } from './vote.entity';
+import { MqttService } from '../mqtt/mqtt.service';
 import {
   DeletePollDto,
   ExtCompletePollDto,
@@ -13,6 +14,7 @@ import { Request, Response } from '../../common/interfaces';
 import { AppException } from '../../common/exceptions';
 import { PollError } from './poll-error.enum';
 import { Result } from './result.enum';
+import { Notification } from '../../common/enums';
 
 @Injectable()
 export class PollsService {
@@ -21,6 +23,7 @@ export class PollsService {
     private pollsRepository: Repository<Poll>,
     @InjectRepository(Vote)
     private votesRepository: Repository<Vote>,
+    private mqttService: MqttService,
   ) {}
 
   async getMainPolls(req: Request): Promise<Response<Poll>> {
@@ -63,11 +66,16 @@ export class PollsService {
 
   async createPoll(dto: ExtCreatePollDto): Promise<void> {
     await this.create(dto);
+    this.mqttService.publishNotificationMessage(0, Notification.CREATED_POLL);
   }
 
   async completePoll(dto: ExtCompletePollDto): Promise<void> {
     const poll = await this.pollsRepository.findOneBy({ id: dto.pollId });
     await this.complete(poll, dto);
+    this.mqttService.publishNotificationMessage(
+      poll.userId,
+      Notification.COMPLETED_POLL,
+    );
   }
 
   async deletePoll(dto: DeletePollDto): Promise<void> {
@@ -91,6 +99,10 @@ export class PollsService {
     } else {
       await this.removeVote(vote);
     }
+    this.mqttService.publishNotificationMessage(
+      poll.userId,
+      Notification.VOTED_POLL,
+    );
   }
 
   async checkPollExists(id: number): Promise<void> {

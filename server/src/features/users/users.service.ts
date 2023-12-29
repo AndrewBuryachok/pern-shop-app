@@ -16,6 +16,7 @@ import { hashData } from '../../common/utils';
 import { AppException } from '../../common/exceptions';
 import { UserError } from './user-error.enum';
 import { Role } from './role.enum';
+import { Notification } from '../../common/enums';
 
 @Injectable()
 export class UsersService {
@@ -182,7 +183,9 @@ export class UsersService {
 
   async createUser(dto: CreateUserDto): Promise<User> {
     await this.checkNickNotUsed(dto.nick);
-    return this.create(dto);
+    const user = await this.create(dto);
+    this.mqttService.publishNotificationMessage(0, Notification.CREATED_USER);
+    return user;
   }
 
   async addUserToken(dto: UpdateUserTokenDto): Promise<void> {

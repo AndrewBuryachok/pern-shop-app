@@ -84,6 +84,10 @@ export class ProductsService {
       kind: Kind.PRODUCT,
     });
     await this.create({ ...dto, storageId: leaseId });
+    this.mqttService.publishNotificationMessage(
+      0,
+      Notification.CREATED_PRODUCT,
+    );
   }
 
   async editProduct(dto: ExtEditProductDto): Promise<void> {

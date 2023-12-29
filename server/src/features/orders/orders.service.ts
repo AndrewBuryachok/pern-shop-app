@@ -79,6 +79,7 @@ export class OrdersService {
     });
     await this.cardsService.decreaseCardBalance({ ...dto, sum: dto.price });
     await this.create({ ...dto, storageId: leaseId });
+    this.mqttService.publishNotificationMessage(0, Notification.CREATED_ORDER);
   }
 
   async takeOrder(dto: ExtTakeOrderDto): Promise<void> {

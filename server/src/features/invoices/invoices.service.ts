@@ -105,6 +105,10 @@ export class InvoicesService {
       throw new AppException(InvoiceError.ALREADY_COMPLETED);
     }
     await this.delete(invoice);
+    this.mqttService.publishNotificationMessage(
+      invoice.receiverUserId,
+      Notification.DELETED_INVOICE,
+    );
   }
 
   async checkInvoiceExists(id: number): Promise<void> {

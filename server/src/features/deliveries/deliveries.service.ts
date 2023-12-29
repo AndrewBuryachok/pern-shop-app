@@ -106,6 +106,10 @@ export class DeliveriesService {
       fromStorageId: fromLeaseId,
       toStorageId: toLeaseId,
     });
+    this.mqttService.publishNotificationMessage(
+      0,
+      Notification.CREATED_DELIVERY,
+    );
   }
 
   async takeDelivery(dto: ExtTakeDeliveryDto): Promise<void> {

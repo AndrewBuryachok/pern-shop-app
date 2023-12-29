@@ -66,6 +66,7 @@ export class LotsService {
       kind: Kind.LOT,
     });
     await this.create({ ...dto, storageId: leaseId });
+    this.mqttService.publishNotificationMessage(0, Notification.CREATED_LOT);
   }
 
   async buyLot(dto: BuyLotDto): Promise<void> {

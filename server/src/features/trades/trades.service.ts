@@ -63,6 +63,7 @@ export class TradesService {
   async createTrade(dto: ExtCreateTradeDto): Promise<void> {
     await this.waresService.buyWare(dto);
     await this.create(dto);
+    this.mqttService.publishNotificationMessage(0, Notification.CREATED_TASK);
   }
 
   async rateTrade(dto: ExtRateTradeDto): Promise<void> {

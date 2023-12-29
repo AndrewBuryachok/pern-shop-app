@@ -81,13 +81,11 @@ export class PlaintsService {
       throw new AppException(PlaintError.ALREADY_COMPLETED);
     }
     await this.complete(plaint, dto);
-    this.mqttService.publishNotificationMessage(
-      plaint.senderUserId,
-      Notification.COMPLETED_PLAINT,
-    );
-    this.mqttService.publishNotificationMessage(
-      plaint.receiverUserId,
-      Notification.COMPLETED_PLAINT,
+    [plaint.senderUserId, plaint.receiverUserId].forEach((userId) =>
+      this.mqttService.publishNotificationMessage(
+        userId,
+        Notification.COMPLETED_PLAINT,
+      ),
     );
   }
 
@@ -100,6 +98,10 @@ export class PlaintsService {
       throw new AppException(PlaintError.ALREADY_COMPLETED);
     }
     await this.delete(plaint);
+    this.mqttService.publishNotificationMessage(
+      plaint.receiverUserId,
+      Notification.DELETED_PLAINT,
+    );
   }
 
   async checkPlaintExists(id: number): Promise<void> {

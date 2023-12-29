@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { City } from './city.entity';
 import { User } from '../users/user.entity';
+import { MqttService } from '../mqtt/mqtt.service';
 import {
   ExtCreateCityDto,
   ExtEditCityDto,
@@ -12,12 +13,14 @@ import { Request, Response } from '../../common/interfaces';
 import { MAX_CITIES_NUMBER } from '../../common/constants';
 import { AppException } from '../../common/exceptions';
 import { CityError } from './city-error.enum';
+import { Notification } from '../../common/enums';
 
 @Injectable()
 export class CitiesService {
   constructor(
     @InjectRepository(City)
     private citiesRepository: Repository<City>,
+    private mqttService: MqttService,
   ) {}
 
   async getMainCities(req: Request): Promise<Response<City>> {
@@ -61,6 +64,7 @@ export class CitiesService {
     await this.checkNameNotUsed(dto.name);
     await this.checkCoordinatesNotUsed(dto.x, dto.y);
     await this.create(dto);
+    this.mqttService.publishNotificationMessage(0, Notification.CREATED_CITY);
   }
 
   async editCity(dto: ExtEditCityDto): Promise<void> {
@@ -74,6 +78,10 @@ export class CitiesService {
     const city = await this.checkCityOwner(dto.cityId, dto.myId, dto.hasRole);
     await this.checkNotCityUser(dto.userId);
     await this.addUser(city, dto.userId);
+    this.mqttService.publishNotificationMessage(
+      dto.userId,
+      Notification.ADDED_CITY,
+    );
   }
 
   async removeCityUser(dto: ExtUpdateCityUserDto): Promise<void> {
@@ -85,6 +93,10 @@ export class CitiesService {
       throw new AppException(CityError.NOT_IN_CITY);
     }
     await this.removeUser(city, dto.userId);
+    this.mqttService.publishNotificationMessage(
+      dto.userId,
+      Notification.REMOVED_CITY,
+    );
   }
 
   async checkCityExists(id: number): Promise<void> {

@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { Card } from './card.entity';
 import { User } from '../users/user.entity';
+import { MqttService } from '../mqtt/mqtt.service';
 import {
   ExtCreateCardDto,
   ExtEditCardDto,
@@ -17,12 +18,14 @@ import {
 } from '../../common/constants';
 import { AppException } from '../../common/exceptions';
 import { CardError } from './card-error.enum';
+import { Notification } from '../../common/enums';
 
 @Injectable()
 export class CardsService {
   constructor(
     @InjectRepository(Card)
     private cardsRepository: Repository<Card>,
+    private mqttService: MqttService,
   ) {}
 
   async getMyCards(myId: number, req: Request): Promise<Response<Card>> {
@@ -70,6 +73,10 @@ export class CardsService {
       throw new AppException(CardError.ALREADY_IN_CARD);
     }
     await this.addUser(card, dto.userId);
+    this.mqttService.publishNotificationMessage(
+      dto.userId,
+      Notification.ADDED_CARD,
+    );
   }
 
   async removeCardUser(dto: ExtUpdateCardUserDto): Promise<void> {
@@ -81,6 +88,10 @@ export class CardsService {
       throw new AppException(CardError.NOT_IN_CARD);
     }
     await this.removeUser(card, dto.userId);
+    this.mqttService.publishNotificationMessage(
+      dto.userId,
+      Notification.REMOVED_CARD,
+    );
   }
 
   async increaseCardBalance(dto: UpdateCardBalanceDto): Promise<Card> {

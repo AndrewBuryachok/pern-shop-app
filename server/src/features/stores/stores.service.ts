@@ -65,6 +65,7 @@ export class StoresService {
     );
     const name = await this.checkHasNotEnough(dto.marketId);
     await this.create({ ...dto, name });
+    this.mqttService.publishNotificationMessage(0, Notification.CREATED_STORE);
   }
 
   async reserveStore(dto: ReserveStoreDto): Promise<void> {
@@ -85,8 +86,15 @@ export class StoresService {
   }
 
   async unreserveStore(id: number): Promise<void> {
-    const store = await this.storesRepository.findOneBy({ id });
+    const store = await this.storesRepository.findOne({
+      relations: ['market', 'market.card'],
+      where: { id },
+    });
     await this.unreserve(store);
+    this.mqttService.publishNotificationMessage(
+      store.market.card.userId,
+      Notification.COMPLETED_RENT,
+    );
   }
 
   async checkStoreExists(id: number): Promise<void> {

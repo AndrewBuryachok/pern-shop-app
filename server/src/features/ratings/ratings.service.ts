@@ -72,6 +72,10 @@ export class RatingsService {
   async deleteRating(dto: DeleteRatingDto): Promise<void> {
     const rating = await this.checkRatingSender(dto.ratingId, dto.myId);
     await this.delete(rating);
+    this.mqttService.publishNotificationMessage(
+      rating.receiverUserId,
+      Notification.DELETED_RATING,
+    );
   }
 
   async checkRatingExists(id: number): Promise<void> {

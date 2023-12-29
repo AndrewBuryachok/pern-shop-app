@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { Article } from './article.entity';
 import { Like } from './like.entity';
+import { MqttService } from '../mqtt/mqtt.service';
 import {
   DeleteArticleDto,
   ExtCreateArticleDto,
@@ -12,6 +13,7 @@ import {
 import { Request, Response } from '../../common/interfaces';
 import { AppException } from '../../common/exceptions';
 import { ArticleError } from './article-error.enum';
+import { Notification } from '../../common/enums';
 
 @Injectable()
 export class ArticlesService {
@@ -20,6 +22,7 @@ export class ArticlesService {
     private articlesRepository: Repository<Article>,
     @InjectRepository(Like)
     private likesRepository: Repository<Like>,
+    private mqttService: MqttService,
   ) {}
 
   async getMainArticles(req: Request): Promise<Response<Article>> {
@@ -99,6 +102,10 @@ export class ArticlesService {
 
   async createArticle(dto: ExtCreateArticleDto): Promise<void> {
     await this.create(dto);
+    this.mqttService.publishNotificationMessage(
+      0,
+      Notification.CREATED_ARTICLE,
+    );
   }
 
   async editArticle(dto: ExtEditArticleDto): Promise<void> {
@@ -129,6 +136,11 @@ export class ArticlesService {
     } else {
       await this.like(dto);
     }
+    const article = await this.findArticleById(dto.articleId);
+    this.mqttService.publishNotificationMessage(
+      article.userId,
+      Notification.LIKED_ARTICLE,
+    );
   }
 
   async checkArticleExists(id: number): Promise<void> {
@@ -145,6 +157,10 @@ export class ArticlesService {
       throw new AppException(ArticleError.NOT_OWNER);
     }
     return article;
+  }
+
+  findArticleById(id: number): Promise<Article> {
+    return this.articlesRepository.findOneBy({ id });
   }
 
   private async create(dto: ExtCreateArticleDto): Promise<void> {

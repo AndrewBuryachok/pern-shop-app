@@ -3,10 +3,12 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { Good } from './good.entity';
 import { ShopsService } from '../shops/shops.service';
+import { MqttService } from '../mqtt/mqtt.service';
 import { DeleteGoodDto, ExtCreateGoodDto, ExtEditGoodDto } from './good.dto';
 import { Request, Response } from '../../common/interfaces';
 import { AppException } from '../../common/exceptions';
 import { GoodError } from './good-error.enum';
+import { Notification } from '../../common/enums';
 
 @Injectable()
 export class GoodsService {
@@ -14,6 +16,7 @@ export class GoodsService {
     @InjectRepository(Good)
     private goodsRepository: Repository<Good>,
     private shopsService: ShopsService,
+    private mqttService: MqttService,
   ) {}
 
   async getMainGoods(req: Request): Promise<Response<Good>> {
@@ -40,6 +43,7 @@ export class GoodsService {
   async createGood(dto: ExtCreateGoodDto): Promise<void> {
     await this.shopsService.checkShopOwner(dto.shopId, dto.myId, dto.hasRole);
     await this.create(dto);
+    this.mqttService.publishNotificationMessage(0, Notification.CREATED_GOOD);
   }
 
   async editGood(dto: ExtEditGoodDto): Promise<void> {

@@ -2,17 +2,20 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { Shop } from './shop.entity';
+import { MqttService } from '../mqtt/mqtt.service';
 import { ExtCreateShopDto, ExtEditShopDto } from './shop.dto';
 import { Request, Response } from '../../common/interfaces';
 import { MAX_SHOPS_NUMBER } from '../../common/constants';
 import { AppException } from '../../common/exceptions';
 import { ShopError } from './shop-error.enum';
+import { Notification } from '../../common/enums';
 
 @Injectable()
 export class ShopsService {
   constructor(
     @InjectRepository(Shop)
     private shopsRepository: Repository<Shop>,
+    private mqttService: MqttService,
   ) {}
 
   async getMainShops(req: Request): Promise<Response<Shop>> {
@@ -54,6 +57,7 @@ export class ShopsService {
     await this.checkNameNotUsed(dto.name);
     await this.checkCoordinatesNotUsed(dto.x, dto.y);
     await this.create(dto);
+    this.mqttService.publishNotificationMessage(0, Notification.CREATED_SHOP);
   }
 
   async editShop(dto: ExtEditShopDto): Promise<void> {

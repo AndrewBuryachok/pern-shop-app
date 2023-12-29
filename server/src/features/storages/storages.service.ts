@@ -4,12 +4,14 @@ import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { Storage } from './storage.entity';
 import { StorageState } from './storage-state.entity';
 import { CardsService } from '../cards/cards.service';
+import { MqttService } from '../mqtt/mqtt.service';
 import { ExtCreateStorageDto, ExtEditStorageDto } from './storage.dto';
 import { Request, Response } from '../../common/interfaces';
 import { getDateWeekAgo } from '../../common/utils';
 import { MAX_STORAGES_NUMBER } from '../../common/constants';
 import { AppException } from '../../common/exceptions';
 import { StorageError } from './storage-error.enum';
+import { Notification } from '../../common/enums';
 
 @Injectable()
 export class StoragesService {
@@ -19,6 +21,7 @@ export class StoragesService {
     @InjectRepository(StorageState)
     private storagesStatesRepository: Repository<StorageState>,
     private cardsService: CardsService,
+    private mqttService: MqttService,
   ) {}
 
   async getMainStorages(req: Request): Promise<Response<Storage>> {
@@ -94,6 +97,10 @@ export class StoragesService {
     await this.checkNameNotUsed(dto.name);
     await this.checkCoordinatesNotUsed(dto.x, dto.y);
     await this.create(dto);
+    this.mqttService.publishNotificationMessage(
+      0,
+      Notification.CREATED_STORAGE,
+    );
   }
 
   async editStorage(dto: ExtEditStorageDto): Promise<void> {
