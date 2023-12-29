@@ -71,8 +71,9 @@ export default function UserProfile({ data: user }: Props) {
                   <Anchor
                     component='button'
                     type='button'
-                    size='sm'
                     onClick={() => openViewUserFriendsModal(user)}
+                    size='xs'
+                    underline
                   >
                     {t('actions.view').toLowerCase()}
                   </Anchor>

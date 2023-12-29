@@ -71,6 +71,7 @@ export default function AuthModal() {
           type='button'
           onClick={() => toggle()}
           color='dimmed'
+          underline
         >
           {t('modals.' + type + '.anchor')}
         </Anchor>

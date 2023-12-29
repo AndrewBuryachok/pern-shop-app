@@ -1,28 +1,27 @@
 import { t } from 'i18next';
-import { useTranslation } from 'react-i18next';
-import { Select, Stack } from '@mantine/core';
+import { Timeline } from '@mantine/core';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { Article } from './article.model';
-import { UsersItem } from '../../common/components/UsersItem';
-import { viewUsers } from '../../common/utils';
+import CustomAvatar from '../../common/components/CustomAvatar';
+import SingleText from '../../common/components/SingleText';
+import { parseTime } from '../../common/utils';
 
 type Props = IModal<Article>;
 
 export default function ViewArticleLikesModal({ data: article }: Props) {
-  const [t] = useTranslation();
-
   return (
-    <Stack spacing={8}>
-      <Select
-        label={t('columns.likes')}
-        placeholder={`${t('components.total')}: ${article.likes.length}`}
-        itemComponent={UsersItem}
-        data={viewUsers(article.likes.map((like) => like.user))}
-        limit={20}
-        searchable
-      />
-    </Stack>
+    <Timeline>
+      {article.likes.map((like) => (
+        <Timeline.Item
+          key={like.id}
+          title={like.user.nick}
+          bullet={<CustomAvatar {...like.user} />}
+        >
+          <SingleText text={parseTime(like.createdAt)} />
+        </Timeline.Item>
+      ))}
+    </Timeline>
   );
 }
 

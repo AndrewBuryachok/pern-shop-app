@@ -1,5 +1,6 @@
 import { SmUser } from '../users/user.model';
 import { Like } from './like.model';
+import { Comment } from '../comments/comment.model';
 
 export interface Article {
   id: number;
@@ -8,4 +9,5 @@ export interface Article {
   image: string;
   createdAt: Date;
   likes: Like[];
+  comments: Comment[];
 }

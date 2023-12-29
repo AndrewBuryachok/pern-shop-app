@@ -15,31 +15,37 @@ export const articlesApi = emptyApi.injectEndpoints({
       query: (req) => ({
         url: `/articles?${getQuery(req)}`,
       }),
-      providesTags: ['Article', 'Like'],
+      providesTags: ['Article', 'Like', 'Comment'],
     }),
     getMyArticles: build.query<IResponse<Article>, IRequest>({
       query: (req) => ({
         url: `/articles/my?${getQuery(req)}`,
       }),
-      providesTags: ['Auth', 'Article', 'Like'],
-    }),
-    getLikedArticles: build.query<IResponse<Article>, IRequest>({
-      query: (req) => ({
-        url: `/articles/liked?${getQuery(req)}`,
-      }),
-      providesTags: ['Auth', 'Article', 'Like'],
+      providesTags: ['Auth', 'Article', 'Like', 'Comment'],
     }),
     getFollowedArticles: build.query<IResponse<Article>, IRequest>({
       query: (req) => ({
         url: `/articles/followed?${getQuery(req)}`,
       }),
-      providesTags: ['Auth', 'Article', 'Like', 'Following'],
+      providesTags: ['Auth', 'Article', 'Like', 'Comment', 'Following'],
+    }),
+    getLikedArticles: build.query<IResponse<Article>, IRequest>({
+      query: (req) => ({
+        url: `/articles/liked?${getQuery(req)}`,
+      }),
+      providesTags: ['Auth', 'Article', 'Like', 'Comment'],
+    }),
+    getCommentedArticles: build.query<IResponse<Article>, IRequest>({
+      query: (req) => ({
+        url: `/articles/commented?${getQuery(req)}`,
+      }),
+      providesTags: ['Auth', 'Article', 'Like', 'Comment'],
     }),
     getAllArticles: build.query<IResponse<Article>, IRequest>({
       query: (req) => ({
         url: `/articles/all?${getQuery(req)}`,
       }),
-      providesTags: ['Auth', 'Article', 'Like'],
+      providesTags: ['Auth', 'Article', 'Like', 'Comment'],
     }),
     createArticle: build.mutation<void, CreateArticleDto>({
       query: (dto) => ({
@@ -77,8 +83,9 @@ export const articlesApi = emptyApi.injectEndpoints({
 export const {
   useGetMainArticlesQuery,
   useGetMyArticlesQuery,
-  useGetLikedArticlesQuery,
   useGetFollowedArticlesQuery,
+  useGetLikedArticlesQuery,
+  useGetCommentedArticlesQuery,
   useGetAllArticlesQuery,
   useCreateArticleMutation,
   useEditArticleMutation,

@@ -10,7 +10,6 @@ import { LikeArticleDto } from './article.dto';
 import CustomForm from '../../common/components/CustomForm';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import CustomImage from '../../common/components/CustomImage';
-import { Color } from '../../common/constants';
 
 type Props = IModal<Article>;
 
@@ -50,12 +49,8 @@ export default function LikeArticleModal({ data: article }: Props) {
   );
 }
 
-export const likeArticleAction = {
-  open: (article: Article) =>
-    openModal({
-      title: t('actions.like') + ' ' + t('modals.articles'),
-      children: <LikeArticleModal data={article} />,
-    }),
-  disable: () => false,
-  color: Color.GREEN,
-};
+export const openLikeArticleModal = (article: Article) =>
+  openModal({
+    title: t('actions.like') + ' ' + t('modals.articles'),
+    children: <LikeArticleModal data={article} />,
+  });

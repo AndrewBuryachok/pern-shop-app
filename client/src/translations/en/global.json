@@ -112,8 +112,9 @@
     "all": "All",
     "sent": "Sent",
     "received": "Received",
-    "liked": "Liked",
     "followed": "Followed",
+    "liked": "Liked",
+    "commented": "Commented",
     "placed": "Placed",
     "selled": "Selled",
     "taken": "Taken",
@@ -233,7 +234,8 @@
     "oldpassword": "Old Password",
     "newpassword": "New Password",
     "rent": "Rent",
-    "likes": "Likes"
+    "likes": "Likes",
+    "comments": "Comments"
   },
   "modals": {
     "auth": "Auth",
@@ -249,6 +251,7 @@
     "friends": "Friend",
     "followings": "Following",
     "articles": "Article",
+    "comments": "Comment",
     "cards": "Card",
     "exchanges": "Exchange",
     "payments": "Payment",
