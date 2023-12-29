@@ -4,10 +4,12 @@ import { Repository } from 'typeorm';
 import { Invitation } from './invitation.entity';
 import { User } from '../users/user.entity';
 import { UsersService } from '../users/users.service';
+import { MqttService } from '../mqtt/mqtt.service';
 import { UpdateFriendDto } from './friend.dto';
 import { Request, Response } from '../../common/interfaces';
 import { AppException } from '../../common/exceptions';
 import { FriendError } from './friend-error.enum';
+import { Notification } from '../../common/enums';
 
 @Injectable()
 export class FriendsService {
@@ -15,6 +17,7 @@ export class FriendsService {
     @InjectRepository(Invitation)
     private invitationsRepository: Repository<Invitation>,
     private usersService: UsersService,
+    private mqttService: MqttService,
   ) {}
 
   getMyFriends(myId: number, req: Request): Promise<Response<User>> {
@@ -57,6 +60,10 @@ export class FriendsService {
       }
       await this.delete(invitation2);
     }
+    this.mqttService.publishNotificationMessage(
+      dto.userId,
+      Notification.ADDED_FRIEND,
+    );
   }
 
   async removeFriend(dto: UpdateFriendDto): Promise<void> {
@@ -84,6 +91,10 @@ export class FriendsService {
         });
       }
     }
+    this.mqttService.publishNotificationMessage(
+      dto.userId,
+      Notification.REMOVED_FRIEND,
+    );
   }
 
   private async create(dto: UpdateFriendDto): Promise<void> {
