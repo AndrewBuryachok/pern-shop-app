@@ -6,7 +6,7 @@ import AvatarWithSingleText from '../../common/components/AvatarWithSingleText';
 import SingleText from '../../common/components/SingleText';
 import VoteBadge from '../../common/components/VoteBadge';
 import CustomProgress from '../../common/components/CustomProgress';
-import DateText from '../../common/components/DateText';
+import ResultBadge from '../../common/components/ResultBadge';
 import CustomActions from '../../common/components/CustomActions';
 import { viewPollAction } from './ViewPollModal';
 
@@ -22,8 +22,8 @@ export default function PollsTable({ actions = [], ...props }: Props) {
         t('columns.owner'),
         t('columns.title'),
         t('columns.vote'),
-        t('columns.results'),
-        t('columns.completed'),
+        t('columns.votes'),
+        t('columns.result'),
         t('columns.action'),
       ]}
       {...props}
@@ -43,7 +43,7 @@ export default function PollsTable({ actions = [], ...props }: Props) {
             <CustomProgress {...poll} />
           </td>
           <td>
-            <DateText date={poll.completedAt} />
+            <ResultBadge {...poll} />
           </td>
           <td>
             <CustomActions data={poll} actions={[viewPollAction, ...actions]} />

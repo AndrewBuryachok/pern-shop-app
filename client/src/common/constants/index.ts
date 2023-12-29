@@ -5,7 +5,8 @@ export * from './categories';
 export * from './items';
 export * from './kits';
 export * from './kind';
-export * from './status';
 export * from './priority';
+export * from './status';
+export * from './result';
 
 export const ROWS_PER_PAGE = 10;

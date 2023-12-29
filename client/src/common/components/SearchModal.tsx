@@ -58,6 +58,7 @@ import {
   selectKits,
   selectMarkets,
   selectPriorities,
+  selectResults,
   selectRoles,
   selectShops,
   selectStatuses,
@@ -514,6 +515,17 @@ export default function SearchModal(props: Props) {
           searchable
           allowDeselect
           {...form.getInputProps('status')}
+        />
+      )}
+      {props.search.result !== undefined && (
+        <Select
+          label={t('columns.result')}
+          placeholder={t('columns.result')}
+          itemComponent={ColorsItem}
+          data={selectResults()}
+          searchable
+          allowDeselect
+          {...form.getInputProps('result')}
         />
       )}
       {props.search.rate !== undefined && (

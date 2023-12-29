@@ -27,6 +27,7 @@ export default function MyPolls() {
     id: +(searchParams.get('id') || 0) || null,
     user: searchParams.get('user'),
     title: searchParams.get('title') || '',
+    result: searchParams.get('result'),
     minDate: searchParams.get('minDate'),
     maxDate: searchParams.get('maxDate'),
   });
@@ -42,7 +43,7 @@ export default function MyPolls() {
 
   const actions = {
     main: [upVotePollAction, downVotePollAction],
-    my: [completePollAction, deletePollAction],
+    my: [deletePollAction],
     voted: [upVotePollAction, downVotePollAction],
     all: [completePollAction, deletePollAction],
   }[tab];

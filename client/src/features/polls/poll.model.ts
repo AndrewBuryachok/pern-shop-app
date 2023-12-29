@@ -6,6 +6,7 @@ export interface Poll {
   user: SmUser;
   title: string;
   text: string;
+  result: number;
   createdAt: Date;
   completedAt?: Date;
   votes: Vote[];

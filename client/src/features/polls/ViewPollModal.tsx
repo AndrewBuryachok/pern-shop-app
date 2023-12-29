@@ -8,7 +8,7 @@ import { getCurrentUser } from '../auth/auth.slice';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import { UsersItem } from '../../common/components/UsersItem';
 import { parseTime, viewUsers } from '../../common/utils';
-import { Color } from '../../common/constants';
+import { Color, results } from '../../common/constants';
 
 type Props = IModal<Poll>;
 
@@ -59,6 +59,11 @@ export default function ViewPollModal({ data: poll }: Props) {
         data={viewUsers(downVotes)}
         limit={20}
         searchable
+      />
+      <TextInput
+        label={t('columns.result')}
+        value={t('constants.results.' + results[poll.result - 1])}
+        disabled
       />
       <TextInput
         label={t('columns.created')}

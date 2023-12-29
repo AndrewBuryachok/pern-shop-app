@@ -1,7 +1,12 @@
 import { emptyApi } from '../../app/empty.api';
 import { IRequest, IResponse } from '../../common/interfaces';
 import { Poll } from './poll.model';
-import { CreatePollDto, PollIdDto, VotePollDto } from './poll.dto';
+import {
+  CompletePollDto,
+  CreatePollDto,
+  DeletePollDto,
+  VotePollDto,
+} from './poll.dto';
 import { getQuery } from '../../common/utils';
 
 export const pollsApi = emptyApi.injectEndpoints({
@@ -38,14 +43,14 @@ export const pollsApi = emptyApi.injectEndpoints({
       }),
       invalidatesTags: ['Poll'],
     }),
-    completePoll: build.mutation<void, PollIdDto>({
+    completePoll: build.mutation<void, CompletePollDto>({
       query: ({ pollId }) => ({
         url: `/polls/${pollId}`,
         method: 'POST',
       }),
       invalidatesTags: ['Poll'],
     }),
-    deletePoll: build.mutation<void, PollIdDto>({
+    deletePoll: build.mutation<void, DeletePollDto>({
       query: ({ pollId }) => ({
         url: `/polls/${pollId}`,
         method: 'DELETE',

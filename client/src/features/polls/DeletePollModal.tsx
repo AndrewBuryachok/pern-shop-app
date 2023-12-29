@@ -6,7 +6,7 @@ import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { Poll } from './poll.model';
 import { useDeletePollMutation } from './polls.api';
-import { PollIdDto } from './poll.dto';
+import { DeletePollDto } from './poll.dto';
 import CustomForm from '../../common/components/CustomForm';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import { Color } from '../../common/constants';
@@ -24,7 +24,7 @@ export default function DeletePollModal({ data: poll }: Props) {
 
   const [deletePoll, { isLoading }] = useDeletePollMutation();
 
-  const handleSubmit = async (dto: PollIdDto) => {
+  const handleSubmit = async (dto: DeletePollDto) => {
     await deletePoll(dto);
   };
 

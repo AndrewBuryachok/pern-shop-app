@@ -213,7 +213,8 @@
     "priority": "Пріоритет",
     "executed": "Виконано",
     "vote": "Голос",
-    "results": "Результати",
+    "votes": "Голоса",
+    "result": "Результат",
     "rate": "Оцінка",
     "action": "Дія",
     "things": "Речі",
@@ -320,6 +321,11 @@
       "high": "Високий",
       "medium": "Середній",
       "low": "Низький"
+    },
+    "results": {
+      "progress": "На розгляді",
+      "approved": "Прийнято",
+      "rejected": "Відхилено"
     },
     "categories": {
       "building": "Будівельні",

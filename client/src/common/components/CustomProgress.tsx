@@ -16,7 +16,7 @@ export default function CustomProgress(props: Props) {
 
   return (
     <>
-      <Group position='apart'>
+      <Group spacing={0} position='apart'>
         {[upVotes, downVotes].map((value, index) => (
           <Text key={index} size='xs' weight='bold'>
             {value}

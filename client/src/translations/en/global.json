@@ -213,7 +213,8 @@
     "priority": "Priority",
     "executed": "Executed",
     "vote": "Vote",
-    "results": "Results",
+    "votes": "Votes",
+    "result": "Result",
     "rate": "Rate",
     "action": "Action",
     "things": "Things",
@@ -320,6 +321,11 @@
       "high": "High",
       "medium": "Medium",
       "low": "Low"
+    },
+    "results": {
+      "progress": "In progress",
+      "approved": "Approved",
+      "rejected": "Rejected"
     },
     "categories": {
       "building": "Building",

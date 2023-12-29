@@ -17,6 +17,8 @@ import {
   kinds,
   kits,
   priorities,
+  results,
+  resultsToColors,
   roles,
   statuses,
 } from '../../common/constants';
@@ -160,6 +162,13 @@ export const selectKinds = () =>
     label: t('constants.kinds.' + kind),
   }));
 
+export const selectPriorities = () =>
+  priorities.map((priority, index) => ({
+    priority: index + 1,
+    value: `${index + 1}`,
+    label: t('constants.priorities.' + priority),
+  }));
+
 export const selectStatuses = () =>
   statuses.map((status, index) => ({
     text: t('constants.statuses.' + status),
@@ -168,9 +177,10 @@ export const selectStatuses = () =>
     label: t('constants.statuses.' + status),
   }));
 
-export const selectPriorities = () =>
-  priorities.map((priority, index) => ({
-    priority: index + 1,
+export const selectResults = () =>
+  results.map((result, index) => ({
+    text: t('constants.results.' + result),
+    color: `${resultsToColors[index]}`,
     value: `${index + 1}`,
-    label: t('constants.priorities.' + priority),
+    label: t('constants.results.' + result),
   }));
