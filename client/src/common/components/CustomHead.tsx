@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
-import { Button, Group, ThemeIcon, Title, Tooltip } from '@mantine/core';
+import { Button, Group, Popover, Text, ThemeIcon, Title } from '@mantine/core';
 import { useDocumentTitle } from '@mantine/hooks';
 import { IconInfoCircle, IconRefresh, IconSearch } from '@tabler/icons';
 import { IHead } from '../interfaces';
@@ -21,17 +21,16 @@ export default function CustomHead(props: Props) {
     <Group spacing={0} position='apart'>
       <Group spacing={4}>
         <Title order={3}>{page}</Title>
-        <Tooltip
-          label={t('information.' + active[1])}
-          position='right'
-          width={220}
-          multiline
-          withArrow
-        >
-          <ThemeIcon size={20}>
-            <IconInfoCircle size={16} />
-          </ThemeIcon>
-        </Tooltip>
+        <Popover offset={4} width={220} withArrow>
+          <Popover.Target>
+            <ThemeIcon size={20}>
+              <IconInfoCircle size={16} />
+            </ThemeIcon>
+          </Popover.Target>
+          <Popover.Dropdown p={8}>
+            <Text size='sm'>{t('information.' + active[1])}</Text>
+          </Popover.Dropdown>
+        </Popover>
       </Group>
       <Button
         leftIcon={<IconRefresh size={16} />}
