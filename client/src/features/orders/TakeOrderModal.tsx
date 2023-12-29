@@ -62,7 +62,7 @@ export default function TakeOrderModal({ data: order, hasRole }: Props) {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={t('actions.take') + ' ' + t('modals.order')}
+      text={t('actions.take') + ' ' + t('modals.orders')}
     >
       <TextInput
         label={t('columns.customer')}
@@ -133,7 +133,7 @@ export default function TakeOrderModal({ data: order, hasRole }: Props) {
 export const takeOrderFactory = (hasRole: boolean) => ({
   open: (order: Order) =>
     openModal({
-      title: t('actions.take') + ' ' + t('modals.order'),
+      title: t('actions.take') + ' ' + t('modals.orders'),
       children: <TakeOrderModal data={order} hasRole={hasRole} />,
     }),
   disable: (order: Order) => order.status !== Status.CREATED,

@@ -34,7 +34,7 @@ export default function DeleteDeliveryModal({ data: delivery }: Props) {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={t('actions.delete') + ' ' + t('modals.delivery')}
+      text={t('actions.delete') + ' ' + t('modals.deliveries')}
     >
       <TextInput
         label={t('columns.customer')}
@@ -72,7 +72,7 @@ export default function DeleteDeliveryModal({ data: delivery }: Props) {
 export const deleteDeliveryAction = {
   open: (delivery: Delivery) =>
     openModal({
-      title: t('actions.delete') + ' ' + t('modals.delivery'),
+      title: t('actions.delete') + ' ' + t('modals.deliveries'),
       children: <DeleteDeliveryModal data={delivery} />,
     }),
   disable: (delivery: Delivery) => delivery.status !== Status.CREATED,

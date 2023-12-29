@@ -72,7 +72,7 @@ export default function CreateStorageModal({ hasRole }: Props) {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={t('actions.create') + ' ' + t('modals.storage')}
+      text={t('actions.create') + ' ' + t('modals.storages')}
     >
       {hasRole && (
         <Select
@@ -160,7 +160,7 @@ export const createStorageFactory = (hasRole: boolean) => ({
   label: 'create',
   open: () =>
     openModal({
-      title: t('actions.create') + ' ' + t('modals.storage'),
+      title: t('actions.create') + ' ' + t('modals.storages'),
       children: <CreateStorageModal hasRole={hasRole} />,
     }),
 });

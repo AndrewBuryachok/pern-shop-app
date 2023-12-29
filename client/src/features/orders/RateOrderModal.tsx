@@ -35,7 +35,7 @@ export default function RateOrderModal({ data: order }: Props) {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={t('actions.rate') + ' ' + t('modals.order')}
+      text={t('actions.rate') + ' ' + t('modals.orders')}
     >
       <TextInput
         label={t('columns.executor')}
@@ -78,7 +78,7 @@ export default function RateOrderModal({ data: order }: Props) {
 export const rateOrderAction = {
   open: (order: Order) =>
     openModal({
-      title: t('actions.rate') + ' ' + t('modals.order'),
+      title: t('actions.rate') + ' ' + t('modals.orders'),
       children: <RateOrderModal data={order} />,
     }),
   disable: (order: Order) => order.status !== Status.COMPLETED || !!order.rate,

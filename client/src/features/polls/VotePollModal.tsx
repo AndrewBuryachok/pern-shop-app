@@ -33,7 +33,7 @@ export default function VotePollModal({ data: poll }: Props) {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={t('actions.vote') + ' ' + t('modals.poll')}
+      text={t('actions.vote') + ' ' + t('modals.polls')}
     >
       <TextInput
         label={t('columns.owner')}
@@ -56,7 +56,7 @@ export default function VotePollModal({ data: poll }: Props) {
 export const votePollFactory = (vote: boolean) => ({
   open: (poll: Poll) =>
     openModal({
-      title: t('actions.vote') + ' ' + t('modals.poll'),
+      title: t('actions.vote') + ' ' + t('modals.polls'),
       children: <VotePollModal data={{ ...poll, type: vote }} />,
     }),
   disable: (poll: Poll) => !!poll.completedAt,

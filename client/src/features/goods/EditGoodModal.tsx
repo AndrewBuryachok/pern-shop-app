@@ -58,7 +58,7 @@ export default function EditGoodModal({ data: good }: Props) {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={t('actions.edit') + ' ' + t('modals.good')}
+      text={t('actions.edit') + ' ' + t('modals.goods')}
       isChanged={!form.isDirty()}
     >
       <Select
@@ -126,7 +126,7 @@ export default function EditGoodModal({ data: good }: Props) {
 export const editGoodAction = {
   open: (good: Good) =>
     openModal({
-      title: t('actions.edit') + ' ' + t('modals.good'),
+      title: t('actions.edit') + ' ' + t('modals.goods'),
       children: <EditGoodModal data={good} />,
     }),
   disable: () => false,

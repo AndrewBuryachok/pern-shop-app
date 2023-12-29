@@ -87,7 +87,7 @@ export default function ViewLotModal({ data: lot }: Props) {
 export const viewLotAction = {
   open: (lot: Lot) =>
     openModal({
-      title: t('actions.view') + ' ' + t('modals.lot'),
+      title: t('actions.view') + ' ' + t('modals.lots'),
       children: <ViewLotModal data={lot} />,
     }),
   disable: () => false,

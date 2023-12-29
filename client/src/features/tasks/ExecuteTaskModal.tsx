@@ -33,7 +33,7 @@ export default function ExecuteTaskModal({ data: task }: Props) {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={t('actions.execute') + ' ' + t('modals.task')}
+      text={t('actions.execute') + ' ' + t('modals.tasks')}
     >
       <TextInput
         label={t('columns.customer')}
@@ -58,7 +58,7 @@ export default function ExecuteTaskModal({ data: task }: Props) {
 export const executeTaskAction = {
   open: (task: Task) =>
     openModal({
-      title: t('actions.execute') + ' ' + t('modals.task'),
+      title: t('actions.execute') + ' ' + t('modals.tasks'),
       children: <ExecuteTaskModal data={task} />,
     }),
   disable: (task: Task) => task.status !== Status.TAKEN,

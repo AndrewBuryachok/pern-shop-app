@@ -34,7 +34,7 @@ export default function CompleteProductModal({ data: product }: Props) {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={t('actions.complete') + ' ' + t('modals.product')}
+      text={t('actions.complete') + ' ' + t('modals.products')}
     >
       <TextInput
         label={t('columns.seller')}
@@ -72,7 +72,7 @@ export default function CompleteProductModal({ data: product }: Props) {
 export const completeProductFactory = (hasRole: boolean) => ({
   open: (product: Product) =>
     openModal({
-      title: t('actions.complete') + ' ' + t('modals.product'),
+      title: t('actions.complete') + ' ' + t('modals.products'),
       children: <CompleteProductModal data={product} />,
     }),
   disable: (product: Product) => !!product.completedAt,

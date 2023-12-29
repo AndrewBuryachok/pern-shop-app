@@ -32,7 +32,7 @@ export default function RemoveFollowingModal({ data: user }: Props) {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={t('actions.remove') + ' ' + t('modals.following')}
+      text={t('actions.remove') + ' ' + t('modals.followings')}
     >
       <TextInput
         label={t('columns.user')}
@@ -48,7 +48,7 @@ export default function RemoveFollowingModal({ data: user }: Props) {
 export const removeFollowingAction = {
   open: (user: User) =>
     openModal({
-      title: t('actions.remove') + ' ' + t('modals.following'),
+      title: t('actions.remove') + ' ' + t('modals.followings'),
       children: <RemoveFollowingModal data={user} />,
     }),
   disable: () => false,

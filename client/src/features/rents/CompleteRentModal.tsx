@@ -33,7 +33,7 @@ export default function CompleteRentModal({ data: rent }: Props) {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={t('actions.complete') + ' ' + t('modals.rent')}
+      text={t('actions.complete') + ' ' + t('modals.rents')}
     >
       <TextInput
         label={t('columns.renter')}
@@ -66,7 +66,7 @@ export default function CompleteRentModal({ data: rent }: Props) {
 export const completeRentAction = {
   open: (rent: Rent) =>
     openModal({
-      title: t('actions.complete') + ' ' + t('modals.rent'),
+      title: t('actions.complete') + ' ' + t('modals.rents'),
       children: <CompleteRentModal data={rent} />,
     }),
   disable: (rent: Rent) => !!rent.completedAt,

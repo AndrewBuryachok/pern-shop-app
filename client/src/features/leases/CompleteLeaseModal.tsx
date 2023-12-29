@@ -33,7 +33,7 @@ export default function CompleteLeaseModal({ data: lease }: Props) {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={t('actions.complete') + ' ' + t('modals.lease')}
+      text={t('actions.complete') + ' ' + t('modals.leases')}
     >
       <TextInput
         label={t('columns.renter')}
@@ -66,7 +66,7 @@ export default function CompleteLeaseModal({ data: lease }: Props) {
 export const completeLeaseAction = {
   open: (lease: Lease) =>
     openModal({
-      title: t('actions.complete') + ' ' + t('modals.lease'),
+      title: t('actions.complete') + ' ' + t('modals.leases'),
       children: <CompleteLeaseModal data={lease} />,
     }),
   disable: (lease: Lease) => !!lease.completedAt,

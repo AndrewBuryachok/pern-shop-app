@@ -50,7 +50,7 @@ export default function ViewCardModal({ data: card }: Props) {
 export const viewCardAction = {
   open: (card: Card) =>
     openModal({
-      title: t('actions.view') + ' ' + t('modals.card'),
+      title: t('actions.view') + ' ' + t('modals.cards'),
       children: <ViewCardModal data={card} />,
     }),
   disable: () => false,

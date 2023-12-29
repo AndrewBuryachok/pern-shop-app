@@ -45,7 +45,7 @@ export default function AddUserCityModal() {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={t('actions.add') + ' ' + t('modals.user')}
+      text={t('actions.add') + ' ' + t('modals.users')}
     >
       <Select
         label={t('columns.user')}
@@ -81,7 +81,7 @@ export const addUserCityButton = {
   label: 'add',
   open: () =>
     openModal({
-      title: t('actions.add') + ' ' + t('modals.user'),
+      title: t('actions.add') + ' ' + t('modals.users'),
       children: <AddUserCityModal />,
     }),
 };

@@ -33,7 +33,7 @@ export default function DeleteArticleModal({ data: article }: Props) {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={t('actions.delete') + ' ' + t('modals.article')}
+      text={t('actions.delete') + ' ' + t('modals.articles')}
     >
       <TextInput
         label={t('columns.owner')}
@@ -53,7 +53,7 @@ export default function DeleteArticleModal({ data: article }: Props) {
 export const deleteArticleAction = {
   open: (article: Article) =>
     openModal({
-      title: t('actions.delete') + ' ' + t('modals.article'),
+      title: t('actions.delete') + ' ' + t('modals.articles'),
       children: <DeleteArticleModal data={article} />,
     }),
   disable: () => false,

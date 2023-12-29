@@ -52,7 +52,7 @@ export default function CreateStoreModal({ hasRole }: Props) {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={t('actions.create') + ' ' + t('modals.store')}
+      text={t('actions.create') + ' ' + t('modals.stores')}
     >
       <Select
         label={t('columns.market')}
@@ -79,7 +79,7 @@ export const createStoreFactory = (hasRole: boolean) => ({
   label: 'create',
   open: () =>
     openModal({
-      title: t('actions.create') + ' ' + t('modals.store'),
+      title: t('actions.create') + ' ' + t('modals.stores'),
       children: <CreateStoreModal hasRole={hasRole} />,
     }),
 });

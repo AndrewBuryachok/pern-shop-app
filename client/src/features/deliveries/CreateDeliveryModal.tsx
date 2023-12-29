@@ -115,7 +115,7 @@ export default function CreateDeliveryModal({ hasRole }: Props) {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={t('actions.create') + ' ' + t('modals.delivery')}
+      text={t('actions.create') + ' ' + t('modals.deliveries')}
     >
       <Select
         label={t('columns.storage') + ' ' + t('columns.from')}
@@ -238,7 +238,7 @@ export const createDeliveryFactory = (hasRole: boolean) => ({
   label: 'create',
   open: () =>
     openModal({
-      title: t('actions.create') + ' ' + t('modals.delivery'),
+      title: t('actions.create') + ' ' + t('modals.deliveries'),
       children: <CreateDeliveryModal hasRole={hasRole} />,
     }),
 });

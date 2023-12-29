@@ -68,7 +68,7 @@ export default function CreateGoodModal({ hasRole }: Props) {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={t('actions.create') + ' ' + t('modals.good')}
+      text={t('actions.create') + ' ' + t('modals.goods')}
     >
       <Select
         label={t('columns.shop')}
@@ -148,7 +148,7 @@ export const createGoodFactory = (hasRole: boolean) => ({
   label: 'create',
   open: () =>
     openModal({
-      title: t('actions.create') + ' ' + t('modals.good'),
+      title: t('actions.create') + ' ' + t('modals.goods'),
       children: <CreateGoodModal hasRole={hasRole} />,
     }),
 });

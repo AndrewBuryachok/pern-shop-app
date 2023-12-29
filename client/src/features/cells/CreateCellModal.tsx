@@ -54,7 +54,7 @@ export default function CreateCellModal({ hasRole }: Props) {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={t('actions.create') + ' ' + t('modals.cell')}
+      text={t('actions.create') + ' ' + t('modals.cells')}
     >
       <Select
         label={t('columns.storage')}
@@ -81,7 +81,7 @@ export const createCellFactory = (hasRole: boolean) => ({
   label: 'create',
   open: () =>
     openModal({
-      title: t('actions.create') + ' ' + t('modals.cell'),
+      title: t('actions.create') + ' ' + t('modals.cells'),
       children: <CreateCellModal hasRole={hasRole} />,
     }),
 });

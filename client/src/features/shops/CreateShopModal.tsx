@@ -62,7 +62,7 @@ export default function CreateShopModal({ hasRole }: Props) {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={t('actions.create') + ' ' + t('modals.shop')}
+      text={t('actions.create') + ' ' + t('modals.shops')}
     >
       {hasRole && (
         <Select
@@ -125,7 +125,7 @@ export const createShopFactory = (hasRole: boolean) => ({
   label: 'create',
   open: () =>
     openModal({
-      title: t('actions.create') + ' ' + t('modals.shop'),
+      title: t('actions.create') + ' ' + t('modals.shops'),
       children: <CreateShopModal hasRole={hasRole} />,
     }),
 });

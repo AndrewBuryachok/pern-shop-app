@@ -35,7 +35,7 @@ export default function RateDeliveryModal({ data: delivery }: Props) {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={t('actions.rate') + ' ' + t('modals.delivery')}
+      text={t('actions.rate') + ' ' + t('modals.deliveries')}
     >
       <TextInput
         label={t('columns.executor')}
@@ -80,7 +80,7 @@ export default function RateDeliveryModal({ data: delivery }: Props) {
 export const rateDeliveryAction = {
   open: (delivery: Delivery) =>
     openModal({
-      title: t('actions.rate') + ' ' + t('modals.delivery'),
+      title: t('actions.rate') + ' ' + t('modals.deliveries'),
       children: <RateDeliveryModal data={delivery} />,
     }),
   disable: (delivery: Delivery) =>

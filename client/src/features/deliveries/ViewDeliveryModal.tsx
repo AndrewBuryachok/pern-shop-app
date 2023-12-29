@@ -113,7 +113,7 @@ export default function ViewDeliveryModal({ data: delivery }: Props) {
 export const viewDeliveryAction = {
   open: (delivery: Delivery) =>
     openModal({
-      title: t('actions.view') + ' ' + t('modals.delivery'),
+      title: t('actions.view') + ' ' + t('modals.deliveries'),
       children: <ViewDeliveryModal data={delivery} />,
     }),
   disable: () => false,

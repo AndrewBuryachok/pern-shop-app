@@ -32,7 +32,7 @@ export default function CreateArticleModal() {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={t('actions.create') + ' ' + t('modals.article')}
+      text={t('actions.create') + ' ' + t('modals.articles')}
     >
       <Textarea
         label={t('columns.text')}
@@ -56,7 +56,7 @@ export const createArticleButton = {
   label: 'create',
   open: () =>
     openModal({
-      title: t('actions.create') + ' ' + t('modals.article'),
+      title: t('actions.create') + ' ' + t('modals.articles'),
       children: <CreateArticleModal />,
     }),
 };

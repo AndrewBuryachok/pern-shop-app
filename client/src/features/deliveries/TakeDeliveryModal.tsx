@@ -62,7 +62,7 @@ export default function TakeDeliveryModal({ data: delivery, hasRole }: Props) {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={t('actions.take') + ' ' + t('modals.delivery')}
+      text={t('actions.take') + ' ' + t('modals.deliveries')}
     >
       <TextInput
         label={t('columns.customer')}
@@ -133,7 +133,7 @@ export default function TakeDeliveryModal({ data: delivery, hasRole }: Props) {
 export const takeDeliveryFactory = (hasRole: boolean) => ({
   open: (delivery: Delivery) =>
     openModal({
-      title: t('actions.take') + ' ' + t('modals.delivery'),
+      title: t('actions.take') + ' ' + t('modals.deliveries'),
       children: <TakeDeliveryModal data={delivery} hasRole={hasRole} />,
     }),
   disable: (delivery: Delivery) => delivery.status !== Status.CREATED,

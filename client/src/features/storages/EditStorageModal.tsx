@@ -50,7 +50,7 @@ export default function EditStorageModal({ data: storage }: Props) {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={t('actions.edit') + ' ' + t('modals.storage')}
+      text={t('actions.edit') + ' ' + t('modals.storages')}
       isChanged={!form.isDirty()}
     >
       <TextInput
@@ -105,7 +105,7 @@ export default function EditStorageModal({ data: storage }: Props) {
 export const editStorageAction = {
   open: (storage: Storage) =>
     openModal({
-      title: t('actions.edit') + ' ' + t('modals.storage'),
+      title: t('actions.edit') + ' ' + t('modals.storages'),
       children: <EditStorageModal data={storage} />,
     }),
   disable: () => false,

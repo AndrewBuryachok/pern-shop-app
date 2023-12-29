@@ -32,7 +32,7 @@ export default function DeleteRatingModal({ data: rating }: Props) {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={t('actions.delete') + ' ' + t('modals.rating')}
+      text={t('actions.delete') + ' ' + t('modals.ratings')}
     >
       <TextInput
         label={t('columns.sender')}
@@ -58,7 +58,7 @@ export default function DeleteRatingModal({ data: rating }: Props) {
 export const deleteRatingAction = {
   open: (rating: Rating) =>
     openModal({
-      title: t('actions.delete') + ' ' + t('modals.rating'),
+      title: t('actions.delete') + ' ' + t('modals.ratings'),
       children: <DeleteRatingModal data={rating} />,
     }),
   disable: () => false,

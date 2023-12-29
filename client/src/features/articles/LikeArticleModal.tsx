@@ -33,7 +33,7 @@ export default function LikeArticleModal({ data: article }: Props) {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={t('actions.like') + ' ' + t('modals.article')}
+      text={t('actions.like') + ' ' + t('modals.articles')}
     >
       <TextInput
         label={t('columns.owner')}
@@ -53,7 +53,7 @@ export default function LikeArticleModal({ data: article }: Props) {
 export const likeArticleAction = {
   open: (article: Article) =>
     openModal({
-      title: t('actions.like') + ' ' + t('modals.article'),
+      title: t('actions.like') + ' ' + t('modals.articles'),
       children: <LikeArticleModal data={article} />,
     }),
   disable: () => false,

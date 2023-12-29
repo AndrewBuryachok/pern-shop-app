@@ -34,7 +34,7 @@ export default function UntakeDeliveryModal({ data: delivery }: Props) {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={t('actions.untake') + ' ' + t('modals.delivery')}
+      text={t('actions.untake') + ' ' + t('modals.deliveries')}
     >
       <TextInput
         label={t('columns.customer')}
@@ -72,7 +72,7 @@ export default function UntakeDeliveryModal({ data: delivery }: Props) {
 export const untakeDeliveryAction = {
   open: (delivery: Delivery) =>
     openModal({
-      title: t('actions.untake') + ' ' + t('modals.delivery'),
+      title: t('actions.untake') + ' ' + t('modals.deliveries'),
       children: <UntakeDeliveryModal data={delivery} />,
     }),
   disable: (delivery: Delivery) => delivery.status !== Status.TAKEN,

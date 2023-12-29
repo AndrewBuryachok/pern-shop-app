@@ -57,7 +57,7 @@ export default function ViewInvoiceModal({ data: invoice }: Props) {
 export const viewInvoiceAction = {
   open: (invoice: Invoice) =>
     openModal({
-      title: t('actions.view') + ' ' + t('modals.invoice'),
+      title: t('actions.view') + ' ' + t('modals.invoices'),
       children: <ViewInvoiceModal data={invoice} />,
     }),
   disable: () => false,

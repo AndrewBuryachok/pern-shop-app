@@ -68,7 +68,7 @@ export default function CreateWareModal({ hasRole }: Props) {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={t('actions.create') + ' ' + t('modals.ware')}
+      text={t('actions.create') + ' ' + t('modals.wares')}
     >
       <Select
         label={t('columns.rent')}
@@ -148,7 +148,7 @@ export const createWareFactory = (hasRole: boolean) => ({
   label: 'create',
   open: () =>
     openModal({
-      title: t('actions.create') + ' ' + t('modals.ware'),
+      title: t('actions.create') + ' ' + t('modals.wares'),
       children: <CreateWareModal hasRole={hasRole} />,
     }),
 });

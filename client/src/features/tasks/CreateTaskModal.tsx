@@ -35,7 +35,7 @@ export default function CreateTaskModal() {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={t('actions.create') + ' ' + t('modals.task')}
+      text={t('actions.create') + ' ' + t('modals.tasks')}
     >
       <TextInput
         label={t('columns.title')}
@@ -68,7 +68,7 @@ export const createTaskButton = {
   label: 'create',
   open: () =>
     openModal({
-      title: t('actions.create') + ' ' + t('modals.task'),
+      title: t('actions.create') + ' ' + t('modals.tasks'),
       children: <CreateTaskModal />,
     }),
 };

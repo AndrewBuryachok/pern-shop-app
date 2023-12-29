@@ -39,7 +39,7 @@ export default function RemoveCityUserModal({ data: city }: Props) {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={t('actions.remove') + ' ' + t('modals.user')}
+      text={t('actions.remove') + ' ' + t('modals.users')}
     >
       <TextInput label={t('columns.city')} value={parsePlace(city)} disabled />
       <Select
@@ -63,7 +63,7 @@ export default function RemoveCityUserModal({ data: city }: Props) {
 export const removeCityUserFactory = (hasRole: boolean) => ({
   open: (city: City) =>
     openModal({
-      title: t('actions.remove') + ' ' + t('modals.user'),
+      title: t('actions.remove') + ' ' + t('modals.users'),
       children: <RemoveCityUserModal data={city} />,
     }),
   disable: (city: City) => {

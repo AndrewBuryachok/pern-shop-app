@@ -102,7 +102,7 @@ export default function CreateOrderModal({ hasRole }: Props) {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={t('actions.create') + ' ' + t('modals.order')}
+      text={t('actions.create') + ' ' + t('modals.orders')}
     >
       <Select
         label={t('columns.storage')}
@@ -210,7 +210,7 @@ export const createOrderFactory = (hasRole: boolean) => ({
   label: 'create',
   open: () =>
     openModal({
-      title: t('actions.create') + ' ' + t('modals.order'),
+      title: t('actions.create') + ' ' + t('modals.orders'),
       children: <CreateOrderModal hasRole={hasRole} />,
     }),
 });

@@ -40,7 +40,7 @@ export default function EditWareModal({ data: ware }: Props) {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={t('actions.edit') + ' ' + t('modals.ware')}
+      text={t('actions.edit') + ' ' + t('modals.wares')}
       isChanged={!form.isDirty()}
     >
       <TextInput
@@ -90,7 +90,7 @@ export default function EditWareModal({ data: ware }: Props) {
 export const editWareAction = {
   open: (ware: Ware) =>
     openModal({
-      title: t('actions.edit') + ' ' + t('modals.ware'),
+      title: t('actions.edit') + ' ' + t('modals.wares'),
       children: <EditWareModal data={ware} />,
     }),
   disable: (ware: Ware) => !!ware.completedAt,

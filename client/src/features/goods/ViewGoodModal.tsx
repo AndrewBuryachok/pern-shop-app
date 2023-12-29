@@ -64,7 +64,7 @@ export default function ViewGoodModal({ data: good }: Props) {
 export const viewGoodAction = {
   open: (good: Good) =>
     openModal({
-      title: t('actions.view') + ' ' + t('modals.good'),
+      title: t('actions.view') + ' ' + t('modals.goods'),
       children: <ViewGoodModal data={good} />,
     }),
   disable: () => false,

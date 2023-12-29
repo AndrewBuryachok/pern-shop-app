@@ -87,7 +87,7 @@ export default function CreatePaymentModal({ hasRole }: Props) {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={t('actions.create') + ' ' + t('modals.payment')}
+      text={t('actions.create') + ' ' + t('modals.payments')}
     >
       {hasRole && (
         <Select
@@ -175,7 +175,7 @@ export const createPaymentFactory = (hasRole: boolean) => ({
   label: 'create',
   open: () =>
     openModal({
-      title: t('actions.create') + ' ' + t('modals.payment'),
+      title: t('actions.create') + ' ' + t('modals.payments'),
       children: <CreatePaymentModal hasRole={hasRole} />,
     }),
 });

@@ -73,7 +73,7 @@ export default function CreateMarketModal({ hasRole }: Props) {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={t('actions.create') + ' ' + t('modals.market')}
+      text={t('actions.create') + ' ' + t('modals.markets')}
     >
       {hasRole && (
         <Select
@@ -161,7 +161,7 @@ export const createMarketFactory = (hasRole: boolean) => ({
   label: 'create',
   open: () =>
     openModal({
-      title: t('actions.create') + ' ' + t('modals.market'),
+      title: t('actions.create') + ' ' + t('modals.markets'),
       children: <CreateMarketModal hasRole={hasRole} />,
     }),
 });

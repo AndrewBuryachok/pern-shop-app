@@ -99,7 +99,7 @@ export default function ViewOrderModal({ data: order }: Props) {
 export const viewOrderAction = {
   open: (order: Order) =>
     openModal({
-      title: t('actions.view') + ' ' + t('modals.order'),
+      title: t('actions.view') + ' ' + t('modals.orders'),
       children: <ViewOrderModal data={order} />,
     }),
   disable: () => false,

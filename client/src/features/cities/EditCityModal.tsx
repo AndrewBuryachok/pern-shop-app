@@ -49,7 +49,7 @@ export default function EditCityModal({ data: city }: Props) {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={t('actions.edit') + ' ' + t('modals.city')}
+      text={t('actions.edit') + ' ' + t('modals.cities')}
       isChanged={!form.isDirty()}
     >
       <TextInput
@@ -96,7 +96,7 @@ export default function EditCityModal({ data: city }: Props) {
 export const editCityFactory = (hasRole: boolean) => ({
   open: (city: City) =>
     openModal({
-      title: t('actions.edit') + ' ' + t('modals.city'),
+      title: t('actions.edit') + ' ' + t('modals.cities'),
       children: <EditCityModal data={city} />,
     }),
   disable: (city: City) => {

@@ -36,7 +36,7 @@ export default function TakeTaskModal({ data: task }: Props) {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={t('actions.take') + ' ' + t('modals.task')}
+      text={t('actions.take') + ' ' + t('modals.tasks')}
     >
       <TextInput
         label={t('columns.customer')}
@@ -61,7 +61,7 @@ export default function TakeTaskModal({ data: task }: Props) {
 export const takeTaskAction = {
   open: (task: Task) =>
     openModal({
-      title: t('actions.take') + ' ' + t('modals.task'),
+      title: t('actions.take') + ' ' + t('modals.tasks'),
       children: <TakeTaskModal data={task} />,
     }),
   disable: (task: Task) => task.status !== Status.CREATED,

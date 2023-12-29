@@ -48,7 +48,7 @@ export default function ViewPaymentModal({ data: payment }: Props) {
 export const viewPaymentAction = {
   open: (payment: Payment) =>
     openModal({
-      title: t('actions.view') + ' ' + t('modals.payment'),
+      title: t('actions.view') + ' ' + t('modals.payments'),
       children: <ViewPaymentModal data={payment} />,
     }),
   disable: () => false,

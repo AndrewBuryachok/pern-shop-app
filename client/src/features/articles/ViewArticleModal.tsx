@@ -34,7 +34,7 @@ export default function ViewArticleModal({ data: article }: Props) {
 export const viewArticleAction = {
   open: (article: Article) =>
     openModal({
-      title: t('actions.view') + ' ' + t('modals.article'),
+      title: t('actions.view') + ' ' + t('modals.articles'),
       children: <ViewArticleModal data={article} />,
     }),
   disable: () => false,

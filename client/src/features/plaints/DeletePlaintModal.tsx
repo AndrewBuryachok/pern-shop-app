@@ -32,7 +32,7 @@ export default function DeletePlaintModal({ data: plaint }: Props) {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={t('actions.delete') + ' ' + t('modals.plaint')}
+      text={t('actions.delete') + ' ' + t('modals.plaints')}
     >
       <TextInput label={t('columns.title')} value={plaint.title} disabled />
       <TextInput
@@ -57,7 +57,7 @@ export default function DeletePlaintModal({ data: plaint }: Props) {
 export const deletePlaintAction = {
   open: (plaint: Plaint) =>
     openModal({
-      title: t('actions.delete') + ' ' + t('modals.plaint'),
+      title: t('actions.delete') + ' ' + t('modals.plaints'),
       children: <DeletePlaintModal data={plaint} />,
     }),
   disable: (plaint: Plaint) => !!plaint.executedAt || !!plaint.completedAt,

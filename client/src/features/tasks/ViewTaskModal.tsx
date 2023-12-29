@@ -62,7 +62,7 @@ export default function ViewTaskModal({ data: task }: Props) {
 export const viewTaskAction = {
   open: (task: Task) =>
     openModal({
-      title: t('actions.view') + ' ' + t('modals.task'),
+      title: t('actions.view') + ' ' + t('modals.tasks'),
       children: <ViewTaskModal data={task} />,
     }),
   disable: () => false,

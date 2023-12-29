@@ -48,7 +48,7 @@ export default function EditShopModal({ data: shop }: Props) {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={t('actions.edit') + ' ' + t('modals.shop')}
+      text={t('actions.edit') + ' ' + t('modals.shops')}
       isChanged={!form.isDirty()}
     >
       <TextInput
@@ -95,7 +95,7 @@ export default function EditShopModal({ data: shop }: Props) {
 export const editShopAction = {
   open: (shop: Shop) =>
     openModal({
-      title: t('actions.edit') + ' ' + t('modals.shop'),
+      title: t('actions.edit') + ' ' + t('modals.shops'),
       children: <EditShopModal data={shop} />,
     }),
   disable: () => false,

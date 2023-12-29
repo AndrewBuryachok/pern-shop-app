@@ -66,7 +66,7 @@ export default function CreateInvoiceModal({ hasRole }: Props) {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={t('actions.create') + ' ' + t('modals.invoice')}
+      text={t('actions.create') + ' ' + t('modals.invoices')}
     >
       {hasRole && (
         <Select
@@ -137,7 +137,7 @@ export const createInvoiceFactory = (hasRole: boolean) => ({
   label: 'create',
   open: () =>
     openModal({
-      title: t('actions.create') + ' ' + t('modals.invoice'),
+      title: t('actions.create') + ' ' + t('modals.invoices'),
       children: <CreateInvoiceModal hasRole={hasRole} />,
     }),
 });

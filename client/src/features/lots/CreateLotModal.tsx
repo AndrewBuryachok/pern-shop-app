@@ -99,7 +99,7 @@ export default function CreateLotModal({ hasRole }: Props) {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={t('actions.create') + ' ' + t('modals.lot')}
+      text={t('actions.create') + ' ' + t('modals.lots')}
     >
       <Select
         label={t('columns.storage')}
@@ -212,7 +212,7 @@ export const createLotFactory = (hasRole: boolean) => ({
   label: 'create',
   open: () =>
     openModal({
-      title: t('actions.create') + ' ' + t('modals.lot'),
+      title: t('actions.create') + ' ' + t('modals.lots'),
       children: <CreateLotModal hasRole={hasRole} />,
     }),
 });

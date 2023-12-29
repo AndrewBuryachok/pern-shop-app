@@ -33,7 +33,7 @@ export default function EditRatingModal({ data: rating }: Props) {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={t('actions.edit') + ' ' + t('modals.rating')}
+      text={t('actions.edit') + ' ' + t('modals.ratings')}
       isChanged={!form.isDirty()}
     >
       <TextInput
@@ -60,7 +60,7 @@ export default function EditRatingModal({ data: rating }: Props) {
 export const editRatingAction = {
   open: (rating: Rating) =>
     openModal({
-      title: t('actions.edit') + ' ' + t('modals.rating'),
+      title: t('actions.edit') + ' ' + t('modals.ratings'),
       children: <EditRatingModal data={rating} />,
     }),
   disable: () => false,

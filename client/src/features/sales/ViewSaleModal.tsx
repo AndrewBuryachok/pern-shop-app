@@ -86,7 +86,7 @@ export default function ViewSaleModal({ data: sale }: Props) {
 export const viewSaleAction = {
   open: (sale: Sale) =>
     openModal({
-      title: t('actions.view') + ' ' + t('modals.sale'),
+      title: t('actions.view') + ' ' + t('modals.sales'),
       children: <ViewSaleModal data={sale} />,
     }),
   disable: () => false,

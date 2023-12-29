@@ -86,7 +86,7 @@ export default function ViewTradeModal({ data: trade }: Props) {
 export const viewTradeAction = {
   open: (trade: Trade) =>
     openModal({
-      title: t('actions.view') + ' ' + t('modals.trade'),
+      title: t('actions.view') + ' ' + t('modals.trades'),
       children: <ViewTradeModal data={trade} />,
     }),
   disable: () => false,

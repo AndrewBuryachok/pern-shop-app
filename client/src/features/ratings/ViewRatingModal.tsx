@@ -45,7 +45,7 @@ export default function ViewRatingModal({ data: rating }: Props) {
 export const viewRatingAction = {
   open: (rating: Rating) =>
     openModal({
-      title: t('actions.view') + ' ' + t('modals.rating'),
+      title: t('actions.view') + ' ' + t('modals.ratings'),
       children: <ViewRatingModal data={rating} />,
     }),
   disable: () => false,

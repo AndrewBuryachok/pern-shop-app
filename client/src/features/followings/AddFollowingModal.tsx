@@ -38,7 +38,7 @@ export default function AddFollowingModal() {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={t('actions.add') + ' ' + t('modals.following')}
+      text={t('actions.add') + ' ' + t('modals.followings')}
     >
       <Select
         label={t('columns.user')}
@@ -62,7 +62,7 @@ export const addFollowingButton = {
   label: 'add',
   open: () =>
     openModal({
-      title: t('actions.add') + ' ' + t('modals.following'),
+      title: t('actions.add') + ' ' + t('modals.followings'),
       children: <AddFollowingModal />,
     }),
 };

@@ -50,7 +50,7 @@ export default function ViewExchangeModal({ data: exchange }: Props) {
 export const viewExchangeAction = {
   open: (exchange: Exchange) =>
     openModal({
-      title: t('actions.view') + ' ' + t('modals.exchange'),
+      title: t('actions.view') + ' ' + t('modals.exchanges'),
       children: <ViewExchangeModal data={exchange} />,
     }),
   disable: () => false,

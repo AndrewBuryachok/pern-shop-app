@@ -34,7 +34,7 @@ export default function UntakeOrderModal({ data: order }: Props) {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={t('actions.untake') + ' ' + t('modals.order')}
+      text={t('actions.untake') + ' ' + t('modals.orders')}
     >
       <TextInput
         label={t('columns.customer')}
@@ -72,7 +72,7 @@ export default function UntakeOrderModal({ data: order }: Props) {
 export const untakeOrderAction = {
   open: (order: Order) =>
     openModal({
-      title: t('actions.untake') + ' ' + t('modals.order'),
+      title: t('actions.untake') + ' ' + t('modals.orders'),
       children: <UntakeOrderModal data={order} />,
     }),
   disable: (order: Order) => order.status !== Status.TAKEN,

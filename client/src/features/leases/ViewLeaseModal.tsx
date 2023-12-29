@@ -77,7 +77,7 @@ export default function ViewLeaseModal({ data: lease }: Props) {
 export const viewLeaseAction = {
   open: (lease: Lease) =>
     openModal({
-      title: t('actions.view') + ' ' + t('modals.lease'),
+      title: t('actions.view') + ' ' + t('modals.leases'),
       children: <ViewLeaseModal data={lease} />,
     }),
   disable: () => false,

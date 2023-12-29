@@ -28,6 +28,6 @@ export default function ViewArticleLikesModal({ data: article }: Props) {
 
 export const openViewArticleLikesModal = (article: Article) =>
   openModal({
-    title: t('actions.view') + ' ' + t('modals.likes'),
+    title: t('columns.likes'),
     children: <ViewArticleLikesModal data={article} />,
   });

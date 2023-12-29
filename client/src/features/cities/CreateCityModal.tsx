@@ -62,7 +62,7 @@ export default function CreateCityModal({ hasRole }: Props) {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={t('actions.create') + ' ' + t('modals.city')}
+      text={t('actions.create') + ' ' + t('modals.cities')}
     >
       {hasRole && (
         <Select
@@ -125,7 +125,7 @@ export const createCityFactory = (hasRole: boolean) => ({
   label: 'create',
   open: () =>
     openModal({
-      title: t('actions.create') + ' ' + t('modals.city'),
+      title: t('actions.create') + ' ' + t('modals.cities'),
       children: <CreateCityModal hasRole={hasRole} />,
     }),
 });

@@ -33,7 +33,7 @@ export default function DeleteTaskModal({ data: task }: Props) {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={t('actions.delete') + ' ' + t('modals.task')}
+      text={t('actions.delete') + ' ' + t('modals.tasks')}
     >
       <TextInput
         label={t('columns.customer')}
@@ -58,7 +58,7 @@ export default function DeleteTaskModal({ data: task }: Props) {
 export const deleteTaskAction = {
   open: (task: Task) =>
     openModal({
-      title: t('actions.delete') + ' ' + t('modals.task'),
+      title: t('actions.delete') + ' ' + t('modals.tasks'),
       children: <DeleteTaskModal data={task} />,
     }),
   disable: (task: Task) => task.status !== Status.CREATED,

@@ -51,7 +51,7 @@ export default function ViewShopModal({ data: shop }: Props) {
 export const viewShopAction = {
   open: (shop: Shop) =>
     openModal({
-      title: t('actions.view') + ' ' + t('modals.shop'),
+      title: t('actions.view') + ' ' + t('modals.shops'),
       children: <ViewShopModal data={shop} />,
     }),
   disable: () => false,

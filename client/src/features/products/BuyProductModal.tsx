@@ -66,7 +66,7 @@ export default function BuyProductModal({ data: product, hasRole }: Props) {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={t('actions.buy') + ' ' + t('modals.product')}
+      text={t('actions.buy') + ' ' + t('modals.products')}
     >
       <TextInput
         label={t('columns.seller')}
@@ -140,7 +140,7 @@ export default function BuyProductModal({ data: product, hasRole }: Props) {
 export const buyProductFactory = (hasRole: boolean) => ({
   open: (product: Product) =>
     openModal({
-      title: t('actions.buy') + ' ' + t('modals.product'),
+      title: t('actions.buy') + ' ' + t('modals.products'),
       children: <BuyProductModal data={product} hasRole={hasRole} />,
     }),
   disable: () => false,

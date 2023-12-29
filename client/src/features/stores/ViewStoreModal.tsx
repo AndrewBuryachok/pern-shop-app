@@ -46,7 +46,7 @@ export default function ViewStoreModal({ data: store }: Props) {
 export const viewStoreAction = {
   open: (store: Store) =>
     openModal({
-      title: t('actions.view') + ' ' + t('modals.store'),
+      title: t('actions.view') + ' ' + t('modals.stores'),
       children: <ViewStoreModal data={store} />,
     }),
   disable: () => false,

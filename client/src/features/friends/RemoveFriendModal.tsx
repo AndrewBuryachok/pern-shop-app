@@ -32,7 +32,7 @@ export default function RemoveFriendModal({ data: user }: Props) {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={t('actions.remove') + ' ' + t('modals.friend')}
+      text={t('actions.remove') + ' ' + t('modals.friends')}
     >
       <TextInput
         label={t('columns.user')}
@@ -48,7 +48,7 @@ export default function RemoveFriendModal({ data: user }: Props) {
 export const removeFriendAction = {
   open: (user: User) =>
     openModal({
-      title: t('actions.remove') + ' ' + t('modals.friend'),
+      title: t('actions.remove') + ' ' + t('modals.friends'),
       children: <RemoveFriendModal data={user} />,
     }),
   disable: () => false,

@@ -42,7 +42,7 @@ export default function CreatePlaintModal() {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={t('actions.create') + ' ' + t('modals.plaint')}
+      text={t('actions.create') + ' ' + t('modals.plaints')}
     >
       <TextInput
         label={t('columns.title')}
@@ -80,7 +80,7 @@ export const createPlaintButton = {
   label: 'create',
   open: () =>
     openModal({
-      title: t('actions.create') + ' ' + t('modals.plaint'),
+      title: t('actions.create') + ' ' + t('modals.plaints'),
       children: <CreatePlaintModal />,
     }),
 };

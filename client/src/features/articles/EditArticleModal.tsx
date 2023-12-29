@@ -42,7 +42,7 @@ export default function EditArticleModal({ data: article }: Props) {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={t('actions.edit') + ' ' + t('modals.article')}
+      text={t('actions.edit') + ' ' + t('modals.articles')}
     >
       <TextInput
         label={t('columns.owner')}
@@ -73,7 +73,7 @@ export default function EditArticleModal({ data: article }: Props) {
 export const editArticleAction = {
   open: (article: Article) =>
     openModal({
-      title: t('actions.edit') + ' ' + t('modals.article'),
+      title: t('actions.edit') + ' ' + t('modals.articles'),
       children: <EditArticleModal data={article} />,
     }),
   disable: () => false,

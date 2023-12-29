@@ -79,7 +79,7 @@ export default function ViewBidModal({ data: bid }: Props) {
 export const viewBidAction = {
   open: (bid: Bid) =>
     openModal({
-      title: t('actions.view') + ' ' + t('modals.bid'),
+      title: t('actions.view') + ' ' + t('modals.bids'),
       children: <ViewBidModal data={bid} />,
     }),
   disable: () => false,

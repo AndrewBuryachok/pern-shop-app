@@ -33,7 +33,7 @@ export default function CompletePlaintModal({ data: plaint }: Props) {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={t('actions.complete') + ' ' + t('modals.plaint')}
+      text={t('actions.complete') + ' ' + t('modals.plaints')}
     >
       <TextInput label={t('columns.title')} value={plaint.title} disabled />
       <TextInput
@@ -70,7 +70,7 @@ export default function CompletePlaintModal({ data: plaint }: Props) {
 export const completePlaintAction = {
   open: (plaint: Plaint) =>
     openModal({
-      title: t('actions.complete') + ' ' + t('modals.plaint'),
+      title: t('actions.complete') + ' ' + t('modals.plaints'),
       children: <CompletePlaintModal data={plaint} />,
     }),
   disable: (plaint: Plaint) => !!plaint.completedAt,

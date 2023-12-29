@@ -77,7 +77,7 @@ export default function ViewPollModal({ data: poll }: Props) {
 export const viewPollAction = {
   open: (poll: Poll) =>
     openModal({
-      title: t('actions.view') + ' ' + t('modals.poll'),
+      title: t('actions.view') + ' ' + t('modals.polls'),
       children: <ViewPollModal data={poll} />,
     }),
   disable: () => false,

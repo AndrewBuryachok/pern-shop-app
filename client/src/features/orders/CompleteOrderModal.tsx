@@ -34,7 +34,7 @@ export default function CompleteOrderModal({ data: order }: Props) {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={t('actions.complete') + ' ' + t('modals.order')}
+      text={t('actions.complete') + ' ' + t('modals.orders')}
     >
       <TextInput
         label={t('columns.customer')}
@@ -72,7 +72,7 @@ export default function CompleteOrderModal({ data: order }: Props) {
 export const completeOrderAction = {
   open: (order: Order) =>
     openModal({
-      title: t('actions.complete') + ' ' + t('modals.order'),
+      title: t('actions.complete') + ' ' + t('modals.orders'),
       children: <CompleteOrderModal data={order} />,
     }),
   disable: (order: Order) => order.status !== Status.EXECUTED,

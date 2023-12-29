@@ -33,7 +33,7 @@ export default function CompleteTaskModal({ data: task }: Props) {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={t('actions.complete') + ' ' + t('modals.task')}
+      text={t('actions.complete') + ' ' + t('modals.tasks')}
     >
       <TextInput
         label={t('columns.customer')}
@@ -58,7 +58,7 @@ export default function CompleteTaskModal({ data: task }: Props) {
 export const completeTaskAction = {
   open: (task: Task) =>
     openModal({
-      title: t('actions.complete') + ' ' + t('modals.task'),
+      title: t('actions.complete') + ' ' + t('modals.tasks'),
       children: <CompleteTaskModal data={task} />,
     }),
   disable: (task: Task) => task.status !== Status.EXECUTED,

@@ -97,7 +97,7 @@ export default function ViewWareModal({ data: ware }: Props) {
 export const viewWareAction = {
   open: (ware: Ware) =>
     openModal({
-      title: t('actions.view') + ' ' + t('modals.ware'),
+      title: t('actions.view') + ' ' + t('modals.wares'),
       children: <ViewWareModal data={ware} />,
     }),
   disable: () => false,

@@ -32,7 +32,7 @@ export default function AddFriendModal({ data: user }: Props) {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={t('actions.add') + ' ' + t('modals.friend')}
+      text={t('actions.add') + ' ' + t('modals.friends')}
     >
       <TextInput
         label={t('columns.user')}
@@ -48,7 +48,7 @@ export default function AddFriendModal({ data: user }: Props) {
 export const addFriendAction = {
   open: (user: User) =>
     openModal({
-      title: t('actions.add') + ' ' + t('modals.friend'),
+      title: t('actions.add') + ' ' + t('modals.friends'),
       children: <AddFriendModal data={user} />,
     }),
   disable: () => false,

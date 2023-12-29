@@ -46,7 +46,7 @@ export default function ViewCellModal({ data: cell }: Props) {
 export const viewCellAction = {
   open: (cell: Cell) =>
     openModal({
-      title: t('actions.view') + ' ' + t('modals.cell'),
+      title: t('actions.view') + ' ' + t('modals.cells'),
       children: <ViewCellModal data={cell} />,
     }),
   disable: () => false,

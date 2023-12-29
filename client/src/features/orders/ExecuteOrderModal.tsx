@@ -34,7 +34,7 @@ export default function ExecuteOrderModal({ data: order }: Props) {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={t('actions.execute') + ' ' + t('modals.order')}
+      text={t('actions.execute') + ' ' + t('modals.orders')}
     >
       <TextInput
         label={t('columns.customer')}
@@ -72,7 +72,7 @@ export default function ExecuteOrderModal({ data: order }: Props) {
 export const executeOrderAction = {
   open: (order: Order) =>
     openModal({
-      title: t('actions.execute') + ' ' + t('modals.order'),
+      title: t('actions.execute') + ' ' + t('modals.orders'),
       children: <ExecuteOrderModal data={order} />,
     }),
   disable: (order: Order) => order.status !== Status.TAKEN,

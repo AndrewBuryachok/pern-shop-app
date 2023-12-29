@@ -61,7 +61,7 @@ export default function CreateExchangeModal() {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={t('actions.create') + ' ' + t('modals.exchange')}
+      text={t('actions.create') + ' ' + t('modals.exchanges')}
     >
       <Select
         label={t('columns.user')}
@@ -115,7 +115,7 @@ export const createExchangeButton = {
   label: 'create',
   open: () =>
     openModal({
-      title: t('actions.create') + ' ' + t('modals.exchange'),
+      title: t('actions.create') + ' ' + t('modals.exchanges'),
       children: <CreateExchangeModal />,
     }),
 };

@@ -60,7 +60,7 @@ export default function CompleteInvoiceModal({
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={t('actions.complete') + ' ' + t('modals.invoice')}
+      text={t('actions.complete') + ' ' + t('modals.invoices')}
     >
       <TextInput
         label={t('columns.sender')}
@@ -101,7 +101,7 @@ export default function CompleteInvoiceModal({
 export const completeInvoiceFactory = (hasRole: boolean) => ({
   open: (invoice: Invoice) =>
     openModal({
-      title: t('actions.complete') + ' ' + t('modals.invoice'),
+      title: t('actions.complete') + ' ' + t('modals.invoices'),
       children: <CompleteInvoiceModal data={invoice} hasRole={hasRole} />,
     }),
   disable: (invoice: Invoice) => !!invoice.completedAt,

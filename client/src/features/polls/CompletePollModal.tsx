@@ -32,7 +32,7 @@ export default function CompletePollModal({ data: poll }: Props) {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={t('actions.complete') + ' ' + t('modals.poll')}
+      text={t('actions.complete') + ' ' + t('modals.polls')}
     >
       <TextInput
         label={t('columns.owner')}
@@ -50,7 +50,7 @@ export default function CompletePollModal({ data: poll }: Props) {
 export const completePollAction = {
   open: (poll: Poll) =>
     openModal({
-      title: t('actions.complete') + ' ' + t('modals.poll'),
+      title: t('actions.complete') + ' ' + t('modals.polls'),
       children: <CompletePollModal data={poll} />,
     }),
   disable: (poll: Poll) => !!poll.completedAt,

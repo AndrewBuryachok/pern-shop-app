@@ -51,7 +51,7 @@ export default function ViewCityModal({ data: city }: Props) {
 export const viewCityAction = {
   open: (city: City) =>
     openModal({
-      title: t('actions.view') + ' ' + t('modals.city'),
+      title: t('actions.view') + ' ' + t('modals.cities'),
       children: <ViewCityModal data={city} />,
     }),
   disable: () => false,

@@ -71,7 +71,7 @@ export default function ViewPlaintModal({ data: plaint }: Props) {
 export const viewPlaintAction = {
   open: (plaint: Plaint) =>
     openModal({
-      title: t('actions.view') + ' ' + t('modals.plaint'),
+      title: t('actions.view') + ' ' + t('modals.plaints'),
       children: <ViewPlaintModal data={plaint} />,
     }),
   disable: () => false,

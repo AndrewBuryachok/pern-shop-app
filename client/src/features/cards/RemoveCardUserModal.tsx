@@ -39,7 +39,7 @@ export default function RemoveCardUserModal({ data: card }: Props) {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={t('actions.remove') + ' ' + t('modals.user')}
+      text={t('actions.remove') + ' ' + t('modals.users')}
     >
       <TextInput label={t('columns.card')} value={card.name} disabled />
       <Select
@@ -63,7 +63,7 @@ export default function RemoveCardUserModal({ data: card }: Props) {
 export const removeCardUserFactory = (hasRole: boolean) => ({
   open: (card: Card) =>
     openModal({
-      title: t('actions.remove') + ' ' + t('modals.user'),
+      title: t('actions.remove') + ' ' + t('modals.users'),
       children: <RemoveCardUserModal data={card} />,
     }),
   disable: (card: Card) => {

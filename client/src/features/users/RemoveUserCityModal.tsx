@@ -35,7 +35,7 @@ export default function RemoveUserCityModal({ data: user }: Props) {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={t('actions.remove') + ' ' + t('modals.user')}
+      text={t('actions.remove') + ' ' + t('modals.users')}
     >
       <TextInput
         label={t('columns.user')}
@@ -56,7 +56,7 @@ export default function RemoveUserCityModal({ data: user }: Props) {
 export const removeUserCityAction = {
   open: (user: User) =>
     openModal({
-      title: t('actions.remove') + ' ' + t('modals.user'),
+      title: t('actions.remove') + ' ' + t('modals.users'),
       children: <RemoveUserCityModal data={user} />,
     }),
   disable: (user: User) => {

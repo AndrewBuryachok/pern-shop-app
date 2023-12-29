@@ -62,7 +62,7 @@ export default function ViewUserModal({ data: user }: Props) {
 export const viewUserAction = {
   open: (user: User) =>
     openModal({
-      title: t('actions.view') + ' ' + t('modals.user'),
+      title: t('actions.view') + ' ' + t('modals.users'),
       children: <ViewUserModal data={user} />,
     }),
   disable: () => false,

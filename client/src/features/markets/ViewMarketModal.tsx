@@ -63,7 +63,7 @@ export default function ViewMarketModal({ data: market }: Props) {
 export const viewMarketAction = {
   open: (market: Market) =>
     openModal({
-      title: t('actions.view') + ' ' + t('modals.market'),
+      title: t('actions.view') + ' ' + t('modals.markets'),
       children: <ViewMarketModal data={market} />,
     }),
   disable: () => false,

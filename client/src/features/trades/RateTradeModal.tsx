@@ -35,7 +35,7 @@ export default function RateTradeModal({ data: trade }: Props) {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={t('actions.rate') + ' ' + t('modals.trade')}
+      text={t('actions.rate') + ' ' + t('modals.trades')}
     >
       <TextInput
         label={t('columns.seller')}
@@ -76,7 +76,7 @@ export default function RateTradeModal({ data: trade }: Props) {
 export const rateTradeAction = {
   open: (trade: Trade) =>
     openModal({
-      title: t('actions.rate') + ' ' + t('modals.trade'),
+      title: t('actions.rate') + ' ' + t('modals.trades'),
       children: <RateTradeModal data={trade} />,
     }),
   disable: (trade: Trade) => !!trade.rate,

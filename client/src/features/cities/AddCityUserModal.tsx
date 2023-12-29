@@ -43,7 +43,7 @@ export default function AddCityUserModal({ data: city }: Props) {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={t('actions.add') + ' ' + t('modals.user')}
+      text={t('actions.add') + ' ' + t('modals.users')}
     >
       <TextInput label={t('columns.city')} value={parsePlace(city)} disabled />
       <Select
@@ -67,7 +67,7 @@ export default function AddCityUserModal({ data: city }: Props) {
 export const addCityUserFactory = (hasRole: boolean) => ({
   open: (city: City) =>
     openModal({
-      title: t('actions.add') + ' ' + t('modals.user'),
+      title: t('actions.add') + ' ' + t('modals.users'),
       children: <AddCityUserModal data={city} />,
     }),
   disable: (city: City) => {

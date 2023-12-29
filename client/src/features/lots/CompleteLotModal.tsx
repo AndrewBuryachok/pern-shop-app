@@ -34,7 +34,7 @@ export default function CompleteLotModal({ data: lot }: Props) {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={t('actions.complete') + ' ' + t('modals.lot')}
+      text={t('actions.complete') + ' ' + t('modals.lots')}
     >
       <TextInput
         label={t('columns.seller')}
@@ -68,7 +68,7 @@ export default function CompleteLotModal({ data: lot }: Props) {
 export const completeLotFactory = (hasRole: boolean) => ({
   open: (lot: Lot) =>
     openModal({
-      title: t('actions.complete') + ' ' + t('modals.lot'),
+      title: t('actions.complete') + ' ' + t('modals.lots'),
       children: <CompleteLotModal data={lot} />,
     }),
   disable: (lot: Lot) => !!lot.completedAt,

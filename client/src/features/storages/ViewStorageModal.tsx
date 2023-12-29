@@ -63,7 +63,7 @@ export default function ViewStorageModal({ data: storage }: Props) {
 export const viewStorageAction = {
   open: (storage: Storage) =>
     openModal({
-      title: t('actions.view') + ' ' + t('modals.storage'),
+      title: t('actions.view') + ' ' + t('modals.storages'),
       children: <ViewStorageModal data={storage} />,
     }),
   disable: () => false,

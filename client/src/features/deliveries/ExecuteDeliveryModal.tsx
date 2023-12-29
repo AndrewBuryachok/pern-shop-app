@@ -34,7 +34,7 @@ export default function ExecuteDeliveryModal({ data: delivery }: Props) {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={t('actions.execute') + ' ' + t('modals.delivery')}
+      text={t('actions.execute') + ' ' + t('modals.deliveries')}
     >
       <TextInput
         label={t('columns.customer')}
@@ -72,7 +72,7 @@ export default function ExecuteDeliveryModal({ data: delivery }: Props) {
 export const executeDeliveryAction = {
   open: (delivery: Delivery) =>
     openModal({
-      title: t('actions.execute') + ' ' + t('modals.delivery'),
+      title: t('actions.execute') + ' ' + t('modals.deliveries'),
       children: <ExecuteDeliveryModal data={delivery} />,
     }),
   disable: (delivery: Delivery) => delivery.status !== Status.TAKEN,

@@ -50,7 +50,7 @@ export default function EditMarketModal({ data: market }: Props) {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={t('actions.edit') + ' ' + t('modals.market')}
+      text={t('actions.edit') + ' ' + t('modals.markets')}
       isChanged={!form.isDirty()}
     >
       <TextInput
@@ -105,7 +105,7 @@ export default function EditMarketModal({ data: market }: Props) {
 export const editMarketAction = {
   open: (market: Market) =>
     openModal({
-      title: t('actions.edit') + ' ' + t('modals.market'),
+      title: t('actions.edit') + ' ' + t('modals.markets'),
       children: <EditMarketModal data={market} />,
     }),
   disable: () => false,

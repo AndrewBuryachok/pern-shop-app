@@ -34,7 +34,7 @@ export default function DeleteGoodModal({ data: good }: Props) {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={t('actions.delete') + ' ' + t('modals.good')}
+      text={t('actions.delete') + ' ' + t('modals.goods')}
     >
       <TextInput
         label={t('columns.seller')}
@@ -68,7 +68,7 @@ export default function DeleteGoodModal({ data: good }: Props) {
 export const deleteGoodAction = {
   open: (good: Good) =>
     openModal({
-      title: t('actions.delete') + ' ' + t('modals.good'),
+      title: t('actions.delete') + ' ' + t('modals.goods'),
       children: <DeleteGoodModal data={good} />,
     }),
   disable: () => false,

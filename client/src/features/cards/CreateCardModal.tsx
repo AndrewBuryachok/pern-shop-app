@@ -53,7 +53,7 @@ export default function CreateCardModal({ hasRole }: Props) {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={t('actions.create') + ' ' + t('modals.card')}
+      text={t('actions.create') + ' ' + t('modals.cards')}
     >
       {hasRole && (
         <Select
@@ -96,7 +96,7 @@ export const createCardFactory = (hasRole: boolean) => ({
   label: 'create',
   open: () =>
     openModal({
-      title: t('actions.create') + ' ' + t('modals.card'),
+      title: t('actions.create') + ' ' + t('modals.cards'),
       children: <CreateCardModal hasRole={hasRole} />,
     }),
 });

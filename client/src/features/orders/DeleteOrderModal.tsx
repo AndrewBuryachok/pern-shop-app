@@ -34,7 +34,7 @@ export default function DeleteOrderModal({ data: order }: Props) {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={t('actions.delete') + ' ' + t('modals.order')}
+      text={t('actions.delete') + ' ' + t('modals.orders')}
     >
       <TextInput
         label={t('columns.customer')}
@@ -72,7 +72,7 @@ export default function DeleteOrderModal({ data: order }: Props) {
 export const deleteOrderAction = {
   open: (order: Order) =>
     openModal({
-      title: t('actions.delete') + ' ' + t('modals.order'),
+      title: t('actions.delete') + ' ' + t('modals.orders'),
       children: <DeleteOrderModal data={order} />,
     }),
   disable: (order: Order) => order.status !== Status.CREATED,

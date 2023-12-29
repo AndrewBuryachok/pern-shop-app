@@ -37,7 +37,7 @@ export default function CreateRatingModal() {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={t('actions.create') + ' ' + t('modals.rating')}
+      text={t('actions.create') + ' ' + t('modals.ratings')}
     >
       <Select
         label={t('columns.user')}
@@ -64,7 +64,7 @@ export const createRatingButton = {
   label: 'create',
   open: () =>
     openModal({
-      title: t('actions.create') + ' ' + t('modals.rating'),
+      title: t('actions.create') + ' ' + t('modals.ratings'),
       children: <CreateRatingModal />,
     }),
 };

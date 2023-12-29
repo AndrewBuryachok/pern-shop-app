@@ -32,7 +32,7 @@ export default function DeletePollModal({ data: poll }: Props) {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={t('actions.delete') + ' ' + t('modals.poll')}
+      text={t('actions.delete') + ' ' + t('modals.polls')}
     >
       <TextInput
         label={t('columns.owner')}
@@ -50,7 +50,7 @@ export default function DeletePollModal({ data: poll }: Props) {
 export const deletePollAction = {
   open: (poll: Poll) =>
     openModal({
-      title: t('actions.delete') + ' ' + t('modals.poll'),
+      title: t('actions.delete') + ' ' + t('modals.polls'),
       children: <DeletePollModal data={poll} />,
     }),
   disable: (poll: Poll) => !!poll.completedAt,

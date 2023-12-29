@@ -74,7 +74,7 @@ export default function ReserveStoreModal({ data: store, hasRole }: Props) {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={t('actions.reserve') + ' ' + t('modals.store')}
+      text={t('actions.reserve') + ' ' + t('modals.stores')}
     >
       <TextInput
         label={t('columns.owner')}
@@ -133,7 +133,7 @@ export default function ReserveStoreModal({ data: store, hasRole }: Props) {
 export const reserveStoreFactory = (hasRole: boolean) => ({
   open: (store: Store) =>
     openModal({
-      title: t('actions.reserve') + ' ' + t('modals.store'),
+      title: t('actions.reserve') + ' ' + t('modals.stores'),
       children: <ReserveStoreModal data={store} hasRole={hasRole} />,
     }),
   disable: () => false,

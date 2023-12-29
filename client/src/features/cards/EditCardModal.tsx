@@ -41,7 +41,7 @@ export default function EditCardModal({ data: card }: Props) {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={t('actions.edit') + ' ' + t('modals.card')}
+      text={t('actions.edit') + ' ' + t('modals.cards')}
       isChanged={!form.isDirty()}
     >
       <TextInput
@@ -68,7 +68,7 @@ export default function EditCardModal({ data: card }: Props) {
 export const editCardFactory = (hasRole: boolean) => ({
   open: (card: Card) =>
     openModal({
-      title: t('actions.edit') + ' ' + t('modals.card'),
+      title: t('actions.edit') + ' ' + t('modals.cards'),
       children: <EditCardModal data={card} />,
     }),
   disable: (card: Card) => {

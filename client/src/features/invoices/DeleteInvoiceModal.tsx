@@ -33,7 +33,7 @@ export default function DeleteInvoiceModal({ data: invoice }: Props) {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={t('actions.delete') + ' ' + t('modals.invoice')}
+      text={t('actions.delete') + ' ' + t('modals.invoices')}
     >
       <TextInput
         label={t('columns.sender')}
@@ -62,7 +62,7 @@ export default function DeleteInvoiceModal({ data: invoice }: Props) {
 export const deleteInvoiceAction = {
   open: (invoice: Invoice) =>
     openModal({
-      title: t('actions.delete') + ' ' + t('modals.invoice'),
+      title: t('actions.delete') + ' ' + t('modals.invoices'),
       children: <DeleteInvoiceModal data={invoice} />,
     }),
   disable: (invoice: Invoice) => !!invoice.completedAt,

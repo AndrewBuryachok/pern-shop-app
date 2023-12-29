@@ -71,7 +71,7 @@ export default function ViewRentModal({ data: rent }: Props) {
 export const viewRentAction = {
   open: (rent: Rent) =>
     openModal({
-      title: t('actions.view') + ' ' + t('modals.rent'),
+      title: t('actions.view') + ' ' + t('modals.rents'),
       children: <ViewRentModal data={rent} />,
     }),
   disable: () => false,

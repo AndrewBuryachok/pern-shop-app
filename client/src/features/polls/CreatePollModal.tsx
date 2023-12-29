@@ -28,7 +28,7 @@ export default function CreatePollModal() {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={t('actions.create') + ' ' + t('modals.poll')}
+      text={t('actions.create') + ' ' + t('modals.polls')}
     >
       <TextInput
         label={t('columns.title')}
@@ -52,7 +52,7 @@ export const createPollButton = {
   label: 'create',
   open: () =>
     openModal({
-      title: t('actions.create') + ' ' + t('modals.poll'),
+      title: t('actions.create') + ' ' + t('modals.polls'),
       children: <CreatePollModal />,
     }),
 };
