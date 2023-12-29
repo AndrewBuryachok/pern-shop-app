@@ -6,6 +6,8 @@ import { store } from '../../app/store';
 import { useAppSelector } from '../../app/hooks';
 import { Tokens } from '../auth/auth.model';
 
+const audio = new Audio('/sound.mp3');
+
 const client = connect(import.meta.env.VITE_BROKER_URL);
 
 client.on('connect', () =>
@@ -22,11 +24,15 @@ client.on('message', (topic, message) => {
     }
   } else {
     const [action, modal] = message.toString().toLowerCase().split(' ');
+    store.dispatch(addNotification(modal));
     showNotification({
       title: t('notifications.notification'),
       message:
         t('actions.' + action) + ' ' + t('modals.' + modal).toLowerCase(),
+      autoClose: false,
+      onClose: () => store.dispatch(removeNotification(modal)),
     });
+    audio.play();
   }
 });
 
@@ -40,7 +46,10 @@ if (user) {
   );
 }
 
-const initialState = { users: [] as number[] };
+const initialState = {
+  users: [] as number[],
+  notifications: {} as { [key: string]: number },
+};
 
 export const mqttSlice = createSlice({
   name: 'mqtt',
@@ -51,6 +60,14 @@ export const mqttSlice = createSlice({
     },
     removeOnlineUser: (state, action: PayloadAction<number>) => {
       state.users = state.users.filter((user) => user !== action.payload);
+    },
+    addNotification: (state, action: PayloadAction<string>) => {
+      state.notifications[action.payload] =
+        (state.notifications[action.payload] || 0) + 1;
+    },
+    removeNotification: (state, action: PayloadAction<string>) => {
+      state.notifications[action.payload] =
+        state.notifications[action.payload] - 1;
     },
     subscribe: (_, action: PayloadAction<number>) => {
       client.subscribe(
@@ -67,7 +84,16 @@ export const mqttSlice = createSlice({
 
 export default mqttSlice.reducer;
 
-export const { addOnlineUser, removeOnlineUser, subscribe, unsubscribe } =
-  mqttSlice.actions;
+export const {
+  addOnlineUser,
+  removeOnlineUser,
+  addNotification,
+  removeNotification,
+  subscribe,
+  unsubscribe,
+} = mqttSlice.actions;
 
 export const getOnlineUsers = () => useAppSelector((state) => state.mqtt.users);
+
+export const getActiveNotifications = () =>
+  useAppSelector((state) => state.mqtt.notifications);

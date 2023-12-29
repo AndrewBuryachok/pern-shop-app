@@ -20,6 +20,7 @@ import {
   IconUsers,
   IconWallet,
 } from '@tabler/icons';
+import NotificationBadge from './NotificationBadge';
 
 type Props = {
   opened: boolean;
@@ -128,7 +129,12 @@ export default function CustomNavbar(props: Props) {
             <NavLink
               key={link.route}
               label={t('navbar.' + link.route)}
-              icon={<link.icon size={16} />}
+              icon={
+                <NotificationBadge
+                  pages={link.nested}
+                  icon={<link.icon size={16} />}
+                />
+              }
               active={link.nested.includes(active)}
               childrenOffset={28}
             >
@@ -136,6 +142,7 @@ export default function CustomNavbar(props: Props) {
                 <NavLink
                   key={route}
                   label={t('navbar.' + route)}
+                  icon={<NotificationBadge pages={[route]} />}
                   component={Link}
                   to={`${route}${link.my ? '/my' : ''}`}
                   active={route === active}
@@ -146,7 +153,12 @@ export default function CustomNavbar(props: Props) {
             <NavLink
               key={link.route}
               label={t('navbar.' + link.route)}
-              icon={<link.icon size={16} />}
+              icon={
+                <NotificationBadge
+                  pages={[link.route]}
+                  icon={<link.icon size={16} />}
+                />
+              }
               component={Link}
               to={`/${link.route === 'home' ? '' : link.route}${
                 link.my ? '/my' : ''
