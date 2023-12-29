@@ -8,6 +8,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { User } from '../users/user.entity';
+import { Result } from './result.enum';
 import { Vote } from './vote.entity';
 
 @Entity('polls')
@@ -27,6 +28,13 @@ export class Poll {
 
   @Column()
   text: string;
+
+  @Column({
+    type: 'enum',
+    enum: Result,
+    default: Result.PROGRESS,
+  })
+  result: Result;
 
   @CreateDateColumn({ type: 'timestamptz', name: 'created_at' })
   createdAt: Date;

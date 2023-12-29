@@ -28,6 +28,7 @@ import {
   MAX_PRICE_VALUE,
   MAX_PRIORITY_VALUE,
   MAX_RATE_VALUE,
+  MAX_RESULT_VALUE,
   MAX_ROLE_VALUE,
   MAX_SUM_VALUE,
   MAX_TEXT_LENGTH,
@@ -173,6 +174,13 @@ export const IsPriority = () => (target: object, key: string) => {
   IsInt()(target, key);
   IsPositive()(target, key);
   Max(MAX_PRIORITY_VALUE)(target, key);
+};
+
+export const IsResult = () => (target: object, key: string) => {
+  IsNotEmpty()(target, key);
+  IsInt()(target, key);
+  IsPositive()(target, key);
+  Max(MAX_RESULT_VALUE)(target, key);
 };
 
 export const IsRate = () => (target: object, key: string) => {

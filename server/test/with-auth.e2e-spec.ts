@@ -1899,7 +1899,8 @@ describe('With Auth', () => {
     it('POST /polls/:pollId', async () => {
       return request(app.getHttpServer())
         .post(`/polls/${pollsId[0]}`)
-        .set('Authorization', `Bearer ${user.access}`)
+        .set('Authorization', `Bearer ${admin.access}`)
+        .send({ result: 2 })
         .expect('');
     });
   });

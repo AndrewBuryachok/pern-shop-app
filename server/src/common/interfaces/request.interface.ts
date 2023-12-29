@@ -12,6 +12,7 @@ import { Role } from '../../features/users/role.enum';
 import { Kind } from '../../features/leases/kind.enum';
 import { Priority } from '../../features/tasks/priority.enum';
 import { Status } from '../../features/transportations/status.enum';
+import { Result } from '../../features/polls/result.enum';
 import { Mode } from '../enums';
 
 export class Request {
@@ -189,6 +190,12 @@ export class Request {
   @IsEnum(Status)
   @Type(() => Number)
   status?: Status;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsEnum(Result)
+  @Type(() => Number)
+  result?: Result;
 
   @ApiProperty({ required: false })
   @IsOptional()

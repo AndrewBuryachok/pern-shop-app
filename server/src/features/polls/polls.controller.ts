@@ -10,7 +10,12 @@ import {
 import { ApiTags } from '@nestjs/swagger';
 import { PollsService } from './polls.service';
 import { Poll } from './poll.entity';
-import { CreatePollDto, PollIdDto, VotePollDto } from './poll.dto';
+import {
+  CompletePollDto,
+  CreatePollDto,
+  PollIdDto,
+  VotePollDto,
+} from './poll.dto';
 import { Request, Response } from '../../common/interfaces';
 import { HasRole, MyId, Public, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
@@ -53,13 +58,13 @@ export class PollsController {
     return this.pollsService.createPoll({ ...dto, myId });
   }
 
+  @Roles(Role.ADMIN)
   @Post(':pollId')
   completePoll(
-    @MyId() myId: number,
-    @HasRole(Role.ADMIN) hasRole: boolean,
     @Param() { pollId }: PollIdDto,
+    @Body() dto: CompletePollDto,
   ): Promise<void> {
-    return this.pollsService.completePoll({ pollId, myId, hasRole });
+    return this.pollsService.completePoll({ ...dto, pollId });
   }
 
   @Delete(':pollId')

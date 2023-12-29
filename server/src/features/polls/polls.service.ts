@@ -3,10 +3,16 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { Poll } from './poll.entity';
 import { Vote } from './vote.entity';
-import { ExtCreatePollDto, ExtPollIdDto, ExtVotePollDto } from './poll.dto';
+import {
+  DeletePollDto,
+  ExtCompletePollDto,
+  ExtCreatePollDto,
+  ExtVotePollDto,
+} from './poll.dto';
 import { Request, Response } from '../../common/interfaces';
 import { AppException } from '../../common/exceptions';
 import { PollError } from './poll-error.enum';
+import { Result } from './result.enum';
 
 @Injectable()
 export class PollsService {
@@ -59,12 +65,12 @@ export class PollsService {
     await this.create(dto);
   }
 
-  async completePoll(dto: ExtPollIdDto): Promise<void> {
-    const poll = await this.checkPollOwner(dto.pollId, dto.myId, dto.hasRole);
-    await this.complete(poll);
+  async completePoll(dto: ExtCompletePollDto): Promise<void> {
+    const poll = await this.pollsRepository.findOneBy({ id: dto.pollId });
+    await this.complete(poll, dto);
   }
 
-  async deletePoll(dto: ExtPollIdDto): Promise<void> {
+  async deletePoll(dto: DeletePollDto): Promise<void> {
     const poll = await this.checkPollOwner(dto.pollId, dto.myId, dto.hasRole);
     await this.delete(poll);
   }
@@ -119,9 +125,10 @@ export class PollsService {
     }
   }
 
-  private async complete(poll: Poll): Promise<void> {
+  private async complete(poll: Poll, dto: ExtCompletePollDto): Promise<void> {
     try {
-      poll.completedAt = new Date();
+      poll.result = dto.result;
+      poll.completedAt = poll.result === Result.PROGRESS ? null : new Date();
       await this.pollsRepository.save(poll);
     } catch (error) {
       throw new AppException(PollError.COMPLETE_FAILED);
@@ -208,6 +215,13 @@ export class PollsService {
       .andWhere(
         new Brackets((qb) =>
           qb
+            .where(`${!req.result}`)
+            .orWhere('poll.result = :result', { result: req.result }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
             .where(`${!req.minDate}`)
             .orWhere('poll.createdAt >= :minDate', { minDate: req.minDate }),
         ),
@@ -228,6 +242,7 @@ export class PollsService {
         'ownerUser.nick',
         'poll.title',
         'poll.text',
+        'poll.result',
         'poll.createdAt',
         'poll.completedAt',
       ]);
