@@ -16,6 +16,7 @@ import { ModalsProvider } from '@mantine/modals';
 import { NotificationsProvider } from '@mantine/notifications';
 import { useAppDispatch } from './app/hooks';
 import { toggleCurrentLanguage } from './features/lang/lang.slice';
+import { toggleMute } from './features/mqtt/mqtt.slice';
 import CustomHeader from './common/components/CustomHeader';
 import CustomNavbar from './common/components/CustomNavbar';
 import CustomLoader from './common/components/CustomLoader';
@@ -44,6 +45,7 @@ export default function App() {
     ['J', () => toggleColorScheme()],
     ['F', () => toggleFullscreen()],
     ['L', () => dispatch(toggleCurrentLanguage())],
+    ['M', () => dispatch(toggleMute())],
   ]);
 
   const [opened, toggle] = useToggle();

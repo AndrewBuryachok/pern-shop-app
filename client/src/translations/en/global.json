@@ -12,6 +12,10 @@
         "fullscreen": {
           "enter": "Enter fullscreen",
           "exit": "Exit fullscreen"
+        },
+        "mute": {
+          "on": "No sound",
+          "off": "With sound"
         }
       },
       "account": {

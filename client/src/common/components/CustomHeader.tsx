@@ -16,6 +16,8 @@ import { useFullscreen } from '@mantine/hooks';
 import {
   IconArrowsMaximize,
   IconArrowsMinimize,
+  IconBell,
+  IconBellOff,
   IconLock,
   IconLogin,
   IconLogout,
@@ -30,7 +32,11 @@ import {
   removeCurrentUser,
 } from '../../features/auth/auth.slice';
 import { toggleCurrentLanguage } from '../../features/lang/lang.slice';
-import { unsubscribe } from '../../features/mqtt/mqtt.slice';
+import {
+  getMute,
+  toggleMute,
+  unsubscribe,
+} from '../../features/mqtt/mqtt.slice';
 import { useLogoutMutation } from '../../features/auth/auth.api';
 import { openAuthModal } from '../../features/auth/AuthModal';
 import { openUpdatePasswordModal } from '../../features/auth/UpdatePasswordModal';
@@ -46,6 +52,7 @@ export default function CustomHeader(props: Props) {
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
   const dark = colorScheme === 'dark';
   const { fullscreen, toggle: toggleFullscreen } = useFullscreen();
+  const mute = getMute();
 
   const dispatch = useAppDispatch();
 
@@ -120,6 +127,15 @@ export default function CustomHeader(props: Props) {
                 ? t('header.menu.settings.fullscreen.exit')
                 : t('header.menu.settings.fullscreen.enter')}{' '}
               <Kbd>F</Kbd>
+            </Menu.Item>
+            <Menu.Item
+              icon={mute ? <IconBell size={16} /> : <IconBellOff size={16} />}
+              onClick={() => dispatch(toggleMute())}
+            >
+              {mute
+                ? t('header.menu.settings.mute.off')
+                : t('header.menu.settings.mute.on')}{' '}
+              <Kbd>M</Kbd>
             </Menu.Item>
             <Menu.Label>{t('header.menu.account.title')}</Menu.Label>
             {user ? (
