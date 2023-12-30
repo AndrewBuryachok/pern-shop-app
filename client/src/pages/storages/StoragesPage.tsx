@@ -36,6 +36,7 @@ export default function MyStorages() {
   }[tab]!({ page, search });
 
   const button = {
+    main: createMyStorageButton,
     my: createMyStorageButton,
     all: createUserStorageButton,
   }[tab];

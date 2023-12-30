@@ -36,7 +36,7 @@ export default function MyStores() {
     all: useGetAllStoresQuery,
   }[tab]!({ page, search });
 
-  const button = { my: createMyStoreButton }[tab];
+  const button = { main: createMyStoreButton, my: createMyStoreButton }[tab];
 
   const actions = {
     main: [reserveMyStoreAction],

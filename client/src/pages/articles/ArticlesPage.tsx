@@ -37,7 +37,7 @@ export default function MyArticles() {
     all: useGetAllArticlesQuery,
   }[tab]!({ page, search });
 
-  const button = { my: createArticleButton }[tab];
+  const button = { main: createArticleButton, my: createArticleButton }[tab];
 
   const actions = {
     my: [editArticleAction, deleteArticleAction],

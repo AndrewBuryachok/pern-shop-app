@@ -44,7 +44,11 @@ export default function MyGoods() {
     all: useGetAllGoodsQuery,
   }[tab]!({ page, search });
 
-  const button = { my: createMyGoodButton, all: createUserGoodButton }[tab];
+  const button = {
+    main: createMyGoodButton,
+    my: createMyGoodButton,
+    all: createUserGoodButton,
+  }[tab];
 
   const actions = {
     my: [editGoodAction, deleteGoodAction],

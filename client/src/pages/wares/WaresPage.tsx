@@ -58,7 +58,11 @@ export default function MyWares() {
     all: useGetAllWaresQuery,
   }[tab]!({ page, search });
 
-  const button = { my: createMyWareButton, all: createUserWareButton }[tab];
+  const button = {
+    main: createMyWareButton,
+    my: createMyWareButton,
+    all: createUserWareButton,
+  }[tab];
 
   const actions = {
     main: [buyMyWareAction],

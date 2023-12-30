@@ -57,7 +57,11 @@ export default function MyLots() {
     all: useGetAllLotsQuery,
   }[tab]!({ page, search });
 
-  const button = { my: createMyLotButton, all: createUserLotButton }[tab];
+  const button = {
+    main: createMyLotButton,
+    my: createMyLotButton,
+    all: createUserLotButton,
+  }[tab];
 
   const actions = {
     main: [buyMyLotAction],

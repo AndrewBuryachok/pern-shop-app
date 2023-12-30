@@ -43,7 +43,11 @@ export default function MyCities() {
     all: useGetAllCitiesQuery,
   }[tab]!({ page, search });
 
-  const button = { my: createMyCityButton, all: createUserCityButton }[tab];
+  const button = {
+    main: createMyCityButton,
+    my: createMyCityButton,
+    all: createUserCityButton,
+  }[tab];
 
   const actions = {
     my: [editMyCityAction, addMyCityUserAction, removeMyCityUserAction],

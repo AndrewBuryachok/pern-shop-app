@@ -38,7 +38,7 @@ export default function MyPlaints() {
     all: useGetAllPlaintsQuery,
   }[tab]!({ page, search });
 
-  const button = { my: createPlaintButton }[tab];
+  const button = { main: createPlaintButton, my: createPlaintButton }[tab];
 
   const actions = {
     my: [deletePlaintAction],

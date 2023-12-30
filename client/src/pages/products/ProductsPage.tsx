@@ -59,6 +59,7 @@ export default function MyProducts() {
   }[tab]!({ page, search });
 
   const button = {
+    main: createMyProductButton,
     my: createMyProductButton,
     all: createUserProductButton,
   }[tab];

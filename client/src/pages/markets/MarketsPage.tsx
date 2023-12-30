@@ -35,7 +35,11 @@ export default function MyMarkets() {
     all: useGetAllMarketsQuery,
   }[tab]!({ page, search });
 
-  const button = { my: createMyMarketButton, all: createUserMarketButton }[tab];
+  const button = {
+    main: createMyMarketButton,
+    my: createMyMarketButton,
+    all: createUserMarketButton,
+  }[tab];
 
   const actions = { my: [editMarketAction], all: [editMarketAction] }[tab];
 

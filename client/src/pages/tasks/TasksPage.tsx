@@ -42,7 +42,7 @@ export default function MyTasks() {
     all: useGetAllTasksQuery,
   }[tab]!({ page, search });
 
-  const button = { my: createTaskButton }[tab];
+  const button = { main: createTaskButton, my: createTaskButton }[tab];
 
   const actions = {
     main: [takeTaskAction],

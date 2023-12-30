@@ -39,7 +39,7 @@ export default function MyPolls() {
     all: useGetAllPollsQuery,
   }[tab]!({ page, search });
 
-  const button = { my: createPollButton }[tab];
+  const button = { main: createPollButton, my: createPollButton }[tab];
 
   const actions = {
     main: [upVotePollAction, downVotePollAction],

@@ -4,12 +4,15 @@ import { Button, Group } from '@mantine/core';
 import { IconPlus } from '@tabler/icons';
 import { pages } from '../../app/pages';
 import { INav } from '../interfaces';
+import { getCurrentUser } from '../../features/auth/auth.slice';
 import { isUserNotHasRole } from '../utils';
 
 type Props = INav;
 
 export default function CustomNav(props: Props) {
   const [t] = useTranslation();
+
+  const user = getCurrentUser();
 
   const active = useLocation().pathname.split('/');
 
@@ -42,6 +45,7 @@ export default function CustomNav(props: Props) {
           onClick={props.button.open}
           leftIcon={<IconPlus size={16} />}
           color='green'
+          disabled={!user}
           compact
         >
           {t('actions.' + props.button.label)}

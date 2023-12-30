@@ -36,7 +36,7 @@ export default function MainUsers() {
     all: useGetAllUsersQuery,
   }[tab]!({ page, search });
 
-  const button = { my: addUserCityButton }[tab];
+  const button = { main: addUserCityButton, my: addUserCityButton }[tab];
 
   const actions = {
     my: [removeUserCityAction],

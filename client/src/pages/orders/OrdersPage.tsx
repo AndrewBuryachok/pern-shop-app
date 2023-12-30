@@ -62,7 +62,11 @@ export default function MyOrders() {
     all: useGetAllOrdersQuery,
   }[tab]!({ page, search });
 
-  const button = { my: createMyOrderButton, all: createUserOrderButton }[tab];
+  const button = {
+    main: createMyOrderButton,
+    my: createMyOrderButton,
+    all: createUserOrderButton,
+  }[tab];
 
   const actions = {
     main: [takeMyOrderAction],

@@ -35,7 +35,11 @@ export default function MyCells() {
     all: useGetAllCellsQuery,
   }[tab]!({ page, search });
 
-  const button = { my: createMyCellButton, all: createUserCellButton }[tab];
+  const button = {
+    main: createMyCellButton,
+    my: createMyCellButton,
+    all: createUserCellButton,
+  }[tab];
 
   return (
     <CellsTable

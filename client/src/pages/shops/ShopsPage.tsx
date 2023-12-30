@@ -32,7 +32,11 @@ export default function MyShops() {
     all: useGetAllShopsQuery,
   }[tab]!({ page, search });
 
-  const button = { my: createMyShopButton, all: createUserShopButton }[tab];
+  const button = {
+    main: createMyShopButton,
+    my: createMyShopButton,
+    all: createUserShopButton,
+  }[tab];
 
   const actions = { my: [editShopAction], all: [editShopAction] }[tab];
 

@@ -63,6 +63,7 @@ export default function MyDeliveries() {
   }[tab]!({ page, search });
 
   const button = {
+    main: createMyDeliveryButton,
     my: createMyDeliveryButton,
     all: createUserDeliveryButton,
   }[tab];
