@@ -7,7 +7,7 @@ export const emptyApi = createApi({
     'Auth',
     'User',
     'Friend',
-    'Following',
+    'Subscriber',
     'Article',
     'Like',
     'Comment',

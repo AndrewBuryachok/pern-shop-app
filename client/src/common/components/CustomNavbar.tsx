@@ -44,7 +44,7 @@ export default function CustomNavbar(props: Props) {
       my: true,
     },
     {
-      route: 'followings',
+      route: 'subscribers',
       icon: IconMail,
       my: true,
     },

@@ -62,7 +62,7 @@ export default function Home() {
       my: true,
     },
     {
-      title: 'followings',
+      title: 'subscribers',
       icon: IconMail,
       my: true,
     },

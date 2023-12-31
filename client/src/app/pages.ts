@@ -5,7 +5,9 @@ const Map = lazy(() => import('../pages/map/Map'));
 const UsersPage = lazy(() => import('../pages/users/UsersPage'));
 const SingleUser = lazy(() => import('../pages/users/SingleUser'));
 const FriendsPage = lazy(() => import('../pages/friends/FriendsPage'));
-const FollowingsPage = lazy(() => import('../pages/followings/FollowingsPage'));
+const SubscribersPage = lazy(
+  () => import('../pages/subscribers/SubscribersPage'),
+);
 const ArticlesPage = lazy(() => import('../pages/articles/ArticlesPage'));
 const CardsPage = lazy(() => import('../pages/cards/CardsPage'));
 const ExchangesPage = lazy(() => import('../pages/exchanges/ExchangesPage'));
@@ -53,8 +55,8 @@ export const pages = [
     nested: [{ path: 'my' }, { path: 'sent' }, { path: 'received' }],
   },
   {
-    path: 'followings',
-    element: FollowingsPage,
+    path: 'subscribers',
+    element: SubscribersPage,
     nested: [{ path: 'my' }, { path: 'received' }],
   },
   {
@@ -63,7 +65,7 @@ export const pages = [
     nested: [
       { index: true },
       { path: 'my' },
-      { path: 'followed' },
+      { path: 'subscribed' },
       { path: 'liked' },
       { path: 'commented' },
       { path: 'all', role: Role.ADMIN },

@@ -2,14 +2,14 @@ import { useState } from 'react';
 import { useLocation, useSearchParams } from 'react-router-dom';
 import { ISearch } from '../../common/interfaces';
 import {
-  useGetMyFollowingsQuery,
-  useGetReceivedFollowingsQuery,
-} from '../../features/followings/followings.api';
+  useGetMySubscribersQuery,
+  useGetReceivedSubscribersQuery,
+} from '../../features/subscribers/subscribers.api';
 import UsersTable from '../../features/users/UsersTable';
-import { addFollowingButton } from '../../features/followings/AddFollowingModal';
-import { removeFollowingAction } from '../../features/followings/RemoveFollowingModal';
+import { addSubscriberButton } from '../../features/subscribers/AddSubscriberModal';
+import { removeSubscriberAction } from '../../features/subscribers/RemoveSubscriberModal';
 
-export default function MyFollowings() {
+export default function MySubscribers() {
   const tab = useLocation().pathname.split('/')[2] || 'main';
 
   const [searchParams] = useSearchParams();
@@ -27,13 +27,13 @@ export default function MyFollowings() {
   });
 
   const response = {
-    my: useGetMyFollowingsQuery,
-    received: useGetReceivedFollowingsQuery,
+    my: useGetMySubscribersQuery,
+    received: useGetReceivedSubscribersQuery,
   }[tab]!({ page, search });
 
-  const button = { my: addFollowingButton }[tab];
+  const button = { my: addSubscriberButton }[tab];
 
-  const actions = { my: [removeFollowingAction] }[tab];
+  const actions = { my: [removeSubscriberAction] }[tab];
 
   return (
     <UsersTable

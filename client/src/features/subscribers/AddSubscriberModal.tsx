@@ -3,16 +3,16 @@ import { useTranslation } from 'react-i18next';
 import { Select } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
-import { useAddFollowingMutation } from './followings.api';
-import { useSelectNotFollowingsUsersQuery } from '../users/users.api';
-import { UpdateFollowingDto } from './following.dto';
+import { useAddSubscriberMutation } from './subscribers.api';
+import { useSelectNotSubscribedUsersQuery } from '../users/users.api';
+import { UpdateSubscriberDto } from './subscriber.dto';
 import CustomForm from '../../common/components/CustomForm';
 import RefetchAction from '../../common/components/RefetchAction';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import { UsersItem } from '../../common/components/UsersItem';
 import { selectUsers } from '../../common/utils';
 
-export default function AddFollowingModal() {
+export default function AddSubscriberModal() {
   const [t] = useTranslation();
 
   const form = useForm({
@@ -24,21 +24,21 @@ export default function AddFollowingModal() {
     }),
   });
 
-  const { data: users, ...usersResponse } = useSelectNotFollowingsUsersQuery();
+  const { data: users, ...usersResponse } = useSelectNotSubscribedUsersQuery();
 
   const user = users?.find((user) => user.id === +form.values.user);
 
-  const [addFollowing, { isLoading }] = useAddFollowingMutation();
+  const [addSubscriber, { isLoading }] = useAddSubscriberMutation();
 
-  const handleSubmit = async (dto: UpdateFollowingDto) => {
-    await addFollowing(dto);
+  const handleSubmit = async (dto: UpdateSubscriberDto) => {
+    await addSubscriber(dto);
   };
 
   return (
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={t('actions.add') + ' ' + t('modals.followings')}
+      text={t('actions.add') + ' ' + t('modals.subscribers')}
     >
       <Select
         label={t('columns.user')}
@@ -58,11 +58,11 @@ export default function AddFollowingModal() {
   );
 }
 
-export const addFollowingButton = {
+export const addSubscriberButton = {
   label: 'add',
   open: () =>
     openModal({
-      title: t('actions.add') + ' ' + t('modals.followings'),
-      children: <AddFollowingModal />,
+      title: t('actions.add') + ' ' + t('modals.subscribers'),
+      children: <AddSubscriberModal />,
     }),
 };

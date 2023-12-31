@@ -5,15 +5,15 @@ import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { User } from '../users/user.model';
-import { useRemoveFollowingMutation } from './followings.api';
-import { UpdateFollowingDto } from './following.dto';
+import { useRemoveSubscriberMutation } from './subscribers.api';
+import { UpdateSubscriberDto } from './subscriber.dto';
 import CustomForm from '../../common/components/CustomForm';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import { Color } from '../../common/constants';
 
 type Props = IModal<User>;
 
-export default function RemoveFollowingModal({ data: user }: Props) {
+export default function RemoveSubscriberModal({ data: user }: Props) {
   const [t] = useTranslation();
 
   const form = useForm({
@@ -22,17 +22,17 @@ export default function RemoveFollowingModal({ data: user }: Props) {
     },
   });
 
-  const [removeFollowing, { isLoading }] = useRemoveFollowingMutation();
+  const [removeSubscriber, { isLoading }] = useRemoveSubscriberMutation();
 
-  const handleSubmit = async (dto: UpdateFollowingDto) => {
-    await removeFollowing(dto);
+  const handleSubmit = async (dto: UpdateSubscriberDto) => {
+    await removeSubscriber(dto);
   };
 
   return (
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={t('actions.remove') + ' ' + t('modals.followings')}
+      text={t('actions.remove') + ' ' + t('modals.subscribers')}
     >
       <TextInput
         label={t('columns.user')}
@@ -45,11 +45,11 @@ export default function RemoveFollowingModal({ data: user }: Props) {
   );
 }
 
-export const removeFollowingAction = {
+export const removeSubscriberAction = {
   open: (user: User) =>
     openModal({
-      title: t('actions.remove') + ' ' + t('modals.followings'),
-      children: <RemoveFollowingModal data={user} />,
+      title: t('actions.remove') + ' ' + t('modals.subscribers'),
+      children: <RemoveSubscriberModal data={user} />,
     }),
   disable: () => false,
   color: Color.RED,

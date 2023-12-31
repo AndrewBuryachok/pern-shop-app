@@ -4,10 +4,10 @@ import { ISearch } from '../../common/interfaces';
 import {
   useGetAllArticlesQuery,
   useGetCommentedArticlesQuery,
-  useGetFollowedArticlesQuery,
   useGetLikedArticlesQuery,
   useGetMainArticlesQuery,
   useGetMyArticlesQuery,
+  useGetSubscribedArticlesQuery,
 } from '../../features/articles/articles.api';
 import ArticlesList from '../../features/articles/ArticlesList';
 import { createArticleButton } from '../../features/articles/CreateArticleModal';
@@ -31,7 +31,7 @@ export default function MyArticles() {
   const response = {
     main: useGetMainArticlesQuery,
     my: useGetMyArticlesQuery,
-    followed: useGetFollowedArticlesQuery,
+    subscribed: useGetSubscribedArticlesQuery,
     liked: useGetLikedArticlesQuery,
     commented: useGetCommentedArticlesQuery,
     all: useGetAllArticlesQuery,
