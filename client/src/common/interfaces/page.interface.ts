@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { ITable } from './table';
+import { ITable } from './table.interface';
 
 export interface IPage<T> extends ITable<T> {
   children: ReactNode;

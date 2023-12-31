@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Pagination } from '@mantine/core';
-import { IPagination } from '../interfaces/pagination';
+import { IPagination } from '../interfaces/pagination.interface';
 
 type Props = IPagination & {
   total?: number;

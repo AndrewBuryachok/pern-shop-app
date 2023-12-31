@@ -1,11 +1,11 @@
 import { getCurrentUser } from '../../features/auth/auth.slice';
 import { Role } from '../constants';
 
-export * from './query';
-export * from './parse';
-export * from './view';
-export * from './select';
-export * from './scale';
+export * from './query.util';
+export * from './parse.util';
+export * from './view.util';
+export * from './select.util';
+export * from './scale.util';
 
 export const customMin = (required: number, optional?: number) =>
   optional === undefined ? required : Math.min(required, optional);

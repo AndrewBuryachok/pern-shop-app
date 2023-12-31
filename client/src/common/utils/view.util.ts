@@ -4,7 +4,7 @@ import { Container } from '../../features/containers/container.model';
 import { SmThing } from '../../features/things/thing.model';
 import { State } from '../../features/states/state.model';
 import { Role, roles as allRoles } from '../constants';
-import { parseItem } from './parse';
+import { parseItem } from './parse.util';
 
 export const viewRoles = (roles: Role[]) =>
   roles.map((role) => ({

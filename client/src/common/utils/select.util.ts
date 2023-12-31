@@ -21,7 +21,7 @@ import {
   resultsToColors,
   roles,
   statuses,
-} from '../../common/constants';
+} from '../constants';
 
 export const selectUsers = (users?: SmUser[]) =>
   users?.map((user) => ({
