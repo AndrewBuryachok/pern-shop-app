@@ -7,7 +7,7 @@ type Props<T> = IPage<T>;
 export default function CustomsList<T>(props: Props<T>) {
   return (
     <CustomPage {...props}>
-      {props.isFetching
+      {props.isLoading
         ? [...Array(10).keys()].map((key) => (
             <Paper key={key} p='md'>
               <Stack spacing={8}>

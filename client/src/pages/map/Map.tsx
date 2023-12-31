@@ -23,18 +23,16 @@ export default function Map() {
     { x1: '50%', x2: '0%', y1: '50%', y2: '50%' },
   ];
 
-  const { data: cities, isFetching: isFetching1 } = useGetMainCitiesQuery({});
-  const { data: shops, isFetching: isFetching2 } = useGetMainShopsQuery({});
-  const { data: markets, isFetching: isFetching3 } = useGetMainMarketsQuery({});
-  const { data: storages, isFetching: isFetching4 } = useGetMainStoragesQuery(
-    {},
-  );
+  const { data: cities, isLoading: isLoading1 } = useGetMainCitiesQuery({});
+  const { data: shops, isLoading: isLoading2 } = useGetMainShopsQuery({});
+  const { data: markets, isLoading: isLoading3 } = useGetMainMarketsQuery({});
+  const { data: storages, isLoading: isLoading4 } = useGetMainStoragesQuery({});
 
-  const isFetching = isFetching1 || isFetching2 || isFetching3 || isFetching4;
+  const isLoading = isLoading1 || isLoading2 || isLoading3 || isLoading4;
 
   return (
     <svg width='100%' height='100%'>
-      {!isFetching &&
+      {!isLoading &&
         [
           cities?.result.map((city) => ({
             ...city,
@@ -69,7 +67,7 @@ export default function Map() {
         <line
           key={index}
           {...line}
-          stroke={theme.colors[isFetching ? 'gray' : colors[index]][7]}
+          stroke={theme.colors[isLoading ? 'gray' : colors[index]][7]}
           strokeWidth='2'
         ></line>
       ))}

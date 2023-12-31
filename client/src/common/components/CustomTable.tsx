@@ -28,7 +28,7 @@ export default function CustomTable<T>(props: Props<T>) {
               </tr>
             </thead>
             <tbody>
-              {props.isFetching
+              {props.isLoading
                 ? [...Array(10).keys()].map((key) => (
                     <tr key={key}>
                       {props.columns.map((column) => (
@@ -40,7 +40,7 @@ export default function CustomTable<T>(props: Props<T>) {
                   ))
                 : props.children}
             </tbody>
-            {!props.isFetching && (
+            {!props.isLoading && (
               <caption style={{ marginTop: 0 }}>
                 {props.data?.result.length
                   ? `${t('components.pagination.from')} ${
