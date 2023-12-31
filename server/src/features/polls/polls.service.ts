@@ -45,7 +45,7 @@ export class PollsService {
   async getVotedPolls(myId: number, req: Request): Promise<Response<Poll>> {
     const [result, count] = await this.getPollsQueryBuilder(req)
       .innerJoinAndMapOne(
-        'poll.myVote',
+        'myVote',
         'poll.votes',
         'myVote',
         'myVote.userId = :myId',

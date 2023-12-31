@@ -46,13 +46,13 @@ export class ArticlesService {
     req: Request,
   ): Promise<Response<Article>> {
     const [result, count] = await this.getArticlesQueryBuilder(req)
-      .leftJoinAndMapMany(
-        'ownerUser.subscribers',
-        'subscribers',
+      .innerJoinAndMapOne(
         'subscriber',
-        'ownerUser.id = subscriber.receiver_user_id',
+        'ownerUser.receivedSubscribers',
+        'subscriber',
+        'subscriber.id = :myId',
+        { myId },
       )
-      .andWhere('subscriber.sender_user_id = :myId', { myId })
       .getManyAndCount();
     await this.loadLikesAndComments(result);
     return { result, count };
@@ -64,7 +64,7 @@ export class ArticlesService {
   ): Promise<Response<Article>> {
     const [result, count] = await this.getArticlesQueryBuilder(req)
       .innerJoinAndMapOne(
-        'article.myLike',
+        'myLike',
         'article.likes',
         'myLike',
         'myLike.userId = :myId',
@@ -81,7 +81,7 @@ export class ArticlesService {
   ): Promise<Response<Article>> {
     const [result, count] = await this.getArticlesQueryBuilder(req)
       .innerJoinAndMapOne(
-        'article.myComment',
+        'myComment',
         'article.comments',
         'myComment',
         'myComment.userId = :myId',

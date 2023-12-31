@@ -21,6 +21,10 @@ export class SubscribersService {
     return this.usersService.getReceivedSubscribers(myId, req);
   }
 
+  selectMySubscribers(myId: number): Promise<User[]> {
+    return this.usersService.selectMySubscribers(myId);
+  }
+
   async addSubscriber(dto: UpdateSubscriberDto): Promise<void> {
     await this.usersService.addUserSubscriber({
       senderUserId: dto.myId,

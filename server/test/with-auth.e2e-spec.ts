@@ -295,6 +295,13 @@ describe('With Auth', () => {
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
 
+    it('GET /subscribers/my/select', async () => {
+      return request(app.getHttpServer())
+        .get('/subscribers/my/select')
+        .set('Authorization', `Bearer ${user.access}`)
+        .expect((res) => expect(res.body.length).toBeGreaterThan(0));
+    });
+
     it('POST /articles', async () => {
       return request(app.getHttpServer())
         .post('/articles')

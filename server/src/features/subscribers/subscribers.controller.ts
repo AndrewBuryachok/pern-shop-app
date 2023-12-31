@@ -27,6 +27,11 @@ export class SubscribersController {
     return this.subscribersService.getReceivedSubscribers(myId, req);
   }
 
+  @Get('my/select')
+  selectMySubscribers(@MyId() myId: number): Promise<User[]> {
+    return this.subscribersService.selectMySubscribers(myId);
+  }
+
   @Post(':userId')
   addSubscriber(@MyId() myId, @Param() { userId }: UserIdDto): Promise<void> {
     return this.subscribersService.addSubscriber({ userId, myId });

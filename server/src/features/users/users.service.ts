@@ -93,13 +93,13 @@ export class UsersService {
 
   async getMySubscribers(myId: number, req: Request): Promise<Response<User>> {
     const [result, count] = await this.getUsersQueryBuilder(req)
-      .leftJoinAndMapMany(
-        'user.subscribers',
-        'subscribers',
+      .innerJoinAndMapOne(
         'subscriber',
-        'user.id = subscriber.receiver_user_id',
+        'user.receivedSubscribers',
+        'subscriber',
+        'subscriber.id = :myId',
+        { myId },
       )
-      .andWhere('subscriber.sender_user_id = :myId', { myId })
       .getManyAndCount();
     await this.loadFriends(result);
     return { result, count };
@@ -110,13 +110,13 @@ export class UsersService {
     req: Request,
   ): Promise<Response<User>> {
     const [result, count] = await this.getUsersQueryBuilder(req)
-      .leftJoinAndMapMany(
-        'user.subscribers',
-        'subscribers',
+      .innerJoinAndMapOne(
         'subscriber',
-        'user.id = subscriber.sender_user_id',
+        'user.sentSubscribers',
+        'subscriber',
+        'subscriber.id = :myId',
+        { myId },
       )
-      .andWhere('subscriber.receiver_user_id = :myId', { myId })
       .getManyAndCount();
     await this.loadFriends(result);
     return { result, count };
@@ -135,13 +135,13 @@ export class UsersService {
   async selectNotFriendsUsers(myId: number): Promise<User[]> {
     const friends = (
       await this.selectUsersQueryBuilder()
-        .leftJoinAndMapMany(
-          'user.friends',
-          'friends',
+        .innerJoinAndMapOne(
           'friend',
-          'user.id = friend.receiver_user_id',
+          'user.friends',
+          'friend',
+          'friend.id = :myId',
+          { myId },
         )
-        .where('friend.sender_user_id = :myId', { myId })
         .getMany()
     ).map((friend) => friend.id);
     const users = await this.selectUsersQueryBuilder().getMany();
@@ -151,13 +151,13 @@ export class UsersService {
   async selectNotSubscribedUsers(myId: number): Promise<User[]> {
     const subscribers = (
       await this.selectUsersQueryBuilder()
-        .leftJoinAndMapMany(
-          'user.subscribers',
-          'subscribers',
+        .innerJoinAndMapOne(
           'subscriber',
-          'user.id = subscriber.receiver_user_id',
+          'user.receivedSubscribers',
+          'subscriber',
+          'subscriber.id = :myId',
+          { myId },
         )
-        .where('subscriber.sender_user_id = :myId', { myId })
         .getMany()
     ).map((subscriber) => subscriber.id);
     const users = await this.selectUsersQueryBuilder().getMany();
@@ -173,6 +173,18 @@ export class UsersService {
     ).map((user) => user.id);
     const users = await this.selectUsersQueryBuilder().getMany();
     return users.filter((user) => !ratings.includes(user.id));
+  }
+
+  selectMySubscribers(myId: number): Promise<User[]> {
+    return this.selectUsersQueryBuilder()
+      .innerJoinAndMapOne(
+        'subscriber',
+        'user.receivedSubscribers',
+        'subscriber',
+        'subscriber.id = :myId',
+        { myId },
+      )
+      .getMany();
   }
 
   async getSingleUser(userId: number): Promise<User> {
@@ -250,11 +262,11 @@ export class UsersService {
 
   async addUserSubscriber(dto: UpdateUserSubscriberDto): Promise<void> {
     const user = await this.usersRepository.findOne({
-      relations: ['subscribers'],
+      relations: ['sentSubscribers'],
       where: { id: dto.senderUserId },
     });
     if (
-      user.subscribers.find(
+      user.sentSubscribers.find(
         (subscriber) => subscriber.id === dto.receiverUserId,
       )
     ) {
@@ -265,11 +277,11 @@ export class UsersService {
 
   async removeUserSubscriber(dto: UpdateUserSubscriberDto): Promise<void> {
     const user = await this.usersRepository.findOne({
-      relations: ['subscribers'],
+      relations: ['sentSubscribers'],
       where: { id: dto.senderUserId },
     });
     if (
-      !user.subscribers.find(
+      !user.sentSubscribers.find(
         (subscriber) => subscriber.id === dto.receiverUserId,
       )
     ) {
@@ -395,7 +407,7 @@ export class UsersService {
     try {
       const subscriber = new User();
       subscriber.id = userId;
-      user.subscribers.push(subscriber);
+      user.sentSubscribers.push(subscriber);
       await this.usersRepository.save(user);
     } catch (error) {
       throw new AppException(UserError.ADD_SUBSCRIBER_FAILED);
@@ -404,7 +416,9 @@ export class UsersService {
 
   private async removeSubscriber(user: User, userId: number): Promise<void> {
     try {
-      user.subscribers = user.subscribers.filter((user) => user.id !== userId);
+      user.sentSubscribers = user.sentSubscribers.filter(
+        (user) => user.id !== userId,
+      );
       await this.usersRepository.save(user);
     } catch (error) {
       throw new AppException(UserError.REMOVE_SUBSCRIBER_FAILED);

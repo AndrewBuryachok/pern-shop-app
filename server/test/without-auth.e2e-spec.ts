@@ -106,6 +106,12 @@ describe('Without Auth', () => {
         .get('/subscribers/received')
         .expect(401);
     });
+
+    it('GET /subscribers/my/select', async () => {
+      return request(app.getHttpServer())
+        .get('/subscribers/my/select')
+        .expect(401);
+    });
   });
 
   describe('Articles', () => {
