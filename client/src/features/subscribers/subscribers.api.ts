@@ -1,6 +1,6 @@
 import { emptyApi } from '../../app/empty.api';
 import { IRequest, IResponse } from '../../common/interfaces';
-import { User } from '../users/user.model';
+import { SmUser, User } from '../users/user.model';
 import { UpdateSubscriberDto } from './subscriber.dto';
 import { getQuery } from '../../common/utils';
 
@@ -17,6 +17,12 @@ export const subscribersApi = emptyApi.injectEndpoints({
         url: `/subscribers/received?${getQuery(req)}`,
       }),
       providesTags: ['Auth', 'User', 'City', 'Friend', 'Subscriber'],
+    }),
+    selectMySubscribers: build.query<SmUser[], void>({
+      query: () => ({
+        url: '/subscribers/my/select',
+      }),
+      providesTags: ['Auth', 'User', 'Subscriber'],
     }),
     addSubscriber: build.mutation<void, UpdateSubscriberDto>({
       query: ({ userId }) => ({
@@ -38,6 +44,7 @@ export const subscribersApi = emptyApi.injectEndpoints({
 export const {
   useGetMySubscribersQuery,
   useGetReceivedSubscribersQuery,
+  useSelectMySubscribersQuery,
   useAddSubscriberMutation,
   useRemoveSubscriberMutation,
 } = subscribersApi;
