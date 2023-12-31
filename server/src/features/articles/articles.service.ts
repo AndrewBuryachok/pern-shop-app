@@ -41,18 +41,18 @@ export class ArticlesService {
     return { result, count };
   }
 
-  async getFollowedArticles(
+  async getSubscribedArticles(
     myId: number,
     req: Request,
   ): Promise<Response<Article>> {
     const [result, count] = await this.getArticlesQueryBuilder(req)
       .leftJoinAndMapMany(
-        'ownerUser.followings',
-        'followings',
-        'following',
-        'ownerUser.id = following.receiver_user_id',
+        'ownerUser.subscribers',
+        'subscribers',
+        'subscriber',
+        'ownerUser.id = subscriber.receiver_user_id',
       )
-      .andWhere('following.sender_user_id = :myId', { myId })
+      .andWhere('subscriber.sender_user_id = :myId', { myId })
       .getManyAndCount();
     await this.loadLikesAndComments(result);
     return { result, count };

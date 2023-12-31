@@ -35,12 +35,12 @@ export class ArticlesController {
     return this.articlesService.getMyArticles(myId, req);
   }
 
-  @Get('followed')
-  getFollowedArticles(
+  @Get('subscribed')
+  getSubscribedArticles(
     @MyId() myId: number,
     @Query() req: Request,
   ): Promise<Response<Article>> {
-    return this.articlesService.getFollowedArticles(myId, req);
+    return this.articlesService.getSubscribedArticles(myId, req);
   }
 
   @Get('liked')

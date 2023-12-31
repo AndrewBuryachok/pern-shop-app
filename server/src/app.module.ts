@@ -4,7 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './features/auth/auth.module';
 import { UsersModule } from './features/users/users.module';
 import { FriendsModule } from './features/friends/friends.module';
-import { FollowingsModule } from './features/followings/followings.module';
+import { SubscribersModule } from './features/subscribers/subscribers.module';
 import { ArticlesModule } from './features/articles/articles.module';
 import { CommentsModule } from './features/comments/comments.module';
 import { CardsModule } from './features/cards/cards.module';
@@ -54,7 +54,7 @@ import { RatingsModule } from './features/ratings/ratings.module';
     AuthModule,
     UsersModule,
     FriendsModule,
-    FollowingsModule,
+    SubscribersModule,
     ArticlesModule,
     CommentsModule,
     CardsModule,

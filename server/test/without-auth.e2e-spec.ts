@@ -69,9 +69,9 @@ describe('Without Auth', () => {
         .expect(401);
     });
 
-    it('GET /users/not-followings/select', async () => {
+    it('GET /users/not-subscribed/select', async () => {
       return request(app.getHttpServer())
-        .get('/users/not-followings/select')
+        .get('/users/not-subscribed/select')
         .expect(401);
     });
 
@@ -96,14 +96,14 @@ describe('Without Auth', () => {
     });
   });
 
-  describe('Followings', () => {
-    it('GET /followings/my', async () => {
-      return request(app.getHttpServer()).get('/followings/my').expect(401);
+  describe('Subscribers', () => {
+    it('GET /subscribers/my', async () => {
+      return request(app.getHttpServer()).get('/subscribers/my').expect(401);
     });
 
-    it('GET /followings/received', async () => {
+    it('GET /subscribers/received', async () => {
       return request(app.getHttpServer())
-        .get('/followings/received')
+        .get('/subscribers/received')
         .expect(401);
     });
   });
@@ -113,8 +113,10 @@ describe('Without Auth', () => {
       return request(app.getHttpServer()).get('/articles/my').expect(401);
     });
 
-    it('GET /articles/followed', async () => {
-      return request(app.getHttpServer()).get('/articles/followed').expect(401);
+    it('GET /articles/subscribed', async () => {
+      return request(app.getHttpServer())
+        .get('/articles/subscribed')
+        .expect(401);
     });
 
     it('GET /articles/liked', async () => {

@@ -47,7 +47,7 @@ export class UpdateUserFriendDto {
   receiverUserId: number;
 }
 
-export class UpdateUserFollowingDto {
+export class UpdateUserSubscriberDto {
   senderUserId: number;
   receiverUserId: number;
 }

@@ -1,5 +1,5 @@
 import { UserIdDto } from '../users/user.dto';
 
-export class UpdateFollowingDto extends UserIdDto {
+export class UpdateSubscriberDto extends UserIdDto {
   myId: number;
 }

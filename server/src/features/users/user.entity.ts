@@ -54,11 +54,11 @@ export class User {
 
   @ManyToMany(() => User)
   @JoinTable({
-    name: 'followings',
+    name: 'subscribers',
     joinColumn: { name: 'sender_user_id' },
     inverseJoinColumn: { name: 'receiver_user_id' },
   })
-  followings: User[];
+  subscribers: User[];
 
   @OneToMany(() => Card, (card) => card.user)
   cards: Card[];

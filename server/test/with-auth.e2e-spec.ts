@@ -190,9 +190,9 @@ describe('With Auth', () => {
         .expect((res) => expect(res.body.length).toBeGreaterThan(0));
     });
 
-    it('GET /users/not-followings/select', async () => {
+    it('GET /users/not-subscribed/select', async () => {
       return request(app.getHttpServer())
-        .get('/users/not-followings/select')
+        .get('/users/not-subscribed/select')
         .set('Authorization', `Bearer ${user.access}`)
         .expect((res) => expect(res.body.length).toBeGreaterThan(0));
     });
@@ -273,24 +273,24 @@ describe('With Auth', () => {
     });
   });
 
-  describe('Followings', () => {
-    it('POST /followings/:followingId', async () => {
+  describe('Subscribers', () => {
+    it('POST /subscribers/:subscriberId', async () => {
       return request(app.getHttpServer())
-        .post(`/followings/${user.id}`)
+        .post(`/subscribers/${user.id}`)
         .set('Authorization', `Bearer ${user.access}`)
         .expect('');
     });
 
-    it('GET /followings/my', async () => {
+    it('GET /subscribers/my', async () => {
       return request(app.getHttpServer())
-        .get('/followings/my')
+        .get('/subscribers/my')
         .set('Authorization', `Bearer ${user.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
 
-    it('GET /followings/received', async () => {
+    it('GET /subscribers/received', async () => {
       return request(app.getHttpServer())
-        .get('/followings/received')
+        .get('/subscribers/received')
         .set('Authorization', `Bearer ${user.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
@@ -303,16 +303,16 @@ describe('With Auth', () => {
         .expect('');
     });
 
-    it('GET /articles/followed', async () => {
+    it('GET /articles/subscribed', async () => {
       return request(app.getHttpServer())
-        .get('/articles/followed')
+        .get('/articles/subscribed')
         .set('Authorization', `Bearer ${user.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
 
-    it('DELETE /followings/:followingId', async () => {
+    it('DELETE /subscribers/:subscriberId', async () => {
       return request(app.getHttpServer())
-        .delete(`/followings/${user.id}`)
+        .delete(`/subscribers/${user.id}`)
         .set('Authorization', `Bearer ${user.access}`)
         .expect('');
     });

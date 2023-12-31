@@ -58,9 +58,9 @@ export class UsersController {
     return this.usersService.selectNotFriendsUsers(myId);
   }
 
-  @Get('not-followings/select')
-  selectNotFollowingsUsers(@MyId() myId: number): Promise<User[]> {
-    return this.usersService.selectNotFollowingsUsers(myId);
+  @Get('not-subscribed/select')
+  selectNotSubscribedUsers(@MyId() myId: number): Promise<User[]> {
+    return this.usersService.selectNotSubscribedUsers(myId);
   }
 
   @Get('not-rated/select')

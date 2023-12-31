@@ -7,8 +7,8 @@ import {
   CreateUserDto,
   ExtEditUserPasswordDto,
   ExtUpdateUserRoleDto,
-  UpdateUserFollowingDto,
   UpdateUserFriendDto,
+  UpdateUserSubscriberDto,
   UpdateUserTokenDto,
 } from './user.dto';
 import { Request, Response } from '../../common/interfaces';
@@ -91,32 +91,32 @@ export class UsersService {
     return { result, count };
   }
 
-  async getMyFollowings(myId: number, req: Request): Promise<Response<User>> {
+  async getMySubscribers(myId: number, req: Request): Promise<Response<User>> {
     const [result, count] = await this.getUsersQueryBuilder(req)
       .leftJoinAndMapMany(
-        'user.followings',
-        'followings',
-        'following',
-        'user.id = following.receiver_user_id',
+        'user.subscribers',
+        'subscribers',
+        'subscriber',
+        'user.id = subscriber.receiver_user_id',
       )
-      .andWhere('following.sender_user_id = :myId', { myId })
+      .andWhere('subscriber.sender_user_id = :myId', { myId })
       .getManyAndCount();
     await this.loadFriends(result);
     return { result, count };
   }
 
-  async getReceivedFollowings(
+  async getReceivedSubscribers(
     myId: number,
     req: Request,
   ): Promise<Response<User>> {
     const [result, count] = await this.getUsersQueryBuilder(req)
       .leftJoinAndMapMany(
-        'user.followings',
-        'followings',
-        'following',
-        'user.id = following.sender_user_id',
+        'user.subscribers',
+        'subscribers',
+        'subscriber',
+        'user.id = subscriber.sender_user_id',
       )
-      .andWhere('following.receiver_user_id = :myId', { myId })
+      .andWhere('subscriber.receiver_user_id = :myId', { myId })
       .getManyAndCount();
     await this.loadFriends(result);
     return { result, count };
@@ -148,20 +148,20 @@ export class UsersService {
     return users.filter((user) => !friends.includes(user.id));
   }
 
-  async selectNotFollowingsUsers(myId: number): Promise<User[]> {
-    const followings = (
+  async selectNotSubscribedUsers(myId: number): Promise<User[]> {
+    const subscribers = (
       await this.selectUsersQueryBuilder()
         .leftJoinAndMapMany(
-          'user.followings',
-          'followings',
-          'following',
-          'user.id = following.receiver_user_id',
+          'user.subscribers',
+          'subscribers',
+          'subscriber',
+          'user.id = subscriber.receiver_user_id',
         )
-        .where('following.sender_user_id = :myId', { myId })
+        .where('subscriber.sender_user_id = :myId', { myId })
         .getMany()
-    ).map((following) => following.id);
+    ).map((subscriber) => subscriber.id);
     const users = await this.selectUsersQueryBuilder().getMany();
-    return users.filter((user) => !followings.includes(user.id));
+    return users.filter((user) => !subscribers.includes(user.id));
   }
 
   async selectNotRatedUsers(myId: number): Promise<User[]> {
@@ -248,26 +248,34 @@ export class UsersService {
     await this.removeFriend(user, dto.receiverUserId);
   }
 
-  async addUserFollowing(dto: UpdateUserFollowingDto): Promise<void> {
+  async addUserSubscriber(dto: UpdateUserSubscriberDto): Promise<void> {
     const user = await this.usersRepository.findOne({
-      relations: ['followings'],
+      relations: ['subscribers'],
       where: { id: dto.senderUserId },
     });
-    if (user.followings.find((friend) => friend.id === dto.receiverUserId)) {
-      throw new AppException(UserError.ALREADY_HAS_FRIEND);
+    if (
+      user.subscribers.find(
+        (subscriber) => subscriber.id === dto.receiverUserId,
+      )
+    ) {
+      throw new AppException(UserError.ALREADY_HAS_SUBSCRIBER);
     }
-    await this.addFollowing(user, dto.receiverUserId);
+    await this.addSubscriber(user, dto.receiverUserId);
   }
 
-  async removeUserFollowing(dto: UpdateUserFollowingDto): Promise<void> {
+  async removeUserSubscriber(dto: UpdateUserSubscriberDto): Promise<void> {
     const user = await this.usersRepository.findOne({
-      relations: ['followings'],
+      relations: ['subscribers'],
       where: { id: dto.senderUserId },
     });
-    if (!user.followings.find((friend) => friend.id === dto.receiverUserId)) {
-      throw new AppException(UserError.NOT_HAS_FRIEND);
+    if (
+      !user.subscribers.find(
+        (subscriber) => subscriber.id === dto.receiverUserId,
+      )
+    ) {
+      throw new AppException(UserError.NOT_HAS_SUBSCRIBER);
     }
-    await this.removeFollowing(user, dto.receiverUserId);
+    await this.removeSubscriber(user, dto.receiverUserId);
   }
 
   async checkUserExists(id: number): Promise<void> {
@@ -383,23 +391,23 @@ export class UsersService {
     }
   }
 
-  private async addFollowing(user: User, userId: number): Promise<void> {
+  private async addSubscriber(user: User, userId: number): Promise<void> {
     try {
-      const following = new User();
-      following.id = userId;
-      user.followings.push(following);
+      const subscriber = new User();
+      subscriber.id = userId;
+      user.subscribers.push(subscriber);
       await this.usersRepository.save(user);
     } catch (error) {
-      throw new AppException(UserError.ADD_FOLLOWING_FAILED);
+      throw new AppException(UserError.ADD_SUBSCRIBER_FAILED);
     }
   }
 
-  private async removeFollowing(user: User, userId: number): Promise<void> {
+  private async removeSubscriber(user: User, userId: number): Promise<void> {
     try {
-      user.followings = user.followings.filter((user) => user.id !== userId);
+      user.subscribers = user.subscribers.filter((user) => user.id !== userId);
       await this.usersRepository.save(user);
     } catch (error) {
-      throw new AppException(UserError.REMOVE_FOLLOWING_FAILED);
+      throw new AppException(UserError.REMOVE_SUBSCRIBER_FAILED);
     }
   }
 
