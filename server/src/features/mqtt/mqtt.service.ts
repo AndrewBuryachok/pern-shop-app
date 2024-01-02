@@ -9,19 +9,11 @@ export class MqttService {
     this.client = connect(process.env.BROKER_URL);
   }
 
-  publishUserMessage(id: number, message: string): void {
-    this.publishMessage('users/' + id, message, true);
-  }
-
   publishNotificationMessage(id: number, message: string): void {
     this.publishMessage('notifications/' + id, message);
   }
 
-  private publishMessage(
-    topic: string,
-    message: string,
-    retain?: boolean,
-  ): void {
-    this.client.publish(process.env.BROKER_TOPIC + topic, message, { retain });
+  private publishMessage(topic: string, message: string): void {
+    this.client.publish(process.env.BROKER_TOPIC + topic, message);
   }
 }

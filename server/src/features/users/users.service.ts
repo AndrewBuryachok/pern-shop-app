@@ -203,13 +203,11 @@ export class UsersService {
   async addUserToken(dto: UpdateUserTokenDto): Promise<void> {
     const user = await this.usersRepository.findOneBy({ id: dto.userId });
     await this.addToken(user, dto.token);
-    this.mqttService.publishUserMessage(dto.userId, 'online');
   }
 
   async removeUserToken(dto: UpdateUserTokenDto): Promise<void> {
     const user = await this.usersRepository.findOneBy({ id: dto.userId });
     await this.removeToken(user);
-    this.mqttService.publishUserMessage(dto.userId, '');
   }
 
   async updateUserPassword(user: User, password: string): Promise<void> {
@@ -339,7 +337,6 @@ export class UsersService {
   private async addToken(user: User, token: string): Promise<void> {
     try {
       user.token = token;
-      user.status = true;
       await this.usersRepository.save(user);
     } catch (error) {
       throw new AppException(UserError.ADD_TOKEN_FAILED);
@@ -349,7 +346,6 @@ export class UsersService {
   private async removeToken(user: User): Promise<void> {
     try {
       user.token = null;
-      user.status = false;
       await this.usersRepository.save(user);
     } catch (error) {
       throw new AppException(UserError.REMOVE_TOKEN_FAILED);
@@ -476,13 +472,6 @@ export class UsersService {
           qb
             .where(`${!req.city}`)
             .orWhere('city.id = :cityId', { cityId: req.city }),
-        ),
-      )
-      .andWhere(
-        new Brackets((qb) =>
-          qb
-            .where(`${!req.type}`)
-            .orWhere('user.status = :type', { type: req.type === 1 }),
         ),
       )
       .andWhere(
