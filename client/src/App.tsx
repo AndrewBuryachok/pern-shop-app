@@ -1,4 +1,4 @@
-import { Suspense } from 'react';
+import { Suspense, useEffect } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import {
   AppShell,
@@ -11,12 +11,20 @@ import {
   useHotkeys,
   useLocalStorage,
   useToggle,
+  useWindowEvent,
 } from '@mantine/hooks';
 import { ModalsProvider } from '@mantine/modals';
 import { NotificationsProvider } from '@mantine/notifications';
 import { useAppDispatch } from './app/hooks';
+import { getCurrentUser } from './features/auth/auth.slice';
 import { toggleCurrentLanguage } from './features/lang/lang.slice';
-import { toggleMute } from './features/mqtt/mqtt.slice';
+import {
+  publishOffline,
+  publishOnline,
+  subscribe,
+  toggleMute,
+  unsubscribe,
+} from './features/mqtt/mqtt.slice';
 import CustomHeader from './common/components/CustomHeader';
 import CustomNavbar from './common/components/CustomNavbar';
 import CustomLoader from './common/components/CustomLoader';
@@ -25,6 +33,24 @@ import { pages } from './app/pages';
 
 export default function App() {
   const dispatch = useAppDispatch();
+
+  const user = getCurrentUser();
+
+  useEffect(() => {
+    if (user) {
+      dispatch(publishOnline(user.id));
+      dispatch(subscribe(user.id));
+    }
+  }, []);
+
+  const handler = () => {
+    if (user) {
+      dispatch(publishOffline(user.id));
+      dispatch(unsubscribe(user.id));
+    }
+  };
+
+  useWindowEvent('unload', handler);
 
   const preferredColorScheme = window.matchMedia(
     '(prefers-color-scheme: dark)',
