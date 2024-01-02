@@ -1,7 +1,9 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
+import { UsersModule } from '../users/users.module';
 import { MqttService } from './mqtt.service';
 
 @Module({
+  imports: [forwardRef(() => UsersModule)],
   providers: [MqttService],
   exports: [MqttService],
 })

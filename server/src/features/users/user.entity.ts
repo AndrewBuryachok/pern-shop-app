@@ -29,7 +29,7 @@ export class User {
   token?: string;
 
   @Column({ default: false })
-  status: boolean;
+  type: boolean;
 
   @Column({ type: 'enum', enum: Role, array: true, default: [] })
   roles: Role[];

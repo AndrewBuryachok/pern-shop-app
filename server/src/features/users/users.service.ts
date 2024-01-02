@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable, forwardRef } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { User } from './user.entity';
@@ -23,6 +23,7 @@ export class UsersService {
   constructor(
     @InjectRepository(User)
     private usersRepository: Repository<User>,
+    @Inject(forwardRef(() => MqttService))
     private mqttService: MqttService,
   ) {}
 
@@ -203,13 +204,21 @@ export class UsersService {
   async addUserToken(dto: UpdateUserTokenDto): Promise<void> {
     const user = await this.usersRepository.findOneBy({ id: dto.userId });
     await this.addToken(user, dto.token);
-    this.mqttService.publishUserMessage(dto.userId, 'online');
   }
 
   async removeUserToken(dto: UpdateUserTokenDto): Promise<void> {
     const user = await this.usersRepository.findOneBy({ id: dto.userId });
     await this.removeToken(user);
-    this.mqttService.publishUserMessage(dto.userId, '');
+  }
+
+  async addUserType(id: number): Promise<void> {
+    const user = await this.usersRepository.findOneBy({ id });
+    await this.addType(user);
+  }
+
+  async removeUserType(id: number): Promise<void> {
+    const user = await this.usersRepository.findOneBy({ id });
+    await this.removeType(user);
   }
 
   async updateUserPassword(user: User, password: string): Promise<void> {
@@ -339,7 +348,6 @@ export class UsersService {
   private async addToken(user: User, token: string): Promise<void> {
     try {
       user.token = token;
-      user.status = true;
       await this.usersRepository.save(user);
     } catch (error) {
       throw new AppException(UserError.ADD_TOKEN_FAILED);
@@ -349,10 +357,27 @@ export class UsersService {
   private async removeToken(user: User): Promise<void> {
     try {
       user.token = null;
-      user.status = false;
       await this.usersRepository.save(user);
     } catch (error) {
       throw new AppException(UserError.REMOVE_TOKEN_FAILED);
+    }
+  }
+
+  private async addType(user: User): Promise<void> {
+    try {
+      user.type = true;
+      await this.usersRepository.save(user);
+    } catch (error) {
+      throw new AppException(UserError.ADD_TYPE_FAILED);
+    }
+  }
+
+  private async removeType(user: User): Promise<void> {
+    try {
+      user.type = false;
+      await this.usersRepository.save(user);
+    } catch (error) {
+      throw new AppException(UserError.REMOVE_TYPE_FAILED);
     }
   }
 
@@ -482,7 +507,7 @@ export class UsersService {
         new Brackets((qb) =>
           qb
             .where(`${!req.type}`)
-            .orWhere('user.status = :type', { type: req.type === 1 }),
+            .orWhere('user.type = :type', { type: req.type === 1 }),
         ),
       )
       .andWhere(
