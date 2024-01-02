@@ -8,7 +8,7 @@ import { useAppDispatch } from '../../app/hooks';
 import { useLoginMutation, useRegisterMutation } from './auth.api';
 import { AuthDto } from './auth.dto';
 import { addCurrentUser } from './auth.slice';
-import { subscribe } from '../mqtt/mqtt.slice';
+import { publishOnline, subscribe } from '../mqtt/mqtt.slice';
 import CustomForm from '../../common/components/CustomForm';
 import {
   MAX_NICK_LENGTH,
@@ -40,6 +40,7 @@ export default function AuthModal() {
         ? await login(dto).unwrap()
         : await register(dto).unwrap();
     dispatch(addCurrentUser(data));
+    dispatch(publishOnline(data.id));
     dispatch(subscribe(data.id));
   };
 

@@ -34,6 +34,7 @@ import {
 import { toggleCurrentLanguage } from '../../features/lang/lang.slice';
 import {
   getMute,
+  publishOffline,
   toggleMute,
   unsubscribe,
 } from '../../features/mqtt/mqtt.slice';
@@ -63,6 +64,7 @@ export default function CustomHeader(props: Props) {
   const handleSubmit = async () => {
     await logout();
     dispatch(removeCurrentUser());
+    dispatch(publishOffline(user!.id));
     dispatch(unsubscribe(user!.id));
   };
 

@@ -4,7 +4,6 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { showNotification } from '@mantine/notifications';
 import { store } from '../../app/store';
 import { useAppSelector } from '../../app/hooks';
-import { Tokens } from '../auth/auth.model';
 
 const audio = new Audio('/sound.mp3');
 
@@ -18,15 +17,19 @@ client.on('connect', () =>
 );
 
 client.on('message', (topic, message) => {
+  const userId = +topic.split('/')[2];
+  const payload = message.toString();
   if (topic.split('/')[1] === 'users') {
-    const user = +topic.split('/')[2];
-    if (message.toString()) {
-      store.dispatch(addOnlineUser(user));
+    if (payload) {
+      store.dispatch(addOnlineUser(userId));
     } else {
-      store.dispatch(removeOnlineUser(user));
+      store.dispatch(removeOnlineUser(userId));
+      if (store.getState().auth.user?.id === userId) {
+        store.dispatch(publishOnline(userId));
+      }
     }
   } else {
-    const [action, modal] = message.toString().toLowerCase().split(' ');
+    const [action, modal] = payload.toLowerCase().split(' ');
     store.dispatch(addNotification(modal));
     showNotification({
       title: t('notifications.notification'),
@@ -41,16 +44,6 @@ client.on('message', (topic, message) => {
   }
 });
 
-const user = localStorage.getItem('user');
-
-if (user) {
-  client.subscribe(
-    import.meta.env.VITE_BROKER_TOPIC +
-      'notifications/' +
-      (JSON.parse(user) as Tokens).id,
-  );
-}
-
 const initialState = {
   users: [] as number[],
   notifications: {} as { [key: string]: number },
@@ -62,7 +55,7 @@ export const mqttSlice = createSlice({
   initialState,
   reducers: {
     addOnlineUser: (state, action: PayloadAction<number>) => {
-      state.users.push(action.payload);
+      !state.users.includes(action.payload) && state.users.push(action.payload);
     },
     removeOnlineUser: (state, action: PayloadAction<number>) => {
       state.users = state.users.filter((user) => user !== action.payload);
@@ -82,6 +75,20 @@ export const mqttSlice = createSlice({
         localStorage.setItem('mute', 'ON');
       }
       state.mute = !state.mute;
+    },
+    publishOnline: (_, action: PayloadAction<number>) => {
+      client.publish(
+        import.meta.env.VITE_BROKER_TOPIC + 'users/' + action.payload,
+        'online',
+        { retain: true },
+      );
+    },
+    publishOffline: (_, action: PayloadAction<number>) => {
+      client.publish(
+        import.meta.env.VITE_BROKER_TOPIC + 'users/' + action.payload,
+        '',
+        { retain: true },
+      );
     },
     subscribe: (_, action: PayloadAction<number>) => {
       client.subscribe(
@@ -104,6 +111,8 @@ export const {
   addNotification,
   removeNotification,
   toggleMute,
+  publishOnline,
+  publishOffline,
   subscribe,
   unsubscribe,
 } = mqttSlice.actions;

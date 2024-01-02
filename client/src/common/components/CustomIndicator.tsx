@@ -10,7 +10,7 @@ type Props = {
 export default function CustomIndicator(props: Props) {
   const users = getOnlineUsers();
 
-  const status = users.find((user) => user === props.id);
+  const status = users.includes(props.id);
 
   return (
     <Indicator zIndex={1} size={8} color={status ? 'green' : 'red'}>
