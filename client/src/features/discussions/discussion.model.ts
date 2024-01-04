@@ -1,8 +1,8 @@
 import { SmUser } from '../users/user.model';
 
-export interface Vote {
+export interface Discussion {
   id: number;
   user: SmUser;
-  type: boolean;
+  text: string;
   createdAt: Date;
 }

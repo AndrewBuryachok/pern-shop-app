@@ -3,16 +3,15 @@ import { useLocation, useSearchParams } from 'react-router-dom';
 import { ISearch } from '../../common/interfaces';
 import {
   useGetAllPollsQuery,
+  useGetDiscussedPollsQuery,
   useGetMainPollsQuery,
   useGetMyPollsQuery,
   useGetVotedPollsQuery,
 } from '../../features/polls/polls.api';
 import PollsTable from '../../features/polls/PollsTable';
 import { createPollButton } from '../../features/polls/CreatePollModal';
-import {
-  downVotePollAction,
-  upVotePollAction,
-} from '../../features/polls/VotePollModal';
+import { votePollAction } from '../../features/polls/VotePollModal';
+import { createDiscussionAction } from '../../features/discussions/CreateDiscussionModal';
 import { completePollAction } from '../../features/polls/CompletePollModal';
 import { deletePollAction } from '../../features/polls/DeletePollModal';
 
@@ -36,15 +35,17 @@ export default function MyPolls() {
     main: useGetMainPollsQuery,
     my: useGetMyPollsQuery,
     voted: useGetVotedPollsQuery,
+    discussed: useGetDiscussedPollsQuery,
     all: useGetAllPollsQuery,
   }[tab]!({ page, search });
 
   const button = { main: createPollButton, my: createPollButton }[tab];
 
   const actions = {
-    main: [upVotePollAction, downVotePollAction],
-    my: [deletePollAction],
-    voted: [upVotePollAction, downVotePollAction],
+    main: [createDiscussionAction, votePollAction],
+    my: [createDiscussionAction, votePollAction, deletePollAction],
+    voted: [createDiscussionAction, votePollAction],
+    discussed: [createDiscussionAction, votePollAction],
     all: [completePollAction, deletePollAction],
   }[tab];
 

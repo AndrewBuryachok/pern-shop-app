@@ -4,8 +4,9 @@ import { Poll } from './poll.model';
 import CustomTable from '../../common/components/CustomTable';
 import AvatarWithSingleText from '../../common/components/AvatarWithSingleText';
 import SingleText from '../../common/components/SingleText';
-import VoteBadge from '../../common/components/VoteBadge';
+import MyVoteBadge from '../../common/components/MyVoteBadge';
 import CustomProgress from '../../common/components/CustomProgress';
+import TotalText from '../../common/components/TotalText';
 import ResultBadge from '../../common/components/ResultBadge';
 import CustomActions from '../../common/components/CustomActions';
 import { viewPollAction } from './ViewPollModal';
@@ -23,6 +24,7 @@ export default function PollsTable({ actions = [], ...props }: Props) {
         t('columns.title'),
         t('columns.vote'),
         t('columns.votes'),
+        t('columns.discussions'),
         t('columns.result'),
         t('columns.action'),
       ]}
@@ -37,10 +39,13 @@ export default function PollsTable({ actions = [], ...props }: Props) {
             <SingleText text={poll.title} />
           </td>
           <td>
-            <VoteBadge {...poll} />
+            <MyVoteBadge {...poll} />
           </td>
           <td>
             <CustomProgress {...poll} />
+          </td>
+          <td>
+            <TotalText data={poll.discussions.length} />
           </td>
           <td>
             <ResultBadge {...poll} />

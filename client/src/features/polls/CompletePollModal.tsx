@@ -21,8 +21,12 @@ export default function CompletePollModal({ data: poll }: Props) {
   const form = useForm({
     initialValues: {
       pollId: poll.id,
-      result: poll.result,
+      result: `${poll.result}`,
     },
+    transformValues: ({ result, ...rest }) => ({
+      ...rest,
+      result: +result,
+    }),
   });
 
   const [completePoll, { isLoading }] = useCompletePollMutation();

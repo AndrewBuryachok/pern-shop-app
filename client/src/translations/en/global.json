@@ -122,7 +122,8 @@
     "placed": "Placed",
     "selled": "Selled",
     "taken": "Taken",
-    "voted": "Voted"
+    "voted": "Voted",
+    "discussed": "Discussed"
   },
   "actions": {
     "create": "Create",
@@ -139,6 +140,7 @@
     "remove": "Remove",
     "untake": "Untake",
     "vote": "Vote to",
+    "discuss": "Discuss",
     "subscribe": "Subscribe",
     "unsubscribe": "Unsubscribe",
     "like": "Like",
@@ -225,6 +227,7 @@
     "executed": "Executed",
     "vote": "Vote",
     "votes": "Votes",
+    "discussions": "Discussions",
     "result": "Result",
     "rate": "Rate",
     "action": "Action",
@@ -233,9 +236,6 @@
     "prices": "Prices",
     "place": "Place",
     "image": "Image",
-    "up": "Up",
-    "down": "Down",
-    "my": "My",
     "mode": "Mode",
     "category": "Category",
     "nick": "Nick",
@@ -286,6 +286,7 @@
     "tasks": "Task",
     "plaints": "Plaint",
     "polls": "Poll",
+    "discussions": "Discussion",
     "ratings": "Rating"
   },
   "errors": {
@@ -300,6 +301,8 @@
   "constants": {
     "increase": "Increase",
     "decrease": "Decrease",
+    "up": "Up",
+    "down": "Down",
     "roles": {
       "admin": "Admin",
       "banker": "Banker",

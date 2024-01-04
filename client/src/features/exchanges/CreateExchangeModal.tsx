@@ -13,10 +13,11 @@ import RefetchAction from '../../common/components/RefetchAction';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import { UsersItem } from '../../common/components/UsersItem';
 import { CardsItem } from '../../common/components/CardsItem';
+import { ColorsItem } from '../../common/components/ColorsItem';
 import {
   customMin,
   selectCardsWithBalance,
-  selectTypes,
+  selectExchangeTypes,
   selectUsers,
 } from '../../common/utils';
 import { MAX_SUM_VALUE } from '../../common/constants';
@@ -94,7 +95,8 @@ export default function CreateExchangeModal() {
       <Select
         label={t('columns.type')}
         placeholder={t('columns.type')}
-        data={selectTypes()}
+        itemComponent={ColorsItem}
+        data={selectExchangeTypes()}
         searchable
         required
         {...form.getInputProps('type')}

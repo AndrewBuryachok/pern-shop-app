@@ -15,25 +15,31 @@ export const pollsApi = emptyApi.injectEndpoints({
       query: (req) => ({
         url: `/polls?${getQuery(req)}`,
       }),
-      providesTags: ['Poll', 'Vote'],
+      providesTags: ['Poll', 'Vote', 'Discussion'],
     }),
     getMyPolls: build.query<IResponse<Poll>, IRequest>({
       query: (req) => ({
         url: `/polls/my?${getQuery(req)}`,
       }),
-      providesTags: ['Auth', 'Poll', 'Vote'],
+      providesTags: ['Auth', 'Poll', 'Vote', 'Discussion'],
     }),
     getVotedPolls: build.query<IResponse<Poll>, IRequest>({
       query: (req) => ({
         url: `/polls/voted?${getQuery(req)}`,
       }),
-      providesTags: ['Auth', 'Poll', 'Vote'],
+      providesTags: ['Auth', 'Poll', 'Vote', 'Discussion'],
+    }),
+    getDiscussedPolls: build.query<IResponse<Poll>, IRequest>({
+      query: (req) => ({
+        url: `/polls/discussed?${getQuery(req)}`,
+      }),
+      providesTags: ['Auth', 'Poll', 'Vote', 'Discussion'],
     }),
     getAllPolls: build.query<IResponse<Poll>, IRequest>({
       query: (req) => ({
         url: `/polls/all?${getQuery(req)}`,
       }),
-      providesTags: ['Auth', 'Poll', 'Vote'],
+      providesTags: ['Auth', 'Poll', 'Vote', 'Discussion'],
     }),
     createPoll: build.mutation<void, CreatePollDto>({
       query: (dto) => ({
@@ -44,9 +50,10 @@ export const pollsApi = emptyApi.injectEndpoints({
       invalidatesTags: ['Poll'],
     }),
     completePoll: build.mutation<void, CompletePollDto>({
-      query: ({ pollId }) => ({
+      query: ({ pollId, ...dto }) => ({
         url: `/polls/${pollId}`,
         method: 'POST',
+        body: dto,
       }),
       invalidatesTags: ['Poll'],
     }),
@@ -72,6 +79,7 @@ export const {
   useGetMainPollsQuery,
   useGetMyPollsQuery,
   useGetVotedPollsQuery,
+  useGetDiscussedPollsQuery,
   useGetAllPollsQuery,
   useCreatePollMutation,
   useCompletePollMutation,

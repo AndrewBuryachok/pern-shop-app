@@ -61,7 +61,6 @@ export default function EditArticleModal({ data: article }: Props) {
       <Textarea
         label={t('columns.image')}
         placeholder={t('columns.image')}
-        required
         maxLength={MAX_IMAGE_LENGTH}
         {...form.getInputProps('image')}
       />

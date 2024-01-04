@@ -285,6 +285,7 @@ export const pages = [
       { index: true },
       { path: 'my' },
       { path: 'voted' },
+      { path: 'discussed' },
       { path: 'all', role: Role.ADMIN },
     ],
   },

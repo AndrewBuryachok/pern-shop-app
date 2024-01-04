@@ -125,10 +125,20 @@ export const searchTypes = () =>
       value: `${index * 2 - 1}`,
     }));
 
-export const selectTypes = () =>
-  [t('constants.decrease'), t('constants.increase')].map((type, index) => ({
+export const selectExchangeTypes = () =>
+  ['decrease', 'increase'].map((type, index) => ({
+    text: t('constants.' + type),
+    color: `${index * 2 + 1}`,
     value: `${index}`,
-    label: type,
+    label: t('constants.' + type),
+  }));
+
+export const selectVoteTypes = () =>
+  ['down', 'up'].map((type, index) => ({
+    text: t('constants.' + type),
+    color: `${index * 2 + 1}`,
+    value: `${index}`,
+    label: t('constants.' + type),
   }));
 
 export const selectCategories = () =>
