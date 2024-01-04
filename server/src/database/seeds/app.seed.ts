@@ -33,6 +33,7 @@ import { Task } from '../../features/tasks/task.entity';
 import { Plaint } from '../../features/plaints/plaint.entity';
 import { Poll } from '../../features/polls/poll.entity';
 import { Vote } from '../../features/polls/vote.entity';
+import { Discussion } from '../../features/discussions/discussion.entity';
 import { Rating } from '../../features/ratings/rating.entity';
 import { Status } from '../../features/transportations/status.enum';
 import { Kind } from '../../features/leases/kind.enum';
@@ -438,6 +439,13 @@ export default class AppSeed implements Seeder {
         return vote;
       })
       .createMany(80);
+    const discussions = await factory(Discussion)()
+      .map(async (discussion) => {
+        discussion.poll = faker.helpers.arrayElement(polls);
+        discussion.user = faker.helpers.arrayElement(users);
+        return discussion;
+      })
+      .createMany(40);
     const allRatings = users.reduce(
       (prev, senderUser) => [
         ...prev,

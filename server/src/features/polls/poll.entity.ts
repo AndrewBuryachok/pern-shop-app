@@ -10,6 +10,7 @@ import {
 import { User } from '../users/user.entity';
 import { Result } from './result.enum';
 import { Vote } from './vote.entity';
+import { Discussion } from '../discussions/discussion.entity';
 
 @Entity('polls')
 export class Poll {
@@ -44,4 +45,7 @@ export class Poll {
 
   @OneToMany(() => Vote, (vote) => vote.poll)
   votes: Vote[];
+
+  @OneToMany(() => Discussion, (discussion) => discussion.poll)
+  discussions: Discussion[];
 }

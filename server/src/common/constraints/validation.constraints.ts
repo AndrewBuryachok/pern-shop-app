@@ -26,6 +26,7 @@ import { DeliveriesService } from '../../features/deliveries/deliveries.service'
 import { TasksService } from '../../features/tasks/tasks.service';
 import { PlaintsService } from '../../features/plaints/plaints.service';
 import { PollsService } from '../../features/polls/polls.service';
+import { DiscussionsService } from '../../features/discussions/discussions.service';
 import { RatingsService } from '../../features/ratings/ratings.service';
 
 @Injectable()
@@ -462,6 +463,25 @@ export class IsPollExists implements ValidatorConstraintInterface {
 
   defaultMessage(): string {
     return 'Unknown poll';
+  }
+}
+
+@Injectable()
+@ValidatorConstraint({ name: 'isDiscussionExists', async: true })
+export class IsDiscussionExists implements ValidatorConstraintInterface {
+  constructor(private discussionsService: DiscussionsService) {}
+
+  async validate(value: number): Promise<boolean> {
+    try {
+      await this.discussionsService.checkDiscussionExists(value);
+    } catch (error) {
+      return false;
+    }
+    return true;
+  }
+
+  defaultMessage(): string {
+    return 'Unknown discussion';
   }
 }
 

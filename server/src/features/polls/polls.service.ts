@@ -30,7 +30,7 @@ export class PollsService {
     const [result, count] = await this.getPollsQueryBuilder(
       req,
     ).getManyAndCount();
-    await this.loadVotes(result);
+    await this.loadVotesAndDiscussions(result);
     return { result, count };
   }
 
@@ -38,7 +38,7 @@ export class PollsService {
     const [result, count] = await this.getPollsQueryBuilder(req)
       .andWhere('ownerUser.id = :myId', { myId })
       .getManyAndCount();
-    await this.loadVotes(result);
+    await this.loadVotesAndDiscussions(result);
     return { result, count };
   }
 
@@ -52,7 +52,21 @@ export class PollsService {
         { myId },
       )
       .getManyAndCount();
-    await this.loadVotes(result);
+    await this.loadVotesAndDiscussions(result);
+    return { result, count };
+  }
+
+  async getDiscussedPolls(myId: number, req: Request): Promise<Response<Poll>> {
+    const [result, count] = await this.getPollsQueryBuilder(req)
+      .innerJoinAndMapOne(
+        'myDiscussion',
+        'poll.discussions',
+        'myDiscussion',
+        'myDiscussion.userId = :myId',
+        { myId },
+      )
+      .getManyAndCount();
+    await this.loadVotesAndDiscussions(result);
     return { result, count };
   }
 
@@ -60,7 +74,7 @@ export class PollsService {
     const [result, count] = await this.getPollsQueryBuilder(
       req,
     ).getManyAndCount();
-    await this.loadVotes(result);
+    await this.loadVotesAndDiscussions(result);
     return { result, count };
   }
 
@@ -118,6 +132,14 @@ export class PollsService {
     if (poll.userId !== userId && !hasRole) {
       throw new AppException(PollError.NOT_OWNER);
     }
+    if (poll.completedAt) {
+      throw new AppException(PollError.ALREADY_COMPLETED);
+    }
+    return poll;
+  }
+
+  async checkPollNotCompleted(id: number): Promise<Poll> {
+    const poll = await this.pollsRepository.findOneBy({ id });
     if (poll.completedAt) {
       throw new AppException(PollError.ALREADY_COMPLETED);
     }
@@ -185,18 +207,34 @@ export class PollsService {
     }
   }
 
-  private async loadVotes(polls: Poll[]): Promise<void> {
+  private async loadVotesAndDiscussions(polls: Poll[]): Promise<void> {
     const promises = polls.map(async (poll) => {
-      poll.votes = (
-        await this.pollsRepository
-          .createQueryBuilder('poll')
-          .leftJoin('poll.votes', 'vote')
-          .leftJoin('vote.user', 'user')
-          .where('poll.id = :pollId', { pollId: poll.id })
-          .orderBy('vote.id', 'DESC')
-          .select(['poll.id', 'vote.id', 'user.id', 'user.nick', 'vote.type'])
-          .getOne()
-      ).votes;
+      const result = await this.pollsRepository
+        .createQueryBuilder('poll')
+        .leftJoin('poll.votes', 'vote')
+        .leftJoin('vote.user', 'voter')
+        .leftJoin('poll.discussions', 'discussion')
+        .leftJoin('discussion.user', 'discussioner')
+        .where('poll.id = :pollId', { pollId: poll.id })
+        .orderBy('vote.id', 'DESC')
+        .addOrderBy('discussion.id', 'DESC')
+        .select([
+          'poll.id',
+          'vote.id',
+          'voter.id',
+          'voter.nick',
+          'vote.type',
+          'vote.createdAt',
+          'discussion.id',
+          'discussion.id',
+          'discussioner.id',
+          'discussioner.nick',
+          'discussion.text',
+          'discussion.createdAt',
+        ])
+        .getOne();
+      poll.votes = result.votes;
+      poll.discussions = result.discussions;
     });
     await Promise.all(promises);
   }

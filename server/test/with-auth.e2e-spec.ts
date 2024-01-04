@@ -41,6 +41,7 @@ describe('With Auth', () => {
   let tasksId: number;
   let plaintsId: number;
   let pollsId: number;
+  let discussionId: number;
   let ratingId: number;
 
   beforeAll(async () => {
@@ -1916,9 +1917,25 @@ describe('With Auth', () => {
         .expect('');
     });
 
+    it('POST /discussions', async () => {
+      return request(app.getHttpServer())
+        .post('/discussions')
+        .set('Authorization', `Bearer ${user.access}`)
+        .send({ pollId: pollsId[0], type: true, text: 'discussion text' })
+        .expect('');
+    });
+
     it('GET /polls/voted', async () => {
       return request(app.getHttpServer())
         .get('/polls/voted')
+        .set('Authorization', `Bearer ${user.access}`)
+        .expect((res) => expect(res.body.count).toBeGreaterThan(0))
+        .then((res) => (discussionId = res.body.result[0].discussions[0].id));
+    });
+
+    it('GET /polls/discussed', async () => {
+      return request(app.getHttpServer())
+        .get('/polls/discussed')
         .set('Authorization', `Bearer ${user.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
@@ -1928,6 +1945,23 @@ describe('With Auth', () => {
         .get('/polls/all')
         .set('Authorization', `Bearer ${admin.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
+    });
+  });
+
+  describe('Discussion', () => {
+    it('PATCH /discussions/:discussionId', async () => {
+      return request(app.getHttpServer())
+        .patch(`/discussions/${discussionId}`)
+        .set('Authorization', `Bearer ${user.access}`)
+        .send({ type: false, text: 'discussion text' })
+        .expect('');
+    });
+
+    it('DELETE /discussions/:discussionId', async () => {
+      return request(app.getHttpServer())
+        .delete(`/discussions/${discussionId}`)
+        .set('Authorization', `Bearer ${user.access}`)
+        .expect('');
     });
 
     it('DELETE /polls/:pollId', async () => {

@@ -11,5 +11,6 @@ import { IsPollExists } from '../../common/constraints';
   imports: [TypeOrmModule.forFeature([Poll, Vote]), MqttModule],
   controllers: [PollsController],
   providers: [PollsService, IsPollExists],
+  exports: [PollsService],
 })
 export class PollsModule {}

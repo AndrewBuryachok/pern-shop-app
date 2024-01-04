@@ -59,6 +59,7 @@ export enum Notification {
   DELETED_PLAINT = 'Deleted plaints',
   CREATED_POLL = 'Created polls',
   VOTED_POLL = 'Voted polls',
+  DISCUSSED_POLL = 'Discussed polls',
   COMPLETED_POLL = 'Completed polls',
   CREATED_RATING = 'Created ratings',
   EDITED_RATING = 'Edited ratings',
