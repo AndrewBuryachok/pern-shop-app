@@ -1,5 +1,4 @@
 export enum Notification {
-  CREATED_USER = 'created users',
   MESSAGED_USER = 'messaged users',
   INVITED_FRIEND = 'invited friends',
   APPROVED_FRIEND = 'approved friends',
