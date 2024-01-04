@@ -1,8 +1,7 @@
-import { Inject, Injectable, forwardRef } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { User } from './user.entity';
-import { MqttService } from '../mqtt/mqtt.service';
 import {
   CreateUserDto,
   ExtEditUserPasswordDto,
@@ -18,15 +17,12 @@ import { hashData } from '../../common/utils';
 import { AppException } from '../../common/exceptions';
 import { UserError } from './user-error.enum';
 import { Role } from './role.enum';
-import { Notification } from '../../common/enums';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User)
     private usersRepository: Repository<User>,
-    @Inject(forwardRef(() => MqttService))
-    private mqttService: MqttService,
   ) {}
 
   async getMainUsers(req: Request): Promise<Response<User>> {
@@ -254,12 +250,6 @@ export class UsersService {
   async createUser(dto: CreateUserDto): Promise<User> {
     await this.checkNickNotUsed(dto.nick);
     const user = await this.create(dto);
-    this.mqttService.publishNotificationMessage(
-      user.id,
-      0,
-      dto.nick,
-      Notification.CREATED_USER,
-    );
     return user;
   }
 
