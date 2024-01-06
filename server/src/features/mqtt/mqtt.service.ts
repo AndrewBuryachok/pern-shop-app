@@ -1,12 +1,27 @@
 import { MqttClient, connect } from 'mqtt';
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable, forwardRef } from '@nestjs/common';
+import { UsersService } from '../users/users.service';
 
 @Injectable()
 export class MqttService {
   private client: MqttClient;
 
-  constructor() {
+  constructor(
+    @Inject(forwardRef(() => UsersService))
+    private usersService: UsersService,
+  ) {
     this.client = connect(process.env.BROKER_URL);
+    this.client.on('connect', () =>
+      this.client.subscribe(process.env.BROKER_TOPIC + 'users/#'),
+    );
+    this.client.on('message', (topic, message) => {
+      const userId = +topic.split('/')[2];
+      if (message.toString()) {
+        this.usersService.addUserOnline(userId);
+      } else {
+        this.usersService.removeUserOnline(userId);
+      }
+    });
   }
 
   publishNotificationMessage(id: number, message: string): void {

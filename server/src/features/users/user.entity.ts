@@ -43,6 +43,9 @@ export class User {
   @CreateDateColumn({ type: 'timestamptz', name: 'created_at' })
   createdAt: Date;
 
+  @Column({ type: 'timestamptz', name: 'online_at', nullable: true })
+  onlineAt?: Date;
+
   @Column({ name: 'city_id', nullable: true })
   cityId?: number;
 

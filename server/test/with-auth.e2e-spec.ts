@@ -8,7 +8,9 @@ import { Tokens } from '../src/features/auth/auth.interface';
 jest.mock('mqtt', () => ({
   connect: jest.fn(() => ({
     connect: jest.fn(),
+    on: jest.fn(),
     publish: jest.fn(),
+    subscribe: jest.fn(),
   })),
 }));
 

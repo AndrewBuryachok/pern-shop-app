@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable, forwardRef } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { User } from './user.entity';
@@ -24,6 +24,7 @@ export class UsersService {
   constructor(
     @InjectRepository(User)
     private usersRepository: Repository<User>,
+    @Inject(forwardRef(() => MqttService))
     private mqttService: MqttService,
   ) {}
 
@@ -211,6 +212,16 @@ export class UsersService {
     await this.removeToken(user);
   }
 
+  async addUserOnline(id: number): Promise<void> {
+    const user = await this.usersRepository.findOneBy({ id });
+    await this.addOnline(user);
+  }
+
+  async removeUserOnline(id: number): Promise<void> {
+    const user = await this.usersRepository.findOneBy({ id });
+    await this.removeOnline(user);
+  }
+
   async editUserProfile(dto: ExtEditUserProfileDto): Promise<void> {
     if (dto.userId !== dto.myId && !dto.hasRole) {
       throw new AppException(UserError.NOT_OWNER);
@@ -361,6 +372,24 @@ export class UsersService {
     }
   }
 
+  private async addOnline(user: User): Promise<void> {
+    try {
+      user.onlineAt = null;
+      await this.usersRepository.save(user);
+    } catch (error) {
+      throw new AppException(UserError.ADD_ONLINE_FAILED);
+    }
+  }
+
+  private async removeOnline(user: User): Promise<void> {
+    try {
+      user.onlineAt = new Date();
+      await this.usersRepository.save(user);
+    } catch (error) {
+      throw new AppException(UserError.REMOVE_ONLINE_FAILED);
+    }
+  }
+
   private async editProfile(
     user: User,
     dto: ExtEditUserProfileDto,
@@ -447,7 +476,8 @@ export class UsersService {
   private selectUsersQueryBuilder(): SelectQueryBuilder<User> {
     return this.usersRepository
       .createQueryBuilder('user')
-      .orderBy('user.nick', 'ASC')
+      .orderBy('user.onlineAt', 'DESC')
+      .addOrderBy('user.nick', 'ASC')
       .select(['user.id', 'user.nick', 'user.avatar']);
   }
 
@@ -458,7 +488,8 @@ export class UsersService {
           .createQueryBuilder('user')
           .leftJoin('user.friends', 'friend')
           .where('user.id = :userId', { userId: user.id })
-          .orderBy('friend.nick', 'ASC')
+          .orderBy('friend.onlineAt', 'DESC')
+          .addOrderBy('friend.nick', 'ASC')
           .select(['user.id', 'friend.id', 'friend.nick', 'friend.avatar'])
           .getOne()
       ).friends;
@@ -499,6 +530,16 @@ export class UsersService {
       )
       .andWhere(
         new Brackets((qb) =>
+          qb.where(`${req.type !== 1}`).orWhere('user.onlineAt IS NULL'),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb.where(`${req.type !== -1}`).orWhere('user.onlineAt IS NOT NULL'),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
           qb
             .where(`${!req.minDate}`)
             .orWhere('user.createdAt >= :minDate', { minDate: req.minDate }),
@@ -511,7 +552,8 @@ export class UsersService {
             .orWhere('user.createdAt <= :maxDate', { maxDate: req.maxDate }),
         ),
       )
-      .orderBy('user.id', 'DESC')
+      .orderBy('user.onlineAt', 'DESC')
+      .addOrderBy('user.id', 'DESC')
       .skip(req.skip)
       .take(req.take)
       .select([
@@ -520,6 +562,7 @@ export class UsersService {
         'user.avatar',
         'user.roles',
         'user.createdAt',
+        'user.onlineAt',
         'city.id',
         'ownerUser.id',
         'ownerUser.nick',

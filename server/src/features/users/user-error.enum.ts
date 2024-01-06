@@ -10,6 +10,8 @@ export enum UserError {
   CREATE_FAILED = '500: Failed to create user',
   ADD_TOKEN_FAILED = '500: Failed to add user token',
   REMOVE_TOKEN_FAILED = '500: Failed to remove user token',
+  ADD_ONLINE_FAILED = '500: Failed to add user online',
+  REMOVE_ONLINE_FAILED = '500: Failed to remove user online',
   EDIT_PROFILE_FAILED = '500: Failed to edit user profile',
   UPDATE_PASSWORD_FAILED = '500: Failed to update user password',
   ADD_ROLE_FAILED = '500: Failed to add user role',
