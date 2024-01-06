@@ -86,10 +86,10 @@ export default function CustomHeader(props: Props) {
               <Avatar
                 size={32}
                 src={
-                  user?.nick &&
+                  user &&
                   `${import.meta.env.VITE_AVATAR_URL}${
                     import.meta.env.VITE_HEAD_ROUTE
-                  }${user.nick}`
+                  }${user.avatar || user.nick}`
                 }
                 alt={user?.nick}
                 style={{ cursor: 'pointer' }}

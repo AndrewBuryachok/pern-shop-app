@@ -3,6 +3,7 @@ import { MdCity } from '../cities/city.model';
 export interface SmUser {
   id: number;
   nick: string;
+  avatar: string;
 }
 
 export interface MdUser extends SmUser {
@@ -16,6 +17,8 @@ export interface User extends MdUser {
 }
 
 export interface ExtUser extends User {
+  discord: string;
+  color: number;
   waresCount: number;
   productsCount: number;
   ordersCount: number;

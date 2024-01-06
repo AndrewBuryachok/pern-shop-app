@@ -1,7 +1,11 @@
 import { emptyApi } from '../../app/empty.api';
 import { IRequest, IResponse } from '../../common/interfaces';
 import { ExtUser, SmUser, User } from './user.model';
-import { EditUserPasswordDto, UpdateUserRoleDto } from './user.dto';
+import {
+  EditUserPasswordDto,
+  EditUserProfileDto,
+  UpdateUserRoleDto,
+} from './user.dto';
 import { getQuery } from '../../common/utils';
 
 export const usersApi = emptyApi.injectEndpoints({
@@ -60,6 +64,14 @@ export const usersApi = emptyApi.injectEndpoints({
       }),
       providesTags: ['User', 'City', 'Friend'],
     }),
+    editUserProfile: build.mutation<void, EditUserProfileDto>({
+      query: ({ userId, ...dto }) => ({
+        url: `/users/${userId}/profile`,
+        method: 'PATCH',
+        body: dto,
+      }),
+      invalidatesTags: ['User'],
+    }),
     editUserPassword: build.mutation<void, EditUserPasswordDto>({
       query: ({ userId, ...dto }) => ({
         url: `/users/${userId}/password`,
@@ -96,6 +108,7 @@ export const {
   useSelectNotSubscribedUsersQuery,
   useSelectNotRatedUsersQuery,
   useGetSingleUserQuery,
+  useEditUserProfileMutation,
   useEditUserPasswordMutation,
   useAddUserRoleMutation,
   useRemoveUserRoleMutation,

@@ -11,7 +11,7 @@ export default function CustomAvatar(props: Props) {
         size={32}
         src={`${import.meta.env.VITE_AVATAR_URL}${
           import.meta.env.VITE_HEAD_ROUTE
-        }${props.nick}`}
+        }${props.avatar || props.nick}`}
         alt={props.nick}
       >
         {props.nick.toUpperCase().slice(0, 2)}

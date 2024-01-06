@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import {
+  ActionIcon,
   Anchor,
   Avatar,
   Container,
@@ -10,7 +11,12 @@ import {
   Stack,
   Text,
 } from '@mantine/core';
-import { IconBuildingSkyscraper, IconClock } from '@tabler/icons';
+import {
+  IconBrandDiscord,
+  IconBuildingSkyscraper,
+  IconClock,
+  IconPencil,
+} from '@tabler/icons';
 import { ExtUser } from './user.model';
 import CustomIndicator from '../../common/components/CustomIndicator';
 import LinkedAvatar from '../../common/components/LinkedAvatar';
@@ -19,6 +25,7 @@ import RolesBadge from '../../common/components/RolesBadge';
 import SingleText from '../../common/components/SingleText';
 import DateText from '../../common/components/DateText';
 import PlaceText from '../../common/components/PlaceText';
+import { editUserProfileAction } from './EditUserProfileModal';
 import { openViewUserFriendsModal } from './ViewUserFriendsModal';
 import { colors } from '../../common/constants';
 
@@ -49,12 +56,12 @@ export default function UserProfile({ data: user }: Props) {
               <Avatar
                 px={8}
                 pt={16}
-                bg='violet'
+                bg={colors[user.color - 1]}
                 radius='md'
                 size={248}
                 src={`${import.meta.env.VITE_AVATAR_URL}${
                   import.meta.env.VITE_BUST_ROUTE
-                }${user.nick}`}
+                }${user.avatar || user.nick}`}
                 alt={user.nick}
               >
                 {user.nick.toUpperCase().slice(0, 2)}
@@ -97,9 +104,28 @@ export default function UserProfile({ data: user }: Props) {
         <Stack spacing={8}>
           <Paper p={8}>
             <Stack spacing={8}>
-              <Text size='xl' weight='bold'>
-                {user.nick}
-              </Text>
+              <div>
+                <Group spacing={8}>
+                  <Text size='xl' weight='bold'>
+                    {user.nick}
+                  </Text>
+                  <ActionIcon
+                    size={24}
+                    variant='filled'
+                    color='yellow'
+                    onClick={() => editUserProfileAction.open(user)}
+                    disabled={editUserProfileAction.disable(user)}
+                  >
+                    <IconPencil size={16} />
+                  </ActionIcon>
+                </Group>
+                {user.discord && (
+                  <Group spacing={8}>
+                    <IconBrandDiscord size={16} />
+                    <Text size='sm'>{user.discord}</Text>
+                  </Group>
+                )}
+              </div>
               <div>
                 <Text size='sm' weight='bold'>
                   {t('columns.roles')}
