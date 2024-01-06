@@ -12,6 +12,7 @@ export interface MdUser extends SmUser {
 
 export interface User extends MdUser {
   createdAt: Date;
+  onlineAt?: Date;
   city?: MdCity;
   friends: SmUser[];
 }

@@ -51,6 +51,11 @@ export default function ViewUserModal({ data: user }: Props) {
         searchable
       />
       <TextInput
+        label={t('columns.online')}
+        value={parseTime(user.onlineAt)}
+        disabled
+      />
+      <TextInput
         label={t('columns.created')}
         value={parseTime(user.createdAt)}
         disabled

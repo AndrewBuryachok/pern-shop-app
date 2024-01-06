@@ -14,6 +14,7 @@ import {
   IconBrandDiscord,
   IconBuildingSkyscraper,
   IconClock,
+  IconHourglass,
   IconPencil,
 } from '@tabler/icons';
 import { ExtUser } from './user.model';
@@ -117,17 +118,6 @@ export default function UserProfile({ data: user }: Props) {
               </div>
               <div>
                 <Text size='sm' weight='bold'>
-                  {t('columns.created')}
-                </Text>
-                <Group spacing={8}>
-                  <IconClock size={32} />
-                  <div>
-                    <DateText date={user.createdAt} />
-                  </div>
-                </Group>
-              </div>
-              <div>
-                <Text size='sm' weight='bold'>
                   {t('columns.city')}
                 </Text>
                 <Group spacing={8}>
@@ -138,6 +128,28 @@ export default function UserProfile({ data: user }: Props) {
                     ) : (
                       <SingleText text='-' />
                     )}
+                  </div>
+                </Group>
+              </div>
+              <div>
+                <Text size='sm' weight='bold'>
+                  {t('columns.online')}
+                </Text>
+                <Group spacing={8}>
+                  <IconHourglass size={32} />
+                  <div>
+                    <DateText date={user.onlineAt} />
+                  </div>
+                </Group>
+              </div>
+              <div>
+                <Text size='sm' weight='bold'>
+                  {t('columns.created')}
+                </Text>
+                <Group spacing={8}>
+                  <IconClock size={32} />
+                  <div>
+                    <DateText date={user.createdAt} />
                   </div>
                 </Group>
               </div>
