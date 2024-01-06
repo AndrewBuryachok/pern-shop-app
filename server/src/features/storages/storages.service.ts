@@ -290,6 +290,7 @@ export class StoragesService {
         'ownerCard.id',
         'ownerUser.id',
         'ownerUser.nick',
+        'ownerUser.avatar',
         'ownerCard.name',
         'ownerCard.color',
         'storage.name',

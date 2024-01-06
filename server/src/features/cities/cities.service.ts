@@ -218,7 +218,7 @@ export class CitiesService {
           .leftJoin('city.users', 'user')
           .where('city.id = :cityId', { cityId: city.id })
           .orderBy('user.nick', 'ASC')
-          .select(['city.id', 'user.id', 'user.nick'])
+          .select(['city.id', 'user.id', 'user.nick', 'user.avatar'])
           .getOne()
       ).users;
     });
@@ -255,6 +255,7 @@ export class CitiesService {
         'city.id',
         'ownerUser.id',
         'ownerUser.nick',
+        'ownerUser.avatar',
         'city.name',
         'city.image',
         'city.description',

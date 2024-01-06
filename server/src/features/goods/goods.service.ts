@@ -223,6 +223,7 @@ export class GoodsService {
         'shop.id',
         'sellerUser.id',
         'sellerUser.nick',
+        'sellerUser.avatar',
         'shop.name',
         'shop.x',
         'shop.y',

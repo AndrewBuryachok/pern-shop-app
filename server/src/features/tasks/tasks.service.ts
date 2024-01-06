@@ -270,6 +270,7 @@ export class TasksService {
         'task.id',
         'customerUser.id',
         'customerUser.nick',
+        'customerUser.avatar',
         'task.title',
         'task.text',
         'task.priority',
@@ -277,6 +278,7 @@ export class TasksService {
         'task.createdAt',
         'executorUser.id',
         'executorUser.nick',
+        'executorUser.avatar',
         'task.completedAt',
       ]);
   }

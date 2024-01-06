@@ -63,6 +63,13 @@ export class AuthService {
     ]);
     const hash = await hashData(refresh);
     await this.usersService.addUserToken({ userId: user.id, token: hash });
-    return { id: user.id, nick: user.nick, roles: user.roles, access, refresh };
+    return {
+      id: user.id,
+      nick: user.nick,
+      avatar: user.avatar,
+      roles: user.roles,
+      access,
+      refresh,
+    };
   }
 }

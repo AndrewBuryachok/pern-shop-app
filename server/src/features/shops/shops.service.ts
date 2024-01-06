@@ -189,6 +189,7 @@ export class ShopsService {
         'shop.id',
         'ownerUser.id',
         'ownerUser.nick',
+        'ownerUser.avatar',
         'shop.name',
         'shop.image',
         'shop.description',

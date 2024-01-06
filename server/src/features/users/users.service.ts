@@ -6,6 +6,7 @@ import { MqttService } from '../mqtt/mqtt.service';
 import {
   CreateUserDto,
   ExtEditUserPasswordDto,
+  ExtEditUserProfileDto,
   ExtUpdateUserRoleDto,
   UpdateUserFriendDto,
   UpdateUserSubscriberDto,
@@ -210,6 +211,14 @@ export class UsersService {
     await this.removeToken(user);
   }
 
+  async editUserProfile(dto: ExtEditUserProfileDto): Promise<void> {
+    if (dto.userId !== dto.myId && !dto.hasRole) {
+      throw new AppException(UserError.NOT_OWNER);
+    }
+    const user = await this.usersRepository.findOneBy({ id: dto.userId });
+    await this.editProfile(user, dto);
+  }
+
   async updateUserPassword(user: User, password: string): Promise<void> {
     await this.updatePassword(user, password);
   }
@@ -352,6 +361,20 @@ export class UsersService {
     }
   }
 
+  private async editProfile(
+    user: User,
+    dto: ExtEditUserProfileDto,
+  ): Promise<void> {
+    try {
+      user.discord = dto.discord;
+      user.avatar = dto.avatar;
+      user.color = dto.color;
+      await this.usersRepository.save(user);
+    } catch (error) {
+      throw new AppException(UserError.EDIT_PROFILE_FAILED);
+    }
+  }
+
   private async updatePassword(user: User, password: string): Promise<void> {
     try {
       user.password = password;
@@ -425,7 +448,7 @@ export class UsersService {
     return this.usersRepository
       .createQueryBuilder('user')
       .orderBy('user.nick', 'ASC')
-      .select(['user.id', 'user.nick']);
+      .select(['user.id', 'user.nick', 'user.avatar']);
   }
 
   private async loadFriends(users: User[]): Promise<void> {
@@ -436,7 +459,7 @@ export class UsersService {
           .leftJoin('user.friends', 'friend')
           .where('user.id = :userId', { userId: user.id })
           .orderBy('friend.nick', 'ASC')
-          .select(['user.id', 'friend.id', 'friend.nick'])
+          .select(['user.id', 'friend.id', 'friend.nick', 'friend.avatar'])
           .getOne()
       ).friends;
     });
@@ -494,11 +517,13 @@ export class UsersService {
       .select([
         'user.id',
         'user.nick',
+        'user.avatar',
         'user.roles',
         'user.createdAt',
         'city.id',
         'ownerUser.id',
         'ownerUser.nick',
+        'ownerUser.avatar',
         'city.name',
         'city.x',
         'city.y',
@@ -506,7 +531,9 @@ export class UsersService {
   }
 
   private async getUserProfile(userId: number): Promise<User> {
-    const user = await this.getUsersQueryBuilder({ id: userId }).getOne();
+    const user = await this.getUsersQueryBuilder({ id: userId })
+      .addSelect(['user.discord', 'user.color'])
+      .getOne();
     await this.loadFriends([user]);
     return user;
   }

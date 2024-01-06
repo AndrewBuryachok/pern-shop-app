@@ -231,6 +231,7 @@ export class StoresService {
         'ownerCard.id',
         'ownerUser.id',
         'ownerUser.nick',
+        'ownerUser.avatar',
         'ownerCard.name',
         'ownerCard.color',
         'market.name',

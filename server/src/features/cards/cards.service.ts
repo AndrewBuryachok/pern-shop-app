@@ -237,6 +237,7 @@ export class CardsService {
         'card.id',
         'ownerUser.id',
         'ownerUser.nick',
+        'ownerUser.avatar',
         'card.name',
         'card.color',
       ]);
@@ -250,7 +251,7 @@ export class CardsService {
           .leftJoin('card.users', 'user')
           .where('card.id = :cardId', { cardId: card.id })
           .orderBy('user.nick', 'ASC')
-          .select(['card.id', 'user.id', 'user.nick'])
+          .select(['card.id', 'user.id', 'user.nick', 'user.avatar'])
           .getOne()
       ).users;
     });
@@ -287,6 +288,7 @@ export class CardsService {
         'card.id',
         'ownerUser.id',
         'ownerUser.nick',
+        'ownerUser.avatar',
         'card.name',
         'card.color',
         'card.balance',

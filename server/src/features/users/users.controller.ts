@@ -11,9 +11,14 @@ import {
 import { ApiTags } from '@nestjs/swagger';
 import { UsersService } from './users.service';
 import { User } from './user.entity';
-import { EditUserPasswordDto, UpdateUserRoleDto, UserIdDto } from './user.dto';
+import {
+  EditUserPasswordDto,
+  EditUserProfileDto,
+  UpdateUserRoleDto,
+  UserIdDto,
+} from './user.dto';
 import { Request, Response } from '../../common/interfaces';
-import { MyId, Public, Roles } from '../../common/decorators';
+import { HasRole, MyId, Public, Roles } from '../../common/decorators';
 import { Role } from './role.enum';
 
 @ApiTags('users')
@@ -72,6 +77,16 @@ export class UsersController {
   @Get(':userId')
   getSingleUser(@Param() { userId }: UserIdDto): Promise<User> {
     return this.usersService.getSingleUser(userId);
+  }
+
+  @Patch(':userId/profile')
+  editUserProfile(
+    @MyId() myId: number,
+    @HasRole(Role.ADMIN) hasRole: boolean,
+    @Param() { userId }: UserIdDto,
+    @Body() dto: EditUserProfileDto,
+  ): Promise<void> {
+    return this.usersService.editUserProfile({ ...dto, userId, myId, hasRole });
   }
 
   @Roles(Role.ADMIN)

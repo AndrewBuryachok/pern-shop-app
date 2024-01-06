@@ -182,8 +182,10 @@ export class RatingsService {
         'rating.id',
         'senderUser.id',
         'senderUser.nick',
+        'senderUser.avatar',
         'receiverUser.id',
         'receiverUser.nick',
+        'receiverUser.avatar',
         'rating.rate',
         'rating.createdAt',
       ]);

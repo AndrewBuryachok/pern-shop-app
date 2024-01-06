@@ -53,6 +53,14 @@ export const IsPassword = () => (target: object, key: string) => {
   MaxLength(MAX_PASSWORD_LENGTH)(target, key);
 };
 
+export const IsDiscordOrAvatar = () => (target: object, key: string) => {
+  ValidateIf((_, value) => value !== '')(target, key);
+  IsNotEmpty()(target, key);
+  IsString()(target, key);
+  MinLength(MIN_NICK_LENGTH)(target, key);
+  MaxLength(MAX_NICK_LENGTH)(target, key);
+};
+
 export const IsName = () => (target: object, key: string) => {
   IsNotEmpty()(target, key);
   IsString()(target, key);

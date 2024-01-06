@@ -1,7 +1,14 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Validate } from 'class-validator';
 import { Type } from 'class-transformer';
-import { IsId, IsNick, IsPassword, IsRole } from '../../common/decorators';
+import {
+  IsColor,
+  IsDiscordOrAvatar,
+  IsId,
+  IsNick,
+  IsPassword,
+  IsRole,
+} from '../../common/decorators';
 import { IsUserExists } from '../../common/constraints';
 
 export class UserIdDto {
@@ -10,6 +17,26 @@ export class UserIdDto {
   @Validate(IsUserExists)
   @Type(() => Number)
   userId: number;
+}
+
+export class EditUserProfileDto {
+  @ApiProperty()
+  @IsDiscordOrAvatar()
+  discord: string;
+
+  @ApiProperty()
+  @IsDiscordOrAvatar()
+  avatar: string;
+
+  @ApiProperty()
+  @IsColor()
+  color: number;
+}
+
+export class ExtEditUserProfileDto extends EditUserProfileDto {
+  userId: number;
+  myId: number;
+  hasRole: boolean;
 }
 
 export class EditUserPasswordDto {

@@ -28,6 +28,15 @@ export class User {
   @Column({ nullable: true })
   token?: string;
 
+  @Column({ default: '' })
+  discord: string;
+
+  @Column({ default: '' })
+  avatar: string;
+
+  @Column({ default: 1 })
+  color: number;
+
   @Column({ type: 'enum', enum: Role, array: true, default: [] })
   roles: Role[];
 

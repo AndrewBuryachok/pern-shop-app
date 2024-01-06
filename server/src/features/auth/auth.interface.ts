@@ -12,6 +12,7 @@ export interface ExtJwtPayload extends JwtPayload {
 export interface Tokens {
   id: number;
   nick: string;
+  avatar: string;
   roles: Role[];
   access: string;
   refresh: string;
