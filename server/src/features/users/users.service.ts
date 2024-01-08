@@ -368,7 +368,7 @@ export class UsersService {
     try {
       user.discord = dto.discord;
       user.avatar = dto.avatar;
-      user.color = dto.color;
+      user.background = dto.background;
       await this.usersRepository.save(user);
     } catch (error) {
       throw new AppException(UserError.EDIT_PROFILE_FAILED);
@@ -532,7 +532,7 @@ export class UsersService {
 
   private async getUserProfile(userId: number): Promise<User> {
     const user = await this.getUsersQueryBuilder({ id: userId })
-      .addSelect(['user.discord', 'user.color'])
+      .addSelect(['user.discord', 'user.background'])
       .getOne();
     await this.loadFriends([user]);
     return user;

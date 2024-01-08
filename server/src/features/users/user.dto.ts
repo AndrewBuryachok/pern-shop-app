@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Validate } from 'class-validator';
 import { Type } from 'class-transformer';
 import {
-  IsColor,
+  IsBackground,
   IsDiscordOrAvatar,
   IsId,
   IsNick,
@@ -29,8 +29,8 @@ export class EditUserProfileDto {
   avatar: string;
 
   @ApiProperty()
-  @IsColor()
-  color: number;
+  @IsBackground()
+  background: number;
 }
 
 export class ExtEditUserProfileDto extends EditUserProfileDto {

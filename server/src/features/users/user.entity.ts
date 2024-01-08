@@ -35,7 +35,7 @@ export class User {
   avatar: string;
 
   @Column({ default: 1 })
-  color: number;
+  background: number;
 
   @Column({ type: 'enum', enum: Role, array: true, default: [] })
   roles: Role[];

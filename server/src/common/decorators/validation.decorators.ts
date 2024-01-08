@@ -13,6 +13,7 @@ import {
 } from 'class-validator';
 import {
   MAX_AMOUNT_VALUE,
+  MAX_BACKGROUND_VALUE,
   MAX_COLOR_VALUE,
   MAX_COORDINATE_VALUE,
   MAX_DESCRIPTION_LENGTH,
@@ -135,6 +136,13 @@ export const IsPrice = () => (target: object, key: string) => {
   IsInt()(target, key);
   IsPositive()(target, key);
   Max(MAX_PRICE_VALUE)(target, key);
+};
+
+export const IsBackground = () => (target: object, key: string) => {
+  IsNotEmpty()(target, key);
+  IsInt()(target, key);
+  IsPositive()(target, key);
+  Max(MAX_BACKGROUND_VALUE)(target, key);
 };
 
 export const IsRole = () => (target: object, key: string) => {
