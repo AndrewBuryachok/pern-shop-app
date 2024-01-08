@@ -6,15 +6,21 @@ import { getQuery } from '../../common/utils';
 
 export const leasesApi = emptyApi.injectEndpoints({
   endpoints: (build) => ({
+    getMainLeases: build.query<IResponse<Lease>, IRequest>({
+      query: (req) => ({
+        url: `/leases?${getQuery(req)}`,
+      }),
+      providesTags: ['Lease'],
+    }),
     getMyLeases: build.query<IResponse<Lease>, IRequest>({
       query: (req) => ({
         url: `/leases/my?${getQuery(req)}`,
       }),
       providesTags: ['Auth', 'Lease'],
     }),
-    getPlacedLeases: build.query<IResponse<Lease>, IRequest>({
+    getReceivedLeases: build.query<IResponse<Lease>, IRequest>({
       query: (req) => ({
-        url: `/leases/placed?${getQuery(req)}`,
+        url: `/leases/received?${getQuery(req)}`,
       }),
       providesTags: ['Auth', 'Lease'],
     }),
@@ -35,8 +41,9 @@ export const leasesApi = emptyApi.injectEndpoints({
 });
 
 export const {
+  useGetMainLeasesQuery,
   useGetMyLeasesQuery,
-  useGetPlacedLeasesQuery,
+  useGetReceivedLeasesQuery,
   useGetAllLeasesQuery,
   useCompleteLeaseMutation,
 } = leasesApi;

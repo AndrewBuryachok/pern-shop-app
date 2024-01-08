@@ -92,7 +92,6 @@ export default function CustomNavbar(props: Props) {
       route: 'receipts',
       icon: IconReceipt,
       nested: ['rents', 'leases'],
-      my: true,
     },
     {
       route: 'tasks',

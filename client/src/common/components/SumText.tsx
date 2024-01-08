@@ -9,23 +9,23 @@ type Props = {
 };
 
 export default function SumText(props: Props) {
-  const user = getCurrentUser()!;
+  const user = getCurrentUser();
 
   const char =
     props.fromId === props.toId
       ? ''
-      : user.id === props.fromId
+      : user?.id === props.fromId
       ? '-'
-      : user.id === props.toId
+      : user?.id === props.toId
       ? '+'
       : '';
 
   const color =
     props.fromId === props.toId
       ? undefined
-      : user.id === props.fromId
+      : user?.id === props.fromId
       ? Color.RED
-      : user.id === props.toId
+      : user?.id === props.toId
       ? Color.GREEN
       : undefined;
 

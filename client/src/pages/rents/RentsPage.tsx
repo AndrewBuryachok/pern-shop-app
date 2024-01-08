@@ -4,8 +4,9 @@ import { ISearch } from '../../common/interfaces';
 import { Mode } from '../../common/enums';
 import {
   useGetAllRentsQuery,
+  useGetMainRentsQuery,
   useGetMyRentsQuery,
-  useGetPlacedRentsQuery,
+  useGetReceivedRentsQuery,
 } from '../../features/rents/rents.api';
 import RentsTable from '../../features/rents/RentsTable';
 import { completeRentAction } from '../../features/rents/CompleteRentModal';
@@ -32,8 +33,9 @@ export default function MyRents() {
   });
 
   const response = {
+    main: useGetMainRentsQuery,
     my: useGetMyRentsQuery,
-    placed: useGetPlacedRentsQuery,
+    received: useGetReceivedRentsQuery,
     all: useGetAllRentsQuery,
   }[tab]!({ page, search });
 

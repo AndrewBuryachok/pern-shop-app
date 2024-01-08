@@ -153,8 +153,9 @@ export const pages = [
     path: 'rents',
     element: RentsPage,
     nested: [
+      { index: true },
       { path: 'my' },
-      { path: 'placed' },
+      { path: 'received' },
       { path: 'all', role: Role.MANAGER },
     ],
   },
@@ -162,8 +163,9 @@ export const pages = [
     path: 'leases',
     element: LeasesPage,
     nested: [
+      { index: true },
       { path: 'my' },
-      { path: 'placed' },
+      { path: 'received' },
       { path: 'all', role: Role.MANAGER },
     ],
   },

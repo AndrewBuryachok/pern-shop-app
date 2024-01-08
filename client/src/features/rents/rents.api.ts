@@ -6,15 +6,21 @@ import { getQuery } from '../../common/utils';
 
 export const rentsApi = emptyApi.injectEndpoints({
   endpoints: (build) => ({
+    getMainRents: build.query<IResponse<Rent>, IRequest>({
+      query: (req) => ({
+        url: `/rents?${getQuery(req)}`,
+      }),
+      providesTags: ['Rent'],
+    }),
     getMyRents: build.query<IResponse<Rent>, IRequest>({
       query: (req) => ({
         url: `/rents/my?${getQuery(req)}`,
       }),
       providesTags: ['Auth', 'Rent'],
     }),
-    getPlacedRents: build.query<IResponse<Rent>, IRequest>({
+    getReceivedRents: build.query<IResponse<Rent>, IRequest>({
       query: (req) => ({
-        url: `/rents/placed?${getQuery(req)}`,
+        url: `/rents/received?${getQuery(req)}`,
       }),
       providesTags: ['Auth', 'Rent'],
     }),
@@ -55,8 +61,9 @@ export const rentsApi = emptyApi.injectEndpoints({
 });
 
 export const {
+  useGetMainRentsQuery,
   useGetMyRentsQuery,
-  useGetPlacedRentsQuery,
+  useGetReceivedRentsQuery,
   useGetAllRentsQuery,
   useSelectAllRentsQuery,
   useSelectMyRentsQuery,

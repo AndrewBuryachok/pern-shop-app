@@ -4,8 +4,9 @@ import { ISearch } from '../../common/interfaces';
 import { Mode } from '../../common/enums';
 import {
   useGetAllLeasesQuery,
+  useGetMainLeasesQuery,
   useGetMyLeasesQuery,
-  useGetPlacedLeasesQuery,
+  useGetReceivedLeasesQuery,
 } from '../../features/leases/leases.api';
 import LeasesTable from '../../features/leases/LeasesTable';
 import { completeLeaseAction } from '../../features/leases/CompleteLeaseModal';
@@ -33,8 +34,9 @@ export default function MyLeases() {
   });
 
   const response = {
+    main: useGetMainLeasesQuery,
     my: useGetMyLeasesQuery,
-    placed: useGetPlacedLeasesQuery,
+    received: useGetReceivedLeasesQuery,
     all: useGetAllLeasesQuery,
   }[tab]!({ page, search });
 

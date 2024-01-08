@@ -160,12 +160,10 @@ export default function Home() {
     {
       title: 'rents',
       icon: IconFileDollar,
-      my: true,
     },
     {
       title: 'leases',
       icon: IconReportMoney,
-      my: true,
     },
     {
       title: 'tasks',
