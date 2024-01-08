@@ -14,19 +14,19 @@ export const usersApi = emptyApi.injectEndpoints({
       query: (req) => ({
         url: `/users?${getQuery(req)}`,
       }),
-      providesTags: ['User', 'City', 'Friend'],
+      providesTags: ['User'],
     }),
     getMyUsers: build.query<IResponse<User>, IRequest>({
       query: (req) => ({
         url: `/users/my?${getQuery(req)}`,
       }),
-      providesTags: ['Auth', 'User', 'City', 'Friend'],
+      providesTags: ['Auth', 'User'],
     }),
     getAllUsers: build.query<IResponse<User>, IRequest>({
       query: (req) => ({
         url: `/users/all?${getQuery(req)}`,
       }),
-      providesTags: ['Auth', 'User', 'City', 'Friend'],
+      providesTags: ['Auth', 'User'],
     }),
     selectAllUsers: build.query<SmUser[], void>({
       query: () => ({
@@ -38,7 +38,7 @@ export const usersApi = emptyApi.injectEndpoints({
       query: () => ({
         url: '/users/not-citizens/select',
       }),
-      providesTags: ['User', 'City'],
+      providesTags: ['User'],
     }),
     selectNotFriendsUsers: build.query<SmUser[], void>({
       query: () => ({
@@ -58,11 +58,17 @@ export const usersApi = emptyApi.injectEndpoints({
       }),
       providesTags: ['Auth', 'User', 'Rating'],
     }),
+    selectUserFriends: build.query<SmUser[], number>({
+      query: (userId) => ({
+        url: `/users/${userId}/friends`,
+      }),
+      providesTags: ['Friend'],
+    }),
     getSingleUser: build.query<ExtUser, number>({
       query: (userId) => ({
         url: `/users/${userId}`,
       }),
-      providesTags: ['User', 'City', 'Friend'],
+      providesTags: ['User'],
     }),
     editUserProfile: build.mutation<void, EditUserProfileDto>({
       query: ({ userId, ...dto }) => ({
@@ -107,6 +113,7 @@ export const {
   useSelectNotFriendsUsersQuery,
   useSelectNotSubscribedUsersQuery,
   useSelectNotRatedUsersQuery,
+  useSelectUserFriendsQuery,
   useGetSingleUserQuery,
   useEditUserProfileMutation,
   useEditUserPasswordMutation,

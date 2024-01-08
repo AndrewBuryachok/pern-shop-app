@@ -1,6 +1,9 @@
 import { SmUser } from '../users/user.model';
-import { Vote } from './vote.model';
-import { Discussion } from '../discussions/discussion.model';
+
+export interface SmPoll {
+  id: number;
+  vote: { id: number; type: boolean };
+}
 
 export interface Poll {
   id: number;
@@ -10,6 +13,7 @@ export interface Poll {
   result: number;
   createdAt: Date;
   completedAt?: Date;
-  votes: Vote[];
-  discussions: Discussion[];
+  upVotes: number;
+  downVotes: number;
+  discussions: number;
 }

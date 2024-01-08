@@ -4,6 +4,9 @@ import { Input, Select, Stack, TextInput, Textarea } from '@mantine/core';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { Storage } from './storage.model';
+import { useSelectStorageStatesQuery } from './storages.api';
+import { useSelectStorageCellsQuery } from '../cells/cells.api';
+import RefetchAction from '../../common/components/RefetchAction';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import CustomImage from '../../common/components/CustomImage';
 import { StatesItem } from '../../common/components/StatesItem';
@@ -14,6 +17,13 @@ type Props = IModal<Storage>;
 
 export default function ViewStorageModal({ data: storage }: Props) {
   const [t] = useTranslation();
+
+  const { data: states, ...statesResponse } = useSelectStorageStatesQuery(
+    storage.id,
+  );
+  const { data: cells, ...cellsResponse } = useSelectStorageCellsQuery(
+    storage.id,
+  );
 
   return (
     <Stack spacing={8}>
@@ -43,16 +53,18 @@ export default function ViewStorageModal({ data: storage }: Props) {
       />
       <Select
         label={t('columns.prices')}
-        placeholder={`${t('components.total')}: ${storage.states.length}`}
+        placeholder={`${t('components.total')}: ${states?.length || 0}`}
+        rightSection={<RefetchAction {...statesResponse} />}
         itemComponent={StatesItem}
-        data={viewStates(storage.states)}
+        data={viewStates(states || [])}
         limit={20}
         searchable
       />
       <Select
         label={t('columns.cells')}
-        placeholder={`${t('components.total')}: ${storage.cells.length}`}
-        data={viewContainers(storage.cells)}
+        placeholder={`${t('components.total')}: ${cells?.length || 0}`}
+        rightSection={<RefetchAction {...cellsResponse} />}
+        data={viewContainers(cells || [])}
         limit={20}
         searchable
       />

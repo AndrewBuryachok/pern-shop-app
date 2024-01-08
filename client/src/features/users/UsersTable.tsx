@@ -48,7 +48,7 @@ export default function UsersTable({ actions = [], ...props }: Props) {
             <DateText date={user.onlineAt} />
           </td>
           <td>
-            <TotalText data={user.friends.length} />
+            <TotalText data={user.friendsCount} />
           </td>
           <td>
             <CustomActions data={user} actions={[viewUserAction, ...actions]} />

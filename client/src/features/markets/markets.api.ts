@@ -1,6 +1,7 @@
 import { emptyApi } from '../../app/empty.api';
 import { IRequest, IResponse } from '../../common/interfaces';
 import { Market, MyMarket, SmMarket } from './market.model';
+import { State } from '../states/state.model';
 import { CreateMarketDto, EditMarketDto } from './market.dto';
 import { getQuery } from '../../common/utils';
 
@@ -42,6 +43,12 @@ export const marketsApi = emptyApi.injectEndpoints({
       }),
       providesTags: ['Auth', 'Market', 'Store'],
     }),
+    selectMarketStates: build.query<State[], number>({
+      query: (marketId) => ({
+        url: `/markets/${marketId}/states`,
+      }),
+      providesTags: ['Market'],
+    }),
     createMarket: build.mutation<void, CreateMarketDto>({
       query: (dto) => ({
         url: '/markets',
@@ -68,6 +75,7 @@ export const {
   useSelectMainMarketsQuery,
   useSelectMyMarketsQuery,
   useSelectAllMarketsQuery,
+  useSelectMarketStatesQuery,
   useCreateMarketMutation,
   useEditMarketMutation,
 } = marketsApi;

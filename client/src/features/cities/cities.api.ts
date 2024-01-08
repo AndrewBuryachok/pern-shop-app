@@ -1,6 +1,7 @@
 import { emptyApi } from '../../app/empty.api';
 import { IRequest, IResponse } from '../../common/interfaces';
 import { City, SmCity } from './city.model';
+import { SmUser } from '../users/user.model';
 import {
   CreateCityDto,
   EditCityDto,
@@ -41,13 +42,19 @@ export const citiesApi = emptyApi.injectEndpoints({
       }),
       providesTags: ['Auth', 'City'],
     }),
+    selectCityUsers: build.query<SmUser[], number>({
+      query: (cityId) => ({
+        url: `/cities/${cityId}/users`,
+      }),
+      providesTags: ['City'],
+    }),
     createMyCity: build.mutation<void, CreateCityDto>({
       query: (dto) => ({
         url: '/cities',
         method: 'POST',
         body: dto,
       }),
-      invalidatesTags: ['City'],
+      invalidatesTags: ['City', 'User'],
     }),
     createUserCity: build.mutation<void, ExtCreateCityDto>({
       query: (dto) => ({
@@ -55,7 +62,7 @@ export const citiesApi = emptyApi.injectEndpoints({
         method: 'POST',
         body: dto,
       }),
-      invalidatesTags: ['City'],
+      invalidatesTags: ['City', 'User'],
     }),
     editCity: build.mutation<void, EditCityDto>({
       query: ({ cityId, ...dto }) => ({
@@ -71,7 +78,7 @@ export const citiesApi = emptyApi.injectEndpoints({
         method: 'POST',
         body: dto,
       }),
-      invalidatesTags: ['City'],
+      invalidatesTags: ['City', 'User'],
     }),
     removeCityUser: build.mutation<void, UpdateCityUserDto>({
       query: ({ cityId, ...dto }) => ({
@@ -79,7 +86,7 @@ export const citiesApi = emptyApi.injectEndpoints({
         method: 'DELETE',
         body: dto,
       }),
-      invalidatesTags: ['City'],
+      invalidatesTags: ['City', 'User'],
     }),
   }),
 });
@@ -90,6 +97,7 @@ export const {
   useGetAllCitiesQuery,
   useSelectAllCitiesQuery,
   useSelectMyCitiesQuery,
+  useSelectCityUsersQuery,
   useCreateMyCityMutation,
   useCreateUserCityMutation,
   useEditCityMutation,

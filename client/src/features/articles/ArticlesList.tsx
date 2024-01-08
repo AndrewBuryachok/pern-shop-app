@@ -4,7 +4,10 @@ import { IconHeart, IconMessage } from '@tabler/icons';
 import { ITableWithActions } from '../../common/interfaces';
 import { Article } from './article.model';
 import { getCurrentUser } from '../auth/auth.slice';
-import { useLikeArticleMutation } from './articles.api';
+import {
+  useLikeArticleMutation,
+  useSelectLikedArticlesQuery,
+} from './articles.api';
 import { LikeArticleDto } from './article.dto';
 import {
   useAddSubscriberMutation,
@@ -17,6 +20,7 @@ import AvatarWithDateText from '../../common/components/AvatarWithDateText';
 import SingleText from '../../common/components/SingleText';
 import CustomImage from '../../common/components/CustomImage';
 import CustomActions from '../../common/components/CustomActions';
+import { openAuthModal } from '../auth/AuthModal';
 import { viewArticleAction } from './ViewArticleModal';
 import { openViewArticleLikesModal } from './ViewArticleLikesModal';
 import { openViewArticleCommentsModal } from './ViewArticleCommentsModal';
@@ -31,6 +35,9 @@ export default function ArticlesList({ actions = [], ...props }: Props) {
 
   const { data: subscribers, ...subscribersResponse } =
     useSelectMySubscribersQuery(undefined, { skip: !user });
+
+  const { data: likedArticles, ...likedArticlesResponse } =
+    useSelectLikedArticlesQuery(undefined, { skip: !user });
 
   const [likeArticle] = useLikeArticleMutation();
 
@@ -58,7 +65,9 @@ export default function ArticlesList({ actions = [], ...props }: Props) {
           subscribed: subscribers?.find(
             (subscriber) => subscriber.id === article.user.id,
           ),
-          liked: article.likes.find((like) => like.user.id === user?.id),
+          liked: likedArticles?.find(
+            (likedArticle) => likedArticle.id === article.id,
+          ),
         }))
         .map((article) => (
           <Paper key={article.id} p='md'>
@@ -75,14 +84,15 @@ export default function ArticlesList({ actions = [], ...props }: Props) {
               <Group spacing={8}>
                 <Button
                   color={article.subscribed ? 'gray' : 'violet'}
-                  loading={subscribersResponse.isFetching}
+                  loading={subscribersResponse.isLoading}
                   loaderPosition='center'
                   onClick={() =>
-                    article.subscribed
-                      ? handleUnsubscribeSubmit({ userId: article.user.id })
-                      : handleSubscribeSubmit({ userId: article.user.id })
+                    user
+                      ? article.subscribed
+                        ? handleUnsubscribeSubmit({ userId: article.user.id })
+                        : handleSubscribeSubmit({ userId: article.user.id })
+                      : openAuthModal()
                   }
-                  disabled={!user}
                   compact
                 >
                   {article.subscribed
@@ -93,8 +103,12 @@ export default function ArticlesList({ actions = [], ...props }: Props) {
                   size={24}
                   variant={article.liked && 'filled'}
                   color={article.liked && 'violet'}
-                  onClick={() => handleLikeSubmit({ articleId: article.id })}
-                  disabled={!user}
+                  loading={likedArticlesResponse.isLoading}
+                  onClick={() =>
+                    user
+                      ? handleLikeSubmit({ articleId: article.id })
+                      : openAuthModal()
+                  }
                 >
                   <IconHeart size={16} />
                 </ActionIcon>
@@ -106,12 +120,13 @@ export default function ArticlesList({ actions = [], ...props }: Props) {
                   color='dimmed'
                   underline
                 >
-                  {article.likes.length}
+                  {article.likes}
                 </Anchor>
                 <ActionIcon
                   size={24}
-                  onClick={() => openCreateCommentModal(article)}
-                  disabled={!user}
+                  onClick={() =>
+                    user ? openCreateCommentModal(article) : openAuthModal()
+                  }
                 >
                   <IconMessage size={16} />
                 </ActionIcon>
@@ -123,7 +138,7 @@ export default function ArticlesList({ actions = [], ...props }: Props) {
                   color='dimmed'
                   underline
                 >
-                  {article.comments.length}
+                  {article.comments}
                 </Anchor>
               </Group>
             </Stack>

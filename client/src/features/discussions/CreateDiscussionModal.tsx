@@ -42,6 +42,8 @@ export default function CreateDiscussionModal({ data: poll }: Props) {
         value={poll.user.nick}
         disabled
       />
+      <TextInput label={t('columns.title')} value={poll.title} disabled />
+      <Textarea label={t('columns.text')} value={poll.text} disabled />
       <Textarea
         label={t('columns.text')}
         placeholder={t('columns.text')}

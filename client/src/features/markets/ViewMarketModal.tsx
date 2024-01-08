@@ -4,6 +4,9 @@ import { Input, Select, Stack, TextInput, Textarea } from '@mantine/core';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { Market } from './market.model';
+import { useSelectMarketStatesQuery } from './markets.api';
+import { useSelectMarketStoresQuery } from '../stores/stores.api';
+import RefetchAction from '../../common/components/RefetchAction';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import CustomImage from '../../common/components/CustomImage';
 import { StatesItem } from '../../common/components/StatesItem';
@@ -14,6 +17,13 @@ type Props = IModal<Market>;
 
 export default function ViewMarketModal({ data: market }: Props) {
   const [t] = useTranslation();
+
+  const { data: states, ...statesResponse } = useSelectMarketStatesQuery(
+    market.id,
+  );
+  const { data: stores, ...storesResponse } = useSelectMarketStoresQuery(
+    market.id,
+  );
 
   return (
     <Stack spacing={8}>
@@ -43,16 +53,18 @@ export default function ViewMarketModal({ data: market }: Props) {
       />
       <Select
         label={t('columns.prices')}
-        placeholder={`${t('components.total')}: ${market.states.length}`}
+        placeholder={`${t('components.total')}: ${states?.length || 0}`}
+        rightSection={<RefetchAction {...statesResponse} />}
         itemComponent={StatesItem}
-        data={viewStates(market.states)}
+        data={viewStates(states || [])}
         limit={20}
         searchable
       />
       <Select
         label={t('columns.stores')}
-        placeholder={`${t('components.total')}: ${market.stores.length}`}
-        data={viewContainers(market.stores)}
+        placeholder={`${t('components.total')}: ${stores?.length || 0}`}
+        rightSection={<RefetchAction {...storesResponse} />}
+        data={viewContainers(stores || [])}
         limit={20}
         searchable
       />

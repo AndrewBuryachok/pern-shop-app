@@ -1,6 +1,7 @@
 import { emptyApi } from '../../app/empty.api';
 import { IRequest, IResponse } from '../../common/interfaces';
 import { Lease } from './lease.model';
+import { SmThing } from '../things/thing.model';
 import { CompleteLeaseDto } from './lease.dto';
 import { getQuery } from '../../common/utils';
 
@@ -30,6 +31,12 @@ export const leasesApi = emptyApi.injectEndpoints({
       }),
       providesTags: ['Auth', 'Lease'],
     }),
+    selectLeaseThings: build.query<SmThing[], number>({
+      query: (leaseId) => ({
+        url: `/leases/${leaseId}/things`,
+      }),
+      providesTags: ['Lease'],
+    }),
     completeLease: build.mutation<void, CompleteLeaseDto>({
       query: ({ leaseId }) => ({
         url: `/leases/${leaseId}`,
@@ -45,5 +52,6 @@ export const {
   useGetMyLeasesQuery,
   useGetReceivedLeasesQuery,
   useGetAllLeasesQuery,
+  useSelectLeaseThingsQuery,
   useCompleteLeaseMutation,
 } = leasesApi;

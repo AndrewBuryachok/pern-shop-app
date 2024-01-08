@@ -1,6 +1,7 @@
 import { emptyApi } from '../../app/empty.api';
 import { IRequest, IResponse } from '../../common/interfaces';
 import { Shop, SmShop } from './shop.model';
+import { SmGood } from '../goods/good.model';
 import { CreateShopDto, EditShopDto, ExtCreateShopDto } from './shop.dto';
 import { getQuery } from '../../common/utils';
 
@@ -36,6 +37,12 @@ export const shopsApi = emptyApi.injectEndpoints({
       }),
       providesTags: ['Auth', 'Shop'],
     }),
+    selectShopGoods: build.query<SmGood[], number>({
+      query: (shopId) => ({
+        url: `/shops/${shopId}/goods`,
+      }),
+      providesTags: ['Good'],
+    }),
     createMyShop: build.mutation<void, CreateShopDto>({
       query: (dto) => ({
         url: '/shops',
@@ -69,6 +76,7 @@ export const {
   useGetAllShopsQuery,
   useSelectAllShopsQuery,
   useSelectMyShopsQuery,
+  useSelectShopGoodsQuery,
   useCreateMyShopMutation,
   useCreateUserShopMutation,
   useEditShopMutation,

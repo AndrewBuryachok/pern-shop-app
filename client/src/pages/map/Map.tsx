@@ -6,7 +6,6 @@ import { useGetMainShopsQuery } from '../../features/shops/shops.api';
 import { useGetMainMarketsQuery } from '../../features/markets/markets.api';
 import { useGetMainStoragesQuery } from '../../features/storages/storages.api';
 import PlacePath from '../../features/places/PlacePath';
-import { viewContainers, viewThings, viewUsers } from '../../common/utils';
 import { colors } from '../../common/constants';
 
 export default function Map() {
@@ -38,27 +37,27 @@ export default function Map() {
             ...city,
             type: 0,
             owner: city.user,
-            data: viewUsers(city.users),
+            data: city.users,
           })),
           shops?.result.map((shop) => ({
             ...shop,
             type: 1,
             owner: shop.user,
-            data: viewThings(shop.goods),
+            data: shop.goods,
           })),
           markets?.result.map((market) => ({
             ...market,
             type: 2,
             owner: market.card.user,
             card: market.card,
-            data: viewContainers(market.stores),
+            data: market.stores,
           })),
           storages?.result.map((storage) => ({
             ...storage,
             type: 3,
             owner: storage.card.user,
             card: storage.card,
-            data: viewContainers(storage.cells),
+            data: storage.cells,
           })),
         ].map((allPlaces) =>
           allPlaces?.map((place) => <PlacePath key={place.id} data={place} />),

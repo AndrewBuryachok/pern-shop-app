@@ -6,7 +6,10 @@ import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { City } from './city.model';
 import { getCurrentUser } from '../auth/auth.slice';
-import { useRemoveCityUserMutation } from './cities.api';
+import {
+  useRemoveCityUserMutation,
+  useSelectCityUsersQuery,
+} from './cities.api';
 import { UpdateCityUserDto } from './city.dto';
 import CustomForm from '../../common/components/CustomForm';
 import CustomAvatar from '../../common/components/CustomAvatar';
@@ -19,6 +22,8 @@ type Props = IModal<City>;
 export default function RemoveCityUserModal({ data: city }: Props) {
   const [t] = useTranslation();
 
+  const { data: cityUsers } = useSelectCityUsersQuery(city.id);
+
   const form = useForm({
     initialValues: {
       cityId: city.id,
@@ -27,7 +32,7 @@ export default function RemoveCityUserModal({ data: city }: Props) {
     transformValues: ({ user, ...rest }) => ({ ...rest, userId: +user }),
   });
 
-  const user = city.users.find((user) => user.id === +form.values.user);
+  const user = cityUsers?.find((user) => user.id === +form.values.user);
 
   const [removeCityUser, { isLoading }] = useRemoveCityUserMutation();
 
@@ -48,9 +53,7 @@ export default function RemoveCityUserModal({ data: city }: Props) {
         icon={user && <CustomAvatar {...user} />}
         iconWidth={48}
         itemComponent={UsersItem}
-        data={selectUsers(city.users).filter(
-          (user) => user.id !== city.user.id,
-        )}
+        data={selectUsers(cityUsers).filter((user) => user.id !== city.user.id)}
         limit={20}
         searchable
         required
@@ -68,7 +71,7 @@ export const removeCityUserFactory = (hasRole: boolean) => ({
     }),
   disable: (city: City) => {
     const user = getCurrentUser()!;
-    return (city.user.id !== user.id && !hasRole) || city.users.length === 1;
+    return (city.user.id !== user.id && !hasRole) || city.users === 1;
   },
   color: Color.RED,
 });

@@ -1,6 +1,7 @@
 import { emptyApi } from '../../app/empty.api';
 import { IRequest, IResponse } from '../../common/interfaces';
 import { Product } from './product.model';
+import { State } from '../states/state.model';
 import {
   CompleteProductDto,
   CreateProductDto,
@@ -40,6 +41,18 @@ export const productsApi = emptyApi.injectEndpoints({
       }),
       providesTags: ['Auth', 'Product'],
     }),
+    selectProductStates: build.query<State[], number>({
+      query: (productId) => ({
+        url: `/products/${productId}/states`,
+      }),
+      providesTags: ['Product'],
+    }),
+    selectProductRating: build.query<{ rate: number }, number>({
+      query: (productId) => ({
+        url: `/products/${productId}/rating`,
+      }),
+      providesTags: ['Sale'],
+    }),
     createProduct: build.mutation<void, CreateProductDto>({
       query: (dto) => ({
         url: '/products',
@@ -72,6 +85,8 @@ export const {
   useGetMyProductsQuery,
   useGetPlacedProductsQuery,
   useGetAllProductsQuery,
+  useSelectProductStatesQuery,
+  useSelectProductRatingQuery,
   useCreateProductMutation,
   useEditProductMutation,
   useCompleteProductMutation,

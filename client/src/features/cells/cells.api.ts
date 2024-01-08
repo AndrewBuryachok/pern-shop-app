@@ -25,8 +25,8 @@ export const cellsApi = emptyApi.injectEndpoints({
       providesTags: ['Auth', 'Cell'],
     }),
     selectStorageCells: build.query<SmCell[], number>({
-      query: (userId) => ({
-        url: `/cells/${userId}/select`,
+      query: (storageId) => ({
+        url: `/cells/${storageId}/select`,
       }),
       providesTags: ['Cell'],
     }),

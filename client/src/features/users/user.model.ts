@@ -14,12 +14,13 @@ export interface User extends MdUser {
   createdAt: Date;
   onlineAt?: Date;
   city?: MdCity;
-  friends: SmUser[];
+  friendsCount: number;
 }
 
 export interface ExtUser extends User {
   discord: string;
   background: number;
+  friends: SmUser[];
   waresCount: number;
   productsCount: number;
   ordersCount: number;

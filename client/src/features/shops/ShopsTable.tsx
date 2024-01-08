@@ -42,7 +42,7 @@ export default function ShopsTable({ actions = [], ...props }: Props) {
             <SingleText text={`${shop.y}`} />
           </td>
           <td>
-            <TotalText data={shop.goods.length} />
+            <TotalText data={shop.goods} />
           </td>
           <td>
             <CustomActions data={shop} actions={[viewShopAction, ...actions]} />

@@ -4,9 +4,11 @@ import { Select, Stack, TextInput } from '@mantine/core';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { User } from './user.model';
+import { useSelectUserFriendsQuery } from './users.api';
+import RefetchAction from '../../common/components/RefetchAction';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import { ColorsItem } from '../../common/components/ColorsItem';
-import { CardsItem } from '../../common/components/CardsItem';
+import { UsersItem } from '../../common/components/UsersItem';
 import {
   parsePlace,
   parseTime,
@@ -19,6 +21,10 @@ type Props = IModal<User>;
 
 export default function ViewUserModal({ data: user }: Props) {
   const [t] = useTranslation();
+
+  const { data: friends, ...friendsResponse } = useSelectUserFriendsQuery(
+    user.id,
+  );
 
   return (
     <Stack spacing={8}>
@@ -44,9 +50,10 @@ export default function ViewUserModal({ data: user }: Props) {
       />
       <Select
         label={t('columns.friends')}
-        placeholder={`${t('components.total')}: ${user.friends.length}`}
-        itemComponent={CardsItem}
-        data={viewUsers(user.friends)}
+        placeholder={`${t('components.total')}: ${user.friendsCount}`}
+        rightSection={<RefetchAction {...friendsResponse} />}
+        itemComponent={UsersItem}
+        data={viewUsers(friends || [])}
         limit={20}
         searchable
       />

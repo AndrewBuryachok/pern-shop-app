@@ -6,7 +6,7 @@ import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { Card } from './card.model';
 import { getCurrentUser } from '../auth/auth.slice';
-import { useAddCardUserMutation } from './cards.api';
+import { useAddCardUserMutation, useSelectCardUsersQuery } from './cards.api';
 import { useSelectAllUsersQuery } from '../users/users.api';
 import { UpdateCardUserDto } from './card.dto';
 import CustomForm from '../../common/components/CustomForm';
@@ -20,6 +20,8 @@ type Props = IModal<Card>;
 
 export default function AddCardUserModal({ data: card }: Props) {
   const [t] = useTranslation();
+
+  const { data: cardUsers } = useSelectCardUsersQuery(card.id);
 
   const form = useForm({
     initialValues: {
@@ -54,7 +56,7 @@ export default function AddCardUserModal({ data: card }: Props) {
         rightSection={<RefetchAction {...usersResponse} />}
         itemComponent={UsersItem}
         data={selectUsers(users).filter(
-          (user) => !card.users.map((user) => user.id).includes(user.id),
+          (user) => !cardUsers?.map((user) => user.id).includes(user.id),
         )}
         limit={20}
         searchable

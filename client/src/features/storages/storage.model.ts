@@ -1,6 +1,4 @@
 import { Place, PlaceWithCard } from '../places/place.model';
-import { State } from '../states/state.model';
-import { SmCell } from '../cells/cell.model';
 
 export interface SmStorage extends Place {}
 
@@ -13,8 +11,8 @@ export interface MdStorage extends PlaceWithCard {}
 export interface Storage extends MdStorage {
   image: string;
   description: string;
-  states: State[];
-  cells: SmCell[];
+  states: number;
+  cells: number;
 }
 
 export interface MyStorage extends SmStorage {

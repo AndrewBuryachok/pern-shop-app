@@ -11,6 +11,11 @@ import {
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { Ware } from './ware.model';
+import {
+  useSelectWareRatingQuery,
+  useSelectWareStatesQuery,
+} from './wares.api';
+import RefetchAction from '../../common/components/RefetchAction';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import ThingImage from '../../common/components/ThingImage';
 import { StatesItem } from '../../common/components/StatesItem';
@@ -28,6 +33,9 @@ type Props = IModal<Ware>;
 
 export default function ViewWareModal({ data: ware }: Props) {
   const [t] = useTranslation();
+
+  const { data: states, ...statesResponse } = useSelectWareStatesQuery(ware.id);
+  const { data: rating } = useSelectWareRatingQuery(ware.id);
 
   return (
     <Stack spacing={8}>
@@ -59,9 +67,10 @@ export default function ViewWareModal({ data: ware }: Props) {
       <TextInput label={t('columns.price')} value={`${ware.price}$`} disabled />
       <Select
         label={t('columns.prices')}
-        placeholder={`${t('components.total')}: ${ware.states.length}`}
+        placeholder={`${t('components.total')}: ${states?.length || 0}`}
+        rightSection={<RefetchAction {...statesResponse} />}
         itemComponent={StatesItem}
-        data={viewStates(ware.states)}
+        data={viewStates(states || [])}
         limit={20}
         searchable
       />
@@ -88,7 +97,7 @@ export default function ViewWareModal({ data: ware }: Props) {
         disabled
       />
       <Input.Wrapper label={t('columns.rate')}>
-        <Rating value={ware.rate} readOnly />
+        <Rating value={rating?.rate} readOnly />
       </Input.Wrapper>
     </Stack>
   );

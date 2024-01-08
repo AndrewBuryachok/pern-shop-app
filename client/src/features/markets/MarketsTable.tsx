@@ -47,7 +47,7 @@ export default function MarketsTable({ actions = [], ...props }: Props) {
             <PriceText {...market} />
           </td>
           <td>
-            <TotalText data={market.stores.length} />
+            <TotalText data={market.stores} />
           </td>
           <td>
             <CustomActions

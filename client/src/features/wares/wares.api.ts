@@ -1,6 +1,7 @@
 import { emptyApi } from '../../app/empty.api';
 import { IRequest, IResponse } from '../../common/interfaces';
 import { Ware } from './ware.model';
+import { State } from '../states/state.model';
 import { CompleteWareDto, CreateWareDto, EditWareDto } from './ware.dto';
 import { getQuery } from '../../common/utils';
 
@@ -36,6 +37,18 @@ export const waresApi = emptyApi.injectEndpoints({
       }),
       providesTags: ['Auth', 'Ware'],
     }),
+    selectWareStates: build.query<State[], number>({
+      query: (wareId) => ({
+        url: `/wares/${wareId}/states`,
+      }),
+      providesTags: ['Ware'],
+    }),
+    selectWareRating: build.query<{ rate: number }, number>({
+      query: (wareId) => ({
+        url: `/wares/${wareId}/rating`,
+      }),
+      providesTags: ['Trade'],
+    }),
     createWare: build.mutation<void, CreateWareDto>({
       query: (dto) => ({
         url: '/wares',
@@ -68,6 +81,8 @@ export const {
   useGetMyWaresQuery,
   useGetPlacedWaresQuery,
   useGetAllWaresQuery,
+  useSelectWareStatesQuery,
+  useSelectWareRatingQuery,
   useCreateWareMutation,
   useEditWareMutation,
   useCompleteWareMutation,

@@ -6,6 +6,7 @@ import {
   SmStorageWithPrice,
   Storage,
 } from './storage.model';
+import { State } from '../states/state.model';
 import { CreateStorageDto, EditStorageDto } from './storage.dto';
 import { getQuery } from '../../common/utils';
 
@@ -53,6 +54,12 @@ export const storagesApi = emptyApi.injectEndpoints({
       }),
       providesTags: ['Storage', 'Cell'],
     }),
+    selectStorageStates: build.query<State[], number>({
+      query: (storageId) => ({
+        url: `/storages/${storageId}/states`,
+      }),
+      providesTags: ['Storage'],
+    }),
     createStorage: build.mutation<void, CreateStorageDto>({
       query: (dto) => ({
         url: '/storages',
@@ -80,6 +87,7 @@ export const {
   useSelectMyStoragesQuery,
   useSelectAllStoragesQuery,
   useSelectFreeStoragesQuery,
+  useSelectStorageStatesQuery,
   useCreateStorageMutation,
   useEditStorageMutation,
 } = storagesApi;

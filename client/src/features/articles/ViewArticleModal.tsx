@@ -6,6 +6,7 @@ import { IModal } from '../../common/interfaces';
 import { Article } from './article.model';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import CustomImage from '../../common/components/CustomImage';
+import { parseTime } from '../../common/utils';
 import { Color } from '../../common/constants';
 
 type Props = IModal<Article>;
@@ -27,6 +28,11 @@ export default function ViewArticleModal({ data: article }: Props) {
       <Input.Wrapper label={t('columns.image')}>
         <CustomImage {...article} />
       </Input.Wrapper>
+      <TextInput
+        label={t('columns.created')}
+        value={parseTime(article.createdAt)}
+        disabled
+      />
     </Stack>
   );
 }

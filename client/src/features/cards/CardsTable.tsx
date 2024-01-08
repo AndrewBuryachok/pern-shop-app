@@ -46,7 +46,7 @@ export default function CardsTable({ actions = [], ...props }: Props) {
             <SingleText text={`${card.balance}$`} />
           </td>
           <td>
-            <TotalText data={card.users.length} />
+            <TotalText data={card.users} />
           </td>
           <td>
             <CustomActions data={card} actions={[viewCardAction, ...actions]} />

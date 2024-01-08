@@ -1,6 +1,8 @@
 import { emptyApi } from '../../app/empty.api';
 import { IRequest, IResponse } from '../../common/interfaces';
-import { Poll } from './poll.model';
+import { Poll, SmPoll } from './poll.model';
+import { Vote } from './vote.model';
+import { Discussion } from '../discussions/discussion.model';
 import {
   CompletePollDto,
   CreatePollDto,
@@ -41,6 +43,24 @@ export const pollsApi = emptyApi.injectEndpoints({
       }),
       providesTags: ['Auth', 'Poll', 'Vote', 'Discussion'],
     }),
+    selectVotedPolls: build.query<SmPoll[], void>({
+      query: () => ({
+        url: '/polls/voted/select',
+      }),
+      providesTags: ['Auth', 'Poll', 'Vote'],
+    }),
+    selectPollVotes: build.query<Vote[], number>({
+      query: (pollId) => ({
+        url: `/polls/${pollId}/votes`,
+      }),
+      providesTags: ['Vote'],
+    }),
+    selectPollDiscussions: build.query<Discussion[], number>({
+      query: (pollId) => ({
+        url: `/polls/${pollId}/discussions`,
+      }),
+      providesTags: ['Discussion'],
+    }),
     createPoll: build.mutation<void, CreatePollDto>({
       query: (dto) => ({
         url: '/polls',
@@ -62,7 +82,7 @@ export const pollsApi = emptyApi.injectEndpoints({
         url: `/polls/${pollId}`,
         method: 'DELETE',
       }),
-      invalidatesTags: ['Poll', 'Vote'],
+      invalidatesTags: ['Poll'],
     }),
     votePoll: build.mutation<void, VotePollDto>({
       query: ({ pollId, ...dto }) => ({
@@ -81,6 +101,9 @@ export const {
   useGetVotedPollsQuery,
   useGetDiscussedPollsQuery,
   useGetAllPollsQuery,
+  useSelectVotedPollsQuery,
+  useSelectPollVotesQuery,
+  useSelectPollDiscussionsQuery,
   useCreatePollMutation,
   useCompletePollMutation,
   useDeletePollMutation,

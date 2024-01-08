@@ -1,6 +1,7 @@
 import { emptyApi } from '../../app/empty.api';
 import { IRequest, IResponse } from '../../common/interfaces';
 import { Card, MdCard, MdCardWithBalance } from './card.model';
+import { SmUser } from '../users/user.model';
 import {
   CreateCardDto,
   EditCardDto,
@@ -40,6 +41,12 @@ export const cardsApi = emptyApi.injectEndpoints({
         url: `/cards/${userId}/ext-select`,
       }),
       providesTags: ['Auth', 'Card'],
+    }),
+    selectCardUsers: build.query<SmUser[], number>({
+      query: (cardId) => ({
+        url: `/cards/${cardId}/users`,
+      }),
+      providesTags: ['Card'],
     }),
     createMyCard: build.mutation<void, CreateCardDto>({
       query: (dto) => ({
@@ -90,6 +97,7 @@ export const {
   useSelectMyCardsQuery,
   useSelectUserCardsQuery,
   useSelectUserCardsWithBalanceQuery,
+  useSelectCardUsersQuery,
   useCreateMyCardMutation,
   useCreateUserCardMutation,
   useEditCardMutation,

@@ -4,6 +4,8 @@ import { Select, Stack, TextInput } from '@mantine/core';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { Rent } from './rent.model';
+import { useSelectRentThingsQuery } from './rents.api';
+import RefetchAction from '../../common/components/RefetchAction';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import { ThingsItem } from '../../common/components/ThingsItem';
 import {
@@ -18,6 +20,8 @@ type Props = IModal<Rent>;
 
 export default function ViewRentModal({ data: rent }: Props) {
   const [t] = useTranslation();
+
+  const { data: things, ...thingsResponse } = useSelectRentThingsQuery(rent.id);
 
   return (
     <Stack spacing={8}>
@@ -57,10 +61,11 @@ export default function ViewRentModal({ data: rent }: Props) {
         disabled
       />
       <Select
-        label={t('columns.wares')}
-        placeholder={`${t('components.total')}: ${rent.wares.length}`}
+        label={t('columns.things')}
+        placeholder={`${t('components.total')}: ${things?.length || 0}`}
+        rightSection={<RefetchAction {...thingsResponse} />}
         itemComponent={ThingsItem}
-        data={viewThings(rent.wares)}
+        data={viewThings(things || [])}
         limit={20}
         searchable
       />

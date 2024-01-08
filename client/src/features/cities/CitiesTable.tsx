@@ -42,7 +42,7 @@ export default function CitiesTable({ actions = [], ...props }: Props) {
             <SingleText text={`${city.y}`} />
           </td>
           <td>
-            <TotalText data={city.users.length} />
+            <TotalText data={city.users} />
           </td>
           <td>
             <CustomActions data={city} actions={[viewCityAction, ...actions]} />

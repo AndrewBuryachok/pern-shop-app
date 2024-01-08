@@ -10,13 +10,13 @@ export const subscribersApi = emptyApi.injectEndpoints({
       query: (req) => ({
         url: `/subscribers/my?${getQuery(req)}`,
       }),
-      providesTags: ['Auth', 'User', 'City', 'Friend', 'Subscriber'],
+      providesTags: ['Auth', 'User', 'Subscriber'],
     }),
     getReceivedSubscribers: build.query<IResponse<User>, IRequest>({
       query: (req) => ({
         url: `/subscribers/received?${getQuery(req)}`,
       }),
-      providesTags: ['Auth', 'User', 'City', 'Friend', 'Subscriber'],
+      providesTags: ['Auth', 'User', 'Subscriber'],
     }),
     selectMySubscribers: build.query<SmUser[], void>({
       query: () => ({

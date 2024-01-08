@@ -113,7 +113,7 @@ export default function App() {
                             key={`${page.path} ${route.path}`}
                             {...route}
                             element={
-                              route.index || route.path === ':userId' ? (
+                              route.index ? (
                                 <page.element />
                               ) : (
                                 <Protected role={route.role}>

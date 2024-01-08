@@ -4,20 +4,44 @@ import { Input, Select, Stack, TextInput, Textarea } from '@mantine/core';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { ExtPlace } from './place.model';
+import { useSelectCityUsersQuery } from '../cities/cities.api';
+import { useSelectShopGoodsQuery } from '../shops/shops.api';
+import { useSelectMarketStoresQuery } from '../stores/stores.api';
+import { useSelectStorageCellsQuery } from '../cells/cells.api';
+import RefetchAction from '../../common/components/RefetchAction';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import CustomImage from '../../common/components/CustomImage';
 import { UsersItem } from '../../common/components/UsersItem';
 import { ThingsItem } from '../../common/components/ThingsItem';
-import { parseCard } from '../../common/utils';
+import {
+  parseCard,
+  viewContainers,
+  viewThings,
+  viewUsers,
+} from '../../common/utils';
 
 type Props = IModal<ExtPlace>;
 
 export default function PlaceModal({ data: place }: Props) {
   const [t] = useTranslation();
 
-  const label = ['users', 'goods', 'stores', 'cells'][place.type];
   const component =
-    label === 'users' ? UsersItem : label === 'goods' ? ThingsItem : undefined;
+    place.type === 0 ? UsersItem : place.type === 1 ? ThingsItem : undefined;
+
+  const { data: users, ...usersResponse } = useSelectCityUsersQuery(place.id, {
+    skip: place.type !== 0,
+  });
+  const { data: goods, ...goodsResponse } = useSelectShopGoodsQuery(place.id, {
+    skip: place.type !== 1,
+  });
+  const { data: stores, ...storesResponse } = useSelectMarketStoresQuery(
+    place.id,
+    { skip: place.type !== 2 },
+  );
+  const { data: cells, ...cellsResponse } = useSelectStorageCellsQuery(
+    place.id,
+    { skip: place.type !== 3 },
+  );
 
   return (
     <Stack spacing={8}>
@@ -47,14 +71,50 @@ export default function PlaceModal({ data: place }: Props) {
           disabled
         />
       )}
-      <Select
-        label={t('columns.' + label)}
-        placeholder={`${t('components.total')}: ${place.data.length}`}
-        itemComponent={component}
-        data={place.data}
-        limit={20}
-        searchable
-      />
+      {place.type === 0 && (
+        <Select
+          label={t('columns.users')}
+          placeholder={`${t('components.total')}: ${users?.length || 0}`}
+          rightSection={<RefetchAction {...usersResponse} />}
+          itemComponent={component}
+          data={viewUsers(users || [])}
+          limit={20}
+          searchable
+        />
+      )}
+      {place.type === 1 && (
+        <Select
+          label={t('columns.goods')}
+          placeholder={`${t('components.total')}: ${goods?.length || 0}`}
+          rightSection={<RefetchAction {...goodsResponse} />}
+          itemComponent={component}
+          data={viewThings(goods || [])}
+          limit={20}
+          searchable
+        />
+      )}
+      {place.type === 2 && (
+        <Select
+          label={t('columns.stores')}
+          placeholder={`${t('components.total')}: ${stores?.length || 0}`}
+          rightSection={<RefetchAction {...storesResponse} />}
+          itemComponent={component}
+          data={viewContainers(stores || [])}
+          limit={20}
+          searchable
+        />
+      )}
+      {place.type === 3 && (
+        <Select
+          label={t('columns.cells')}
+          placeholder={`${t('components.total')}: ${cells?.length || 0}`}
+          rightSection={<RefetchAction {...cellsResponse} />}
+          itemComponent={component}
+          data={viewContainers(cells || [])}
+          limit={20}
+          searchable
+        />
+      )}
     </Stack>
   );
 }

@@ -4,6 +4,8 @@ import { Select, Stack, Textarea, TextInput } from '@mantine/core';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { Lot } from './lot.model';
+import { useSelectLotBidsQuery } from './lots.api';
+import RefetchAction from '../../common/components/RefetchAction';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import ThingImage from '../../common/components/ThingImage';
 import { StatesItem } from '../../common/components/StatesItem';
@@ -21,6 +23,8 @@ type Props = IModal<Lot>;
 
 export default function ViewLotModal({ data: lot }: Props) {
   const [t] = useTranslation();
+
+  const { data: bids, ...bidsResponse } = useSelectLotBidsQuery(lot.id);
 
   return (
     <Stack spacing={8}>
@@ -52,9 +56,10 @@ export default function ViewLotModal({ data: lot }: Props) {
       <TextInput label={t('columns.price')} value={`${lot.price}$`} disabled />
       <Select
         label={t('columns.bids')}
-        placeholder={`${t('components.total')}: ${lot.bids.length}`}
+        placeholder={`${t('components.total')}: ${bids?.length || 0}`}
+        rightSection={<RefetchAction {...bidsResponse} />}
         itemComponent={StatesItem}
-        data={viewStates(lot.bids)}
+        data={viewStates(bids || [])}
         limit={20}
         searchable
       />

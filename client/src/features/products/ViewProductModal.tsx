@@ -11,6 +11,11 @@ import {
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { Product } from './product.model';
+import {
+  useSelectProductRatingQuery,
+  useSelectProductStatesQuery,
+} from './products.api';
+import RefetchAction from '../../common/components/RefetchAction';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import ThingImage from '../../common/components/ThingImage';
 import { StatesItem } from '../../common/components/StatesItem';
@@ -28,6 +33,11 @@ type Props = IModal<Product>;
 
 export default function ViewProductModal({ data: product }: Props) {
   const [t] = useTranslation();
+
+  const { data: states, ...statesResponse } = useSelectProductStatesQuery(
+    product.id,
+  );
+  const { data: rating } = useSelectProductRatingQuery(product.id);
 
   return (
     <Stack spacing={8}>
@@ -63,9 +73,10 @@ export default function ViewProductModal({ data: product }: Props) {
       />
       <Select
         label={t('columns.prices')}
-        placeholder={`${t('components.total')}: ${product.states.length}`}
+        placeholder={`${t('components.total')}: ${states?.length || 0}`}
+        rightSection={<RefetchAction {...statesResponse} />}
         itemComponent={StatesItem}
-        data={viewStates(product.states)}
+        data={viewStates(states || [])}
         limit={20}
         searchable
       />
@@ -92,7 +103,7 @@ export default function ViewProductModal({ data: product }: Props) {
         disabled
       />
       <Input.Wrapper label={t('columns.rate')}>
-        <Rating value={product.rate} readOnly />
+        <Rating value={rating?.rate} readOnly />
       </Input.Wrapper>
     </Stack>
   );

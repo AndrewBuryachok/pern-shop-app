@@ -1,6 +1,8 @@
 import { emptyApi } from '../../app/empty.api';
 import { IRequest, IResponse } from '../../common/interfaces';
-import { Article } from './article.model';
+import { Article, SmArticle } from './article.model';
+import { Like } from './like.model';
+import { Comment } from '../comments/comment.model';
 import {
   CreateArticleDto,
   DeleteArticleDto,
@@ -47,6 +49,24 @@ export const articlesApi = emptyApi.injectEndpoints({
       }),
       providesTags: ['Auth', 'Article', 'Like', 'Comment'],
     }),
+    selectLikedArticles: build.query<SmArticle[], void>({
+      query: () => ({
+        url: '/articles/liked/select',
+      }),
+      providesTags: ['Auth', 'Article', 'Like'],
+    }),
+    selectArticleLikes: build.query<Like[], number>({
+      query: (articleId) => ({
+        url: `/articles/${articleId}/likes`,
+      }),
+      providesTags: ['Like'],
+    }),
+    selectArticleComments: build.query<Comment[], number>({
+      query: (articleId) => ({
+        url: `/articles/${articleId}/comments`,
+      }),
+      providesTags: ['Comment'],
+    }),
     createArticle: build.mutation<void, CreateArticleDto>({
       query: (dto) => ({
         url: '/articles',
@@ -68,7 +88,7 @@ export const articlesApi = emptyApi.injectEndpoints({
         url: `/articles/${articleId}`,
         method: 'DELETE',
       }),
-      invalidatesTags: ['Article', 'Like'],
+      invalidatesTags: ['Article'],
     }),
     likeArticle: build.mutation<void, LikeArticleDto>({
       query: ({ articleId }) => ({
@@ -87,6 +107,9 @@ export const {
   useGetLikedArticlesQuery,
   useGetCommentedArticlesQuery,
   useGetAllArticlesQuery,
+  useSelectLikedArticlesQuery,
+  useSelectArticleLikesQuery,
+  useSelectArticleCommentsQuery,
   useCreateArticleMutation,
   useEditArticleMutation,
   useDeleteArticleMutation,

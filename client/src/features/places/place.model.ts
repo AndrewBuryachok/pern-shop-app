@@ -24,5 +24,5 @@ export interface ExtPlace extends Place {
   image: string;
   description: string;
   price?: number;
-  data: { value: string; label: string }[];
+  data: number;
 }

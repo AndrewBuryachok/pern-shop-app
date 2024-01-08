@@ -1,6 +1,5 @@
 import { Receipt, ReceiptWithDate } from '../receipts/receipt.model';
 import { LgStore, MdStore } from '../stores/store.model';
-import { SmWare } from '../wares/ware.model';
 
 export interface SmRent extends Receipt {
   store: LgStore;
@@ -8,7 +7,7 @@ export interface SmRent extends Receipt {
 
 export interface Rent extends ReceiptWithDate {
   store: LgStore;
-  wares: SmWare[];
+  things: number;
 }
 
 export interface SelectRent {

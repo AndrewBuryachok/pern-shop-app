@@ -1,6 +1,7 @@
 import { emptyApi } from '../../app/empty.api';
 import { IRequest, IResponse } from '../../common/interfaces';
 import { Lot } from './lot.model';
+import { State } from '../states/state.model';
 import { CompleteLotDto, CreateLotDto } from './lot.dto';
 import { getQuery } from '../../common/utils';
 
@@ -30,6 +31,12 @@ export const lotsApi = emptyApi.injectEndpoints({
       }),
       providesTags: ['Auth', 'Lot'],
     }),
+    selectLotBids: build.query<State[], number>({
+      query: (lotId) => ({
+        url: `/lots/${lotId}/bids`,
+      }),
+      providesTags: ['Bid'],
+    }),
     createLot: build.mutation<void, CreateLotDto>({
       query: (dto) => ({
         url: '/lots',
@@ -53,6 +60,7 @@ export const {
   useGetMyLotsQuery,
   useGetPlacedLotsQuery,
   useGetAllLotsQuery,
+  useSelectLotBidsQuery,
   useCreateLotMutation,
   useCompleteLotMutation,
 } = lotsApi;

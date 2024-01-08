@@ -10,19 +10,19 @@ export const friendsApi = emptyApi.injectEndpoints({
       query: (req) => ({
         url: `/friends/my?${getQuery(req)}`,
       }),
-      providesTags: ['Auth', 'User', 'City', 'Friend'],
+      providesTags: ['Auth', 'User', 'Friend'],
     }),
     getSentFriends: build.query<IResponse<User>, IRequest>({
       query: (req) => ({
         url: `/friends/sent?${getQuery(req)}`,
       }),
-      providesTags: ['Auth', 'User', 'City', 'Friend'],
+      providesTags: ['Auth', 'User', 'Friend'],
     }),
     getReceivedFriends: build.query<IResponse<User>, IRequest>({
       query: (req) => ({
         url: `/friends/received?${getQuery(req)}`,
       }),
-      providesTags: ['Auth', 'User', 'City', 'Friend'],
+      providesTags: ['Auth', 'User', 'Friend'],
     }),
     addFriend: build.mutation<void, UpdateFriendDto>({
       query: ({ userId }) => ({

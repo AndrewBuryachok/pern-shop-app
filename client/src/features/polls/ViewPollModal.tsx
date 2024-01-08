@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import {
   Group,
   Input,
+  Skeleton,
   Stack,
   Textarea,
   TextInput,
@@ -12,6 +13,10 @@ import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { Poll } from './poll.model';
 import { getCurrentUser } from '../auth/auth.slice';
+import {
+  useSelectPollDiscussionsQuery,
+  useSelectPollVotesQuery,
+} from './polls.api';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import VoteBadge from '../../common/components/VoteBadge';
 import SingleText from '../../common/components/SingleText';
@@ -28,7 +33,11 @@ export default function ViewPollModal({ data: poll }: Props) {
 
   const user = getCurrentUser();
 
-  const myVote = user && poll.votes.find((vote) => vote.user.id === user.id);
+  const { data: votes, ...votesResponse } = useSelectPollVotesQuery(poll.id);
+  const { data: discussions, ...discussionsResponse } =
+    useSelectPollDiscussionsQuery(poll.id);
+
+  const myVote = votes?.find((vote) => vote.user.id === user?.id);
 
   return (
     <Stack spacing={8}>
@@ -50,22 +59,34 @@ export default function ViewPollModal({ data: poll }: Props) {
         disabled
       />
       <Input.Wrapper label={t('columns.votes')}>
-        <Timeline mt={8} mb={-8}>
-          {poll.votes.map((vote) => (
+        <Timeline bulletSize={32}>
+          {votesResponse.isLoading && (
+            <Timeline.Item title={<Skeleton w={64} h={16} />}>
+              <Skeleton w={16} h={16} />
+              <Skeleton w={128} h={16} />
+            </Timeline.Item>
+          )}
+          {votes?.map((vote) => (
             <Timeline.Item
               key={vote.id}
               title={vote.user.nick}
               bullet={<CustomAvatar {...vote.user} />}
             >
-              <VoteBadge vote={vote} />
+              <VoteBadge {...vote} />
               <SingleText text={parseTime(vote.createdAt)} />
             </Timeline.Item>
           ))}
         </Timeline>
       </Input.Wrapper>
       <Input.Wrapper label={t('columns.discussions')}>
-        <Timeline mt={8} mb={-8}>
-          {poll.discussions.map((discussion) => (
+        <Timeline bulletSize={32}>
+          {discussionsResponse.isLoading && (
+            <Timeline.Item title={<Skeleton w={64} h={16} />}>
+              <Skeleton w={128} h={16} />
+              <Skeleton w={128} h={16} />
+            </Timeline.Item>
+          )}
+          {discussions?.map((discussion) => (
             <Timeline.Item
               key={discussion.id}
               title={discussion.user.nick}

@@ -1,6 +1,5 @@
 import { LgThing, MdThing, SmThing } from '../things/thing.model';
 import { SmLease } from '../leases/lease.model';
-import { State } from '../states/state.model';
 
 export interface SmLot extends SmThing {}
 
@@ -11,5 +10,5 @@ export interface MdLot extends MdThing {
 
 export interface Lot extends LgThing {
   lease: SmLease;
-  bids: State[];
+  bids: number;
 }

@@ -24,7 +24,7 @@ export default function RentsTable({ actions = [], ...props }: Props) {
         t('columns.market'),
         t('columns.sum'),
         t('columns.created'),
-        t('columns.wares'),
+        t('columns.things'),
         t('columns.action'),
       ]}
       {...props}
@@ -51,7 +51,7 @@ export default function RentsTable({ actions = [], ...props }: Props) {
             <DateText date={rent.createdAt} />
           </td>
           <td>
-            <TotalText data={rent.wares.length} />
+            <TotalText data={rent.things} />
           </td>
           <td>
             <CustomActions data={rent} actions={[viewRentAction, ...actions]} />

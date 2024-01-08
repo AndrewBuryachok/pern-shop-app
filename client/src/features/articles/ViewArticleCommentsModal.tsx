@@ -1,8 +1,9 @@
 import { t } from 'i18next';
-import { Group, Timeline } from '@mantine/core';
+import { Group, Skeleton, Timeline } from '@mantine/core';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { Article } from './article.model';
+import { useSelectArticleCommentsQuery } from './articles.api';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import SingleText from '../../common/components/SingleText';
 import CustomActions from '../../common/components/CustomActions';
@@ -13,9 +14,18 @@ import { deleteCommentAction } from '../comments/DeleteCommentModal';
 type Props = IModal<Article>;
 
 export default function ViewArticleCommentsModal({ data: article }: Props) {
+  const { data: comments, ...commentsResponse } = useSelectArticleCommentsQuery(
+    article.id,
+  );
+
   return (
-    <Timeline>
-      {article.comments.map((comment) => (
+    <Timeline bulletSize={32}>
+      {commentsResponse.isLoading && (
+        <Timeline.Item title={<Skeleton w={64} h={16} />}>
+          <Skeleton w={128} h={16} />
+        </Timeline.Item>
+      )}
+      {comments?.map((comment) => (
         <Timeline.Item
           key={comment.id}
           title={comment.user.nick}

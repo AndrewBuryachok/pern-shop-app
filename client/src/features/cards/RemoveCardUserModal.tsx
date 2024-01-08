@@ -6,7 +6,10 @@ import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { Card } from './card.model';
 import { getCurrentUser } from '../auth/auth.slice';
-import { useRemoveCardUserMutation } from './cards.api';
+import {
+  useRemoveCardUserMutation,
+  useSelectCardUsersQuery,
+} from './cards.api';
 import { UpdateCardUserDto } from './card.dto';
 import CustomForm from '../../common/components/CustomForm';
 import CustomAvatar from '../../common/components/CustomAvatar';
@@ -19,6 +22,8 @@ type Props = IModal<Card>;
 export default function RemoveCardUserModal({ data: card }: Props) {
   const [t] = useTranslation();
 
+  const { data: cardUsers } = useSelectCardUsersQuery(card.id);
+
   const form = useForm({
     initialValues: {
       cardId: card.id,
@@ -27,7 +32,7 @@ export default function RemoveCardUserModal({ data: card }: Props) {
     transformValues: ({ user, ...rest }) => ({ ...rest, userId: +user }),
   });
 
-  const user = card.users.find((user) => user.id === +form.values.user);
+  const user = cardUsers?.find((user) => user.id === +form.values.user);
 
   const [removeCardUser, { isLoading }] = useRemoveCardUserMutation();
 
@@ -48,9 +53,7 @@ export default function RemoveCardUserModal({ data: card }: Props) {
         icon={user && <CustomAvatar {...user} />}
         iconWidth={48}
         itemComponent={UsersItem}
-        data={selectUsers(card.users).filter(
-          (user) => user.id !== card.user.id,
-        )}
+        data={selectUsers(cardUsers).filter((user) => user.id !== card.user.id)}
         limit={20}
         searchable
         required
@@ -68,7 +71,7 @@ export const removeCardUserFactory = (hasRole: boolean) => ({
     }),
   disable: (card: Card) => {
     const user = getCurrentUser()!;
-    return (card.user.id !== user.id && !hasRole) || card.users.length === 1;
+    return (card.user.id !== user.id && !hasRole) || card.users === 1;
   },
   color: Color.RED,
 });

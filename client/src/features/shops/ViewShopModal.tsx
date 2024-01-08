@@ -4,6 +4,8 @@ import { Input, Select, Stack, TextInput, Textarea } from '@mantine/core';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { Shop } from './shop.model';
+import { useSelectShopGoodsQuery } from './shops.api';
+import RefetchAction from '../../common/components/RefetchAction';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import CustomImage from '../../common/components/CustomImage';
 import { ThingsItem } from '../../common/components/ThingsItem';
@@ -14,6 +16,8 @@ type Props = IModal<Shop>;
 
 export default function ViewShopModal({ data: shop }: Props) {
   const [t] = useTranslation();
+
+  const { data: goods, ...goodsResponse } = useSelectShopGoodsQuery(shop.id);
 
   return (
     <Stack spacing={8}>
@@ -38,9 +42,10 @@ export default function ViewShopModal({ data: shop }: Props) {
       <TextInput label={t('columns.y')} value={shop.y} disabled />
       <Select
         label={t('columns.goods')}
-        placeholder={`${t('components.total')}: ${shop.goods.length}`}
+        placeholder={`${t('components.total')}: ${goods?.length || 0}`}
+        rightSection={<RefetchAction {...goodsResponse} />}
         itemComponent={ThingsItem}
-        data={viewThings(shop.goods)}
+        data={viewThings(goods || [])}
         limit={20}
         searchable
       />

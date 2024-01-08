@@ -25,8 +25,8 @@ export const storesApi = emptyApi.injectEndpoints({
       providesTags: ['Auth', 'Store'],
     }),
     selectMarketStores: build.query<SmStore[], number>({
-      query: (userId) => ({
-        url: `/stores/${userId}/select`,
+      query: (marketId) => ({
+        url: `/stores/${marketId}/select`,
       }),
       providesTags: ['Store'],
     }),

@@ -47,7 +47,7 @@ export default function StoragesTable({ actions = [], ...props }: Props) {
             <PriceText {...storage} />
           </td>
           <td>
-            <TotalText data={storage.cells.length} />
+            <TotalText data={storage.cells} />
           </td>
           <td>
             <CustomActions
