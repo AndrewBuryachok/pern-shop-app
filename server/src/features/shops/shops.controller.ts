@@ -10,6 +10,7 @@ import {
 import { ApiTags } from '@nestjs/swagger';
 import { ShopsService } from './shops.service';
 import { Shop } from './shop.entity';
+import { Good } from '../goods/good.entity';
 import {
   CreateShopDto,
   EditShopDto,
@@ -54,6 +55,12 @@ export class ShopsController {
   @Get('my/select')
   selectMyShops(@MyId() myId: number): Promise<Shop[]> {
     return this.shopsService.selectMyShops(myId);
+  }
+
+  @Public()
+  @Get(':shopId/goods')
+  selectShopGoods(@Param() { shopId }: ShopIdDto): Promise<Good[]> {
+    return this.shopsService.selectShopGoods(shopId);
   }
 
   @Post()

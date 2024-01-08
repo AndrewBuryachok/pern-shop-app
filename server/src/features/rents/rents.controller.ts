@@ -2,6 +2,7 @@ import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { RentsService } from './rents.service';
 import { Rent } from './rent.entity';
+import { Thing } from '../things/thing.entity';
 import { CreateRentDto, RentIdDto } from './rent.dto';
 import { Request, Response } from '../../common/interfaces';
 import { HasRole, MyId, Public, Roles } from '../../common/decorators';
@@ -49,6 +50,12 @@ export class RentsController {
   @Get('my/select')
   selectMyRents(@MyId() myId: number): Promise<Rent[]> {
     return this.rentsService.selectMyRents(myId);
+  }
+
+  @Public()
+  @Get(':rentId/things')
+  selectRentThings(@Param() { rentId }: RentIdDto): Promise<Thing[]> {
+    return this.rentsService.selectRentThings(rentId);
   }
 
   @Post()

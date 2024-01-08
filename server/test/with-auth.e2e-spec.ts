@@ -268,6 +268,12 @@ describe('With Auth', () => {
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
 
+    it('GET /users/:userId/friends', async () => {
+      return request(app.getHttpServer())
+        .get(`/users/${user.id}/friends`)
+        .expect((res) => expect(res.body.length).toBeGreaterThan(0));
+    });
+
     it('DELETE /friends/:friendId', async () => {
       return request(app.getHttpServer())
         .delete(`/friends/${user.id}`)
@@ -377,8 +383,7 @@ describe('With Auth', () => {
       return request(app.getHttpServer())
         .get('/articles/liked')
         .set('Authorization', `Bearer ${user.access}`)
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0))
-        .then((res) => (commentId = res.body.result[0].comments[0].id));
+        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
 
     it('GET /articles/commented', async () => {
@@ -386,6 +391,26 @@ describe('With Auth', () => {
         .get('/articles/commented')
         .set('Authorization', `Bearer ${user.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
+    });
+
+    it('GET /articles/liked/select', async () => {
+      return request(app.getHttpServer())
+        .get('/articles/liked/select')
+        .set('Authorization', `Bearer ${user.access}`)
+        .expect((res) => expect(res.body.length).toBeGreaterThan(0));
+    });
+
+    it('GET /articles/:articleId/likes', async () => {
+      return request(app.getHttpServer())
+        .get(`/articles/${articlesId[0]}/likes`)
+        .expect((res) => expect(res.body.length).toBeGreaterThan(0));
+    });
+
+    it('GET /articles/:articleId/comments', async () => {
+      return request(app.getHttpServer())
+        .get(`/articles/${articlesId[0]}/comments`)
+        .expect((res) => expect(res.body.length).toBeGreaterThan(0))
+        .then((res) => (commentId = res.body[0].id));
     });
 
     it('GET /articles/all', async () => {
@@ -465,10 +490,16 @@ describe('With Auth', () => {
         .expect((res) => expect(res.body.length).toBeGreaterThan(0));
     });
 
-    it('GET /cards/:userId/select', async () => {
+    it('GET /cards/:userId/ext-select', async () => {
       return request(app.getHttpServer())
         .get(`/cards/${user.id}/ext-select`)
         .set('Authorization', `Bearer ${banker.access}`)
+        .expect((res) => expect(res.body.length).toBeGreaterThan(0));
+    });
+
+    it('GET /cards/:cardId/users', async () => {
+      return request(app.getHttpServer())
+        .get(`/cards/${cardId}/users`)
         .expect((res) => expect(res.body.length).toBeGreaterThan(0));
     });
 
@@ -650,6 +681,12 @@ describe('With Auth', () => {
         .expect((res) => expect(res.body.length).toBeGreaterThan(0));
     });
 
+    it('GET /cities/:cityId/users', async () => {
+      return request(app.getHttpServer())
+        .get(`/cities/${cityId}/users`)
+        .expect((res) => expect(res.body.length).toBeGreaterThan(0));
+    });
+
     it('PATCH /cities/:cityId', async () => {
       return request(app.getHttpServer())
         .patch(`/cities/${cityId}`)
@@ -799,6 +836,12 @@ describe('With Auth', () => {
         })
         .expect('');
     });
+
+    it('GET /markets/:marketId/states', async () => {
+      return request(app.getHttpServer())
+        .get(`/markets/${marketId}/states`)
+        .expect((res) => expect(res.body.length).toBeGreaterThan(0));
+    });
   });
 
   describe('Storages', () => {
@@ -872,6 +915,12 @@ describe('With Auth', () => {
           price: 10,
         })
         .expect('');
+    });
+
+    it('GET /storages/:storageId/states', async () => {
+      return request(app.getHttpServer())
+        .get(`/storages/${storageId}/states`)
+        .expect((res) => expect(res.body.length).toBeGreaterThan(0));
     });
   });
 
@@ -1083,6 +1132,12 @@ describe('With Auth', () => {
         .set('Authorization', `Bearer ${user.access}`)
         .expect('');
     });
+
+    it('GET /rents/:rentId/things', async () => {
+      return request(app.getHttpServer())
+        .get(`/rents/${rentId}/things`)
+        .expect((res) => expect(res.body.length).toBeGreaterThan(0));
+    });
   });
 
   describe('Goods', () => {
@@ -1123,6 +1178,12 @@ describe('With Auth', () => {
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
 
+    it('GET /shops/:shopId/goods', async () => {
+      return request(app.getHttpServer())
+        .get(`/shops/${shopId}/goods`)
+        .expect((res) => expect(res.body.length).toBeGreaterThan(0));
+    });
+
     it('PATCH /goods/:goodId', async () => {
       return request(app.getHttpServer())
         .patch(`/goods/${goodId}`)
@@ -1135,6 +1196,13 @@ describe('With Auth', () => {
           kit: 1,
           price: 10,
         })
+        .expect('');
+    });
+
+    it('DELETE /goods/:goodId', async () => {
+      return request(app.getHttpServer())
+        .delete(`/goods/${goodId}`)
+        .set('Authorization', `Bearer ${user.access}`)
         .expect('');
     });
   });
@@ -1189,6 +1257,12 @@ describe('With Auth', () => {
         .post(`/wares/${wareId}`)
         .set('Authorization', `Bearer ${user.access}`)
         .expect('');
+    });
+
+    it('GET /wares/:wareId/states', async () => {
+      return request(app.getHttpServer())
+        .get(`/wares/${wareId}/states`)
+        .expect((res) => expect(res.body.length).toBeGreaterThan(0));
     });
   });
 
@@ -1260,6 +1334,12 @@ describe('With Auth', () => {
         .set('Authorization', `Bearer ${user.access}`)
         .expect('');
     });
+
+    it('GET /products/:productId/states', async () => {
+      return request(app.getHttpServer())
+        .get(`/products/${productId}/states`)
+        .expect((res) => expect(res.body.length).toBeGreaterThan(0));
+    });
   });
 
   describe('Lots', () => {
@@ -1321,6 +1401,12 @@ describe('With Auth', () => {
         .post(`/lots/${lotId}`)
         .set('Authorization', `Bearer ${user.access}`)
         .expect('');
+    });
+
+    it('GET /lots/:lotId/bids', async () => {
+      return request(app.getHttpServer())
+        .get(`/lots/${lotId}/bids`)
+        .expect((res) => expect(res.body.length).toBeGreaterThan(0));
     });
   });
 
@@ -1607,6 +1693,12 @@ describe('With Auth', () => {
         .set('Authorization', `Bearer ${user.access}`)
         .expect('');
     });
+
+    it('GET /leases/:leaseId/things', async () => {
+      return request(app.getHttpServer())
+        .get(`/leases/${leaseId}/things`)
+        .expect((res) => expect(res.body.length).toBeGreaterThan(0));
+    });
   });
 
   describe('Trades', () => {
@@ -1646,6 +1738,12 @@ describe('With Auth', () => {
         .send({ rate: 5 })
         .expect('');
     });
+
+    it('GET /wares/:wareId/rating', async () => {
+      return request(app.getHttpServer())
+        .get(`/wares/${wareId}/rating`)
+        .expect((res) => expect(res.body.rate).toBeGreaterThan(0));
+    });
   });
 
   describe('Sales', () => {
@@ -1684,6 +1782,12 @@ describe('With Auth', () => {
         .set('Authorization', `Bearer ${user.access}`)
         .send({ rate: 5 })
         .expect('');
+    });
+
+    it('GET /products/:productId/rating', async () => {
+      return request(app.getHttpServer())
+        .get(`/products/${productId}/rating`)
+        .expect((res) => expect(res.body.rate).toBeGreaterThan(0));
     });
   });
 
@@ -1943,8 +2047,7 @@ describe('With Auth', () => {
       return request(app.getHttpServer())
         .get('/polls/voted')
         .set('Authorization', `Bearer ${user.access}`)
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0))
-        .then((res) => (discussionId = res.body.result[0].discussions[0].id));
+        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
 
     it('GET /polls/discussed', async () => {
@@ -1952,6 +2055,26 @@ describe('With Auth', () => {
         .get('/polls/discussed')
         .set('Authorization', `Bearer ${user.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
+    });
+
+    it('GET /polls/voted/select', async () => {
+      return request(app.getHttpServer())
+        .get('/polls/voted/select')
+        .set('Authorization', `Bearer ${user.access}`)
+        .expect((res) => expect(res.body.length).toBeGreaterThan(0));
+    });
+
+    it('GET /polls/:pollId/votes', async () => {
+      return request(app.getHttpServer())
+        .get(`/polls/${pollsId[0]}/votes`)
+        .expect((res) => expect(res.body.length).toBeGreaterThan(0));
+    });
+
+    it('GET /polls/:pollId/discussions', async () => {
+      return request(app.getHttpServer())
+        .get(`/polls/${pollsId[0]}/discussions`)
+        .expect((res) => expect(res.body.length).toBeGreaterThan(0))
+        .then((res) => (discussionId = res.body[0].id));
     });
 
     it('GET /polls/all', async () => {

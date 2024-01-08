@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { Poll } from './poll.entity';
 import { Vote } from './vote.entity';
+import { Discussion } from '../discussions/discussion.entity';
 import { MqttService } from '../mqtt/mqtt.service';
 import {
   DeletePollDto,
@@ -30,7 +31,6 @@ export class PollsService {
     const [result, count] = await this.getPollsQueryBuilder(
       req,
     ).getManyAndCount();
-    await this.loadVotesAndDiscussions(result);
     return { result, count };
   }
 
@@ -38,7 +38,6 @@ export class PollsService {
     const [result, count] = await this.getPollsQueryBuilder(req)
       .andWhere('ownerUser.id = :myId', { myId })
       .getManyAndCount();
-    await this.loadVotesAndDiscussions(result);
     return { result, count };
   }
 
@@ -52,7 +51,6 @@ export class PollsService {
         { myId },
       )
       .getManyAndCount();
-    await this.loadVotesAndDiscussions(result);
     return { result, count };
   }
 
@@ -66,7 +64,6 @@ export class PollsService {
         { myId },
       )
       .getManyAndCount();
-    await this.loadVotesAndDiscussions(result);
     return { result, count };
   }
 
@@ -74,8 +71,61 @@ export class PollsService {
     const [result, count] = await this.getPollsQueryBuilder(
       req,
     ).getManyAndCount();
-    await this.loadVotesAndDiscussions(result);
     return { result, count };
+  }
+
+  selectVotedPolls(myId: number): Promise<Poll[]> {
+    return this.pollsRepository
+      .createQueryBuilder('poll')
+      .innerJoinAndMapOne(
+        'poll.vote',
+        'poll.votes',
+        'myVote',
+        'myVote.userId = :myId',
+        { myId },
+      )
+      .select(['poll.id', 'myVote.id', 'myVote.type'])
+      .getMany();
+  }
+
+  async selectPollVotes(pollId: number): Promise<Vote[]> {
+    const poll = await this.pollsRepository
+      .createQueryBuilder('poll')
+      .leftJoin('poll.votes', 'vote')
+      .leftJoin('vote.user', 'voter')
+      .where('poll.id = :pollId', { pollId })
+      .orderBy('vote.id', 'DESC')
+      .select([
+        'poll.id',
+        'vote.id',
+        'voter.id',
+        'voter.nick',
+        'voter.avatar',
+        'vote.type',
+        'vote.createdAt',
+      ])
+      .getOne();
+    return poll.votes;
+  }
+
+  async selectPollDiscussions(pollId: number): Promise<Discussion[]> {
+    const poll = await this.pollsRepository
+      .createQueryBuilder('poll')
+      .leftJoin('poll.discussions', 'discussion')
+      .leftJoin('discussion.user', 'discussioner')
+      .where('poll.id = :pollId', { pollId })
+      .orderBy('discussion.id', 'DESC')
+      .select([
+        'poll.id',
+        'discussion.id',
+        'discussioner.id',
+        'discussioner.nick',
+        'discussioner.avatar',
+        'discussion.text',
+        'discussion.createdAt',
+      ])
+      .getOne();
+    return poll.discussions;
   }
 
   async createPoll(dto: ExtCreatePollDto): Promise<void> {
@@ -207,44 +257,20 @@ export class PollsService {
     }
   }
 
-  private async loadVotesAndDiscussions(polls: Poll[]): Promise<void> {
-    const promises = polls.map(async (poll) => {
-      const result = await this.pollsRepository
-        .createQueryBuilder('poll')
-        .leftJoin('poll.votes', 'vote')
-        .leftJoin('vote.user', 'voter')
-        .leftJoin('poll.discussions', 'discussion')
-        .leftJoin('discussion.user', 'discussioner')
-        .where('poll.id = :pollId', { pollId: poll.id })
-        .orderBy('vote.id', 'DESC')
-        .addOrderBy('discussion.id', 'DESC')
-        .select([
-          'poll.id',
-          'vote.id',
-          'voter.id',
-          'voter.nick',
-          'voter.avatar',
-          'vote.type',
-          'vote.createdAt',
-          'discussion.id',
-          'discussion.id',
-          'discussioner.id',
-          'discussioner.nick',
-          'discussioner.avatar',
-          'discussion.text',
-          'discussion.createdAt',
-        ])
-        .getOne();
-      poll.votes = result.votes;
-      poll.discussions = result.discussions;
-    });
-    await Promise.all(promises);
-  }
-
   private getPollsQueryBuilder(req: Request): SelectQueryBuilder<Poll> {
     return this.pollsRepository
       .createQueryBuilder('poll')
       .innerJoin('poll.user', 'ownerUser')
+      .loadRelationCountAndMap('poll.upVotes', 'poll.votes', 'upVote', (qb) =>
+        qb.where('upVote.type'),
+      )
+      .loadRelationCountAndMap(
+        'poll.downVotes',
+        'poll.votes',
+        'downVote',
+        (qb) => qb.where('NOT downVote.type'),
+      )
+      .loadRelationCountAndMap('poll.discussions', 'poll.discussions')
       .where(
         new Brackets((qb) =>
           qb.where(`${!req.id}`).orWhere('poll.id = :id', { id: req.id }),

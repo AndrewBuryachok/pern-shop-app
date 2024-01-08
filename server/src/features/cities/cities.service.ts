@@ -27,7 +27,6 @@ export class CitiesService {
     const [result, count] = await this.getCitiesQueryBuilder(
       req,
     ).getManyAndCount();
-    await this.loadUsers(result);
     return { result, count };
   }
 
@@ -36,7 +35,6 @@ export class CitiesService {
       .innerJoin('city.users', 'ownerUsers')
       .andWhere('ownerUsers.id = :myId', { myId })
       .getManyAndCount();
-    await this.loadUsers(result);
     return { result, count };
   }
 
@@ -44,7 +42,6 @@ export class CitiesService {
     const [result, count] = await this.getCitiesQueryBuilder(
       req,
     ).getManyAndCount();
-    await this.loadUsers(result);
     return { result, count };
   }
 
@@ -56,6 +53,18 @@ export class CitiesService {
     return this.selectCitiesQueryBuilder()
       .where('city.userId = :myId', { myId })
       .getMany();
+  }
+
+  async selectCityUsers(cityId): Promise<User[]> {
+    const city = await this.citiesRepository
+      .createQueryBuilder('city')
+      .leftJoin('city.users', 'user')
+      .where('city.id = :cityId', { cityId })
+      .orderBy('user.onlineAt', 'DESC')
+      .addOrderBy('user.nick', 'ASC')
+      .select(['city.id', 'user.id', 'user.nick', 'user.avatar'])
+      .getOne();
+    return city.users;
   }
 
   async createCity(dto: ExtCreateCityDto): Promise<void> {
@@ -210,26 +219,11 @@ export class CitiesService {
       .select(['city.id', 'city.name', 'city.x', 'city.y']);
   }
 
-  private async loadUsers(cities: City[]): Promise<void> {
-    const promises = cities.map(async (city) => {
-      city.users = (
-        await this.citiesRepository
-          .createQueryBuilder('city')
-          .leftJoin('city.users', 'user')
-          .where('city.id = :cityId', { cityId: city.id })
-          .orderBy('user.onlineAt', 'DESC')
-          .addOrderBy('user.nick', 'ASC')
-          .select(['city.id', 'user.id', 'user.nick', 'user.avatar'])
-          .getOne()
-      ).users;
-    });
-    await Promise.all(promises);
-  }
-
   private getCitiesQueryBuilder(req: Request): SelectQueryBuilder<City> {
     return this.citiesRepository
       .createQueryBuilder('city')
       .innerJoin('city.user', 'ownerUser')
+      .loadRelationCountAndMap('city.users', 'city.users')
       .where(
         new Brackets((qb) =>
           qb.where(`${!req.id}`).orWhere('city.id = :id', { id: req.id }),

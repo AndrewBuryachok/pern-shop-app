@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { Rent } from './rent.entity';
+import { Thing } from '../things/thing.entity';
 import { StoresService } from '../stores/stores.service';
 import { CompleteRentDto, ExtCreateRentDto } from './rent.dto';
 import { Request, Response } from '../../common/interfaces';
@@ -23,7 +24,6 @@ export class RentsService {
       .andWhere('rent.createdAt > :date', { date: getDateWeekAgo() })
       .andWhere('rent.completedAt IS NULL')
       .getManyAndCount();
-    await this.loadWares(result);
     return { result, count };
   }
 
@@ -32,7 +32,6 @@ export class RentsService {
       .innerJoin('renterCard.users', 'renterUsers')
       .andWhere('renterUsers.id = :myId', { myId })
       .getManyAndCount();
-    await this.loadWares(result);
     return { result, count };
   }
 
@@ -41,7 +40,6 @@ export class RentsService {
       .innerJoin('ownerCard.users', 'ownerUsers')
       .andWhere('ownerUsers.id = :myId', { myId })
       .getManyAndCount();
-    await this.loadWares(result);
     return { result, count };
   }
 
@@ -49,7 +47,6 @@ export class RentsService {
     const [result, count] = await this.getRentsQueryBuilder(
       req,
     ).getManyAndCount();
-    await this.loadWares(result);
     return { result, count };
   }
 
@@ -63,6 +60,17 @@ export class RentsService {
       .innerJoin('renterCard.users', 'renterUsers')
       .andWhere('renterUsers.id = :myId', { myId })
       .getMany();
+  }
+
+  async selectRentThings(rentId: number): Promise<Thing[]> {
+    const rent = await this.rentsRepository
+      .createQueryBuilder('rent')
+      .leftJoin('rent.wares', 'ware')
+      .where('rent.id = :rentId', { rentId })
+      .orderBy('ware.id', 'DESC')
+      .select(['rent.id', 'ware.id', 'ware.item', 'ware.description'])
+      .getOne();
+    return rent.wares;
   }
 
   async createRent(dto: ExtCreateRentDto): Promise<void> {
@@ -141,26 +149,6 @@ export class RentsService {
       ]);
   }
 
-  private async loadWares(rents: Rent[]): Promise<void> {
-    const promises = rents.map(async (rent) => {
-      rent['wares'] = (
-        await this.rentsRepository
-          .createQueryBuilder('rent')
-          .leftJoinAndMapMany(
-            'rent.wares',
-            'wares',
-            'ware',
-            'rent.id = ware.rentId',
-          )
-          .where('rent.id = :rentId', { rentId: rent.id })
-          .orderBy('ware.id', 'DESC')
-          .select(['rent.id', 'ware.id', 'ware.item', 'ware.description'])
-          .getOne()
-      )['wares'];
-    });
-    await Promise.all(promises);
-  }
-
   private getRentsQueryBuilder(req: Request): SelectQueryBuilder<Rent> {
     return this.rentsRepository
       .createQueryBuilder('rent')
@@ -176,6 +164,7 @@ export class RentsService {
         'next',
         'state.createdAt < next.createdAt AND next.createdAt < rent.createdAt',
       )
+      .loadRelationCountAndMap('rent.things', 'rent.wares')
       .where('next.id IS NULL')
       .andWhere(
         new Brackets((qb) =>

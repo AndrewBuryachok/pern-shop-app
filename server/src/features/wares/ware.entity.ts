@@ -9,6 +9,7 @@ import {
 import { Thing } from '../things/thing.entity';
 import { Rent } from '../rents/rent.entity';
 import { WareState } from './ware-state.entity';
+import { Trade } from '../trades/trade.entity';
 
 @Entity('wares')
 export class Ware extends Thing {
@@ -21,6 +22,9 @@ export class Ware extends Thing {
 
   @OneToMany(() => WareState, (wareState) => wareState.ware)
   states: WareState[];
+
+  @OneToMany(() => Trade, (trade) => trade.ware)
+  trades: Trade[];
 
   @AfterLoad()
   setPrice() {

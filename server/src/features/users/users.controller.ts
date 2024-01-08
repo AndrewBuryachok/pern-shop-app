@@ -74,6 +74,12 @@ export class UsersController {
   }
 
   @Public()
+  @Get(':userId/friends')
+  selectUserFriends(@Param() { userId }: UserIdDto): Promise<User[]> {
+    return this.usersService.selectUserFriends(userId);
+  }
+
+  @Public()
   @Get(':userId')
   getSingleUser(@Param() { userId }: UserIdDto): Promise<User> {
     return this.usersService.getSingleUser(userId);

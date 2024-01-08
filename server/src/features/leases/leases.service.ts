@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { Lease } from './lease.entity';
+import { Thing } from '../things/thing.entity';
 import { CellsService } from '../cells/cells.service';
 import { CompleteLeaseDto, ExtCreateLeaseDto } from './lease.dto';
 import { Request, Response } from '../../common/interfaces';
@@ -23,7 +24,6 @@ export class LeasesService {
       .andWhere('lease.createdAt > :date', { date: getDateWeekAgo() })
       .andWhere('lease.completedAt IS NULL')
       .getManyAndCount();
-    await this.loadThing(result);
     return { result, count };
   }
 
@@ -32,7 +32,6 @@ export class LeasesService {
       .innerJoin('renterCard.users', 'renterUsers')
       .andWhere('renterUsers.id = :myId', { myId })
       .getManyAndCount();
-    await this.loadThing(result);
     return { result, count };
   }
 
@@ -44,7 +43,6 @@ export class LeasesService {
       .innerJoin('ownerCard.users', 'ownerUsers')
       .andWhere('ownerUsers.id = :myId', { myId })
       .getManyAndCount();
-    await this.loadThing(result);
     return { result, count };
   }
 
@@ -52,8 +50,44 @@ export class LeasesService {
     const [result, count] = await this.getLeasesQueryBuilder(
       req,
     ).getManyAndCount();
-    await this.loadThing(result);
     return { result, count };
+  }
+
+  async selectLeaseThings(leaseId: number): Promise<Thing[]> {
+    const lease = await this.leasesRepository
+      .createQueryBuilder('lease')
+      .leftJoin('lease.products', 'product')
+      .leftJoin('lease.lots', 'lot')
+      .leftJoin('lease.orders', 'order')
+      .leftJoin('lease.fromDeliveries', 'fromDelivery')
+      .leftJoin('lease.toDeliveries', 'toDelivery')
+      .where('lease.id = :leaseId', { leaseId })
+      .select([
+        'lease.id',
+        'product.id',
+        'product.item',
+        'product.description',
+        'lot.id',
+        'lot.item',
+        'lot.description',
+        'order.id',
+        'order.item',
+        'order.description',
+        'fromDelivery.id',
+        'fromDelivery.item',
+        'fromDelivery.description',
+        'toDelivery.id',
+        'toDelivery.item',
+        'toDelivery.description',
+      ])
+      .getOne();
+    return [
+      ...lease.products,
+      ...lease.lots,
+      ...lease.orders,
+      ...lease.fromDeliveries,
+      ...lease.toDeliveries,
+    ];
   }
 
   async createLease(dto: ExtCreateLeaseDto): Promise<number> {
@@ -118,55 +152,6 @@ export class LeasesService {
     } catch (error) {
       throw new AppException(LeaseError.COMPLETE_FAILED);
     }
-  }
-
-  private async loadThing(leases: Lease[]): Promise<void> {
-    const promises = leases.map(async (lease) => {
-      const result = await this.leasesRepository
-        .createQueryBuilder('lease')
-        .leftJoinAndMapOne(
-          'lease.product',
-          'products',
-          'product',
-          'lease.id = product.leaseId',
-        )
-        .leftJoinAndMapOne('lease.lot', 'lots', 'lot', 'lease.id = lot.leaseId')
-        .leftJoinAndMapOne(
-          'lease.order',
-          'orders',
-          'order',
-          'lease.id = order.leaseId',
-        )
-        .leftJoinAndMapOne(
-          'lease.delivery',
-          'deliveries',
-          'delivery',
-          'lease.id = delivery.fromLeaseId OR lease.id = delivery.toLeaseId',
-        )
-        .where('lease.id = :leaseId', { leaseId: lease.id })
-        .select([
-          'lease.id',
-          'product.id',
-          'product.item',
-          'product.description',
-          'lot.id',
-          'lot.item',
-          'lot.description',
-          'order.id',
-          'order.item',
-          'order.description',
-          'delivery.id',
-          'delivery.item',
-          'delivery.description',
-        ])
-        .getOne();
-      lease['thing'] =
-        result['product'] ||
-        result['lot'] ||
-        result['order'] ||
-        result['delivery'];
-    });
-    await Promise.all(promises);
   }
 
   private getLeasesQueryBuilder(req: Request): SelectQueryBuilder<Lease> {

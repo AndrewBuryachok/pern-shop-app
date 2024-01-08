@@ -10,6 +10,8 @@ import {
 import { ApiTags } from '@nestjs/swagger';
 import { PollsService } from './polls.service';
 import { Poll } from './poll.entity';
+import { Vote } from './vote.entity';
+import { Discussion } from '../discussions/discussion.entity';
 import {
   CompletePollDto,
   CreatePollDto,
@@ -59,6 +61,23 @@ export class PollsController {
   @Get('all')
   getAllPolls(@Query() req: Request): Promise<Response<Poll>> {
     return this.pollsService.getAllPolls(req);
+  }
+
+  @Get('voted/select')
+  selectVotedPolls(@MyId() myId: number): Promise<Poll[]> {
+    return this.pollsService.selectVotedPolls(myId);
+  }
+
+  @Public()
+  @Get(':pollId/votes')
+  selectPollVotes(@Param() { pollId }: PollIdDto): Promise<Vote[]> {
+    return this.pollsService.selectPollVotes(pollId);
+  }
+
+  @Public()
+  @Get(':pollId/discussions')
+  selectPollDiscussions(@Param() { pollId }: PollIdDto): Promise<Discussion[]> {
+    return this.pollsService.selectPollDiscussions(pollId);
   }
 
   @Post()

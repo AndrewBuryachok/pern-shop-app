@@ -137,6 +137,12 @@ describe('Without Auth', () => {
         .expect(401);
     });
 
+    it('GET /articles/liked/select', async () => {
+      return request(app.getHttpServer())
+        .get('/articles/liked/select')
+        .expect(401);
+    });
+
     it('GET /articles/all', async () => {
       return request(app.getHttpServer())
         .get('/articles/all')
@@ -161,7 +167,7 @@ describe('Without Auth', () => {
       return request(app.getHttpServer()).get('/cards/my/select').expect(401);
     });
 
-    it('GET /cards/:userId/select', async () => {
+    it('GET /cards/:userId/ext-select', async () => {
       return request(app.getHttpServer())
         .get(`/cards/${user.id}/ext-select`)
         .set('Authorization', `Bearer ${user.access}`)
@@ -581,6 +587,12 @@ describe('Without Auth', () => {
 
     it('GET /polls/discussed', async () => {
       return request(app.getHttpServer()).get('/polls/discussed').expect(401);
+    });
+
+    it('GET /polls/voted/select', async () => {
+      return request(app.getHttpServer())
+        .get('/polls/voted/select')
+        .expect(401);
     });
 
     it('GET /polls/all', async () => {

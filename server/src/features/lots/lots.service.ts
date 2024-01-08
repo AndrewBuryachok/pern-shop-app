@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { Lot } from './lot.entity';
+import { Bid } from '../bids/bid.entity';
 import { LeasesService } from '../leases/leases.service';
 import { CardsService } from '../cards/cards.service';
 import { PaymentsService } from '../payments/payments.service';
@@ -30,7 +31,6 @@ export class LotsService {
       .andWhere('lot.createdAt > :date', { date: getDateWeekAgo() })
       .andWhere('lot.completedAt IS NULL')
       .getManyAndCount();
-    await this.loadBids(result);
     return { result, count };
   }
 
@@ -39,7 +39,6 @@ export class LotsService {
       .innerJoin('sellerCard.users', 'sellerUsers')
       .andWhere('sellerUsers.id = :myId', { myId })
       .getManyAndCount();
-    await this.loadBids(result);
     return { result, count };
   }
 
@@ -48,7 +47,6 @@ export class LotsService {
       .innerJoin('ownerCard.users', 'ownerUsers')
       .andWhere('ownerUsers.id = :myId', { myId })
       .getManyAndCount();
-    await this.loadBids(result);
     return { result, count };
   }
 
@@ -56,8 +54,18 @@ export class LotsService {
     const [result, count] = await this.getLotsQueryBuilder(
       req,
     ).getManyAndCount();
-    await this.loadBids(result);
     return { result, count };
+  }
+
+  async selectLotBids(lotId: number): Promise<Bid[]> {
+    const lot = await this.lotsRepository
+      .createQueryBuilder('lot')
+      .leftJoin('lot.bids', 'bid')
+      .where('lot.id = :lotId', { lotId })
+      .orderBy('bid.id', 'DESC')
+      .select(['lot.id', 'lot.price', 'bid.id', 'bid.price', 'bid.createdAt'])
+      .getOne();
+    return lot.bids;
   }
 
   async createLot(dto: ExtCreateLotDto): Promise<void> {
@@ -179,28 +187,6 @@ export class LotsService {
     }
   }
 
-  private async loadBids(lots: Lot[]): Promise<void> {
-    const promises = lots.map(
-      async (lot) =>
-        (lot.bids = (
-          await this.lotsRepository
-            .createQueryBuilder('lot')
-            .leftJoin('lot.bids', 'bid')
-            .where('lot.id = :lotId', { lotId: lot.id })
-            .orderBy('bid.id', 'DESC')
-            .select([
-              'lot.id',
-              'lot.price',
-              'bid.id',
-              'bid.price',
-              'bid.createdAt',
-            ])
-            .getOne()
-        ).bids),
-    );
-    await Promise.all(promises);
-  }
-
   private getLotsQueryBuilder(req: Request): SelectQueryBuilder<Lot> {
     return this.lotsRepository
       .createQueryBuilder('lot')
@@ -211,6 +197,7 @@ export class LotsService {
       .innerJoin('ownerCard.user', 'ownerUser')
       .innerJoin('lease.card', 'sellerCard')
       .innerJoin('sellerCard.user', 'sellerUser')
+      .loadRelationCountAndMap('lot.bids', 'lot.bids')
       .where(
         new Brackets((qb) =>
           qb.where(`${!req.id}`).orWhere('lot.id = :id', { id: req.id }),

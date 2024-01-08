@@ -11,6 +11,7 @@ import {
 import { ApiTags } from '@nestjs/swagger';
 import { CardsService } from './cards.service';
 import { Card } from './card.entity';
+import { User } from '../users/user.entity';
 import {
   CardIdDto,
   CreateCardDto,
@@ -57,6 +58,12 @@ export class CardsController {
   @Get(':userId/ext-select')
   selectUserCardsWithBalance(@Param() { userId }: UserIdDto): Promise<Card[]> {
     return this.cardsService.selectUserCardsWithBalance(userId);
+  }
+
+  @Public()
+  @Get(':cardId/users')
+  selectCardUsers(@Param() { cardId }: CardIdDto): Promise<User[]> {
+    return this.cardsService.selectCardUsers(cardId);
   }
 
   @Post()

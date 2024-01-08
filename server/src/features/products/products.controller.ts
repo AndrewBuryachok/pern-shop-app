@@ -10,6 +10,7 @@ import {
 import { ApiTags } from '@nestjs/swagger';
 import { ProductsService } from './products.service';
 import { Product } from './product.entity';
+import { ProductState } from './product-state.entity';
 import { CreateProductDto, EditProductDto, ProductIdDto } from './product.dto';
 import { Request, Response } from '../../common/interfaces';
 import { HasRole, MyId, Public, Roles } from '../../common/decorators';
@@ -52,6 +53,22 @@ export class ProductsController {
   @Get('all')
   getAllProducts(@Query() req: Request): Promise<Response<Product>> {
     return this.productsService.getAllProducts(req);
+  }
+
+  @Public()
+  @Get(':productId/states')
+  selectProductStates(
+    @Param() { productId }: ProductIdDto,
+  ): Promise<ProductState[]> {
+    return this.productsService.selectProductStates(productId);
+  }
+
+  @Public()
+  @Get(':productId/rating')
+  selectProductRating(
+    @Param() { productId }: ProductIdDto,
+  ): Promise<{ rate: number }> {
+    return this.productsService.selectProductRating(productId);
   }
 
   @Post()

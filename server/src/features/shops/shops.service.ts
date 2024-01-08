@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { Shop } from './shop.entity';
+import { Good } from '../goods/good.entity';
 import { MqttService } from '../mqtt/mqtt.service';
 import { ExtCreateShopDto, ExtEditShopDto } from './shop.dto';
 import { Request, Response } from '../../common/interfaces';
@@ -22,7 +23,6 @@ export class ShopsService {
     const [result, count] = await this.getShopsQueryBuilder(
       req,
     ).getManyAndCount();
-    await this.loadGoods(result);
     return { result, count };
   }
 
@@ -30,7 +30,6 @@ export class ShopsService {
     const [result, count] = await this.getShopsQueryBuilder(req)
       .andWhere('ownerUser.id = :myId', { myId })
       .getManyAndCount();
-    await this.loadGoods(result);
     return { result, count };
   }
 
@@ -38,7 +37,6 @@ export class ShopsService {
     const [result, count] = await this.getShopsQueryBuilder(
       req,
     ).getManyAndCount();
-    await this.loadGoods(result);
     return { result, count };
   }
 
@@ -50,6 +48,17 @@ export class ShopsService {
     return this.selectShopsQueryBuilder()
       .where('shop.userId = :myId', { myId })
       .getMany();
+  }
+
+  async selectShopGoods(shopId: number): Promise<Good[]> {
+    const shop = await this.shopsRepository
+      .createQueryBuilder('shop')
+      .leftJoin('shop.goods', 'good')
+      .where('shop.id = :shopId', { shopId })
+      .orderBy('good.id', 'DESC')
+      .select(['shop.id', 'good.id', 'good.item', 'good.description'])
+      .getOne();
+    return shop.goods;
   }
 
   async createShop(dto: ExtCreateShopDto): Promise<void> {
@@ -144,25 +153,11 @@ export class ShopsService {
       .select(['shop.id', 'shop.name', 'shop.x', 'shop.y']);
   }
 
-  private async loadGoods(shops: Shop[]): Promise<void> {
-    const promises = shops.map(async (shop) => {
-      shop.goods = (
-        await this.shopsRepository
-          .createQueryBuilder('shop')
-          .leftJoin('shop.goods', 'good')
-          .where('shop.id = :shopId', { shopId: shop.id })
-          .orderBy('good.id', 'DESC')
-          .select(['shop.id', 'good.id', 'good.item', 'good.description'])
-          .getOne()
-      ).goods;
-    });
-    await Promise.all(promises);
-  }
-
   private getShopsQueryBuilder(req: Request): SelectQueryBuilder<Shop> {
     return this.shopsRepository
       .createQueryBuilder('shop')
       .innerJoin('shop.user', 'ownerUser')
+      .loadRelationCountAndMap('shop.goods', 'shop.goods')
       .where(
         new Brackets((qb) =>
           qb.where(`${!req.id}`).orWhere('shop.id = :id', { id: req.id }),

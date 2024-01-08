@@ -32,7 +32,6 @@ export class UsersService {
     const [result, count] = await this.getUsersQueryBuilder(
       req,
     ).getManyAndCount();
-    await this.loadFriends(result);
     return { result, count };
   }
 
@@ -41,7 +40,6 @@ export class UsersService {
       .leftJoin('city.users', 'cityUsers')
       .andWhere('cityUsers.id = :myId', { myId })
       .getManyAndCount();
-    await this.loadFriends(result);
     return { result, count };
   }
 
@@ -49,7 +47,6 @@ export class UsersService {
     const [result, count] = await this.getUsersQueryBuilder(
       req,
     ).getManyAndCount();
-    await this.loadFriends(result);
     return { result, count };
   }
 
@@ -58,7 +55,6 @@ export class UsersService {
       .leftJoin('user.friends', 'friend')
       .andWhere('friend.id = :myId', { myId })
       .getManyAndCount();
-    await this.loadFriends(result);
     return { result, count };
   }
 
@@ -72,7 +68,6 @@ export class UsersService {
       )
       .andWhere('invitation.senderUserId = :myId', { myId })
       .getManyAndCount();
-    await this.loadFriends(result);
     return { result, count };
   }
 
@@ -89,7 +84,6 @@ export class UsersService {
       )
       .andWhere('invitation.receiverUserId = :myId', { myId })
       .getManyAndCount();
-    await this.loadFriends(result);
     return { result, count };
   }
 
@@ -103,7 +97,6 @@ export class UsersService {
         { myId },
       )
       .getManyAndCount();
-    await this.loadFriends(result);
     return { result, count };
   }
 
@@ -120,7 +113,6 @@ export class UsersService {
         { myId },
       )
       .getManyAndCount();
-    await this.loadFriends(result);
     return { result, count };
   }
 
@@ -185,6 +177,18 @@ export class UsersService {
         'subscriber',
         'subscriber.id = :myId',
         { myId },
+      )
+      .getMany();
+  }
+
+  selectUserFriends(userId: number): Promise<User[]> {
+    return this.selectUsersQueryBuilder()
+      .innerJoinAndMapOne(
+        'friend',
+        'user.friends',
+        'friend',
+        'friend.id = :userId',
+        { userId },
       )
       .getMany();
   }
@@ -481,27 +485,12 @@ export class UsersService {
       .select(['user.id', 'user.nick', 'user.avatar']);
   }
 
-  private async loadFriends(users: User[]): Promise<void> {
-    const promises = users.map(async (user) => {
-      user.friends = (
-        await this.usersRepository
-          .createQueryBuilder('user')
-          .leftJoin('user.friends', 'friend')
-          .where('user.id = :userId', { userId: user.id })
-          .orderBy('friend.onlineAt', 'DESC')
-          .addOrderBy('friend.nick', 'ASC')
-          .select(['user.id', 'friend.id', 'friend.nick', 'friend.avatar'])
-          .getOne()
-      ).friends;
-    });
-    await Promise.all(promises);
-  }
-
   private getUsersQueryBuilder(req: Request): SelectQueryBuilder<User> {
     return this.usersRepository
       .createQueryBuilder('user')
       .leftJoin('user.city', 'city')
       .leftJoin('city.user', 'ownerUser')
+      .loadRelationCountAndMap('user.friendsCount', 'user.friends')
       .where(
         new Brackets((qb) =>
           qb.where(`${!req.id}`).orWhere('user.id = :id', { id: req.id }),
@@ -577,7 +566,7 @@ export class UsersService {
     const user = await this.getUsersQueryBuilder({ id: userId })
       .addSelect(['user.discord', 'user.background'])
       .getOne();
-    await this.loadFriends([user]);
+    user.friends = await this.selectUserFriends(userId);
     return user;
   }
 
@@ -591,12 +580,7 @@ export class UsersService {
         'rent',
         'card.id = rent.cardId',
       )
-      .leftJoinAndMapMany(
-        'rent.wares',
-        'wares',
-        'ware',
-        'rent.id = ware.rentId',
-      )
+      .leftJoin('rent.wares', 'ware')
       .where('user.id = :userId', { userId })
       .select('COUNT(ware.id)', 'waresCount')
       .getRawOne();
@@ -609,12 +593,7 @@ export class UsersService {
         'lease',
         'card.id = lease.cardId',
       )
-      .leftJoinAndMapMany(
-        'lease.products',
-        'products',
-        'product',
-        'lease.id = product.leaseId',
-      )
+      .leftJoin('lease.products', 'product')
       .where('user.id = :userId', { userId })
       .select('COUNT(product.id)', 'productsCount')
       .getRawOne();
@@ -651,18 +630,8 @@ export class UsersService {
         'rent',
         'card.id = rent.cardId',
       )
-      .leftJoinAndMapMany(
-        'rent.wares',
-        'wares',
-        'ware',
-        'rent.id = ware.rentId',
-      )
-      .leftJoinAndMapMany(
-        'ware.trades',
-        'trades',
-        'trade',
-        'ware.id = trade.wareId',
-      )
+      .leftJoin('rent.wares', 'ware')
+      .leftJoin('ware.trades', 'trade')
       .where('user.id = :userId', { userId })
       .select('AVG(trade.rate)', 'waresRate')
       .getRawOne();
@@ -675,18 +644,8 @@ export class UsersService {
         'lease',
         'card.id = lease.cardId',
       )
-      .leftJoinAndMapMany(
-        'lease.products',
-        'products',
-        'product',
-        'lease.id = product.leaseId',
-      )
-      .leftJoinAndMapMany(
-        'product.sales',
-        'sales',
-        'sale',
-        'product.id = sale.productId',
-      )
+      .leftJoin('lease.products', 'product')
+      .leftJoin('product.sales', 'sale')
       .where('user.id = :userId', { userId })
       .select('AVG(sale.rate)', 'productsRate')
       .getRawOne();

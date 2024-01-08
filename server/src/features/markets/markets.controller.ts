@@ -10,6 +10,7 @@ import {
 import { ApiTags } from '@nestjs/swagger';
 import { MarketsService } from './markets.service';
 import { Market } from './market.entity';
+import { MarketState } from './market-state.entity';
 import { CreateMarketDto, EditMarketDto, MarketIdDto } from './market.dto';
 import { Request, Response } from '../../common/interfaces';
 import { HasRole, MyId, Public, Roles } from '../../common/decorators';
@@ -55,6 +56,14 @@ export class MarketsController {
   @Get('all/select')
   selectAllMarkets(): Promise<Market[]> {
     return this.marketsService.selectAllMarkets();
+  }
+
+  @Public()
+  @Get(':marketId/states')
+  selectMarketStates(
+    @Param() { marketId }: MarketIdDto,
+  ): Promise<MarketState[]> {
+    return this.marketsService.selectMarketStates(marketId);
   }
 
   @Post()

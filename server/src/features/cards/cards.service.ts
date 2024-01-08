@@ -33,7 +33,6 @@ export class CardsService {
       .innerJoin('card.users', 'ownerUsers')
       .andWhere('ownerUsers.id = :myId', { myId })
       .getManyAndCount();
-    await this.loadUsers(result);
     return { result, count };
   }
 
@@ -41,7 +40,6 @@ export class CardsService {
     const [result, count] = await this.getCardsQueryBuilder(
       req,
     ).getManyAndCount();
-    await this.loadUsers(result);
     return { result, count };
   }
 
@@ -53,6 +51,18 @@ export class CardsService {
     return this.selectCardsQueryBuilder(userId)
       .addSelect('card.balance')
       .getMany();
+  }
+
+  async selectCardUsers(cardId: number): Promise<User[]> {
+    const card = await this.cardsRepository
+      .createQueryBuilder('card')
+      .leftJoin('card.users', 'user')
+      .where('card.id = :cardId', { cardId })
+      .orderBy('user.onlineAt', 'DESC')
+      .addOrderBy('user.nick', 'ASC')
+      .select(['card.id', 'user.id', 'user.nick', 'user.avatar'])
+      .getOne();
+    return card.users;
   }
 
   async createCard(dto: ExtCreateCardDto): Promise<void> {
@@ -243,26 +253,11 @@ export class CardsService {
       ]);
   }
 
-  private async loadUsers(cards: Card[]): Promise<void> {
-    const promises = cards.map(async (card) => {
-      card.users = (
-        await this.cardsRepository
-          .createQueryBuilder('card')
-          .leftJoin('card.users', 'user')
-          .where('card.id = :cardId', { cardId: card.id })
-          .orderBy('user.onlineAt', 'DESC')
-          .addOrderBy('user.nick', 'ASC')
-          .select(['card.id', 'user.id', 'user.nick', 'user.avatar'])
-          .getOne()
-      ).users;
-    });
-    await Promise.all(promises);
-  }
-
   private getCardsQueryBuilder(req: Request): SelectQueryBuilder<Card> {
     return this.cardsRepository
       .createQueryBuilder('card')
       .innerJoin('card.user', 'ownerUser')
+      .loadRelationCountAndMap('card.users', 'card.users')
       .where(
         new Brackets((qb) =>
           qb.where(`${!req.id}`).orWhere('card.id = :id', { id: req.id }),

@@ -11,6 +11,7 @@ import {
 import { ApiTags } from '@nestjs/swagger';
 import { CitiesService } from './cities.service';
 import { City } from './city.entity';
+import { User } from '../users/user.entity';
 import {
   CityIdDto,
   CreateCityDto,
@@ -56,6 +57,12 @@ export class CitiesController {
   @Get('my/select')
   selectMyCities(@MyId() myId: number): Promise<City[]> {
     return this.citiesService.selectMyCities(myId);
+  }
+
+  @Public()
+  @Get(':cityId/users')
+  selectCityUsers(@Param() { cityId }: CityIdDto): Promise<User[]> {
+    return this.citiesService.selectCityUsers(cityId);
   }
 
   @Post()

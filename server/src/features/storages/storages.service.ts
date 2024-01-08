@@ -28,7 +28,6 @@ export class StoragesService {
     const [result, count] = await this.getStoragesQueryBuilder(
       req,
     ).getManyAndCount();
-    await this.loadStatesAndCells(result);
     return { result, count };
   }
 
@@ -37,7 +36,6 @@ export class StoragesService {
       .innerJoin('ownerCard.users', 'ownerUsers')
       .andWhere('ownerUsers.id = :myId', { myId })
       .getManyAndCount();
-    await this.loadStatesAndCells(result);
     return { result, count };
   }
 
@@ -45,7 +43,6 @@ export class StoragesService {
     const [result, count] = await this.getStoragesQueryBuilder(
       req,
     ).getManyAndCount();
-    await this.loadStatesAndCells(result);
     return { result, count };
   }
 
@@ -89,6 +86,23 @@ export class StoragesService {
         delete storage['cellsCount'];
         return storage;
       });
+  }
+
+  async selectStorageStates(storageId: number): Promise<StorageState[]> {
+    const storage = await this.storagesRepository
+      .createQueryBuilder('storage')
+      .leftJoin('storage.states', 'state')
+      .where('storage.id = :storageId', { storageId })
+      .orderBy('state.id', 'DESC')
+      .select([
+        'storage.id',
+        'storage.price',
+        'state.id',
+        'state.price',
+        'state.createdAt',
+      ])
+      .getOne();
+    return storage.states;
   }
 
   async createStorage(dto: ExtCreateStorageDto): Promise<void> {
@@ -212,36 +226,13 @@ export class StoragesService {
       .select(['storage.id', 'storage.name', 'storage.x', 'storage.y']);
   }
 
-  private async loadStatesAndCells(storages: Storage[]): Promise<void> {
-    const promises = storages.map(async (storage) => {
-      const result = await this.storagesRepository
-        .createQueryBuilder('storage')
-        .leftJoin('storage.states', 'state')
-        .leftJoin('storage.cells', 'cell')
-        .where('storage.id = :storageId', { storageId: storage.id })
-        .orderBy('state.id', 'DESC')
-        .addOrderBy('cell.id', 'DESC')
-        .select([
-          'storage.id',
-          'storage.price',
-          'state.id',
-          'state.price',
-          'state.createdAt',
-          'cell.id',
-          'cell.name',
-        ])
-        .getOne();
-      storage.states = result.states;
-      storage.cells = result.cells;
-    });
-    await Promise.all(promises);
-  }
-
   private getStoragesQueryBuilder(req: Request): SelectQueryBuilder<Storage> {
     return this.storagesRepository
       .createQueryBuilder('storage')
       .innerJoin('storage.card', 'ownerCard')
       .innerJoin('ownerCard.user', 'ownerUser')
+      .loadRelationCountAndMap('storage.states', 'storage.states')
+      .loadRelationCountAndMap('storage.cells', 'storage.cells')
       .where(
         new Brackets((qb) =>
           qb.where(`${!req.id}`).orWhere('storage.id = :id', { id: req.id }),

@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { Article } from './article.entity';
 import { Like } from './like.entity';
+import { Comment } from '../comments/comment.entity';
 import { MqttService } from '../mqtt/mqtt.service';
 import {
   DeleteArticleDto,
@@ -29,7 +30,6 @@ export class ArticlesService {
     const [result, count] = await this.getArticlesQueryBuilder(
       req,
     ).getManyAndCount();
-    await this.loadLikesAndComments(result);
     return { result, count };
   }
 
@@ -37,7 +37,6 @@ export class ArticlesService {
     const [result, count] = await this.getArticlesQueryBuilder(req)
       .andWhere('ownerUser.id = :myId', { myId })
       .getManyAndCount();
-    await this.loadLikesAndComments(result);
     return { result, count };
   }
 
@@ -54,7 +53,6 @@ export class ArticlesService {
         { myId },
       )
       .getManyAndCount();
-    await this.loadLikesAndComments(result);
     return { result, count };
   }
 
@@ -71,7 +69,6 @@ export class ArticlesService {
         { myId },
       )
       .getManyAndCount();
-    await this.loadLikesAndComments(result);
     return { result, count };
   }
 
@@ -88,7 +85,6 @@ export class ArticlesService {
         { myId },
       )
       .getManyAndCount();
-    await this.loadLikesAndComments(result);
     return { result, count };
   }
 
@@ -96,8 +92,60 @@ export class ArticlesService {
     const [result, count] = await this.getArticlesQueryBuilder(
       req,
     ).getManyAndCount();
-    await this.loadLikesAndComments(result);
     return { result, count };
+  }
+
+  selectLikedArticles(myId: number): Promise<Article[]> {
+    return this.articlesRepository
+      .createQueryBuilder('article')
+      .innerJoinAndMapOne(
+        'myLike',
+        'article.likes',
+        'myLike',
+        'myLike.userId = :myId',
+        { myId },
+      )
+      .select(['article.id'])
+      .getMany();
+  }
+
+  async selectArticleLikes(articleId: number): Promise<Like[]> {
+    const article = await this.articlesRepository
+      .createQueryBuilder('article')
+      .leftJoin('article.likes', 'like')
+      .leftJoin('like.user', 'liker')
+      .where('article.id = :articleId', { articleId })
+      .orderBy('like.id', 'DESC')
+      .select([
+        'article.id',
+        'like.id',
+        'liker.id',
+        'liker.nick',
+        'liker.avatar',
+        'like.createdAt',
+      ])
+      .getOne();
+    return article.likes;
+  }
+
+  async selectArticleComments(articleId: number): Promise<Comment[]> {
+    const article = await this.articlesRepository
+      .createQueryBuilder('article')
+      .leftJoin('article.comments', 'comment')
+      .leftJoin('comment.user', 'commenter')
+      .where('article.id = :articleId', { articleId })
+      .orderBy('comment.id', 'DESC')
+      .select([
+        'article.id',
+        'comment.id',
+        'commenter.id',
+        'commenter.nick',
+        'commenter.avatar',
+        'comment.text',
+        'comment.createdAt',
+      ])
+      .getOne();
+    return article.comments;
   }
 
   async createArticle(dto: ExtCreateArticleDto): Promise<void> {
@@ -214,42 +262,12 @@ export class ArticlesService {
     }
   }
 
-  private async loadLikesAndComments(articles: Article[]): Promise<void> {
-    const promises = articles.map(async (article) => {
-      const result = await this.articlesRepository
-        .createQueryBuilder('article')
-        .leftJoin('article.likes', 'like')
-        .leftJoin('like.user', 'liker')
-        .leftJoin('article.comments', 'comment')
-        .leftJoin('comment.user', 'commenter')
-        .where('article.id = :articleId', { articleId: article.id })
-        .orderBy('like.id', 'DESC')
-        .addOrderBy('comment.id', 'DESC')
-        .select([
-          'article.id',
-          'like.id',
-          'liker.id',
-          'liker.nick',
-          'liker.avatar',
-          'like.createdAt',
-          'comment.id',
-          'commenter.id',
-          'commenter.nick',
-          'commenter.avatar',
-          'comment.text',
-          'comment.createdAt',
-        ])
-        .getOne();
-      article.likes = result.likes;
-      article.comments = result.comments;
-    });
-    await Promise.all(promises);
-  }
-
   private getArticlesQueryBuilder(req: Request): SelectQueryBuilder<Article> {
     return this.articlesRepository
       .createQueryBuilder('article')
       .innerJoin('article.user', 'ownerUser')
+      .loadRelationCountAndMap('article.likes', 'article.likes')
+      .loadRelationCountAndMap('article.comments', 'article.comments')
       .where(
         new Brackets((qb) =>
           qb.where(`${!req.id}`).orWhere('article.id = :id', { id: req.id }),

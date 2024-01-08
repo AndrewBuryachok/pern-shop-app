@@ -27,7 +27,6 @@ export class MarketsService {
     const [result, count] = await this.getMarketsQueryBuilder(
       req,
     ).getManyAndCount();
-    await this.loadStatesAndStores(result);
     return { result, count };
   }
 
@@ -36,7 +35,6 @@ export class MarketsService {
       .innerJoin('ownerCard.users', 'ownerUsers')
       .andWhere('ownerUsers.id = :myId', { myId })
       .getManyAndCount();
-    await this.loadStatesAndStores(result);
     return { result, count };
   }
 
@@ -44,7 +42,6 @@ export class MarketsService {
     const [result, count] = await this.getMarketsQueryBuilder(
       req,
     ).getManyAndCount();
-    await this.loadStatesAndStores(result);
     return { result, count };
   }
 
@@ -65,6 +62,23 @@ export class MarketsService {
     return this.selectMarketsQueryBuilder()
       .loadRelationCountAndMap('market.stores', 'market.stores')
       .getMany();
+  }
+
+  async selectMarketStates(marketId: number): Promise<MarketState[]> {
+    const market = await this.marketsRepository
+      .createQueryBuilder('market')
+      .leftJoin('market.states', 'state')
+      .where('market.id = :marketId', { marketId })
+      .orderBy('state.id', 'DESC')
+      .select([
+        'market.id',
+        'market.price',
+        'state.id',
+        'state.price',
+        'state.createdAt',
+      ])
+      .getOne();
+    return market.states;
   }
 
   async createMarket(dto: ExtCreateMarketDto): Promise<void> {
@@ -185,36 +199,13 @@ export class MarketsService {
       .select(['market.id', 'market.name', 'market.x', 'market.y']);
   }
 
-  private async loadStatesAndStores(markets: Market[]): Promise<void> {
-    const promises = markets.map(async (market) => {
-      const result = await this.marketsRepository
-        .createQueryBuilder('market')
-        .leftJoin('market.states', 'state')
-        .leftJoin('market.stores', 'store')
-        .where('market.id = :marketId', { marketId: market.id })
-        .orderBy('state.id', 'DESC')
-        .addOrderBy('store.id', 'DESC')
-        .select([
-          'market.id',
-          'market.price',
-          'state.id',
-          'state.price',
-          'state.createdAt',
-          'store.id',
-          'store.name',
-        ])
-        .getOne();
-      market.states = result.states;
-      market.stores = result.stores;
-    });
-    await Promise.all(promises);
-  }
-
   private getMarketsQueryBuilder(req: Request): SelectQueryBuilder<Market> {
     return this.marketsRepository
       .createQueryBuilder('market')
       .innerJoin('market.card', 'ownerCard')
       .innerJoin('ownerCard.user', 'ownerUser')
+      .loadRelationCountAndMap('market.states', 'market.states')
+      .loadRelationCountAndMap('market.stores', 'market.stores')
       .where(
         new Brackets((qb) =>
           qb.where(`${!req.id}`).orWhere('market.id = :id', { id: req.id }),

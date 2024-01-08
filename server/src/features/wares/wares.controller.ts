@@ -10,6 +10,7 @@ import {
 import { ApiTags } from '@nestjs/swagger';
 import { WaresService } from './wares.service';
 import { Ware } from './ware.entity';
+import { WareState } from './ware-state.entity';
 import { CreateWareDto, EditWareDto, WareIdDto } from './ware.dto';
 import { Request, Response } from '../../common/interfaces';
 import { HasRole, MyId, Public, Roles } from '../../common/decorators';
@@ -52,6 +53,18 @@ export class WaresController {
   @Get('all')
   getAllWares(@Query() req: Request): Promise<Response<Ware>> {
     return this.waresService.getAllWares(req);
+  }
+
+  @Public()
+  @Get(':wareId/states')
+  selectWareStates(@Param() { wareId }: WareIdDto): Promise<WareState[]> {
+    return this.waresService.selectWareStates(wareId);
+  }
+
+  @Public()
+  @Get(':wareId/rating')
+  selectWareRating(@Param() { wareId }: WareIdDto): Promise<{ rate: number }> {
+    return this.waresService.selectWareRating(wareId);
   }
 
   @Post()

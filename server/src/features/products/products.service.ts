@@ -45,7 +45,6 @@ export class ProductsService {
       .andWhere('product.amount > 0')
       .andWhere('lease.createdAt > :date', { date: getDateWeekAgo() })
       .getManyAndCount();
-    await this.loadStatesAndRates(result);
     return { result, count };
   }
 
@@ -54,7 +53,6 @@ export class ProductsService {
       .innerJoin('sellerCard.users', 'sellerUsers')
       .andWhere('sellerUsers.id = :myId', { myId })
       .getManyAndCount();
-    await this.loadStatesAndRates(result);
     return { result, count };
   }
 
@@ -66,7 +64,6 @@ export class ProductsService {
       .innerJoin('ownerCard.users', 'ownerUsers')
       .andWhere('ownerUsers.id = :myId', { myId })
       .getManyAndCount();
-    await this.loadStatesAndRates(result);
     return { result, count };
   }
 
@@ -74,8 +71,34 @@ export class ProductsService {
     const [result, count] = await this.getProductsQueryBuilder(
       req,
     ).getManyAndCount();
-    await this.loadStatesAndRates(result);
     return { result, count };
+  }
+
+  async selectProductStates(productId: number): Promise<ProductState[]> {
+    const product = await this.productsRepository
+      .createQueryBuilder('product')
+      .leftJoin('product.states', 'state')
+      .where('product.id = :productId', { productId })
+      .orderBy('state.id', 'DESC')
+      .select([
+        'product.id',
+        'product.price',
+        'state.id',
+        'state.price',
+        'state.createdAt',
+      ])
+      .getOne();
+    return product.states;
+  }
+
+  async selectProductRating(productId: number): Promise<{ rate: number }> {
+    const product = await this.productsRepository
+      .createQueryBuilder('product')
+      .leftJoin('product.sales', 'sale')
+      .where('product.id = :productId', { productId })
+      .select('AVG(sale.rate)', 'rate')
+      .getRawOne();
+    return { rate: +product.rate };
   }
 
   async createProduct(dto: ExtCreateProductDto): Promise<void> {
@@ -221,40 +244,6 @@ export class ProductsService {
     }
   }
 
-  private async loadStatesAndRates(products: Product[]): Promise<void> {
-    const promises = products.map(async (product) => {
-      product.states = (
-        await this.productsRepository
-          .createQueryBuilder('product')
-          .leftJoin('product.states', 'state')
-          .where('product.id = :productId', { productId: product.id })
-          .orderBy('state.id', 'DESC')
-          .select([
-            'product.id',
-            'product.price',
-            'state.id',
-            'state.price',
-            'state.createdAt',
-          ])
-          .getOne()
-      ).states;
-      product['rate'] = +(
-        await this.productsRepository
-          .createQueryBuilder('product')
-          .leftJoinAndMapMany(
-            'product.sales',
-            'sales',
-            'sale',
-            'product.id = sale.productId',
-          )
-          .where('product.id = :productId', { productId: product.id })
-          .select('AVG(sale.rate)', 'rate')
-          .getRawOne()
-      ).rate;
-    });
-    await Promise.all(promises);
-  }
-
   private getProductsQueryBuilder(req: Request): SelectQueryBuilder<Product> {
     return this.productsRepository
       .createQueryBuilder('product')
@@ -265,6 +254,7 @@ export class ProductsService {
       .innerJoin('ownerCard.user', 'ownerUser')
       .innerJoin('lease.card', 'sellerCard')
       .innerJoin('sellerCard.user', 'sellerUser')
+      .loadRelationCountAndMap('product.states', 'product.states')
       .where(
         new Brackets((qb) =>
           qb.where(`${!req.id}`).orWhere('product.id = :id', { id: req.id }),

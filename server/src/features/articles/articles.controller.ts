@@ -11,6 +11,8 @@ import {
 import { ApiTags } from '@nestjs/swagger';
 import { ArticlesService } from './articles.service';
 import { Article } from './article.entity';
+import { Like } from './like.entity';
+import { Comment } from '../comments/comment.entity';
 import { ArticleIdDto, CreateArticleDto, EditArticleDto } from './article.dto';
 import { Request, Response } from '../../common/interfaces';
 import { HasRole, MyId, Public, Roles } from '../../common/decorators';
@@ -63,6 +65,25 @@ export class ArticlesController {
   @Get('all')
   getAllArticles(@Query() req: Request): Promise<Response<Article>> {
     return this.articlesService.getAllArticles(req);
+  }
+
+  @Get('liked/select')
+  selectLikedArticles(@MyId() myId: number): Promise<Article[]> {
+    return this.articlesService.selectLikedArticles(myId);
+  }
+
+  @Public()
+  @Get(':articleId/likes')
+  selectArticleLikes(@Param() { articleId }: ArticleIdDto): Promise<Like[]> {
+    return this.articlesService.selectArticleLikes(articleId);
+  }
+
+  @Public()
+  @Get(':articleId/comments')
+  selectArticleComments(
+    @Param() { articleId }: ArticleIdDto,
+  ): Promise<Comment[]> {
+    return this.articlesService.selectArticleComments(articleId);
   }
 
   @Post()
