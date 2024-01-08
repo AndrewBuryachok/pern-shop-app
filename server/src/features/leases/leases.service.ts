@@ -18,6 +18,15 @@ export class LeasesService {
     private cellsService: CellsService,
   ) {}
 
+  async getMainLeases(req: Request): Promise<Response<Lease>> {
+    const [result, count] = await this.getLeasesQueryBuilder(req)
+      .andWhere('lease.createdAt > :date', { date: getDateWeekAgo() })
+      .andWhere('lease.completedAt IS NULL')
+      .getManyAndCount();
+    await this.loadThing(result);
+    return { result, count };
+  }
+
   async getMyLeases(myId: number, req: Request): Promise<Response<Lease>> {
     const [result, count] = await this.getLeasesQueryBuilder(req)
       .innerJoin('renterCard.users', 'renterUsers')
@@ -27,7 +36,10 @@ export class LeasesService {
     return { result, count };
   }
 
-  async getPlacedLeases(myId: number, req: Request): Promise<Response<Lease>> {
+  async getReceivedLeases(
+    myId: number,
+    req: Request,
+  ): Promise<Response<Lease>> {
     const [result, count] = await this.getLeasesQueryBuilder(req)
       .innerJoin('ownerCard.users', 'ownerUsers')
       .andWhere('ownerUsers.id = :myId', { myId })

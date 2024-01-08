@@ -4,13 +4,19 @@ import { RentsService } from './rents.service';
 import { Rent } from './rent.entity';
 import { CreateRentDto, RentIdDto } from './rent.dto';
 import { Request, Response } from '../../common/interfaces';
-import { HasRole, MyId, Roles } from '../../common/decorators';
+import { HasRole, MyId, Public, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
 
 @ApiTags('rents')
 @Controller('rents')
 export class RentsController {
   constructor(private rentsService: RentsService) {}
+
+  @Public()
+  @Get()
+  getMainRents(@Query() req: Request): Promise<Response<Rent>> {
+    return this.rentsService.getMainRents(req);
+  }
 
   @Get('my')
   getMyRents(
@@ -20,12 +26,12 @@ export class RentsController {
     return this.rentsService.getMyRents(myId, req);
   }
 
-  @Get('placed')
-  getPlacedRents(
+  @Get('received')
+  getReceivedRents(
     @MyId() myId: number,
     @Query() req: Request,
   ): Promise<Response<Rent>> {
-    return this.rentsService.getPlacedRents(myId, req);
+    return this.rentsService.getReceivedRents(myId, req);
   }
 
   @Roles(Role.MANAGER)

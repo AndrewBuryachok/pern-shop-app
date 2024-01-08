@@ -18,6 +18,15 @@ export class RentsService {
     private storesService: StoresService,
   ) {}
 
+  async getMainRents(req: Request): Promise<Response<Rent>> {
+    const [result, count] = await this.getRentsQueryBuilder(req)
+      .andWhere('rent.createdAt > :date', { date: getDateWeekAgo() })
+      .andWhere('rent.completedAt IS NULL')
+      .getManyAndCount();
+    await this.loadWares(result);
+    return { result, count };
+  }
+
   async getMyRents(myId: number, req: Request): Promise<Response<Rent>> {
     const [result, count] = await this.getRentsQueryBuilder(req)
       .innerJoin('renterCard.users', 'renterUsers')
@@ -27,7 +36,7 @@ export class RentsService {
     return { result, count };
   }
 
-  async getPlacedRents(myId: number, req: Request): Promise<Response<Rent>> {
+  async getReceivedRents(myId: number, req: Request): Promise<Response<Rent>> {
     const [result, count] = await this.getRentsQueryBuilder(req)
       .innerJoin('ownerCard.users', 'ownerUsers')
       .andWhere('ownerUsers.id = :myId', { myId })

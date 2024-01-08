@@ -1019,6 +1019,12 @@ describe('With Auth', () => {
         .expect('');
     });
 
+    it('GET /rents', async () => {
+      return request(app.getHttpServer())
+        .get('/rents')
+        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
+    });
+
     it('GET /rents/my', async () => {
       return request(app.getHttpServer())
         .get('/rents/my')
@@ -1027,9 +1033,9 @@ describe('With Auth', () => {
         .then((res) => (rentId = res.body.result[0].id));
     });
 
-    it('GET /rents/placed', async () => {
+    it('GET /rents/received', async () => {
       return request(app.getHttpServer())
-        .get('/rents/placed')
+        .get('/rents/received')
         .set('Authorization', `Bearer ${user.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
@@ -1567,6 +1573,12 @@ describe('With Auth', () => {
   });
 
   describe('Leases', () => {
+    it('GET /leases', async () => {
+      return request(app.getHttpServer())
+        .get('/leases')
+        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
+    });
+
     it('GET /leases/my', async () => {
       return request(app.getHttpServer())
         .get('/leases/my')
@@ -1575,9 +1587,9 @@ describe('With Auth', () => {
         .then((res) => (leaseId = res.body.result[0].id));
     });
 
-    it('GET /leases/placed', async () => {
+    it('GET /leases/received', async () => {
       return request(app.getHttpServer())
-        .get('/leases/placed')
+        .get('/leases/received')
         .set('Authorization', `Bearer ${user.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });

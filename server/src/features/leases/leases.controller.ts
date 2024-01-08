@@ -4,13 +4,19 @@ import { LeasesService } from './leases.service';
 import { Lease } from './lease.entity';
 import { LeaseIdDto } from './lease.dto';
 import { Request, Response } from '../../common/interfaces';
-import { HasRole, MyId, Roles } from '../../common/decorators';
+import { HasRole, MyId, Public, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
 
 @ApiTags('leases')
 @Controller('leases')
 export class LeasesController {
   constructor(private leasesService: LeasesService) {}
+
+  @Public()
+  @Get()
+  getMainLeases(@Query() req: Request): Promise<Response<Lease>> {
+    return this.leasesService.getMainLeases(req);
+  }
 
   @Get('my')
   getMyLeases(
@@ -20,12 +26,12 @@ export class LeasesController {
     return this.leasesService.getMyLeases(myId, req);
   }
 
-  @Get('placed')
-  getPlacedLeases(
+  @Get('received')
+  getReceivedLeases(
     @MyId() myId: number,
     @Query() req: Request,
   ): Promise<Response<Lease>> {
-    return this.leasesService.getPlacedLeases(myId, req);
+    return this.leasesService.getReceivedLeases(myId, req);
   }
 
   @Roles(Role.MANAGER)
