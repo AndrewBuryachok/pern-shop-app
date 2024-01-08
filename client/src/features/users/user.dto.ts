@@ -2,7 +2,7 @@ export interface EditUserProfileDto {
   userId: number;
   discord: string;
   avatar: string;
-  color: number;
+  background: number;
 }
 
 export interface EditUserPasswordDto {

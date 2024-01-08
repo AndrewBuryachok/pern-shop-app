@@ -243,6 +243,7 @@
     "profile": "Profile",
     "discord": "Discord",
     "avatar": "Avatar",
+    "background": "Background",
     "name": "Name",
     "oldpassword": "Old Password",
     "newpassword": "New Password",
@@ -306,6 +307,20 @@
     "decrease": "Decrease",
     "up": "Up",
     "down": "Down",
+    "backgrounds": {
+      "Warm_Ocean": "Warm ocean",
+      "Mushroom_Fields": "Mushroom fields",
+      "Mountain_Meadows": "Mountain meadows",
+      "Cherry_Grove": "Cherry grove",
+      "Forest": "Forest",
+      "Taiga": "Taiga",
+      "Jungle": "Jungle",
+      "Swamp": "Swamp",
+      "Plains": "Plains",
+      "Desert": "Desert",
+      "Savanna": "Savanna",
+      "Badlands": "Badlands"
+    },
     "roles": {
       "admin": "Admin",
       "banker": "Banker",

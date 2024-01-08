@@ -1,4 +1,5 @@
 export * from './validation.constant';
+export * from './background.constant';
 export * from './role.constant';
 export * from './color.constant';
 export * from './category.constant';

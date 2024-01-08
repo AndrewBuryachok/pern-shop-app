@@ -243,6 +243,7 @@
     "profile": "Профіль",
     "discord": "Discord",
     "avatar": "Аватар",
+    "background": "Фон",
     "name": "Назва",
     "oldpassword": "Старий Пароль",
     "newpassword": "Новий Пароль",
@@ -306,6 +307,20 @@
     "decrease": "Зменшення",
     "up": "За",
     "down": "Проти",
+    "backgrounds": {
+      "Warm_Ocean": "Теплий океан",
+      "Mushroom_Fields": "Грибні поля",
+      "Mountain_Meadows": "Гірські луки",
+      "Cherry_Grove": "Вишневий гай",
+      "Forest": "Ліс",
+      "Taiga": "Тайга",
+      "Jungle": "Джунглі",
+      "Swamp": "Болото",
+      "Plains": "Рівнини",
+      "Desert": "Пустеля",
+      "Savanna": "Савана",
+      "Badlands": "Безплідні землі"
+    },
     "roles": {
       "admin": "Адмін",
       "banker": "Банкір",

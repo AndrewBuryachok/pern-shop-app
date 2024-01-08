@@ -2,7 +2,6 @@ import { useTranslation } from 'react-i18next';
 import {
   ActionIcon,
   Anchor,
-  Avatar,
   Container,
   Flex,
   Group,
@@ -18,7 +17,7 @@ import {
   IconPencil,
 } from '@tabler/icons';
 import { ExtUser } from './user.model';
-import CustomIndicator from '../../common/components/CustomIndicator';
+import ProfileAvatar from '../../common/components/ProfileAvatar';
 import LinkedAvatar from '../../common/components/LinkedAvatar';
 import CustomRating from '../../common/components/CustomRating';
 import RolesBadge from '../../common/components/RolesBadge';
@@ -51,23 +50,7 @@ export default function UserProfile({ data: user }: Props) {
     <Container px={0}>
       <Flex gap='md' justify='center' direction={{ base: 'column', xs: 'row' }}>
         <Stack spacing={8}>
-          <Stack spacing={0} align='center'>
-            <CustomIndicator {...user}>
-              <Avatar
-                px={8}
-                pt={16}
-                bg={colors[user.color - 1]}
-                radius='md'
-                size={248}
-                src={`${import.meta.env.VITE_AVATAR_URL}${
-                  import.meta.env.VITE_BUST_ROUTE
-                }${user.avatar || user.nick}`}
-                alt={user.nick}
-              >
-                {user.nick.toUpperCase().slice(0, 2)}
-              </Avatar>
-            </CustomIndicator>
-          </Stack>
+          <ProfileAvatar {...user} />
           <Paper p={8}>
             <Stack spacing={8}>
               <div>

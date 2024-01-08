@@ -11,6 +11,7 @@ import {
 import { Container } from '../../features/containers/container.model';
 import { SelectRent } from '../../features/rents/rent.model';
 import {
+  backgrounds,
   categories,
   colors,
   items,
@@ -37,6 +38,7 @@ export const selectCards = (cards?: MdCard[]) =>
     ...card,
     userid: user.id,
     nick: user.nick,
+    avatar: user.avatar,
     color: `${card.color}`,
     value: `${card.id}`,
     label: card.name,
@@ -47,6 +49,7 @@ export const selectCardsWithBalance = (cards?: MdCardWithBalance[]) =>
     ...card,
     userid: user.id,
     nick: user.nick,
+    avatar: user.avatar,
     color: `${card.color}`,
     value: `${card.id}`,
     label: `${card.name} ${card.balance}$`,
@@ -100,6 +103,12 @@ export const selectRents = (rents?: SelectRent[]) =>
     value: `${rent.id}`,
     label: `${rent.store.market.name} (${rent.store.market.x} ${rent.store.market.y}) #${rent.store.name}`,
   })) || [];
+
+export const selectBackgrounds = () =>
+  backgrounds.map((bakground, index) => ({
+    value: `${index + 1}`,
+    label: t('constants.backgrounds.' + bakground),
+  }));
 
 export const selectRoles = () =>
   roles.map((role, index) => ({

@@ -1,6 +1,7 @@
 import { t } from 'i18next';
 import { useTranslation } from 'react-i18next';
 import { Select, TextInput } from '@mantine/core';
+import { useDebouncedValue } from '@mantine/hooks';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
@@ -10,8 +11,8 @@ import { useEditUserProfileMutation } from './users.api';
 import { EditUserProfileDto } from './user.dto';
 import CustomForm from '../../common/components/CustomForm';
 import CustomAvatar from '../../common/components/CustomAvatar';
-import { ColorsItem } from '../../common/components/ColorsItem';
-import { isUserNotHasRole, selectColors } from '../../common/utils';
+import ProfileAvatar from '../../common/components/ProfileAvatar';
+import { isUserNotHasRole, selectBackgrounds } from '../../common/utils';
 import {
   Color,
   MAX_NICK_LENGTH,
@@ -29,10 +30,15 @@ export default function EditUserProfileModal({ data: user }: Props) {
       userId: user.id,
       discord: user.discord,
       avatar: user.avatar,
-      color: `${user.color}`,
+      background: `${user.background}`,
     },
-    transformValues: ({ color, ...rest }) => ({ ...rest, color: +color }),
+    transformValues: ({ background, ...rest }) => ({
+      ...rest,
+      background: +background,
+    }),
   });
+
+  const [avatar] = useDebouncedValue(form.values.avatar, 500);
 
   const [editUserProfile, { isLoading }] = useEditUserProfileMutation();
 
@@ -68,13 +74,17 @@ export default function EditUserProfileModal({ data: user }: Props) {
         {...form.getInputProps('avatar')}
       />
       <Select
-        label={t('columns.color')}
-        placeholder={t('columns.color')}
-        itemComponent={ColorsItem}
-        data={selectColors()}
+        label={t('columns.background')}
+        placeholder={t('columns.background')}
+        data={selectBackgrounds()}
         searchable
         required
-        {...form.getInputProps('color')}
+        {...form.getInputProps('background')}
+      />
+      <ProfileAvatar
+        {...user}
+        avatar={avatar}
+        background={+form.values.background}
       />
     </CustomForm>
   );

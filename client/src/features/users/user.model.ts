@@ -18,7 +18,7 @@ export interface User extends MdUser {
 
 export interface ExtUser extends User {
   discord: string;
-  color: number;
+  background: number;
   waresCount: number;
   productsCount: number;
   ordersCount: number;
