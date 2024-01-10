@@ -48,7 +48,7 @@ export default function DeleteTaskModal({ data: task }: Props) {
         label={t('columns.priority')}
         icon={<PriorityIcon {...task} />}
         iconWidth={48}
-        value={t('constants.priorities.' + priorities[task.priority - 1])}
+        value={t(`constants.priorities.${priorities[task.priority - 1]}`)}
         disabled
       />
     </CustomForm>

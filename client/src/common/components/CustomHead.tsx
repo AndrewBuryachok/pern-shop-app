@@ -13,9 +13,9 @@ export default function CustomHead(props: Props) {
 
   const active = useLocation().pathname.split('/');
 
-  const page = t('navbar.' + active[1]);
+  const page = t(`navbar.${active[1]}`);
 
-  useDocumentTitle(t('pages.' + (active[2] || 'main')) + ' ' + page);
+  useDocumentTitle(t(`pages.${active[2] || 'main'}`) + ' ' + page);
 
   return (
     <Group spacing={0} position='apart'>
@@ -28,7 +28,7 @@ export default function CustomHead(props: Props) {
             </ThemeIcon>
           </Popover.Target>
           <Popover.Dropdown p={8}>
-            <Text size='sm'>{t('information.' + active[1])}</Text>
+            <Text size='sm'>{t(`information.${active[1]}`)}</Text>
           </Popover.Dropdown>
         </Popover>
       </Group>

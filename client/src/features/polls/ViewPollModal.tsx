@@ -108,7 +108,7 @@ export default function ViewPollModal({ data: poll }: Props) {
       </Input.Wrapper>
       <TextInput
         label={t('columns.result')}
-        value={t('constants.results.' + results[poll.result - 1])}
+        value={t(`constants.results.${results[poll.result - 1]}`)}
         disabled
       />
       <TextInput

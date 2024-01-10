@@ -12,7 +12,7 @@ export default function ColorBadge(props: Props) {
   return (
     <CustomBadge
       color={props.color}
-      text={t('constants.colors.' + colors[props.color - 1])}
+      text={t(`constants.colors.${colors[props.color - 1]}`)}
     />
   );
 }

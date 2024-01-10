@@ -249,7 +249,7 @@ export default function SearchModal(props: Props) {
           {...form.getInputProps('mode')}
         >
           {props.search.modes.map((mode) => (
-            <Radio key={mode} label={t('columns.' + mode)} value={mode} />
+            <Radio key={mode} label={t(`columns.${mode}`)} value={mode} />
           ))}
           <CloseButton
             size={24}

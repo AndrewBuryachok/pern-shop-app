@@ -36,7 +36,7 @@ export default function CustomNav(props: Props) {
           disabled={link.path !== 'main' && isUserNotHasRole(link.role)}
           compact
         >
-          {t('pages.' + link.path)}
+          {t(`pages.${link.path}`)}
         </Button>
       ))}
       {props.button && (
@@ -48,7 +48,7 @@ export default function CustomNav(props: Props) {
           disabled={!user}
           compact
         >
-          {t('actions.' + props.button.label)}
+          {t(`actions.${props.button.label}`)}
         </Button>
       )}
     </Group>

@@ -128,6 +128,6 @@ export const openPlaceModal = (place: ExtPlace) =>
     title:
       t('actions.view') +
       ' ' +
-      t('modals.' + ['cities', 'shops', 'markets', 'storages'][place.type]),
+      t(`modals.${['cities', 'shops', 'markets', 'storages'][place.type]}`),
     children: <PlaceModal data={place} />,
   });

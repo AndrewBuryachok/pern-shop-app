@@ -12,7 +12,7 @@ export default function ResultBadge(props: Props) {
   return (
     <CustomBadge
       color={resultsToColors[props.result - 1]}
-      text={t('constants.results.' + results[props.result - 1])}
+      text={t(`constants.results.${results[props.result - 1]}`)}
     />
   );
 }

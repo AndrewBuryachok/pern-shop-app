@@ -66,7 +66,7 @@ export default function AuthModal() {
         {...form.getInputProps('password')}
       />
       <Text size='xs'>
-        {t('modals.' + type + '.text')}
+        {t(`modals.${type}.text`)}
         <Anchor
           component='button'
           type='button'
@@ -74,7 +74,7 @@ export default function AuthModal() {
           color='dimmed'
           underline
         >
-          {t('modals.' + type + '.anchor')}
+          {t(`modals.${type}.anchor`)}
         </Anchor>
       </Text>
     </CustomForm>

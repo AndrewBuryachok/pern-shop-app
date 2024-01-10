@@ -205,7 +205,7 @@ export default function Home() {
                 <feature.icon size={32} />
               </ThemeIcon>
               <Text size='lg' weight='bold'>
-                {t('navbar.' + feature.title)}
+                {t(`navbar.${feature.title}`)}
               </Text>
               <Text size='sm' color='dimmed'>
                 {t('home.text')}

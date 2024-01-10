@@ -42,7 +42,7 @@ export const parseCell = (cell: MdCell) =>
   `${parsePlace(cell.storage)} #${cell.name}`;
 
 export const parseItem = (item: number) =>
-  t('constants.items.' + items[item - 1].split(': ')[1]);
+  t(`constants.items.${items[item - 1].split(': ')[1]}`);
 
 export const parseThingAmount = (data: {
   amount: number;
@@ -50,21 +50,21 @@ export const parseThingAmount = (data: {
   kit: number;
 }) =>
   `${data.amount} * ${data.intake} ${t(
-    'constants.kits.' + kits[data.kit - 1],
+    `constants.kits.${kits[data.kit - 1]}`,
   )}`;
 
 export const parseTradeAmount = (trade: Trade) =>
   `${trade.amount} * ${trade.ware.intake} ${t(
-    'constants.kits.' + kits[trade.ware.kit - 1],
+    `constants.kits.${kits[trade.ware.kit - 1]}`,
   )}`;
 
 export const parseSaleAmount = (sale: Sale) =>
   `${sale.amount} * ${sale.product.intake} ${t(
-    'constants.kits.' + kits[sale.product.kit - 1],
+    `constants.kits.${kits[sale.product.kit - 1]}`,
   )}`;
 
 export const parseKind = (kind: number) =>
-  t('constants.kinds.' + kinds[kind - 1]);
+  t(`constants.kinds.${kinds[kind - 1]}`);
 
 export const parseStatus = (status: number) =>
-  t('constants.statuses.' + statuses[status - 1]);
+  t(`constants.statuses.${statuses[status - 1]}`);

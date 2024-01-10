@@ -31,7 +31,7 @@ export default function ViewCardModal({ data: card }: Props) {
       <TextInput label={t('columns.card')} value={card.name} disabled />
       <TextInput
         label={t('columns.color')}
-        value={t('constants.colors.' + colors[card.color - 1])}
+        value={t(`constants.colors.${colors[card.color - 1]}`)}
         disabled
       />
       <TextInput

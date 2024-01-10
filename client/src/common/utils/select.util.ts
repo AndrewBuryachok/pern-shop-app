@@ -107,25 +107,25 @@ export const selectRents = (rents?: SelectRent[]) =>
   })) || [];
 
 export const selectBackgrounds = () =>
-  backgrounds.map((bakground, index) => ({
+  backgrounds.map((background, index) => ({
     value: `${index + 1}`,
-    label: t('constants.backgrounds.' + bakground),
+    label: t(`constants.backgrounds.${background}`),
   }));
 
 export const selectRoles = () =>
   roles.map((role, index) => ({
-    text: t('constants.roles.' + role),
+    text: t(`constants.roles.${role}`),
     color: `${index + 1}`,
     value: `${index + 1}`,
-    label: t('constants.roles.' + role),
+    label: t(`constants.roles.${role}`),
   }));
 
 export const selectColors = () =>
   colors.map((color, index) => ({
-    text: t('constants.colors.' + color),
+    text: t(`constants.colors.${color}`),
     color: `${index + 1}`,
     value: `${index + 1}`,
-    label: t('constants.colors.' + color),
+    label: t(`constants.colors.${color}`),
   }));
 
 export const searchTypes = () =>
@@ -138,24 +138,24 @@ export const searchTypes = () =>
 
 export const selectExchangeTypes = () =>
   ['decrease', 'increase'].map((type, index) => ({
-    text: t('constants.' + type),
+    text: t(`constants.${type}`),
     color: `${index * 2 + 1}`,
     value: `${index}`,
-    label: t('constants.' + type),
+    label: t(`constants.${type}`),
   }));
 
 export const selectVoteTypes = () =>
   ['down', 'up'].map((type, index) => ({
-    text: t('constants.' + type),
+    text: t(`constants.${type}`),
     color: `${index * 2 + 1}`,
     value: `${index}`,
-    label: t('constants.' + type),
+    label: t(`constants.${type}`),
   }));
 
 export const selectCategories = () =>
   categories.map((category, index) => ({
     value: `${index}`,
-    label: t('constants.categories.' + category),
+    label: t(`constants.categories.${category}`),
   }));
 
 export const selectItems = (category: string) =>
@@ -163,45 +163,45 @@ export const selectItems = (category: string) =>
     .map((item, index) => ({
       item: index + 1,
       category: item.split(': ')[0],
-      group: t('constants.categories.' + categories[+item.split(': ')[0][0]]),
+      group: t(`constants.categories.${categories[+item.split(': ')[0][0]]}`),
       value: `${index + 1}`,
-      label: t('constants.items.' + item.split(': ')[1]),
+      label: t(`constants.items.${item.split(': ')[1]}`),
     }))
     .filter((item) => item.category.includes(category || ''));
 
 export const selectKits = () =>
   kits.map((kit, index) => ({
     value: `${index + 1}`,
-    label: t('constants.kits.' + kit),
+    label: t(`constants.kits.${kit}`),
   }));
 
 export const selectKinds = () =>
   kinds.map((kind, index) => ({
-    text: t('constants.kinds.' + kind),
+    text: t(`constants.kinds.${kind}`),
     color: `${index + 1}`,
     value: `${index + 1}`,
-    label: t('constants.kinds.' + kind),
+    label: t(`constants.kinds.${kind}`),
   }));
 
 export const selectPriorities = () =>
   priorities.map((priority, index) => ({
     priority: index + 1,
     value: `${index + 1}`,
-    label: t('constants.priorities.' + priority),
+    label: t(`constants.priorities.${priority}`),
   }));
 
 export const selectStatuses = () =>
   statuses.map((status, index) => ({
-    text: t('constants.statuses.' + status),
+    text: t(`constants.statuses.${status}`),
     color: `${index + 1}`,
     value: `${index + 1}`,
-    label: t('constants.statuses.' + status),
+    label: t(`constants.statuses.${status}`),
   }));
 
 export const selectResults = () =>
   results.map((result, index) => ({
-    text: t('constants.results.' + result),
+    text: t(`constants.results.${result}`),
     color: `${resultsToColors[index]}`,
     value: `${index + 1}`,
-    label: t('constants.results.' + result),
+    label: t(`constants.results.${result}`),
   }));

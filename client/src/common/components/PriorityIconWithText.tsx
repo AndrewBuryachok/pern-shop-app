@@ -15,7 +15,7 @@ export default function PriorityIconWithText(props: Props) {
     <Group spacing={8}>
       <PriorityIcon {...props} />
       <SingleText
-        text={t('constants.priorities.' + priorities[props.priority - 1])}
+        text={t(`constants.priorities.${priorities[props.priority - 1]}`)}
       />
     </Group>
   );

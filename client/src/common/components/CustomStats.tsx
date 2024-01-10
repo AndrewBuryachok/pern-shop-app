@@ -42,7 +42,7 @@ export default function CustomStats() {
             <div>
               <Text size='xs' weight='bold' color='dimmed'>
                 {`${t('components.new')} ${t(
-                  'navbar.' + stat.label,
+                  `navbar.${stat.label}`,
                 )}`.toUpperCase()}
               </Text>
               <Text size='xl' weight='bold'>

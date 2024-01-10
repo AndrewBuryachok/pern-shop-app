@@ -127,7 +127,7 @@ export default function CustomNavbar(props: Props) {
           link.nested ? (
             <NavLink
               key={link.route}
-              label={t('navbar.' + link.route)}
+              label={t(`navbar.${link.route}`)}
               icon={
                 <NotificationBadge
                   pages={link.nested}
@@ -140,7 +140,7 @@ export default function CustomNavbar(props: Props) {
               {link.nested.map((route) => (
                 <NavLink
                   key={route}
-                  label={t('navbar.' + route)}
+                  label={t(`navbar.${route}`)}
                   icon={<NotificationBadge pages={[route]} />}
                   component={Link}
                   to={`${route}${link.my ? '/my' : ''}`}
@@ -151,7 +151,7 @@ export default function CustomNavbar(props: Props) {
           ) : (
             <NavLink
               key={link.route}
-              label={t('navbar.' + link.route)}
+              label={t(`navbar.${link.route}`)}
               icon={
                 <NotificationBadge
                   pages={[link.route]}

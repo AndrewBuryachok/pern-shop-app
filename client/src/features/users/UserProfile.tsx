@@ -164,7 +164,7 @@ export default function UserProfile({ data: user }: Props) {
               <Paper key={stat.label} p={8}>
                 <Stack spacing={0} align='center'>
                   <Text size='sm' color={colors[index]}>
-                    {t('navbar.' + stat.label)}
+                    {t(`navbar.${stat.label}`)}
                   </Text>
                   <Text size='lg' weight='bold'>
                     {stat.count || 0}
