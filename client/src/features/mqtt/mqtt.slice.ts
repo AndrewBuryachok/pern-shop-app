@@ -33,8 +33,7 @@ client.on('message', (topic, message) => {
     store.dispatch(addNotification(modal));
     showNotification({
       title: t('notifications.notification'),
-      message:
-        t('actions.' + action) + ' ' + t('modals.' + modal).toLowerCase(),
+      message: t(`notifications.${modal}.${action}`),
       autoClose: false,
       onClose: () => store.dispatch(removeNotification(modal)),
     });

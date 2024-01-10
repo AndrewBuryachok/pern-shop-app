@@ -145,20 +145,7 @@
     "unsubscribe": "Unsubscribe",
     "like": "Like",
     "comment": "Comment",
-    "view": "View",
-    "created": "Created",
-    "added": "Added",
-    "completed": "Completed",
-    "taken": "Taken",
-    "executed": "Executed",
-    "edited": "Edited",
-    "rated": "Rated",
-    "removed": "Removed",
-    "untaken": "Untaken",
-    "deleted": "Deleted",
-    "liked": "Liked",
-    "commented": "Commented",
-    "voted": "Voted to"
+    "view": "View"
   },
   "components": {
     "submit": "Submit",
@@ -301,7 +288,130 @@
     "success": "Success",
     "error": "Error",
     "message": "Operation completed successfully",
-    "notification": "Notification"
+    "notification": "Notification",
+    "users": {
+      "created": "Someone registered"
+    },
+    "friends": {
+      "added": "Someone added you in friends",
+      "removed": "Someone removed you from friends"
+    },
+    "subscribers": {
+      "added": "Someone subscribed on you",
+      "removed": "Someone unsubscribed from you"
+    },
+    "articles": {
+      "created": "Someone created article",
+      "liked": "Someone liked your article",
+      "commented": "Someone commented your article"
+    },
+    "cards": {
+      "added": "Someone added you in card",
+      "removed": "Someone removed you from card"
+    },
+    "exchanges": {
+      "created": "Someone created exchange to you"
+    },
+    "payments": {
+      "created": "Someone created payment to you"
+    },
+    "invoices": {
+      "created": "Someone created invoice to you",
+      "completed": "Someone completed your invoice",
+      "deleted": "Someone deleted your invoice"
+    },
+    "cities": {
+      "created": "Someone created city",
+      "added": "Someone added you in city",
+      "removed": "Someone removed you from city"
+    },
+    "shops": {
+      "created": "Someone created shop"
+    },
+    "markets": {
+      "created": "Someone created market"
+    },
+    "storages": {
+      "created": "Someone created storage"
+    },
+    "stores": {
+      "created": "Someone created store"
+    },
+    "cells": {
+      "created": "Someone created cell"
+    },
+    "rents": {
+      "created": "Someone reserved your store",
+      "completed": "Someone completed your rent"
+    },
+    "leases": {
+      "created": "Someone reserved your cell",
+      "completed": "Someone completed your lease"
+    },
+    "goods": {
+      "created": "Someone created good"
+    },
+    "wares": {
+      "created": "Someone created ware"
+    },
+    "products": {
+      "created": "Someone created product"
+    },
+    "lots": {
+      "created": "Someone created lot",
+      "completed": "Someone completed your lot"
+    },
+    "trades": {
+      "created": "Someone bought your ware",
+      "rated": "Someone rated your ware"
+    },
+    "sales": {
+      "created": "Someone bought your product",
+      "rated": "Someone rated your product"
+    },
+    "bids": {
+      "created": "Someone bought your lot"
+    },
+    "orders": {
+      "created": "Someone created order",
+      "taken": "Someone taken your order",
+      "untaken": "Someone untaken your order",
+      "executed": "Someone executed your order",
+      "completed": "Someone completed your order",
+      "rated": "Someone rated your order"
+    },
+    "deliveries": {
+      "created": "Someone created delivery",
+      "taken": "Someone taken your delivery",
+      "untaken": "Someone untaken your delivery",
+      "executed": "Someone executed your delivery",
+      "completed": "Someone completed your delivery",
+      "rated": "Someone rated your delivery"
+    },
+    "tasks": {
+      "created": "Someone created task",
+      "taken": "Someone taken your task",
+      "untaken": "Someone untaken your task",
+      "executed": "Someone executed your task",
+      "completed": "Someone completed your task"
+    },
+    "plaints": {
+      "created": "Someone created plaint",
+      "executed": "Someone executed your plaint",
+      "completed": "Someone completed your plaint",
+      "deleted": "Someone deleted your plaint"
+    },
+    "polls": {
+      "created": "Someone created poll",
+      "voted": "Someone voted to your poll",
+      "discussed": "Someone discussed your poll",
+      "completed": "Someone completed your poll"
+    },
+    "ratings": {
+      "created": "Someone created rating to you",
+      "edited": "Someone edited rating to you",
+      "deleted": "Someone deleted rating to you"
+    }
   },
   "constants": {
     "currency": "DO",
