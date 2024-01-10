@@ -304,6 +304,7 @@
     "notification": "Повідомлення"
   },
   "constants": {
+    "currency": "ДР",
     "increase": "Збільшення",
     "decrease": "Зменшення",
     "up": "За",

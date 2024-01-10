@@ -2,6 +2,7 @@ import { forwardRef } from 'react';
 import { Group } from '@mantine/core';
 import CustomAvatar from './CustomAvatar';
 import SingleText from './SingleText';
+import PriceText from './PriceText';
 
 interface Props extends React.ComponentPropsWithoutRef<'div'> {
   userid: number;
@@ -25,9 +26,7 @@ export const CardsItem = forwardRef<HTMLDivElement, Props>(
           <SingleText text={props.nick} />
           <Group spacing={8}>
             <SingleText text={props.name} color={+props.color} />
-            {props.balance !== undefined && (
-              <SingleText text={`${props.balance}$`} />
-            )}
+            {props.balance !== undefined && <PriceText price={props.balance} />}
           </Group>
         </div>
       </Group>

@@ -63,7 +63,7 @@ export default function RateSaleModal({ data: sale }: Props) {
       />
       <TextInput
         label={t('columns.sum')}
-        value={`${sale.amount * sale.product.price}$`}
+        value={`${sale.amount * sale.product.price} ${t('constants.currency')}`}
         disabled
       />
       <Input.Wrapper label={t('columns.rate')} required>

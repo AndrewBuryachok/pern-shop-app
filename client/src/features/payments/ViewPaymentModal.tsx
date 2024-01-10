@@ -30,7 +30,11 @@ export default function ViewPaymentModal({ data: payment }: Props) {
         value={parseCard(payment.receiverCard)}
         disabled
       />
-      <TextInput label={t('columns.sum')} value={`${payment.sum}$`} disabled />
+      <TextInput
+        label={t('columns.sum')}
+        value={`${payment.sum} ${t('constants.currency')}`}
+        disabled
+      />
       <Textarea
         label={t('columns.description')}
         value={payment.description || '-'}

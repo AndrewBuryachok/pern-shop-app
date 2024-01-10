@@ -53,7 +53,11 @@ export default function ViewLotModal({ data: lot }: Props) {
         value={parseThingAmount(lot)}
         disabled
       />
-      <TextInput label={t('columns.price')} value={`${lot.price}$`} disabled />
+      <TextInput
+        label={t('columns.price')}
+        value={`${lot.price} ${t('constants.currency')}`}
+        disabled
+      />
       <Select
         label={t('columns.bids')}
         placeholder={`${t('components.total')}: ${bids?.length || 0}`}

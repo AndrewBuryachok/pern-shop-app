@@ -1,3 +1,4 @@
+import { t } from 'i18next';
 import DoubleText from './DoubleText';
 import { parseCoordinates } from '../../common/utils';
 
@@ -15,7 +16,7 @@ export default function PlaceText(props: Props) {
     <DoubleText
       text={`${props.name}${props.container ? ` #${props.container}` : ''}${
         !props.container && props.price && !props.withoutPrice
-          ? ` ${props.price}$`
+          ? ` ${props.price} ${t('constants.currency')}`
           : ''
       }`}
       subtext={`${props.x} ${props.y}`}

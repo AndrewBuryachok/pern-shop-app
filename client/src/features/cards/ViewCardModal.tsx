@@ -36,7 +36,7 @@ export default function ViewCardModal({ data: card }: Props) {
       />
       <TextInput
         label={t('columns.balance')}
-        value={`${card.balance}$`}
+        value={`${card.balance} ${t('constants.currency')}`}
         disabled
       />
       <Select

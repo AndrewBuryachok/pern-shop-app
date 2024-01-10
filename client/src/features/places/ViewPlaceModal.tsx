@@ -71,7 +71,7 @@ export default function PlaceModal({ data: place }: Props) {
       {place.price && (
         <TextInput
           label={t('columns.price')}
-          value={`${place.price}$`}
+          value={`${place.price} ${t('constants.currency')}`}
           disabled
         />
       )}

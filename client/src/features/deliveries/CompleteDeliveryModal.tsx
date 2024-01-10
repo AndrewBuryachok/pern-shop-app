@@ -62,7 +62,7 @@ export default function CompleteDeliveryModal({ data: delivery }: Props) {
       />
       <TextInput
         label={t('columns.price')}
-        value={`${delivery.price}$`}
+        value={`${delivery.price} ${t('constants.currency')}`}
         disabled
       />
     </CustomForm>

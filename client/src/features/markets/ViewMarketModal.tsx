@@ -48,7 +48,7 @@ export default function ViewMarketModal({ data: market }: Props) {
       <TextInput label={t('columns.y')} value={market.y} disabled />
       <TextInput
         label={t('columns.price')}
-        value={`${market.price}$`}
+        value={`${market.price} ${t('constants.currency')}`}
         disabled
       />
       <Select

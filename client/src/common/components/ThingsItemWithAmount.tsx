@@ -2,6 +2,7 @@ import { forwardRef } from 'react';
 import { Group } from '@mantine/core';
 import ThingImageWithText from './ThingImageWithText';
 import SingleText from './SingleText';
+import PriceText from './PriceText';
 import { parseThingAmount } from '../utils';
 
 interface Props extends React.ComponentPropsWithoutRef<'div'> {
@@ -19,7 +20,7 @@ export const ThingsItemWithAmount = forwardRef<HTMLDivElement, Props>(
       <ThingImageWithText {...props} />
       <Group spacing={8}>
         <SingleText text={parseThingAmount(props)} />
-        <SingleText text={`${props.price}$`} />
+        <PriceText price={props.price} />
       </Group>
     </div>
   ),

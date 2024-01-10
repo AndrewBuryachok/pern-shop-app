@@ -76,7 +76,11 @@ export default function CompleteInvoiceModal({
         value={invoice.receiverUser.nick}
         disabled
       />
-      <TextInput label={t('columns.sum')} value={`${invoice.sum}$`} disabled />
+      <TextInput
+        label={t('columns.sum')}
+        value={`${invoice.sum} ${t('constants.currency')}`}
+        disabled
+      />
       <Textarea
         label={t('columns.description')}
         value={invoice.description || '-'}

@@ -51,7 +51,11 @@ export default function ViewGoodModal({ data: good }: Props) {
         value={parseThingAmount(good)}
         disabled
       />
-      <TextInput label={t('columns.price')} value={`${good.price}$`} disabled />
+      <TextInput
+        label={t('columns.price')}
+        value={`${good.price} ${t('constants.currency')}`}
+        disabled
+      />
       <TextInput
         label={t('columns.created')}
         value={parseTime(good.createdAt)}

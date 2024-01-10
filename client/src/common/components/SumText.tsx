@@ -1,5 +1,6 @@
-import SingleText from './SingleText';
+import { t } from 'i18next';
 import { getCurrentUser } from '../../features/auth/auth.slice';
+import SingleText from './SingleText';
 import { Color } from '../constants';
 
 type Props = {
@@ -29,5 +30,10 @@ export default function SumText(props: Props) {
       ? Color.GREEN
       : undefined;
 
-  return <SingleText text={`${char}${props.sum}$`} color={color} />;
+  return (
+    <SingleText
+      text={`${char}${props.sum} ${t('constants.currency')}`}
+      color={color}
+    />
+  );
 }

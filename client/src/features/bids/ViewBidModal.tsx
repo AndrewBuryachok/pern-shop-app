@@ -54,7 +54,11 @@ export default function ViewBidModal({ data: bid }: Props) {
         value={parseThingAmount(bid.lot)}
         disabled
       />
-      <TextInput label={t('columns.sum')} value={`${bid.price}$`} disabled />
+      <TextInput
+        label={t('columns.sum')}
+        value={`${bid.price} ${t('constants.currency')}`}
+        disabled
+      />
       <TextInput
         label={t('columns.storage')}
         value={parseCell(bid.lot.lease.cell)}

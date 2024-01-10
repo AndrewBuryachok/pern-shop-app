@@ -65,7 +65,7 @@ export default function RateOrderModal({ data: order }: Props) {
       />
       <TextInput
         label={t('columns.price')}
-        value={`${order.price}$`}
+        value={`${order.price} ${t('constants.currency')}`}
         disabled
       />
       <Input.Wrapper label={t('columns.rate')} required>

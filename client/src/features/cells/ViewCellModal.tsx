@@ -31,7 +31,7 @@ export default function ViewCellModal({ data: cell }: Props) {
       <TextInput label={t('columns.cell')} value={`#${cell.name}`} disabled />
       <TextInput
         label={t('columns.price')}
-        value={`${cell.storage.price}$`}
+        value={`${cell.storage.price} ${t('constants.currency')}`}
         disabled
       />
       <TextInput

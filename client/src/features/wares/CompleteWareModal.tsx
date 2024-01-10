@@ -60,7 +60,11 @@ export default function CompleteWareModal({ data: ware }: Props) {
         value={parseThingAmount(ware)}
         disabled
       />
-      <TextInput label={t('columns.price')} value={`${ware.price}$`} disabled />
+      <TextInput
+        label={t('columns.price')}
+        value={`${ware.price} ${t('constants.currency')}`}
+        disabled
+      />
     </CustomForm>
   );
 }

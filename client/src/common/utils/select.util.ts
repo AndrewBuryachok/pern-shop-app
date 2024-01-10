@@ -52,7 +52,7 @@ export const selectCardsWithBalance = (cards?: MdCardWithBalance[]) =>
     avatar: user.avatar,
     color: `${card.color}`,
     value: `${card.id}`,
-    label: `${card.name} ${card.balance}$`,
+    label: `${card.name} ${card.balance} ${t('constants.currency')}`,
   })) || [];
 
 export const selectCities = (cities?: SmCity[]) =>
@@ -87,7 +87,9 @@ export const selectStoragesWithPrice = (storages?: SmStorageWithPrice[]) =>
   storages?.map((storage) => ({
     ...storage,
     value: `${storage.id}`,
-    label: `${storage.name} (${storage.x} ${storage.y}) ${storage.price}$`,
+    label: `${storage.name} (${storage.x} ${storage.y}) ${storage.price} ${t(
+      'constants.currency',
+    )}`,
   })) || [];
 
 export const selectContainers = (containers?: Container[]) =>

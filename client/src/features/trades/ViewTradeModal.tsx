@@ -56,7 +56,7 @@ export default function ViewTradeModal({ data: trade }: Props) {
       />
       <TextInput
         label={t('columns.sum')}
-        value={`${trade.amount * trade.ware.price}$`}
+        value={`${trade.amount * trade.ware.price} ${t('constants.currency')}`}
         disabled
       />
       <TextInput

@@ -43,7 +43,7 @@ export const viewThings = (things: MdThing[]) =>
 export const viewStates = (states: State[]) =>
   states.map((state) => ({
     value: `${state.id}`,
-    label: `${state.price}$`,
+    label: `${state.price} ${t('constants.currency')}`,
     price: state.price,
     date: state.createdAt,
     disabled: true,

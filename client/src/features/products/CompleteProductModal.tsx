@@ -62,7 +62,7 @@ export default function CompleteProductModal({ data: product }: Props) {
       />
       <TextInput
         label={t('columns.price')}
-        value={`${product.price}$`}
+        value={`${product.price} ${t('constants.currency')}`}
         disabled
       />
     </CustomForm>

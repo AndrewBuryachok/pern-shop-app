@@ -92,7 +92,11 @@ export default function BuyWareModal({ data: ware, hasRole }: Props) {
         value={parseThingAmount(ware)}
         disabled
       />
-      <TextInput label={t('columns.price')} value={`${ware.price}$`} disabled />
+      <TextInput
+        label={t('columns.price')}
+        value={`${ware.price} ${t('constants.currency')}`}
+        disabled
+      />
       {hasRole && (
         <Select
           label={t('columns.user')}

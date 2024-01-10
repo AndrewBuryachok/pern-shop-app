@@ -64,7 +64,11 @@ export default function ViewWareModal({ data: ware }: Props) {
         value={parseThingAmount(ware)}
         disabled
       />
-      <TextInput label={t('columns.price')} value={`${ware.price}$`} disabled />
+      <TextInput
+        label={t('columns.price')}
+        value={`${ware.price} ${t('constants.currency')}`}
+        disabled
+      />
       <Select
         label={t('columns.prices')}
         placeholder={`${t('components.total')}: ${states?.length || 0}`}

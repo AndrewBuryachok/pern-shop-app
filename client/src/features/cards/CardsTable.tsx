@@ -5,6 +5,7 @@ import CustomTable from '../../common/components/CustomTable';
 import AvatarWithSingleText from '../../common/components/AvatarWithSingleText';
 import SingleText from '../../common/components/SingleText';
 import CustomBadge from '../../common/components/CustomBadge';
+import PriceText from '../../common/components/PriceText';
 import TotalText from '../../common/components/TotalText';
 import CustomActions from '../../common/components/CustomActions';
 import { viewCardAction } from './ViewCardModal';
@@ -43,7 +44,7 @@ export default function CardsTable({ actions = [], ...props }: Props) {
             />
           </td>
           <td>
-            <SingleText text={`${card.balance}$`} />
+            <PriceText price={card.balance} />
           </td>
           <td>
             <TotalText data={card.users} />

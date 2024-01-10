@@ -90,7 +90,7 @@ export default function TakeDeliveryModal({ data: delivery, hasRole }: Props) {
       />
       <TextInput
         label={t('columns.price')}
-        value={`${delivery.price}$`}
+        value={`${delivery.price} ${t('constants.currency')}`}
         disabled
       />
       {hasRole && (

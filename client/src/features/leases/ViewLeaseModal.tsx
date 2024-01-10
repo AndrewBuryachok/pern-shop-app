@@ -50,7 +50,7 @@ export default function ViewLeaseModal({ data: lease }: Props) {
       />
       <TextInput
         label={t('columns.sum')}
-        value={`${lease.cell.storage.price}$`}
+        value={`${lease.cell.storage.price} ${t('constants.currency')}`}
         disabled
       />
       <TextInput

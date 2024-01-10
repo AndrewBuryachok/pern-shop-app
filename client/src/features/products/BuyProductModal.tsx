@@ -94,7 +94,7 @@ export default function BuyProductModal({ data: product, hasRole }: Props) {
       />
       <TextInput
         label={t('columns.price')}
-        value={`${product.price}$`}
+        value={`${product.price} ${t('constants.currency')}`}
         disabled
       />
       {hasRole && (

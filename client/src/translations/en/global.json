@@ -304,6 +304,7 @@
     "notification": "Notification"
   },
   "constants": {
+    "currency": "DO",
     "increase": "Increase",
     "decrease": "Decrease",
     "up": "Up",

@@ -90,7 +90,7 @@ export default function ReserveStoreModal({ data: store, hasRole }: Props) {
       />
       <TextInput
         label={t('columns.price')}
-        value={`${store.market.price}$`}
+        value={`${store.market.price} ${t('constants.currency')}`}
         disabled
       />
       {hasRole && (

@@ -90,7 +90,7 @@ export default function TakeOrderModal({ data: order, hasRole }: Props) {
       />
       <TextInput
         label={t('columns.price')}
-        value={`${order.price}$`}
+        value={`${order.price} ${t('constants.currency')}`}
         disabled
       />
       {hasRole && (

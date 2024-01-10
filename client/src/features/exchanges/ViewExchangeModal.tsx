@@ -37,7 +37,11 @@ export default function ViewExchangeModal({ data: exchange }: Props) {
         }
         disabled
       />
-      <TextInput label={t('columns.sum')} value={`${exchange.sum}$`} disabled />
+      <TextInput
+        label={t('columns.sum')}
+        value={`${exchange.sum} ${t('constants.currency')}`}
+        disabled
+      />
       <TextInput
         label={t('columns.created')}
         value={parseTime(exchange.createdAt)}

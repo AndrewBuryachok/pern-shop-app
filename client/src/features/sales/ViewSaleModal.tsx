@@ -56,7 +56,7 @@ export default function ViewSaleModal({ data: sale }: Props) {
       />
       <TextInput
         label={t('columns.sum')}
-        value={`${sale.amount * sale.product.price}$`}
+        value={`${sale.amount * sale.product.price} ${t('constants.currency')}`}
         disabled
       />
       <TextInput

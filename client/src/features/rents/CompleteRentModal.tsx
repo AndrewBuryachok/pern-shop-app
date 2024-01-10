@@ -56,7 +56,7 @@ export default function CompleteRentModal({ data: rent }: Props) {
       />
       <TextInput
         label={t('columns.sum')}
-        value={`${rent.store.market.price}$`}
+        value={`${rent.store.market.price} ${t('constants.currency')}`}
         disabled
       />
     </CustomForm>

@@ -63,7 +63,7 @@ export default function RateTradeModal({ data: trade }: Props) {
       />
       <TextInput
         label={t('columns.sum')}
-        value={`${trade.amount * trade.ware.price}$`}
+        value={`${trade.amount * trade.ware.price} ${t('constants.currency')}`}
         disabled
       />
       <Input.Wrapper label={t('columns.rate')} required>

@@ -67,7 +67,7 @@ export default function RateDeliveryModal({ data: delivery }: Props) {
       />
       <TextInput
         label={t('columns.price')}
-        value={`${delivery.price}$`}
+        value={`${delivery.price} ${t('constants.currency')}`}
         disabled
       />
       <Input.Wrapper label={t('columns.rate')} required>

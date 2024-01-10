@@ -48,7 +48,7 @@ export default function ViewStorageModal({ data: storage }: Props) {
       <TextInput label={t('columns.y')} value={storage.y} disabled />
       <TextInput
         label={t('columns.price')}
-        value={`${storage.price}$`}
+        value={`${storage.price} ${t('constants.currency')}`}
         disabled
       />
       <Select

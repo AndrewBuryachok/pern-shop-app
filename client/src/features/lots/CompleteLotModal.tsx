@@ -60,7 +60,11 @@ export default function CompleteLotModal({ data: lot }: Props) {
         value={parseThingAmount(lot)}
         disabled
       />
-      <TextInput label={t('columns.price')} value={`${lot.price}$`} disabled />
+      <TextInput
+        label={t('columns.price')}
+        value={`${lot.price} ${t('constants.currency')}`}
+        disabled
+      />
     </CustomForm>
   );
 }
