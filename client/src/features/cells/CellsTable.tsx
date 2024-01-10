@@ -1,4 +1,3 @@
-import { useTranslation } from 'react-i18next';
 import { ITableWithActions } from '../../common/interfaces';
 import { Cell } from './cell.model';
 import CustomTable from '../../common/components/CustomTable';
@@ -13,19 +12,10 @@ import { viewCellAction } from './ViewCellModal';
 type Props = ITableWithActions<Cell>;
 
 export default function CellsTable({ actions = [], ...props }: Props) {
-  const [t] = useTranslation();
-
   return (
     <CustomTable
       minWidth={700}
-      columns={[
-        t('columns.owner'),
-        t('columns.storage'),
-        t('columns.cell'),
-        t('columns.price'),
-        t('columns.reserved'),
-        t('columns.action'),
-      ]}
+      columns={['owner', 'storage', 'cell', 'price', 'reserved', 'action']}
       {...props}
     >
       {props.data?.result.map((cell) => (

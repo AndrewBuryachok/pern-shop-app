@@ -1,4 +1,3 @@
-import { useTranslation } from 'react-i18next';
 import { ITableWithActions } from '../../common/interfaces';
 import { User } from './user.model';
 import CustomTable from '../../common/components/CustomTable';
@@ -14,19 +13,10 @@ import { viewUserAction } from './ViewUserModal';
 type Props = ITableWithActions<User>;
 
 export default function UsersTable({ actions = [], ...props }: Props) {
-  const [t] = useTranslation();
-
   return (
     <CustomTable
       minWidth={1000}
-      columns={[
-        t('columns.user'),
-        t('columns.roles'),
-        t('columns.city'),
-        t('columns.online'),
-        t('columns.friends'),
-        t('columns.action'),
-      ]}
+      columns={['user', 'roles', 'city', 'online', 'friends', 'action']}
       {...props}
     >
       {props.data?.result.map((user) => (

@@ -1,4 +1,3 @@
-import { useTranslation } from 'react-i18next';
 import { ITableWithActions } from '../../common/interfaces';
 import { Shop } from './shop.model';
 import CustomTable from '../../common/components/CustomTable';
@@ -12,19 +11,10 @@ import { viewShopAction } from './ViewShopModal';
 type Props = ITableWithActions<Shop>;
 
 export default function ShopsTable({ actions = [], ...props }: Props) {
-  const [t] = useTranslation();
-
   return (
     <CustomTable
       minWidth={700}
-      columns={[
-        t('columns.owner'),
-        t('columns.shop'),
-        t('columns.x'),
-        t('columns.y'),
-        t('columns.goods'),
-        t('columns.action'),
-      ]}
+      columns={['owner', 'shop', 'x', 'y', 'goods', 'action']}
       {...props}
     >
       {props.data?.result.map((shop) => (

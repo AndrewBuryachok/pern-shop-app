@@ -4,12 +4,11 @@ import { Card } from './card.model';
 import CustomTable from '../../common/components/CustomTable';
 import AvatarWithSingleText from '../../common/components/AvatarWithSingleText';
 import SingleText from '../../common/components/SingleText';
-import CustomBadge from '../../common/components/CustomBadge';
+import ColorBadge from '../../common/components/ColorBadge';
 import PriceText from '../../common/components/PriceText';
 import TotalText from '../../common/components/TotalText';
 import CustomActions from '../../common/components/CustomActions';
 import { viewCardAction } from './ViewCardModal';
-import { colors } from '../../common/constants';
 
 type Props = ITableWithActions<Card>;
 
@@ -19,14 +18,7 @@ export default function CardsTable({ actions = [], ...props }: Props) {
   return (
     <CustomTable
       minWidth={700}
-      columns={[
-        t('columns.owner'),
-        t('columns.card'),
-        t('columns.color'),
-        t('columns.balance'),
-        t('columns.users'),
-        t('columns.action'),
-      ]}
+      columns={['owner', 'card', 'color', 'balance', 'users', 'action']}
       {...props}
     >
       {props.data?.result.map((card) => (
@@ -38,10 +30,7 @@ export default function CardsTable({ actions = [], ...props }: Props) {
             <SingleText text={card.name} color={card.color} />
           </td>
           <td>
-            <CustomBadge
-              color={card.color}
-              text={t('constants.colors.' + colors[card.color - 1])}
-            />
+            <ColorBadge color={card.color} />
           </td>
           <td>
             <PriceText price={card.balance} />

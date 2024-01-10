@@ -1,4 +1,3 @@
-import { useTranslation } from 'react-i18next';
 import { ITableWithActions } from '../../common/interfaces';
 import { Rent } from './rent.model';
 import CustomTable from '../../common/components/CustomTable';
@@ -13,19 +12,17 @@ import { viewRentAction } from './ViewRentModal';
 type Props = ITableWithActions<Rent>;
 
 export default function RentsTable({ actions = [], ...props }: Props) {
-  const [t] = useTranslation();
-
   return (
     <CustomTable
       minWidth={900}
       columns={[
-        t('columns.renter'),
-        t('columns.owner'),
-        t('columns.market'),
-        t('columns.sum'),
-        t('columns.created'),
-        t('columns.things'),
-        t('columns.action'),
+        'renter',
+        'owner',
+        'market',
+        'sum',
+        'created',
+        'things',
+        'action',
       ]}
       {...props}
     >

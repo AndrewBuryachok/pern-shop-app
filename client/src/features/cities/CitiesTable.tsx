@@ -1,4 +1,3 @@
-import { useTranslation } from 'react-i18next';
 import { ITableWithActions } from '../../common/interfaces';
 import { City } from './city.model';
 import CustomTable from '../../common/components/CustomTable';
@@ -12,19 +11,10 @@ import { viewCityAction } from './ViewCityModal';
 type Props = ITableWithActions<City>;
 
 export default function CitiesTable({ actions = [], ...props }: Props) {
-  const [t] = useTranslation();
-
   return (
     <CustomTable
       minWidth={700}
-      columns={[
-        t('columns.owner'),
-        t('columns.city'),
-        t('columns.x'),
-        t('columns.y'),
-        t('columns.users'),
-        t('columns.action'),
-      ]}
+      columns={['owner', 'city', 'x', 'y', 'users', 'action']}
       {...props}
     >
       {props.data?.result.map((city) => (

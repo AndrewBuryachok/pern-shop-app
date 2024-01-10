@@ -1,4 +1,3 @@
-import { useTranslation } from 'react-i18next';
 import { ITableWithActions } from '../../common/interfaces';
 import { Task } from './task.model';
 import CustomTable from '../../common/components/CustomTable';
@@ -12,18 +11,10 @@ import { viewTaskAction } from './ViewTaskModal';
 type Props = ITableWithActions<Task>;
 
 export default function TasksTable({ actions = [], ...props }: Props) {
-  const [t] = useTranslation();
-
   return (
     <CustomTable
       minWidth={900}
-      columns={[
-        t('columns.customer'),
-        t('columns.title'),
-        t('columns.priority'),
-        t('columns.status'),
-        t('columns.action'),
-      ]}
+      columns={['customer', 'title', 'priority', 'status', 'action']}
       {...props}
     >
       {props.data?.result.map((task) => (

@@ -1,4 +1,3 @@
-import { useTranslation } from 'react-i18next';
 import { ITableWithActions } from '../../common/interfaces';
 import { Invoice } from './invoice.model';
 import CustomTable from '../../common/components/CustomTable';
@@ -13,18 +12,16 @@ import { viewInvoiceAction } from './ViewInvoiceModal';
 type Props = ITableWithActions<Invoice>;
 
 export default function InvoicesTable({ actions = [], ...props }: Props) {
-  const [t] = useTranslation();
-
   return (
     <CustomTable
       minWidth={900}
       columns={[
-        t('columns.sender'),
-        t('columns.receiver'),
-        t('columns.sum'),
-        t('columns.description'),
-        t('columns.completed'),
-        t('columns.action'),
+        'sender',
+        'receiver',
+        'sum',
+        'description',
+        'completed',
+        'action',
       ]}
       {...props}
     >

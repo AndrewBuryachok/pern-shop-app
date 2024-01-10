@@ -1,4 +1,3 @@
-import { useTranslation } from 'react-i18next';
 import { ITableWithActions } from '../../common/interfaces';
 import { Poll } from './poll.model';
 import { getCurrentUser } from '../auth/auth.slice';
@@ -17,8 +16,6 @@ import { viewPollAction } from './ViewPollModal';
 type Props = ITableWithActions<Poll>;
 
 export default function PollsTable({ actions = [], ...props }: Props) {
-  const [t] = useTranslation();
-
   const user = getCurrentUser();
 
   const { data: votedPolls } = useSelectVotedPollsQuery(undefined, {
@@ -29,13 +26,13 @@ export default function PollsTable({ actions = [], ...props }: Props) {
     <CustomTable
       minWidth={1000}
       columns={[
-        t('columns.owner'),
-        t('columns.title'),
-        t('columns.vote'),
-        t('columns.votes'),
-        t('columns.discussions'),
-        t('columns.result'),
-        t('columns.action'),
+        'owner',
+        'title',
+        'vote',
+        'votes',
+        'discussions',
+        'result',
+        'action',
       ]}
       {...props}
     >

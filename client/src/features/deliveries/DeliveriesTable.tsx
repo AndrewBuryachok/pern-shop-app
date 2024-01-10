@@ -1,4 +1,3 @@
-import { useTranslation } from 'react-i18next';
 import { ITableWithActions } from '../../common/interfaces';
 import { Delivery } from './delivery.model';
 import CustomTable from '../../common/components/CustomTable';
@@ -15,20 +14,18 @@ import { parseThingAmount } from '../../common/utils';
 type Props = ITableWithActions<Delivery>;
 
 export default function DeliveriesTable({ actions = [], ...props }: Props) {
-  const [t] = useTranslation();
-
   return (
     <CustomTable
       minWidth={1200}
       columns={[
-        t('columns.customer'),
-        t('columns.item'),
-        t('columns.amount'),
-        t('columns.price'),
-        t('columns.status'),
-        t('columns.from'),
-        t('columns.to'),
-        t('columns.action'),
+        'customer',
+        'item',
+        'amount',
+        'price',
+        'status',
+        'from',
+        'to',
+        'action',
       ]}
       {...props}
     >

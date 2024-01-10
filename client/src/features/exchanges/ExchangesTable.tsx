@@ -4,12 +4,11 @@ import { Exchange } from './exchange.model';
 import CustomTable from '../../common/components/CustomTable';
 import AvatarWithSingleText from '../../common/components/AvatarWithSingleText';
 import AvatarWithDoubleText from '../../common/components/AvatarWithDoubleText';
-import CustomBadge from '../../common/components/CustomBadge';
+import TypeBadge from '../../common/components/TypeBadge';
 import SumText from '../../common/components/SumText';
 import DateText from '../../common/components/DateText';
 import CustomActions from '../../common/components/CustomActions';
 import { viewExchangeAction } from './ViewExchangeModal';
-import { Color } from '../../common/constants';
 
 type Props = ITableWithActions<Exchange>;
 
@@ -19,14 +18,7 @@ export default function ExchangesTable({ actions = [], ...props }: Props) {
   return (
     <CustomTable
       minWidth={800}
-      columns={[
-        t('columns.executor'),
-        t('columns.customer'),
-        t('columns.type'),
-        t('columns.sum'),
-        t('columns.created'),
-        t('columns.action'),
-      ]}
+      columns={['executor', 'customer', 'type', 'sum', 'created', 'action']}
       {...props}
     >
       {props.data?.result.map((exchange) => (
@@ -38,14 +30,7 @@ export default function ExchangesTable({ actions = [], ...props }: Props) {
             <AvatarWithDoubleText {...exchange.customerCard} />
           </td>
           <td>
-            <CustomBadge
-              color={exchange.type ? Color.GREEN : Color.RED}
-              text={
-                exchange.type
-                  ? t('constants.increase')
-                  : t('constants.decrease')
-              }
-            />
+            <TypeBadge type={exchange.type} />
           </td>
           <td>
             <SumText

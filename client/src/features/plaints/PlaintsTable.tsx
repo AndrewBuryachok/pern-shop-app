@@ -1,4 +1,3 @@
-import { useTranslation } from 'react-i18next';
 import { ITableWithActions } from '../../common/interfaces';
 import { Plaint } from './plaint.model';
 import CustomTable from '../../common/components/CustomTable';
@@ -11,18 +10,16 @@ import { viewPlaintAction } from './ViewPlaintModal';
 type Props = ITableWithActions<Plaint>;
 
 export default function PlaintsTable({ actions = [], ...props }: Props) {
-  const [t] = useTranslation();
-
   return (
     <CustomTable
       minWidth={1000}
       columns={[
-        t('columns.sender'),
-        t('columns.receiver'),
-        t('columns.title'),
-        t('columns.executor'),
-        t('columns.completed'),
-        t('columns.action'),
+        'sender',
+        'receiver',
+        'title',
+        'executor',
+        'completed',
+        'action',
       ]}
       {...props}
     >

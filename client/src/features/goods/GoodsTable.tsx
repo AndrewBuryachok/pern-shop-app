@@ -1,4 +1,3 @@
-import { useTranslation } from 'react-i18next';
 import { ITableWithActions } from '../../common/interfaces';
 import { Good } from './good.model';
 import CustomTable from '../../common/components/CustomTable';
@@ -15,19 +14,17 @@ import { parseThingAmount } from '../../common/utils';
 type Props = ITableWithActions<Good>;
 
 export default function GoodsTable({ actions = [], ...props }: Props) {
-  const [t] = useTranslation();
-
   return (
     <CustomTable
       minWidth={1000}
       columns={[
-        t('columns.seller'),
-        t('columns.item'),
-        t('columns.amount'),
-        t('columns.price'),
-        t('columns.shop'),
-        t('columns.created'),
-        t('columns.action'),
+        'seller',
+        'item',
+        'amount',
+        'price',
+        'shop',
+        'created',
+        'action',
       ]}
       {...props}
     >

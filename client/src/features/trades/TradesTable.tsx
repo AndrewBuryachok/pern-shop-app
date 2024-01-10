@@ -1,4 +1,3 @@
-import { useTranslation } from 'react-i18next';
 import { ITableWithActions } from '../../common/interfaces';
 import { Trade } from './trade.model';
 import CustomTable from '../../common/components/CustomTable';
@@ -15,20 +14,18 @@ import { parseTradeAmount } from '../../common/utils';
 type Props = ITableWithActions<Trade>;
 
 export default function TradesTable({ actions = [], ...props }: Props) {
-  const [t] = useTranslation();
-
   return (
     <CustomTable
       minWidth={1100}
       columns={[
-        t('columns.buyer'),
-        t('columns.seller'),
-        t('columns.item'),
-        t('columns.amount'),
-        t('columns.sum'),
-        t('columns.market'),
-        t('columns.created'),
-        t('columns.action'),
+        'buyer',
+        'seller',
+        'item',
+        'amount',
+        'sum',
+        'market',
+        'created',
+        'action',
       ]}
       {...props}
     >

@@ -1,4 +1,3 @@
-import { useTranslation } from 'react-i18next';
 import { ITableWithActions } from '../../common/interfaces';
 import { Payment } from './payment.model';
 import CustomTable from '../../common/components/CustomTable';
@@ -12,18 +11,16 @@ import { viewPaymentAction } from './ViewPaymentModal';
 type Props = ITableWithActions<Payment>;
 
 export default function PaymentsTable({ actions = [], ...props }: Props) {
-  const [t] = useTranslation();
-
   return (
     <CustomTable
       minWidth={900}
       columns={[
-        t('columns.sender'),
-        t('columns.receiver'),
-        t('columns.sum'),
-        t('columns.description'),
-        t('columns.created'),
-        t('columns.action'),
+        'sender',
+        'receiver',
+        'sum',
+        'description',
+        'created',
+        'action',
       ]}
       {...props}
     >

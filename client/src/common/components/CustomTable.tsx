@@ -23,7 +23,7 @@ export default function CustomTable<T>(props: Props<T>) {
             <thead>
               <tr>
                 {props.columns.map((column) => (
-                  <th key={column}>{column}</th>
+                  <th key={column}>{t('columns.' + column)}</th>
                 ))}
               </tr>
             </thead>

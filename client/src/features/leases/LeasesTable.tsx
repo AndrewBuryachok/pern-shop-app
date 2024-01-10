@@ -1,4 +1,3 @@
-import { useTranslation } from 'react-i18next';
 import { ITableWithActions } from '../../common/interfaces';
 import { Lease } from './lease.model';
 import CustomTable from '../../common/components/CustomTable';
@@ -14,19 +13,17 @@ import { parseKind } from '../../common/utils';
 type Props = ITableWithActions<Lease>;
 
 export default function LeasesTable({ actions = [], ...props }: Props) {
-  const [t] = useTranslation();
-
   return (
     <CustomTable
       minWidth={900}
       columns={[
-        t('columns.renter'),
-        t('columns.owner'),
-        t('columns.storage'),
-        t('columns.sum'),
-        t('columns.created'),
-        t('columns.kind'),
-        t('columns.action'),
+        'renter',
+        'owner',
+        'storage',
+        'sum',
+        'created',
+        'kind',
+        'action',
       ]}
       {...props}
     >
