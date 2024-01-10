@@ -68,7 +68,16 @@ export class RentsService {
       .leftJoin('rent.wares', 'ware')
       .where('rent.id = :rentId', { rentId })
       .orderBy('ware.id', 'DESC')
-      .select(['rent.id', 'ware.id', 'ware.item', 'ware.description'])
+      .select([
+        'rent.id',
+        'ware.id',
+        'ware.item',
+        'ware.description',
+        'ware.amount',
+        'ware.intake',
+        'ware.kit',
+        'ware.price',
+      ])
       .getOne();
     return rent.wares;
   }

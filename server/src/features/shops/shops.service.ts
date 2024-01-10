@@ -56,7 +56,16 @@ export class ShopsService {
       .leftJoin('shop.goods', 'good')
       .where('shop.id = :shopId', { shopId })
       .orderBy('good.id', 'DESC')
-      .select(['shop.id', 'good.id', 'good.item', 'good.description'])
+      .select([
+        'shop.id',
+        'good.id',
+        'good.item',
+        'good.description',
+        'good.amount',
+        'good.intake',
+        'good.kit',
+        'good.price',
+      ])
       .getOne();
     return shop.goods;
   }
