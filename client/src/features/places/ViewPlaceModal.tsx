@@ -12,7 +12,7 @@ import RefetchAction from '../../common/components/RefetchAction';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import CustomImage from '../../common/components/CustomImage';
 import { UsersItem } from '../../common/components/UsersItem';
-import { ThingsItem } from '../../common/components/ThingsItem';
+import { ThingsItemWithAmount } from '../../common/components/ThingsItemWithAmount';
 import {
   parseCard,
   viewContainers,
@@ -26,7 +26,11 @@ export default function PlaceModal({ data: place }: Props) {
   const [t] = useTranslation();
 
   const component =
-    place.type === 0 ? UsersItem : place.type === 1 ? ThingsItem : undefined;
+    place.type === 0
+      ? UsersItem
+      : place.type === 1
+      ? ThingsItemWithAmount
+      : undefined;
 
   const { data: users, ...usersResponse } = useSelectCityUsersQuery(place.id, {
     skip: place.type !== 0,

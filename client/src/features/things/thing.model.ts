@@ -2,16 +2,16 @@ export interface SmThing {
   id: number;
   item: number;
   description: string;
-}
-
-export interface MdThing extends SmThing {
   intake: number;
   kit: number;
   price: number;
 }
 
-export interface LgThing extends MdThing {
+export interface MdThing extends SmThing {
   amount: number;
+}
+
+export interface LgThing extends MdThing {
   createdAt: Date;
   completedAt?: Date;
 }

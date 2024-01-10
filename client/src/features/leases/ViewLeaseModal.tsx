@@ -7,7 +7,7 @@ import { Lease } from './lease.model';
 import { useSelectLeaseThingsQuery } from './leases.api';
 import RefetchAction from '../../common/components/RefetchAction';
 import CustomAvatar from '../../common/components/CustomAvatar';
-import { ThingsItem } from '../../common/components/ThingsItem';
+import { ThingsItemWithAmount } from '../../common/components/ThingsItemWithAmount';
 import {
   parseCard,
   parseCell,
@@ -72,7 +72,7 @@ export default function ViewLeaseModal({ data: lease }: Props) {
         label={t('columns.things')}
         placeholder={`${t('components.total')}: 1`}
         rightSection={<RefetchAction {...thingsResponse} />}
-        itemComponent={ThingsItem}
+        itemComponent={ThingsItemWithAmount}
         data={viewThings(things || [])}
         limit={20}
         searchable

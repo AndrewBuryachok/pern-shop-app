@@ -7,7 +7,7 @@ import { Rent } from './rent.model';
 import { useSelectRentThingsQuery } from './rents.api';
 import RefetchAction from '../../common/components/RefetchAction';
 import CustomAvatar from '../../common/components/CustomAvatar';
-import { ThingsItem } from '../../common/components/ThingsItem';
+import { ThingsItemWithAmount } from '../../common/components/ThingsItemWithAmount';
 import {
   parseCard,
   parseStore,
@@ -64,7 +64,7 @@ export default function ViewRentModal({ data: rent }: Props) {
         label={t('columns.things')}
         placeholder={`${t('components.total')}: ${things?.length || 0}`}
         rightSection={<RefetchAction {...thingsResponse} />}
-        itemComponent={ThingsItem}
+        itemComponent={ThingsItemWithAmount}
         data={viewThings(things || [])}
         limit={20}
         searchable

@@ -1,7 +1,7 @@
 import { emptyApi } from '../../app/empty.api';
 import { IRequest, IResponse } from '../../common/interfaces';
 import { Shop, SmShop } from './shop.model';
-import { SmGood } from '../goods/good.model';
+import { MdThing } from '../things/thing.model';
 import { CreateShopDto, EditShopDto, ExtCreateShopDto } from './shop.dto';
 import { getQuery } from '../../common/utils';
 
@@ -37,7 +37,7 @@ export const shopsApi = emptyApi.injectEndpoints({
       }),
       providesTags: ['Auth', 'Shop'],
     }),
-    selectShopGoods: build.query<SmGood[], number>({
+    selectShopGoods: build.query<MdThing[], number>({
       query: (shopId) => ({
         url: `/shops/${shopId}/goods`,
       }),

@@ -1,7 +1,7 @@
 import { emptyApi } from '../../app/empty.api';
 import { IRequest, IResponse } from '../../common/interfaces';
 import { Rent, SelectRent } from './rent.model';
-import { SmThing } from '../things/thing.model';
+import { MdThing } from '../things/thing.model';
 import { CompleteRentDto, CreateRentDto } from './rent.dto';
 import { getQuery } from '../../common/utils';
 
@@ -43,7 +43,7 @@ export const rentsApi = emptyApi.injectEndpoints({
       }),
       providesTags: ['Auth', 'Rent'],
     }),
-    selectRentThings: build.query<SmThing[], number>({
+    selectRentThings: build.query<MdThing[], number>({
       query: (rentId) => ({
         url: `/rents/${rentId}/things`,
       }),

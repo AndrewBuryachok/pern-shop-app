@@ -8,7 +8,7 @@ import { useSelectShopGoodsQuery } from './shops.api';
 import RefetchAction from '../../common/components/RefetchAction';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import CustomImage from '../../common/components/CustomImage';
-import { ThingsItem } from '../../common/components/ThingsItem';
+import { ThingsItemWithAmount } from '../../common/components/ThingsItemWithAmount';
 import { viewThings } from '../../common/utils';
 import { Color } from '../../common/constants';
 
@@ -44,7 +44,7 @@ export default function ViewShopModal({ data: shop }: Props) {
         label={t('columns.goods')}
         placeholder={`${t('components.total')}: ${goods?.length || 0}`}
         rightSection={<RefetchAction {...goodsResponse} />}
-        itemComponent={ThingsItem}
+        itemComponent={ThingsItemWithAmount}
         data={viewThings(goods || [])}
         limit={20}
         searchable

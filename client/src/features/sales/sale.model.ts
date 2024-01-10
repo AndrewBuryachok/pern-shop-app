@@ -1,6 +1,6 @@
 import { PurchaseWithAmount } from '../purchases/purchase.model';
-import { MdProduct } from '../products/product.model';
+import { SmProduct } from '../products/product.model';
 
 export interface Sale extends PurchaseWithAmount {
-  product: MdProduct;
+  product: SmProduct;
 }

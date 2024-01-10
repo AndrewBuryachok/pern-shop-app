@@ -1,9 +1,7 @@
-import { LgThing, MdThing, SmThing } from '../things/thing.model';
+import { LgThing, SmThing } from '../things/thing.model';
 import { SmRent } from '../rents/rent.model';
 
-export interface SmWare extends SmThing {}
-
-export interface MdWare extends MdThing {
+export interface SmWare extends SmThing {
   rent: SmRent;
 }
 

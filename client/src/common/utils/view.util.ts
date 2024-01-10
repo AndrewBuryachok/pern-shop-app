@@ -1,7 +1,7 @@
 import { t } from 'i18next';
 import { SmUser } from '../../features/users/user.model';
 import { Container } from '../../features/containers/container.model';
-import { SmThing } from '../../features/things/thing.model';
+import { MdThing } from '../../features/things/thing.model';
 import { State } from '../../features/states/state.model';
 import { Role, roles as allRoles } from '../constants';
 import { parseItem } from './parse.util';
@@ -32,7 +32,7 @@ export const viewContainers = (containers: Container[]) =>
     disabled: true,
   }));
 
-export const viewThings = (things: SmThing[]) =>
+export const viewThings = (things: MdThing[]) =>
   things.map((thing) => ({
     ...thing,
     value: `${thing.id}`,
