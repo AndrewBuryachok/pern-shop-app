@@ -19,7 +19,15 @@ export class CreateArticleDto {
 
   @ApiProperty()
   @IsImage()
-  image: string;
+  image1: string;
+
+  @ApiProperty()
+  @IsImage()
+  image2: string;
+
+  @ApiProperty()
+  @IsImage()
+  image3: string;
 }
 
 export class ExtCreateArticleDto extends CreateArticleDto {

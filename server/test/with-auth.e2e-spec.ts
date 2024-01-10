@@ -315,7 +315,15 @@ describe('With Auth', () => {
       return request(app.getHttpServer())
         .post('/articles')
         .set('Authorization', `Bearer ${user.access}`)
-        .send({ text: 'article text', image: '' })
+        .send({ text: 'article text', image1: '', image2: '', image3: '' })
+        .expect('');
+    });
+
+    it('POST /articles', async () => {
+      return request(app.getHttpServer())
+        .post('/articles')
+        .set('Authorization', `Bearer ${user.access}`)
+        .send({ text: 'article text', image1: '', image2: '', image3: '' })
         .expect('');
     });
 
@@ -335,14 +343,6 @@ describe('With Auth', () => {
   });
 
   describe('Articles', () => {
-    it('POST /articles', async () => {
-      return request(app.getHttpServer())
-        .post('/articles')
-        .set('Authorization', `Bearer ${user.access}`)
-        .send({ text: 'article text', image: '' })
-        .expect('');
-    });
-
     it('GET /articles', async () => {
       return request(app.getHttpServer())
         .get('/articles')
@@ -424,7 +424,7 @@ describe('With Auth', () => {
       return request(app.getHttpServer())
         .patch(`/articles/${articlesId[0]}`)
         .set('Authorization', `Bearer ${user.access}`)
-        .send({ text: 'article text', image: '' })
+        .send({ text: 'article text', image1: '', image2: '', image3: '' })
         .expect('');
     });
 
