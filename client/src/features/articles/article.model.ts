@@ -8,7 +8,9 @@ export interface Article {
   id: number;
   user: SmUser;
   text: string;
-  image: string;
+  image1: string;
+  image2: string;
+  image3: string;
   createdAt: Date;
   likes: number;
   comments: number;

@@ -15,7 +15,7 @@ import {
   useSelectMySubscribersQuery,
 } from '../subscribers/subscribers.api';
 import { UpdateSubscriberDto } from '../subscribers/subscriber.dto';
-import CustomsList from '../../common/components/CustomList';
+import CustomList from '../../common/components/CustomList';
 import AvatarWithDateText from '../../common/components/AvatarWithDateText';
 import SingleText from '../../common/components/SingleText';
 import CustomImage from '../../common/components/CustomImage';
@@ -58,7 +58,7 @@ export default function ArticlesList({ actions = [], ...props }: Props) {
   };
 
   return (
-    <CustomsList {...props}>
+    <CustomList {...props}>
       {props.data?.result
         .map((article) => ({
           ...article,
@@ -80,7 +80,9 @@ export default function ArticlesList({ actions = [], ...props }: Props) {
                 />
               </Group>
               <SingleText text={article.text} />
-              {article.image && <CustomImage {...article} />}
+              {article.image1 && <CustomImage image={article.image1} />}
+              {article.image2 && <CustomImage image={article.image2} />}
+              {article.image3 && <CustomImage image={article.image3} />}
               <Group spacing={8}>
                 <Button
                   color={article.subscribed ? 'gray' : 'violet'}
@@ -144,6 +146,6 @@ export default function ArticlesList({ actions = [], ...props }: Props) {
             </Stack>
           </Paper>
         ))}
-    </CustomsList>
+    </CustomList>
   );
 }

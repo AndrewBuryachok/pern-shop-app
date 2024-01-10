@@ -34,7 +34,7 @@ export default function CreateCommentModal({ data: article }: Props) {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={t('actions.create') + ' ' + t('modals.comments')}
+      text={t('actions.comment') + ' ' + t('modals.articles')}
     >
       <TextInput
         label={t('columns.owner')}
@@ -45,7 +45,13 @@ export default function CreateCommentModal({ data: article }: Props) {
       />
       <Textarea label={t('columns.text')} value={article.text} disabled />
       <Input.Wrapper label={t('columns.image')}>
-        <CustomImage {...article} />
+        <CustomImage image={article.image1} />
+      </Input.Wrapper>
+      <Input.Wrapper label={t('columns.image')}>
+        <CustomImage image={article.image2} />
+      </Input.Wrapper>
+      <Input.Wrapper label={t('columns.image')}>
+        <CustomImage image={article.image3} />
       </Input.Wrapper>
       <Textarea
         label={t('columns.text')}
@@ -60,6 +66,6 @@ export default function CreateCommentModal({ data: article }: Props) {
 
 export const openCreateCommentModal = (article: Article) =>
   openModal({
-    title: t('actions.create') + ' ' + t('modals.comments'),
+    title: t('actions.comment') + ' ' + t('modals.articles'),
     children: <CreateCommentModal data={article} />,
   });

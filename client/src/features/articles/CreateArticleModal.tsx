@@ -16,11 +16,15 @@ export default function CreateArticleModal() {
   const form = useForm({
     initialValues: {
       text: '',
-      image: '',
+      image1: '',
+      image2: '',
+      image3: '',
     },
   });
 
-  const [image] = useDebouncedValue(form.values.image, 500);
+  const [image1] = useDebouncedValue(form.values.image1, 500);
+  const [image2] = useDebouncedValue(form.values.image2, 500);
+  const [image3] = useDebouncedValue(form.values.image3, 500);
 
   const [createArticle, { isLoading }] = useCreateArticleMutation();
 
@@ -45,9 +49,23 @@ export default function CreateArticleModal() {
         label={t('columns.image')}
         placeholder={t('columns.image')}
         maxLength={MAX_IMAGE_LENGTH}
-        {...form.getInputProps('image')}
+        {...form.getInputProps('image1')}
       />
-      <CustomImage image={image} />
+      <CustomImage image={image1} />
+      <Textarea
+        label={t('columns.image')}
+        placeholder={t('columns.image')}
+        maxLength={MAX_IMAGE_LENGTH}
+        {...form.getInputProps('image2')}
+      />
+      <CustomImage image={image2} />
+      <Textarea
+        label={t('columns.image')}
+        placeholder={t('columns.image')}
+        maxLength={MAX_IMAGE_LENGTH}
+        {...form.getInputProps('image3')}
+      />
+      <CustomImage image={image3} />
     </CustomForm>
   );
 }

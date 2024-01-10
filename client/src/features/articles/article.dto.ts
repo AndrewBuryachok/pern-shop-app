@@ -1,6 +1,8 @@
 export interface CreateArticleDto {
   text: string;
-  image: string;
+  image1: string;
+  image2: string;
+  image3: string;
 }
 
 export interface EditArticleDto extends CreateArticleDto {

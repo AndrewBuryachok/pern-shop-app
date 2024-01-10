@@ -26,7 +26,13 @@ export default function ViewArticleModal({ data: article }: Props) {
       />
       <Textarea label={t('columns.text')} value={article.text} disabled />
       <Input.Wrapper label={t('columns.image')}>
-        <CustomImage {...article} />
+        <CustomImage image={article.image1} />
+      </Input.Wrapper>
+      <Input.Wrapper label={t('columns.image')}>
+        <CustomImage image={article.image2} />
+      </Input.Wrapper>
+      <Input.Wrapper label={t('columns.image')}>
+        <CustomImage image={article.image3} />
       </Input.Wrapper>
       <TextInput
         label={t('columns.created')}
