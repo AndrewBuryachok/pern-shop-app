@@ -42,7 +42,12 @@ export default function DeletePlaintModal({ data: plaint }: Props) {
         value={plaint.senderUser.nick}
         disabled
       />
-      <Textarea label={t('columns.text')} value={plaint.senderText} disabled />
+      <Textarea
+        label={t('columns.text')}
+        value={plaint.senderText}
+        autosize
+        disabled
+      />
       <TextInput
         label={t('columns.receiver')}
         icon={<CustomAvatar {...plaint.receiverUser} />}

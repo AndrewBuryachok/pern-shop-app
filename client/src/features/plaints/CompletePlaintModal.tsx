@@ -43,7 +43,12 @@ export default function CompletePlaintModal({ data: plaint }: Props) {
         value={plaint.senderUser.nick}
         disabled
       />
-      <Textarea label={t('columns.text')} value={plaint.senderText} disabled />
+      <Textarea
+        label={t('columns.text')}
+        value={plaint.senderText}
+        autosize
+        disabled
+      />
       <TextInput
         label={t('columns.receiver')}
         icon={<CustomAvatar {...plaint.receiverUser} />}
@@ -54,12 +59,14 @@ export default function CompletePlaintModal({ data: plaint }: Props) {
       <Textarea
         label={t('columns.text')}
         value={plaint.receiverText}
+        autosize
         disabled
       />
       <Textarea
         label={t('columns.text')}
         placeholder={t('columns.text')}
         required
+        autosize
         maxLength={MAX_TEXT_LENGTH}
         {...form.getInputProps('text')}
       />

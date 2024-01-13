@@ -42,7 +42,7 @@ export default function DeletePollModal({ data: poll }: Props) {
         disabled
       />
       <TextInput label={t('columns.title')} value={poll.title} disabled />
-      <Textarea label={t('columns.text')} value={poll.text} disabled />
+      <Textarea label={t('columns.text')} value={poll.text} autosize disabled />
     </CustomForm>
   );
 }

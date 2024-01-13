@@ -24,7 +24,12 @@ export default function ViewPlaintModal({ data: plaint }: Props) {
         value={plaint.senderUser.nick}
         disabled
       />
-      <Textarea label={t('columns.text')} value={plaint.senderText} disabled />
+      <Textarea
+        label={t('columns.text')}
+        value={plaint.senderText}
+        autosize
+        disabled
+      />
       <TextInput
         label={t('columns.receiver')}
         icon={<CustomAvatar {...plaint.receiverUser} />}
@@ -35,6 +40,7 @@ export default function ViewPlaintModal({ data: plaint }: Props) {
       <Textarea
         label={t('columns.text')}
         value={plaint.receiverText || '-'}
+        autosize
         disabled
       />
       <TextInput
@@ -47,6 +53,7 @@ export default function ViewPlaintModal({ data: plaint }: Props) {
       <Textarea
         label={t('columns.text')}
         value={plaint.executorText || '-'}
+        autosize
         disabled
       />
       <TextInput

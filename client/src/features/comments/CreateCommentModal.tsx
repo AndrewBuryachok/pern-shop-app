@@ -57,6 +57,7 @@ export default function CreateCommentModal({ data: article }: Props) {
         label={t('columns.text')}
         placeholder={t('columns.text')}
         required
+        autosize
         maxLength={MAX_TEXT_LENGTH}
         {...form.getInputProps('text')}
       />

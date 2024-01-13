@@ -43,7 +43,12 @@ export default function DeleteDiscussionModal({ data: discussion }: Props) {
         value={discussion.user.nick}
         disabled
       />
-      <Textarea label={t('columns.text')} value={discussion.text} disabled />
+      <Textarea
+        label={t('columns.text')}
+        value={discussion.text}
+        autosize
+        disabled
+      />
     </CustomForm>
   );
 }

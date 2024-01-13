@@ -24,7 +24,12 @@ export default function ViewArticleModal({ data: article }: Props) {
         value={article.user.nick}
         disabled
       />
-      <Textarea label={t('columns.text')} value={article.text} disabled />
+      <Textarea
+        label={t('columns.text')}
+        value={article.text}
+        autosize
+        disabled
+      />
       <Input.Wrapper label={t('columns.image')}>
         <CustomImage image={article.image1} />
       </Input.Wrapper>

@@ -43,7 +43,7 @@ export default function ExecuteTaskModal({ data: task }: Props) {
         disabled
       />
       <TextInput label={t('columns.title')} value={task.title} disabled />
-      <Textarea label={t('columns.text')} value={task.text} disabled />
+      <Textarea label={t('columns.text')} value={task.text} autosize disabled />
       <TextInput
         label={t('columns.priority')}
         icon={<PriorityIcon {...task} />}

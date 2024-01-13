@@ -48,6 +48,7 @@ export default function EditDiscussionModal({ data: discussion }: Props) {
         label={t('columns.text')}
         placeholder={t('columns.text')}
         required
+        autosize
         maxLength={MAX_TEXT_LENGTH}
         {...form.getInputProps('text')}
       />

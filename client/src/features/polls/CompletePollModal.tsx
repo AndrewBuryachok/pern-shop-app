@@ -49,7 +49,7 @@ export default function CompletePollModal({ data: poll }: Props) {
         disabled
       />
       <TextInput label={t('columns.title')} value={poll.title} disabled />
-      <Textarea label={t('columns.text')} value={poll.text} disabled />
+      <Textarea label={t('columns.text')} value={poll.text} autosize disabled />
       <Select
         label={t('columns.result')}
         placeholder={t('columns.result')}

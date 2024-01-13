@@ -43,11 +43,12 @@ export default function CreateDiscussionModal({ data: poll }: Props) {
         disabled
       />
       <TextInput label={t('columns.title')} value={poll.title} disabled />
-      <Textarea label={t('columns.text')} value={poll.text} disabled />
+      <Textarea label={t('columns.text')} value={poll.text} autosize disabled />
       <Textarea
         label={t('columns.text')}
         placeholder={t('columns.text')}
         required
+        autosize
         maxLength={MAX_TEXT_LENGTH}
         {...form.getInputProps('text')}
       />

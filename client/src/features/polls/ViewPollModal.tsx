@@ -50,7 +50,7 @@ export default function ViewPollModal({ data: poll }: Props) {
         disabled
       />
       <TextInput label={t('columns.title')} value={poll.title} disabled />
-      <Textarea label={t('columns.text')} value={poll.text} disabled />
+      <Textarea label={t('columns.text')} value={poll.text} autosize disabled />
       <TextInput
         label={t('columns.vote')}
         value={

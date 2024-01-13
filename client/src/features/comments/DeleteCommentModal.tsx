@@ -43,7 +43,12 @@ export default function DeleteCommentModal({ data: comment }: Props) {
         value={comment.user.nick}
         disabled
       />
-      <Textarea label={t('columns.text')} value={comment.text} disabled />
+      <Textarea
+        label={t('columns.text')}
+        value={comment.text}
+        autosize
+        disabled
+      />
     </CustomForm>
   );
 }
