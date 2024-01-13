@@ -6,7 +6,6 @@ import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { Task } from './task.model';
 import { useTakeTaskMutation } from './tasks.api';
-import { useSelectMyCardsQuery } from '../cards/cards.api';
 import { TaskIdDto } from './task.dto';
 import CustomForm from '../../common/components/CustomForm';
 import CustomAvatar from '../../common/components/CustomAvatar';
@@ -23,8 +22,6 @@ export default function TakeTaskModal({ data: task }: Props) {
       taskId: task.id,
     },
   });
-
-  const { data: cards, ...cardsResponse } = useSelectMyCardsQuery();
 
   const [takeTask, { isLoading }] = useTakeTaskMutation();
 
