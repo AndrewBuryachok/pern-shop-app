@@ -32,6 +32,12 @@ export class UsersController {
     return this.usersService.getMainUsers(req);
   }
 
+  @Public()
+  @Get('top')
+  getTopUsers(@Query() req: Request): Promise<Response<User>> {
+    return this.usersService.getTopUsers(req);
+  }
+
   @Get('my')
   getMyUsers(
     @MyId() myId: number,
@@ -71,12 +77,6 @@ export class UsersController {
   @Get('not-rated/select')
   selectNotRatedUsers(@MyId() myId: number): Promise<User[]> {
     return this.usersService.selectNotRatedUsers(myId);
-  }
-
-  @Public()
-  @Get(':userId/friends')
-  selectUserFriends(@Param() { userId }: UserIdDto): Promise<User[]> {
-    return this.usersService.selectUserFriends(userId);
   }
 
   @Public()

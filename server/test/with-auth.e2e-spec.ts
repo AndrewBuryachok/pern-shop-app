@@ -160,6 +160,12 @@ describe('With Auth', () => {
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
 
+    it('GET /users/top', async () => {
+      return request(app.getHttpServer())
+        .get('/users/top')
+        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
+    });
+
     it('GET /users/my', async () => {
       return request(app.getHttpServer())
         .get('/users/my')
@@ -266,12 +272,6 @@ describe('With Auth', () => {
         .get('/friends/my')
         .set('Authorization', `Bearer ${user.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
-    });
-
-    it('GET /users/:userId/friends', async () => {
-      return request(app.getHttpServer())
-        .get(`/users/${user.id}/friends`)
-        .expect((res) => expect(res.body.length).toBeGreaterThan(0));
     });
 
     it('DELETE /friends/:friendId', async () => {
