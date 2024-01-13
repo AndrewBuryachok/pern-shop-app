@@ -11,10 +11,10 @@ export interface MdUser extends SmUser {
 }
 
 export interface User extends MdUser {
+  rating: number;
   createdAt: Date;
   onlineAt?: Date;
   city?: MdCity;
-  friendsCount: number;
 }
 
 export interface ExtUser extends User {
@@ -29,5 +29,4 @@ export interface ExtUser extends User {
   productsRate: number;
   ordersRate: number;
   deliveriesRate: number;
-  rating: number;
 }

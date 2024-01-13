@@ -73,7 +73,7 @@ export default function UserProfile({ data: user }: Props) {
                   {user.friends.slice(0, 6).map((friend) => (
                     <LinkedAvatar key={friend.id} {...friend} />
                   ))}
-                  {!user.friendsCount && <SingleText text='-' />}
+                  {!user.friends.length && <SingleText text='-' />}
                 </Group>
               </div>
               <div>

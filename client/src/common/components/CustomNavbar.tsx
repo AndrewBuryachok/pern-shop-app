@@ -108,7 +108,6 @@ export default function CustomNavbar(props: Props) {
     {
       route: 'ratings',
       icon: IconStar,
-      my: true,
     },
   ];
 

@@ -6,7 +6,7 @@ import RolesBadge from '../../common/components/RolesBadge';
 import SingleText from '../../common/components/SingleText';
 import PlaceWithSingleAvatar from '../../common/components/PlaceWithSingleAvatar';
 import DateText from '../../common/components/DateText';
-import TotalText from '../../common/components/TotalText';
+import CustomRating from '../../common/components/CustomRating';
 import CustomActions from '../../common/components/CustomActions';
 import { viewUserAction } from './ViewUserModal';
 
@@ -16,7 +16,7 @@ export default function UsersTable({ actions = [], ...props }: Props) {
   return (
     <CustomTable
       minWidth={1000}
-      columns={['user', 'roles', 'city', 'online', 'friends', 'action']}
+      columns={['user', 'roles', 'city', 'online', 'rating', 'action']}
       {...props}
     >
       {props.data?.result.map((user) => (
@@ -38,7 +38,7 @@ export default function UsersTable({ actions = [], ...props }: Props) {
             <DateText date={user.onlineAt} />
           </td>
           <td>
-            <TotalText data={user.friendsCount} />
+            <CustomRating value={user.rating} />
           </td>
           <td>
             <CustomActions data={user} actions={[viewUserAction, ...actions]} />

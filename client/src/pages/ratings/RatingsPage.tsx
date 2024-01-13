@@ -2,11 +2,13 @@ import { useState } from 'react';
 import { useLocation, useSearchParams } from 'react-router-dom';
 import { ISearch } from '../../common/interfaces';
 import { Mode } from '../../common/enums';
+import { useGetTopUsersQuery } from '../../features/users/users.api';
 import {
   useGetAllRatingsQuery,
   useGetMyRatingsQuery,
   useGetReceivedRatingsQuery,
 } from '../../features/ratings/ratings.api';
+import UsersTable from '../../features/users/UsersTable';
 import RatingsTable from '../../features/ratings/RatingsTable';
 import { createRatingButton } from '../../features/ratings/CreateRatingModal';
 import { editRatingAction } from '../../features/ratings/EditRatingModal';
@@ -29,19 +31,34 @@ export default function MyRatings() {
     maxDate: searchParams.get('maxDate'),
   });
 
-  const response = {
+  const usersResponse = useGetTopUsersQuery(
+    { page, search },
+    { skip: tab !== 'main' },
+  );
+
+  const ratingsResponse = {
+    main: useGetMyRatingsQuery,
     my: useGetMyRatingsQuery,
     received: useGetReceivedRatingsQuery,
     all: useGetAllRatingsQuery,
-  }[tab]!({ page, search });
+  }[tab]!({ page, search }, { skip: tab === 'main' });
 
-  const button = { my: createRatingButton }[tab];
+  const button = { main: createRatingButton, my: createRatingButton }[tab];
 
   const actions = { my: [editRatingAction, deleteRatingAction] }[tab];
 
-  return (
+  return tab === 'main' ? (
+    <UsersTable
+      {...usersResponse}
+      page={page}
+      setPage={setPage}
+      search={search}
+      setSearch={setSearch}
+      button={button}
+    />
+  ) : (
     <RatingsTable
-      {...response}
+      {...ratingsResponse}
       page={page}
       setPage={setPage}
       search={search}

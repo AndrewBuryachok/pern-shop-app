@@ -16,6 +16,12 @@ export const usersApi = emptyApi.injectEndpoints({
       }),
       providesTags: ['User'],
     }),
+    getTopUsers: build.query<IResponse<User>, IRequest>({
+      query: (req) => ({
+        url: `/users/top?${getQuery(req)}`,
+      }),
+      providesTags: ['User', 'Rating'],
+    }),
     getMyUsers: build.query<IResponse<User>, IRequest>({
       query: (req) => ({
         url: `/users/my?${getQuery(req)}`,
@@ -57,12 +63,6 @@ export const usersApi = emptyApi.injectEndpoints({
         url: '/users/not-rated/select',
       }),
       providesTags: ['Auth', 'User', 'Rating'],
-    }),
-    selectUserFriends: build.query<SmUser[], number>({
-      query: (userId) => ({
-        url: `/users/${userId}/friends`,
-      }),
-      providesTags: ['Friend'],
     }),
     getSingleUser: build.query<ExtUser, number>({
       query: (userId) => ({
@@ -106,6 +106,7 @@ export const usersApi = emptyApi.injectEndpoints({
 
 export const {
   useGetMainUsersQuery,
+  useGetTopUsersQuery,
   useGetMyUsersQuery,
   useGetAllUsersQuery,
   useSelectAllUsersQuery,
@@ -113,7 +114,6 @@ export const {
   useSelectNotFriendsUsersQuery,
   useSelectNotSubscribedUsersQuery,
   useSelectNotRatedUsersQuery,
-  useSelectUserFriendsQuery,
   useGetSingleUserQuery,
   useEditUserProfileMutation,
   useEditUserPasswordMutation,

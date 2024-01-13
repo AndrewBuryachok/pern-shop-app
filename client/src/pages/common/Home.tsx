@@ -180,7 +180,6 @@ export default function Home() {
     {
       title: 'ratings',
       icon: IconStar,
-      my: true,
     },
   ];
 

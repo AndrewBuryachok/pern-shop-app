@@ -295,6 +295,7 @@ export const pages = [
     path: 'ratings',
     element: RatingsPage,
     nested: [
+      { index: true },
       { path: 'my' },
       { path: 'received' },
       { path: 'all', role: Role.ADMIN },

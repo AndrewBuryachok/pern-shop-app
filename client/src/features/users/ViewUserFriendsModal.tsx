@@ -16,7 +16,7 @@ export default function ViewUserFriendsModal({ data: user }: Props) {
     <Stack spacing={8}>
       <Select
         label={t('columns.friends')}
-        placeholder={`${t('components.total')}: ${user.friendsCount}`}
+        placeholder={`${t('components.total')}: ${user.friends.length}`}
         itemComponent={UsersItem}
         data={viewUsers(user.friends)}
         limit={20}
