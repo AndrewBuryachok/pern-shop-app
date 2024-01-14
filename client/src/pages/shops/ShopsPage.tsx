@@ -11,7 +11,18 @@ import {
   createMyShopButton,
   createUserShopButton,
 } from '../../features/shops/CreateShopModal';
-import { editShopAction } from '../../features/shops/EditShopModal';
+import {
+  editMyShopAction,
+  editUserShopAction,
+} from '../../features/shops/EditShopModal';
+import {
+  addMyShopUserAction,
+  addUserShopUserAction,
+} from '../../features/shops/AddShopUserModal';
+import {
+  removeMyShopUserAction,
+  removeUserShopUserAction,
+} from '../../features/shops/RemoveShopUserModal';
 
 export default function MyShops() {
   const tab = useLocation().pathname.split('/')[2] || 'main';
@@ -38,7 +49,10 @@ export default function MyShops() {
     all: createUserShopButton,
   }[tab];
 
-  const actions = { my: [editShopAction], all: [editShopAction] }[tab];
+  const actions = {
+    my: [editMyShopAction, addMyShopUserAction, removeMyShopUserAction],
+    all: [editUserShopAction, addUserShopUserAction, removeUserShopUserAction],
+  }[tab];
 
   return (
     <ShopsTable

@@ -9,3 +9,8 @@ export interface ExtCreateShopDto extends CreateShopDto {
 export interface EditShopDto extends CreatePlaceDto {
   shopId: number;
 }
+
+export interface UpdateShopUserDto {
+  shopId: number;
+  userId: number;
+}

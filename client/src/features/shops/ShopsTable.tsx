@@ -14,7 +14,7 @@ export default function ShopsTable({ actions = [], ...props }: Props) {
   return (
     <CustomTable
       minWidth={700}
-      columns={['owner', 'shop', 'x', 'y', 'goods', 'action']}
+      columns={['owner', 'shop', 'x', 'y', 'users', 'goods', 'action']}
       {...props}
     >
       {props.data?.result.map((shop) => (
@@ -30,6 +30,9 @@ export default function ShopsTable({ actions = [], ...props }: Props) {
           </td>
           <td>
             <SingleText text={`${shop.y}`} />
+          </td>
+          <td>
+            <TotalText data={shop.users} />
           </td>
           <td>
             <TotalText data={shop.goods} />

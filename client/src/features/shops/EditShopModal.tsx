@@ -6,6 +6,7 @@ import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { Shop } from './shop.model';
+import { getCurrentUser } from '../auth/auth.slice';
 import { useEditShopMutation } from './shops.api';
 import { EditShopDto } from './shop.dto';
 import CustomForm from '../../common/components/CustomForm';
@@ -92,12 +93,19 @@ export default function EditShopModal({ data: shop }: Props) {
   );
 }
 
-export const editShopAction = {
+export const editShopFactory = (hasRole: boolean) => ({
   open: (shop: Shop) =>
     openModal({
       title: t('actions.edit') + ' ' + t('modals.shops'),
       children: <EditShopModal data={shop} />,
     }),
-  disable: () => false,
+  disable: (shop: Shop) => {
+    const user = getCurrentUser()!;
+    return shop.user.id !== user.id && !hasRole;
+  },
   color: Color.YELLOW,
-};
+});
+
+export const editMyShopAction = editShopFactory(false);
+
+export const editUserShopAction = editShopFactory(true);

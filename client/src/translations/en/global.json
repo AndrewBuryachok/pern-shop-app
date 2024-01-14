@@ -326,7 +326,9 @@
       "removed": "Someone removed you from city"
     },
     "shops": {
-      "created": "Someone created shop"
+      "created": "Someone created shop",
+      "added": "Someone added you in shop",
+      "removed": "Someone removed you from shop"
     },
     "markets": {
       "created": "Someone created market"
