@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Patch,
@@ -10,12 +11,14 @@ import {
 import { ApiTags } from '@nestjs/swagger';
 import { ShopsService } from './shops.service';
 import { Shop } from './shop.entity';
+import { User } from '../users/user.entity';
 import { Good } from '../goods/good.entity';
 import {
   CreateShopDto,
   EditShopDto,
   ExtCreateShopDto,
   ShopIdDto,
+  UpdateShopUserDto,
 } from './shop.dto';
 import { Request, Response } from '../../common/interfaces';
 import { HasRole, MyId, Public, Roles } from '../../common/decorators';
@@ -58,6 +61,12 @@ export class ShopsController {
   }
 
   @Public()
+  @Get(':shopId/users')
+  selectShopUsers(@Param() { shopId }: ShopIdDto): Promise<User[]> {
+    return this.shopsService.selectShopUsers(shopId);
+  }
+
+  @Public()
   @Get(':shopId/goods')
   selectShopGoods(@Param() { shopId }: ShopIdDto): Promise<Good[]> {
     return this.shopsService.selectShopGoods(shopId);
@@ -85,5 +94,25 @@ export class ShopsController {
     @Body() dto: EditShopDto,
   ): Promise<void> {
     return this.shopsService.editShop({ ...dto, shopId, myId, hasRole });
+  }
+
+  @Post(':shopId/users')
+  addShopUser(
+    @MyId() myId: number,
+    @HasRole(Role.MANAGER) hasRole: boolean,
+    @Param() { shopId }: ShopIdDto,
+    @Body() dto: UpdateShopUserDto,
+  ): Promise<void> {
+    return this.shopsService.addShopUser({ ...dto, shopId, myId, hasRole });
+  }
+
+  @Delete(':shopId/users')
+  removeShopUser(
+    @MyId() myId: number,
+    @HasRole(Role.MANAGER) hasRole: boolean,
+    @Param() { shopId }: ShopIdDto,
+    @Body() dto: UpdateShopUserDto,
+  ): Promise<void> {
+    return this.shopsService.removeShopUser({ ...dto, shopId, myId, hasRole });
   }
 }

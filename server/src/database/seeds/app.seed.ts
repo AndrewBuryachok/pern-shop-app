@@ -145,7 +145,10 @@ export default class AppSeed implements Seeder {
       .createMany(10);
     const shops = await factory(Shop)()
       .map(async (shop) => {
-        shop.user = faker.helpers.arrayElement(users);
+        const count = Math.floor(Math.random() * 2) + 1;
+        const shuffled = users.sort(() => 0.5 - Math.random());
+        shop.users = shuffled.slice(0, count);
+        shop.user = shop.users[0];
         return shop;
       })
       .createMany(10);

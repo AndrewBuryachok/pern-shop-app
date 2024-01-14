@@ -18,6 +18,8 @@ export enum Notification {
   ADDED_CITY = 'Added cities',
   REMOVED_CITY = 'Removed cities',
   CREATED_SHOP = 'Created shops',
+  ADDED_SHOP = 'Added shops',
+  REMOVED_SHOP = 'Removed shops',
   CREATED_MARKET = 'Created markets',
   CREATED_STORAGE = 'Created storages',
   CREATED_STORE = 'Created stores',

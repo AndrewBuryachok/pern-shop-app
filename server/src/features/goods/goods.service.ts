@@ -28,7 +28,8 @@ export class GoodsService {
 
   async getMyGoods(myId: number, req: Request): Promise<Response<Good>> {
     const [result, count] = await this.getGoodsQueryBuilder(req)
-      .andWhere('sellerUser.id = :myId', { myId })
+      .innerJoin('shop.users', 'sellerUsers')
+      .andWhere('sellerUsers.id = :myId', { myId })
       .getManyAndCount();
     return { result, count };
   }
@@ -41,7 +42,7 @@ export class GoodsService {
   }
 
   async createGood(dto: ExtCreateGoodDto): Promise<void> {
-    await this.shopsService.checkShopOwner(dto.shopId, dto.myId, dto.hasRole);
+    await this.shopsService.checkShopUser(dto.shopId, dto.myId, dto.hasRole);
     await this.create(dto);
     this.mqttService.publishNotificationMessage(0, Notification.CREATED_GOOD);
   }
@@ -66,10 +67,10 @@ export class GoodsService {
     hasRole: boolean,
   ): Promise<Good> {
     const good = await this.goodsRepository.findOne({
-      relations: ['shop'],
+      relations: ['shop', 'shop.users'],
       where: { id },
     });
-    if (good.shop.userId !== userId && !hasRole) {
+    if (!good.shop.users.map((user) => user.id).includes(userId) && !hasRole) {
       throw new AppException(GoodError.NOT_OWNER);
     }
     return good;

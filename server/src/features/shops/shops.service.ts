@@ -2,9 +2,14 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { Shop } from './shop.entity';
+import { User } from '../users/user.entity';
 import { Good } from '../goods/good.entity';
 import { MqttService } from '../mqtt/mqtt.service';
-import { ExtCreateShopDto, ExtEditShopDto } from './shop.dto';
+import {
+  ExtCreateShopDto,
+  ExtEditShopDto,
+  ExtUpdateShopUserDto,
+} from './shop.dto';
 import { Request, Response } from '../../common/interfaces';
 import { MAX_SHOPS_NUMBER } from '../../common/constants';
 import { AppException } from '../../common/exceptions';
@@ -28,7 +33,8 @@ export class ShopsService {
 
   async getMyShops(myId: number, req: Request): Promise<Response<Shop>> {
     const [result, count] = await this.getShopsQueryBuilder(req)
-      .andWhere('ownerUser.id = :myId', { myId })
+      .innerJoin('shop.users', 'ownerUsers')
+      .andWhere('ownerUsers.id = :myId', { myId })
       .getManyAndCount();
     return { result, count };
   }
@@ -46,8 +52,21 @@ export class ShopsService {
 
   selectMyShops(myId: number): Promise<Shop[]> {
     return this.selectShopsQueryBuilder()
-      .where('shop.userId = :myId', { myId })
+      .innerJoin('shop.users', 'ownerUsers')
+      .where('ownerUsers.id = :myId', { myId })
       .getMany();
+  }
+
+  async selectShopUsers(shopId: number): Promise<User[]> {
+    const shop = await this.shopsRepository
+      .createQueryBuilder('shop')
+      .leftJoin('shop.users', 'user')
+      .where('shop.id = :shopId', { shopId })
+      .orderBy('user.onlineAt', 'DESC')
+      .addOrderBy('user.nick', 'ASC')
+      .select(['shop.id', 'user.id', 'user.nick', 'user.avatar'])
+      .getOne();
+    return shop.users;
   }
 
   async selectShopGoods(shopId: number): Promise<Good[]> {
@@ -85,6 +104,33 @@ export class ShopsService {
     await this.edit(shop, dto);
   }
 
+  async addShopUser(dto: ExtUpdateShopUserDto): Promise<void> {
+    const shop = await this.checkShopOwner(dto.shopId, dto.myId, dto.hasRole);
+    if (shop.users.map((user) => user.id).includes(dto.userId)) {
+      throw new AppException(ShopError.ALREADY_IN_SHOP);
+    }
+    await this.addUser(shop, dto.userId);
+    this.mqttService.publishNotificationMessage(
+      dto.userId,
+      Notification.ADDED_SHOP,
+    );
+  }
+
+  async removeShopUser(dto: ExtUpdateShopUserDto): Promise<void> {
+    const shop = await this.checkShopOwner(dto.shopId, dto.myId, dto.hasRole);
+    if (dto.userId === dto.myId) {
+      throw new AppException(ShopError.OWNER);
+    }
+    if (!shop.users.map((user) => user.id).includes(dto.userId)) {
+      throw new AppException(ShopError.NOT_IN_SHOP);
+    }
+    await this.removeUser(shop, dto.userId);
+    this.mqttService.publishNotificationMessage(
+      dto.userId,
+      Notification.REMOVED_SHOP,
+    );
+  }
+
   async checkShopExists(id: number): Promise<void> {
     await this.shopsRepository.findOneByOrFail({ id });
   }
@@ -94,9 +140,27 @@ export class ShopsService {
     userId: number,
     hasRole: boolean,
   ): Promise<Shop> {
-    const shop = await this.shopsRepository.findOneBy({ id });
+    const shop = await this.shopsRepository.findOne({
+      relations: ['users'],
+      where: { id },
+    });
     if (shop.userId !== userId && !hasRole) {
       throw new AppException(ShopError.NOT_OWNER);
+    }
+    return shop;
+  }
+
+  async checkShopUser(
+    id: number,
+    userId: number,
+    hasRole: boolean,
+  ): Promise<Shop> {
+    const shop = await this.shopsRepository.findOne({
+      relations: ['users'],
+      where: { id },
+    });
+    if (!shop.users.map((user) => user.id).includes(userId) && !hasRole) {
+      throw new AppException(ShopError.NOT_USER);
     }
     return shop;
   }
@@ -135,6 +199,7 @@ export class ShopsService {
         description: dto.description,
         x: dto.x,
         y: dto.y,
+        users: [{ id: dto.userId }],
       });
       await this.shopsRepository.save(shop);
     } catch (error) {
@@ -155,6 +220,26 @@ export class ShopsService {
     }
   }
 
+  private async addUser(shop: Shop, userId: number): Promise<void> {
+    try {
+      const user = new User();
+      user.id = userId;
+      shop.users.push(user);
+      await this.shopsRepository.save(shop);
+    } catch (error) {
+      throw new AppException(ShopError.ADD_USER_FAILED);
+    }
+  }
+
+  private async removeUser(shop: Shop, userId: number): Promise<void> {
+    try {
+      shop.users = shop.users.filter((user) => user.id !== userId);
+      await this.shopsRepository.save(shop);
+    } catch (error) {
+      throw new AppException(ShopError.REMOVE_USER_FAILED);
+    }
+  }
+
   private selectShopsQueryBuilder(): SelectQueryBuilder<Shop> {
     return this.shopsRepository
       .createQueryBuilder('shop')
@@ -166,6 +251,7 @@ export class ShopsService {
     return this.shopsRepository
       .createQueryBuilder('shop')
       .innerJoin('shop.user', 'ownerUser')
+      .loadRelationCountAndMap('shop.users', 'shop.users')
       .loadRelationCountAndMap('shop.goods', 'shop.goods')
       .where(
         new Brackets((qb) =>
