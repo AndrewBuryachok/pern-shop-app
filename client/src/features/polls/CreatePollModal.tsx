@@ -97,6 +97,7 @@ export default function CreatePollModal({ hasRole }: Props) {
       <Textarea
         label={t('columns.image')}
         placeholder={t('columns.image')}
+        description={t('information.image')}
         maxLength={MAX_LINK_LENGTH}
         {...form.getInputProps('image')}
       />
@@ -104,6 +105,7 @@ export default function CreatePollModal({ hasRole }: Props) {
       <Textarea
         label={t('columns.video')}
         placeholder={t('columns.video')}
+        description={t('information.image')}
         maxLength={MAX_LINK_LENGTH}
         {...form.getInputProps('video')}
       />

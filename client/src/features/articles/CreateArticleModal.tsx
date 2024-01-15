@@ -88,6 +88,7 @@ export default function CreateArticleModal({ hasRole }: Props) {
       <Textarea
         label={t('columns.image')}
         placeholder={t('columns.image')}
+        description={t('information.image')}
         maxLength={MAX_LINK_LENGTH}
         {...form.getInputProps('image1')}
       />
@@ -95,6 +96,7 @@ export default function CreateArticleModal({ hasRole }: Props) {
       <Textarea
         label={t('columns.image')}
         placeholder={t('columns.image')}
+        description={t('information.image')}
         maxLength={MAX_LINK_LENGTH}
         {...form.getInputProps('image2')}
       />
@@ -102,6 +104,7 @@ export default function CreateArticleModal({ hasRole }: Props) {
       <Textarea
         label={t('columns.image')}
         placeholder={t('columns.image')}
+        description={t('information.image')}
         maxLength={MAX_LINK_LENGTH}
         {...form.getInputProps('image3')}
       />
@@ -109,6 +112,7 @@ export default function CreateArticleModal({ hasRole }: Props) {
       <Textarea
         label={t('columns.video')}
         placeholder={t('columns.video')}
+        description={t('information.video')}
         maxLength={MAX_LINK_LENGTH}
         {...form.getInputProps('video')}
       />
