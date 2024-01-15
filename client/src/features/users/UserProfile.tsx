@@ -27,6 +27,7 @@ import DateText from '../../common/components/DateText';
 import PlaceText from '../../common/components/PlaceText';
 import { editUserProfileAction } from './EditUserProfileModal';
 import { openViewUserFriendsModal } from './ViewUserFriendsModal';
+import { openViewUserRatersModal } from './ViewUserRatersModal';
 import { colors } from '../../common/constants';
 
 type Props = {
@@ -77,9 +78,20 @@ export default function UserProfile({ data: user }: Props) {
                 </Group>
               </div>
               <div>
-                <Text size='sm' weight='bold'>
-                  {t('columns.rating')}
-                </Text>
+                <Group spacing={0} position='apart'>
+                  <Text size='sm' weight='bold'>
+                    {t('columns.rating')}
+                  </Text>
+                  <Anchor
+                    component='button'
+                    type='button'
+                    onClick={() => openViewUserRatersModal(user)}
+                    size='xs'
+                    underline
+                  >
+                    {t('actions.view').toLowerCase()}
+                  </Anchor>
+                </Group>
                 <CustomRating value={user.rating} />
               </div>
             </Stack>

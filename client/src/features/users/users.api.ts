@@ -64,6 +64,12 @@ export const usersApi = emptyApi.injectEndpoints({
       }),
       providesTags: ['Auth', 'User', 'Rating'],
     }),
+    selectUserRaters: build.query<SmUser[], number>({
+      query: (userId) => ({
+        url: `/users/${userId}/raters`,
+      }),
+      providesTags: ['Auth', 'User', 'Rating'],
+    }),
     getSingleUser: build.query<ExtUser, number>({
       query: (userId) => ({
         url: `/users/${userId}`,
@@ -114,6 +120,7 @@ export const {
   useSelectNotFriendsUsersQuery,
   useSelectNotSubscribedUsersQuery,
   useSelectNotRatedUsersQuery,
+  useSelectUserRatersQuery,
   useGetSingleUserQuery,
   useEditUserProfileMutation,
   useEditUserPasswordMutation,
