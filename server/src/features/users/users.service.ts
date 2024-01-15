@@ -38,14 +38,16 @@ export class UsersService {
 
   async getTopUsers(req: Request): Promise<Response<User>> {
     const [result, count] = await this.getUsersQueryBuilder(req)
-      .leftJoin('user.ratings', 'rating')
+      .leftJoin('user.receivedRatings', 'rating')
       .groupBy('user.id')
       .addGroupBy('city.id')
       .addGroupBy('ownerUser.id')
       .orderBy('user_rating', 'DESC', 'NULLS LAST')
+      .addOrderBy('user_ratings', 'DESC', 'NULLS LAST')
       .addOrderBy('user.onlineAt', 'DESC')
       .addOrderBy('user.id', 'DESC')
       .addSelect('AVG(rating.rate)', 'user_rating')
+      .addSelect('COUNT(rating.rate)', 'user_ratings')
       .getManyAndCount();
     await this.loadRating(result);
     return { result, count };
@@ -177,14 +179,19 @@ export class UsersService {
   }
 
   async selectNotRatedUsers(myId: number): Promise<User[]> {
-    const ratings = (
+    const raters = (
       await this.selectUsersQueryBuilder()
-        .innerJoin('user.ratings', 'rating')
-        .where('rating.senderUserId = :myId', { myId })
+        .innerJoinAndMapOne(
+          'rating',
+          'user.receivedRatings',
+          'rating',
+          'rating.senderUserId = :myId',
+          { myId },
+        )
         .getMany()
     ).map((user) => user.id);
     const users = await this.selectUsersQueryBuilder().getMany();
-    return users.filter((user) => !ratings.includes(user.id));
+    return users.filter((user) => !raters.includes(user.id));
   }
 
   selectMySubscribers(myId: number): Promise<User[]> {
@@ -195,6 +202,18 @@ export class UsersService {
         'subscriber',
         'subscriber.id = :myId',
         { myId },
+      )
+      .getMany();
+  }
+
+  selectUserRaters(userId: number): Promise<User[]> {
+    return this.selectUsersQueryBuilder()
+      .innerJoinAndMapOne(
+        'rating',
+        'user.sentRatings',
+        'rating',
+        'rating.receiverUserId = :userId',
+        { userId },
       )
       .getMany();
   }
@@ -495,10 +514,10 @@ export class UsersService {
     const promises = users.map(async (user) => {
       const ratings = (
         await this.usersRepository.findOne({
-          relations: ['ratings'],
+          relations: ['receivedRatings'],
           where: { id: user.id },
         })
-      ).ratings;
+      ).receivedRatings;
       user['rating'] =
         ratings
           .map((rating) => rating.rate)

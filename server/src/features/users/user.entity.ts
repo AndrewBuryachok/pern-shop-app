@@ -80,6 +80,9 @@ export class User {
   @OneToMany(() => Card, (card) => card.user)
   cards: Card[];
 
+  @OneToMany(() => Rating, (rating) => rating.senderUser)
+  sentRatings: Rating[];
+
   @OneToMany(() => Rating, (rating) => rating.receiverUser)
-  ratings: Rating[];
+  receivedRatings: Rating[];
 }

@@ -2148,6 +2148,12 @@ describe('With Auth', () => {
         .expect('');
     });
 
+    it('GET /users/:userId/raters', async () => {
+      return request(app.getHttpServer())
+        .get(`/users/${user.id}/raters`)
+        .expect((res) => expect(res.body.length).toBeGreaterThan(0));
+    });
+
     it('GET /ratings/my', async () => {
       return request(app.getHttpServer())
         .get('/ratings/my')
