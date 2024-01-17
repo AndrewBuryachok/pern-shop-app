@@ -8,7 +8,7 @@ import {
   IsTitle,
   IsType,
 } from '../../common/decorators';
-import { IsPollExists } from '../../common/constraints';
+import { IsPollExists, IsUserExists } from '../../common/constraints';
 
 export class PollIdDto {
   @ApiProperty()
@@ -29,7 +29,10 @@ export class CreatePollDto {
 }
 
 export class ExtCreatePollDto extends CreatePollDto {
-  myId: number;
+  @ApiProperty()
+  @IsId()
+  @Validate(IsUserExists)
+  userId: number;
 }
 
 export class CompletePollDto {

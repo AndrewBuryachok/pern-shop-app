@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Validate } from 'class-validator';
 import { Type } from 'class-transformer';
 import { IsId, IsImage, IsText } from '../../common/decorators';
-import { IsArticleExists } from '../../common/constraints';
+import { IsArticleExists, IsUserExists } from '../../common/constraints';
 
 export class ArticleIdDto {
   @ApiProperty()
@@ -31,7 +31,10 @@ export class CreateArticleDto {
 }
 
 export class ExtCreateArticleDto extends CreateArticleDto {
-  myId: number;
+  @ApiProperty()
+  @IsId()
+  @Validate(IsUserExists)
+  userId: number;
 }
 
 export class EditArticleDto extends CreateArticleDto {}

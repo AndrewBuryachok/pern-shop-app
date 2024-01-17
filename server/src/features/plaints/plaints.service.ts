@@ -55,7 +55,7 @@ export class PlaintsService {
   async createPlaint(dto: ExtCreatePlaintDto): Promise<void> {
     await this.create(dto);
     this.mqttService.publishNotificationMessage(
-      dto.userId,
+      dto.receiverUserId,
       Notification.CREATED_PLAINT,
     );
   }
@@ -140,8 +140,8 @@ export class PlaintsService {
     try {
       const plaint = this.plaintsRepository.create({
         title: dto.title,
-        senderUserId: dto.myId,
-        receiverUserId: dto.userId,
+        senderUserId: dto.senderUserId,
+        receiverUserId: dto.receiverUserId,
         senderText: dto.text,
       });
       await this.plaintsRepository.save(plaint);

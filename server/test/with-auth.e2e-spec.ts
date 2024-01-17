@@ -1940,7 +1940,7 @@ describe('With Auth', () => {
         .set('Authorization', `Bearer ${user.access}`)
         .send({
           title: 'plaint title',
-          userId: user.id,
+          receiverUserId: user.id,
           text: 'sender text',
         })
         .expect('');
@@ -1952,7 +1952,7 @@ describe('With Auth', () => {
         .set('Authorization', `Bearer ${user.access}`)
         .send({
           title: 'plaint title',
-          userId: user.id,
+          receiverUserId: user.id,
           text: 'sender text',
         })
         .expect('');

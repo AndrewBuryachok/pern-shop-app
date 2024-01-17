@@ -10,7 +10,12 @@ import {
 import { ApiTags } from '@nestjs/swagger';
 import { PlaintsService } from './plaints.service';
 import { Plaint } from './plaint.entity';
-import { CreatePlaintDto, PlaintIdDto, UpdatePlaintDto } from './plaint.dto';
+import {
+  CreatePlaintDto,
+  ExtCreatePlaintDto,
+  PlaintIdDto,
+  UpdatePlaintDto,
+} from './plaint.dto';
 import { Request, Response } from '../../common/interfaces';
 import { MyId, Public, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
@@ -49,11 +54,17 @@ export class PlaintsController {
   }
 
   @Post()
-  createPlaint(
+  createMyPlaint(
     @MyId() myId: number,
     @Body() dto: CreatePlaintDto,
   ): Promise<void> {
-    return this.plaintsService.createPlaint({ ...dto, myId });
+    return this.plaintsService.createPlaint({ ...dto, senderUserId: myId });
+  }
+
+  @Roles(Role.ADMIN)
+  @Post('all')
+  createUserPlaint(@Body() dto: ExtCreatePlaintDto): Promise<void> {
+    return this.plaintsService.createPlaint(dto);
   }
 
   @Post(':plaintId/execute')

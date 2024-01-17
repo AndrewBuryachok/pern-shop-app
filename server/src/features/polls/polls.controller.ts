@@ -15,6 +15,7 @@ import { Discussion } from '../discussions/discussion.entity';
 import {
   CompletePollDto,
   CreatePollDto,
+  ExtCreatePollDto,
   PollIdDto,
   VotePollDto,
 } from './poll.dto';
@@ -81,8 +82,17 @@ export class PollsController {
   }
 
   @Post()
-  createPoll(@MyId() myId: number, @Body() dto: CreatePollDto): Promise<void> {
-    return this.pollsService.createPoll({ ...dto, myId });
+  createMyPoll(
+    @MyId() myId: number,
+    @Body() dto: CreatePollDto,
+  ): Promise<void> {
+    return this.pollsService.createPoll({ ...dto, userId: myId });
+  }
+
+  @Roles(Role.ADMIN)
+  @Post('all')
+  createUserPoll(@Body() dto: ExtCreatePollDto): Promise<void> {
+    return this.pollsService.createPoll(dto);
   }
 
   @Roles(Role.ADMIN)

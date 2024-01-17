@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Validate } from 'class-validator';
 import { Type } from 'class-transformer';
 import { IsId, IsPriority, IsText, IsTitle } from '../../common/decorators';
-import { IsTaskExists } from '../../common/constraints';
+import { IsTaskExists, IsUserExists } from '../../common/constraints';
 
 export class TaskIdDto {
   @ApiProperty()
@@ -27,7 +27,10 @@ export class CreateTaskDto {
 }
 
 export class ExtCreateTaskDto extends CreateTaskDto {
-  myId: number;
+  @ApiProperty()
+  @IsId()
+  @Validate(IsUserExists)
+  userId: number;
 }
 
 export class ExtTaskIdDto extends TaskIdDto {

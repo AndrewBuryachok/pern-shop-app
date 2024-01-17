@@ -199,7 +199,7 @@ export class PollsService {
   private async create(dto: ExtCreatePollDto): Promise<void> {
     try {
       const poll = this.pollsRepository.create({
-        userId: dto.myId,
+        userId: dto.userId,
         title: dto.title,
         text: dto.text,
       });

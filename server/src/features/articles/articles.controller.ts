@@ -13,7 +13,12 @@ import { ArticlesService } from './articles.service';
 import { Article } from './article.entity';
 import { Like } from './like.entity';
 import { Comment } from '../comments/comment.entity';
-import { ArticleIdDto, CreateArticleDto, EditArticleDto } from './article.dto';
+import {
+  ArticleIdDto,
+  CreateArticleDto,
+  EditArticleDto,
+  ExtCreateArticleDto,
+} from './article.dto';
 import { Request, Response } from '../../common/interfaces';
 import { HasRole, MyId, Public, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
@@ -87,11 +92,17 @@ export class ArticlesController {
   }
 
   @Post()
-  createArticle(
+  createMyArticle(
     @MyId() myId: number,
     @Body() dto: CreateArticleDto,
   ): Promise<void> {
-    return this.articlesService.createArticle({ ...dto, myId });
+    return this.articlesService.createArticle({ ...dto, userId: myId });
+  }
+
+  @Roles(Role.ADMIN)
+  @Post('all')
+  createUserArticle(@Body() dto: ExtCreateArticleDto): Promise<void> {
+    return this.articlesService.createArticle(dto);
   }
 
   @Patch(':articleId')

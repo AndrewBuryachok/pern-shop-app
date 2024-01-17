@@ -31,11 +31,14 @@ export class CreatePlaintDto extends UpdatePlaintDto {
   @ApiProperty()
   @IsId()
   @Validate(IsUserExists)
-  userId: number;
+  receiverUserId: number;
 }
 
 export class ExtCreatePlaintDto extends CreatePlaintDto {
-  myId: number;
+  @ApiProperty()
+  @IsId()
+  @Validate(IsUserExists)
+  senderUserId: number;
 }
 
 export class DeletePlaintDto extends PlaintIdDto {

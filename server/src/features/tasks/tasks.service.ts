@@ -139,7 +139,7 @@ export class TasksService {
   private async create(dto: ExtCreateTaskDto): Promise<void> {
     try {
       const task = this.tasksRepository.create({
-        customerUserId: dto.myId,
+        customerUserId: dto.userId,
         title: dto.title,
         text: dto.text,
         priority: dto.priority,

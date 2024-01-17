@@ -10,7 +10,7 @@ import {
 import { ApiTags } from '@nestjs/swagger';
 import { TasksService } from './tasks.service';
 import { Task } from './task.entity';
-import { CreateTaskDto, TaskIdDto } from './task.dto';
+import { CreateTaskDto, ExtCreateTaskDto, TaskIdDto } from './task.dto';
 import { Request, Response } from '../../common/interfaces';
 import { MyId, Public, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
@@ -49,8 +49,17 @@ export class TasksController {
   }
 
   @Post()
-  createTask(@MyId() myId: number, @Body() dto: CreateTaskDto): Promise<void> {
-    return this.tasksService.createTask({ ...dto, myId });
+  createMyTask(
+    @MyId() myId: number,
+    @Body() dto: CreateTaskDto,
+  ): Promise<void> {
+    return this.tasksService.createTask({ ...dto, userId: myId });
+  }
+
+  @Roles(Role.ADMIN)
+  @Post('all')
+  createUserTask(@Body() dto: ExtCreateTaskDto): Promise<void> {
+    return this.tasksService.createTask(dto);
   }
 
   @Post(':taskId/take')

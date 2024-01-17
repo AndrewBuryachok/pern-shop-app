@@ -214,7 +214,7 @@ export class ArticlesService {
   private async create(dto: ExtCreateArticleDto): Promise<void> {
     try {
       const article = this.articlesRepository.create({
-        userId: dto.myId,
+        userId: dto.userId,
         text: dto.text,
         image1: dto.image1,
         image2: dto.image2,
