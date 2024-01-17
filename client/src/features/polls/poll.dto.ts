@@ -3,6 +3,10 @@ export interface CreatePollDto {
   text: string;
 }
 
+export interface ExtCreatePollDto extends CreatePollDto {
+  userId: number;
+}
+
 export interface DeletePollDto {
   pollId: number;
 }

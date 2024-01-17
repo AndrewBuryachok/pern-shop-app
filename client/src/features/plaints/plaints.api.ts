@@ -4,6 +4,7 @@ import { Plaint } from './plaint.model';
 import {
   CreatePlaintDto,
   DeletePlaintDto,
+  ExtCreatePlaintDto,
   UpdatePlaintDto,
 } from './plaint.dto';
 import { getQuery } from '../../common/utils';
@@ -34,9 +35,17 @@ export const plaintsApi = emptyApi.injectEndpoints({
       }),
       providesTags: ['Auth', 'Plaint'],
     }),
-    createPlaint: build.mutation<void, CreatePlaintDto>({
+    createMyPlaint: build.mutation<void, CreatePlaintDto>({
       query: (dto) => ({
         url: '/plaints',
+        method: 'POST',
+        body: dto,
+      }),
+      invalidatesTags: ['Plaint'],
+    }),
+    createUserPlaint: build.mutation<void, ExtCreatePlaintDto>({
+      query: (dto) => ({
+        url: '/plaints/all',
         method: 'POST',
         body: dto,
       }),
@@ -73,7 +82,8 @@ export const {
   useGetMyPlaintsQuery,
   useGetReceivedPlaintsQuery,
   useGetAllPlaintsQuery,
-  useCreatePlaintMutation,
+  useCreateMyPlaintMutation,
+  useCreateUserPlaintMutation,
   useExecutePlaintMutation,
   useCompletePlaintMutation,
   useDeletePlaintMutation,

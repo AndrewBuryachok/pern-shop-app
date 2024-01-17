@@ -9,7 +9,10 @@ import {
   useGetReceivedPlaintsQuery,
 } from '../../features/plaints/plaints.api';
 import PlaintsTable from '../../features/plaints/PlaintsTable';
-import { createPlaintButton } from '../../features/plaints/CreatePlaintModal';
+import {
+  createMyPlaintButton,
+  createUserPlaintButton,
+} from '../../features/plaints/CreatePlaintModal';
 import { executePlaintAction } from '../../features/plaints/ExecutePlaintModal';
 import { completePlaintAction } from '../../features/plaints/CompletePlaintModal';
 import { deletePlaintAction } from '../../features/plaints/DeletePlaintModal';
@@ -38,7 +41,11 @@ export default function MyPlaints() {
     all: useGetAllPlaintsQuery,
   }[tab]!({ page, search });
 
-  const button = { main: createPlaintButton, my: createPlaintButton }[tab];
+  const button = {
+    main: createMyPlaintButton,
+    my: createMyPlaintButton,
+    all: createUserPlaintButton,
+  }[tab];
 
   const actions = {
     my: [deletePlaintAction],

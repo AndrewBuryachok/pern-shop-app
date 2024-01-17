@@ -5,6 +5,10 @@ export interface CreateArticleDto {
   image3: string;
 }
 
+export interface ExtCreateArticleDto extends CreateArticleDto {
+  userId: number;
+}
+
 export interface EditArticleDto extends CreateArticleDto {
   articleId: number;
 }

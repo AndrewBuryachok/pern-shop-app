@@ -4,6 +4,10 @@ export interface CreateTaskDto {
   priority: number;
 }
 
+export interface ExtCreateTaskDto extends CreateTaskDto {
+  userId: number;
+}
+
 export interface TaskIdDto {
   taskId: number;
 }

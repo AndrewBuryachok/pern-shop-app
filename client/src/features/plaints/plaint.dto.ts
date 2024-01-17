@@ -1,7 +1,11 @@
 export interface CreatePlaintDto {
   title: string;
-  userId: number;
+  receiverUserId: number;
   text: string;
+}
+
+export interface ExtCreatePlaintDto extends CreatePlaintDto {
+  senderUserId: number;
 }
 
 export interface DeletePlaintDto {

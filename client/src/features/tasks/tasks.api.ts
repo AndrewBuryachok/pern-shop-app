@@ -1,7 +1,7 @@
 import { emptyApi } from '../../app/empty.api';
 import { IRequest, IResponse } from '../../common/interfaces';
 import { Task } from './task.model';
-import { CreateTaskDto, TaskIdDto } from './task.dto';
+import { CreateTaskDto, ExtCreateTaskDto, TaskIdDto } from './task.dto';
 import { getQuery } from '../../common/utils';
 
 export const tasksApi = emptyApi.injectEndpoints({
@@ -30,9 +30,17 @@ export const tasksApi = emptyApi.injectEndpoints({
       }),
       providesTags: ['Auth', 'Task'],
     }),
-    createTask: build.mutation<void, CreateTaskDto>({
+    createMyTask: build.mutation<void, CreateTaskDto>({
       query: (dto) => ({
         url: '/tasks',
+        method: 'POST',
+        body: dto,
+      }),
+      invalidatesTags: ['Task'],
+    }),
+    createUserTask: build.mutation<void, ExtCreateTaskDto>({
+      query: (dto) => ({
+        url: '/tasks/all',
         method: 'POST',
         body: dto,
       }),
@@ -82,7 +90,8 @@ export const {
   useGetMyTasksQuery,
   useGetTakenTasksQuery,
   useGetAllTasksQuery,
-  useCreateTaskMutation,
+  useCreateMyTaskMutation,
+  useCreateUserTaskMutation,
   useTakeTaskMutation,
   useUntakeTaskMutation,
   useExecuteTaskMutation,

@@ -10,7 +10,10 @@ import {
   useGetSubscribedArticlesQuery,
 } from '../../features/articles/articles.api';
 import ArticlesList from '../../features/articles/ArticlesList';
-import { createArticleButton } from '../../features/articles/CreateArticleModal';
+import {
+  createMyArticleButton,
+  createUserArticleButton,
+} from '../../features/articles/CreateArticleModal';
 import { editArticleAction } from '../../features/articles/EditArticleModal';
 import { deleteArticleAction } from '../../features/articles/DeleteArticleModal';
 
@@ -37,7 +40,11 @@ export default function MyArticles() {
     all: useGetAllArticlesQuery,
   }[tab]!({ page, search });
 
-  const button = { main: createArticleButton, my: createArticleButton }[tab];
+  const button = {
+    main: createMyArticleButton,
+    my: createMyArticleButton,
+    all: createUserArticleButton,
+  }[tab];
 
   const actions = {
     my: [editArticleAction, deleteArticleAction],

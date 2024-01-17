@@ -7,7 +7,10 @@ import {
   useGetMyStoresQuery,
 } from '../../features/stores/stores.api';
 import StoresTable from '../../features/stores/StoresTable';
-import { createMyStoreButton } from '../../features/stores/CreateStoreModal';
+import {
+  createMyStoreButton,
+  createUserStoreButton,
+} from '../../features/stores/CreateStoreModal';
 import {
   reserveMyStoreAction,
   reserveUserStoreAction,
@@ -36,7 +39,11 @@ export default function MyStores() {
     all: useGetAllStoresQuery,
   }[tab]!({ page, search });
 
-  const button = { main: createMyStoreButton, my: createMyStoreButton }[tab];
+  const button = {
+    main: createMyStoreButton,
+    my: createMyStoreButton,
+    all: createUserStoreButton,
+  }[tab];
 
   const actions = {
     main: [reserveMyStoreAction],

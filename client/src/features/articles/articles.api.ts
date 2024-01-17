@@ -7,6 +7,7 @@ import {
   CreateArticleDto,
   DeleteArticleDto,
   EditArticleDto,
+  ExtCreateArticleDto,
   LikeArticleDto,
 } from './article.dto';
 import { getQuery } from '../../common/utils';
@@ -67,9 +68,17 @@ export const articlesApi = emptyApi.injectEndpoints({
       }),
       providesTags: ['Comment'],
     }),
-    createArticle: build.mutation<void, CreateArticleDto>({
+    createMyArticle: build.mutation<void, CreateArticleDto>({
       query: (dto) => ({
         url: '/articles',
+        method: 'POST',
+        body: dto,
+      }),
+      invalidatesTags: ['Article'],
+    }),
+    createUserArticle: build.mutation<void, ExtCreateArticleDto>({
+      query: (dto) => ({
+        url: '/articles/all',
         method: 'POST',
         body: dto,
       }),
@@ -110,7 +119,8 @@ export const {
   useSelectLikedArticlesQuery,
   useSelectArticleLikesQuery,
   useSelectArticleCommentsQuery,
-  useCreateArticleMutation,
+  useCreateMyArticleMutation,
+  useCreateUserArticleMutation,
   useEditArticleMutation,
   useDeleteArticleMutation,
   useLikeArticleMutation,

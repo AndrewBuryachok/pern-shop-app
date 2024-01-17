@@ -9,7 +9,10 @@ import {
   useGetTakenTasksQuery,
 } from '../../features/tasks/tasks.api';
 import TasksTable from '../../features/tasks/TasksTable';
-import { createTaskButton } from '../../features/tasks/CreateTaskModal';
+import {
+  createMyTaskButton,
+  createUserTaskButton,
+} from '../../features/tasks/CreateTaskModal';
 import { takeTaskAction } from '../../features/tasks/TakeTaskModal';
 import { executeTaskAction } from '../../features/tasks/ExecuteTaskModal';
 import { completeTaskAction } from '../../features/tasks/CompleteTaskModal';
@@ -42,7 +45,11 @@ export default function MyTasks() {
     all: useGetAllTasksQuery,
   }[tab]!({ page, search });
 
-  const button = { main: createTaskButton, my: createTaskButton }[tab];
+  const button = {
+    main: createMyTaskButton,
+    my: createMyTaskButton,
+    all: createUserTaskButton,
+  }[tab];
 
   const actions = {
     main: [takeTaskAction],

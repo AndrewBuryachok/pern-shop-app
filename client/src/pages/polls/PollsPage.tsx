@@ -9,7 +9,10 @@ import {
   useGetVotedPollsQuery,
 } from '../../features/polls/polls.api';
 import PollsTable from '../../features/polls/PollsTable';
-import { createPollButton } from '../../features/polls/CreatePollModal';
+import {
+  createMyPollButton,
+  createUserPollButton,
+} from '../../features/polls/CreatePollModal';
 import { votePollAction } from '../../features/polls/VotePollModal';
 import { createDiscussionAction } from '../../features/discussions/CreateDiscussionModal';
 import { completePollAction } from '../../features/polls/CompletePollModal';
@@ -39,7 +42,11 @@ export default function MyPolls() {
     all: useGetAllPollsQuery,
   }[tab]!({ page, search });
 
-  const button = { main: createPollButton, my: createPollButton }[tab];
+  const button = {
+    main: createMyPollButton,
+    my: createMyPollButton,
+    all: createUserPollButton,
+  }[tab];
 
   const actions = {
     main: [createDiscussionAction, votePollAction],

@@ -88,4 +88,4 @@ export const createCellFactory = (hasRole: boolean) => ({
 
 export const createMyCellButton = createCellFactory(false);
 
-export const createUserCellButton = createCellFactory(false);
+export const createUserCellButton = createCellFactory(true);
