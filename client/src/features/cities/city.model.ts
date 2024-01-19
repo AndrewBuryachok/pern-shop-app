@@ -6,6 +6,7 @@ export interface MdCity extends PlaceWithUser {}
 
 export interface City extends MdCity {
   image: string;
+  video: string;
   description: string;
   users: number;
 }

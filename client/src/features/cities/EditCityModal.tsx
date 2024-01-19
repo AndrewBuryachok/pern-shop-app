@@ -11,11 +11,12 @@ import { useEditCityMutation } from './cities.api';
 import { EditCityDto } from './city.dto';
 import CustomForm from '../../common/components/CustomForm';
 import CustomImage from '../../common/components/CustomImage';
+import CustomVideo from '../../common/components/CustomVideo';
 import {
   Color,
   MAX_COORDINATE_VALUE,
   MAX_DESCRIPTION_LENGTH,
-  MAX_IMAGE_LENGTH,
+  MAX_LINK_LENGTH,
   MAX_NAME_LENGTH,
   MIN_COORDINATE_VALUE,
   MIN_NAME_LENGTH,
@@ -31,6 +32,7 @@ export default function EditCityModal({ data: city }: Props) {
       cityId: city.id,
       name: city.name,
       image: city.image,
+      video: city.video,
       description: city.description,
       x: city.x,
       y: city.y,
@@ -38,6 +40,7 @@ export default function EditCityModal({ data: city }: Props) {
   });
 
   const [image] = useDebouncedValue(form.values.image, 500);
+  const [video] = useDebouncedValue(form.values.video, 500);
 
   const [editCity, { isLoading }] = useEditCityMutation();
 
@@ -63,10 +66,17 @@ export default function EditCityModal({ data: city }: Props) {
       <Textarea
         label={t('columns.image')}
         placeholder={t('columns.image')}
-        maxLength={MAX_IMAGE_LENGTH}
+        maxLength={MAX_LINK_LENGTH}
         {...form.getInputProps('image')}
       />
       <CustomImage image={image} />
+      <Textarea
+        label={t('columns.video')}
+        placeholder={t('columns.video')}
+        maxLength={MAX_LINK_LENGTH}
+        {...form.getInputProps('video')}
+      />
+      <CustomVideo video={video} />
       <Textarea
         label={t('columns.description')}
         placeholder={t('columns.description')}

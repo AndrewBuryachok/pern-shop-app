@@ -10,6 +10,7 @@ import { DeleteArticleDto } from './article.dto';
 import CustomForm from '../../common/components/CustomForm';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import CustomImage from '../../common/components/CustomImage';
+import CustomVideo from '../../common/components/CustomVideo';
 import { Color } from '../../common/constants';
 
 type Props = IModal<Article>;
@@ -56,6 +57,9 @@ export default function DeleteArticleModal({ data: article }: Props) {
       </Input.Wrapper>
       <Input.Wrapper label={t('columns.image')}>
         <CustomImage image={article.image3} />
+      </Input.Wrapper>
+      <Input.Wrapper label={t('columns.video')}>
+        <CustomVideo video={article.video} />
       </Input.Wrapper>
     </CustomForm>
   );

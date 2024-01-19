@@ -11,9 +11,10 @@ import { EditArticleDto } from './article.dto';
 import CustomForm from '../../common/components/CustomForm';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import CustomImage from '../../common/components/CustomImage';
+import CustomVideo from '../../common/components/CustomVideo';
 import {
   Color,
-  MAX_IMAGE_LENGTH,
+  MAX_LINK_LENGTH,
   MAX_TEXT_LENGTH,
 } from '../../common/constants';
 
@@ -29,12 +30,14 @@ export default function EditArticleModal({ data: article }: Props) {
       image1: article.image1,
       image2: article.image2,
       image3: article.image3,
+      video: article.video,
     },
   });
 
   const [image1] = useDebouncedValue(form.values.image1, 500);
   const [image2] = useDebouncedValue(form.values.image2, 500);
   const [image3] = useDebouncedValue(form.values.image3, 500);
+  const [video] = useDebouncedValue(form.values.video, 500);
 
   const [editArticle, { isLoading }] = useEditArticleMutation();
 
@@ -66,24 +69,31 @@ export default function EditArticleModal({ data: article }: Props) {
       <Textarea
         label={t('columns.image')}
         placeholder={t('columns.image')}
-        maxLength={MAX_IMAGE_LENGTH}
+        maxLength={MAX_LINK_LENGTH}
         {...form.getInputProps('image1')}
       />
       <CustomImage image={image1} />
       <Textarea
         label={t('columns.image')}
         placeholder={t('columns.image')}
-        maxLength={MAX_IMAGE_LENGTH}
+        maxLength={MAX_LINK_LENGTH}
         {...form.getInputProps('image2')}
       />
       <CustomImage image={image2} />
       <Textarea
         label={t('columns.image')}
         placeholder={t('columns.image')}
-        maxLength={MAX_IMAGE_LENGTH}
+        maxLength={MAX_LINK_LENGTH}
         {...form.getInputProps('image3')}
       />
       <CustomImage image={image3} />
+      <Textarea
+        label={t('columns.video')}
+        placeholder={t('columns.video')}
+        maxLength={MAX_LINK_LENGTH}
+        {...form.getInputProps('video')}
+      />
+      <CustomVideo video={video} />
     </CustomForm>
   );
 }

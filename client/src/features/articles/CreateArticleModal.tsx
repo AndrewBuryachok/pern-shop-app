@@ -14,9 +14,10 @@ import CustomForm from '../../common/components/CustomForm';
 import RefetchAction from '../../common/components/RefetchAction';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import CustomImage from '../../common/components/CustomImage';
+import CustomVideo from '../../common/components/CustomVideo';
 import { UsersItem } from '../../common/components/UsersItem';
 import { selectUsers } from '../../common/utils';
-import { MAX_IMAGE_LENGTH, MAX_TEXT_LENGTH } from '../../common/constants';
+import { MAX_LINK_LENGTH, MAX_TEXT_LENGTH } from '../../common/constants';
 
 type Props = { hasRole: boolean };
 
@@ -30,6 +31,7 @@ export default function CreateArticleModal({ hasRole }: Props) {
       image1: '',
       image2: '',
       image3: '',
+      video: '',
     },
     transformValues: ({ user, ...rest }) => ({ ...rest, userId: +user }),
   });
@@ -43,6 +45,7 @@ export default function CreateArticleModal({ hasRole }: Props) {
   const [image1] = useDebouncedValue(form.values.image1, 500);
   const [image2] = useDebouncedValue(form.values.image2, 500);
   const [image3] = useDebouncedValue(form.values.image3, 500);
+  const [video] = useDebouncedValue(form.values.video, 500);
 
   const [createArticle, { isLoading }] = hasRole
     ? useCreateUserArticleMutation()
@@ -85,24 +88,31 @@ export default function CreateArticleModal({ hasRole }: Props) {
       <Textarea
         label={t('columns.image')}
         placeholder={t('columns.image')}
-        maxLength={MAX_IMAGE_LENGTH}
+        maxLength={MAX_LINK_LENGTH}
         {...form.getInputProps('image1')}
       />
       <CustomImage image={image1} />
       <Textarea
         label={t('columns.image')}
         placeholder={t('columns.image')}
-        maxLength={MAX_IMAGE_LENGTH}
+        maxLength={MAX_LINK_LENGTH}
         {...form.getInputProps('image2')}
       />
       <CustomImage image={image2} />
       <Textarea
         label={t('columns.image')}
         placeholder={t('columns.image')}
-        maxLength={MAX_IMAGE_LENGTH}
+        maxLength={MAX_LINK_LENGTH}
         {...form.getInputProps('image3')}
       />
       <CustomImage image={image3} />
+      <Textarea
+        label={t('columns.video')}
+        placeholder={t('columns.video')}
+        maxLength={MAX_LINK_LENGTH}
+        {...form.getInputProps('video')}
+      />
+      <CustomVideo video={video} />
     </CustomForm>
   );
 }

@@ -8,6 +8,7 @@ import { useSelectCityUsersQuery } from './cities.api';
 import RefetchAction from '../../common/components/RefetchAction';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import CustomImage from '../../common/components/CustomImage';
+import CustomVideo from '../../common/components/CustomVideo';
 import { UsersItem } from '../../common/components/UsersItem';
 import { viewUsers } from '../../common/utils';
 import { Color } from '../../common/constants';
@@ -31,7 +32,10 @@ export default function ViewCityModal({ data: city }: Props) {
       />
       <TextInput label={t('columns.city')} value={city.name} disabled />
       <Input.Wrapper label={t('columns.image')}>
-        <CustomImage {...city} />
+        <CustomImage image={city.image} />
+      </Input.Wrapper>
+      <Input.Wrapper label={t('columns.video')}>
+        <CustomVideo video={city.video} />
       </Input.Wrapper>
       <Textarea
         label={t('columns.description')}

@@ -10,6 +10,7 @@ export interface MdStorage extends PlaceWithCard {}
 
 export interface Storage extends MdStorage {
   image: string;
+  video: string;
   description: string;
   states: number;
   cells: number;

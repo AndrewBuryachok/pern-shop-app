@@ -8,6 +8,7 @@ import { useSelectShopGoodsQuery, useSelectShopUsersQuery } from './shops.api';
 import RefetchAction from '../../common/components/RefetchAction';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import CustomImage from '../../common/components/CustomImage';
+import CustomVideo from '../../common/components/CustomVideo';
 import { UsersItem } from '../../common/components/UsersItem';
 import { ThingsItemWithAmount } from '../../common/components/ThingsItemWithAmount';
 import { viewThings, viewUsers } from '../../common/utils';
@@ -33,7 +34,10 @@ export default function ViewShopModal({ data: shop }: Props) {
       />
       <TextInput label={t('columns.shop')} value={shop.name} disabled />
       <Input.Wrapper label={t('columns.image')}>
-        <CustomImage {...shop} />
+        <CustomImage image={shop.image} />
+      </Input.Wrapper>
+      <Input.Wrapper label={t('columns.video')}>
+        <CustomVideo video={shop.video} />
       </Input.Wrapper>
       <Textarea
         label={t('columns.description')}

@@ -22,6 +22,7 @@ export interface ExtPlace extends Place {
   owner: SmUser;
   card?: MdCard;
   image: string;
+  video: string;
   description: string;
   price?: number;
   data: number;

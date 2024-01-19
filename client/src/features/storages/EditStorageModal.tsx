@@ -10,11 +10,12 @@ import { useEditStorageMutation } from './storages.api';
 import { EditStorageDto } from './storage.dto';
 import CustomForm from '../../common/components/CustomForm';
 import CustomImage from '../../common/components/CustomImage';
+import CustomVideo from '../../common/components/CustomVideo';
 import {
   Color,
   MAX_COORDINATE_VALUE,
   MAX_DESCRIPTION_LENGTH,
-  MAX_IMAGE_LENGTH,
+  MAX_LINK_LENGTH,
   MAX_NAME_LENGTH,
   MAX_PRICE_VALUE,
   MIN_COORDINATE_VALUE,
@@ -31,6 +32,7 @@ export default function EditStorageModal({ data: storage }: Props) {
       storageId: storage.id,
       name: storage.name,
       image: storage.image,
+      video: storage.video,
       description: storage.description,
       x: storage.x,
       y: storage.y,
@@ -39,6 +41,7 @@ export default function EditStorageModal({ data: storage }: Props) {
   });
 
   const [image] = useDebouncedValue(form.values.image, 500);
+  const [video] = useDebouncedValue(form.values.video, 500);
 
   const [editStorage, { isLoading }] = useEditStorageMutation();
 
@@ -64,10 +67,17 @@ export default function EditStorageModal({ data: storage }: Props) {
       <Textarea
         label={t('columns.image')}
         placeholder={t('columns.image')}
-        maxLength={MAX_IMAGE_LENGTH}
+        maxLength={MAX_LINK_LENGTH}
         {...form.getInputProps('image')}
       />
       <CustomImage image={image} />
+      <Textarea
+        label={t('columns.video')}
+        placeholder={t('columns.video')}
+        maxLength={MAX_LINK_LENGTH}
+        {...form.getInputProps('video')}
+      />
+      <CustomVideo video={video} />
       <Textarea
         label={t('columns.description')}
         placeholder={t('columns.description')}

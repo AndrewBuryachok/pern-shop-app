@@ -11,6 +11,7 @@ import { useSelectStorageCellsQuery } from '../cells/cells.api';
 import RefetchAction from '../../common/components/RefetchAction';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import CustomImage from '../../common/components/CustomImage';
+import CustomVideo from '../../common/components/CustomVideo';
 import { UsersItem } from '../../common/components/UsersItem';
 import { ThingsItemWithAmount } from '../../common/components/ThingsItemWithAmount';
 import {
@@ -59,7 +60,10 @@ export default function PlaceModal({ data: place }: Props) {
       />
       <TextInput label={t('columns.place')} value={place.name} disabled />
       <Input.Wrapper label={t('columns.image')}>
-        <CustomImage {...place} />
+        <CustomImage image={place.image} />
+      </Input.Wrapper>
+      <Input.Wrapper label={t('columns.video')}>
+        <CustomVideo video={place.video} />
       </Input.Wrapper>
       <Textarea
         label={t('columns.description')}

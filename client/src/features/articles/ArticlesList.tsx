@@ -19,6 +19,7 @@ import CustomList from '../../common/components/CustomList';
 import AvatarWithDateText from '../../common/components/AvatarWithDateText';
 import SingleText from '../../common/components/SingleText';
 import CustomImage from '../../common/components/CustomImage';
+import CustomVideo from '../../common/components/CustomVideo';
 import CustomActions from '../../common/components/CustomActions';
 import { openAuthModal } from '../auth/AuthModal';
 import { viewArticleAction } from './ViewArticleModal';
@@ -83,6 +84,7 @@ export default function ArticlesList({ actions = [], ...props }: Props) {
               {article.image1 && <CustomImage image={article.image1} />}
               {article.image2 && <CustomImage image={article.image2} />}
               {article.image3 && <CustomImage image={article.image3} />}
+              {article.video && <CustomVideo video={article.video} />}
               <Group spacing={8}>
                 <Button
                   color={article.subscribed ? 'gray' : 'violet'}

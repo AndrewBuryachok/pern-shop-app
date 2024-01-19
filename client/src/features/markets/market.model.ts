@@ -6,6 +6,7 @@ export interface MdMarket extends PlaceWithCard {}
 
 export interface Market extends MdMarket {
   image: string;
+  video: string;
   description: string;
   states: number;
   stores: number;

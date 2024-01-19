@@ -9,6 +9,7 @@ import { useSelectMarketStoresQuery } from '../stores/stores.api';
 import RefetchAction from '../../common/components/RefetchAction';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import CustomImage from '../../common/components/CustomImage';
+import CustomVideo from '../../common/components/CustomVideo';
 import { StatesItem } from '../../common/components/StatesItem';
 import { parseCard, viewContainers, viewStates } from '../../common/utils';
 import { Color } from '../../common/constants';
@@ -37,7 +38,10 @@ export default function ViewMarketModal({ data: market }: Props) {
       />
       <TextInput label={t('columns.market')} value={market.name} disabled />
       <Input.Wrapper label={t('columns.image')}>
-        <CustomImage {...market} />
+        <CustomImage image={market.image} />
+      </Input.Wrapper>
+      <Input.Wrapper label={t('columns.video')}>
+        <CustomVideo video={market.video} />
       </Input.Wrapper>
       <Textarea
         label={t('columns.description')}
