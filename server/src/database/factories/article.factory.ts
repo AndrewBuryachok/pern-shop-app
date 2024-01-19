@@ -8,5 +8,6 @@ define(Article, (faker: Faker) => {
   article.image1 = `https://picsum.photos/seed/${faker.lorem.word()}/960/480`;
   article.image2 = '';
   article.image3 = '';
+  article.video = '';
   return article;
 });

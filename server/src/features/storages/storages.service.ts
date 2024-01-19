@@ -181,6 +181,7 @@ export class StoragesService {
         cardId: dto.cardId,
         name: dto.name,
         image: dto.image,
+        video: dto.video,
         description: dto.description,
         x: dto.x,
         y: dto.y,
@@ -202,6 +203,7 @@ export class StoragesService {
       const equal = storage.price === dto.price;
       storage.name = dto.name;
       storage.image = dto.image;
+      storage.video = dto.video;
       storage.description = dto.description;
       storage.x = dto.x;
       storage.y = dto.y;
@@ -286,6 +288,7 @@ export class StoragesService {
         'ownerCard.color',
         'storage.name',
         'storage.image',
+        'storage.video',
         'storage.description',
         'storage.x',
         'storage.y',

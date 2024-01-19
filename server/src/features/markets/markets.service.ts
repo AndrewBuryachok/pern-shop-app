@@ -154,6 +154,7 @@ export class MarketsService {
         cardId: dto.cardId,
         name: dto.name,
         image: dto.image,
+        video: dto.video,
         description: dto.description,
         x: dto.x,
         y: dto.y,
@@ -175,6 +176,7 @@ export class MarketsService {
       const equal = market.price === dto.price;
       market.name = dto.name;
       market.image = dto.image;
+      market.video = dto.video;
       market.description = dto.description;
       market.x = dto.x;
       market.y = dto.y;
@@ -259,6 +261,7 @@ export class MarketsService {
         'ownerCard.color',
         'market.name',
         'market.image',
+        'market.video',
         'market.description',
         'market.x',
         'market.y',

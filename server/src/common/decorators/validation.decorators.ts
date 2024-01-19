@@ -18,11 +18,11 @@ import {
   MAX_COORDINATE_VALUE,
   MAX_DESCRIPTION_LENGTH,
   MAX_ID_VALUE,
-  MAX_IMAGE_LENGTH,
   MAX_INTAKE_VALUE,
   MAX_ITEM_VALUE,
   MAX_KIND_VALUE,
   MAX_KIT_VALUE,
+  MAX_LINK_LENGTH,
   MAX_NAME_LENGTH,
   MAX_NICK_LENGTH,
   MAX_PASSWORD_LENGTH,
@@ -88,12 +88,12 @@ export const IsText = () => (target: object, key: string) => {
   MaxLength(MAX_TEXT_LENGTH)(target, key);
 };
 
-export const IsImage = () => (target: object, key: string) => {
+export const IsLink = () => (target: object, key: string) => {
   ValidateIf((_, value) => value !== '')(target, key);
   IsNotEmpty()(target, key);
   IsString()(target, key);
   IsUrl()(target, key);
-  MaxLength(MAX_IMAGE_LENGTH)(target, key);
+  MaxLength(MAX_LINK_LENGTH)(target, key);
 };
 
 export const IsId = () => (target: object, key: string) => {

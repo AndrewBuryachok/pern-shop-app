@@ -10,6 +10,7 @@ define(Storage, (faker: Faker) => {
   const storage = new Storage();
   storage.name = faker.address.city();
   storage.image = '';
+  storage.video = '';
   storage.description = '';
   storage.x =
     Math.floor(

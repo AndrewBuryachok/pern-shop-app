@@ -10,6 +10,7 @@ define(Shop, (faker: Faker) => {
   const shop = new Shop();
   shop.name = faker.address.city();
   shop.image = '';
+  shop.video = '';
   shop.description = '';
   shop.x =
     Math.floor(

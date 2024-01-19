@@ -196,6 +196,7 @@ export class ShopsService {
         userId: dto.userId,
         name: dto.name,
         image: dto.image,
+        video: dto.video,
         description: dto.description,
         x: dto.x,
         y: dto.y,
@@ -211,6 +212,7 @@ export class ShopsService {
     try {
       shop.name = dto.name;
       shop.image = dto.image;
+      shop.video = dto.video;
       shop.description = dto.description;
       shop.x = dto.x;
       shop.y = dto.y;
@@ -282,6 +284,7 @@ export class ShopsService {
         'ownerUser.avatar',
         'shop.name',
         'shop.image',
+        'shop.video',
         'shop.description',
         'shop.x',
         'shop.y',

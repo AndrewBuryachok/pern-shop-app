@@ -150,7 +150,14 @@ describe('With Auth', () => {
       return request(app.getHttpServer())
         .post('/cities')
         .set('Authorization', `Bearer ${user.access}`)
-        .send({ name: 'My City', image: '', description: '', x: 500, y: 500 })
+        .send({
+          name: 'My City',
+          image: '',
+          video: '',
+          description: '',
+          x: 500,
+          y: 500,
+        })
         .expect('');
     });
 
@@ -315,7 +322,13 @@ describe('With Auth', () => {
       return request(app.getHttpServer())
         .post('/articles')
         .set('Authorization', `Bearer ${user.access}`)
-        .send({ text: 'article text', image1: '', image2: '', image3: '' })
+        .send({
+          text: 'article text',
+          image1: '',
+          image2: '',
+          image3: '',
+          video: '',
+        })
         .expect('');
     });
 
@@ -323,7 +336,13 @@ describe('With Auth', () => {
       return request(app.getHttpServer())
         .post('/articles')
         .set('Authorization', `Bearer ${user.access}`)
-        .send({ text: 'article text', image1: '', image2: '', image3: '' })
+        .send({
+          text: 'article text',
+          image1: '',
+          image2: '',
+          image3: '',
+          video: '',
+        })
         .expect('');
     });
 
@@ -424,7 +443,13 @@ describe('With Auth', () => {
       return request(app.getHttpServer())
         .patch(`/articles/${articlesId[0]}`)
         .set('Authorization', `Bearer ${user.access}`)
-        .send({ text: 'article text', image1: '', image2: '', image3: '' })
+        .send({
+          text: 'article text',
+          image1: '',
+          image2: '',
+          image3: '',
+          video: '',
+        })
         .expect('');
     });
 
@@ -691,7 +716,14 @@ describe('With Auth', () => {
       return request(app.getHttpServer())
         .patch(`/cities/${cityId}`)
         .set('Authorization', `Bearer ${user.access}`)
-        .send({ name: 'My City', image: '', description: '', x: 500, y: 500 })
+        .send({
+          name: 'My City',
+          image: '',
+          video: '',
+          description: '',
+          x: 500,
+          y: 500,
+        })
         .expect('');
     });
 
@@ -717,7 +749,14 @@ describe('With Auth', () => {
       return request(app.getHttpServer())
         .post('/shops')
         .set('Authorization', `Bearer ${user.access}`)
-        .send({ name: 'My Shop', image: '', description: '', x: 500, y: -500 })
+        .send({
+          name: 'My Shop',
+          image: '',
+          video: '',
+          description: '',
+          x: 500,
+          y: -500,
+        })
         .expect('');
     });
 
@@ -765,7 +804,14 @@ describe('With Auth', () => {
       return request(app.getHttpServer())
         .patch(`/shops/${shopId}`)
         .set('Authorization', `Bearer ${user.access}`)
-        .send({ name: 'My Shop', image: '', description: '', x: 500, y: -500 })
+        .send({
+          name: 'My Shop',
+          image: '',
+          video: '',
+          description: '',
+          x: 500,
+          y: -500,
+        })
         .expect('');
     });
 
@@ -795,6 +841,7 @@ describe('With Auth', () => {
           cardId,
           name: 'My Market',
           image: '',
+          video: '',
           description: '',
           x: -500,
           y: 500,
@@ -851,6 +898,7 @@ describe('With Auth', () => {
         .send({
           name: 'My Market',
           image: '',
+          video: '',
           description: '',
           x: -500,
           y: 500,
@@ -875,6 +923,7 @@ describe('With Auth', () => {
           cardId,
           name: 'My Storage',
           image: '',
+          video: '',
           description: '',
           x: -500,
           y: -500,
@@ -931,6 +980,7 @@ describe('With Auth', () => {
         .send({
           name: 'My Storage',
           image: '',
+          video: '',
           description: '',
           x: -500,
           y: -500,

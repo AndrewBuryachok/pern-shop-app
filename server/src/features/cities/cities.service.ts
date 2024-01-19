@@ -168,6 +168,7 @@ export class CitiesService {
         userId: dto.userId,
         name: dto.name,
         image: dto.image,
+        video: dto.video,
         description: dto.description,
         x: dto.x,
         y: dto.y,
@@ -183,6 +184,7 @@ export class CitiesService {
     try {
       city.name = dto.name;
       city.image = dto.image;
+      city.video = dto.video;
       city.description = dto.description;
       city.x = dto.x;
       city.y = dto.y;
@@ -253,6 +255,7 @@ export class CitiesService {
         'ownerUser.avatar',
         'city.name',
         'city.image',
+        'city.video',
         'city.description',
         'city.x',
         'city.y',

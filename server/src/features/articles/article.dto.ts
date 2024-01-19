@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Validate } from 'class-validator';
 import { Type } from 'class-transformer';
-import { IsId, IsImage, IsText } from '../../common/decorators';
+import { IsId, IsLink, IsText } from '../../common/decorators';
 import { IsArticleExists, IsUserExists } from '../../common/constraints';
 
 export class ArticleIdDto {
@@ -18,16 +18,20 @@ export class CreateArticleDto {
   text: string;
 
   @ApiProperty()
-  @IsImage()
+  @IsLink()
   image1: string;
 
   @ApiProperty()
-  @IsImage()
+  @IsLink()
   image2: string;
 
   @ApiProperty()
-  @IsImage()
+  @IsLink()
   image3: string;
+
+  @ApiProperty()
+  @IsLink()
+  video: string;
 }
 
 export class ExtCreateArticleDto extends CreateArticleDto {

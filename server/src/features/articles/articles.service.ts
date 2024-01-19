@@ -219,6 +219,7 @@ export class ArticlesService {
         image1: dto.image1,
         image2: dto.image2,
         image3: dto.image3,
+        video: dto.video,
       });
       await this.articlesRepository.save(article);
     } catch (error) {
@@ -232,6 +233,7 @@ export class ArticlesService {
       article.image1 = dto.image1;
       article.image2 = dto.image2;
       article.image3 = dto.image3;
+      article.video = dto.video;
       await this.articlesRepository.save(article);
     } catch (error) {
       throw new AppException(ArticleError.EDIT_FAILED);
@@ -310,6 +312,7 @@ export class ArticlesService {
         'article.image1',
         'article.image2',
         'article.image3',
+        'article.video',
         'article.createdAt',
       ]);
   }

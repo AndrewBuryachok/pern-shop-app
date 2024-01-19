@@ -10,6 +10,7 @@ define(City, (faker: Faker) => {
   const city = new City();
   city.name = faker.address.city();
   city.image = '';
+  city.video = '';
   city.description = '';
   city.x =
     Math.floor(
