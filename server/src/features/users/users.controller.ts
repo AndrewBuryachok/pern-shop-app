@@ -33,9 +33,21 @@ export class UsersController {
   }
 
   @Public()
-  @Get('top')
-  getTopUsers(@Query() req: Request): Promise<Response<User>> {
-    return this.usersService.getTopUsers(req);
+  @Get('friends')
+  getFriendsUsers(@Query() req: Request): Promise<Response<User>> {
+    return this.usersService.getFriendsUsers(req);
+  }
+
+  @Public()
+  @Get('subscribers')
+  getSubscribersUsers(@Query() req: Request): Promise<Response<User>> {
+    return this.usersService.getSubscribersUsers(req);
+  }
+
+  @Public()
+  @Get('ratings')
+  getRatingsUsers(@Query() req: Request): Promise<Response<User>> {
+    return this.usersService.getRatingsUsers(req);
   }
 
   @Get('my')
@@ -77,12 +89,6 @@ export class UsersController {
   @Get('not-rated/select')
   selectNotRatedUsers(@MyId() myId: number): Promise<User[]> {
     return this.usersService.selectNotRatedUsers(myId);
-  }
-
-  @Public()
-  @Get(':userId/raters')
-  selectUserRaters(@Param() { userId }: UserIdDto): Promise<User[]> {
-    return this.usersService.selectUserRaters(userId);
   }
 
   @Public()

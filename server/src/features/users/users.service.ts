@@ -32,11 +32,38 @@ export class UsersService {
     const [result, count] = await this.getUsersQueryBuilder(
       req,
     ).getManyAndCount();
-    await this.loadRating(result);
     return { result, count };
   }
 
-  async getTopUsers(req: Request): Promise<Response<User>> {
+  async getFriendsUsers(req: Request): Promise<Response<User>> {
+    const [result, count] = await this.getUsersQueryBuilder(req)
+      .leftJoin('user.friends', 'friend')
+      .groupBy('user.id')
+      .addGroupBy('city.id')
+      .addGroupBy('ownerUser.id')
+      .orderBy('user_friends', 'DESC', 'NULLS LAST')
+      .addOrderBy('user.onlineAt', 'DESC')
+      .addOrderBy('user.id', 'DESC')
+      .addSelect('COUNT(friend.id)', 'user_friends')
+      .getManyAndCount();
+    return { result, count };
+  }
+
+  async getSubscribersUsers(req: Request): Promise<Response<User>> {
+    const [result, count] = await this.getUsersQueryBuilder(req)
+      .leftJoin('user.receivedSubscribers', 'subscriber')
+      .groupBy('user.id')
+      .addGroupBy('city.id')
+      .addGroupBy('ownerUser.id')
+      .orderBy('user_subscribers', 'DESC', 'NULLS LAST')
+      .addOrderBy('user.onlineAt', 'DESC')
+      .addOrderBy('user.id', 'DESC')
+      .addSelect('COUNT(subscriber.id)', 'user_subscribers')
+      .getManyAndCount();
+    return { result, count };
+  }
+
+  async getRatingsUsers(req: Request): Promise<Response<User>> {
     const [result, count] = await this.getUsersQueryBuilder(req)
       .leftJoin('user.receivedRatings', 'rating')
       .groupBy('user.id')
@@ -47,9 +74,8 @@ export class UsersService {
       .addOrderBy('user.onlineAt', 'DESC')
       .addOrderBy('user.id', 'DESC')
       .addSelect('AVG(rating.rate)', 'user_rating')
-      .addSelect('COUNT(rating.rate)', 'user_ratings')
+      .addSelect('COUNT(rating.id)', 'user_ratings')
       .getManyAndCount();
-    await this.loadRating(result);
     return { result, count };
   }
 
@@ -58,7 +84,6 @@ export class UsersService {
       .leftJoin('city.users', 'cityUsers')
       .andWhere('cityUsers.id = :myId', { myId })
       .getManyAndCount();
-    await this.loadRating(result);
     return { result, count };
   }
 
@@ -66,7 +91,6 @@ export class UsersService {
     const [result, count] = await this.getUsersQueryBuilder(
       req,
     ).getManyAndCount();
-    await this.loadRating(result);
     return { result, count };
   }
 
@@ -202,18 +226,6 @@ export class UsersService {
         'subscriber',
         'subscriber.id = :myId',
         { myId },
-      )
-      .getMany();
-  }
-
-  selectUserRaters(userId: number): Promise<User[]> {
-    return this.selectUsersQueryBuilder()
-      .innerJoinAndMapOne(
-        'rating',
-        'user.sentRatings',
-        'rating',
-        'rating.receiverUserId = :userId',
-        { userId },
       )
       .getMany();
   }
@@ -510,22 +522,6 @@ export class UsersService {
       .select(['user.id', 'user.nick', 'user.avatar']);
   }
 
-  private async loadRating(users: User[]): Promise<void> {
-    const promises = users.map(async (user) => {
-      const ratings = (
-        await this.usersRepository.findOne({
-          relations: ['receivedRatings'],
-          where: { id: user.id },
-        })
-      ).receivedRatings;
-      user['rating'] =
-        ratings
-          .map((rating) => rating.rate)
-          .reduce((acc, cur) => acc + cur, 0) / ratings.length;
-    });
-    await Promise.all(promises);
-  }
-
   private getUsersQueryBuilder(req: Request): SelectQueryBuilder<User> {
     return this.usersRepository
       .createQueryBuilder('user')
@@ -604,22 +600,45 @@ export class UsersService {
 
   private async getUserProfile(userId: number): Promise<User> {
     const user = await this.getUsersQueryBuilder({ id: userId })
-      .leftJoin('user.friends', 'friend')
-      .orderBy('friend.onlineAt', 'DESC')
-      .addOrderBy('friend.id', 'DESC')
-      .addSelect([
-        'user.discord',
-        'user.background',
-        'friend.id',
-        'friend.nick',
-        'friend.avatar',
-      ])
+      .addSelect(['user.discord', 'user.background'])
       .getOne();
-    await this.loadRating([user]);
+    user.friends = await this.selectUsersQueryBuilder()
+      .innerJoinAndMapOne(
+        'friend',
+        'user.friends',
+        'friend',
+        'friend.id = :userId',
+        { userId },
+      )
+      .getMany();
+    user['subscribers'] = await this.selectUsersQueryBuilder()
+      .innerJoinAndMapOne(
+        'subscriber',
+        'user.sentSubscribers',
+        'subscriber',
+        'subscriber.id = :userId',
+        { userId },
+      )
+      .getMany();
+    user['raters'] = await this.selectUsersQueryBuilder()
+      .innerJoinAndMapOne(
+        'rating',
+        'user.sentRatings',
+        'rating',
+        'rating.receiverUserId = :userId',
+        { userId },
+      )
+      .getMany();
     return user;
   }
 
   private async getUserStatsAndRates(userId: number): Promise<User> {
+    const rating = await this.usersRepository
+      .createQueryBuilder('user')
+      .leftJoin('user.receivedRatings', 'rating')
+      .where('user.id = :userId', { userId })
+      .select('AVG(rating.rate)', 'rating')
+      .getRawOne();
     const waresCount = await this.usersRepository
       .createQueryBuilder('user')
       .leftJoin('user.cards', 'card')
@@ -723,6 +742,7 @@ export class UsersService {
       .select('AVG(delivery.rate)', 'deliveriesRate')
       .getRawOne();
     const user = {
+      ...rating,
       ...waresCount,
       ...productsCount,
       ...ordersCount,

@@ -167,9 +167,21 @@ describe('With Auth', () => {
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
 
-    it('GET /users/top', async () => {
+    it('GET /users/friends', async () => {
       return request(app.getHttpServer())
-        .get('/users/top')
+        .get('/users/friends')
+        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
+    });
+
+    it('GET /users/subscribers', async () => {
+      return request(app.getHttpServer())
+        .get('/users/subscribers')
+        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
+    });
+
+    it('GET /users/ratings', async () => {
+      return request(app.getHttpServer())
+        .get('/users/ratings')
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
 
@@ -2196,12 +2208,6 @@ describe('With Auth', () => {
         .set('Authorization', `Bearer ${user.access}`)
         .send({ userId: user.id, rate: 5 })
         .expect('');
-    });
-
-    it('GET /users/:userId/raters', async () => {
-      return request(app.getHttpServer())
-        .get(`/users/${user.id}/raters`)
-        .expect((res) => expect(res.body.length).toBeGreaterThan(0));
     });
 
     it('GET /ratings/my', async () => {
