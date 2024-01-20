@@ -17,8 +17,10 @@ export interface User extends MdUser {
 }
 
 export interface ExtUser extends User {
-  discord: string;
   background: number;
+  discord: string;
+  twitch: string;
+  youtube: string;
   friends: SmUser[];
   subscribers: SmUser[];
   raters: SmUser[];

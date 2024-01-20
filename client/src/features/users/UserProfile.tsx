@@ -1,7 +1,9 @@
 import { useTranslation } from 'react-i18next';
 import {
   ActionIcon,
+  Button,
   Container,
+  CopyButton,
   Flex,
   Group,
   Paper,
@@ -12,6 +14,8 @@ import {
 } from '@mantine/core';
 import {
   IconBrandDiscord,
+  IconBrandTwitch,
+  IconBrandYoutube,
   IconBuildingSkyscraper,
   IconClock,
   IconHourglass,
@@ -38,6 +42,19 @@ type Props = {
 
 export default function UserProfile({ data: user }: Props) {
   const [t] = useTranslation();
+
+  const contacts = [
+    {
+      icon: IconBrandTwitch,
+      label: user.twitch,
+      href: `https://twitch.tv/${user.twitch}`,
+    },
+    {
+      icon: IconBrandYoutube,
+      label: user.youtube,
+      href: `https://youtube.com/@${user.youtube}`,
+    },
+  ];
 
   const socials = [
     { label: 'friends', users: user.friends, open: openViewUserFriendsModal },
@@ -96,6 +113,45 @@ export default function UserProfile({ data: user }: Props) {
               </Group>
             </Paper>
           ))}
+          <Paper p={8}>
+            <Text size='sm' weight='bold'>
+              {t('columns.contacts')}
+            </Text>
+            <Stack spacing={8}>
+              {user.discord && (
+                <CopyButton value={user.discord}>
+                  {({ copy }) => (
+                    <Button
+                      leftIcon={<IconBrandDiscord size={16} />}
+                      onClick={copy}
+                      variant='light'
+                      color='gray'
+                      compact
+                    >
+                      {user.discord}
+                    </Button>
+                  )}
+                </CopyButton>
+              )}
+              {contacts.map(
+                (contact, index) =>
+                  contact.label && (
+                    <Button
+                      key={index}
+                      leftIcon={<contact.icon size={16} />}
+                      component='a'
+                      href={contact.href}
+                      target='_blank'
+                      variant='light'
+                      color='gray'
+                      compact
+                    >
+                      {contact.label}
+                    </Button>
+                  ),
+              )}
+            </Stack>
+          </Paper>
         </Stack>
         <Stack spacing={8}>
           <Paper p={8}>
@@ -115,12 +171,6 @@ export default function UserProfile({ data: user }: Props) {
                     <IconPencil size={16} />
                   </ActionIcon>
                 </Group>
-                {user.discord && (
-                  <Group spacing={8}>
-                    <IconBrandDiscord size={16} />
-                    <Text size='sm'>{user.discord}</Text>
-                  </Group>
-                )}
               </div>
               <div>
                 <Text size='sm' weight='bold'>

@@ -1,8 +1,10 @@
 export interface EditUserProfileDto {
   userId: number;
-  discord: string;
   avatar: string;
   background: number;
+  discord: string;
+  twitch: string;
+  youtube: string;
 }
 
 export interface EditUserPasswordDto {

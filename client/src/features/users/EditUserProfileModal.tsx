@@ -15,6 +15,7 @@ import ProfileAvatar from '../../common/components/ProfileAvatar';
 import { isUserNotHasRole, selectBackgrounds } from '../../common/utils';
 import {
   Color,
+  MAX_CONTACT_LENGTH,
   MAX_NICK_LENGTH,
   MIN_NICK_LENGTH,
   Role,
@@ -28,9 +29,11 @@ export default function EditUserProfileModal({ data: user }: Props) {
   const form = useForm({
     initialValues: {
       userId: user.id,
-      discord: user.discord,
       avatar: user.avatar,
       background: `${user.background}`,
+      discord: user.discord,
+      twitch: user.twitch,
+      youtube: user.youtube,
     },
     transformValues: ({ background, ...rest }) => ({
       ...rest,
@@ -51,6 +54,7 @@ export default function EditUserProfileModal({ data: user }: Props) {
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
       text={t('actions.edit') + ' ' + t('columns.profile')}
+      isChanged={!form.isDirty()}
     >
       <TextInput
         label={t('columns.user')}
@@ -58,13 +62,6 @@ export default function EditUserProfileModal({ data: user }: Props) {
         iconWidth={48}
         value={user.nick}
         disabled
-      />
-      <TextInput
-        label={t('columns.discord')}
-        placeholder={t('columns.discord')}
-        minLength={MIN_NICK_LENGTH}
-        maxLength={MAX_NICK_LENGTH}
-        {...form.getInputProps('discord')}
       />
       <TextInput
         label={t('columns.avatar')}
@@ -85,6 +82,24 @@ export default function EditUserProfileModal({ data: user }: Props) {
         {...user}
         avatar={avatar}
         background={+form.values.background}
+      />
+      <TextInput
+        label={t('columns.discord')}
+        placeholder={t('columns.discord')}
+        maxLength={MAX_CONTACT_LENGTH}
+        {...form.getInputProps('discord')}
+      />
+      <TextInput
+        label={t('columns.twitch')}
+        placeholder={t('columns.twitch')}
+        maxLength={MAX_CONTACT_LENGTH}
+        {...form.getInputProps('twitch')}
+      />
+      <TextInput
+        label={t('columns.youtube')}
+        placeholder={t('columns.youtube')}
+        maxLength={MAX_CONTACT_LENGTH}
+        {...form.getInputProps('youtube')}
       />
     </CustomForm>
   );
