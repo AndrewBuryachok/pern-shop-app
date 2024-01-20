@@ -20,12 +20,12 @@ export class BidsController {
     return this.bidsService.getMyBids(myId, req);
   }
 
-  @Get('selled')
-  getSelledBids(
+  @Get('sold')
+  getSoldBids(
     @MyId() myId: number,
     @Query() req: Request,
   ): Promise<Response<Bid>> {
-    return this.bidsService.getSelledBids(myId, req);
+    return this.bidsService.getSoldBids(myId, req);
   }
 
   @Get('placed')

@@ -1782,9 +1782,9 @@ describe('With Auth', () => {
         .then((res) => (tradeId = res.body.result[0].id));
     });
 
-    it('GET /trades/selled', async () => {
+    it('GET /trades/sold', async () => {
       return request(app.getHttpServer())
-        .get('/trades/selled')
+        .get('/trades/sold')
         .set('Authorization', `Bearer ${user.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
@@ -1827,9 +1827,9 @@ describe('With Auth', () => {
         .then((res) => (saleId = res.body.result[0].id));
     });
 
-    it('GET /sales/selled', async () => {
+    it('GET /sales/sold', async () => {
       return request(app.getHttpServer())
-        .get('/sales/selled')
+        .get('/sales/sold')
         .set('Authorization', `Bearer ${user.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
@@ -1871,9 +1871,9 @@ describe('With Auth', () => {
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
 
-    it('GET /bids/selled', async () => {
+    it('GET /bids/sold', async () => {
       return request(app.getHttpServer())
-        .get('/bids/selled')
+        .get('/bids/sold')
         .set('Authorization', `Bearer ${user.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });

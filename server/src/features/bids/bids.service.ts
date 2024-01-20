@@ -25,7 +25,7 @@ export class BidsService {
     return { result, count };
   }
 
-  async getSelledBids(myId: number, req: Request): Promise<Response<Bid>> {
+  async getSoldBids(myId: number, req: Request): Promise<Response<Bid>> {
     const [result, count] = await this.getBidsQueryBuilder(req)
       .innerJoin('sellerCard.users', 'sellerUsers')
       .andWhere('sellerUsers.id = :myId', { myId })

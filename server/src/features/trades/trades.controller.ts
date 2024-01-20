@@ -34,12 +34,12 @@ export class TradesController {
     return this.tradesService.getMyTrades(myId, req);
   }
 
-  @Get('selled')
-  getSelledTrades(
+  @Get('sold')
+  getSoldTrades(
     @MyId() myId: number,
     @Query() req: Request,
   ): Promise<Response<Trade>> {
-    return this.tradesService.getSelledTrades(myId, req);
+    return this.tradesService.getSoldTrades(myId, req);
   }
 
   @Get('placed')

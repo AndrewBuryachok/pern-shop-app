@@ -442,8 +442,8 @@ describe('Without Auth', () => {
       return request(app.getHttpServer()).get('/trades/my').expect(401);
     });
 
-    it('GET /trades/selled', async () => {
-      return request(app.getHttpServer()).get('/trades/selled').expect(401);
+    it('GET /trades/sold', async () => {
+      return request(app.getHttpServer()).get('/trades/sold').expect(401);
     });
 
     it('GET /trades/placed', async () => {
@@ -463,8 +463,8 @@ describe('Without Auth', () => {
       return request(app.getHttpServer()).get('/sales/my').expect(401);
     });
 
-    it('GET /sales/selled', async () => {
-      return request(app.getHttpServer()).get('/sales/selled').expect(401);
+    it('GET /sales/sold', async () => {
+      return request(app.getHttpServer()).get('/sales/sold').expect(401);
     });
 
     it('GET /sales/placed', async () => {
@@ -484,8 +484,8 @@ describe('Without Auth', () => {
       return request(app.getHttpServer()).get('/bids/my').expect(401);
     });
 
-    it('GET /bids/selled', async () => {
-      return request(app.getHttpServer()).get('/bids/selled').expect(401);
+    it('GET /bids/sold', async () => {
+      return request(app.getHttpServer()).get('/bids/sold').expect(401);
     });
 
     it('GET /bids/placed', async () => {

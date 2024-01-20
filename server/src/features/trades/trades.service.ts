@@ -37,7 +37,7 @@ export class TradesService {
     return { result, count };
   }
 
-  async getSelledTrades(myId: number, req: Request): Promise<Response<Trade>> {
+  async getSoldTrades(myId: number, req: Request): Promise<Response<Trade>> {
     const [result, count] = await this.getTradesQueryBuilder(req)
       .innerJoin('sellerCard.users', 'sellerUsers')
       .andWhere('sellerUsers.id = :myId', { myId })

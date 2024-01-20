@@ -37,7 +37,7 @@ export class SalesService {
     return { result, count };
   }
 
-  async getSelledSales(myId: number, req: Request): Promise<Response<Sale>> {
+  async getSoldSales(myId: number, req: Request): Promise<Response<Sale>> {
     const [result, count] = await this.getSalesQueryBuilder(req)
       .innerJoin('sellerCard.users', 'sellerUsers')
       .andWhere('sellerUsers.id = :myId', { myId })
