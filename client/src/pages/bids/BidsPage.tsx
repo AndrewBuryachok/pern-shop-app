@@ -6,7 +6,7 @@ import {
   useGetAllBidsQuery,
   useGetMyBidsQuery,
   useGetPlacedBidsQuery,
-  useGetSelledBidsQuery,
+  useGetSoldBidsQuery,
 } from '../../features/bids/bids.api';
 import BidsTable from '../../features/bids/BidsTable';
 
@@ -40,7 +40,7 @@ export default function MyBids() {
 
   const response = {
     my: useGetMyBidsQuery,
-    selled: useGetSelledBidsQuery,
+    sold: useGetSoldBidsQuery,
     placed: useGetPlacedBidsQuery,
     all: useGetAllBidsQuery,
   }[tab]!({ page, search });

@@ -235,7 +235,7 @@ export const pages = [
     element: TradesPage,
     nested: [
       { path: 'my' },
-      { path: 'selled' },
+      { path: 'sold' },
       { path: 'placed' },
       { path: 'all', role: Role.MANAGER },
     ],
@@ -245,7 +245,7 @@ export const pages = [
     element: SalesPage,
     nested: [
       { path: 'my' },
-      { path: 'selled' },
+      { path: 'sold' },
       { path: 'placed' },
       { path: 'all', role: Role.MANAGER },
     ],
@@ -255,7 +255,7 @@ export const pages = [
     element: BidsPage,
     nested: [
       { path: 'my' },
-      { path: 'selled' },
+      { path: 'sold' },
       { path: 'placed' },
       { path: 'all', role: Role.MANAGER },
     ],

@@ -6,7 +6,7 @@ import {
   useGetAllTradesQuery,
   useGetMyTradesQuery,
   useGetPlacedTradesQuery,
-  useGetSelledTradesQuery,
+  useGetSoldTradesQuery,
 } from '../../features/trades/trades.api';
 import TradesTable from '../../features/trades/TradesTable';
 import { rateTradeAction } from '../../features/trades/RateTradeModal';
@@ -42,7 +42,7 @@ export default function MyTrades() {
 
   const response = {
     my: useGetMyTradesQuery,
-    selled: useGetSelledTradesQuery,
+    sold: useGetSoldTradesQuery,
     placed: useGetPlacedTradesQuery,
     all: useGetAllTradesQuery,
   }[tab]!({ page, search });

@@ -6,7 +6,7 @@ import {
   useGetAllSalesQuery,
   useGetMySalesQuery,
   useGetPlacedSalesQuery,
-  useGetSelledSalesQuery,
+  useGetSoldSalesQuery,
 } from '../../features/sales/sales.api';
 import SalesTable from '../../features/sales/SalesTable';
 import { rateSaleAction } from '../../features/sales/RateSaleModal';
@@ -42,7 +42,7 @@ export default function MySales() {
 
   const response = {
     my: useGetMySalesQuery,
-    selled: useGetSelledSalesQuery,
+    sold: useGetSoldSalesQuery,
     placed: useGetPlacedSalesQuery,
     all: useGetAllSalesQuery,
   }[tab]!({ page, search });
