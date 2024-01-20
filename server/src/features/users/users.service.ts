@@ -639,6 +639,94 @@ export class UsersService {
       .where('user.id = :userId', { userId })
       .select('AVG(rating.rate)', 'rating')
       .getRawOne();
+    const articles = await this.usersRepository
+      .createQueryBuilder('user')
+      .leftJoinAndMapMany(
+        'user.articles',
+        'articles',
+        'article',
+        'article.userId = user.id',
+      )
+      .where('user.id = :userId', { userId })
+      .select('COUNT(article.id)', 'articles')
+      .getRawOne();
+    const likes = await this.usersRepository
+      .createQueryBuilder('user')
+      .leftJoinAndMapMany(
+        'user.likes',
+        'likes',
+        'like',
+        'like.userId = user.id',
+      )
+      .where('user.id = :userId', { userId })
+      .select('COUNT(like.id)', 'likes')
+      .getRawOne();
+    const comments = await this.usersRepository
+      .createQueryBuilder('user')
+      .leftJoinAndMapMany(
+        'user.comments',
+        'comments',
+        'comment',
+        'comment.userId = user.id',
+      )
+      .where('user.id = :userId', { userId })
+      .select('COUNT(comment.id)', 'comments')
+      .getRawOne();
+    const tasks = await this.usersRepository
+      .createQueryBuilder('user')
+      .leftJoinAndMapMany(
+        'user.tasks',
+        'tasks',
+        'task',
+        'task.customerUserId = user.id',
+      )
+      .where('user.id = :userId', { userId })
+      .select('COUNT(task.id)', 'tasks')
+      .getRawOne();
+    const plaints = await this.usersRepository
+      .createQueryBuilder('user')
+      .leftJoinAndMapMany(
+        'user.plaints',
+        'plaints',
+        'plaint',
+        'plaint.senderUserId = user.id',
+      )
+      .where('user.id = :userId', { userId })
+      .select('COUNT(plaint.id)', 'plaints')
+      .getRawOne();
+    const polls = await this.usersRepository
+      .createQueryBuilder('user')
+      .leftJoinAndMapMany(
+        'user.polls',
+        'polls',
+        'poll',
+        'poll.userId = user.id',
+      )
+      .where('user.id = :userId', { userId })
+      .select('COUNT(poll.id)', 'polls')
+      .getRawOne();
+    const votes = await this.usersRepository
+      .createQueryBuilder('user')
+      .leftJoinAndMapMany(
+        'user.votes',
+        'votes',
+        'vote',
+        'vote.userId = user.id',
+      )
+      .where('user.id = :userId', { userId })
+      .select('COUNT(vote.id)', 'votes')
+      .getRawOne();
+    const discussions = await this.usersRepository
+      .createQueryBuilder('user')
+      .leftJoinAndMapMany(
+        'user.discussions',
+        'discussions',
+        'discussion',
+        'discussion.userId = user.id',
+      )
+      .where('user.id = :userId', { userId })
+      .select('COUNT(discussion.id)', 'discussions')
+      .getRawOne();
     const waresCount = await this.usersRepository
       .createQueryBuilder('user')
       .leftJoin('user.cards', 'card')
@@ -743,6 +831,14 @@ export class UsersService {
       .getRawOne();
     const user = {
       ...rating,
+      ...articles,
+      ...likes,
+      ...comments,
+      ...tasks,
+      ...plaints,
+      ...polls,
+      ...votes,
+      ...discussions,
       ...waresCount,
       ...productsCount,
       ...ordersCount,
