@@ -35,6 +35,8 @@
     "friends": "Друзі",
     "subscribers": "Підписники",
     "articles": "Статті",
+    "likes": "Вподобання",
+    "comments": "Коментарі",
     "wallet": "Гаманець",
     "cards": "Карти",
     "payments": "Перекази",
@@ -67,6 +69,8 @@
     "tasks": "Завдання",
     "plaints": "Скарги",
     "polls": "Опитування",
+    "votes": "Голоса",
+    "discussions": "Обговорення",
     "ratings": "Рейтинги"
   },
   "information": {

@@ -23,6 +23,14 @@ export interface ExtUser extends User {
   subscribers: SmUser[];
   raters: SmUser[];
   rating: number;
+  articles: number;
+  likes: number;
+  comments: number;
+  tasks: number;
+  plaints: number;
+  polls: number;
+  votes: number;
+  discussions: number;
   waresCount: number;
   productsCount: number;
   ordersCount: number;

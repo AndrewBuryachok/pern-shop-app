@@ -35,6 +35,8 @@
     "friends": "Friends",
     "subscribers": "Subscribers",
     "articles": "Articles",
+    "likes": "Likes",
+    "comments": "Comments",
     "wallet": "Wallet",
     "cards": "Cards",
     "payments": "Payments",
@@ -67,6 +69,8 @@
     "tasks": "Tasks",
     "plaints": "Plaints",
     "polls": "Polls",
+    "votes": "Votes",
+    "discussions": "Discussions",
     "ratings": "Ratings"
   },
   "information": {
