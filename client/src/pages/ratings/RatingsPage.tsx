@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useLocation, useSearchParams } from 'react-router-dom';
 import { ISearch } from '../../common/interfaces';
 import { Mode } from '../../common/enums';
-import { useGetTopUsersQuery } from '../../features/users/users.api';
+import { useGetRatingsUsersQuery } from '../../features/users/users.api';
 import {
   useGetAllRatingsQuery,
   useGetMyRatingsQuery,
@@ -31,7 +31,7 @@ export default function MyRatings() {
     maxDate: searchParams.get('maxDate'),
   });
 
-  const usersResponse = useGetTopUsersQuery(
+  const usersResponse = useGetRatingsUsersQuery(
     { page, search },
     { skip: tab !== 'main' },
   );

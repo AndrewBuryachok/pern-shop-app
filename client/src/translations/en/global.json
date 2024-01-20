@@ -169,6 +169,7 @@
     "owner": "Owner",
     "city": "City",
     "friends": "Friends",
+    "subscribers": "Subscribers",
     "raters": "Raters",
     "rating": "Rating",
     "created": "Created",

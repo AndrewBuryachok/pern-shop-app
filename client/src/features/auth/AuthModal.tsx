@@ -1,6 +1,6 @@
 import { t } from 'i18next';
 import { useTranslation } from 'react-i18next';
-import { Anchor, PasswordInput, Text, TextInput } from '@mantine/core';
+import { PasswordInput, Text, TextInput } from '@mantine/core';
 import { useToggle } from '@mantine/hooks';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
@@ -10,6 +10,7 @@ import { AuthDto } from './auth.dto';
 import { addCurrentUser } from './auth.slice';
 import { publishOnline, subscribe } from '../mqtt/mqtt.slice';
 import CustomForm from '../../common/components/CustomForm';
+import CustomAnchor from '../../common/components/CustomAnchor';
 import {
   MAX_NICK_LENGTH,
   MAX_PASSWORD_LENGTH,
@@ -67,15 +68,7 @@ export default function AuthModal() {
       />
       <Text size='xs'>
         {t(`modals.${type}.text`)}
-        <Anchor
-          component='button'
-          type='button'
-          onClick={() => toggle()}
-          color='dimmed'
-          underline
-        >
-          {t(`modals.${type}.anchor`)}
-        </Anchor>
+        <CustomAnchor text={t(`modals.${type}.anchor`)} onClick={toggle} />
       </Text>
     </CustomForm>
   );

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useLocation, useSearchParams } from 'react-router-dom';
 import { ISearch } from '../../common/interfaces';
+import { useGetFriendsUsersQuery } from '../../features/users/users.api';
 import {
   useGetMyFriendsQuery,
   useGetReceivedFriendsQuery,
@@ -29,12 +30,13 @@ export default function MyFriends() {
   });
 
   const response = {
+    main: useGetFriendsUsersQuery,
     my: useGetMyFriendsQuery,
     sent: useGetSentFriendsQuery,
     received: useGetReceivedFriendsQuery,
   }[tab]!({ page, search });
 
-  const button = { my: createFriendButton }[tab];
+  const button = { main: createFriendButton, my: createFriendButton }[tab];
 
   const actions = {
     my: [removeFriendAction],

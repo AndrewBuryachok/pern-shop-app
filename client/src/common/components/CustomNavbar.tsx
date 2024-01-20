@@ -41,12 +41,10 @@ export default function CustomNavbar(props: Props) {
     {
       route: 'friends',
       icon: IconFriends,
-      my: true,
     },
     {
       route: 'subscribers',
       icon: IconMail,
-      my: true,
     },
     {
       route: 'articles',

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useLocation, useSearchParams } from 'react-router-dom';
 import { ISearch } from '../../common/interfaces';
+import { useGetSubscribersUsersQuery } from '../../features/users/users.api';
 import {
   useGetMySubscribersQuery,
   useGetReceivedSubscribersQuery,
@@ -27,11 +28,12 @@ export default function MySubscribers() {
   });
 
   const response = {
+    main: useGetSubscribersUsersQuery,
     my: useGetMySubscribersQuery,
     received: useGetReceivedSubscribersQuery,
   }[tab]!({ page, search });
 
-  const button = { my: addSubscriberButton }[tab];
+  const button = { main: addSubscriberButton, my: addSubscriberButton }[tab];
 
   const actions = { my: [removeSubscriberAction] }[tab];
 

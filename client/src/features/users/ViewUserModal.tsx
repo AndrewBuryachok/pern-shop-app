@@ -1,28 +1,18 @@
 import { t } from 'i18next';
 import { useTranslation } from 'react-i18next';
-import { Input, Rating, Select, Stack, TextInput } from '@mantine/core';
+import { Select, Stack, TextInput } from '@mantine/core';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { User } from './user.model';
-import { useSelectUserRatersQuery } from './users.api';
-import RefetchAction from '../../common/components/RefetchAction';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import { ColorsItem } from '../../common/components/ColorsItem';
-import { UsersItem } from '../../common/components/UsersItem';
-import {
-  parsePlace,
-  parseTime,
-  viewRoles,
-  viewUsers,
-} from '../../common/utils';
+import { parsePlace, parseTime, viewRoles } from '../../common/utils';
 import { Color } from '../../common/constants';
 
 type Props = IModal<User>;
 
 export default function ViewUserModal({ data: user }: Props) {
   const [t] = useTranslation();
-
-  const { data: raters, ...ratersResponse } = useSelectUserRatersQuery(user.id);
 
   return (
     <Stack spacing={8}>
@@ -46,18 +36,6 @@ export default function ViewUserModal({ data: user }: Props) {
         value={user.city ? parsePlace(user.city) : '-'}
         disabled
       />
-      <Select
-        label={t('columns.raters')}
-        placeholder={`${t('components.total')}: ${raters?.length || 0}`}
-        rightSection={<RefetchAction {...ratersResponse} />}
-        itemComponent={UsersItem}
-        data={viewUsers(raters || [])}
-        limit={20}
-        searchable
-      />
-      <Input.Wrapper label={t('columns.rating')}>
-        <Rating value={user.rating} readOnly />
-      </Input.Wrapper>
       <TextInput
         label={t('columns.online')}
         value={parseTime(user.onlineAt)}

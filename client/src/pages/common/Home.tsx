@@ -8,7 +8,6 @@ import {
   Text,
   ThemeIcon,
   Title,
-  useMantineTheme,
 } from '@mantine/core';
 import { useDocumentTitle } from '@mantine/hooks';
 import {
@@ -49,8 +48,6 @@ export default function Home() {
 
   useDocumentTitle(t('navbar.home'));
 
-  const theme = useMantineTheme();
-
   const features = [
     {
       title: 'users',
@@ -59,12 +56,10 @@ export default function Home() {
     {
       title: 'friends',
       icon: IconFriends,
-      my: true,
     },
     {
       title: 'subscribers',
       icon: IconMail,
-      my: true,
     },
     {
       title: 'articles',

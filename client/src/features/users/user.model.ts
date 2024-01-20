@@ -11,7 +11,6 @@ export interface MdUser extends SmUser {
 }
 
 export interface User extends MdUser {
-  rating: number;
   createdAt: Date;
   onlineAt?: Date;
   city?: MdCity;
@@ -21,6 +20,9 @@ export interface ExtUser extends User {
   discord: string;
   background: number;
   friends: SmUser[];
+  subscribers: SmUser[];
+  raters: SmUser[];
+  rating: number;
   waresCount: number;
   productsCount: number;
   ordersCount: number;

@@ -16,9 +16,21 @@ export const usersApi = emptyApi.injectEndpoints({
       }),
       providesTags: ['User'],
     }),
-    getTopUsers: build.query<IResponse<User>, IRequest>({
+    getFriendsUsers: build.query<IResponse<User>, IRequest>({
       query: (req) => ({
-        url: `/users/top?${getQuery(req)}`,
+        url: `/users/friends?${getQuery(req)}`,
+      }),
+      providesTags: ['User', 'Friend'],
+    }),
+    getSubscribersUsers: build.query<IResponse<User>, IRequest>({
+      query: (req) => ({
+        url: `/users/subscribers?${getQuery(req)}`,
+      }),
+      providesTags: ['User', 'Subscriber'],
+    }),
+    getRatingsUsers: build.query<IResponse<User>, IRequest>({
+      query: (req) => ({
+        url: `/users/ratings?${getQuery(req)}`,
       }),
       providesTags: ['User', 'Rating'],
     }),
@@ -64,12 +76,6 @@ export const usersApi = emptyApi.injectEndpoints({
       }),
       providesTags: ['Auth', 'User', 'Rating'],
     }),
-    selectUserRaters: build.query<SmUser[], number>({
-      query: (userId) => ({
-        url: `/users/${userId}/raters`,
-      }),
-      providesTags: ['Auth', 'User', 'Rating'],
-    }),
     getSingleUser: build.query<ExtUser, number>({
       query: (userId) => ({
         url: `/users/${userId}`,
@@ -112,7 +118,9 @@ export const usersApi = emptyApi.injectEndpoints({
 
 export const {
   useGetMainUsersQuery,
-  useGetTopUsersQuery,
+  useGetFriendsUsersQuery,
+  useGetSubscribersUsersQuery,
+  useGetRatingsUsersQuery,
   useGetMyUsersQuery,
   useGetAllUsersQuery,
   useSelectAllUsersQuery,
@@ -120,7 +128,6 @@ export const {
   useSelectNotFriendsUsersQuery,
   useSelectNotSubscribedUsersQuery,
   useSelectNotRatedUsersQuery,
-  useSelectUserRatersQuery,
   useGetSingleUserQuery,
   useEditUserProfileMutation,
   useEditUserPasswordMutation,

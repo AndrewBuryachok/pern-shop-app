@@ -9,16 +9,16 @@ import { viewUsers } from '../../common/utils';
 
 type Props = IModal<ExtUser>;
 
-export default function ViewUserRatersModal({ data: user }: Props) {
+export default function ViewUserSubscribersModal({ data: user }: Props) {
   const [t] = useTranslation();
 
   return (
     <Stack spacing={8}>
       <Select
-        label={t('columns.raters')}
-        placeholder={`${t('components.total')}: ${user.raters.length}`}
+        label={t('columns.subscribers')}
+        placeholder={`${t('components.total')}: ${user.subscribers.length}`}
         itemComponent={UsersItem}
-        data={viewUsers(user.raters)}
+        data={viewUsers(user.subscribers)}
         limit={20}
         searchable
       />
@@ -26,8 +26,8 @@ export default function ViewUserRatersModal({ data: user }: Props) {
   );
 }
 
-export const openViewUserRatersModal = (user: ExtUser) =>
+export const openViewUserSubscribersModal = (user: ExtUser) =>
   openModal({
-    title: t('columns.raters'),
-    children: <ViewUserRatersModal data={user} />,
+    title: t('columns.subscribers'),
+    children: <ViewUserSubscribersModal data={user} />,
   });

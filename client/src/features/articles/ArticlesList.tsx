@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { ActionIcon, Anchor, Button, Group, Paper, Stack } from '@mantine/core';
+import { ActionIcon, Button, Group, Paper, Stack } from '@mantine/core';
 import { IconHeart, IconMessage } from '@tabler/icons';
 import { ITableWithActions } from '../../common/interfaces';
 import { Article } from './article.model';
@@ -20,6 +20,7 @@ import AvatarWithDateText from '../../common/components/AvatarWithDateText';
 import SingleText from '../../common/components/SingleText';
 import CustomImage from '../../common/components/CustomImage';
 import CustomVideo from '../../common/components/CustomVideo';
+import CustomAnchor from '../../common/components/CustomAnchor';
 import CustomActions from '../../common/components/CustomActions';
 import { openAuthModal } from '../auth/AuthModal';
 import { viewArticleAction } from './ViewArticleModal';
@@ -116,16 +117,10 @@ export default function ArticlesList({ actions = [], ...props }: Props) {
                 >
                   <IconHeart size={16} />
                 </ActionIcon>
-                <Anchor
-                  component='button'
-                  type='button'
+                <CustomAnchor
+                  text={`${article.likes}`}
                   onClick={() => openViewArticleLikesModal(article)}
-                  size='xs'
-                  color='dimmed'
-                  underline
-                >
-                  {article.likes}
-                </Anchor>
+                />
                 <ActionIcon
                   size={24}
                   onClick={() =>
@@ -134,16 +129,10 @@ export default function ArticlesList({ actions = [], ...props }: Props) {
                 >
                   <IconMessage size={16} />
                 </ActionIcon>
-                <Anchor
-                  component='button'
-                  type='button'
+                <CustomAnchor
+                  text={`${article.comments}`}
                   onClick={() => openViewArticleCommentsModal(article)}
-                  size='xs'
-                  color='dimmed'
-                  underline
-                >
-                  {article.comments}
-                </Anchor>
+                />
               </Group>
             </Stack>
           </Paper>

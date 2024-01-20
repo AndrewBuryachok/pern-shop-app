@@ -1,7 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import {
   ActionIcon,
-  Anchor,
   Container,
   Flex,
   Group,
@@ -9,6 +8,7 @@ import {
   SimpleGrid,
   Stack,
   Text,
+  Tooltip,
 } from '@mantine/core';
 import {
   IconBrandDiscord,
@@ -20,13 +20,15 @@ import {
 import { ExtUser } from './user.model';
 import ProfileAvatar from '../../common/components/ProfileAvatar';
 import LinkedAvatar from '../../common/components/LinkedAvatar';
-import CustomRating from '../../common/components/CustomRating';
 import RolesBadge from '../../common/components/RolesBadge';
+import CustomRating from '../../common/components/CustomRating';
 import SingleText from '../../common/components/SingleText';
 import DateText from '../../common/components/DateText';
 import PlaceText from '../../common/components/PlaceText';
+import CustomAnchor from '../../common/components/CustomAnchor';
 import { editUserProfileAction } from './EditUserProfileModal';
 import { openViewUserFriendsModal } from './ViewUserFriendsModal';
+import { openViewUserSubscribersModal } from './ViewUserSubscribersModal';
 import { openViewUserRatersModal } from './ViewUserRatersModal';
 import { colors } from '../../common/constants';
 
@@ -36,6 +38,16 @@ type Props = {
 
 export default function UserProfile({ data: user }: Props) {
   const [t] = useTranslation();
+
+  const socials = [
+    { label: 'friends', users: user.friends, open: openViewUserFriendsModal },
+    {
+      label: 'subscribers',
+      users: user.subscribers,
+      open: openViewUserSubscribersModal,
+    },
+    { label: 'raters', users: user.raters, open: openViewUserRatersModal },
+  ];
 
   const stats = [
     { label: 'wares', count: user.waresCount, rate: user.waresRate },
@@ -53,49 +65,29 @@ export default function UserProfile({ data: user }: Props) {
       <Flex gap='md' justify='center' direction={{ base: 'column', xs: 'row' }}>
         <Stack spacing={8}>
           <ProfileAvatar {...user} />
-          <Paper p={8}>
-            <Stack spacing={8}>
-              <div>
-                <Group spacing={0} position='apart'>
-                  <Text size='sm' weight='bold'>
-                    {t('columns.friends')}
-                  </Text>
-                  <Anchor
-                    component='button'
-                    type='button'
-                    onClick={() => openViewUserFriendsModal(user)}
-                    size='xs'
-                    underline
-                  >
-                    {t('actions.view').toLowerCase()}
-                  </Anchor>
-                </Group>
-                <Group spacing={8}>
-                  {user.friends.slice(0, 6).map((friend) => (
-                    <LinkedAvatar key={friend.id} {...friend} />
-                  ))}
-                  {!user.friends.length && <SingleText text='-' />}
-                </Group>
-              </div>
-              <div>
-                <Group spacing={0} position='apart'>
-                  <Text size='sm' weight='bold'>
-                    {t('columns.rating')}
-                  </Text>
-                  <Anchor
-                    component='button'
-                    type='button'
-                    onClick={() => openViewUserRatersModal(user)}
-                    size='xs'
-                    underline
-                  >
-                    {t('actions.view').toLowerCase()}
-                  </Anchor>
-                </Group>
-                <CustomRating value={user.rating} />
-              </div>
-            </Stack>
-          </Paper>
+          {socials.map((social) => (
+            <Paper key={social.label} p={8}>
+              <Group spacing={0} position='apart'>
+                <Text size='sm' weight='bold'>
+                  {t(`columns.${social.label}`)} ({social.users.length})
+                </Text>
+                <CustomAnchor
+                  text={t('actions.view').toLowerCase()}
+                  onClick={() => social.open(user)}
+                />
+              </Group>
+              <Group spacing={8}>
+                {social.users.slice(0, 6).map((user) => (
+                  <Tooltip key={user.id} label={user.nick} withArrow>
+                    <div>
+                      <LinkedAvatar {...user} />
+                    </div>
+                  </Tooltip>
+                ))}
+                {!social.users.length && <SingleText text='-' />}
+              </Group>
+            </Paper>
+          ))}
         </Stack>
         <Stack spacing={8}>
           <Paper p={8}>
@@ -127,6 +119,12 @@ export default function UserProfile({ data: user }: Props) {
                   {t('columns.roles')}
                 </Text>
                 <RolesBadge roles={user.roles} />
+              </div>
+              <div>
+                <Text size='sm' weight='bold'>
+                  {t('columns.rating')}
+                </Text>
+                <CustomRating value={user.rating} />
               </div>
               <div>
                 <Text size='sm' weight='bold'>
