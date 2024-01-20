@@ -15,6 +15,7 @@ import {
   MAX_AMOUNT_VALUE,
   MAX_BACKGROUND_VALUE,
   MAX_COLOR_VALUE,
+  MAX_CONTACT_LENGTH,
   MAX_COORDINATE_VALUE,
   MAX_DESCRIPTION_LENGTH,
   MAX_ID_VALUE,
@@ -54,19 +55,18 @@ export const IsPassword = () => (target: object, key: string) => {
   MaxLength(MAX_PASSWORD_LENGTH)(target, key);
 };
 
-export const IsDiscordOrAvatar = () => (target: object, key: string) => {
-  ValidateIf((_, value) => value !== '')(target, key);
-  IsNotEmpty()(target, key);
-  IsString()(target, key);
-  MinLength(MIN_NICK_LENGTH)(target, key);
-  MaxLength(MAX_NICK_LENGTH)(target, key);
-};
-
 export const IsName = () => (target: object, key: string) => {
   IsNotEmpty()(target, key);
   IsString()(target, key);
   MinLength(MIN_NAME_LENGTH)(target, key);
   MaxLength(MAX_NAME_LENGTH)(target, key);
+};
+
+export const IsContact = () => (target: object, key: string) => {
+  ValidateIf((_, value) => value !== '')(target, key);
+  IsNotEmpty()(target, key);
+  IsString()(target, key);
+  MaxLength(MAX_CONTACT_LENGTH)(target, key);
 };
 
 export const IsTitle = () => (target: object, key: string) => {

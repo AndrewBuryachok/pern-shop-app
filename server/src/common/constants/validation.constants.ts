@@ -4,6 +4,7 @@ export const MIN_PASSWORD_LENGTH = 4;
 export const MAX_PASSWORD_LENGTH = 16;
 export const MIN_NAME_LENGTH = 4;
 export const MAX_NAME_LENGTH = 16;
+export const MAX_CONTACT_LENGTH = 24;
 export const MAX_TITLE_LENGTH = 24;
 export const MAX_DESCRIPTION_LENGTH = 32;
 export const MAX_TEXT_LENGTH = 500;

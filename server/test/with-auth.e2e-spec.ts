@@ -232,6 +232,20 @@ describe('With Auth', () => {
         .expect((res) => expect(res.body.length).toBeGreaterThan(0));
     });
 
+    it('PATCH /users/:userId/profile', async () => {
+      return request(app.getHttpServer())
+        .patch(`/users/${user.id}/profile`)
+        .set('Authorization', `Bearer ${user.access}`)
+        .send({
+          avatar: '',
+          background: 1,
+          discord: '',
+          twitch: '',
+          youtube: 'string',
+        })
+        .expect('');
+    });
+
     it('PATCH /users/:userId/password', async () => {
       return request(app.getHttpServer())
         .patch(`/users/${user.id}/password`)

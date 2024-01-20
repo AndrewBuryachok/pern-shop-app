@@ -436,9 +436,11 @@ export class UsersService {
     dto: ExtEditUserProfileDto,
   ): Promise<void> {
     try {
-      user.discord = dto.discord;
       user.avatar = dto.avatar;
       user.background = dto.background;
+      user.discord = dto.discord;
+      user.twitch = dto.twitch;
+      user.youtube = dto.youtube;
       await this.usersRepository.save(user);
     } catch (error) {
       throw new AppException(UserError.EDIT_PROFILE_FAILED);
@@ -600,7 +602,12 @@ export class UsersService {
 
   private async getUserProfile(userId: number): Promise<User> {
     const user = await this.getUsersQueryBuilder({ id: userId })
-      .addSelect(['user.discord', 'user.background'])
+      .addSelect([
+        'user.background',
+        'user.discord',
+        'user.twitch',
+        'user.youtube',
+      ])
       .getOne();
     user.friends = await this.selectUsersQueryBuilder()
       .innerJoinAndMapOne(

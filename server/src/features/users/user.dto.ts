@@ -3,7 +3,7 @@ import { Validate } from 'class-validator';
 import { Type } from 'class-transformer';
 import {
   IsBackground,
-  IsDiscordOrAvatar,
+  IsContact,
   IsId,
   IsNick,
   IsPassword,
@@ -21,16 +21,24 @@ export class UserIdDto {
 
 export class EditUserProfileDto {
   @ApiProperty()
-  @IsDiscordOrAvatar()
-  discord: string;
-
-  @ApiProperty()
-  @IsDiscordOrAvatar()
+  @IsContact()
   avatar: string;
 
   @ApiProperty()
   @IsBackground()
   background: number;
+
+  @ApiProperty()
+  @IsContact()
+  discord: string;
+
+  @ApiProperty()
+  @IsContact()
+  twitch: string;
+
+  @ApiProperty()
+  @IsContact()
+  youtube: string;
 }
 
 export class ExtEditUserProfileDto extends EditUserProfileDto {

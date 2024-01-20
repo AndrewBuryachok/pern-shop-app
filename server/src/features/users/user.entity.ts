@@ -29,13 +29,19 @@ export class User {
   token?: string;
 
   @Column({ default: '' })
-  discord: string;
-
-  @Column({ default: '' })
   avatar: string;
 
   @Column({ default: 1 })
   background: number;
+
+  @Column({ default: '' })
+  discord: string;
+
+  @Column({ default: '' })
+  twitch: string;
+
+  @Column({ default: '' })
+  youtube: string;
 
   @Column({ type: 'enum', enum: Role, array: true, default: [] })
   roles: Role[];
