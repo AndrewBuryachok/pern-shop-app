@@ -16,7 +16,7 @@ import {
   reserveUserStoreAction,
 } from '../../features/stores/ReserveStoreModal';
 
-export default function MyStores() {
+export default function StoresPage() {
   const tab = useLocation().pathname.split('/')[2] || 'main';
 
   const [searchParams] = useSearchParams();

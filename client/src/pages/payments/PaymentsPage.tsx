@@ -12,7 +12,7 @@ import {
   createUserPaymentButton,
 } from '../../features/payments/CreatePaymentModal';
 
-export default function MyPayments() {
+export default function PaymentsPage() {
   const tab = useLocation().pathname.split('/')[2] || 'main';
 
   const [searchParams] = useSearchParams();

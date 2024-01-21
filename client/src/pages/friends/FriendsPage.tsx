@@ -12,7 +12,7 @@ import { createFriendButton } from '../../features/friends/CreateFriendModal';
 import { addFriendAction } from '../../features/friends/AddFriendModal';
 import { removeFriendAction } from '../../features/friends/RemoveFriendModal';
 
-export default function MyFriends() {
+export default function FriendsPage() {
   const tab = useLocation().pathname.split('/')[2] || 'main';
 
   const [searchParams] = useSearchParams();

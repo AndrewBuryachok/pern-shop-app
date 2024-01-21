@@ -11,7 +11,7 @@ import {
 import TradesTable from '../../features/trades/TradesTable';
 import { rateTradeAction } from '../../features/trades/RateTradeModal';
 
-export default function MyTrades() {
+export default function TradesPage() {
   const tab = useLocation().pathname.split('/')[2] || 'main';
 
   const [searchParams] = useSearchParams();

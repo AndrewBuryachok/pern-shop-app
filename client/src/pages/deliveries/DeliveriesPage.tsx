@@ -24,7 +24,7 @@ import { completeDeliveryAction } from '../../features/deliveries/CompleteDelive
 import { untakeDeliveryAction } from '../../features/deliveries/UntakeDeliveryModal';
 import { deleteDeliveryAction } from '../../features/deliveries/DeleteDeliveryModal';
 
-export default function MyDeliveries() {
+export default function DeliveriesPage() {
   const tab = useLocation().pathname.split('/')[2] || 'main';
 
   const [searchParams] = useSearchParams();

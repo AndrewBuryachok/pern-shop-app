@@ -11,7 +11,7 @@ import {
 import RentsTable from '../../features/rents/RentsTable';
 import { completeRentAction } from '../../features/rents/CompleteRentModal';
 
-export default function MyRents() {
+export default function RentsPage() {
   const tab = useLocation().pathname.split('/')[2] || 'main';
 
   const [searchParams] = useSearchParams();

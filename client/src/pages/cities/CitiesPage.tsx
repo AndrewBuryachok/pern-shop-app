@@ -24,7 +24,7 @@ import {
   removeUserCityUserAction,
 } from '../../features/cities/RemoveCityUserModal';
 
-export default function MyCities() {
+export default function CitiesPage() {
   const tab = useLocation().pathname.split('/')[2] || 'main';
 
   const [searchParams] = useSearchParams();

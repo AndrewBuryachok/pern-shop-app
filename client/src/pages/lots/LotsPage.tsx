@@ -19,7 +19,7 @@ import {
 } from '../../features/lots/BuyLotModal';
 import { completeLotAction } from '../../features/lots/CompleteLotModal';
 
-export default function MyLots() {
+export default function LotsPage() {
   const tab = useLocation().pathname.split('/')[2] || 'main';
 
   const [searchParams] = useSearchParams();

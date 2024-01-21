@@ -11,7 +11,7 @@ import {
 import LeasesTable from '../../features/leases/LeasesTable';
 import { completeLeaseAction } from '../../features/leases/CompleteLeaseModal';
 
-export default function MyLeases() {
+export default function LeasesPage() {
   const tab = useLocation().pathname.split('/')[2] || 'main';
 
   const [searchParams] = useSearchParams();

@@ -10,7 +10,7 @@ import {
 } from '../../features/bids/bids.api';
 import BidsTable from '../../features/bids/BidsTable';
 
-export default function MyBids() {
+export default function BidsPage() {
   const tab = useLocation().pathname.split('/')[2] || 'main';
 
   const [searchParams] = useSearchParams();

@@ -24,7 +24,7 @@ import {
   removeUserShopUserAction,
 } from '../../features/shops/RemoveShopUserModal';
 
-export default function MyShops() {
+export default function ShopsPage() {
   const tab = useLocation().pathname.split('/')[2] || 'main';
 
   const [searchParams] = useSearchParams();

@@ -11,7 +11,7 @@ import {
 import SalesTable from '../../features/sales/SalesTable';
 import { rateSaleAction } from '../../features/sales/RateSaleModal';
 
-export default function MySales() {
+export default function SalesPage() {
   const tab = useLocation().pathname.split('/')[2] || 'main';
 
   const [searchParams] = useSearchParams();

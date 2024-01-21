@@ -19,7 +19,7 @@ import { completeTaskAction } from '../../features/tasks/CompleteTaskModal';
 import { untakeTaskAction } from '../../features/tasks/UntakeTaskModal';
 import { deleteTaskAction } from '../../features/tasks/DeleteTaskModal';
 
-export default function MyTasks() {
+export default function TasksPage() {
   const tab = useLocation().pathname.split('/')[2] || 'main';
 
   const [searchParams] = useSearchParams();

@@ -12,7 +12,7 @@ import {
   createUserCellButton,
 } from '../../features/cells/CreateCellModal';
 
-export default function MyCells() {
+export default function CellsPage() {
   const tab = useLocation().pathname.split('/')[2] || 'main';
 
   const [searchParams] = useSearchParams();

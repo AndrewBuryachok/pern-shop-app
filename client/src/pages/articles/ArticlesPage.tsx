@@ -17,7 +17,7 @@ import {
 import { editArticleAction } from '../../features/articles/EditArticleModal';
 import { deleteArticleAction } from '../../features/articles/DeleteArticleModal';
 
-export default function MyArticles() {
+export default function ArticlesPage() {
   const tab = useLocation().pathname.split('/')[2] || 'main';
 
   const [searchParams] = useSearchParams();

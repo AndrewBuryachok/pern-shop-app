@@ -13,7 +13,7 @@ import { editUserPasswordAction } from '../../features/users/EditUserPasswordMod
 import { addUserRoleAction } from '../../features/users/AddUserRoleModal';
 import { removeUserRoleAction } from '../../features/users/RemoveUserRoleModal';
 
-export default function MainUsers() {
+export default function UsersPage() {
   const tab = useLocation().pathname.split('/')[2] || 'main';
 
   const [searchParams] = useSearchParams();

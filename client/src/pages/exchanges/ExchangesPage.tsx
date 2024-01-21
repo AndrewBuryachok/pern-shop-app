@@ -9,7 +9,7 @@ import {
 import ExchangesTable from '../../features/exchanges/ExchangesTable';
 import { createExchangeButton } from '../../features/exchanges/CreateExchangeModal';
 
-export default function MyExchanges() {
+export default function ExchangesPage() {
   const tab = useLocation().pathname.split('/')[2] || 'main';
 
   const [searchParams] = useSearchParams();

@@ -20,7 +20,7 @@ import {
 } from '../../features/wares/BuyWareModal';
 import { completeWareAction } from '../../features/wares/CompleteWareModal';
 
-export default function MyWares() {
+export default function WaresPage() {
   const tab = useLocation().pathname.split('/')[2] || 'main';
 
   const [searchParams] = useSearchParams();

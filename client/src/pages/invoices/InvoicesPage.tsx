@@ -18,7 +18,7 @@ import {
 } from '../../features/invoices/CompleteInvoiceModal';
 import { deleteInvoiceAction } from '../../features/invoices/DeleteInvoiceModal';
 
-export default function MyInvoices() {
+export default function InvoicesPage() {
   const tab = useLocation().pathname.split('/')[2] || 'main';
 
   const [searchParams] = useSearchParams();

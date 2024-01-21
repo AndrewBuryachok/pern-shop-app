@@ -13,7 +13,7 @@ import {
 } from '../../features/markets/CreateMarketModal';
 import { editMarketAction } from '../../features/markets/EditMarketModal';
 
-export default function MyMarkets() {
+export default function MarketsPage() {
   const tab = useLocation().pathname.split('/')[2] || 'main';
 
   const [searchParams] = useSearchParams();

@@ -23,7 +23,7 @@ import {
   removeUserCardUserAction,
 } from '../../features/cards/RemoveCardUserModal';
 
-export default function MyCards() {
+export default function CardsPage() {
   const tab = useLocation().pathname.split('/')[2] || 'main';
 
   const [searchParams] = useSearchParams();

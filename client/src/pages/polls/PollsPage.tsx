@@ -18,7 +18,7 @@ import { createDiscussionAction } from '../../features/discussions/CreateDiscuss
 import { completePollAction } from '../../features/polls/CompletePollModal';
 import { deletePollAction } from '../../features/polls/DeletePollModal';
 
-export default function MyPolls() {
+export default function PollsPage() {
   const tab = useLocation().pathname.split('/')[2] || 'main';
 
   const [searchParams] = useSearchParams();

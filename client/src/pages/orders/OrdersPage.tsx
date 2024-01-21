@@ -24,7 +24,7 @@ import { completeOrderAction } from '../../features/orders/CompleteOrderModal';
 import { untakeOrderAction } from '../../features/orders/UntakeOrderModal';
 import { deleteOrderAction } from '../../features/orders/DeleteOrderModal';
 
-export default function MyOrders() {
+export default function OrdersPage() {
   const tab = useLocation().pathname.split('/')[2] || 'main';
 
   const [searchParams] = useSearchParams();

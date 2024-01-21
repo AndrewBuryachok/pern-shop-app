@@ -10,7 +10,7 @@ import UsersTable from '../../features/users/UsersTable';
 import { addSubscriberButton } from '../../features/subscribers/AddSubscriberModal';
 import { removeSubscriberAction } from '../../features/subscribers/RemoveSubscriberModal';
 
-export default function MySubscribers() {
+export default function SubscribersPage() {
   const tab = useLocation().pathname.split('/')[2] || 'main';
 
   const [searchParams] = useSearchParams();

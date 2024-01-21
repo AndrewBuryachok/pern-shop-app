@@ -13,7 +13,7 @@ import {
 } from '../../features/storages/CreateStorageModal';
 import { editStorageAction } from '../../features/storages/EditStorageModal';
 
-export default function MyStorages() {
+export default function StoragesPage() {
   const tab = useLocation().pathname.split('/')[2] || 'main';
 
   const [searchParams] = useSearchParams();

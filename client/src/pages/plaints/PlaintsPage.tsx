@@ -17,7 +17,7 @@ import { executePlaintAction } from '../../features/plaints/ExecutePlaintModal';
 import { completePlaintAction } from '../../features/plaints/CompletePlaintModal';
 import { deletePlaintAction } from '../../features/plaints/DeletePlaintModal';
 
-export default function MyPlaints() {
+export default function PlaintsPage() {
   const tab = useLocation().pathname.split('/')[2] || 'main';
 
   const [searchParams] = useSearchParams();

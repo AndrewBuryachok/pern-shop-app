@@ -14,7 +14,7 @@ import { createRatingButton } from '../../features/ratings/CreateRatingModal';
 import { editRatingAction } from '../../features/ratings/EditRatingModal';
 import { deleteRatingAction } from '../../features/ratings/DeleteRatingModal';
 
-export default function MyRatings() {
+export default function RatingsPage() {
   const tab = useLocation().pathname.split('/')[2] || 'main';
 
   const [searchParams] = useSearchParams();
