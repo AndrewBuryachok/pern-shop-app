@@ -18,10 +18,7 @@ import {
   buyMyProductAction,
   buyUserProductAction,
 } from '../../features/products/BuyProductModal';
-import {
-  completeMyProductAction,
-  completeUserProductAction,
-} from '../../features/products/CompleteProductModal';
+import { completeProductAction } from '../../features/products/CompleteProductModal';
 
 export default function MyProducts() {
   const tab = useLocation().pathname.split('/')[2] || 'main';
@@ -66,8 +63,8 @@ export default function MyProducts() {
 
   const actions = {
     main: [buyMyProductAction],
-    my: [editProductAction, completeMyProductAction],
-    all: [editProductAction, buyUserProductAction, completeUserProductAction],
+    my: [editProductAction, completeProductAction],
+    all: [editProductAction, buyUserProductAction, completeProductAction],
   }[tab];
 
   return (

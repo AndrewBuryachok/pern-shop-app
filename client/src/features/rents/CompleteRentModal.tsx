@@ -70,5 +70,5 @@ export const completeRentAction = {
       children: <CompleteRentModal data={rent} />,
     }),
   disable: (rent: Rent) => rent.completedAt > new Date(),
-  color: Color.GREEN,
+  color: Color.RED,
 };

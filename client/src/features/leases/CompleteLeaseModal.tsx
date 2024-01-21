@@ -70,5 +70,5 @@ export const completeLeaseAction = {
       children: <CompleteLeaseModal data={lease} />,
     }),
   disable: (lease: Lease) => lease.completedAt > new Date(),
-  color: Color.GREEN,
+  color: Color.RED,
 };

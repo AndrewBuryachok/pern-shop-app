@@ -18,10 +18,7 @@ import {
   buyMyWareAction,
   buyUserWareAction,
 } from '../../features/wares/BuyWareModal';
-import {
-  completeMyWareAction,
-  completeUserWareAction,
-} from '../../features/wares/CompleteWareModal';
+import { completeWareAction } from '../../features/wares/CompleteWareModal';
 
 export default function MyWares() {
   const tab = useLocation().pathname.split('/')[2] || 'main';
@@ -66,8 +63,8 @@ export default function MyWares() {
 
   const actions = {
     main: [buyMyWareAction],
-    my: [editWareAction, completeMyWareAction],
-    all: [editWareAction, buyUserWareAction, completeUserWareAction],
+    my: [editWareAction, completeWareAction],
+    all: [editWareAction, buyUserWareAction, completeWareAction],
   }[tab];
 
   return (

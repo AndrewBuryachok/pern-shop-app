@@ -17,10 +17,7 @@ import {
   buyMyLotAction,
   buyUserLotAction,
 } from '../../features/lots/BuyLotModal';
-import {
-  completeMyLotAction,
-  completeUserLotAction,
-} from '../../features/lots/CompleteLotModal';
+import { completeLotAction } from '../../features/lots/CompleteLotModal';
 
 export default function MyLots() {
   const tab = useLocation().pathname.split('/')[2] || 'main';
@@ -65,8 +62,8 @@ export default function MyLots() {
 
   const actions = {
     main: [buyMyLotAction],
-    my: [completeMyLotAction],
-    all: [buyUserLotAction, completeUserLotAction],
+    my: [completeLotAction],
+    all: [buyUserLotAction, completeLotAction],
   }[tab];
 
   return (

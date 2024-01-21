@@ -69,16 +69,12 @@ export default function CompleteProductModal({ data: product }: Props) {
   );
 }
 
-export const completeProductFactory = (hasRole: boolean) => ({
+export const completeProductAction = {
   open: (product: Product) =>
     openModal({
       title: t('actions.complete') + ' ' + t('modals.products'),
       children: <CompleteProductModal data={product} />,
     }),
   disable: (product: Product) => !!product.completedAt,
-  color: hasRole ? Color.RED : Color.GREEN,
-});
-
-export const completeMyProductAction = completeProductFactory(false);
-
-export const completeUserProductAction = completeProductFactory(true);
+  color: Color.RED,
+};
