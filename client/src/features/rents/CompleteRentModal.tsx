@@ -6,7 +6,7 @@ import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { Rent } from './rent.model';
 import { useCompleteRentMutation } from './rents.api';
-import { CompleteRentDto } from './rent.dto';
+import { RentIdDto } from './rent.dto';
 import CustomForm from '../../common/components/CustomForm';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import { parseCard, parseStore } from '../../common/utils';
@@ -25,7 +25,7 @@ export default function CompleteRentModal({ data: rent }: Props) {
 
   const [completeRent, { isLoading }] = useCompleteRentMutation();
 
-  const handleSubmit = async (dto: CompleteRentDto) => {
+  const handleSubmit = async (dto: RentIdDto) => {
     await completeRent(dto);
   };
 

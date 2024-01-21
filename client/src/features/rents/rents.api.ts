@@ -2,7 +2,7 @@ import { emptyApi } from '../../app/empty.api';
 import { IRequest, IResponse } from '../../common/interfaces';
 import { Rent, SelectRent } from './rent.model';
 import { MdThing } from '../things/thing.model';
-import { CompleteRentDto, CreateRentDto } from './rent.dto';
+import { CreateRentDto, RentIdDto } from './rent.dto';
 import { getQuery } from '../../common/utils';
 
 export const rentsApi = emptyApi.injectEndpoints({
@@ -57,7 +57,14 @@ export const rentsApi = emptyApi.injectEndpoints({
       }),
       invalidatesTags: ['Rent', 'Store', 'Payment', 'Card'],
     }),
-    completeRent: build.mutation<void, CompleteRentDto>({
+    continueRent: build.mutation<void, RentIdDto>({
+      query: ({ rentId }) => ({
+        url: `/rents/${rentId}/continue`,
+        method: 'POST',
+      }),
+      invalidatesTags: ['Rent', 'Store', 'Payment', 'Card'],
+    }),
+    completeRent: build.mutation<void, RentIdDto>({
       query: ({ rentId }) => ({
         url: `/rents/${rentId}`,
         method: 'POST',
@@ -76,5 +83,6 @@ export const {
   useSelectMyRentsQuery,
   useSelectRentThingsQuery,
   useCreateRentMutation,
+  useContinueRentMutation,
   useCompleteRentMutation,
 } = rentsApi;

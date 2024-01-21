@@ -3,6 +3,6 @@ export interface CreateRentDto {
   cardId: number;
 }
 
-export interface CompleteRentDto {
+export interface RentIdDto {
   rentId: number;
 }

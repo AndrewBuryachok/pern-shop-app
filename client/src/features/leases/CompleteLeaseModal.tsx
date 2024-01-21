@@ -6,7 +6,7 @@ import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { Lease } from './lease.model';
 import { useCompleteLeaseMutation } from './leases.api';
-import { CompleteLeaseDto } from './lease.dto';
+import { LeaseIdDto } from './lease.dto';
 import CustomForm from '../../common/components/CustomForm';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import { parseCard, parseCell } from '../../common/utils';
@@ -25,7 +25,7 @@ export default function CompleteLeaseModal({ data: lease }: Props) {
 
   const [completeLease, { isLoading }] = useCompleteLeaseMutation();
 
-  const handleSubmit = async (dto: CompleteLeaseDto) => {
+  const handleSubmit = async (dto: LeaseIdDto) => {
     await completeLease(dto);
   };
 

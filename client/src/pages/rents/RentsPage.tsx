@@ -9,6 +9,10 @@ import {
   useGetReceivedRentsQuery,
 } from '../../features/rents/rents.api';
 import RentsTable from '../../features/rents/RentsTable';
+import {
+  continueMyRentAction,
+  continueUserRentAction,
+} from '../../features/rents/ContinueRentModal';
 import { completeRentAction } from '../../features/rents/CompleteRentModal';
 
 export default function RentsPage() {
@@ -39,7 +43,10 @@ export default function RentsPage() {
     all: useGetAllRentsQuery,
   }[tab]!({ page, search });
 
-  const actions = { my: [completeRentAction], all: [completeRentAction] }[tab];
+  const actions = {
+    my: [continueMyRentAction, completeRentAction],
+    all: [continueUserRentAction, completeRentAction],
+  }[tab];
 
   return (
     <RentsTable

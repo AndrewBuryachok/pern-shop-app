@@ -2,7 +2,7 @@ import { emptyApi } from '../../app/empty.api';
 import { IRequest, IResponse } from '../../common/interfaces';
 import { Lease } from './lease.model';
 import { MdThing } from '../things/thing.model';
-import { CompleteLeaseDto } from './lease.dto';
+import { LeaseIdDto } from './lease.dto';
 import { getQuery } from '../../common/utils';
 
 export const leasesApi = emptyApi.injectEndpoints({
@@ -37,7 +37,14 @@ export const leasesApi = emptyApi.injectEndpoints({
       }),
       providesTags: ['Lease'],
     }),
-    completeLease: build.mutation<void, CompleteLeaseDto>({
+    continueLease: build.mutation<void, LeaseIdDto>({
+      query: ({ leaseId }) => ({
+        url: `/leases/${leaseId}/continue`,
+        method: 'POST',
+      }),
+      invalidatesTags: ['Lease', 'Cell', 'Payment', 'Card'],
+    }),
+    completeLease: build.mutation<void, LeaseIdDto>({
       query: ({ leaseId }) => ({
         url: `/leases/${leaseId}`,
         method: 'POST',
@@ -53,5 +60,6 @@ export const {
   useGetReceivedLeasesQuery,
   useGetAllLeasesQuery,
   useSelectLeaseThingsQuery,
+  useContinueLeaseMutation,
   useCompleteLeaseMutation,
 } = leasesApi;

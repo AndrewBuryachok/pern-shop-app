@@ -1,3 +1,3 @@
-export interface CompleteLeaseDto {
+export interface LeaseIdDto {
   leaseId: number;
 }

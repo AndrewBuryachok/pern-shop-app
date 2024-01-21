@@ -9,6 +9,10 @@ import {
   useGetReceivedLeasesQuery,
 } from '../../features/leases/leases.api';
 import LeasesTable from '../../features/leases/LeasesTable';
+import {
+  continueMyLeaseAction,
+  continueUserLeaseAction,
+} from '../../features/leases/ContinueLeaseModal';
 import { completeLeaseAction } from '../../features/leases/CompleteLeaseModal';
 
 export default function LeasesPage() {
@@ -41,8 +45,8 @@ export default function LeasesPage() {
   }[tab]!({ page, search });
 
   const actions = {
-    my: [completeLeaseAction],
-    all: [completeLeaseAction],
+    my: [continueMyLeaseAction, completeLeaseAction],
+    all: [continueUserLeaseAction, completeLeaseAction],
   }[tab];
 
   return (

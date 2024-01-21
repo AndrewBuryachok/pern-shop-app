@@ -132,6 +132,7 @@
   "actions": {
     "create": "Create",
     "add": "Add",
+    "continue": "Continue",
     "complete": "Complete",
     "reserve": "Reserve",
     "buy": "Buy",
@@ -354,10 +355,12 @@
     },
     "rents": {
       "created": "Someone reserved your store",
+      "continued": "Someone continued your rent",
       "completed": "Someone completed your rent"
     },
     "leases": {
       "created": "Someone reserved your cell",
+      "continued": "Someone continued your lease",
       "completed": "Someone completed your lease"
     },
     "goods": {
