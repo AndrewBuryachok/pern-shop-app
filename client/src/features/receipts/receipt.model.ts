@@ -7,5 +7,5 @@ export interface Receipt {
 
 export interface ReceiptWithDate extends Receipt {
   createdAt: Date;
-  completedAt?: Date;
+  completedAt: Date;
 }

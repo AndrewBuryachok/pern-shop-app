@@ -12,5 +12,5 @@ export interface LgStore extends SmStore {
 }
 
 export interface Store extends LgStore {
-  reservedAt?: Date;
+  reservedUntil?: Date;
 }

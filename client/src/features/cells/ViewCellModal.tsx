@@ -36,7 +36,7 @@ export default function ViewCellModal({ data: cell }: Props) {
       />
       <TextInput
         label={t('columns.reserved')}
-        value={parseTime(cell.reservedAt)}
+        value={parseTime(cell.reservedUntil)}
         disabled
       />
     </Stack>

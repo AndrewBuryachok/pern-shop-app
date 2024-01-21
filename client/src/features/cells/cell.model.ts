@@ -12,5 +12,5 @@ export interface LgCell extends SmCell {
 }
 
 export interface Cell extends LgCell {
-  reservedAt?: Date;
+  reservedUntil?: Date;
 }

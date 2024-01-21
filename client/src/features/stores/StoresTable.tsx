@@ -33,7 +33,7 @@ export default function StoresTable({ actions = [], ...props }: Props) {
             <PriceText {...store.market} />
           </td>
           <td>
-            <DateText date={store.reservedAt} />
+            <DateText date={store.reservedUntil} />
           </td>
           <td>
             <CustomActions

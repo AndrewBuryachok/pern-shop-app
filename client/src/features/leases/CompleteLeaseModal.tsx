@@ -69,6 +69,6 @@ export const completeLeaseAction = {
       title: t('actions.complete') + ' ' + t('modals.leases'),
       children: <CompleteLeaseModal data={lease} />,
     }),
-  disable: (lease: Lease) => !!lease.completedAt,
+  disable: (lease: Lease) => lease.completedAt > new Date(),
   color: Color.GREEN,
 };

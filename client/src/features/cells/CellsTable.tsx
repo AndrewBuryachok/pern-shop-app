@@ -33,7 +33,7 @@ export default function CellsTable({ actions = [], ...props }: Props) {
             <PriceText {...cell.storage} />
           </td>
           <td>
-            <DateText date={cell.reservedAt} />
+            <DateText date={cell.reservedUntil} />
           </td>
           <td>
             <CustomActions data={cell} actions={[viewCellAction, ...actions]} />

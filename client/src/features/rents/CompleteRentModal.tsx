@@ -69,6 +69,6 @@ export const completeRentAction = {
       title: t('actions.complete') + ' ' + t('modals.rents'),
       children: <CompleteRentModal data={rent} />,
     }),
-  disable: (rent: Rent) => !!rent.completedAt,
+  disable: (rent: Rent) => rent.completedAt > new Date(),
   color: Color.GREEN,
 };

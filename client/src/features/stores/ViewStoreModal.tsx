@@ -36,7 +36,7 @@ export default function ViewStoreModal({ data: store }: Props) {
       />
       <TextInput
         label={t('columns.reserved')}
-        value={parseTime(store.reservedAt)}
+        value={parseTime(store.reservedUntil)}
         disabled
       />
     </Stack>
