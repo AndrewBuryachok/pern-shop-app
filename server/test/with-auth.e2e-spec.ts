@@ -1356,6 +1356,13 @@ describe('With Auth', () => {
         .expect((res) => expect(res.body.length).toBeGreaterThan(0));
     });
 
+    it('POST /rents/:rentId/continue', async () => {
+      return request(app.getHttpServer())
+        .post(`/rents/${rentId}/continue`)
+        .set('Authorization', `Bearer ${user.access}`)
+        .expect('');
+    });
+
     it('POST /rents/:rentId', async () => {
       return request(app.getHttpServer())
         .post(`/rents/${rentId}`)
@@ -1783,6 +1790,13 @@ describe('With Auth', () => {
         .get('/leases/all')
         .set('Authorization', `Bearer ${manager.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
+    });
+
+    it('POST /leases/:leaseId/continue', async () => {
+      return request(app.getHttpServer())
+        .post(`/leases/${leaseId}/continue`)
+        .set('Authorization', `Bearer ${user.access}`)
+        .expect('');
     });
 
     it('POST /leases/:leaseId', async () => {

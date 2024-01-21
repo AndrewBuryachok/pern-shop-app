@@ -84,6 +84,26 @@ export class CellsService {
     return cell.id;
   }
 
+  async continueCell(dto: ReserveCellDto): Promise<void> {
+    const cell = await this.cellsRepository.findOne({
+      relations: ['storage', 'storage.card'],
+      where: { id: dto.storageId },
+    });
+    await this.paymentsService.createPayment({
+      myId: dto.myId,
+      hasRole: dto.hasRole,
+      senderCardId: dto.cardId,
+      receiverCardId: cell.storage.cardId,
+      sum: cell.storage.price,
+      description: '',
+    });
+    await this.continue(cell);
+    this.mqttService.publishNotificationMessage(
+      cell.storage.card.userId,
+      Notification.CONTINUED_LEASE,
+    );
+  }
+
   async unreserveCell(id: number): Promise<void> {
     const cell = await this.cellsRepository.findOne({
       relations: ['storage', 'storage.card'],
@@ -143,6 +163,15 @@ export class CellsService {
       await this.cellsRepository.save(cell);
     } catch (error) {
       throw new AppException(CellError.RESERVE_FAILED);
+    }
+  }
+
+  private async continue(cell: Cell): Promise<void> {
+    try {
+      cell.reservedUntil.setDate(cell.reservedUntil.getDate() + 7);
+      await this.cellsRepository.save(cell);
+    } catch (error) {
+      throw new AppException(CellError.CONTINUE_FAILED);
     }
   }
 

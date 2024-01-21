@@ -4,7 +4,7 @@ import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { Rent } from './rent.entity';
 import { Thing } from '../things/thing.entity';
 import { StoresService } from '../stores/stores.service';
-import { CompleteRentDto, ExtCreateRentDto } from './rent.dto';
+import { ExtCreateRentDto, ExtRentIdDto } from './rent.dto';
 import { Request, Response } from '../../common/interfaces';
 import { getDateWeekAfter } from '../../common/utils';
 import { AppException } from '../../common/exceptions';
@@ -86,7 +86,17 @@ export class RentsService {
     await this.create(dto);
   }
 
-  async completeRent(dto: CompleteRentDto): Promise<void> {
+  async continueRent(dto: ExtRentIdDto): Promise<void> {
+    const rent = await this.checkRentOwner(dto.rentId, dto.myId, dto.hasRole);
+    await this.storesService.continueStore({
+      ...dto,
+      storeId: rent.storeId,
+      cardId: rent.cardId,
+    });
+    await this.continue(rent);
+  }
+
+  async completeRent(dto: ExtRentIdDto): Promise<void> {
     const rent = await this.checkRentOwner(dto.rentId, dto.myId, dto.hasRole);
     await this.storesService.unreserveStore(rent.storeId);
     await this.complete(rent);
@@ -124,6 +134,15 @@ export class RentsService {
       await this.rentsRepository.save(rent);
     } catch (error) {
       throw new AppException(RentError.CREATE_FAILED);
+    }
+  }
+
+  private async continue(rent: Rent): Promise<void> {
+    try {
+      rent.completedAt.setDate(rent.completedAt.getDate() + 7);
+      await this.rentsRepository.save(rent);
+    } catch (error) {
+      throw new AppException(RentError.CONTINUE_FAILED);
     }
   }
 

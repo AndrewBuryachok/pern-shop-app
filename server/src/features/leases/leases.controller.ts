@@ -47,6 +47,15 @@ export class LeasesController {
     return this.leasesService.selectLeaseThings(leaseId);
   }
 
+  @Post(':leaseId/continue')
+  continueLease(
+    @MyId() myId: number,
+    @HasRole(Role.MANAGER) hasRole: boolean,
+    @Param() { leaseId }: LeaseIdDto,
+  ): Promise<void> {
+    return this.leasesService.continueLease({ leaseId, myId, hasRole });
+  }
+
   @Post(':leaseId')
   completeLease(
     @MyId() myId: number,

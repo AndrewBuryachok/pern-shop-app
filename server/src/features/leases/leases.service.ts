@@ -4,7 +4,7 @@ import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { Lease } from './lease.entity';
 import { Thing } from '../things/thing.entity';
 import { CellsService } from '../cells/cells.service';
-import { CompleteLeaseDto, ExtCreateLeaseDto } from './lease.dto';
+import { ExtCreateLeaseDto, ExtLeaseIdDto } from './lease.dto';
 import { Request, Response } from '../../common/interfaces';
 import { getDateWeekAfter } from '../../common/utils';
 import { AppException } from '../../common/exceptions';
@@ -115,7 +115,21 @@ export class LeasesService {
     return lease.id;
   }
 
-  async completeLease(dto: CompleteLeaseDto): Promise<void> {
+  async continueLease(dto: ExtLeaseIdDto): Promise<void> {
+    const lease = await this.checkLeaseOwner(
+      dto.leaseId,
+      dto.myId,
+      dto.hasRole,
+    );
+    await this.cellsService.continueCell({
+      ...dto,
+      storageId: lease.cellId,
+      cardId: lease.cardId,
+    });
+    await this.continue(lease);
+  }
+
+  async completeLease(dto: ExtLeaseIdDto): Promise<void> {
     const lease = await this.checkLeaseOwner(
       dto.leaseId,
       dto.myId,
@@ -159,6 +173,15 @@ export class LeasesService {
       return lease;
     } catch (error) {
       throw new AppException(LeaseError.CREATE_FAILED);
+    }
+  }
+
+  private async continue(lease: Lease): Promise<void> {
+    try {
+      lease.completedAt.setDate(lease.completedAt.getDate() + 7);
+      await this.leasesRepository.save(lease);
+    } catch (error) {
+      throw new AppException(LeaseError.CONTINUE_FAILED);
     }
   }
 

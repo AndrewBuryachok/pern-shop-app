@@ -67,6 +67,15 @@ export class RentsController {
     return this.rentsService.createRent({ ...dto, myId, hasRole });
   }
 
+  @Post(':rentId/continue')
+  continueRent(
+    @MyId() myId: number,
+    @HasRole(Role.MANAGER) hasRole: boolean,
+    @Param() { rentId }: RentIdDto,
+  ): Promise<void> {
+    return this.rentsService.continueRent({ rentId, myId, hasRole });
+  }
+
   @Post(':rentId')
   completeRent(
     @MyId() myId: number,

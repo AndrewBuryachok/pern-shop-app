@@ -29,7 +29,7 @@ export class ExtCreateLeaseDto extends CreateLeaseDto {
   hasRole: boolean;
 }
 
-export class CompleteLeaseDto extends LeaseIdDto {
+export class ExtLeaseIdDto extends LeaseIdDto {
   myId: number;
   hasRole: boolean;
 }

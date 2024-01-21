@@ -83,6 +83,26 @@ export class StoresService {
     );
   }
 
+  async continueStore(dto: ReserveStoreDto): Promise<void> {
+    const store = await this.storesRepository.findOne({
+      relations: ['market', 'market.card'],
+      where: { id: dto.storeId },
+    });
+    await this.paymentsService.createPayment({
+      myId: dto.myId,
+      hasRole: dto.hasRole,
+      senderCardId: dto.cardId,
+      receiverCardId: store.market.cardId,
+      sum: store.market.price,
+      description: '',
+    });
+    await this.continue(store);
+    this.mqttService.publishNotificationMessage(
+      store.market.card.userId,
+      Notification.CONTINUED_RENT,
+    );
+  }
+
   async unreserveStore(id: number): Promise<void> {
     const store = await this.storesRepository.findOne({
       relations: ['market', 'market.card'],
@@ -145,6 +165,15 @@ export class StoresService {
       await this.storesRepository.save(store);
     } catch (error) {
       throw new AppException(StoreError.RESERVE_FAILED);
+    }
+  }
+
+  private async continue(store: Store): Promise<void> {
+    try {
+      store.reservedUntil.setDate(store.reservedUntil.getDate() + 7);
+      await this.storesRepository.save(store);
+    } catch (error) {
+      throw new AppException(StoreError.CONTINUE_FAILED);
     }
   }
 
