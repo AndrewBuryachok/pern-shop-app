@@ -1224,13 +1224,6 @@ describe('With Auth', () => {
         .expect('');
     });
 
-    it('POST /rents/:rentId', async () => {
-      return request(app.getHttpServer())
-        .post(`/rents/${rentId}`)
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect('');
-    });
-
     it('GET /rents/:rentId/things', async () => {
       return request(app.getHttpServer())
         .get(`/rents/${rentId}/things`)
@@ -1361,6 +1354,13 @@ describe('With Auth', () => {
       return request(app.getHttpServer())
         .get(`/wares/${wareId}/states`)
         .expect((res) => expect(res.body.length).toBeGreaterThan(0));
+    });
+
+    it('POST /rents/:rentId', async () => {
+      return request(app.getHttpServer())
+        .post(`/rents/${rentId}`)
+        .set('Authorization', `Bearer ${user.access}`)
+        .expect('');
     });
   });
 

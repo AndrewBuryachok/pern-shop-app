@@ -6,7 +6,7 @@ import { ProductsService } from '../products/products.service';
 import { MqttService } from '../mqtt/mqtt.service';
 import { ExtCreateSaleDto, ExtRateSaleDto } from './sale.dto';
 import { Request, Response } from '../../common/interfaces';
-import { getDateMonthAgo } from '../../common/utils';
+import { getDateMonthBefore } from '../../common/utils';
 import { AppException } from '../../common/exceptions';
 import { SaleError } from './sale-error.enum';
 import { Mode, Notification } from '../../common/enums';
@@ -24,7 +24,7 @@ export class SalesService {
     return this.salesRepository
       .createQueryBuilder('sale')
       .where('sale.createdAt >= :createdAt', {
-        createdAt: getDateMonthAgo(),
+        createdAt: getDateMonthBefore(),
       })
       .getCount();
   }

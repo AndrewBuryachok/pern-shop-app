@@ -13,7 +13,7 @@ import {
   ExtEditProductDto,
 } from './product.dto';
 import { Request, Response } from '../../common/interfaces';
-import { getDateMonthAgo, getDateWeekAgo } from '../../common/utils';
+import { getDateMonthBefore } from '../../common/utils';
 import { AppException } from '../../common/exceptions';
 import { ProductError } from './product-error.enum';
 import { Kind } from '../leases/kind.enum';
@@ -35,7 +35,7 @@ export class ProductsService {
     return this.productsRepository
       .createQueryBuilder('product')
       .where('product.createdAt >= :createdAt', {
-        createdAt: getDateMonthAgo(),
+        createdAt: getDateMonthBefore(),
       })
       .getCount();
   }
@@ -43,7 +43,8 @@ export class ProductsService {
   async getMainProducts(req: Request): Promise<Response<Product>> {
     const [result, count] = await this.getProductsQueryBuilder(req)
       .andWhere('product.amount > 0')
-      .andWhere('lease.createdAt > :date', { date: getDateWeekAgo() })
+      .andWhere('product.completedAt IS NULL')
+      .andWhere('lease.completedAt > NOW()')
       .getManyAndCount();
     return { result, count };
   }
@@ -136,11 +137,14 @@ export class ProductsService {
       relations: ['lease', 'lease.card'],
       where: { id: dto.productId },
     });
-    if (product.createdAt < getDateWeekAgo()) {
-      throw new AppException(ProductError.ALREADY_EXPIRED);
-    }
     if (product.amount < dto.amount) {
       throw new AppException(ProductError.NOT_ENOUGH_AMOUNT);
+    }
+    if (product.completedAt) {
+      throw new AppException(ProductError.ALREADY_COMPLETED);
+    }
+    if (product.lease.completedAt < new Date()) {
+      throw new AppException(ProductError.ALREADY_EXPIRED);
     }
     await this.paymentsService.createPayment({
       myId: dto.myId,
@@ -175,9 +179,6 @@ export class ProductsService {
       !hasRole
     ) {
       throw new AppException(ProductError.NOT_OWNER);
-    }
-    if (product.createdAt < getDateWeekAgo()) {
-      throw new AppException(ProductError.ALREADY_EXPIRED);
     }
     if (product.completedAt) {
       throw new AppException(ProductError.ALREADY_COMPLETED);
@@ -227,7 +228,6 @@ export class ProductsService {
 
   private async complete(product: Product): Promise<void> {
     try {
-      product.amount = 0;
       product.completedAt = new Date();
       await this.productsRepository.save(product);
     } catch (error) {

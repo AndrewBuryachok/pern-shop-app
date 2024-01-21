@@ -7,7 +7,6 @@ import { CardsService } from '../cards/cards.service';
 import { MqttService } from '../mqtt/mqtt.service';
 import { ExtCreateStorageDto, ExtEditStorageDto } from './storage.dto';
 import { Request, Response } from '../../common/interfaces';
-import { getDateWeekAgo } from '../../common/utils';
 import { MAX_STORAGES_NUMBER } from '../../common/constants';
 import { AppException } from '../../common/exceptions';
 import { StorageError } from './storage-error.enum';
@@ -73,10 +72,8 @@ export class StoragesService {
         'cell',
         (qb) =>
           qb
-            .where('cell.reservedAt IS NULL')
-            .orWhere('cell.reservedAt < :date', {
-              date: getDateWeekAgo(),
-            }),
+            .where('cell.reservedUntil IS NULL')
+            .orWhere('cell.reservedUntil < NOW()'),
       )
       .addSelect('storage.price')
       .getMany();

@@ -9,7 +9,6 @@ import { PaymentsService } from '../payments/payments.service';
 import { MqttService } from '../mqtt/mqtt.service';
 import { BuyLotDto, CompleteLotDto, ExtCreateLotDto } from './lot.dto';
 import { Request, Response } from '../../common/interfaces';
-import { getDateWeekAgo } from '../../common/utils';
 import { AppException } from '../../common/exceptions';
 import { LotError } from './lot-error.enum';
 import { Kind } from '../leases/kind.enum';
@@ -28,8 +27,8 @@ export class LotsService {
 
   async getMainLots(req: Request): Promise<Response<Lot>> {
     const [result, count] = await this.getLotsQueryBuilder(req)
-      .andWhere('lot.createdAt > :date', { date: getDateWeekAgo() })
       .andWhere('lot.completedAt IS NULL')
+      .andWhere('lease.completedAt > NOW()')
       .getManyAndCount();
     return { result, count };
   }
@@ -82,11 +81,14 @@ export class LotsService {
       relations: ['lease', 'lease.card'],
       where: { id: dto.lotId },
     });
-    if (lot.createdAt < getDateWeekAgo()) {
-      throw new AppException(LotError.ALREADY_EXPIRED);
-    }
     if (lot.price >= dto.price) {
       throw new AppException(LotError.NOT_ENOUGH_PRICE);
+    }
+    if (lot.completedAt) {
+      throw new AppException(LotError.ALREADY_COMPLETED);
+    }
+    if (lot.lease.completedAt < new Date()) {
+      throw new AppException(LotError.ALREADY_EXPIRED);
     }
     await this.cardsService.decreaseCardBalance({ ...dto, sum: dto.price });
     await this.buy(lot, dto.price);
@@ -98,9 +100,6 @@ export class LotsService {
 
   async completeLot(dto: CompleteLotDto): Promise<void> {
     const lot = await this.checkLotOwner(dto.lotId, dto.myId, dto.hasRole);
-    if (lot.completedAt) {
-      throw new AppException(LotError.ALREADY_EXPIRED);
-    }
     const promises = lot.bids.map(
       async (bid) =>
         await this.cardsService.increaseCardBalance({ ...bid, sum: bid.price }),
@@ -148,6 +147,9 @@ export class LotsService {
       !hasRole
     ) {
       throw new AppException(LotError.NOT_OWNER);
+    }
+    if (lot.completedAt) {
+      throw new AppException(LotError.ALREADY_COMPLETED);
     }
     return lot;
   }

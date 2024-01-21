@@ -6,7 +6,7 @@ import { Thing } from '../things/thing.entity';
 import { CellsService } from '../cells/cells.service';
 import { CompleteLeaseDto, ExtCreateLeaseDto } from './lease.dto';
 import { Request, Response } from '../../common/interfaces';
-import { getDateWeekAgo } from '../../common/utils';
+import { getDateWeekAfter } from '../../common/utils';
 import { AppException } from '../../common/exceptions';
 import { LeaseError } from './lease-error.enum';
 import { Mode } from '../../common/enums';
@@ -21,8 +21,7 @@ export class LeasesService {
 
   async getMainLeases(req: Request): Promise<Response<Lease>> {
     const [result, count] = await this.getLeasesQueryBuilder(req)
-      .andWhere('lease.createdAt > :date', { date: getDateWeekAgo() })
-      .andWhere('lease.completedAt IS NULL')
+      .andWhere('lease.completedAt > NOW()')
       .getManyAndCount();
     return { result, count };
   }
@@ -142,10 +141,7 @@ export class LeasesService {
     if (!lease.card.users.map((user) => user.id).includes(userId) && !hasRole) {
       throw new AppException(LeaseError.NOT_OWNER);
     }
-    if (lease.createdAt < getDateWeekAgo()) {
-      throw new AppException(LeaseError.ALREADY_EXPIRED);
-    }
-    if (lease.completedAt) {
+    if (lease.completedAt < new Date()) {
       throw new AppException(LeaseError.ALREADY_COMPLETED);
     }
     return lease;
@@ -157,6 +153,7 @@ export class LeasesService {
         cellId: dto.storageId,
         cardId: dto.cardId,
         kind: dto.kind,
+        completedAt: getDateWeekAfter(),
       });
       await this.leasesRepository.save(lease);
       return lease;

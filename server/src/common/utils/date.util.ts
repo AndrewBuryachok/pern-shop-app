@@ -1,10 +1,10 @@
-export const getDateWeekAgo = () => {
+export const getDateWeekAfter = () => {
   const date = new Date();
-  date.setDate(date.getDate() - 7);
+  date.setDate(date.getDate() + 7);
   return date;
 };
 
-export const getDateMonthAgo = () => {
+export const getDateMonthBefore = () => {
   const date = new Date();
   date.setMonth(date.getMonth() - 1);
   return date;

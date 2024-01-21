@@ -7,7 +7,7 @@ import { PaymentsService } from '../payments/payments.service';
 import { MqttService } from '../mqtt/mqtt.service';
 import { ExtCreateCellDto, ReserveCellDto } from './cell.dto';
 import { Request, Response } from '../../common/interfaces';
-import { getDateWeekAgo } from '../../common/utils';
+import { getDateWeekAfter } from '../../common/utils';
 import { MAX_CELLS_NUMBER } from '../../common/constants';
 import { AppException } from '../../common/exceptions';
 import { CellError } from './cell-error.enum';
@@ -28,10 +28,8 @@ export class CellsService {
       .andWhere(
         new Brackets((qb) =>
           qb
-            .where('cell.reservedAt IS NULL')
-            .orWhere('cell.reservedAt < :date', {
-              date: getDateWeekAgo(),
-            }),
+            .where('cell.reservedUntil IS NULL')
+            .orWhere('cell.reservedUntil < NOW()'),
         ),
       )
       .getManyAndCount();
@@ -115,8 +113,8 @@ export class CellsService {
       .andWhere(
         new Brackets((qb) =>
           qb
-            .where('cell.reservedAt IS NULL')
-            .orWhere('cell.reservedAt < :date', { date: getDateWeekAgo() }),
+            .where('cell.reservedUntil IS NULL')
+            .orWhere('cell.reservedUntil < NOW()'),
         ),
       )
       .orderBy('RANDOM()')
@@ -141,7 +139,7 @@ export class CellsService {
 
   private async reserve(cell: Cell): Promise<void> {
     try {
-      cell.reservedAt = new Date();
+      cell.reservedUntil = getDateWeekAfter();
       await this.cellsRepository.save(cell);
     } catch (error) {
       throw new AppException(CellError.RESERVE_FAILED);
@@ -150,7 +148,7 @@ export class CellsService {
 
   private async unreserve(cell: Cell): Promise<void> {
     try {
-      cell.reservedAt = null;
+      cell.reservedUntil = new Date();
       await this.cellsRepository.save(cell);
     } catch (error) {
       throw new AppException(CellError.UNRESERVE_FAILED);
@@ -235,7 +233,7 @@ export class CellsService {
         'storage.y',
         'storage.price',
         'cell.name',
-        'cell.reservedAt',
+        'cell.reservedUntil',
       ]);
   }
 }

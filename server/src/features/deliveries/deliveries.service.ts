@@ -13,7 +13,6 @@ import {
   ExtTakeDeliveryDto,
 } from './delivery.dto';
 import { Request, Response } from '../../common/interfaces';
-import { getDateWeekAgo } from '../../common/utils';
 import { AppException } from '../../common/exceptions';
 import { DeliveryError } from './delivery-error.enum';
 import { Status } from '../transportations/status.enum';
@@ -33,10 +32,11 @@ export class DeliveriesService {
 
   async getMainDeliveries(req: Request): Promise<Response<Delivery>> {
     const [result, count] = await this.getDeliveriesQueryBuilder(req)
-      .andWhere('delivery.createdAt > :date', { date: getDateWeekAgo() })
       .andWhere('delivery.status = :status', {
         status: Status.CREATED,
       })
+      .andWhere('fromLease.completedAt > NOW()')
+      .andWhere('toLease.completedAt > NOW()')
       .getManyAndCount();
     return { result, count };
   }
@@ -115,14 +115,17 @@ export class DeliveriesService {
   async takeDelivery(dto: ExtTakeDeliveryDto): Promise<void> {
     await this.cardsService.checkCardUser(dto.cardId, dto.myId, dto.hasRole);
     const delivery = await this.deliveriesRepository.findOne({
-      relations: ['fromLease', 'fromLease.card'],
+      relations: ['fromLease', 'fromLease.card', 'toLease'],
       where: { id: dto.deliveryId },
     });
-    if (delivery.createdAt < getDateWeekAgo()) {
-      throw new AppException(DeliveryError.ALREADY_EXPIRED);
-    }
     if (delivery.status !== Status.CREATED) {
       throw new AppException(DeliveryError.NOT_CREATED);
+    }
+    if (
+      delivery.fromLease.completedAt < new Date() ||
+      delivery.toLease.completedAt < new Date()
+    ) {
+      throw new AppException(DeliveryError.ALREADY_EXPIRED);
     }
     await this.take(delivery, dto.cardId);
     this.mqttService.publishNotificationMessage(

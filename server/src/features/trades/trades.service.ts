@@ -6,7 +6,7 @@ import { WaresService } from '../wares/wares.service';
 import { MqttService } from '../mqtt/mqtt.service';
 import { ExtCreateTradeDto, ExtRateTradeDto } from './trade.dto';
 import { Request, Response } from '../../common/interfaces';
-import { getDateMonthAgo } from '../../common/utils';
+import { getDateMonthBefore } from '../../common/utils';
 import { AppException } from '../../common/exceptions';
 import { TradeError } from './trade-error.enum';
 import { Mode, Notification } from '../../common/enums';
@@ -24,7 +24,7 @@ export class TradesService {
     return this.tradesRepository
       .createQueryBuilder('trade')
       .where('trade.createdAt >= :createdAt', {
-        createdAt: getDateMonthAgo(),
+        createdAt: getDateMonthBefore(),
       })
       .getCount();
   }

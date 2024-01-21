@@ -13,7 +13,7 @@ import {
   ExtEditWareDto,
 } from './ware.dto';
 import { Request, Response } from '../../common/interfaces';
-import { getDateMonthAgo, getDateWeekAgo } from '../../common/utils';
+import { getDateMonthBefore } from '../../common/utils';
 import { AppException } from '../../common/exceptions';
 import { WareError } from './ware-error.enum';
 import { Mode, Notification } from '../../common/enums';
@@ -34,7 +34,7 @@ export class WaresService {
     return this.waresRepository
       .createQueryBuilder('ware')
       .where('ware.createdAt >= :createdAt', {
-        createdAt: getDateMonthAgo(),
+        createdAt: getDateMonthBefore(),
       })
       .getCount();
   }
@@ -42,7 +42,8 @@ export class WaresService {
   async getMainWares(req: Request): Promise<Response<Ware>> {
     const [result, count] = await this.getWaresQueryBuilder(req)
       .andWhere('ware.amount > 0')
-      .andWhere('rent.createdAt > :date', { date: getDateWeekAgo() })
+      .andWhere('ware.completedAt IS NULL')
+      .andWhere('rent.completedAt > NOW()')
       .getManyAndCount();
     return { result, count };
   }
@@ -118,11 +119,14 @@ export class WaresService {
       relations: ['rent', 'rent.card'],
       where: { id: dto.wareId },
     });
-    if (ware.createdAt < getDateWeekAgo()) {
-      throw new AppException(WareError.ALREADY_EXPIRED);
-    }
     if (ware.amount < dto.amount) {
       throw new AppException(WareError.NOT_ENOUGH_AMOUNT);
+    }
+    if (ware.completedAt) {
+      throw new AppException(WareError.ALREADY_COMPLETED);
+    }
+    if (ware.rent.completedAt < new Date()) {
+      throw new AppException(WareError.ALREADY_EXPIRED);
     }
     await this.paymentsService.createPayment({
       myId: dto.myId,
@@ -157,9 +161,6 @@ export class WaresService {
       !hasRole
     ) {
       throw new AppException(WareError.NOT_OWNER);
-    }
-    if (ware.createdAt < getDateWeekAgo()) {
-      throw new AppException(WareError.ALREADY_EXPIRED);
     }
     if (ware.completedAt) {
       throw new AppException(WareError.ALREADY_COMPLETED);
@@ -209,7 +210,6 @@ export class WaresService {
 
   private async complete(ware: Ware): Promise<void> {
     try {
-      ware.amount = 0;
       ware.completedAt = new Date();
       await this.waresRepository.save(ware);
     } catch (error) {

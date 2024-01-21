@@ -37,7 +37,7 @@ import { Discussion } from '../../features/discussions/discussion.entity';
 import { Rating } from '../../features/ratings/rating.entity';
 import { Status } from '../../features/transportations/status.enum';
 import { Kind } from '../../features/leases/kind.enum';
-import { hashData } from '../../common/utils';
+import { getDateWeekAfter, hashData } from '../../common/utils';
 
 export default class AppSeed implements Seeder {
   public async run(factory: Factory) {
@@ -201,9 +201,9 @@ export default class AppSeed implements Seeder {
     const rents = await factory(Rent)()
       .map(async (rent) => {
         rent.store = faker.helpers.arrayElement(
-          stores.filter((store) => !store.reservedAt),
+          stores.filter((store) => !store.reservedUntil),
         );
-        rent.store.reservedAt = new Date();
+        rent.store.reservedUntil = getDateWeekAfter();
         rent.card = faker.helpers.arrayElement(
           cards.filter((card) => card.balance >= rent.store.market.price),
         );
@@ -222,9 +222,9 @@ export default class AppSeed implements Seeder {
     const leases = await factory(Lease)()
       .map(async (lease) => {
         lease.cell = faker.helpers.arrayElement(
-          cells.filter((cell) => !cell.reservedAt),
+          cells.filter((cell) => !cell.reservedUntil),
         );
-        lease.cell.reservedAt = new Date();
+        lease.cell.reservedUntil = getDateWeekAfter();
         lease.card = faker.helpers.arrayElement(
           cards.filter((card) => card.balance >= lease.cell.storage.price),
         );

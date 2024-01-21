@@ -7,7 +7,7 @@ import { PaymentsService } from '../payments/payments.service';
 import { MqttService } from '../mqtt/mqtt.service';
 import { ExtCreateStoreDto, ReserveStoreDto } from './store.dto';
 import { Request, Response } from '../../common/interfaces';
-import { getDateWeekAgo } from '../../common/utils';
+import { getDateWeekAfter } from '../../common/utils';
 import { MAX_STORES_NUMBER } from '../../common/constants';
 import { AppException } from '../../common/exceptions';
 import { StoreError } from './store-error.enum';
@@ -28,10 +28,8 @@ export class StoresService {
       .andWhere(
         new Brackets((qb) =>
           qb
-            .where('store.reservedAt IS NULL')
-            .orWhere('store.reservedAt < :date', {
-              date: getDateWeekAgo(),
-            }),
+            .where('store.reservedUntil IS NULL')
+            .orWhere('store.reservedUntil < NOW()'),
         ),
       )
       .getManyAndCount();
@@ -118,8 +116,8 @@ export class StoresService {
       .andWhere(
         new Brackets((qb) =>
           qb
-            .where('store.reservedAt IS NULL')
-            .orWhere('store.reservedAt < :date', { date: getDateWeekAgo() }),
+            .where('store.reservedUntil IS NULL')
+            .orWhere('store.reservedUntil < NOW()'),
         ),
       )
       .getOne();
@@ -143,7 +141,7 @@ export class StoresService {
 
   private async reserve(store: Store): Promise<void> {
     try {
-      store.reservedAt = new Date();
+      store.reservedUntil = getDateWeekAfter();
       await this.storesRepository.save(store);
     } catch (error) {
       throw new AppException(StoreError.RESERVE_FAILED);
@@ -152,7 +150,7 @@ export class StoresService {
 
   private async unreserve(store: Store): Promise<void> {
     try {
-      store.reservedAt = null;
+      store.reservedUntil = new Date();
       await this.storesRepository.save(store);
     } catch (error) {
       throw new AppException(StoreError.UNRESERVE_FAILED);
@@ -239,7 +237,7 @@ export class StoresService {
         'market.y',
         'market.price',
         'store.name',
-        'store.reservedAt',
+        'store.reservedUntil',
       ]);
   }
 }

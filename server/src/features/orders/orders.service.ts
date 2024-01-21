@@ -13,7 +13,6 @@ import {
   ExtTakeOrderDto,
 } from './order.dto';
 import { Request, Response } from '../../common/interfaces';
-import { getDateWeekAgo } from '../../common/utils';
 import { AppException } from '../../common/exceptions';
 import { OrderError } from './order-error.enum';
 import { Status } from '../transportations/status.enum';
@@ -33,10 +32,10 @@ export class OrdersService {
 
   async getMainOrders(req: Request): Promise<Response<Order>> {
     const [result, count] = await this.getOrdersQueryBuilder(req)
-      .andWhere('order.createdAt > :date', { date: getDateWeekAgo() })
       .andWhere('order.status = :status', {
         status: Status.CREATED,
       })
+      .andWhere('lease.completedAt > NOW()')
       .getManyAndCount();
     return { result, count };
   }
@@ -88,11 +87,11 @@ export class OrdersService {
       relations: ['lease', 'lease.card'],
       where: { id: dto.orderId },
     });
-    if (order.createdAt < getDateWeekAgo()) {
-      throw new AppException(OrderError.ALREADY_EXPIRED);
-    }
     if (order.status !== Status.CREATED) {
       throw new AppException(OrderError.NOT_CREATED);
+    }
+    if (order.lease.completedAt < new Date()) {
+      throw new AppException(OrderError.ALREADY_EXPIRED);
     }
     await this.take(order, dto.cardId);
     this.mqttService.publishNotificationMessage(

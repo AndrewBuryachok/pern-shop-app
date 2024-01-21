@@ -7,6 +7,6 @@ export abstract class Container {
   @Column()
   name: number;
 
-  @Column({ type: 'timestamptz', name: 'reserved_at', nullable: true })
-  reservedAt?: Date;
+  @Column({ type: 'timestamptz', name: 'reserved_until', nullable: true })
+  reservedUntil?: Date;
 }

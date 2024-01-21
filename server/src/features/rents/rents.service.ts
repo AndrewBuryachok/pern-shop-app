@@ -6,7 +6,7 @@ import { Thing } from '../things/thing.entity';
 import { StoresService } from '../stores/stores.service';
 import { CompleteRentDto, ExtCreateRentDto } from './rent.dto';
 import { Request, Response } from '../../common/interfaces';
-import { getDateWeekAgo } from '../../common/utils';
+import { getDateWeekAfter } from '../../common/utils';
 import { AppException } from '../../common/exceptions';
 import { RentError } from './rent-error.enum';
 import { Mode } from '../../common/enums';
@@ -21,8 +21,7 @@ export class RentsService {
 
   async getMainRents(req: Request): Promise<Response<Rent>> {
     const [result, count] = await this.getRentsQueryBuilder(req)
-      .andWhere('rent.createdAt > :date', { date: getDateWeekAgo() })
-      .andWhere('rent.completedAt IS NULL')
+      .andWhere('rent.completedAt > NOW()')
       .getManyAndCount();
     return { result, count };
   }
@@ -109,10 +108,7 @@ export class RentsService {
     if (!rent.card.users.map((user) => user.id).includes(userId) && !hasRole) {
       throw new AppException(RentError.NOT_OWNER);
     }
-    if (rent.createdAt < getDateWeekAgo()) {
-      throw new AppException(RentError.ALREADY_EXPIRED);
-    }
-    if (rent.completedAt) {
+    if (rent.completedAt < new Date()) {
       throw new AppException(RentError.ALREADY_COMPLETED);
     }
     return rent;
@@ -123,6 +119,7 @@ export class RentsService {
       const rent = this.rentsRepository.create({
         storeId: dto.storeId,
         cardId: dto.cardId,
+        completedAt: getDateWeekAfter(),
       });
       await this.rentsRepository.save(rent);
     } catch (error) {
@@ -144,8 +141,7 @@ export class RentsService {
       .createQueryBuilder('rent')
       .innerJoin('rent.store', 'store')
       .innerJoin('store.market', 'market')
-      .where('rent.createdAt > :date', { date: getDateWeekAgo() })
-      .andWhere('rent.completedAt IS NULL')
+      .where('rent.completedAt > NOW()')
       .orderBy('rent.id', 'DESC')
       .select([
         'rent.id',
