@@ -288,6 +288,7 @@ export class ShopsService {
         'shop.description',
         'shop.x',
         'shop.y',
+        'shop.createdAt',
       ]);
   }
 }

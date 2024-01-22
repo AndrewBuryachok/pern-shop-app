@@ -259,6 +259,7 @@ export class CitiesService {
         'city.description',
         'city.x',
         'city.y',
+        'city.createdAt',
       ]);
   }
 }

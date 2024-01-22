@@ -288,6 +288,7 @@ export class CardsService {
         'card.name',
         'card.color',
         'card.balance',
+        'card.createdAt',
       ]);
   }
 }

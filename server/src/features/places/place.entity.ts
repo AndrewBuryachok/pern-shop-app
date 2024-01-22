@@ -1,4 +1,10 @@
-import { Column, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { User } from '../users/user.entity';
 import { Card } from '../cards/card.entity';
 
@@ -23,6 +29,9 @@ export abstract class Place {
 
   @Column()
   y: number;
+
+  @CreateDateColumn({ type: 'timestamptz', name: 'created_at' })
+  createdAt: Date;
 }
 
 export abstract class PlaceWithUser extends Place {

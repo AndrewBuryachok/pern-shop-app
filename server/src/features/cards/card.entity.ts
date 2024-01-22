@@ -1,5 +1,6 @@
 import {
   Column,
+  CreateDateColumn,
   Entity,
   JoinColumn,
   JoinTable,
@@ -29,6 +30,9 @@ export class Card {
 
   @Column({ default: 0 })
   balance: number;
+
+  @CreateDateColumn({ type: 'timestamptz', name: 'created_at' })
+  createdAt: Date;
 
   @ManyToMany(() => User)
   @JoinTable({

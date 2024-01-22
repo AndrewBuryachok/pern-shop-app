@@ -230,7 +230,6 @@ export class StoragesService {
       .createQueryBuilder('storage')
       .innerJoin('storage.card', 'ownerCard')
       .innerJoin('ownerCard.user', 'ownerUser')
-      .loadRelationCountAndMap('storage.states', 'storage.states')
       .loadRelationCountAndMap('storage.cells', 'storage.cells')
       .where(
         new Brackets((qb) =>
@@ -290,6 +289,7 @@ export class StoragesService {
         'storage.x',
         'storage.y',
         'storage.price',
+        'storage.createdAt',
       ]);
   }
 }

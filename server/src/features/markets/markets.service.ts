@@ -206,7 +206,6 @@ export class MarketsService {
       .createQueryBuilder('market')
       .innerJoin('market.card', 'ownerCard')
       .innerJoin('ownerCard.user', 'ownerUser')
-      .loadRelationCountAndMap('market.states', 'market.states')
       .loadRelationCountAndMap('market.stores', 'market.stores')
       .where(
         new Brackets((qb) =>
@@ -266,6 +265,7 @@ export class MarketsService {
         'market.x',
         'market.y',
         'market.price',
+        'market.createdAt',
       ]);
   }
 }
