@@ -13,7 +13,7 @@ type Coordinates = {
 };
 
 export const parseCoordinates = ({ x, y }: Coordinates) =>
-  Math.abs(x) <= Math.abs(y) ? (y >= 0 ? 1 : 2) : x >= 0 ? 3 : 4;
+  Math.abs(x) <= Math.abs(y) ? (y >= 0 ? 3 : 4) : x >= 0 ? 2 : 1;
 
 export const parseDate = (date: Date) => ({
   date: new Date(date).toLocaleDateString(i18next.language, {
