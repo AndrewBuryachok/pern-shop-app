@@ -1,11 +1,10 @@
-import { useTranslation } from 'react-i18next';
 import { ITableWithActions } from '../../common/interfaces';
 import { Card } from './card.model';
 import CustomTable from '../../common/components/CustomTable';
 import AvatarWithSingleText from '../../common/components/AvatarWithSingleText';
 import SingleText from '../../common/components/SingleText';
-import ColorBadge from '../../common/components/ColorBadge';
 import PriceText from '../../common/components/PriceText';
+import DateText from '../../common/components/DateText';
 import TotalText from '../../common/components/TotalText';
 import CustomActions from '../../common/components/CustomActions';
 import { viewCardAction } from './ViewCardModal';
@@ -13,12 +12,10 @@ import { viewCardAction } from './ViewCardModal';
 type Props = ITableWithActions<Card>;
 
 export default function CardsTable({ actions = [], ...props }: Props) {
-  const [t] = useTranslation();
-
   return (
     <CustomTable
       minWidth={700}
-      columns={['owner', 'card', 'color', 'balance', 'users', 'action']}
+      columns={['owner', 'card', 'balance', 'created', 'users', 'action']}
       {...props}
     >
       {props.data?.result.map((card) => (
@@ -30,10 +27,10 @@ export default function CardsTable({ actions = [], ...props }: Props) {
             <SingleText text={card.name} color={card.color} />
           </td>
           <td>
-            <ColorBadge color={card.color} />
+            <PriceText price={card.balance} />
           </td>
           <td>
-            <PriceText price={card.balance} />
+            <DateText date={card.createdAt} />
           </td>
           <td>
             <TotalText data={card.users} />

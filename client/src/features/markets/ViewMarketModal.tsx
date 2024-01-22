@@ -11,7 +11,12 @@ import CustomAvatar from '../../common/components/CustomAvatar';
 import CustomImage from '../../common/components/CustomImage';
 import CustomVideo from '../../common/components/CustomVideo';
 import { StatesItem } from '../../common/components/StatesItem';
-import { parseCard, viewContainers, viewStates } from '../../common/utils';
+import {
+  parseCard,
+  parseTime,
+  viewContainers,
+  viewStates,
+} from '../../common/utils';
 import { Color } from '../../common/constants';
 
 type Props = IModal<Market>;
@@ -53,6 +58,11 @@ export default function ViewMarketModal({ data: market }: Props) {
       <TextInput
         label={t('columns.price')}
         value={`${market.price} ${t('constants.currency')}`}
+        disabled
+      />
+      <TextInput
+        label={t('columns.created')}
+        value={parseTime(market.createdAt)}
         disabled
       />
       <Select

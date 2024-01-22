@@ -3,8 +3,8 @@ import { Storage } from './storage.model';
 import CustomTable from '../../common/components/CustomTable';
 import AvatarWithDoubleText from '../../common/components/AvatarWithDoubleText';
 import PlaceText from '../../common/components/PlaceText';
-import SingleText from '../../common/components/SingleText';
 import PriceText from '../../common/components/PriceText';
+import DateText from '../../common/components/DateText';
 import TotalText from '../../common/components/TotalText';
 import CustomActions from '../../common/components/CustomActions';
 import { viewStorageAction } from './ViewStorageModal';
@@ -15,7 +15,7 @@ export default function StoragesTable({ actions = [], ...props }: Props) {
   return (
     <CustomTable
       minWidth={700}
-      columns={['owner', 'storage', 'x', 'y', 'price', 'cells', 'action']}
+      columns={['owner', 'storage', 'price', 'created', 'cells', 'action']}
       {...props}
     >
       {props.data?.result.map((storage) => (
@@ -27,13 +27,10 @@ export default function StoragesTable({ actions = [], ...props }: Props) {
             <PlaceText {...storage} withoutPrice />
           </td>
           <td>
-            <SingleText text={`${storage.x}`} />
-          </td>
-          <td>
-            <SingleText text={`${storage.y}`} />
-          </td>
-          <td>
             <PriceText {...storage} />
+          </td>
+          <td>
+            <DateText date={storage.createdAt} />
           </td>
           <td>
             <TotalText data={storage.cells} />

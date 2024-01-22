@@ -8,7 +8,7 @@ export interface Market extends MdMarket {
   image: string;
   video: string;
   description: string;
-  states: number;
+  createdAt: Date;
   stores: number;
 }
 

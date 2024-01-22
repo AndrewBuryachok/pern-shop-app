@@ -26,4 +26,5 @@ export interface ExtPlace extends Place {
   description: string;
   price?: number;
   data: number;
+  createdAt: Date;
 }

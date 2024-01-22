@@ -3,7 +3,7 @@ import { City } from './city.model';
 import CustomTable from '../../common/components/CustomTable';
 import AvatarWithSingleText from '../../common/components/AvatarWithSingleText';
 import PlaceText from '../../common/components/PlaceText';
-import SingleText from '../../common/components/SingleText';
+import DateText from '../../common/components/DateText';
 import TotalText from '../../common/components/TotalText';
 import CustomActions from '../../common/components/CustomActions';
 import { viewCityAction } from './ViewCityModal';
@@ -14,7 +14,7 @@ export default function CitiesTable({ actions = [], ...props }: Props) {
   return (
     <CustomTable
       minWidth={700}
-      columns={['owner', 'city', 'x', 'y', 'users', 'action']}
+      columns={['owner', 'city', 'created', 'users', 'action']}
       {...props}
     >
       {props.data?.result.map((city) => (
@@ -26,10 +26,7 @@ export default function CitiesTable({ actions = [], ...props }: Props) {
             <PlaceText {...city} />
           </td>
           <td>
-            <SingleText text={`${city.x}`} />
-          </td>
-          <td>
-            <SingleText text={`${city.y}`} />
+            <DateText date={city.createdAt} />
           </td>
           <td>
             <TotalText data={city.users} />

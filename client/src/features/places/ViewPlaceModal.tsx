@@ -16,6 +16,7 @@ import { UsersItem } from '../../common/components/UsersItem';
 import { ThingsItemWithAmount } from '../../common/components/ThingsItemWithAmount';
 import {
   parseCard,
+  parseTime,
   viewContainers,
   viewThings,
   viewUsers,
@@ -79,6 +80,11 @@ export default function PlaceModal({ data: place }: Props) {
           disabled
         />
       )}
+      <TextInput
+        label={t('columns.created')}
+        value={parseTime(place.createdAt)}
+        disabled
+      />
       {place.type === 0 && (
         <Select
           label={t('columns.users')}

@@ -8,7 +8,7 @@ import { useSelectCardUsersQuery } from './cards.api';
 import RefetchAction from '../../common/components/RefetchAction';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import { UsersItem } from '../../common/components/UsersItem';
-import { viewUsers } from '../../common/utils';
+import { parseTime, viewUsers } from '../../common/utils';
 import { Color, colors } from '../../common/constants';
 
 type Props = IModal<Card>;
@@ -37,6 +37,11 @@ export default function ViewCardModal({ data: card }: Props) {
       <TextInput
         label={t('columns.balance')}
         value={`${card.balance} ${t('constants.currency')}`}
+        disabled
+      />
+      <TextInput
+        label={t('columns.created')}
+        value={parseTime(card.createdAt)}
         disabled
       />
       <Select

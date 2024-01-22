@@ -8,6 +8,7 @@ export interface Shop extends MdShop {
   image: string;
   video: string;
   description: string;
+  createdAt: Date;
   users: number;
   goods: number;
 }

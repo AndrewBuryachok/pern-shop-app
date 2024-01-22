@@ -10,7 +10,7 @@ import CustomAvatar from '../../common/components/CustomAvatar';
 import CustomImage from '../../common/components/CustomImage';
 import CustomVideo from '../../common/components/CustomVideo';
 import { UsersItem } from '../../common/components/UsersItem';
-import { viewUsers } from '../../common/utils';
+import { parseTime, viewUsers } from '../../common/utils';
 import { Color } from '../../common/constants';
 
 type Props = IModal<City>;
@@ -44,6 +44,11 @@ export default function ViewCityModal({ data: city }: Props) {
       />
       <TextInput label={t('columns.x')} value={city.x} disabled />
       <TextInput label={t('columns.y')} value={city.y} disabled />
+      <TextInput
+        label={t('columns.created')}
+        value={parseTime(city.createdAt)}
+        disabled
+      />
       <Select
         label={t('columns.users')}
         placeholder={`${t('components.total')}: ${users?.length || 0}`}

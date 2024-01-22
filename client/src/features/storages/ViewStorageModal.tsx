@@ -11,7 +11,12 @@ import CustomAvatar from '../../common/components/CustomAvatar';
 import CustomImage from '../../common/components/CustomImage';
 import CustomVideo from '../../common/components/CustomVideo';
 import { StatesItem } from '../../common/components/StatesItem';
-import { parseCard, viewContainers, viewStates } from '../../common/utils';
+import {
+  parseCard,
+  parseTime,
+  viewContainers,
+  viewStates,
+} from '../../common/utils';
 import { Color } from '../../common/constants';
 
 type Props = IModal<Storage>;
@@ -53,6 +58,11 @@ export default function ViewStorageModal({ data: storage }: Props) {
       <TextInput
         label={t('columns.price')}
         value={`${storage.price} ${t('constants.currency')}`}
+        disabled
+      />
+      <TextInput
+        label={t('columns.created')}
+        value={parseTime(storage.createdAt)}
         disabled
       />
       <Select

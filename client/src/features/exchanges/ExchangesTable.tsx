@@ -1,4 +1,3 @@
-import { useTranslation } from 'react-i18next';
 import { ITableWithActions } from '../../common/interfaces';
 import { Exchange } from './exchange.model';
 import CustomTable from '../../common/components/CustomTable';
@@ -13,8 +12,6 @@ import { viewExchangeAction } from './ViewExchangeModal';
 type Props = ITableWithActions<Exchange>;
 
 export default function ExchangesTable({ actions = [], ...props }: Props) {
-  const [t] = useTranslation();
-
   return (
     <CustomTable
       minWidth={800}

@@ -11,7 +11,7 @@ import CustomImage from '../../common/components/CustomImage';
 import CustomVideo from '../../common/components/CustomVideo';
 import { UsersItem } from '../../common/components/UsersItem';
 import { ThingsItemWithAmount } from '../../common/components/ThingsItemWithAmount';
-import { viewThings, viewUsers } from '../../common/utils';
+import { parseTime, viewThings, viewUsers } from '../../common/utils';
 import { Color } from '../../common/constants';
 
 type Props = IModal<Shop>;
@@ -46,6 +46,11 @@ export default function ViewShopModal({ data: shop }: Props) {
       />
       <TextInput label={t('columns.x')} value={shop.x} disabled />
       <TextInput label={t('columns.y')} value={shop.y} disabled />
+      <TextInput
+        label={t('columns.created')}
+        value={parseTime(shop.createdAt)}
+        disabled
+      />
       <Select
         label={t('columns.users')}
         placeholder={`${t('components.total')}: ${users?.length || 0}`}

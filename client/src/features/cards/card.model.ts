@@ -16,5 +16,6 @@ export interface MdCardWithBalance extends MdCard {
 
 export interface Card extends MdCard {
   balance: number;
+  createdAt: Date;
   users: number;
 }
