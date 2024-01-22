@@ -16,10 +16,10 @@ export default function Map() {
   const theme = useMantineTheme();
 
   const lines = [
-    { x1: '50%', x2: '50%', y1: '50%', y2: '0%' },
-    { x1: '50%', x2: '50%', y1: '50%', y2: '100%' },
-    { x1: '50%', x2: '100%', y1: '50%', y2: '50%' },
     { x1: '50%', x2: '0%', y1: '50%', y2: '50%' },
+    { x1: '50%', x2: '100%', y1: '50%', y2: '50%' },
+    { x1: '50%', x2: '50%', y1: '50%', y2: '100%' },
+    { x1: '50%', x2: '50%', y1: '50%', y2: '0%' },
   ];
 
   const { data: cities, isLoading: isLoading1 } = useGetMainCitiesQuery({});
@@ -31,6 +31,15 @@ export default function Map() {
 
   return (
     <svg width='100%' height='100%'>
+      {lines.map((line, index) => (
+        <line
+          key={index}
+          {...line}
+          stroke={theme.colors[isLoading ? 'gray' : colors[index]][7]}
+          strokeWidth='2'
+        ></line>
+      ))}
+      <circle cx='50%' cy='50%' r='8' fill={theme.colors.violet[7]}></circle>
       {!isLoading &&
         [
           cities?.result.map((city) => ({
@@ -62,15 +71,6 @@ export default function Map() {
         ].map((allPlaces) =>
           allPlaces?.map((place) => <PlacePath key={place.id} data={place} />),
         )}
-      {lines.map((line, index) => (
-        <line
-          key={index}
-          {...line}
-          stroke={theme.colors[isLoading ? 'gray' : colors[index]][7]}
-          strokeWidth='2'
-        ></line>
-      ))}
-      <circle cx='50%' cy='50%' r='8' fill={theme.colors.violet[7]}></circle>
     </svg>
   );
 }
