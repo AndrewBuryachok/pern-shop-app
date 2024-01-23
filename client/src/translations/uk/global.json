@@ -433,6 +433,8 @@
     "currency": "ДР",
     "increase": "Збільшення",
     "decrease": "Зменшення",
+    "like": "Лайк",
+    "dislike": "Діслайк",
     "up": "За",
     "down": "Проти",
     "backgrounds": {

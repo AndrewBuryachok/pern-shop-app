@@ -2,6 +2,7 @@ import { SmUser } from '../users/user.model';
 
 export interface SmArticle {
   id: number;
+  like: { id: number; type: boolean };
 }
 
 export interface Article {
@@ -13,6 +14,7 @@ export interface Article {
   image3: string;
   video: string;
   createdAt: Date;
-  likes: number;
+  upLikes: number;
+  downLikes: number;
   comments: number;
 }

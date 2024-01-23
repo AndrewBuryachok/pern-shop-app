@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { ActionIcon, Button, Group, Paper, Stack } from '@mantine/core';
-import { IconHeart, IconMessage } from '@tabler/icons';
+import { IconMessage, IconThumbDown, IconThumbUp } from '@tabler/icons';
 import { ITableWithActions } from '../../common/interfaces';
 import { Article } from './article.model';
 import { getCurrentUser } from '../auth/auth.slice';
@@ -67,15 +67,39 @@ export default function ArticlesList({ actions = [], ...props }: Props) {
           subscribed: subscribers?.find(
             (subscriber) => subscriber.id === article.user.id,
           ),
-          liked: likedArticles?.find(
-            (likedArticle) => likedArticle.id === article.id,
+          upLiked: likedArticles?.find(
+            (likedArticle) =>
+              likedArticle.id === article.id && likedArticle.like.type,
+          ),
+          downLiked: likedArticles?.find(
+            (likedArticle) =>
+              likedArticle.id === article.id && !likedArticle.like.type,
           ),
         }))
         .map((article) => (
           <Paper key={article.id} p='md'>
             <Stack spacing={8}>
               <Group spacing={0} position='apart'>
-                <AvatarWithDateText {...article} />
+                <Group spacing={8}>
+                  <AvatarWithDateText {...article} />
+                  <Button
+                    color={article.subscribed ? 'gray' : 'violet'}
+                    loading={subscribersResponse.isLoading}
+                    loaderPosition='center'
+                    onClick={() =>
+                      user
+                        ? article.subscribed
+                          ? handleUnsubscribeSubmit({ userId: article.user.id })
+                          : handleSubscribeSubmit({ userId: article.user.id })
+                        : openAuthModal()
+                    }
+                    compact
+                  >
+                    {article.subscribed
+                      ? t('actions.unsubscribe')
+                      : t('actions.subscribe')}
+                  </Button>
+                </Group>
                 <CustomActions
                   data={article}
                   actions={[viewArticleAction, ...actions]}
@@ -87,38 +111,38 @@ export default function ArticlesList({ actions = [], ...props }: Props) {
               {article.image3 && <CustomImage image={article.image3} />}
               {article.video && <CustomVideo video={article.video} />}
               <Group spacing={8}>
-                <Button
-                  color={article.subscribed ? 'gray' : 'violet'}
-                  loading={subscribersResponse.isLoading}
-                  loaderPosition='center'
-                  onClick={() =>
-                    user
-                      ? article.subscribed
-                        ? handleUnsubscribeSubmit({ userId: article.user.id })
-                        : handleSubscribeSubmit({ userId: article.user.id })
-                      : openAuthModal()
-                  }
-                  compact
-                >
-                  {article.subscribed
-                    ? t('actions.unsubscribe')
-                    : t('actions.subscribe')}
-                </Button>
                 <ActionIcon
                   size={24}
-                  variant={article.liked && 'filled'}
-                  color={article.liked && 'violet'}
+                  variant={article.upLiked && 'filled'}
+                  color={article.upLiked && 'violet'}
                   loading={likedArticlesResponse.isLoading}
                   onClick={() =>
                     user
-                      ? handleLikeSubmit({ articleId: article.id })
+                      ? handleLikeSubmit({ articleId: article.id, type: true })
                       : openAuthModal()
                   }
                 >
-                  <IconHeart size={16} />
+                  <IconThumbUp size={16} />
                 </ActionIcon>
                 <CustomAnchor
-                  text={`${article.likes}`}
+                  text={`${article.upLikes}`}
+                  onClick={() => openViewArticleLikesModal(article)}
+                />
+                <ActionIcon
+                  size={24}
+                  variant={article.downLiked && 'filled'}
+                  color={article.downLiked && 'violet'}
+                  loading={likedArticlesResponse.isLoading}
+                  onClick={() =>
+                    user
+                      ? handleLikeSubmit({ articleId: article.id, type: false })
+                      : openAuthModal()
+                  }
+                >
+                  <IconThumbDown size={16} />
+                </ActionIcon>
+                <CustomAnchor
+                  text={`${article.downLikes}`}
                   onClick={() => openViewArticleLikesModal(article)}
                 />
                 <ActionIcon
