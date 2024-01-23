@@ -214,6 +214,7 @@ export class UsersService {
         )
         .getMany()
     ).map((user) => user.id);
+    raters.push(myId);
     const users = await this.selectUsersQueryBuilder().getMany();
     return users.filter((user) => !raters.includes(user.id));
   }

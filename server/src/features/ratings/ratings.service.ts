@@ -46,6 +46,9 @@ export class RatingsService {
   }
 
   async createRating(dto: ExtCreateRatingDto): Promise<void> {
+    if (dto.userId === dto.myId) {
+      throw new AppException(RatingError.SENDER);
+    }
     const rating = await this.ratingsRepository.findOneBy({
       senderUserId: dto.myId,
       receiverUserId: dto.userId,

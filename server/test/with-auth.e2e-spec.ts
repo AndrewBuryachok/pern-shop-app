@@ -2234,7 +2234,7 @@ describe('With Auth', () => {
       return request(app.getHttpServer())
         .post('/ratings')
         .set('Authorization', `Bearer ${user.access}`)
-        .send({ userId: user.id, rate: 5 })
+        .send({ userId: admin.id, rate: 5 })
         .expect('');
     });
 
@@ -2249,7 +2249,7 @@ describe('With Auth', () => {
     it('GET /ratings/received', async () => {
       return request(app.getHttpServer())
         .get('/ratings/received')
-        .set('Authorization', `Bearer ${user.access}`)
+        .set('Authorization', `Bearer ${admin.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
 
