@@ -3,6 +3,7 @@ export enum ArticleError {
   CREATE_FAILED = '500: Failed to create article',
   EDIT_FAILED = '500: Failed to edit article',
   DELETE_FAILED = '500: Failed to delete article',
-  LIKE_FAILED = '500: Failed to like article',
-  UNLIKE_FAILED = '500: Failed to unlike article',
+  ADD_LIKE_FAILED = '500: Failed to add like',
+  UPDATE_LIKE_FAILED = '500: Failed to update like',
+  REMOVE_LIKE_FAILED = '500: Failed to remove like',
 }

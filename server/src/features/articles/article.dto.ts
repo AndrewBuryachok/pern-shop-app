@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Validate } from 'class-validator';
 import { Type } from 'class-transformer';
-import { IsId, IsLink, IsText } from '../../common/decorators';
+import { IsId, IsLink, IsText, IsType } from '../../common/decorators';
 import { IsArticleExists, IsUserExists } from '../../common/constraints';
 
 export class ArticleIdDto {
@@ -54,6 +54,13 @@ export class DeleteArticleDto extends ArticleIdDto {
   hasRole: boolean;
 }
 
-export class LikeArticleDto extends ArticleIdDto {
+export class LikeArticleDto {
+  @ApiProperty()
+  @IsType()
+  type: boolean;
+}
+
+export class ExtLikeArticleDto extends LikeArticleDto {
+  articleId: number;
   myId: number;
 }

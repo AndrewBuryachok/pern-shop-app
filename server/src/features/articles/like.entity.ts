@@ -28,6 +28,9 @@ export class Like {
   @JoinColumn({ name: 'user_id' })
   user: User;
 
+  @Column()
+  type: boolean;
+
   @CreateDateColumn({ type: 'timestamptz', name: 'created_at' })
   createdAt: Date;
 }
