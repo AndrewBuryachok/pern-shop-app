@@ -56,10 +56,12 @@ export default function Home() {
     {
       title: 'friends',
       icon: IconFriends,
+      sub: '/top',
     },
     {
       title: 'subscribers',
       icon: IconMail,
+      sub: '/top',
     },
     {
       title: 'articles',
@@ -68,22 +70,22 @@ export default function Home() {
     {
       title: 'cards',
       icon: IconCreditCard,
-      my: true,
+      sub: '/my',
     },
     {
       title: 'payments',
       icon: IconCashBanknote,
-      my: true,
+      sub: '/my',
     },
     {
       title: 'exchanges',
       icon: IconExchange,
-      my: true,
+      sub: '/my',
     },
     {
       title: 'invoices',
       icon: IconBusinessplan,
-      my: true,
+      sub: '/my',
     },
     {
       title: 'goods',
@@ -104,17 +106,17 @@ export default function Home() {
     {
       title: 'trades',
       icon: IconPaperBag,
-      my: true,
+      sub: '/my',
     },
     {
       title: 'sales',
       icon: IconGardenCart,
-      my: true,
+      sub: '/my',
     },
     {
       title: 'bids',
       icon: IconTags,
-      my: true,
+      sub: '/my',
     },
     {
       title: 'orders',
@@ -175,6 +177,7 @@ export default function Home() {
     {
       title: 'ratings',
       icon: IconStar,
+      sub: '/top',
     },
   ];
 
@@ -205,7 +208,7 @@ export default function Home() {
                 {t('home.text')}
                 <Anchor
                   component={Link}
-                  to={`/${feature.title}${feature.my ? '/my' : ''}`}
+                  to={`/${feature.title}${feature.sub || ''}`}
                 >
                   {t('home.anchor')}
                 </Anchor>

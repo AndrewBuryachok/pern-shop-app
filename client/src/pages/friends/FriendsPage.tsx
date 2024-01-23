@@ -30,13 +30,13 @@ export default function FriendsPage() {
   });
 
   const response = {
-    main: useGetFriendsUsersQuery,
+    top: useGetFriendsUsersQuery,
     my: useGetMyFriendsQuery,
     sent: useGetSentFriendsQuery,
     received: useGetReceivedFriendsQuery,
   }[tab]!({ page, search });
 
-  const button = { main: createFriendButton, my: createFriendButton }[tab];
+  const button = { top: createFriendButton, my: createFriendButton }[tab];
 
   const actions = {
     my: [removeFriendAction],

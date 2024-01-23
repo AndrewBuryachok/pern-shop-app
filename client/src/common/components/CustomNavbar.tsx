@@ -41,10 +41,12 @@ export default function CustomNavbar(props: Props) {
     {
       route: 'friends',
       icon: IconFriends,
+      sub: '/top',
     },
     {
       route: 'subscribers',
       icon: IconMail,
+      sub: '/top',
     },
     {
       route: 'articles',
@@ -54,7 +56,7 @@ export default function CustomNavbar(props: Props) {
       route: 'wallet',
       icon: IconWallet,
       nested: ['cards', 'payments', 'exchanges', 'invoices'],
-      my: true,
+      sub: '/my',
     },
     {
       route: 'things',
@@ -65,7 +67,7 @@ export default function CustomNavbar(props: Props) {
       route: 'purchases',
       icon: IconTags,
       nested: ['trades', 'sales', 'bids'],
-      my: true,
+      sub: '/my',
     },
     {
       route: 'transportations',
@@ -106,6 +108,7 @@ export default function CustomNavbar(props: Props) {
     {
       route: 'ratings',
       icon: IconStar,
+      sub: '/top',
     },
   ];
 
@@ -140,7 +143,7 @@ export default function CustomNavbar(props: Props) {
                   label={t(`navbar.${route}`)}
                   icon={<NotificationBadge pages={[route]} />}
                   component={Link}
-                  to={`${route}${link.my ? '/my' : ''}`}
+                  to={`${route}${link.sub || ''}`}
                   active={route === active}
                 />
               ))}
@@ -157,7 +160,7 @@ export default function CustomNavbar(props: Props) {
               }
               component={Link}
               to={`/${link.route === 'home' ? '' : link.route}${
-                link.my ? '/my' : ''
+                link.sub || ''
               }`}
               active={link.route === active}
             />

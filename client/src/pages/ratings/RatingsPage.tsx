@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useLocation, useSearchParams } from 'react-router-dom';
 import { ISearch } from '../../common/interfaces';
 import { Mode } from '../../common/enums';
@@ -21,33 +21,51 @@ export default function RatingsPage() {
 
   const [page, setPage] = useState(+(searchParams.get('page') || 1));
 
-  const [search, setSearch] = useState<ISearch>({
-    id: +(searchParams.get('id') || 0) || null,
-    user: searchParams.get('user'),
-    modes: [Mode.SENDER, Mode.RECEIVER],
-    mode: searchParams.get('mode') as Mode,
-    rate: +(searchParams.get('rate') || 0) || null,
-    minDate: searchParams.get('minDate'),
-    maxDate: searchParams.get('maxDate'),
-  });
+  const [search, setSearch] = useState<ISearch>({});
+
+  useEffect(
+    () =>
+      setSearch(
+        tab === 'top'
+          ? {
+              id: +(searchParams.get('id') || 0) || null,
+              user: searchParams.get('user'),
+              roles: searchParams.get('roles')?.split(',') || [],
+              city: searchParams.get('city'),
+              type: searchParams.get('type'),
+              minDate: searchParams.get('minDate'),
+              maxDate: searchParams.get('maxDate'),
+            }
+          : {
+              id: +(searchParams.get('id') || 0) || null,
+              user: searchParams.get('user'),
+              modes: [Mode.SENDER, Mode.RECEIVER],
+              mode: searchParams.get('mode') as Mode,
+              rate: +(searchParams.get('rate') || 0) || null,
+              minDate: searchParams.get('minDate'),
+              maxDate: searchParams.get('maxDate'),
+            },
+      ),
+    [tab],
+  );
 
   const usersResponse = useGetRatingsUsersQuery(
     { page, search },
-    { skip: tab !== 'main' },
+    { skip: tab !== 'top' },
   );
 
   const ratingsResponse = {
-    main: useGetMyRatingsQuery,
+    top: useGetMyRatingsQuery,
     my: useGetMyRatingsQuery,
     received: useGetReceivedRatingsQuery,
     all: useGetAllRatingsQuery,
-  }[tab]!({ page, search }, { skip: tab === 'main' });
+  }[tab]!({ page, search }, { skip: tab === 'top' });
 
-  const button = { main: createRatingButton, my: createRatingButton }[tab];
+  const button = { top: createRatingButton, my: createRatingButton }[tab];
 
   const actions = { my: [editRatingAction, deleteRatingAction] }[tab];
 
-  return tab === 'main' ? (
+  return tab === 'top' ? (
     <UsersTable
       {...usersResponse}
       page={page}

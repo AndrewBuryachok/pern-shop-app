@@ -53,7 +53,7 @@ export const pages = [
     path: 'friends',
     element: FriendsPage,
     nested: [
-      { index: true },
+      { path: 'top' },
       { path: 'my' },
       { path: 'sent' },
       { path: 'received' },
@@ -62,7 +62,7 @@ export const pages = [
   {
     path: 'subscribers',
     element: SubscribersPage,
-    nested: [{ index: true }, { path: 'my' }, { path: 'received' }],
+    nested: [{ path: 'top' }, { path: 'my' }, { path: 'received' }],
   },
   {
     path: 'articles',
@@ -300,7 +300,7 @@ export const pages = [
     path: 'ratings',
     element: RatingsPage,
     nested: [
-      { index: true },
+      { path: 'top' },
       { path: 'my' },
       { path: 'received' },
       { path: 'all', role: Role.ADMIN },

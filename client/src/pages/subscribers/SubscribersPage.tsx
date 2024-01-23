@@ -28,12 +28,12 @@ export default function SubscribersPage() {
   });
 
   const response = {
-    main: useGetSubscribersUsersQuery,
+    top: useGetSubscribersUsersQuery,
     my: useGetMySubscribersQuery,
     received: useGetReceivedSubscribersQuery,
   }[tab]!({ page, search });
 
-  const button = { main: addSubscriberButton, my: addSubscriberButton }[tab];
+  const button = { top: addSubscriberButton, my: addSubscriberButton }[tab];
 
   const actions = { my: [removeSubscriberAction] }[tab];
 

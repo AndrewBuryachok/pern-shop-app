@@ -33,7 +33,11 @@ export default function CustomNav(props: Props) {
           component={Link}
           to={`/${active[1]}/${link.path}`.replace('/main', '')}
           color={link.path === tab ? 'violet' : 'gray'}
-          disabled={link.path !== 'main' && isUserNotHasRole(link.role)}
+          disabled={
+            link.path !== 'main' &&
+            link.path !== 'top' &&
+            isUserNotHasRole(link.role)
+          }
           compact
         >
           {t(`pages.${link.path}`)}
