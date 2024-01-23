@@ -1,31 +1,45 @@
 import { t } from 'i18next';
 import { useTranslation } from 'react-i18next';
-import { Textarea, TextInput } from '@mantine/core';
+import { Select, Textarea, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { Task } from './task.model';
-import { useTakeTaskMutation } from './tasks.api';
-import { TaskIdDto } from './task.dto';
+import { useTakeMyTaskMutation, useTakeUserTaskMutation } from './tasks.api';
+import { useSelectAllUsersQuery } from '../users/users.api';
+import { TakeTaskDto } from './task.dto';
 import CustomForm from '../../common/components/CustomForm';
+import RefetchAction from '../../common/components/RefetchAction';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import PriorityIcon from '../../common/components/PriorityIcon';
+import { UsersItem } from '../../common/components/UsersItem';
+import { selectUsers } from '../../common/utils';
 import { Color, priorities, Status } from '../../common/constants';
 
-type Props = IModal<Task>;
+type Props = IModal<Task> & { hasRole: boolean };
 
-export default function TakeTaskModal({ data: task }: Props) {
+export default function TakeTaskModal({ data: task, hasRole }: Props) {
   const [t] = useTranslation();
 
   const form = useForm({
     initialValues: {
       taskId: task.id,
+      user: '',
     },
+    transformValues: ({ user, ...rest }) => ({ ...rest, userId: +user }),
   });
 
-  const [takeTask, { isLoading }] = useTakeTaskMutation();
+  const { data: users, ...usersResponse } = useSelectAllUsersQuery(undefined, {
+    skip: !hasRole,
+  });
 
-  const handleSubmit = async (dto: TaskIdDto) => {
+  const user = users?.find((user) => user.id === +form.values.user);
+
+  const [takeTask, { isLoading }] = hasRole
+    ? useTakeUserTaskMutation()
+    : useTakeMyTaskMutation();
+
+  const handleSubmit = async (dto: TakeTaskDto) => {
     await takeTask(dto);
   };
 
@@ -51,16 +65,36 @@ export default function TakeTaskModal({ data: task }: Props) {
         value={t(`constants.priorities.${priorities[task.priority - 1]}`)}
         readOnly
       />
+      {hasRole && (
+        <Select
+          label={t('columns.user')}
+          placeholder={t('columns.user')}
+          icon={user && <CustomAvatar {...user} />}
+          iconWidth={48}
+          rightSection={<RefetchAction {...usersResponse} />}
+          itemComponent={UsersItem}
+          data={selectUsers(users)}
+          limit={20}
+          searchable
+          required
+          readOnly={usersResponse.isFetching}
+          {...form.getInputProps('user')}
+        />
+      )}
     </CustomForm>
   );
 }
 
-export const takeTaskAction = {
+export const takeTaskFactory = (hasRole: boolean) => ({
   open: (task: Task) =>
     openModal({
       title: t('actions.take') + ' ' + t('modals.tasks'),
-      children: <TakeTaskModal data={task} />,
+      children: <TakeTaskModal data={task} hasRole={hasRole} />,
     }),
   disable: (task: Task) => task.status !== Status.CREATED,
   color: Color.GREEN,
-};
+});
+
+export const takeMyTaskAction = takeTaskFactory(false);
+
+export const takeUserTaskAction = takeTaskFactory(true);

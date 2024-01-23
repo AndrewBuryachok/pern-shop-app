@@ -1,7 +1,12 @@
 import { emptyApi } from '../../app/empty.api';
 import { IRequest, IResponse } from '../../common/interfaces';
 import { Task } from './task.model';
-import { CreateTaskDto, ExtCreateTaskDto, TaskIdDto } from './task.dto';
+import {
+  CreateTaskDto,
+  ExtCreateTaskDto,
+  TakeTaskDto,
+  TaskIdDto,
+} from './task.dto';
 import { getQuery } from '../../common/utils';
 
 export const tasksApi = emptyApi.injectEndpoints({
@@ -46,9 +51,16 @@ export const tasksApi = emptyApi.injectEndpoints({
       }),
       invalidatesTags: ['Task'],
     }),
-    takeTask: build.mutation<void, TaskIdDto>({
-      query: ({ taskId, ...dto }) => ({
+    takeMyTask: build.mutation<void, TaskIdDto>({
+      query: ({ taskId }) => ({
         url: `/tasks/${taskId}/take`,
+        method: 'POST',
+      }),
+      invalidatesTags: ['Task'],
+    }),
+    takeUserTask: build.mutation<void, TakeTaskDto>({
+      query: ({ taskId, ...dto }) => ({
+        url: `/tasks/all/${taskId}/take`,
         method: 'POST',
         body: dto,
       }),
@@ -92,7 +104,8 @@ export const {
   useGetAllTasksQuery,
   useCreateMyTaskMutation,
   useCreateUserTaskMutation,
-  useTakeTaskMutation,
+  useTakeMyTaskMutation,
+  useTakeUserTaskMutation,
   useUntakeTaskMutation,
   useExecuteTaskMutation,
   useCompleteTaskMutation,

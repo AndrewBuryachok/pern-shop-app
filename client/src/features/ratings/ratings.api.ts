@@ -1,7 +1,12 @@
 import { emptyApi } from '../../app/empty.api';
 import { IRequest, IResponse } from '../../common/interfaces';
 import { Rating } from './rating.model';
-import { CreateRatingDto, DeleteRatingDto, EditRatingDto } from './rating.dto';
+import {
+  CreateRatingDto,
+  DeleteRatingDto,
+  EditRatingDto,
+  ExtCreateRatingDto,
+} from './rating.dto';
 import { getQuery } from '../../common/utils';
 
 export const ratingsApi = emptyApi.injectEndpoints({
@@ -24,9 +29,17 @@ export const ratingsApi = emptyApi.injectEndpoints({
       }),
       providesTags: ['Auth', 'Rating'],
     }),
-    createRating: build.mutation<void, CreateRatingDto>({
+    createMyRating: build.mutation<void, CreateRatingDto>({
       query: (dto) => ({
         url: '/ratings',
+        method: 'POST',
+        body: dto,
+      }),
+      invalidatesTags: ['Rating'],
+    }),
+    createUserRating: build.mutation<void, ExtCreateRatingDto>({
+      query: (dto) => ({
+        url: '/ratings/all',
         method: 'POST',
         body: dto,
       }),
@@ -54,7 +67,8 @@ export const {
   useGetMyRatingsQuery,
   useGetReceivedRatingsQuery,
   useGetAllRatingsQuery,
-  useCreateRatingMutation,
+  useCreateMyRatingMutation,
+  useCreateUserRatingMutation,
   useEditRatingMutation,
   useDeleteRatingMutation,
 } = ratingsApi;

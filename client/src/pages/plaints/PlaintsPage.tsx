@@ -50,7 +50,7 @@ export default function PlaintsPage() {
   const actions = {
     my: [deletePlaintAction],
     received: [executePlaintAction],
-    all: [completePlaintAction],
+    all: [completePlaintAction, deletePlaintAction],
   }[tab];
 
   return (

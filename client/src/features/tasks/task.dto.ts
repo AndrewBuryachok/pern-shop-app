@@ -11,3 +11,7 @@ export interface ExtCreateTaskDto extends CreateTaskDto {
 export interface TaskIdDto {
   taskId: number;
 }
+
+export interface TakeTaskDto extends TaskIdDto {
+  userId: number;
+}
