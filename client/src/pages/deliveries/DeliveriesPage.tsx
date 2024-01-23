@@ -14,7 +14,6 @@ import {
   createMyDeliveryButton,
   createUserDeliveryButton,
 } from '../../features/deliveries/CreateDeliveryModal';
-import { rateDeliveryAction } from '../../features/deliveries/RateDeliveryModal';
 import {
   takeMyDeliveryAction,
   takeUserDeliveryAction,
@@ -23,6 +22,7 @@ import { executeDeliveryAction } from '../../features/deliveries/ExecuteDelivery
 import { completeDeliveryAction } from '../../features/deliveries/CompleteDeliveryModal';
 import { untakeDeliveryAction } from '../../features/deliveries/UntakeDeliveryModal';
 import { deleteDeliveryAction } from '../../features/deliveries/DeleteDeliveryModal';
+import { rateDeliveryAction } from '../../features/deliveries/RateDeliveryModal';
 
 export default function DeliveriesPage() {
   const tab = useLocation().pathname.split('/')[2] || 'main';
@@ -70,7 +70,7 @@ export default function DeliveriesPage() {
 
   const actions = {
     main: [takeMyDeliveryAction],
-    my: [completeDeliveryAction, rateDeliveryAction, deleteDeliveryAction],
+    my: [completeDeliveryAction, deleteDeliveryAction, rateDeliveryAction],
     taken: [untakeDeliveryAction, executeDeliveryAction],
     all: [
       takeUserDeliveryAction,

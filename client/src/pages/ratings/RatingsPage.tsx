@@ -10,7 +10,10 @@ import {
 } from '../../features/ratings/ratings.api';
 import UsersTable from '../../features/users/UsersTable';
 import RatingsTable from '../../features/ratings/RatingsTable';
-import { createRatingButton } from '../../features/ratings/CreateRatingModal';
+import {
+  createMyRatingButton,
+  createUserRatingButton,
+} from '../../features/ratings/CreateRatingModal';
 import { editRatingAction } from '../../features/ratings/EditRatingModal';
 import { deleteRatingAction } from '../../features/ratings/DeleteRatingModal';
 
@@ -61,9 +64,16 @@ export default function RatingsPage() {
     all: useGetAllRatingsQuery,
   }[tab]!({ page, search }, { skip: tab === 'top' });
 
-  const button = { top: createRatingButton, my: createRatingButton }[tab];
+  const button = {
+    top: createMyRatingButton,
+    my: createMyRatingButton,
+    all: createUserRatingButton,
+  }[tab];
 
-  const actions = { my: [editRatingAction, deleteRatingAction] }[tab];
+  const actions = {
+    my: [editRatingAction, deleteRatingAction],
+    all: [editRatingAction, deleteRatingAction],
+  }[tab];
 
   return tab === 'top' ? (
     <UsersTable

@@ -14,7 +14,6 @@ import {
   createMyOrderButton,
   createUserOrderButton,
 } from '../../features/orders/CreateOrderModal';
-import { rateOrderAction } from '../../features/orders/RateOrderModal';
 import {
   takeMyOrderAction,
   takeUserOrderAction,
@@ -23,6 +22,7 @@ import { executeOrderAction } from '../../features/orders/ExecuteOrderModal';
 import { completeOrderAction } from '../../features/orders/CompleteOrderModal';
 import { untakeOrderAction } from '../../features/orders/UntakeOrderModal';
 import { deleteOrderAction } from '../../features/orders/DeleteOrderModal';
+import { rateOrderAction } from '../../features/orders/RateOrderModal';
 
 export default function OrdersPage() {
   const tab = useLocation().pathname.split('/')[2] || 'main';
@@ -70,7 +70,7 @@ export default function OrdersPage() {
 
   const actions = {
     main: [takeMyOrderAction],
-    my: [completeOrderAction, rateOrderAction, deleteOrderAction],
+    my: [completeOrderAction, deleteOrderAction, rateOrderAction],
     taken: [untakeOrderAction, executeOrderAction],
     all: [
       takeUserOrderAction,

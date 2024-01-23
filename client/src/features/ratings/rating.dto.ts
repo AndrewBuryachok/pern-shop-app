@@ -1,6 +1,10 @@
 export interface CreateRatingDto {
-  userId: number;
+  receiverUserId: number;
   rate: number;
+}
+
+export interface ExtCreateRatingDto extends CreateRatingDto {
+  senderUserId: number;
 }
 
 export interface DeleteRatingDto {

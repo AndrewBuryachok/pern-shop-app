@@ -13,7 +13,10 @@ import {
   createMyTaskButton,
   createUserTaskButton,
 } from '../../features/tasks/CreateTaskModal';
-import { takeTaskAction } from '../../features/tasks/TakeTaskModal';
+import {
+  takeMyTaskAction,
+  takeUserTaskAction,
+} from '../../features/tasks/TakeTaskModal';
 import { executeTaskAction } from '../../features/tasks/ExecuteTaskModal';
 import { completeTaskAction } from '../../features/tasks/CompleteTaskModal';
 import { untakeTaskAction } from '../../features/tasks/UntakeTaskModal';
@@ -52,9 +55,16 @@ export default function TasksPage() {
   }[tab];
 
   const actions = {
-    main: [takeTaskAction],
+    main: [takeMyTaskAction],
     my: [completeTaskAction, deleteTaskAction],
     taken: [untakeTaskAction, executeTaskAction],
+    all: [
+      takeUserTaskAction,
+      executeTaskAction,
+      completeTaskAction,
+      untakeTaskAction,
+      deleteTaskAction,
+    ],
   }[tab];
 
   return (
