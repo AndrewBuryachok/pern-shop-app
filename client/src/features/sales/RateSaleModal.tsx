@@ -42,29 +42,29 @@ export default function RateSaleModal({ data: sale }: Props) {
         icon={<CustomAvatar {...sale.product.lease.card.user} />}
         iconWidth={48}
         value={parseCard(sale.product.lease.card)}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.item')}
         icon={<ThingImage {...sale.product} />}
         iconWidth={48}
         value={parseItem(sale.product.item)}
-        disabled
+        readOnly
       />
       <Textarea
         label={t('columns.description')}
         value={sale.product.description || '-'}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.amount')}
         value={parseSaleAmount(sale)}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.sum')}
         value={`${sale.amount * sale.product.price} ${t('constants.currency')}`}
-        disabled
+        readOnly
       />
       <Input.Wrapper label={t('columns.rate')} required>
         <Rating {...form.getInputProps('rate')} />

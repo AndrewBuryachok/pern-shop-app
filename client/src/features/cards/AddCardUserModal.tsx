@@ -47,7 +47,7 @@ export default function AddCardUserModal({ data: card }: Props) {
       isLoading={isLoading}
       text={t('actions.add') + ' ' + t('modals.users')}
     >
-      <TextInput label={t('columns.card')} value={card.name} disabled />
+      <TextInput label={t('columns.card')} value={card.name} readOnly />
       <Select
         label={t('columns.user')}
         placeholder={t('columns.user')}
@@ -61,7 +61,7 @@ export default function AddCardUserModal({ data: card }: Props) {
         limit={20}
         searchable
         required
-        disabled={usersResponse.isFetching}
+        readOnly={usersResponse.isFetching}
         {...form.getInputProps('user')}
       />
     </CustomForm>

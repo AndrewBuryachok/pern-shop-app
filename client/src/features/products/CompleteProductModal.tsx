@@ -41,29 +41,29 @@ export default function CompleteProductModal({ data: product }: Props) {
         icon={<CustomAvatar {...product.lease.card.user} />}
         iconWidth={48}
         value={parseCard(product.lease.card)}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.item')}
         icon={<ThingImage {...product} />}
         iconWidth={48}
         value={parseItem(product.item)}
-        disabled
+        readOnly
       />
       <Textarea
         label={t('columns.description')}
         value={product.description || '-'}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.amount')}
         value={parseThingAmount(product)}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.price')}
         value={`${product.price} ${t('constants.currency')}`}
-        disabled
+        readOnly
       />
     </CustomForm>
   );

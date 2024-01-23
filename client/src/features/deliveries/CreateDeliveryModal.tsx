@@ -126,7 +126,7 @@ export default function CreateDeliveryModal({ hasRole }: Props) {
         limit={20}
         searchable
         required
-        disabled={storagesResponse.isFetching}
+        readOnly={storagesResponse.isFetching}
         {...form.getInputProps('fromStorage')}
       />
       <Select
@@ -138,7 +138,7 @@ export default function CreateDeliveryModal({ hasRole }: Props) {
         limit={20}
         searchable
         required
-        disabled={storagesResponse.isFetching}
+        readOnly={storagesResponse.isFetching}
         {...form.getInputProps('toStorage')}
       />
       {hasRole && (
@@ -153,7 +153,7 @@ export default function CreateDeliveryModal({ hasRole }: Props) {
           limit={20}
           searchable
           required
-          disabled={usersResponse.isFetching}
+          readOnly={usersResponse.isFetching}
           {...form.getInputProps('user')}
         />
       )}
@@ -166,7 +166,7 @@ export default function CreateDeliveryModal({ hasRole }: Props) {
         limit={20}
         searchable
         required
-        disabled={cardsResponse.isFetching}
+        readOnly={cardsResponse.isFetching}
         {...form.getInputProps('card')}
       />
       <Select

@@ -46,7 +46,7 @@ export default function RemoveShopUserModal({ data: shop }: Props) {
       isLoading={isLoading}
       text={t('actions.remove') + ' ' + t('modals.users')}
     >
-      <TextInput label={t('columns.shop')} value={shop.name} disabled />
+      <TextInput label={t('columns.shop')} value={shop.name} readOnly />
       <Select
         label={t('columns.user')}
         placeholder={t('columns.user')}

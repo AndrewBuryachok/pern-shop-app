@@ -16,13 +16,13 @@ export default function ViewUserModal({ data: user }: Props) {
 
   return (
     <Stack spacing={8}>
-      <TextInput label={t('columns.id')} value={user.id} disabled />
+      <TextInput label={t('columns.id')} value={user.id} readOnly />
       <TextInput
         label={t('columns.user')}
         icon={<CustomAvatar {...user} />}
         iconWidth={48}
         value={user.nick}
-        disabled
+        readOnly
       />
       <Select
         label={t('columns.roles')}
@@ -34,17 +34,17 @@ export default function ViewUserModal({ data: user }: Props) {
       <TextInput
         label={t('columns.city')}
         value={user.city ? parsePlace(user.city) : '-'}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.online')}
         value={parseTime(user.onlineAt)}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.created')}
         value={parseTime(user.createdAt)}
-        disabled
+        readOnly
       />
     </Stack>
   );

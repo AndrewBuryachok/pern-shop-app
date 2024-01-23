@@ -33,15 +33,15 @@ export default function ViewStorageModal({ data: storage }: Props) {
 
   return (
     <Stack spacing={8}>
-      <TextInput label={t('columns.id')} value={storage.id} disabled />
+      <TextInput label={t('columns.id')} value={storage.id} readOnly />
       <TextInput
         label={t('columns.owner')}
         icon={<CustomAvatar {...storage.card.user} />}
         iconWidth={48}
         value={parseCard(storage.card)}
-        disabled
+        readOnly
       />
-      <TextInput label={t('columns.storage')} value={storage.name} disabled />
+      <TextInput label={t('columns.storage')} value={storage.name} readOnly />
       <Input.Wrapper label={t('columns.image')}>
         <CustomImage image={storage.image} />
       </Input.Wrapper>
@@ -51,19 +51,19 @@ export default function ViewStorageModal({ data: storage }: Props) {
       <Textarea
         label={t('columns.description')}
         value={storage.description || '-'}
-        disabled
+        readOnly
       />
-      <TextInput label={t('columns.x')} value={storage.x} disabled />
-      <TextInput label={t('columns.y')} value={storage.y} disabled />
+      <TextInput label={t('columns.x')} value={storage.x} readOnly />
+      <TextInput label={t('columns.y')} value={storage.y} readOnly />
       <TextInput
         label={t('columns.price')}
         value={`${storage.price} ${t('constants.currency')}`}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.created')}
         value={parseTime(storage.createdAt)}
-        disabled
+        readOnly
       />
       <Select
         label={t('columns.prices')}

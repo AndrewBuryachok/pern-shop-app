@@ -17,19 +17,19 @@ export default function ViewArticleModal({ data: article }: Props) {
 
   return (
     <Stack spacing={8}>
-      <TextInput label={t('columns.id')} value={article.id} disabled />
+      <TextInput label={t('columns.id')} value={article.id} readOnly />
       <TextInput
         label={t('columns.owner')}
         icon={<CustomAvatar {...article.user} />}
         iconWidth={48}
         value={article.user.nick}
-        disabled
+        readOnly
       />
       <Textarea
         label={t('columns.text')}
         value={article.text}
         autosize
-        disabled
+        readOnly
       />
       <Input.Wrapper label={t('columns.image')}>
         <CustomImage image={article.image1} />
@@ -46,7 +46,7 @@ export default function ViewArticleModal({ data: article }: Props) {
       <TextInput
         label={t('columns.created')}
         value={parseTime(article.createdAt)}
-        disabled
+        readOnly
       />
     </Stack>
   );

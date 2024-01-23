@@ -63,12 +63,12 @@ export default function CreateStoreModal({ hasRole }: Props) {
         limit={20}
         searchable
         required
-        disabled={marketsResponse.isFetching}
+        readOnly={marketsResponse.isFetching}
         {...form.getInputProps('market')}
       />
       <TextInput
         label={t('columns.name')}
-        disabled
+        readOnly
         {...form.getInputProps('name')}
       />
     </CustomForm>

@@ -15,35 +15,35 @@ export default function ViewPaymentModal({ data: payment }: Props) {
 
   return (
     <Stack spacing={8}>
-      <TextInput label={t('columns.id')} value={payment.id} disabled />
+      <TextInput label={t('columns.id')} value={payment.id} readOnly />
       <TextInput
         label={t('columns.sender')}
         icon={<CustomAvatar {...payment.senderCard.user} />}
         iconWidth={48}
         value={parseCard(payment.senderCard)}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.receiver')}
         icon={<CustomAvatar {...payment.receiverCard.user} />}
         iconWidth={48}
         value={parseCard(payment.receiverCard)}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.sum')}
         value={`${payment.sum} ${t('constants.currency')}`}
-        disabled
+        readOnly
       />
       <Textarea
         label={t('columns.description')}
         value={payment.description || '-'}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.created')}
         value={parseTime(payment.createdAt)}
-        disabled
+        readOnly
       />
     </Stack>
   );

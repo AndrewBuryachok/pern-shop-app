@@ -42,12 +42,12 @@ export default function RemoveUserCityModal({ data: user }: Props) {
         icon={<CustomAvatar {...user} />}
         iconWidth={48}
         value={user.nick}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.city')}
         value={parsePlace(user.city!)}
-        disabled
+        readOnly
       />
     </CustomForm>
   );

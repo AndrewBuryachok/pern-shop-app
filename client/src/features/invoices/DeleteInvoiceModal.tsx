@@ -40,24 +40,24 @@ export default function DeleteInvoiceModal({ data: invoice }: Props) {
         icon={<CustomAvatar {...invoice.senderCard.user} />}
         iconWidth={48}
         value={parseCard(invoice.senderCard)}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.receiver')}
         icon={<CustomAvatar {...invoice.receiverUser} />}
         iconWidth={48}
         value={invoice.receiverUser.nick}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.sum')}
         value={`${invoice.sum} ${t('constants.currency')}`}
-        disabled
+        readOnly
       />
       <Textarea
         label={t('columns.description')}
         value={invoice.description || '-'}
-        disabled
+        readOnly
       />
     </CustomForm>
   );

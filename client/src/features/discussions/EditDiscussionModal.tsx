@@ -42,7 +42,7 @@ export default function EditDiscussionModal({ data: discussion }: Props) {
         icon={<CustomAvatar {...discussion.user} />}
         iconWidth={48}
         value={discussion.user.nick}
-        disabled
+        readOnly
       />
       <Textarea
         label={t('columns.text')}

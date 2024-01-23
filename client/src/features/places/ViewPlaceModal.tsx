@@ -51,15 +51,15 @@ export default function PlaceModal({ data: place }: Props) {
 
   return (
     <Stack spacing={8}>
-      <TextInput label={t('columns.id')} value={place.id} disabled />
+      <TextInput label={t('columns.id')} value={place.id} readOnly />
       <TextInput
         label={t('columns.owner')}
         icon={<CustomAvatar {...place.owner} />}
         iconWidth={48}
         value={place.card ? parseCard(place.card) : place.owner.nick}
-        disabled
+        readOnly
       />
-      <TextInput label={t('columns.place')} value={place.name} disabled />
+      <TextInput label={t('columns.place')} value={place.name} readOnly />
       <Input.Wrapper label={t('columns.image')}>
         <CustomImage image={place.image} />
       </Input.Wrapper>
@@ -69,21 +69,21 @@ export default function PlaceModal({ data: place }: Props) {
       <Textarea
         label={t('columns.description')}
         value={place.description || '-'}
-        disabled
+        readOnly
       />
-      <TextInput label={t('columns.x')} value={place.x} disabled />
-      <TextInput label={t('columns.y')} value={place.y} disabled />
+      <TextInput label={t('columns.x')} value={place.x} readOnly />
+      <TextInput label={t('columns.y')} value={place.y} readOnly />
       {place.price && (
         <TextInput
           label={t('columns.price')}
           value={`${place.price} ${t('constants.currency')}`}
-          disabled
+          readOnly
         />
       )}
       <TextInput
         label={t('columns.created')}
         value={parseTime(place.createdAt)}
-        disabled
+        readOnly
       />
       {place.type === 0 && (
         <Select

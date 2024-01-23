@@ -40,16 +40,16 @@ export default function DeleteTaskModal({ data: task }: Props) {
         icon={<CustomAvatar {...task.customerUser} />}
         iconWidth={48}
         value={task.customerUser.nick}
-        disabled
+        readOnly
       />
-      <TextInput label={t('columns.title')} value={task.title} disabled />
-      <Textarea label={t('columns.text')} value={task.text} autosize disabled />
+      <TextInput label={t('columns.title')} value={task.title} readOnly />
+      <Textarea label={t('columns.text')} value={task.text} autosize readOnly />
       <TextInput
         label={t('columns.priority')}
         icon={<PriorityIcon {...task} />}
         iconWidth={48}
         value={t(`constants.priorities.${priorities[task.priority - 1]}`)}
-        disabled
+        readOnly
       />
     </CustomForm>
   );

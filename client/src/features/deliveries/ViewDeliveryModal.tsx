@@ -23,35 +23,35 @@ export default function ViewDeliveryModal({ data: delivery }: Props) {
 
   return (
     <Stack spacing={8}>
-      <TextInput label={t('columns.id')} value={delivery.id} disabled />
+      <TextInput label={t('columns.id')} value={delivery.id} readOnly />
       <TextInput
         label={t('columns.customer')}
         icon={<CustomAvatar {...delivery.fromLease.card.user} />}
         iconWidth={48}
         value={parseCard(delivery.fromLease.card)}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.item')}
         icon={<ThingImage {...delivery} />}
         iconWidth={48}
         value={parseItem(delivery.item)}
-        disabled
+        readOnly
       />
       <Textarea
         label={t('columns.description')}
         value={delivery.description || '-'}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.amount')}
         value={parseThingAmount(delivery)}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.price')}
         value={`${delivery.price} ${t('constants.currency')}`}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.executor')}
@@ -62,46 +62,46 @@ export default function ViewDeliveryModal({ data: delivery }: Props) {
         }
         iconWidth={48}
         value={delivery.executorCard ? parseCard(delivery.executorCard) : '-'}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.status')}
         value={parseStatus(delivery.status)}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.storage') + ' ' + t('columns.from')}
         value={parseCell(delivery.fromLease.cell)}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.owner') + ' ' + t('columns.from')}
         icon={<CustomAvatar {...delivery.fromLease.cell.storage.card.user} />}
         iconWidth={48}
         value={parseCard(delivery.fromLease.cell.storage.card)}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.storage') + ' ' + t('columns.to')}
         value={parseCell(delivery.toLease.cell)}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.owner') + ' ' + t('columns.to')}
         icon={<CustomAvatar {...delivery.toLease.cell.storage.card.user} />}
         iconWidth={48}
         value={parseCard(delivery.toLease.cell.storage.card)}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.created')}
         value={parseTime(delivery.createdAt)}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.completed')}
         value={parseTime(delivery.completedAt)}
-        disabled
+        readOnly
       />
       <Input.Wrapper label={t('columns.rate')}>
         <Rating value={delivery.rate} readOnly />

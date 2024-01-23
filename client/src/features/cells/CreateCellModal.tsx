@@ -65,12 +65,12 @@ export default function CreateCellModal({ hasRole }: Props) {
         limit={20}
         searchable
         required
-        disabled={storagesResponse.isFetching}
+        readOnly={storagesResponse.isFetching}
         {...form.getInputProps('storage')}
       />
       <TextInput
         label={t('columns.name')}
-        disabled
+        readOnly
         {...form.getInputProps('name')}
       />
     </CustomForm>

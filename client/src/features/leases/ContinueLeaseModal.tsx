@@ -66,7 +66,7 @@ export default function ContinueLeaseModal({ data: lease, hasRole }: Props) {
         icon={<CustomAvatar {...lease.card.user} />}
         iconWidth={48}
         value={parseCard(lease.card)}
-        disabled
+        readOnly
       />
       <Select
         label={t('columns.card')}
@@ -85,17 +85,17 @@ export default function ContinueLeaseModal({ data: lease, hasRole }: Props) {
         icon={<CustomAvatar {...lease.cell.storage.card.user} />}
         iconWidth={48}
         value={parseCard(lease.cell.storage.card)}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.storage')}
         value={parseCell(lease.cell)}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.sum')}
         value={`${lease.cell.storage.price} ${t('constants.currency')}`}
-        disabled
+        readOnly
       />
     </CustomForm>
   );

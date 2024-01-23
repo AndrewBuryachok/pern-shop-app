@@ -81,17 +81,17 @@ export default function ReserveStoreModal({ data: store, hasRole }: Props) {
         icon={<CustomAvatar {...store.market.card.user} />}
         iconWidth={48}
         value={parseCard(store.market.card)}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.store')}
         value={parseStore(store)}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.price')}
         value={`${store.market.price} ${t('constants.currency')}`}
-        disabled
+        readOnly
       />
       {hasRole && (
         <Select
@@ -105,7 +105,7 @@ export default function ReserveStoreModal({ data: store, hasRole }: Props) {
           limit={20}
           searchable
           required
-          disabled={usersResponse.isFetching}
+          readOnly={usersResponse.isFetching}
           {...form.getInputProps('user')}
         />
       )}
@@ -123,7 +123,7 @@ export default function ReserveStoreModal({ data: store, hasRole }: Props) {
         limit={20}
         searchable
         required
-        disabled={cardsResponse.isFetching}
+        readOnly={cardsResponse.isFetching}
         {...form.getInputProps('card')}
       />
     </CustomForm>

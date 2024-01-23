@@ -39,35 +39,35 @@ export default function ViewWareModal({ data: ware }: Props) {
 
   return (
     <Stack spacing={8}>
-      <TextInput label={t('columns.id')} value={ware.id} disabled />
+      <TextInput label={t('columns.id')} value={ware.id} readOnly />
       <TextInput
         label={t('columns.seller')}
         icon={<CustomAvatar {...ware.rent.card.user} />}
         iconWidth={48}
         value={parseCard(ware.rent.card)}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.item')}
         icon={<ThingImage {...ware} />}
         iconWidth={48}
         value={parseItem(ware.item)}
-        disabled
+        readOnly
       />
       <Textarea
         label={t('columns.description')}
         value={ware.description || '-'}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.amount')}
         value={parseThingAmount(ware)}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.price')}
         value={`${ware.price} ${t('constants.currency')}`}
-        disabled
+        readOnly
       />
       <Select
         label={t('columns.prices')}
@@ -81,24 +81,24 @@ export default function ViewWareModal({ data: ware }: Props) {
       <TextInput
         label={t('columns.market')}
         value={parseStore(ware.rent.store)}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.owner')}
         icon={<CustomAvatar {...ware.rent.store.market.card.user} />}
         iconWidth={48}
         value={parseCard(ware.rent.store.market.card)}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.created')}
         value={parseTime(ware.createdAt)}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.completed')}
         value={parseTime(ware.completedAt)}
-        disabled
+        readOnly
       />
       <Input.Wrapper label={t('columns.rate')}>
         <Rating value={rating?.rate} readOnly />

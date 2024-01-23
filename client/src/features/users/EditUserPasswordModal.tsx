@@ -44,7 +44,7 @@ export default function EditUserPasswordModal({ data: user }: Props) {
         icon={<CustomAvatar {...user} />}
         iconWidth={48}
         value={user.nick}
-        disabled
+        readOnly
       />
       <PasswordInput
         label={t('columns.password')}

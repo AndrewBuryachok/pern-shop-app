@@ -15,29 +15,29 @@ export default function ViewStoreModal({ data: store }: Props) {
 
   return (
     <Stack spacing={8}>
-      <TextInput label={t('columns.id')} value={store.id} disabled />
+      <TextInput label={t('columns.id')} value={store.id} readOnly />
       <TextInput
         label={t('columns.owner')}
         icon={<CustomAvatar {...store.market.card.user} />}
         iconWidth={48}
         value={parseCard(store.market.card)}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.market')}
         value={parsePlace(store.market)}
-        disabled
+        readOnly
       />
-      <TextInput label={t('columns.store')} value={`#${store.name}`} disabled />
+      <TextInput label={t('columns.store')} value={`#${store.name}`} readOnly />
       <TextInput
         label={t('columns.price')}
         value={`${store.market.price} ${t('constants.currency')}`}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.reserved')}
         value={parseTime(store.reservedUntil)}
-        disabled
+        readOnly
       />
     </Stack>
   );

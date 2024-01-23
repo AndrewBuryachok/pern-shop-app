@@ -33,15 +33,15 @@ export default function ViewMarketModal({ data: market }: Props) {
 
   return (
     <Stack spacing={8}>
-      <TextInput label={t('columns.id')} value={market.id} disabled />
+      <TextInput label={t('columns.id')} value={market.id} readOnly />
       <TextInput
         label={t('columns.owner')}
         icon={<CustomAvatar {...market.card.user} />}
         iconWidth={48}
         value={parseCard(market.card)}
-        disabled
+        readOnly
       />
-      <TextInput label={t('columns.market')} value={market.name} disabled />
+      <TextInput label={t('columns.market')} value={market.name} readOnly />
       <Input.Wrapper label={t('columns.image')}>
         <CustomImage image={market.image} />
       </Input.Wrapper>
@@ -51,19 +51,19 @@ export default function ViewMarketModal({ data: market }: Props) {
       <Textarea
         label={t('columns.description')}
         value={market.description || '-'}
-        disabled
+        readOnly
       />
-      <TextInput label={t('columns.x')} value={market.x} disabled />
-      <TextInput label={t('columns.y')} value={market.y} disabled />
+      <TextInput label={t('columns.x')} value={market.x} readOnly />
+      <TextInput label={t('columns.y')} value={market.y} readOnly />
       <TextInput
         label={t('columns.price')}
         value={`${market.price} ${t('constants.currency')}`}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.created')}
         value={parseTime(market.createdAt)}
-        disabled
+        readOnly
       />
       <Select
         label={t('columns.prices')}

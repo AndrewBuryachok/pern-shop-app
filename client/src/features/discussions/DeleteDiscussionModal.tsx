@@ -41,13 +41,13 @@ export default function DeleteDiscussionModal({ data: discussion }: Props) {
         icon={<CustomAvatar {...discussion.user} />}
         iconWidth={48}
         value={discussion.user.nick}
-        disabled
+        readOnly
       />
       <Textarea
         label={t('columns.text')}
         value={discussion.text}
         autosize
-        disabled
+        readOnly
       />
     </CustomForm>
   );

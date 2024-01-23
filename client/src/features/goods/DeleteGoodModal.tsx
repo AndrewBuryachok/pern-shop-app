@@ -41,29 +41,29 @@ export default function DeleteGoodModal({ data: good }: Props) {
         icon={<CustomAvatar {...good.shop.user} />}
         iconWidth={48}
         value={good.shop.user.nick}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.item')}
         icon={<ThingImage {...good} />}
         iconWidth={48}
         value={parseItem(good.item)}
-        disabled
+        readOnly
       />
       <Textarea
         label={t('columns.description')}
         value={good.description || '-'}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.amount')}
         value={parseThingAmount(good)}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.price')}
         value={`${good.price} ${t('constants.currency')}`}
-        disabled
+        readOnly
       />
     </CustomForm>
   );

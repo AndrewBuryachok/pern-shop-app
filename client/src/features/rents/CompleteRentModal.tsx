@@ -40,24 +40,24 @@ export default function CompleteRentModal({ data: rent }: Props) {
         icon={<CustomAvatar {...rent.card.user} />}
         iconWidth={48}
         value={parseCard(rent.card)}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.owner')}
         icon={<CustomAvatar {...rent.store.market.card.user} />}
         iconWidth={48}
         value={parseCard(rent.store.market.card)}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.storage')}
         value={parseStore(rent.store)}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.sum')}
         value={`${rent.store.market.price} ${t('constants.currency')}`}
-        disabled
+        readOnly
       />
     </CustomForm>
   );

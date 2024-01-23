@@ -46,29 +46,29 @@ export default function RateDeliveryModal({ data: delivery }: Props) {
         }
         iconWidth={48}
         value={delivery.executorCard ? parseCard(delivery.executorCard) : '-'}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.item')}
         icon={<ThingImage {...delivery} />}
         iconWidth={48}
         value={parseItem(delivery.item)}
-        disabled
+        readOnly
       />
       <Textarea
         label={t('columns.description')}
         value={delivery.description || '-'}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.amount')}
         value={parseThingAmount(delivery)}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.price')}
         value={`${delivery.price} ${t('constants.currency')}`}
-        disabled
+        readOnly
       />
       <Input.Wrapper label={t('columns.rate')} required>
         <Rating {...form.getInputProps('rate')} />

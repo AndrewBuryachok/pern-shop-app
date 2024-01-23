@@ -40,24 +40,24 @@ export default function CompleteLeaseModal({ data: lease }: Props) {
         icon={<CustomAvatar {...lease.card.user} />}
         iconWidth={48}
         value={parseCard(lease.card)}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.owner')}
         icon={<CustomAvatar {...lease.cell.storage.card.user} />}
         iconWidth={48}
         value={parseCard(lease.cell.storage.card)}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.storage')}
         value={parseCell(lease.cell)}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.sum')}
         value={`${lease.cell.storage.price} ${t('constants.currency')}`}
-        disabled
+        readOnly
       />
     </CustomForm>
   );

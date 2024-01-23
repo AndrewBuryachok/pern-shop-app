@@ -22,59 +22,59 @@ export default function ViewBidModal({ data: bid }: Props) {
 
   return (
     <Stack spacing={8}>
-      <TextInput label={t('columns.id')} value={bid.id} disabled />
+      <TextInput label={t('columns.id')} value={bid.id} readOnly />
       <TextInput
         label={t('columns.buyer')}
         icon={<CustomAvatar {...bid.card.user} />}
         iconWidth={48}
         value={parseCard(bid.card)}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.seller')}
         icon={<CustomAvatar {...bid.lot.lease.card.user} />}
         iconWidth={48}
         value={parseCard(bid.lot.lease.card)}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.item')}
         icon={<ThingImage {...bid.lot} />}
         iconWidth={48}
         value={parseItem(bid.lot.item)}
-        disabled
+        readOnly
       />
       <Textarea
         label={t('columns.description')}
         value={bid.lot.description || '-'}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.amount')}
         value={parseThingAmount(bid.lot)}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.sum')}
         value={`${bid.price} ${t('constants.currency')}`}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.storage')}
         value={parseCell(bid.lot.lease.cell)}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.owner')}
         icon={<CustomAvatar {...bid.lot.lease.cell.storage.card.user} />}
         iconWidth={48}
         value={parseCard(bid.lot.lease.cell.storage.card)}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.created')}
         value={parseTime(bid.createdAt)}
-        disabled
+        readOnly
       />
     </Stack>
   );

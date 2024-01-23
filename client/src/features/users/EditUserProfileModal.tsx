@@ -61,7 +61,7 @@ export default function EditUserProfileModal({ data: user }: Props) {
         icon={<CustomAvatar {...user} />}
         iconWidth={48}
         value={user.nick}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.avatar')}

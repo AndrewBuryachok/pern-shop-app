@@ -22,15 +22,15 @@ export default function ViewCityModal({ data: city }: Props) {
 
   return (
     <Stack spacing={8}>
-      <TextInput label={t('columns.id')} value={city.id} disabled />
+      <TextInput label={t('columns.id')} value={city.id} readOnly />
       <TextInput
         label={t('columns.owner')}
         icon={<CustomAvatar {...city.user} />}
         iconWidth={48}
         value={city.user.nick}
-        disabled
+        readOnly
       />
-      <TextInput label={t('columns.city')} value={city.name} disabled />
+      <TextInput label={t('columns.city')} value={city.name} readOnly />
       <Input.Wrapper label={t('columns.image')}>
         <CustomImage image={city.image} />
       </Input.Wrapper>
@@ -40,14 +40,14 @@ export default function ViewCityModal({ data: city }: Props) {
       <Textarea
         label={t('columns.description')}
         value={city.description || '-'}
-        disabled
+        readOnly
       />
-      <TextInput label={t('columns.x')} value={city.x} disabled />
-      <TextInput label={t('columns.y')} value={city.y} disabled />
+      <TextInput label={t('columns.x')} value={city.x} readOnly />
+      <TextInput label={t('columns.y')} value={city.y} readOnly />
       <TextInput
         label={t('columns.created')}
         value={parseTime(city.createdAt)}
-        disabled
+        readOnly
       />
       <Select
         label={t('columns.users')}

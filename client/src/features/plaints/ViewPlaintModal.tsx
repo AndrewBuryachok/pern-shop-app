@@ -15,61 +15,61 @@ export default function ViewPlaintModal({ data: plaint }: Props) {
 
   return (
     <Stack spacing={8}>
-      <TextInput label={t('columns.id')} value={plaint.id} disabled />
-      <TextInput label={t('columns.title')} value={plaint.title} disabled />
+      <TextInput label={t('columns.id')} value={plaint.id} readOnly />
+      <TextInput label={t('columns.title')} value={plaint.title} readOnly />
       <TextInput
         label={t('columns.sender')}
         icon={<CustomAvatar {...plaint.senderUser} />}
         iconWidth={48}
         value={plaint.senderUser.nick}
-        disabled
+        readOnly
       />
       <Textarea
         label={t('columns.text')}
         value={plaint.senderText}
         autosize
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.receiver')}
         icon={<CustomAvatar {...plaint.receiverUser} />}
         iconWidth={48}
         value={plaint.receiverUser.nick}
-        disabled
+        readOnly
       />
       <Textarea
         label={t('columns.text')}
         value={plaint.receiverText || '-'}
         autosize
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.executor')}
         icon={plaint.executorUser && <CustomAvatar {...plaint.executorUser} />}
         iconWidth={48}
         value={plaint.executorUser ? plaint.executorUser.nick : '-'}
-        disabled
+        readOnly
       />
       <Textarea
         label={t('columns.text')}
         value={plaint.executorText || '-'}
         autosize
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.created')}
         value={parseTime(plaint.createdAt)}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.executed')}
         value={parseTime(plaint.executedAt)}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.completed')}
         value={parseTime(plaint.completedAt)}
-        disabled
+        readOnly
       />
     </Stack>
   );

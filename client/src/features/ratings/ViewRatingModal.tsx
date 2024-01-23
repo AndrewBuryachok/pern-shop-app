@@ -15,20 +15,20 @@ export default function ViewRatingModal({ data: rating }: Props) {
 
   return (
     <Stack spacing={8}>
-      <TextInput label={t('columns.id')} value={rating.id} disabled />
+      <TextInput label={t('columns.id')} value={rating.id} readOnly />
       <TextInput
         label={t('columns.sender')}
         icon={<CustomAvatar {...rating.senderUser} />}
         iconWidth={48}
         value={rating.senderUser.nick}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.receiver')}
         icon={<CustomAvatar {...rating.receiverUser} />}
         iconWidth={48}
         value={rating.receiverUser.nick}
-        disabled
+        readOnly
       />
       <Input.Wrapper label={t('columns.rate')}>
         <CustomRating value={rating.rate} readOnly />
@@ -36,7 +36,7 @@ export default function ViewRatingModal({ data: rating }: Props) {
       <TextInput
         label={t('columns.created')}
         value={parseTime(rating.createdAt)}
-        disabled
+        readOnly
       />
     </Stack>
   );

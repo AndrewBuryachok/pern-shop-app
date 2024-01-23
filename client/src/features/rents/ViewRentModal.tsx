@@ -25,40 +25,40 @@ export default function ViewRentModal({ data: rent }: Props) {
 
   return (
     <Stack spacing={8}>
-      <TextInput label={t('columns.id')} value={rent.id} disabled />
+      <TextInput label={t('columns.id')} value={rent.id} readOnly />
       <TextInput
         label={t('columns.renter')}
         icon={<CustomAvatar {...rent.card.user} />}
         iconWidth={48}
         value={parseCard(rent.card)}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.owner')}
         icon={<CustomAvatar {...rent.store.market.card.user} />}
         iconWidth={48}
         value={parseCard(rent.store.market.card)}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.storage')}
         value={parseStore(rent.store)}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.sum')}
         value={`${rent.store.market.price} ${t('constants.currency')}`}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.created')}
         value={parseTime(rent.createdAt)}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.completed')}
         value={parseTime(rent.completedAt)}
-        disabled
+        readOnly
       />
       <Select
         label={t('columns.things')}

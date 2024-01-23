@@ -50,7 +50,7 @@ export default function CreateRatingModal() {
         limit={20}
         searchable
         required
-        disabled={usersResponse.isFetching}
+        readOnly={usersResponse.isFetching}
         {...form.getInputProps('user')}
       />
       <Input.Wrapper label={t('columns.rate')} required>

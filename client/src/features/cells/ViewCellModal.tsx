@@ -15,29 +15,29 @@ export default function ViewCellModal({ data: cell }: Props) {
 
   return (
     <Stack spacing={8}>
-      <TextInput label={t('columns.id')} value={cell.id} disabled />
+      <TextInput label={t('columns.id')} value={cell.id} readOnly />
       <TextInput
         label={t('columns.owner')}
         icon={<CustomAvatar {...cell.storage.card.user} />}
         iconWidth={48}
         value={parseCard(cell.storage.card)}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.storage')}
         value={parsePlace(cell.storage)}
-        disabled
+        readOnly
       />
-      <TextInput label={t('columns.cell')} value={`#${cell.name}`} disabled />
+      <TextInput label={t('columns.cell')} value={`#${cell.name}`} readOnly />
       <TextInput
         label={t('columns.price')}
         value={`${cell.storage.price} ${t('constants.currency')}`}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.reserved')}
         value={parseTime(cell.reservedUntil)}
-        disabled
+        readOnly
       />
     </Stack>
   );

@@ -45,7 +45,7 @@ export default function AddCityUserModal({ data: city }: Props) {
       isLoading={isLoading}
       text={t('actions.add') + ' ' + t('modals.users')}
     >
-      <TextInput label={t('columns.city')} value={parsePlace(city)} disabled />
+      <TextInput label={t('columns.city')} value={parsePlace(city)} readOnly />
       <Select
         label={t('columns.user')}
         placeholder={t('columns.user')}
@@ -57,7 +57,7 @@ export default function AddCityUserModal({ data: city }: Props) {
         limit={20}
         searchable
         required
-        disabled={usersResponse.isFetching}
+        readOnly={usersResponse.isFetching}
         {...form.getInputProps('user')}
       />
     </CustomForm>

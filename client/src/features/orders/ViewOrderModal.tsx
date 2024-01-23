@@ -23,35 +23,35 @@ export default function ViewOrderModal({ data: order }: Props) {
 
   return (
     <Stack spacing={8}>
-      <TextInput label={t('columns.id')} value={order.id} disabled />
+      <TextInput label={t('columns.id')} value={order.id} readOnly />
       <TextInput
         label={t('columns.customer')}
         icon={<CustomAvatar {...order.lease.card.user} />}
         iconWidth={48}
         value={parseCard(order.lease.card)}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.item')}
         icon={<ThingImage {...order} />}
         iconWidth={48}
         value={parseItem(order.item)}
-        disabled
+        readOnly
       />
       <Textarea
         label={t('columns.description')}
         value={order.description || '-'}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.amount')}
         value={parseThingAmount(order)}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.price')}
         value={`${order.price} ${t('constants.currency')}`}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.executor')}
@@ -60,34 +60,34 @@ export default function ViewOrderModal({ data: order }: Props) {
         }
         iconWidth={48}
         value={order.executorCard ? parseCard(order.executorCard) : '-'}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.status')}
         value={parseStatus(order.status)}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.storage')}
         value={parseCell(order.lease.cell)}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.owner')}
         icon={<CustomAvatar {...order.lease.cell.storage.card.user} />}
         iconWidth={48}
         value={parseCard(order.lease.cell.storage.card)}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.created')}
         value={parseTime(order.createdAt)}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.completed')}
         value={parseTime(order.completedAt)}
-        disabled
+        readOnly
       />
       <Input.Wrapper label={t('columns.rate')}>
         <Rating value={order.rate} readOnly />

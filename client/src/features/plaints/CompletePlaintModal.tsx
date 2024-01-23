@@ -35,32 +35,32 @@ export default function CompletePlaintModal({ data: plaint }: Props) {
       isLoading={isLoading}
       text={t('actions.complete') + ' ' + t('modals.plaints')}
     >
-      <TextInput label={t('columns.title')} value={plaint.title} disabled />
+      <TextInput label={t('columns.title')} value={plaint.title} readOnly />
       <TextInput
         label={t('columns.sender')}
         icon={<CustomAvatar {...plaint.senderUser} />}
         iconWidth={48}
         value={plaint.senderUser.nick}
-        disabled
+        readOnly
       />
       <Textarea
         label={t('columns.text')}
         value={plaint.senderText}
         autosize
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.receiver')}
         icon={<CustomAvatar {...plaint.receiverUser} />}
         iconWidth={48}
         value={plaint.receiverUser.nick}
-        disabled
+        readOnly
       />
       <Textarea
         label={t('columns.text')}
         value={plaint.receiverText}
         autosize
-        disabled
+        readOnly
       />
       <Textarea
         label={t('columns.text')}

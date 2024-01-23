@@ -73,29 +73,29 @@ export default function BuyProductModal({ data: product, hasRole }: Props) {
         icon={<CustomAvatar {...product.lease.card.user} />}
         iconWidth={48}
         value={parseCard(product.lease.card)}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.item')}
         icon={<ThingImage {...product} />}
         iconWidth={48}
         value={parseItem(product.item)}
-        disabled
+        readOnly
       />
       <Textarea
         label={t('columns.description')}
         value={product.description || '-'}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.amount')}
         value={parseThingAmount(product)}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.price')}
         value={`${product.price} ${t('constants.currency')}`}
-        disabled
+        readOnly
       />
       {hasRole && (
         <Select
@@ -109,7 +109,7 @@ export default function BuyProductModal({ data: product, hasRole }: Props) {
           limit={20}
           searchable
           required
-          disabled={usersResponse.isFetching}
+          readOnly={usersResponse.isFetching}
           {...form.getInputProps('user')}
         />
       )}
@@ -122,7 +122,7 @@ export default function BuyProductModal({ data: product, hasRole }: Props) {
         limit={20}
         searchable
         required
-        disabled={cardsResponse.isFetching}
+        readOnly={cardsResponse.isFetching}
         {...form.getInputProps('card')}
       />
       <NumberInput

@@ -16,44 +16,44 @@ export default function ViewTaskModal({ data: task }: Props) {
 
   return (
     <Stack spacing={8}>
-      <TextInput label={t('columns.id')} value={task.id} disabled />
+      <TextInput label={t('columns.id')} value={task.id} readOnly />
       <TextInput
         label={t('columns.customer')}
         icon={<CustomAvatar {...task.customerUser} />}
         iconWidth={48}
         value={task.customerUser.nick}
-        disabled
+        readOnly
       />
-      <TextInput label={t('columns.title')} value={task.title} disabled />
-      <Textarea label={t('columns.text')} value={task.text} autosize disabled />
+      <TextInput label={t('columns.title')} value={task.title} readOnly />
+      <Textarea label={t('columns.text')} value={task.text} autosize readOnly />
       <TextInput
         label={t('columns.priority')}
         icon={<PriorityIcon {...task} />}
         iconWidth={48}
         value={t(`constants.priorities.${priorities[task.priority - 1]}`)}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.executor')}
         icon={task.executorUser && <CustomAvatar {...task.executorUser} />}
         iconWidth={48}
         value={task.executorUser ? task.executorUser.nick : '-'}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.status')}
         value={parseStatus(task.status)}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.created')}
         value={parseTime(task.createdAt)}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.completed')}
         value={parseTime(task.completedAt)}
-        disabled
+        readOnly
       />
     </Stack>
   );

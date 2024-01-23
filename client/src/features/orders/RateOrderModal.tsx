@@ -44,29 +44,29 @@ export default function RateOrderModal({ data: order }: Props) {
         }
         iconWidth={48}
         value={order.executorCard ? parseCard(order.executorCard) : '-'}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.item')}
         icon={<ThingImage {...order} />}
         iconWidth={48}
         value={parseItem(order.item)}
-        disabled
+        readOnly
       />
       <Textarea
         label={t('columns.description')}
         value={order.description || '-'}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.amount')}
         value={parseThingAmount(order)}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.price')}
         value={`${order.price} ${t('constants.currency')}`}
-        disabled
+        readOnly
       />
       <Input.Wrapper label={t('columns.rate')} required>
         <Rating {...form.getInputProps('rate')} />

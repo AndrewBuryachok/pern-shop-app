@@ -41,35 +41,35 @@ export default function ViewProductModal({ data: product }: Props) {
 
   return (
     <Stack spacing={8}>
-      <TextInput label={t('columns.id')} value={product.id} disabled />
+      <TextInput label={t('columns.id')} value={product.id} readOnly />
       <TextInput
         label={t('columns.seller')}
         icon={<CustomAvatar {...product.lease.card.user} />}
         iconWidth={48}
         value={parseCard(product.lease.card)}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.item')}
         icon={<ThingImage {...product} />}
         iconWidth={48}
         value={parseItem(product.item)}
-        disabled
+        readOnly
       />
       <Textarea
         label={t('columns.description')}
         value={product.description || '-'}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.amount')}
         value={parseThingAmount(product)}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.price')}
         value={`${product.price} ${t('constants.currency')}`}
-        disabled
+        readOnly
       />
       <Select
         label={t('columns.prices')}
@@ -83,24 +83,24 @@ export default function ViewProductModal({ data: product }: Props) {
       <TextInput
         label={t('columns.storage')}
         value={parseCell(product.lease.cell)}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.owner')}
         icon={<CustomAvatar {...product.lease.cell.storage.card.user} />}
         iconWidth={48}
         value={parseCard(product.lease.cell.storage.card)}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.created')}
         value={parseTime(product.createdAt)}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.completed')}
         value={parseTime(product.completedAt)}
-        disabled
+        readOnly
       />
       <Input.Wrapper label={t('columns.rate')}>
         <Rating value={rating?.rate} readOnly />

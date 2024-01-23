@@ -41,29 +41,29 @@ export default function CompleteLotModal({ data: lot }: Props) {
         icon={<CustomAvatar {...lot.lease.card.user} />}
         iconWidth={48}
         value={parseCard(lot.lease.card)}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.item')}
         icon={<ThingImage {...lot} />}
         iconWidth={48}
         value={parseItem(lot.item)}
-        disabled
+        readOnly
       />
       <Textarea
         label={t('columns.description')}
         value={lot.description || '-'}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.amount')}
         value={parseThingAmount(lot)}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.price')}
         value={`${lot.price} ${t('constants.currency')}`}
-        disabled
+        readOnly
       />
     </CustomForm>
   );

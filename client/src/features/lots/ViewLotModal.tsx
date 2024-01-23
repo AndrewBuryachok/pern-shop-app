@@ -28,35 +28,35 @@ export default function ViewLotModal({ data: lot }: Props) {
 
   return (
     <Stack spacing={8}>
-      <TextInput label={t('columns.id')} value={lot.id} disabled />
+      <TextInput label={t('columns.id')} value={lot.id} readOnly />
       <TextInput
         label={t('columns.seller')}
         icon={<CustomAvatar {...lot.lease.card.user} />}
         iconWidth={48}
         value={parseCard(lot.lease.card)}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.item')}
         icon={<ThingImage {...lot} />}
         iconWidth={48}
         value={parseItem(lot.item)}
-        disabled
+        readOnly
       />
       <Textarea
         label={t('columns.description')}
         value={lot.description || '-'}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.amount')}
         value={parseThingAmount(lot)}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.price')}
         value={`${lot.price} ${t('constants.currency')}`}
-        disabled
+        readOnly
       />
       <Select
         label={t('columns.bids')}
@@ -70,24 +70,24 @@ export default function ViewLotModal({ data: lot }: Props) {
       <TextInput
         label={t('columns.storage')}
         value={parseCell(lot.lease.cell)}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.owner')}
         icon={<CustomAvatar {...lot.lease.cell.storage.card.user} />}
         iconWidth={48}
         value={parseCard(lot.lease.cell.storage.card)}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.created')}
         value={parseTime(lot.createdAt)}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.completed')}
         value={parseTime(lot.completedAt)}
-        disabled
+        readOnly
       />
     </Stack>
   );

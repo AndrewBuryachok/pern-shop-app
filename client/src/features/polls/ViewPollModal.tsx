@@ -41,22 +41,22 @@ export default function ViewPollModal({ data: poll }: Props) {
 
   return (
     <Stack spacing={8}>
-      <TextInput label={t('columns.id')} value={poll.id} disabled />
+      <TextInput label={t('columns.id')} value={poll.id} readOnly />
       <TextInput
         label={t('columns.owner')}
         icon={<CustomAvatar {...poll.user} />}
         iconWidth={48}
         value={poll.user.nick}
-        disabled
+        readOnly
       />
-      <TextInput label={t('columns.title')} value={poll.title} disabled />
-      <Textarea label={t('columns.text')} value={poll.text} autosize disabled />
+      <TextInput label={t('columns.title')} value={poll.title} readOnly />
+      <Textarea label={t('columns.text')} value={poll.text} autosize readOnly />
       <TextInput
         label={t('columns.vote')}
         value={
           myVote ? (myVote.type ? t('constants.up') : t('constants.down')) : '-'
         }
-        disabled
+        readOnly
       />
       <Input.Wrapper label={t('columns.votes')}>
         <Timeline bulletSize={32}>
@@ -109,17 +109,17 @@ export default function ViewPollModal({ data: poll }: Props) {
       <TextInput
         label={t('columns.result')}
         value={t(`constants.results.${results[poll.result - 1]}`)}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.created')}
         value={parseTime(poll.createdAt)}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.completed')}
         value={parseTime(poll.completedAt)}
-        disabled
+        readOnly
       />
     </Stack>
   );

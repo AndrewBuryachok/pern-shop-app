@@ -101,7 +101,7 @@ export default function CreatePaymentModal({ hasRole }: Props) {
           limit={20}
           searchable
           required
-          disabled={usersResponse.isFetching}
+          readOnly={usersResponse.isFetching}
           {...form.getInputProps('senderUser')}
         />
       )}
@@ -119,7 +119,7 @@ export default function CreatePaymentModal({ hasRole }: Props) {
         limit={20}
         searchable
         required
-        disabled={senderCardsResponse.isFetching}
+        readOnly={senderCardsResponse.isFetching}
         {...form.getInputProps('senderCard')}
       />
       <Select
@@ -133,7 +133,7 @@ export default function CreatePaymentModal({ hasRole }: Props) {
         limit={20}
         searchable
         required
-        disabled={usersResponse.isFetching}
+        readOnly={usersResponse.isFetching}
         {...form.getInputProps('receiverUser')}
       />
       <Select
@@ -150,7 +150,7 @@ export default function CreatePaymentModal({ hasRole }: Props) {
         limit={20}
         searchable
         required
-        disabled={receiverCardsResponse.isFetching}
+        readOnly={receiverCardsResponse.isFetching}
         {...form.getInputProps('receiverCard')}
       />
       <NumberInput

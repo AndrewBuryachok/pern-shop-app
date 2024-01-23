@@ -41,13 +41,13 @@ export default function DeleteCommentModal({ data: comment }: Props) {
         icon={<CustomAvatar {...comment.user} />}
         iconWidth={48}
         value={comment.user.nick}
-        disabled
+        readOnly
       />
       <Textarea
         label={t('columns.text')}
         value={comment.text}
         autosize
-        disabled
+        readOnly
       />
     </CustomForm>
   );

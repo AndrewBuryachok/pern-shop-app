@@ -46,7 +46,7 @@ export default function RemoveCardUserModal({ data: card }: Props) {
       isLoading={isLoading}
       text={t('actions.remove') + ' ' + t('modals.users')}
     >
-      <TextInput label={t('columns.card')} value={card.name} disabled />
+      <TextInput label={t('columns.card')} value={card.name} readOnly />
       <Select
         label={t('columns.user')}
         placeholder={t('columns.user')}

@@ -42,7 +42,7 @@ export default function EditCommentModal({ data: comment }: Props) {
         icon={<CustomAvatar {...comment.user} />}
         iconWidth={48}
         value={comment.user.nick}
-        disabled
+        readOnly
       />
       <Textarea
         label={t('columns.text')}

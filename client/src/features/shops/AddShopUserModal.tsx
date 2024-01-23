@@ -47,7 +47,7 @@ export default function AddShopUserModal({ data: shop }: Props) {
       isLoading={isLoading}
       text={t('actions.add') + ' ' + t('modals.users')}
     >
-      <TextInput label={t('columns.shop')} value={shop.name} disabled />
+      <TextInput label={t('columns.shop')} value={shop.name} readOnly />
       <Select
         label={t('columns.user')}
         placeholder={t('columns.user')}
@@ -61,7 +61,7 @@ export default function AddShopUserModal({ data: shop }: Props) {
         limit={20}
         searchable
         required
-        disabled={usersResponse.isFetching}
+        readOnly={usersResponse.isFetching}
         {...form.getInputProps('user')}
       />
     </CustomForm>

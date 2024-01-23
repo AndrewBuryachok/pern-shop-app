@@ -66,7 +66,7 @@ export default function ContinueRentModal({ data: rent, hasRole }: Props) {
         icon={<CustomAvatar {...rent.card.user} />}
         iconWidth={48}
         value={parseCard(rent.card)}
-        disabled
+        readOnly
       />
       <Select
         label={t('columns.card')}
@@ -85,17 +85,17 @@ export default function ContinueRentModal({ data: rent, hasRole }: Props) {
         icon={<CustomAvatar {...rent.store.market.card.user} />}
         iconWidth={48}
         value={parseCard(rent.store.market.card)}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.storage')}
         value={parseStore(rent.store)}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.sum')}
         value={`${rent.store.market.price} ${t('constants.currency')}`}
-        disabled
+        readOnly
       />
     </CustomForm>
   );

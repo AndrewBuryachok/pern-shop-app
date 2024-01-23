@@ -21,45 +21,45 @@ export default function ViewGoodModal({ data: good }: Props) {
 
   return (
     <Stack spacing={8}>
-      <TextInput label={t('columns.id')} value={good.id} disabled />
+      <TextInput label={t('columns.id')} value={good.id} readOnly />
       <TextInput
         label={t('columns.seller')}
         icon={<CustomAvatar {...good.shop.user} />}
         iconWidth={48}
         value={good.shop.user.nick}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.item')}
         icon={<ThingImage {...good} />}
         iconWidth={48}
         value={parseItem(good.item)}
-        disabled
+        readOnly
       />
       <Textarea
         label={t('columns.description')}
         value={good.description || '-'}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.shop')}
         value={parsePlace(good.shop)}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.amount')}
         value={parseThingAmount(good)}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.price')}
         value={`${good.price} ${t('constants.currency')}`}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.created')}
         value={parseTime(good.createdAt)}
-        disabled
+        readOnly
       />
     </Stack>
   );

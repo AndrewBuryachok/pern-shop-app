@@ -79,7 +79,7 @@ export default function CreateWareModal({ hasRole }: Props) {
         limit={20}
         searchable
         required
-        disabled={rentsResponse.isFetching}
+        readOnly={rentsResponse.isFetching}
         {...form.getInputProps('rent')}
       />
       <Select

@@ -20,29 +20,29 @@ export default function ViewCardModal({ data: card }: Props) {
 
   return (
     <Stack spacing={8}>
-      <TextInput label={t('columns.id')} value={card.id} disabled />
+      <TextInput label={t('columns.id')} value={card.id} readOnly />
       <TextInput
         label={t('columns.owner')}
         icon={<CustomAvatar {...card.user} />}
         iconWidth={48}
         value={card.user.nick}
-        disabled
+        readOnly
       />
-      <TextInput label={t('columns.card')} value={card.name} disabled />
+      <TextInput label={t('columns.card')} value={card.name} readOnly />
       <TextInput
         label={t('columns.color')}
         value={t(`constants.colors.${colors[card.color - 1]}`)}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.balance')}
         value={`${card.balance} ${t('constants.currency')}`}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.created')}
         value={parseTime(card.createdAt)}
-        disabled
+        readOnly
       />
       <Select
         label={t('columns.users')}

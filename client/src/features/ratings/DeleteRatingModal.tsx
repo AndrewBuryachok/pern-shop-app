@@ -39,14 +39,14 @@ export default function DeleteRatingModal({ data: rating }: Props) {
         icon={<CustomAvatar {...rating.senderUser} />}
         iconWidth={48}
         value={rating.senderUser.nick}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.receiver')}
         icon={<CustomAvatar {...rating.receiverUser} />}
         iconWidth={48}
         value={rating.receiverUser.nick}
-        disabled
+        readOnly
       />
       <Input.Wrapper label={t('columns.rate')}>
         <CustomRating value={rating.rate} readOnly />

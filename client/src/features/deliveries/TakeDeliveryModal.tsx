@@ -69,29 +69,29 @@ export default function TakeDeliveryModal({ data: delivery, hasRole }: Props) {
         icon={<CustomAvatar {...delivery.fromLease.card.user} />}
         iconWidth={48}
         value={parseCard(delivery.fromLease.card)}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.item')}
         icon={<ThingImage {...delivery} />}
         iconWidth={48}
         value={parseItem(delivery.item)}
-        disabled
+        readOnly
       />
       <Textarea
         label={t('columns.description')}
         value={delivery.description || '-'}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.amount')}
         value={parseThingAmount(delivery)}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.price')}
         value={`${delivery.price} ${t('constants.currency')}`}
-        disabled
+        readOnly
       />
       {hasRole && (
         <Select
@@ -105,7 +105,7 @@ export default function TakeDeliveryModal({ data: delivery, hasRole }: Props) {
           limit={20}
           searchable
           required
-          disabled={usersResponse.isFetching}
+          readOnly={usersResponse.isFetching}
           {...form.getInputProps('user')}
         />
       )}
@@ -123,7 +123,7 @@ export default function TakeDeliveryModal({ data: delivery, hasRole }: Props) {
         limit={20}
         searchable
         required
-        disabled={cardsResponse.isFetching}
+        readOnly={cardsResponse.isFetching}
         {...form.getInputProps('card')}
       />
     </CustomForm>

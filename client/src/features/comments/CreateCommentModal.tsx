@@ -41,9 +41,9 @@ export default function CreateCommentModal({ data: article }: Props) {
         icon={<CustomAvatar {...article.user} />}
         iconWidth={48}
         value={article.user.nick}
-        disabled
+        readOnly
       />
-      <Textarea label={t('columns.text')} value={article.text} disabled />
+      <Textarea label={t('columns.text')} value={article.text} readOnly />
       <Input.Wrapper label={t('columns.image')}>
         <CustomImage image={article.image1} />
       </Input.Wrapper>

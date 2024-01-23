@@ -15,13 +15,13 @@ export default function ViewInvoiceModal({ data: invoice }: Props) {
 
   return (
     <Stack spacing={8}>
-      <TextInput label={t('columns.id')} value={invoice.id} disabled />
+      <TextInput label={t('columns.id')} value={invoice.id} readOnly />
       <TextInput
         label={t('columns.sender')}
         icon={<CustomAvatar {...invoice.senderCard.user} />}
         iconWidth={48}
         value={parseCard(invoice.senderCard)}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.receiver')}
@@ -32,27 +32,27 @@ export default function ViewInvoiceModal({ data: invoice }: Props) {
             ? parseCard(invoice.receiverCard)
             : invoice.receiverUser.nick
         }
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.sum')}
         value={`${invoice.sum} ${t('constants.currency')}`}
-        disabled
+        readOnly
       />
       <Textarea
         label={t('columns.description')}
         value={invoice.description || '-'}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.created')}
         value={parseTime(invoice.createdAt)}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.completed')}
         value={parseTime(invoice.completedAt)}
-        disabled
+        readOnly
       />
     </Stack>
   );

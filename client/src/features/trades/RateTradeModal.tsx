@@ -42,29 +42,29 @@ export default function RateTradeModal({ data: trade }: Props) {
         icon={<CustomAvatar {...trade.ware.rent.card.user} />}
         iconWidth={48}
         value={parseCard(trade.ware.rent.card)}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.item')}
         icon={<ThingImage {...trade.ware} />}
         iconWidth={48}
         value={parseItem(trade.ware.item)}
-        disabled
+        readOnly
       />
       <Textarea
         label={t('columns.description')}
         value={trade.ware.description || '-'}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.amount')}
         value={parseTradeAmount(trade)}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.sum')}
         value={`${trade.amount * trade.ware.price} ${t('constants.currency')}`}
-        disabled
+        readOnly
       />
       <Input.Wrapper label={t('columns.rate')} required>
         <Rating {...form.getInputProps('rate')} />

@@ -24,15 +24,15 @@ export default function ViewShopModal({ data: shop }: Props) {
 
   return (
     <Stack spacing={8}>
-      <TextInput label={t('columns.id')} value={shop.id} disabled />
+      <TextInput label={t('columns.id')} value={shop.id} readOnly />
       <TextInput
         label={t('columns.owner')}
         icon={<CustomAvatar {...shop.user} />}
         iconWidth={48}
         value={shop.user.nick}
-        disabled
+        readOnly
       />
-      <TextInput label={t('columns.shop')} value={shop.name} disabled />
+      <TextInput label={t('columns.shop')} value={shop.name} readOnly />
       <Input.Wrapper label={t('columns.image')}>
         <CustomImage image={shop.image} />
       </Input.Wrapper>
@@ -42,14 +42,14 @@ export default function ViewShopModal({ data: shop }: Props) {
       <Textarea
         label={t('columns.description')}
         value={shop.description || '-'}
-        disabled
+        readOnly
       />
-      <TextInput label={t('columns.x')} value={shop.x} disabled />
-      <TextInput label={t('columns.y')} value={shop.y} disabled />
+      <TextInput label={t('columns.x')} value={shop.x} readOnly />
+      <TextInput label={t('columns.y')} value={shop.y} readOnly />
       <TextInput
         label={t('columns.created')}
         value={parseTime(shop.createdAt)}
-        disabled
+        readOnly
       />
       <Select
         label={t('columns.users')}

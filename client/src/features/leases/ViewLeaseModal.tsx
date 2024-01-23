@@ -28,45 +28,45 @@ export default function ViewLeaseModal({ data: lease }: Props) {
 
   return (
     <Stack spacing={8}>
-      <TextInput label={t('columns.id')} value={lease.id} disabled />
+      <TextInput label={t('columns.id')} value={lease.id} readOnly />
       <TextInput
         label={t('columns.renter')}
         icon={<CustomAvatar {...lease.card.user} />}
         iconWidth={48}
         value={parseCard(lease.card)}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.owner')}
         icon={<CustomAvatar {...lease.cell.storage.card.user} />}
         iconWidth={48}
         value={parseCard(lease.cell.storage.card)}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.storage')}
         value={parseCell(lease.cell)}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.sum')}
         value={`${lease.cell.storage.price} ${t('constants.currency')}`}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.created')}
         value={parseTime(lease.createdAt)}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.completed')}
         value={parseTime(lease.completedAt)}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.kind')}
         value={parseKind(lease.kind)}
-        disabled
+        readOnly
       />
       <Select
         label={t('columns.things')}

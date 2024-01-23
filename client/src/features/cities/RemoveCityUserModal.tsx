@@ -46,7 +46,7 @@ export default function RemoveCityUserModal({ data: city }: Props) {
       isLoading={isLoading}
       text={t('actions.remove') + ' ' + t('modals.users')}
     >
-      <TextInput label={t('columns.city')} value={parsePlace(city)} disabled />
+      <TextInput label={t('columns.city')} value={parsePlace(city)} readOnly />
       <Select
         label={t('columns.user')}
         placeholder={t('columns.user')}

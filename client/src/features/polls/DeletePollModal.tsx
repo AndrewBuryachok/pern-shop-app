@@ -39,10 +39,10 @@ export default function DeletePollModal({ data: poll }: Props) {
         icon={<CustomAvatar {...poll.user} />}
         iconWidth={48}
         value={poll.user.nick}
-        disabled
+        readOnly
       />
-      <TextInput label={t('columns.title')} value={poll.title} disabled />
-      <Textarea label={t('columns.text')} value={poll.text} autosize disabled />
+      <TextInput label={t('columns.title')} value={poll.title} readOnly />
+      <Textarea label={t('columns.text')} value={poll.text} autosize readOnly />
     </CustomForm>
   );
 }

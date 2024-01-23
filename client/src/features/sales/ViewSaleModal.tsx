@@ -22,59 +22,59 @@ export default function ViewSaleModal({ data: sale }: Props) {
 
   return (
     <Stack spacing={8}>
-      <TextInput label={t('columns.id')} value={sale.id} disabled />
+      <TextInput label={t('columns.id')} value={sale.id} readOnly />
       <TextInput
         label={t('columns.buyer')}
         icon={<CustomAvatar {...sale.card.user} />}
         iconWidth={48}
         value={parseCard(sale.card)}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.seller')}
         icon={<CustomAvatar {...sale.product.lease.card.user} />}
         iconWidth={48}
         value={parseCard(sale.product.lease.card)}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.item')}
         icon={<ThingImage {...sale.product} />}
         iconWidth={48}
         value={parseItem(sale.product.item)}
-        disabled
+        readOnly
       />
       <Textarea
         label={t('columns.description')}
         value={sale.product.description || '-'}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.amount')}
         value={parseSaleAmount(sale)}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.sum')}
         value={`${sale.amount * sale.product.price} ${t('constants.currency')}`}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.storage')}
         value={parseCell(sale.product.lease.cell)}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.owner')}
         icon={<CustomAvatar {...sale.product.lease.cell.storage.card.user} />}
         iconWidth={48}
         value={parseCard(sale.product.lease.cell.storage.card)}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.created')}
         value={parseTime(sale.createdAt)}
-        disabled
+        readOnly
       />
       <Input.Wrapper label={t('columns.rate')}>
         <Rating value={sale.rate} readOnly />

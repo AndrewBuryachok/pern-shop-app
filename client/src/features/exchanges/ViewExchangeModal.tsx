@@ -15,37 +15,37 @@ export default function ViewExchangeModal({ data: exchange }: Props) {
 
   return (
     <Stack spacing={8}>
-      <TextInput label={t('columns.id')} value={exchange.id} disabled />
+      <TextInput label={t('columns.id')} value={exchange.id} readOnly />
       <TextInput
         label={t('columns.executor')}
         icon={<CustomAvatar {...exchange.executorUser} />}
         iconWidth={48}
         value={exchange.executorUser.nick}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.customer')}
         icon={<CustomAvatar {...exchange.customerCard.user} />}
         iconWidth={48}
         value={parseCard(exchange.customerCard)}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.type')}
         value={
           exchange.type ? t('constants.increase') : t('constants.decrease')
         }
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.sum')}
         value={`${exchange.sum} ${t('constants.currency')}`}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.created')}
         value={parseTime(exchange.createdAt)}
-        disabled
+        readOnly
       />
     </Stack>
   );

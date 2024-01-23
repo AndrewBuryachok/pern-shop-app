@@ -43,7 +43,7 @@ export default function RemoveUserRoleModal({ data: user }: Props) {
         icon={<CustomAvatar {...user} />}
         iconWidth={48}
         value={user.nick}
-        disabled
+        readOnly
       />
       <Select
         label={t('columns.role')}

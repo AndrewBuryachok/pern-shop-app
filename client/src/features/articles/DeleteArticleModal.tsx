@@ -41,13 +41,13 @@ export default function DeleteArticleModal({ data: article }: Props) {
         icon={<CustomAvatar {...article.user} />}
         iconWidth={48}
         value={article.user.nick}
-        disabled
+        readOnly
       />
       <Textarea
         label={t('columns.text')}
         value={article.text}
         autosize
-        disabled
+        readOnly
       />
       <Input.Wrapper label={t('columns.image')}>
         <CustomImage image={article.image1} />

@@ -41,29 +41,29 @@ export default function ExecuteOrderModal({ data: order }: Props) {
         icon={<CustomAvatar {...order.lease.card.user} />}
         iconWidth={48}
         value={parseCard(order.lease.card)}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.item')}
         icon={<ThingImage {...order} />}
         iconWidth={48}
         value={parseItem(order.item)}
-        disabled
+        readOnly
       />
       <Textarea
         label={t('columns.description')}
         value={order.description || '-'}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.amount')}
         value={parseThingAmount(order)}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.price')}
         value={`${order.price} ${t('constants.currency')}`}
-        disabled
+        readOnly
       />
     </CustomForm>
   );

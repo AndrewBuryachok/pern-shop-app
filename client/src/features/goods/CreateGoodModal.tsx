@@ -79,7 +79,7 @@ export default function CreateGoodModal({ hasRole }: Props) {
         limit={20}
         searchable
         required
-        disabled={shopsResponse.isFetching}
+        readOnly={shopsResponse.isFetching}
         {...form.getInputProps('shop')}
       />
       <Select

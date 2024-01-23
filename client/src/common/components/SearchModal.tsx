@@ -223,7 +223,7 @@ export default function SearchModal(props: Props) {
         limit={20}
         searchable
         allowDeselect
-        disabled={usersResponse.isFetching}
+        readOnly={usersResponse.isFetching}
         {...form.getInputProps('user')}
       />
       {props.search.card !== undefined && (
@@ -238,7 +238,7 @@ export default function SearchModal(props: Props) {
           limit={20}
           searchable
           allowDeselect
-          disabled={cardsResponse.isFetching}
+          readOnly={cardsResponse.isFetching}
           {...form.getInputProps('card')}
         />
       )}
@@ -278,7 +278,7 @@ export default function SearchModal(props: Props) {
           limit={20}
           searchable
           allowDeselect
-          disabled={citiesResponse.isFetching}
+          readOnly={citiesResponse.isFetching}
           {...form.getInputProps('city')}
         />
       )}
@@ -305,7 +305,7 @@ export default function SearchModal(props: Props) {
           limit={20}
           searchable
           allowDeselect
-          disabled={marketsResponse.isFetching}
+          readOnly={marketsResponse.isFetching}
           {...form.getInputProps('market')}
         />
       )}
@@ -319,7 +319,7 @@ export default function SearchModal(props: Props) {
           limit={20}
           searchable
           allowDeselect
-          disabled={storagesResponse.isFetching}
+          readOnly={storagesResponse.isFetching}
           {...form.getInputProps('storage')}
         />
       )}
@@ -334,7 +334,7 @@ export default function SearchModal(props: Props) {
           limit={20}
           searchable
           allowDeselect
-          disabled={storesResponse.isFetching}
+          readOnly={storesResponse.isFetching}
           {...form.getInputProps('store')}
         />
       )}
@@ -349,7 +349,7 @@ export default function SearchModal(props: Props) {
           limit={20}
           searchable
           allowDeselect
-          disabled={cellsResponse.isFetching}
+          readOnly={cellsResponse.isFetching}
           {...form.getInputProps('cell')}
         />
       )}

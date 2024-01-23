@@ -56,7 +56,7 @@ export default function EditArticleModal({ data: article }: Props) {
         icon={<CustomAvatar {...article.user} />}
         iconWidth={48}
         value={article.user.nick}
-        disabled
+        readOnly
       />
       <Textarea
         label={t('columns.text')}

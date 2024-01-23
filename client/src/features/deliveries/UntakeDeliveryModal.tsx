@@ -41,29 +41,29 @@ export default function UntakeDeliveryModal({ data: delivery }: Props) {
         icon={<CustomAvatar {...delivery.fromLease.card.user} />}
         iconWidth={48}
         value={parseCard(delivery.fromLease.card)}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.item')}
         icon={<ThingImage {...delivery} />}
         iconWidth={48}
         value={parseItem(delivery.item)}
-        disabled
+        readOnly
       />
       <Textarea
         label={t('columns.description')}
         value={delivery.description || '-'}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.amount')}
         value={parseThingAmount(delivery)}
-        disabled
+        readOnly
       />
       <TextInput
         label={t('columns.price')}
         value={`${delivery.price} ${t('constants.currency')}`}
-        disabled
+        readOnly
       />
     </CustomForm>
   );

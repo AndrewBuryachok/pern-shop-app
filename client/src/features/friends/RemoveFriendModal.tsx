@@ -39,7 +39,7 @@ export default function RemoveFriendModal({ data: user }: Props) {
         icon={<CustomAvatar {...user} />}
         iconWidth={48}
         value={user.nick}
-        disabled
+        readOnly
       />
     </CustomForm>
   );
