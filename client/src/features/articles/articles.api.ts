@@ -100,9 +100,10 @@ export const articlesApi = emptyApi.injectEndpoints({
       invalidatesTags: ['Article'],
     }),
     likeArticle: build.mutation<void, LikeArticleDto>({
-      query: ({ articleId }) => ({
+      query: ({ articleId, ...dto }) => ({
         url: `/articles/${articleId}/likes`,
         method: 'POST',
+        body: dto,
       }),
       invalidatesTags: ['Like'],
     }),

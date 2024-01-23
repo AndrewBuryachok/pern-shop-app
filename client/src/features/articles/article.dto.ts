@@ -17,6 +17,6 @@ export interface DeleteArticleDto {
   articleId: number;
 }
 
-export interface LikeArticleDto {
-  articleId: number;
+export interface LikeArticleDto extends DeleteArticleDto {
+  type: boolean;
 }

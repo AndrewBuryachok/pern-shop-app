@@ -5,6 +5,7 @@ import { IModal } from '../../common/interfaces';
 import { Article } from './article.model';
 import { useSelectArticleLikesQuery } from './articles.api';
 import CustomAvatar from '../../common/components/CustomAvatar';
+import LikeBadge from '../../common/components/LikeBadge';
 import SingleText from '../../common/components/SingleText';
 import { parseTime } from '../../common/utils';
 
@@ -28,6 +29,7 @@ export default function ViewArticleLikesModal({ data: article }: Props) {
           title={like.user.nick}
           bullet={<CustomAvatar {...like.user} />}
         >
+          <LikeBadge {...like} />
           <SingleText text={parseTime(like.createdAt)} />
         </Timeline.Item>
       ))}
