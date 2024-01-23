@@ -5,13 +5,15 @@ import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { Article } from './article.model';
+import { getCurrentUser } from '../auth/auth.slice';
 import { useDeleteArticleMutation } from './articles.api';
 import { DeleteArticleDto } from './article.dto';
 import CustomForm from '../../common/components/CustomForm';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import CustomImage from '../../common/components/CustomImage';
 import CustomVideo from '../../common/components/CustomVideo';
-import { Color } from '../../common/constants';
+import { isUserNotHasRole } from '../../common/utils';
+import { Color, Role } from '../../common/constants';
 
 type Props = IModal<Article>;
 
@@ -71,6 +73,9 @@ export const deleteArticleAction = {
       title: t('actions.delete') + ' ' + t('modals.articles'),
       children: <DeleteArticleModal data={article} />,
     }),
-  disable: () => false,
+  disable: (article: Article) => {
+    const user = getCurrentUser();
+    return isUserNotHasRole(Role.ADMIN) && article.user.id !== user?.id;
+  },
   color: Color.RED,
 };

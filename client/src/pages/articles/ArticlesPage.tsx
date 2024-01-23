@@ -47,6 +47,7 @@ export default function ArticlesPage() {
   }[tab];
 
   const actions = {
+    main: [editArticleAction, deleteArticleAction],
     my: [editArticleAction, deleteArticleAction],
     all: [editArticleAction, deleteArticleAction],
   }[tab];

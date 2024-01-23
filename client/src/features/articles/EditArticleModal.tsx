@@ -6,16 +6,19 @@ import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { Article } from './article.model';
+import { getCurrentUser } from '../auth/auth.slice';
 import { useEditArticleMutation } from './articles.api';
 import { EditArticleDto } from './article.dto';
 import CustomForm from '../../common/components/CustomForm';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import CustomImage from '../../common/components/CustomImage';
 import CustomVideo from '../../common/components/CustomVideo';
+import { isUserNotHasRole } from '../../common/utils';
 import {
   Color,
   MAX_LINK_LENGTH,
   MAX_TEXT_LENGTH,
+  Role,
 } from '../../common/constants';
 
 type Props = IModal<Article>;
@@ -104,6 +107,9 @@ export const editArticleAction = {
       title: t('actions.edit') + ' ' + t('modals.articles'),
       children: <EditArticleModal data={article} />,
     }),
-  disable: () => false,
+  disable: (article: Article) => {
+    const user = getCurrentUser();
+    return isUserNotHasRole(Role.ADMIN) && article.user.id !== user?.id;
+  },
   color: Color.YELLOW,
 };

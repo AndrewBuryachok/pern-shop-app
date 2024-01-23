@@ -19,7 +19,7 @@ export default function CustomHead(props: Props) {
 
   return (
     <Group spacing={0} position='apart'>
-      <Group spacing={4}>
+      <Group spacing={8}>
         <Title order={3}>{page}</Title>
         <Popover offset={4} width={220} withArrow>
           <Popover.Target>
@@ -32,24 +32,26 @@ export default function CustomHead(props: Props) {
           </Popover.Dropdown>
         </Popover>
       </Group>
-      <Button
-        leftIcon={<IconRefresh size={16} />}
-        loading={props.isFetching}
-        loaderPosition='center'
-        onClick={props.refetch}
-        compact
-      >
-        {t('components.refresh')}
-      </Button>
-      <Button
-        leftIcon={<IconSearch size={16} />}
-        loading={props.isFetching}
-        loaderPosition='center'
-        onClick={() => openSearchModal(props)}
-        compact
-      >
-        {t('components.search')}
-      </Button>
+      <Group spacing={8}>
+        <Button
+          leftIcon={<IconRefresh size={16} />}
+          loading={props.isFetching}
+          loaderPosition='center'
+          onClick={props.refetch}
+          compact
+        >
+          {t('components.refresh')}
+        </Button>
+        <Button
+          leftIcon={<IconSearch size={16} />}
+          loading={props.isFetching}
+          loaderPosition='center'
+          onClick={() => openSearchModal(props)}
+          compact
+        >
+          {t('components.search')}
+        </Button>
+      </Group>
     </Group>
   );
 }
