@@ -9,7 +9,7 @@ import {
   DeleteArticleDto,
   ExtCreateArticleDto,
   ExtEditArticleDto,
-  LikeArticleDto,
+  ExtLikeArticleDto,
 } from './article.dto';
 import { Request, Response } from '../../common/interfaces';
 import { AppException } from '../../common/exceptions';
@@ -99,13 +99,13 @@ export class ArticlesService {
     return this.articlesRepository
       .createQueryBuilder('article')
       .innerJoinAndMapOne(
-        'myLike',
+        'article.like',
         'article.likes',
         'myLike',
         'myLike.userId = :myId',
         { myId },
       )
-      .select(['article.id'])
+      .select(['article.id', 'myLike.id', 'myLike.type'])
       .getMany();
   }
 
@@ -122,6 +122,7 @@ export class ArticlesService {
         'liker.id',
         'liker.nick',
         'liker.avatar',
+        'like.type',
         'like.createdAt',
       ])
       .getOne();
@@ -174,15 +175,17 @@ export class ArticlesService {
     await this.delete(article);
   }
 
-  async likeArticle(dto: LikeArticleDto): Promise<void> {
+  async likeArticle(dto: ExtLikeArticleDto): Promise<void> {
     const like = await this.likesRepository.findOneBy({
       articleId: dto.articleId,
       userId: dto.myId,
     });
-    if (like) {
-      await this.unlike(like);
+    if (!like) {
+      await this.addLike(dto);
+    } else if (like.type !== dto.type) {
+      await this.updateLike(like, dto);
     } else {
-      await this.like(dto);
+      await this.removeLike(like);
     }
     const article = await this.findArticleById(dto.articleId);
     this.mqttService.publishNotificationMessage(
@@ -248,23 +251,33 @@ export class ArticlesService {
     }
   }
 
-  private async like(dto: LikeArticleDto): Promise<void> {
+  private async addLike(dto: ExtLikeArticleDto): Promise<void> {
     try {
       const like = this.likesRepository.create({
         articleId: dto.articleId,
         userId: dto.myId,
+        type: dto.type,
       });
       await this.likesRepository.save(like);
     } catch (error) {
-      throw new AppException(ArticleError.LIKE_FAILED);
+      throw new AppException(ArticleError.ADD_LIKE_FAILED);
     }
   }
 
-  private async unlike(like: Like): Promise<void> {
+  private async updateLike(like: Like, dto: ExtLikeArticleDto): Promise<void> {
+    try {
+      like.type = dto.type;
+      await this.likesRepository.save(like);
+    } catch (error) {
+      throw new AppException(ArticleError.UPDATE_LIKE_FAILED);
+    }
+  }
+
+  private async removeLike(like: Like): Promise<void> {
     try {
       await this.likesRepository.remove(like);
     } catch (error) {
-      throw new AppException(ArticleError.UNLIKE_FAILED);
+      throw new AppException(ArticleError.REMOVE_LIKE_FAILED);
     }
   }
 
@@ -272,7 +285,18 @@ export class ArticlesService {
     return this.articlesRepository
       .createQueryBuilder('article')
       .innerJoin('article.user', 'ownerUser')
-      .loadRelationCountAndMap('article.likes', 'article.likes')
+      .loadRelationCountAndMap(
+        'article.upLikes',
+        'article.likes',
+        'upLike',
+        (qb) => qb.where('upLike.type'),
+      )
+      .loadRelationCountAndMap(
+        'article.downLikes',
+        'article.likes',
+        'downLike',
+        (qb) => qb.where('NOT downLike.type'),
+      )
       .loadRelationCountAndMap('article.comments', 'article.comments')
       .where(
         new Brackets((qb) =>

@@ -18,6 +18,7 @@ import {
   CreateArticleDto,
   EditArticleDto,
   ExtCreateArticleDto,
+  LikeArticleDto,
 } from './article.dto';
 import { Request, Response } from '../../common/interfaces';
 import { HasRole, MyId, Public, Roles } from '../../common/decorators';
@@ -133,7 +134,8 @@ export class ArticlesController {
   likeArticle(
     @MyId() myId: number,
     @Param() { articleId }: ArticleIdDto,
+    @Body() dto: LikeArticleDto,
   ): Promise<void> {
-    return this.articlesService.likeArticle({ articleId, myId });
+    return this.articlesService.likeArticle({ ...dto, articleId, myId });
   }
 }

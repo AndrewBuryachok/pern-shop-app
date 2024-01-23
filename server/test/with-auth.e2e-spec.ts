@@ -414,6 +414,7 @@ describe('With Auth', () => {
       return request(app.getHttpServer())
         .post(`/articles/${articlesId[0]}/likes`)
         .set('Authorization', `Bearer ${user.access}`)
+        .send({ type: true })
         .expect('');
     });
 
@@ -421,6 +422,7 @@ describe('With Auth', () => {
       return request(app.getHttpServer())
         .post(`/articles/${articlesId[1]}/likes`)
         .set('Authorization', `Bearer ${user.access}`)
+        .send({ type: false })
         .expect('');
     });
 
