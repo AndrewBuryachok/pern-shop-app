@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { Task } from './task.entity';
 import { MqttService } from '../mqtt/mqtt.service';
-import { ExtCreateTaskDto, ExtTaskIdDto } from './task.dto';
+import { ExtCreateTaskDto, ExtTakeTaskDto, ExtTaskIdDto } from './task.dto';
 import { Request, Response } from '../../common/interfaces';
 import { AppException } from '../../common/exceptions';
 import { TaskError } from './task-error.enum';
@@ -52,14 +52,14 @@ export class TasksService {
     await this.create(dto);
   }
 
-  async takeTask(dto: ExtTaskIdDto): Promise<void> {
+  async takeTask(dto: ExtTakeTaskDto): Promise<void> {
     const task = await this.tasksRepository.findOneBy({
       id: dto.taskId,
     });
     if (task.status !== Status.CREATED) {
       throw new AppException(TaskError.NOT_CREATED);
     }
-    await this.take(task, dto.myId);
+    await this.take(task, dto.userId);
     this.mqttService.publishNotificationMessage(
       task.customerUserId,
       Notification.TAKEN_TASK,
@@ -67,7 +67,11 @@ export class TasksService {
   }
 
   async untakeTask(dto: ExtTaskIdDto): Promise<void> {
-    const task = await this.checkTaskExecutor(dto.taskId, dto.myId);
+    const task = await this.checkTaskExecutor(
+      dto.taskId,
+      dto.myId,
+      dto.hasRole,
+    );
     if (task.status !== Status.TAKEN) {
       throw new AppException(TaskError.NOT_TAKEN);
     }
@@ -79,7 +83,11 @@ export class TasksService {
   }
 
   async executeTask(dto: ExtTaskIdDto): Promise<void> {
-    const task = await this.checkTaskExecutor(dto.taskId, dto.myId);
+    const task = await this.checkTaskExecutor(
+      dto.taskId,
+      dto.myId,
+      dto.hasRole,
+    );
     if (task.status !== Status.TAKEN) {
       throw new AppException(TaskError.NOT_TAKEN);
     }
@@ -91,7 +99,11 @@ export class TasksService {
   }
 
   async completeTask(dto: ExtTaskIdDto): Promise<void> {
-    const task = await this.checkTaskCustomer(dto.taskId, dto.myId);
+    const task = await this.checkTaskCustomer(
+      dto.taskId,
+      dto.myId,
+      dto.hasRole,
+    );
     if (task.status !== Status.EXECUTED) {
       throw new AppException(TaskError.NOT_EXECUTED);
     }
@@ -103,7 +115,11 @@ export class TasksService {
   }
 
   async deleteTask(dto: ExtTaskIdDto): Promise<void> {
-    const task = await this.checkTaskCustomer(dto.taskId, dto.myId);
+    const task = await this.checkTaskCustomer(
+      dto.taskId,
+      dto.myId,
+      dto.hasRole,
+    );
     if (task.status !== Status.CREATED) {
       throw new AppException(TaskError.NOT_CREATED);
     }
@@ -116,10 +132,11 @@ export class TasksService {
 
   private async checkTaskCustomer(
     id: number,
-    customerUserId: number,
+    userId: number,
+    hasRole: boolean,
   ): Promise<Task> {
-    const task = await this.tasksRepository.findOneBy({ id, customerUserId });
-    if (!task) {
+    const task = await this.tasksRepository.findOneBy({ id });
+    if (task.customerUserId !== userId && !hasRole) {
       throw new AppException(TaskError.NOT_CUSTOMER);
     }
     return task;
@@ -127,10 +144,11 @@ export class TasksService {
 
   private async checkTaskExecutor(
     id: number,
-    executorUserId: number,
+    userId: number,
+    hasRole: boolean,
   ): Promise<Task> {
-    const task = await this.tasksRepository.findOneBy({ id, executorUserId });
-    if (!task) {
+    const task = await this.tasksRepository.findOneBy({ id });
+    if (task.executorUserId !== userId && !hasRole) {
       throw new AppException(TaskError.NOT_EXECUTOR);
     }
     return task;

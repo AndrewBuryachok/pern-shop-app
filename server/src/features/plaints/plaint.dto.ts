@@ -19,8 +19,9 @@ export class UpdatePlaintDto {
 }
 
 export class ExtUpdatePlaintDto extends UpdatePlaintDto {
-  myId: number;
   plaintId: number;
+  myId: number;
+  hasRole: boolean;
 }
 
 export class CreatePlaintDto extends UpdatePlaintDto {
@@ -43,4 +44,5 @@ export class ExtCreatePlaintDto extends CreatePlaintDto {
 
 export class DeletePlaintDto extends PlaintIdDto {
   myId: number;
+  hasRole: boolean;
 }

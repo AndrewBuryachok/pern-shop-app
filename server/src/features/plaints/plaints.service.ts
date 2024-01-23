@@ -61,7 +61,11 @@ export class PlaintsService {
   }
 
   async executePlaint(dto: ExtUpdatePlaintDto): Promise<void> {
-    const plaint = await this.checkPlaintReceiver(dto.plaintId, dto.myId);
+    const plaint = await this.checkPlaintReceiver(
+      dto.plaintId,
+      dto.myId,
+      dto.hasRole,
+    );
     if (plaint.executedAt) {
       throw new AppException(PlaintError.ALREADY_EXECUTED);
     }
@@ -90,7 +94,11 @@ export class PlaintsService {
   }
 
   async deletePlaint(dto: DeletePlaintDto): Promise<void> {
-    const plaint = await this.checkPlaintSender(dto.plaintId, dto.myId);
+    const plaint = await this.checkPlaintSender(
+      dto.plaintId,
+      dto.myId,
+      dto.hasRole,
+    );
     if (plaint.executedAt) {
       throw new AppException(PlaintError.ALREADY_EXECUTED);
     }
@@ -110,13 +118,11 @@ export class PlaintsService {
 
   private async checkPlaintSender(
     id: number,
-    senderUserId: number,
+    userId: number,
+    hasRole: boolean,
   ): Promise<Plaint> {
-    const plaint = await this.plaintsRepository.findOneBy({
-      id,
-      senderUserId,
-    });
-    if (!plaint) {
+    const plaint = await this.plaintsRepository.findOneBy({ id });
+    if (plaint.senderUserId !== userId && !hasRole) {
       throw new AppException(PlaintError.NOT_SENDER);
     }
     return plaint;
@@ -124,13 +130,11 @@ export class PlaintsService {
 
   private async checkPlaintReceiver(
     id: number,
-    receiverUserId: number,
+    userId: number,
+    hasRole: boolean,
   ): Promise<Plaint> {
-    const plaint = await this.plaintsRepository.findOneBy({
-      id,
-      receiverUserId,
-    });
-    if (!plaint) {
+    const plaint = await this.plaintsRepository.findOneBy({ id });
+    if (plaint.receiverUserId !== userId && !hasRole) {
       throw new AppException(PlaintError.NOT_RECEIVER);
     }
     return plaint;

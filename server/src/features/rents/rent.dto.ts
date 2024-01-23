@@ -13,6 +13,11 @@ export class RentIdDto {
   rentId: number;
 }
 
+export class ExtRentIdDto extends RentIdDto {
+  myId: number;
+  hasRole: boolean;
+}
+
 export class CreateRentDto extends CreateReceiptDto {
   @ApiProperty()
   @IsId()
@@ -21,11 +26,6 @@ export class CreateRentDto extends CreateReceiptDto {
 }
 
 export class ExtCreateRentDto extends CreateRentDto {
-  myId: number;
-  hasRole: boolean;
-}
-
-export class ExtRentIdDto extends RentIdDto {
   myId: number;
   hasRole: boolean;
 }

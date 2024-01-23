@@ -10,9 +10,14 @@ import {
 import { ApiTags } from '@nestjs/swagger';
 import { TasksService } from './tasks.service';
 import { Task } from './task.entity';
-import { CreateTaskDto, ExtCreateTaskDto, TaskIdDto } from './task.dto';
+import {
+  CreateTaskDto,
+  ExtCreateTaskDto,
+  TakeTaskDto,
+  TaskIdDto,
+} from './task.dto';
 import { Request, Response } from '../../common/interfaces';
-import { MyId, Public, Roles } from '../../common/decorators';
+import { HasRole, MyId, Public, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
 
 @ApiTags('tasks')
@@ -63,42 +68,55 @@ export class TasksController {
   }
 
   @Post(':taskId/take')
-  takeTask(
+  takeMyTask(
     @MyId() myId: number,
     @Param() { taskId }: TaskIdDto,
   ): Promise<void> {
-    return this.tasksService.takeTask({ taskId, myId });
+    return this.tasksService.takeTask({ taskId, userId: myId });
+  }
+
+  @Roles(Role.ADMIN)
+  @Post('all/:taskId/take')
+  takeUserTask(
+    @Param() { taskId }: TaskIdDto,
+    @Body() dto: TakeTaskDto,
+  ): Promise<void> {
+    return this.tasksService.takeTask({ ...dto, taskId });
   }
 
   @Delete(':taskId/take')
   untakeTask(
     @MyId() myId: number,
+    @HasRole(Role.ADMIN) hasRole: boolean,
     @Param() { taskId }: TaskIdDto,
   ): Promise<void> {
-    return this.tasksService.untakeTask({ taskId, myId });
+    return this.tasksService.untakeTask({ taskId, myId, hasRole });
   }
 
   @Post(':taskId/execute')
   executeTask(
     @MyId() myId: number,
+    @HasRole(Role.ADMIN) hasRole: boolean,
     @Param() { taskId }: TaskIdDto,
   ): Promise<void> {
-    return this.tasksService.executeTask({ taskId, myId });
+    return this.tasksService.executeTask({ taskId, myId, hasRole });
   }
 
   @Post(':taskId')
   completeTask(
     @MyId() myId: number,
+    @HasRole(Role.ADMIN) hasRole: boolean,
     @Param() { taskId }: TaskIdDto,
   ): Promise<void> {
-    return this.tasksService.completeTask({ taskId, myId });
+    return this.tasksService.completeTask({ taskId, myId, hasRole });
   }
 
   @Delete(':taskId')
   deleteTask(
     @MyId() myId: number,
+    @HasRole(Role.ADMIN) hasRole: boolean,
     @Param() { taskId }: TaskIdDto,
   ): Promise<void> {
-    return this.tasksService.deleteTask({ taskId, myId });
+    return this.tasksService.deleteTask({ taskId, myId, hasRole });
   }
 }

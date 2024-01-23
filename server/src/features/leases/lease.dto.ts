@@ -13,6 +13,11 @@ export class LeaseIdDto {
   leaseId: number;
 }
 
+export class ExtLeaseIdDto extends LeaseIdDto {
+  myId: number;
+  hasRole: boolean;
+}
+
 export class CreateLeaseDto extends CreateReceiptDto {
   @ApiProperty()
   @IsId()
@@ -25,11 +30,6 @@ export class CreateLeaseDto extends CreateReceiptDto {
 }
 
 export class ExtCreateLeaseDto extends CreateLeaseDto {
-  myId: number;
-  hasRole: boolean;
-}
-
-export class ExtLeaseIdDto extends LeaseIdDto {
   myId: number;
   hasRole: boolean;
 }

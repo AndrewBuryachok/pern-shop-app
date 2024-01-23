@@ -21,19 +21,24 @@ export class EditRatingDto {
 export class ExtEditRatingDto extends EditRatingDto {
   ratingId: number;
   myId: number;
+  hasRole: boolean;
 }
 
 export class CreateRatingDto extends EditRatingDto {
   @ApiProperty()
   @IsId()
   @Validate(IsUserExists)
-  userId: number;
+  receiverUserId: number;
 }
 
 export class ExtCreateRatingDto extends CreateRatingDto {
-  myId: number;
+  @ApiProperty()
+  @IsId()
+  @Validate(IsUserExists)
+  senderUserId: number;
 }
 
 export class DeleteRatingDto extends RatingIdDto {
   myId: number;
+  hasRole: boolean;
 }

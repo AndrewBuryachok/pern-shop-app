@@ -17,7 +17,7 @@ import {
   UpdatePlaintDto,
 } from './plaint.dto';
 import { Request, Response } from '../../common/interfaces';
-import { MyId, Public, Roles } from '../../common/decorators';
+import { HasRole, MyId, Public, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
 
 @ApiTags('plaints')
@@ -61,7 +61,7 @@ export class PlaintsController {
     return this.plaintsService.createPlaint({ ...dto, senderUserId: myId });
   }
 
-  @Roles(Role.ADMIN)
+  @Roles(Role.JUDGE)
   @Post('all')
   createUserPlaint(@Body() dto: ExtCreatePlaintDto): Promise<void> {
     return this.plaintsService.createPlaint(dto);
@@ -70,27 +70,40 @@ export class PlaintsController {
   @Post(':plaintId/execute')
   executePlaint(
     @MyId() myId: number,
+    @HasRole(Role.JUDGE) hasRole: boolean,
     @Param() { plaintId }: PlaintIdDto,
     @Body() dto: UpdatePlaintDto,
   ): Promise<void> {
-    return this.plaintsService.executePlaint({ ...dto, plaintId, myId });
+    return this.plaintsService.executePlaint({
+      ...dto,
+      plaintId,
+      myId,
+      hasRole,
+    });
   }
 
   @Roles(Role.JUDGE)
   @Post(':plaintId')
   completePlaint(
     @MyId() myId: number,
+    @HasRole(Role.JUDGE) hasRole: boolean,
     @Param() { plaintId }: PlaintIdDto,
     @Body() dto: UpdatePlaintDto,
   ): Promise<void> {
-    return this.plaintsService.completePlaint({ ...dto, plaintId, myId });
+    return this.plaintsService.completePlaint({
+      ...dto,
+      plaintId,
+      myId,
+      hasRole,
+    });
   }
 
   @Delete(':plaintId')
   deletePlaint(
     @MyId() myId: number,
+    @HasRole(Role.JUDGE) hasRole: boolean,
     @Param() { plaintId }: PlaintIdDto,
   ): Promise<void> {
-    return this.plaintsService.deletePlaint({ plaintId, myId });
+    return this.plaintsService.deletePlaint({ plaintId, myId, hasRole });
   }
 }

@@ -2234,7 +2234,7 @@ describe('With Auth', () => {
       return request(app.getHttpServer())
         .post('/ratings')
         .set('Authorization', `Bearer ${user.access}`)
-        .send({ userId: admin.id, rate: 5 })
+        .send({ receiverUserId: admin.id, rate: 5 })
         .expect('');
     });
 

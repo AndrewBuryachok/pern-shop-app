@@ -12,6 +12,11 @@ export class TaskIdDto {
   taskId: number;
 }
 
+export class ExtTaskIdDto extends TaskIdDto {
+  myId: number;
+  hasRole: boolean;
+}
+
 export class CreateTaskDto {
   @ApiProperty()
   @IsTitle()
@@ -33,6 +38,13 @@ export class ExtCreateTaskDto extends CreateTaskDto {
   userId: number;
 }
 
-export class ExtTaskIdDto extends TaskIdDto {
-  myId: number;
+export class TakeTaskDto {
+  @ApiProperty()
+  @IsId()
+  @Validate(IsUserExists)
+  userId: number;
+}
+
+export class ExtTakeTaskDto extends TakeTaskDto {
+  taskId: number;
 }

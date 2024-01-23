@@ -46,25 +46,29 @@ export class RatingsService {
   }
 
   async createRating(dto: ExtCreateRatingDto): Promise<void> {
-    if (dto.userId === dto.myId) {
+    if (dto.senderUserId === dto.receiverUserId) {
       throw new AppException(RatingError.SENDER);
     }
     const rating = await this.ratingsRepository.findOneBy({
-      senderUserId: dto.myId,
-      receiverUserId: dto.userId,
+      senderUserId: dto.senderUserId,
+      receiverUserId: dto.receiverUserId,
     });
     if (rating) {
       throw new AppException(RatingError.ALREADY_HAS_RATING);
     }
     await this.create(dto);
     this.mqttService.publishNotificationMessage(
-      dto.userId,
+      dto.receiverUserId,
       Notification.CREATED_RATING,
     );
   }
 
   async editRating(dto: ExtEditRatingDto): Promise<void> {
-    const rating = await this.checkRatingSender(dto.ratingId, dto.myId);
+    const rating = await this.checkRatingSender(
+      dto.ratingId,
+      dto.myId,
+      dto.hasRole,
+    );
     await this.edit(rating, dto.rate);
     this.mqttService.publishNotificationMessage(
       rating.receiverUserId,
@@ -73,7 +77,11 @@ export class RatingsService {
   }
 
   async deleteRating(dto: DeleteRatingDto): Promise<void> {
-    const rating = await this.checkRatingSender(dto.ratingId, dto.myId);
+    const rating = await this.checkRatingSender(
+      dto.ratingId,
+      dto.myId,
+      dto.hasRole,
+    );
     await this.delete(rating);
     this.mqttService.publishNotificationMessage(
       rating.receiverUserId,
@@ -87,10 +95,11 @@ export class RatingsService {
 
   private async checkRatingSender(
     id: number,
-    senderUserId: number,
+    userId: number,
+    hasRole: boolean,
   ): Promise<Rating> {
-    const rating = await this.ratingsRepository.findOneBy({ id, senderUserId });
-    if (!rating) {
+    const rating = await this.ratingsRepository.findOneBy({ id });
+    if (rating.senderUserId !== userId && !hasRole) {
       throw new AppException(RatingError.NOT_SENDER);
     }
     return rating;
@@ -99,8 +108,8 @@ export class RatingsService {
   private async create(dto: ExtCreateRatingDto): Promise<void> {
     try {
       const rating = this.ratingsRepository.create({
-        senderUserId: dto.myId,
-        receiverUserId: dto.userId,
+        senderUserId: dto.senderUserId,
+        receiverUserId: dto.receiverUserId,
         rate: dto.rate,
       });
       await this.ratingsRepository.save(rating);
