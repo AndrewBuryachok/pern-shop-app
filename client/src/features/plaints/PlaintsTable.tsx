@@ -3,6 +3,7 @@ import { Plaint } from './plaint.model';
 import CustomTable from '../../common/components/CustomTable';
 import AvatarWithSingleText from '../../common/components/AvatarWithSingleText';
 import SingleText from '../../common/components/SingleText';
+import TotalText from '../../common/components/TotalText';
 import DateText from '../../common/components/DateText';
 import CustomActions from '../../common/components/CustomActions';
 import { viewPlaintAction } from './ViewPlaintModal';
@@ -17,6 +18,7 @@ export default function PlaintsTable({ actions = [], ...props }: Props) {
         'sender',
         'receiver',
         'title',
+        'answers',
         'executor',
         'completed',
         'action',
@@ -33,6 +35,9 @@ export default function PlaintsTable({ actions = [], ...props }: Props) {
           </td>
           <td>
             <SingleText text={plaint.title} />
+          </td>
+          <td>
+            <TotalText data={plaint.answers} />
           </td>
           <td>
             {plaint.executorUser ? (

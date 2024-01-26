@@ -2,14 +2,12 @@ import { SmUser } from '../users/user.model';
 
 export interface Plaint {
   id: number;
-  title: string;
   senderUser: SmUser;
-  senderText: string;
   receiverUser: SmUser;
-  receiverText?: string;
+  title: string;
   executorUser?: SmUser;
-  executorText?: string;
+  text?: string;
   createdAt: Date;
-  executedAt?: Date;
   completedAt?: Date;
+  answers: number;
 }

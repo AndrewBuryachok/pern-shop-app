@@ -1,7 +1,6 @@
 export interface CreatePlaintDto {
-  title: string;
   receiverUserId: number;
-  text: string;
+  title: string;
 }
 
 export interface ExtCreatePlaintDto extends CreatePlaintDto {
@@ -12,6 +11,9 @@ export interface DeletePlaintDto {
   plaintId: number;
 }
 
-export interface UpdatePlaintDto extends DeletePlaintDto {
+export interface EditPlaintDto extends DeletePlaintDto {
+  title: string;
+}
+export interface CompletePlaintDto extends DeletePlaintDto {
   text: string;
 }

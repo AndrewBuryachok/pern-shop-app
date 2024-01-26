@@ -1,6 +1,6 @@
 import { t } from 'i18next';
 import { useTranslation } from 'react-i18next';
-import { Select, TextInput, Textarea } from '@mantine/core';
+import { Select, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import {
@@ -14,7 +14,7 @@ import RefetchAction from '../../common/components/RefetchAction';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import { UsersItem } from '../../common/components/UsersItem';
 import { selectUsers } from '../../common/utils';
-import { MAX_TEXT_LENGTH, MAX_TITLE_LENGTH } from '../../common/constants';
+import { MAX_TITLE_LENGTH } from '../../common/constants';
 
 type Props = { hasRole: boolean };
 
@@ -23,10 +23,9 @@ export default function CreatePlaintModal({ hasRole }: Props) {
 
   const form = useForm({
     initialValues: {
-      title: '',
       senderUser: '',
       receiverUser: '',
-      text: '',
+      title: '',
     },
     transformValues: ({ senderUser, receiverUser, ...rest }) => ({
       ...rest,
@@ -56,13 +55,6 @@ export default function CreatePlaintModal({ hasRole }: Props) {
       isLoading={isLoading}
       text={t('actions.create') + ' ' + t('modals.plaints')}
     >
-      <TextInput
-        label={t('columns.title')}
-        placeholder={t('columns.title')}
-        required
-        maxLength={MAX_TITLE_LENGTH}
-        {...form.getInputProps('title')}
-      />
       {hasRole && (
         <Select
           label={t('columns.sender')}
@@ -93,13 +85,12 @@ export default function CreatePlaintModal({ hasRole }: Props) {
         readOnly={usersResponse.isFetching}
         {...form.getInputProps('receiverUser')}
       />
-      <Textarea
-        label={t('columns.text')}
-        placeholder={t('columns.text')}
+      <TextInput
+        label={t('columns.title')}
+        placeholder={t('columns.title')}
         required
-        autosize
-        maxLength={MAX_TEXT_LENGTH}
-        {...form.getInputProps('text')}
+        maxLength={MAX_TITLE_LENGTH}
+        {...form.getInputProps('title')}
       />
     </CustomForm>
   );

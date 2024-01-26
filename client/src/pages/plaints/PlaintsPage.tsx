@@ -4,6 +4,7 @@ import { ISearch } from '../../common/interfaces';
 import { Mode } from '../../common/enums';
 import {
   useGetAllPlaintsQuery,
+  useGetAnsweredPlaintsQuery,
   useGetMainPlaintsQuery,
   useGetMyPlaintsQuery,
   useGetReceivedPlaintsQuery,
@@ -13,7 +14,8 @@ import {
   createMyPlaintButton,
   createUserPlaintButton,
 } from '../../features/plaints/CreatePlaintModal';
-import { executePlaintAction } from '../../features/plaints/ExecutePlaintModal';
+import { editPlaintAction } from '../../features/plaints/EditPlaintModal';
+import { createAnswerAction } from '../../features/answers/CreateAnswerModal';
 import { completePlaintAction } from '../../features/plaints/CompletePlaintModal';
 import { deletePlaintAction } from '../../features/plaints/DeletePlaintModal';
 
@@ -38,6 +40,7 @@ export default function PlaintsPage() {
     main: useGetMainPlaintsQuery,
     my: useGetMyPlaintsQuery,
     received: useGetReceivedPlaintsQuery,
+    answered: useGetAnsweredPlaintsQuery,
     all: useGetAllPlaintsQuery,
   }[tab]!({ page, search });
 
@@ -48,9 +51,11 @@ export default function PlaintsPage() {
   }[tab];
 
   const actions = {
-    my: [deletePlaintAction],
-    received: [executePlaintAction],
-    all: [completePlaintAction, deletePlaintAction],
+    main: [createAnswerAction],
+    my: [editPlaintAction, createAnswerAction, deletePlaintAction],
+    received: [createAnswerAction],
+    answered: [createAnswerAction],
+    all: [editPlaintAction, completePlaintAction, deletePlaintAction],
   }[tab];
 
   return (

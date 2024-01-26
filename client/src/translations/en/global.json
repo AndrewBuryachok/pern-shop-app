@@ -100,7 +100,7 @@
     "rents": "View rents; complete rents",
     "leases": "View leases; complete leases",
     "tasks": "View tasks; create, take, execute, complete tasks",
-    "plaints": "View plaints; create, execute, complete plaints",
+    "plaints": "View plaints; create, edit, complete plaints",
     "polls": "View polls; create, complete, delete polls; vote to polls",
     "ratings": "View ratings; create, edit, delete ratings"
   },
@@ -127,6 +127,7 @@
     "placed": "Placed",
     "sold": "Sold",
     "taken": "Taken",
+    "answered": "Answered",
     "voted": "Voted",
     "discussed": "Discussed"
   },
@@ -145,6 +146,7 @@
     "delete": "Delete",
     "remove": "Remove",
     "untake": "Untake",
+    "answer": "Answer to",
     "vote": "Vote to",
     "discuss": "Discuss",
     "subscribe": "Subscribe",
@@ -220,7 +222,7 @@
     "to": "To",
     "status": "Status",
     "priority": "Priority",
-    "executed": "Executed",
+    "answers": "Answers",
     "vote": "Vote",
     "votes": "Votes",
     "discussions": "Discussions",
@@ -289,6 +291,7 @@
     "deliveries": "Delivery",
     "tasks": "Task",
     "plaints": "Plaint",
+    "answers": "Answer",
     "polls": "Poll",
     "discussions": "Discussion",
     "ratings": "Rating"
@@ -413,7 +416,7 @@
     },
     "plaints": {
       "created": "Someone created plaint",
-      "executed": "Someone executed your plaint",
+      "answered": "Someone answered to your plaint",
       "completed": "Someone completed your plaint",
       "deleted": "Someone deleted your plaint"
     },

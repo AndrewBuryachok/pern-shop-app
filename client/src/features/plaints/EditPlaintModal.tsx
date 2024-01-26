@@ -5,34 +5,35 @@ import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { Plaint } from './plaint.model';
-import { useDeletePlaintMutation } from './plaints.api';
-import { DeletePlaintDto } from './plaint.dto';
+import { useEditPlaintMutation } from './plaints.api';
+import { EditPlaintDto } from './plaint.dto';
 import CustomForm from '../../common/components/CustomForm';
 import CustomAvatar from '../../common/components/CustomAvatar';
-import { Color } from '../../common/constants';
+import { Color, MAX_TITLE_LENGTH } from '../../common/constants';
 
 type Props = IModal<Plaint>;
 
-export default function DeletePlaintModal({ data: plaint }: Props) {
+export default function EditPlaintModal({ data: plaint }: Props) {
   const [t] = useTranslation();
 
   const form = useForm({
     initialValues: {
       plaintId: plaint.id,
+      title: plaint.title,
     },
   });
 
-  const [deletePlaint, { isLoading }] = useDeletePlaintMutation();
+  const [editPlaint, { isLoading }] = useEditPlaintMutation();
 
-  const handleSubmit = async (dto: DeletePlaintDto) => {
-    await deletePlaint(dto);
+  const handleSubmit = async (dto: EditPlaintDto) => {
+    await editPlaint(dto);
   };
 
   return (
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={t('actions.delete') + ' ' + t('modals.plaints')}
+      text={t('actions.edit') + ' ' + t('modals.plaints')}
     >
       <TextInput
         label={t('columns.sender')}
@@ -48,17 +49,23 @@ export default function DeletePlaintModal({ data: plaint }: Props) {
         value={plaint.receiverUser.nick}
         readOnly
       />
-      <TextInput label={t('columns.title')} value={plaint.title} readOnly />
+      <TextInput
+        label={t('columns.title')}
+        placeholder={t('columns.title')}
+        required
+        maxLength={MAX_TITLE_LENGTH}
+        {...form.getInputProps('title')}
+      />
     </CustomForm>
   );
 }
 
-export const deletePlaintAction = {
+export const editPlaintAction = {
   open: (plaint: Plaint) =>
     openModal({
-      title: t('actions.delete') + ' ' + t('modals.plaints'),
-      children: <DeletePlaintModal data={plaint} />,
+      title: t('actions.edit') + ' ' + t('modals.plaints'),
+      children: <EditPlaintModal data={plaint} />,
     }),
   disable: (plaint: Plaint) => !!plaint.completedAt,
-  color: Color.RED,
+  color: Color.YELLOW,
 };

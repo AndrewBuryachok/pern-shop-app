@@ -1,11 +1,13 @@
 import { emptyApi } from '../../app/empty.api';
 import { IRequest, IResponse } from '../../common/interfaces';
 import { Plaint } from './plaint.model';
+import { Answer } from '../answers/answer.model';
 import {
+  CompletePlaintDto,
   CreatePlaintDto,
   DeletePlaintDto,
+  EditPlaintDto,
   ExtCreatePlaintDto,
-  UpdatePlaintDto,
 } from './plaint.dto';
 import { getQuery } from '../../common/utils';
 
@@ -15,25 +17,37 @@ export const plaintsApi = emptyApi.injectEndpoints({
       query: (req) => ({
         url: `/plaints?${getQuery(req)}`,
       }),
-      providesTags: ['Plaint'],
+      providesTags: ['Plaint', 'Answer'],
     }),
     getMyPlaints: build.query<IResponse<Plaint>, IRequest>({
       query: (req) => ({
         url: `/plaints/my?${getQuery(req)}`,
       }),
-      providesTags: ['Auth', 'Plaint'],
+      providesTags: ['Auth', 'Plaint', 'Answer'],
     }),
     getReceivedPlaints: build.query<IResponse<Plaint>, IRequest>({
       query: (req) => ({
         url: `/plaints/received?${getQuery(req)}`,
       }),
-      providesTags: ['Auth', 'Plaint'],
+      providesTags: ['Auth', 'Plaint', 'Answer'],
+    }),
+    getAnsweredPlaints: build.query<IResponse<Plaint>, IRequest>({
+      query: (req) => ({
+        url: `/plaints/answered?${getQuery(req)}`,
+      }),
+      providesTags: ['Auth', 'Plaint', 'Answer'],
     }),
     getAllPlaints: build.query<IResponse<Plaint>, IRequest>({
       query: (req) => ({
         url: `/plaints/all?${getQuery(req)}`,
       }),
-      providesTags: ['Auth', 'Plaint'],
+      providesTags: ['Auth', 'Plaint', 'Answer'],
+    }),
+    selectPlaintAnswers: build.query<Answer[], number>({
+      query: (plaintId) => ({
+        url: `/plaints/${plaintId}/answers`,
+      }),
+      providesTags: ['Answer'],
     }),
     createMyPlaint: build.mutation<void, CreatePlaintDto>({
       query: (dto) => ({
@@ -51,15 +65,15 @@ export const plaintsApi = emptyApi.injectEndpoints({
       }),
       invalidatesTags: ['Plaint'],
     }),
-    executePlaint: build.mutation<void, UpdatePlaintDto>({
+    editPlaint: build.mutation<void, EditPlaintDto>({
       query: ({ plaintId, ...dto }) => ({
-        url: `/plaints/${plaintId}/execute`,
-        method: 'POST',
+        url: `/plaints/${plaintId}`,
+        method: 'PATCH',
         body: dto,
       }),
       invalidatesTags: ['Plaint'],
     }),
-    completePlaint: build.mutation<void, UpdatePlaintDto>({
+    completePlaint: build.mutation<void, CompletePlaintDto>({
       query: ({ plaintId, ...dto }) => ({
         url: `/plaints/${plaintId}`,
         method: 'POST',
@@ -81,10 +95,12 @@ export const {
   useGetMainPlaintsQuery,
   useGetMyPlaintsQuery,
   useGetReceivedPlaintsQuery,
+  useGetAnsweredPlaintsQuery,
   useGetAllPlaintsQuery,
+  useSelectPlaintAnswersQuery,
   useCreateMyPlaintMutation,
   useCreateUserPlaintMutation,
-  useExecutePlaintMutation,
+  useEditPlaintMutation,
   useCompletePlaintMutation,
   useDeletePlaintMutation,
 } = plaintsApi;
