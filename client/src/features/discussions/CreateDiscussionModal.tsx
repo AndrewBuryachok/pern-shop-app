@@ -1,6 +1,6 @@
 import { t } from 'i18next';
 import { useTranslation } from 'react-i18next';
-import { Textarea, TextInput } from '@mantine/core';
+import { Input, Textarea, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
@@ -9,7 +9,8 @@ import { useCreateDiscussionMutation } from './discussions.api';
 import { CreateDiscussionDto } from './discussion.dto';
 import CustomForm from '../../common/components/CustomForm';
 import CustomAvatar from '../../common/components/CustomAvatar';
-import { Color, MAX_TEXT_LENGTH } from '../../common/constants';
+import CustomImage from '../../common/components/CustomImage';
+import { MAX_TEXT_LENGTH } from '../../common/constants';
 
 type Props = IModal<Poll>;
 
@@ -33,7 +34,7 @@ export default function CreateDiscussionModal({ data: poll }: Props) {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={t('actions.create') + ' ' + t('modals.discussions')}
+      text={t('actions.discussion') + ' ' + t('modals.polls')}
     >
       <TextInput
         label={t('columns.owner')}
@@ -42,8 +43,10 @@ export default function CreateDiscussionModal({ data: poll }: Props) {
         value={poll.user.nick}
         readOnly
       />
-      <TextInput label={t('columns.title')} value={poll.title} readOnly />
-      <Textarea label={t('columns.text')} value={poll.text} autosize readOnly />
+      <Textarea label={t('columns.text')} value={poll.text} readOnly />
+      <Input.Wrapper label={t('columns.image')}>
+        <CustomImage image={poll.image} />
+      </Input.Wrapper>
       <Textarea
         label={t('columns.text')}
         placeholder={t('columns.text')}
@@ -56,12 +59,8 @@ export default function CreateDiscussionModal({ data: poll }: Props) {
   );
 }
 
-export const createDiscussionAction = {
-  open: (poll: Poll) =>
-    openModal({
-      title: t('actions.discuss') + ' ' + t('modals.polls'),
-      children: <CreateDiscussionModal data={poll} />,
-    }),
-  disable: (poll: Poll) => !!poll.completedAt,
-  color: Color.YELLOW,
-};
+export const openCreateDiscussionModal = (poll: Poll) =>
+  openModal({
+    title: t('actions.discussion') + ' ' + t('modals.polls'),
+    children: <CreateDiscussionModal data={poll} />,
+  });

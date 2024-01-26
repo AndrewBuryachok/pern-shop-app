@@ -17,6 +17,7 @@ import {
   items,
   kinds,
   kits,
+  marks,
   priorities,
   results,
   resultsToColors,
@@ -144,12 +145,12 @@ export const selectExchangeTypes = () =>
     label: t(`constants.${type}`),
   }));
 
-export const selectVoteTypes = () =>
-  ['down', 'up'].map((type, index) => ({
-    text: t(`constants.${type}`),
+export const selectPollTypes = () =>
+  ['rejected', 'approved'].map((type, index) => ({
+    text: t(`constants.results.${type}`),
     color: `${index * 2 + 1}`,
     value: `${index}`,
-    label: t(`constants.${type}`),
+    label: t(`constants.results.${type}`),
   }));
 
 export const selectCategories = () =>
@@ -196,6 +197,12 @@ export const selectStatuses = () =>
     color: `${index + 1}`,
     value: `${index + 1}`,
     label: t(`constants.statuses.${status}`),
+  }));
+
+export const selectMarks = () =>
+  marks.map((mark, index) => ({
+    value: `${index + 1}`,
+    label: t(`constants.marks.${mark}`),
   }));
 
 export const selectResults = () =>
