@@ -1,6 +1,6 @@
 import { t } from 'i18next';
 import { useTranslation } from 'react-i18next';
-import { Select, Textarea, TextInput } from '@mantine/core';
+import { Input, Select, Textarea, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
@@ -9,9 +9,11 @@ import { useCompletePollMutation } from './polls.api';
 import { CompletePollDto } from './poll.dto';
 import CustomForm from '../../common/components/CustomForm';
 import CustomAvatar from '../../common/components/CustomAvatar';
+import CustomImage from '../../common/components/CustomImage';
+import CustomVideo from '../../common/components/CustomVideo';
 import { ColorsItem } from '../../common/components/ColorsItem';
-import { selectResults } from '../../common/utils';
-import { Color } from '../../common/constants';
+import { selectPollTypes } from '../../common/utils';
+import { Color, marks } from '../../common/constants';
 
 type Props = IModal<Poll>;
 
@@ -21,11 +23,11 @@ export default function CompletePollModal({ data: poll }: Props) {
   const form = useForm({
     initialValues: {
       pollId: poll.id,
-      result: `${poll.result}`,
+      type: '',
     },
-    transformValues: ({ result, ...rest }) => ({
+    transformValues: ({ type, ...rest }) => ({
       ...rest,
-      result: +result,
+      type: !!+type,
     }),
   });
 
@@ -48,16 +50,26 @@ export default function CompletePollModal({ data: poll }: Props) {
         value={poll.user.nick}
         readOnly
       />
-      <TextInput label={t('columns.title')} value={poll.title} readOnly />
       <Textarea label={t('columns.text')} value={poll.text} autosize readOnly />
+      <TextInput
+        label={t('columns.mark')}
+        value={t(`constants.marks.${marks[poll.mark - 1]}`)}
+        readOnly
+      />
+      <Input.Wrapper label={t('columns.image')}>
+        <CustomImage image={poll.image} />
+      </Input.Wrapper>
+      <Input.Wrapper label={t('columns.video')}>
+        <CustomVideo video={poll.video} />
+      </Input.Wrapper>
       <Select
         label={t('columns.result')}
         placeholder={t('columns.result')}
         itemComponent={ColorsItem}
-        data={selectResults()}
+        data={selectPollTypes()}
         searchable
         required
-        {...form.getInputProps('result')}
+        {...form.getInputProps('type')}
       />
     </CustomForm>
   );
@@ -69,6 +81,6 @@ export const completePollAction = {
       title: t('actions.complete') + ' ' + t('modals.polls'),
       children: <CompletePollModal data={poll} />,
     }),
-  disable: () => false,
+  disable: (poll: Poll) => !!poll.completedAt,
   color: Color.GREEN,
 };

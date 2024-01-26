@@ -8,8 +8,10 @@ export interface SmPoll {
 export interface Poll {
   id: number;
   user: SmUser;
-  title: string;
   text: string;
+  mark: number;
+  image: string;
+  video: string;
   result: number;
   createdAt: Date;
   completedAt?: Date;

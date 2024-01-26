@@ -1,6 +1,7 @@
 import { t } from 'i18next';
 import { useTranslation } from 'react-i18next';
-import { Select, TextInput, Textarea } from '@mantine/core';
+import { Select, Textarea } from '@mantine/core';
+import { useDebouncedValue } from '@mantine/hooks';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import {
@@ -12,9 +13,11 @@ import { ExtCreatePollDto } from './poll.dto';
 import CustomForm from '../../common/components/CustomForm';
 import RefetchAction from '../../common/components/RefetchAction';
 import CustomAvatar from '../../common/components/CustomAvatar';
+import CustomImage from '../../common/components/CustomImage';
+import CustomVideo from '../../common/components/CustomVideo';
 import { UsersItem } from '../../common/components/UsersItem';
-import { selectUsers } from '../../common/utils';
-import { MAX_TEXT_LENGTH, MAX_TITLE_LENGTH } from '../../common/constants';
+import { selectMarks, selectUsers } from '../../common/utils';
+import { MAX_LINK_LENGTH, MAX_TEXT_LENGTH } from '../../common/constants';
 
 type Props = { hasRole: boolean };
 
@@ -24,11 +27,20 @@ export default function CreatePollModal({ hasRole }: Props) {
   const form = useForm({
     initialValues: {
       user: '',
-      title: '',
       text: '',
+      mark: '',
+      image: '',
+      video: '',
     },
-    transformValues: ({ user, ...rest }) => ({ ...rest, userId: +user }),
+    transformValues: ({ user, mark, ...rest }) => ({
+      ...rest,
+      mark: +mark,
+      userId: +user,
+    }),
   });
+
+  const [image] = useDebouncedValue(form.values.image, 500);
+  const [video] = useDebouncedValue(form.values.video, 500);
 
   const { data: users, ...usersResponse } = useSelectAllUsersQuery(undefined, {
     skip: !hasRole,
@@ -66,13 +78,6 @@ export default function CreatePollModal({ hasRole }: Props) {
           {...form.getInputProps('user')}
         />
       )}
-      <TextInput
-        label={t('columns.title')}
-        placeholder={t('columns.title')}
-        required
-        maxLength={MAX_TITLE_LENGTH}
-        {...form.getInputProps('title')}
-      />
       <Textarea
         label={t('columns.text')}
         placeholder={t('columns.text')}
@@ -81,6 +86,28 @@ export default function CreatePollModal({ hasRole }: Props) {
         maxLength={MAX_TEXT_LENGTH}
         {...form.getInputProps('text')}
       />
+      <Select
+        label={t('columns.mark')}
+        placeholder={t('columns.mark')}
+        data={selectMarks()}
+        searchable
+        required
+        {...form.getInputProps('mark')}
+      />
+      <Textarea
+        label={t('columns.image')}
+        placeholder={t('columns.image')}
+        maxLength={MAX_LINK_LENGTH}
+        {...form.getInputProps('image')}
+      />
+      <CustomImage image={image} />
+      <Textarea
+        label={t('columns.video')}
+        placeholder={t('columns.video')}
+        maxLength={MAX_LINK_LENGTH}
+        {...form.getInputProps('video')}
+      />
+      <CustomVideo video={video} />
     </CustomForm>
   );
 }

@@ -1,10 +1,16 @@
 export interface CreatePollDto {
-  title: string;
   text: string;
+  mark: number;
+  image: string;
+  video: string;
 }
 
 export interface ExtCreatePollDto extends CreatePollDto {
   userId: number;
+}
+
+export interface EditPollDto extends CreatePollDto {
+  pollId: number;
 }
 
 export interface DeletePollDto {
@@ -12,7 +18,7 @@ export interface DeletePollDto {
 }
 
 export interface CompletePollDto extends DeletePollDto {
-  result: number;
+  type: boolean;
 }
 
 export interface VotePollDto extends DeletePollDto {

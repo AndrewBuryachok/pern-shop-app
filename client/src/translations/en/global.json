@@ -101,7 +101,7 @@
     "leases": "View leases; complete leases",
     "tasks": "View tasks; create, take, execute, complete tasks",
     "plaints": "View plaints; create, edit, complete plaints",
-    "polls": "View polls; create, complete, delete polls; vote to polls",
+    "polls": "View polls; create, edit, complete, delete polls; vote to polls",
     "ratings": "View ratings; create, edit, delete ratings"
   },
   "home": {
@@ -146,13 +146,11 @@
     "delete": "Delete",
     "remove": "Remove",
     "untake": "Untake",
-    "answer": "Answer to",
-    "vote": "Vote to",
-    "discuss": "Discuss",
     "subscribe": "Subscribe",
     "unsubscribe": "Unsubscribe",
-    "like": "Like",
     "comment": "Comment",
+    "answer": "Answer to",
+    "discuss": "Discuss",
     "view": "View"
   },
   "components": {
@@ -226,6 +224,7 @@
     "vote": "Vote",
     "votes": "Votes",
     "discussions": "Discussions",
+    "mark": "Mark",
     "result": "Result",
     "rate": "Rate",
     "action": "Action",
@@ -488,6 +487,10 @@
       "high": "High",
       "medium": "Medium",
       "low": "Low"
+    },
+    "marks": {
+      "site": "Site",
+      "server": "Server"
     },
     "results": {
       "progress": "In progress",

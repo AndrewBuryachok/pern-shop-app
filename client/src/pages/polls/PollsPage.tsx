@@ -8,13 +8,12 @@ import {
   useGetMyPollsQuery,
   useGetVotedPollsQuery,
 } from '../../features/polls/polls.api';
-import PollsTable from '../../features/polls/PollsTable';
+import PollsList from '../../features/polls/PollsList';
 import {
   createMyPollButton,
   createUserPollButton,
 } from '../../features/polls/CreatePollModal';
-import { votePollAction } from '../../features/polls/VotePollModal';
-import { createDiscussionAction } from '../../features/discussions/CreateDiscussionModal';
+import { editPollAction } from '../../features/polls/EditPollModal';
 import { completePollAction } from '../../features/polls/CompletePollModal';
 import { deletePollAction } from '../../features/polls/DeletePollModal';
 
@@ -28,7 +27,7 @@ export default function PollsPage() {
   const [search, setSearch] = useState<ISearch>({
     id: +(searchParams.get('id') || 0) || null,
     user: searchParams.get('user'),
-    title: searchParams.get('title') || '',
+    mark: searchParams.get('mark'),
     result: searchParams.get('result'),
     minDate: searchParams.get('minDate'),
     maxDate: searchParams.get('maxDate'),
@@ -49,15 +48,12 @@ export default function PollsPage() {
   }[tab];
 
   const actions = {
-    main: [createDiscussionAction, votePollAction],
-    my: [createDiscussionAction, votePollAction, deletePollAction],
-    voted: [createDiscussionAction, votePollAction],
-    discussed: [createDiscussionAction, votePollAction],
-    all: [completePollAction, deletePollAction],
+    my: [editPollAction, deletePollAction],
+    all: [editPollAction, completePollAction, deletePollAction],
   }[tab];
 
   return (
-    <PollsTable
+    <PollsList
       {...response}
       page={page}
       setPage={setPage}

@@ -7,6 +7,7 @@ import {
   CompletePollDto,
   CreatePollDto,
   DeletePollDto,
+  EditPollDto,
   ExtCreatePollDto,
   VotePollDto,
 } from './poll.dto';
@@ -78,6 +79,14 @@ export const pollsApi = emptyApi.injectEndpoints({
       }),
       invalidatesTags: ['Poll'],
     }),
+    editPoll: build.mutation<void, EditPollDto>({
+      query: ({ pollId, ...dto }) => ({
+        url: `/polls/${pollId}`,
+        method: 'PATCH',
+        body: dto,
+      }),
+      invalidatesTags: ['Poll'],
+    }),
     completePoll: build.mutation<void, CompletePollDto>({
       query: ({ pollId, ...dto }) => ({
         url: `/polls/${pollId}`,
@@ -115,6 +124,7 @@ export const {
   useSelectPollDiscussionsQuery,
   useCreateMyPollMutation,
   useCreateUserPollMutation,
+  useEditPollMutation,
   useCompletePollMutation,
   useDeletePollMutation,
   useVotePollMutation,

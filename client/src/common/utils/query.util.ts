@@ -88,6 +88,9 @@ export const getQuery = ({ page, search }: IRequest) => {
   if (search?.status) {
     query.append('status', search.status);
   }
+  if (search?.mark) {
+    query.append('mark', search.mark);
+  }
   if (search?.result) {
     query.append('result', search.result);
   }

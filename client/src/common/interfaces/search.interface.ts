@@ -29,6 +29,7 @@ export interface ISearch {
   kind?: string | null;
   priority?: string | null;
   status?: string | null;
+  mark?: string | null;
   result?: string | null;
   rate?: number | null;
   minDate?: string | null;
