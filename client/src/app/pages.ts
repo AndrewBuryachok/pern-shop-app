@@ -282,6 +282,7 @@ export const pages = [
       { index: true },
       { path: 'my' },
       { path: 'received' },
+      { path: 'answered' },
       { path: 'all', role: Role.JUDGE },
     ],
   },

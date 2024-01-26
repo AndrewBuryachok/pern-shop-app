@@ -34,6 +34,7 @@ export const emptyApi = createApi({
     'Bid',
     'Task',
     'Plaint',
+    'Answer',
     'Poll',
     'Vote',
     'Discussion',

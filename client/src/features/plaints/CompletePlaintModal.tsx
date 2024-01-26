@@ -6,7 +6,7 @@ import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { Plaint } from './plaint.model';
 import { useCompletePlaintMutation } from './plaints.api';
-import { UpdatePlaintDto } from './plaint.dto';
+import { CompletePlaintDto } from './plaint.dto';
 import CustomForm from '../../common/components/CustomForm';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import { Color, MAX_TEXT_LENGTH } from '../../common/constants';
@@ -25,7 +25,7 @@ export default function CompletePlaintModal({ data: plaint }: Props) {
 
   const [completePlaint, { isLoading }] = useCompletePlaintMutation();
 
-  const handleSubmit = async (dto: UpdatePlaintDto) => {
+  const handleSubmit = async (dto: CompletePlaintDto) => {
     await completePlaint(dto);
   };
 
@@ -35,18 +35,11 @@ export default function CompletePlaintModal({ data: plaint }: Props) {
       isLoading={isLoading}
       text={t('actions.complete') + ' ' + t('modals.plaints')}
     >
-      <TextInput label={t('columns.title')} value={plaint.title} readOnly />
       <TextInput
         label={t('columns.sender')}
         icon={<CustomAvatar {...plaint.senderUser} />}
         iconWidth={48}
         value={plaint.senderUser.nick}
-        readOnly
-      />
-      <Textarea
-        label={t('columns.text')}
-        value={plaint.senderText}
-        autosize
         readOnly
       />
       <TextInput
@@ -56,12 +49,7 @@ export default function CompletePlaintModal({ data: plaint }: Props) {
         value={plaint.receiverUser.nick}
         readOnly
       />
-      <Textarea
-        label={t('columns.text')}
-        value={plaint.receiverText}
-        autosize
-        readOnly
-      />
+      <TextInput label={t('columns.title')} value={plaint.title} readOnly />
       <Textarea
         label={t('columns.text')}
         placeholder={t('columns.text')}
