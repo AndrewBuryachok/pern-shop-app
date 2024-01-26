@@ -4,17 +4,16 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { User } from '../users/user.entity';
+import { Answer } from '../answers/answer.entity';
 
 @Entity('plaints')
 export class Plaint {
   @PrimaryGeneratedColumn()
   id: number;
-
-  @Column()
-  title: string;
 
   @Column({ name: 'sender_user_id' })
   senderUserId: number;
@@ -23,9 +22,6 @@ export class Plaint {
   @JoinColumn({ name: 'sender_user_id' })
   senderUser: User;
 
-  @Column({ name: 'sender_text' })
-  senderText: string;
-
   @Column({ name: 'receiver_user_id' })
   receiverUserId: number;
 
@@ -33,8 +29,8 @@ export class Plaint {
   @JoinColumn({ name: 'receiver_user_id' })
   receiverUser: User;
 
-  @Column({ name: 'receiver_text', nullable: true })
-  receiverText?: string;
+  @Column()
+  title: string;
 
   @Column({ name: 'executor_user_id', nullable: true })
   executorUserId?: number;
@@ -43,15 +39,15 @@ export class Plaint {
   @JoinColumn({ name: 'executor_user_id' })
   executorUser?: User;
 
-  @Column({ name: 'executor_text', nullable: true })
-  executorText?: string;
+  @Column({ nullable: true })
+  text?: string;
 
   @CreateDateColumn({ type: 'timestamptz', name: 'created_at' })
   createdAt: Date;
 
-  @Column({ type: 'timestamptz', name: 'executed_at', nullable: true })
-  executedAt?: Date;
-
   @Column({ type: 'timestamptz', name: 'completed_at', nullable: true })
   completedAt?: Date;
+
+  @OneToMany(() => Answer, (answer) => answer.plaint)
+  answers: Answer[];
 }

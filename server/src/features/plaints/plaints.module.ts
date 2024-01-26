@@ -10,5 +10,6 @@ import { IsPlaintExists } from '../../common/constraints';
   imports: [TypeOrmModule.forFeature([Plaint]), MqttModule],
   controllers: [PlaintsController],
   providers: [PlaintsService, IsPlaintExists],
+  exports: [PlaintsService],
 })
 export class PlaintsModule {}

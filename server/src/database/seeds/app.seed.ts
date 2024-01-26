@@ -31,6 +31,7 @@ import { Sale } from '../../features/sales/sale.entity';
 import { Bid } from '../../features/bids/bid.entity';
 import { Task } from '../../features/tasks/task.entity';
 import { Plaint } from '../../features/plaints/plaint.entity';
+import { Answer } from '../../features/answers/answer.entity';
 import { Poll } from '../../features/polls/poll.entity';
 import { Vote } from '../../features/polls/vote.entity';
 import { Discussion } from '../../features/discussions/discussion.entity';
@@ -421,6 +422,13 @@ export default class AppSeed implements Seeder {
         return plaint;
       })
       .createMany(20);
+    const answers = await factory(Answer)()
+      .map(async (answer) => {
+        answer.plaint = faker.helpers.arrayElement(plaints);
+        answer.user = faker.helpers.arrayElement(users);
+        return answer;
+      })
+      .createMany(40);
     const polls = await factory(Poll)()
       .map(async (poll) => {
         poll.user = faker.helpers.arrayElement(users);

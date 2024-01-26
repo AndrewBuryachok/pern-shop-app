@@ -12,23 +12,19 @@ export class PlaintIdDto {
   plaintId: number;
 }
 
-export class UpdatePlaintDto {
+export class EditPlaintDto {
   @ApiProperty()
-  @IsText()
-  text: string;
+  @IsTitle()
+  title: string;
 }
 
-export class ExtUpdatePlaintDto extends UpdatePlaintDto {
+export class ExtEditPlaintDto extends EditPlaintDto {
   plaintId: number;
   myId: number;
   hasRole: boolean;
 }
 
-export class CreatePlaintDto extends UpdatePlaintDto {
-  @ApiProperty()
-  @IsTitle()
-  title: string;
-
+export class CreatePlaintDto extends EditPlaintDto {
   @ApiProperty()
   @IsId()
   @Validate(IsUserExists)
@@ -40,6 +36,17 @@ export class ExtCreatePlaintDto extends CreatePlaintDto {
   @IsId()
   @Validate(IsUserExists)
   senderUserId: number;
+}
+
+export class CompletePlaintDto {
+  @ApiProperty()
+  @IsText()
+  text: string;
+}
+
+export class ExtCompletePlaintDto extends CompletePlaintDto {
+  plaintId: number;
+  myId: number;
 }
 
 export class DeletePlaintDto extends PlaintIdDto {

@@ -42,6 +42,7 @@ describe('With Auth', () => {
   let deliveriesId: number;
   let tasksId: number;
   let plaintsId: number;
+  let answerId: number;
   let pollsId: number;
   let discussionId: number;
   let ratingId: number;
@@ -2030,11 +2031,7 @@ describe('With Auth', () => {
       return request(app.getHttpServer())
         .post('/plaints')
         .set('Authorization', `Bearer ${user.access}`)
-        .send({
-          title: 'plaint title',
-          receiverUserId: user.id,
-          text: 'sender text',
-        })
+        .send({ receiverUserId: user.id, title: 'plaint title' })
         .expect('');
     });
 
@@ -2042,11 +2039,7 @@ describe('With Auth', () => {
       return request(app.getHttpServer())
         .post('/plaints')
         .set('Authorization', `Bearer ${user.access}`)
-        .send({
-          title: 'plaint title',
-          receiverUserId: user.id,
-          text: 'sender text',
-        })
+        .send({ receiverUserId: user.id, title: 'plaint title' })
         .expect('');
     });
 
@@ -2071,18 +2064,49 @@ describe('With Auth', () => {
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
 
+    it('POST /answers', async () => {
+      return request(app.getHttpServer())
+        .post('/answers')
+        .set('Authorization', `Bearer ${user.access}`)
+        .send({ plaintId: plaintsId[0], text: 'answer text' })
+        .expect('');
+    });
+
+    it('GET /plaints/answered', async () => {
+      return request(app.getHttpServer())
+        .get('/plaints/answered')
+        .set('Authorization', `Bearer ${user.access}`)
+        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
+    });
+
     it('GET /plaints/all', async () => {
       return request(app.getHttpServer())
         .get('/plaints/all')
         .set('Authorization', `Bearer ${judge.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
+  });
 
-    it('POST /plaints/:plaintId/execute', async () => {
+  describe('Answers', () => {
+    it('GET /plaints/:plaintId/answers', async () => {
       return request(app.getHttpServer())
-        .post(`/plaints/${plaintsId[0]}/execute`)
+        .get(`/plaints/${plaintsId[0]}/answers`)
+        .expect((res) => expect(res.body.length).toBeGreaterThan(0))
+        .then((res) => (answerId = res.body[0].id));
+    });
+
+    it('PATCH /answers/:answerId', async () => {
+      return request(app.getHttpServer())
+        .patch(`/answers/${answerId}`)
         .set('Authorization', `Bearer ${user.access}`)
-        .send({ text: 'receiver text' })
+        .send({ text: 'answer text' })
+        .expect('');
+    });
+
+    it('DELETE /answers/:answerId', async () => {
+      return request(app.getHttpServer())
+        .delete(`/answers/${answerId}`)
+        .set('Authorization', `Bearer ${user.access}`)
         .expect('');
     });
 
@@ -2090,7 +2114,7 @@ describe('With Auth', () => {
       return request(app.getHttpServer())
         .post(`/plaints/${plaintsId[0]}`)
         .set('Authorization', `Bearer ${judge.access}`)
-        .send({ text: 'executor text' })
+        .send({ text: 'plaint text' })
         .expect('');
     });
 
@@ -2153,7 +2177,7 @@ describe('With Auth', () => {
       return request(app.getHttpServer())
         .post('/discussions')
         .set('Authorization', `Bearer ${user.access}`)
-        .send({ pollId: pollsId[0], type: true, text: 'discussion text' })
+        .send({ pollId: pollsId[0], text: 'discussion text' })
         .expect('');
     });
 
@@ -2199,12 +2223,12 @@ describe('With Auth', () => {
     });
   });
 
-  describe('Discussion', () => {
+  describe('Discussions', () => {
     it('PATCH /discussions/:discussionId', async () => {
       return request(app.getHttpServer())
         .patch(`/discussions/${discussionId}`)
         .set('Authorization', `Bearer ${user.access}`)
-        .send({ type: false, text: 'discussion text' })
+        .send({ text: 'discussion text' })
         .expect('');
     });
 
