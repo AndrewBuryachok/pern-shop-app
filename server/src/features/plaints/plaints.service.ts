@@ -2,11 +2,13 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { Plaint } from './plaint.entity';
+import { Answer } from '../answers/answer.entity';
 import { MqttService } from '../mqtt/mqtt.service';
 import {
   DeletePlaintDto,
+  ExtCompletePlaintDto,
   ExtCreatePlaintDto,
-  ExtUpdatePlaintDto,
+  ExtEditPlaintDto,
 } from './plaint.dto';
 import { Request, Response } from '../../common/interfaces';
 import { AppException } from '../../common/exceptions';
@@ -45,11 +47,47 @@ export class PlaintsService {
     return { result, count };
   }
 
+  async getAnsweredPlaints(
+    myId: number,
+    req: Request,
+  ): Promise<Response<Plaint>> {
+    const [result, count] = await this.getPlaintsQueryBuilder(req)
+      .innerJoinAndMapOne(
+        'myAnswer',
+        'plaint.answers',
+        'myAnswer',
+        'myAnswer.userId = :myId',
+        { myId },
+      )
+      .getManyAndCount();
+    return { result, count };
+  }
+
   async getAllPlaints(req: Request): Promise<Response<Plaint>> {
     const [result, count] = await this.getPlaintsQueryBuilder(
       req,
     ).getManyAndCount();
     return { result, count };
+  }
+
+  async selectPlaintAnswers(plaintId: number): Promise<Answer[]> {
+    const plaint = await this.plaintsRepository
+      .createQueryBuilder('plaint')
+      .leftJoin('plaint.answers', 'answer')
+      .leftJoin('answer.user', 'answerer')
+      .where('plaint.id = :plaintId', { plaintId })
+      .orderBy('answer.id', 'DESC')
+      .select([
+        'plaint.id',
+        'answer.id',
+        'answerer.id',
+        'answerer.nick',
+        'answerer.avatar',
+        'answer.text',
+        'answer.createdAt',
+      ])
+      .getOne();
+    return plaint.answers;
   }
 
   async createPlaint(dto: ExtCreatePlaintDto): Promise<void> {
@@ -60,30 +98,17 @@ export class PlaintsService {
     );
   }
 
-  async executePlaint(dto: ExtUpdatePlaintDto): Promise<void> {
-    const plaint = await this.checkPlaintReceiver(
+  async editPlaint(dto: ExtEditPlaintDto): Promise<void> {
+    const plaint = await this.checkPlaintSender(
       dto.plaintId,
       dto.myId,
       dto.hasRole,
     );
-    if (plaint.executedAt) {
-      throw new AppException(PlaintError.ALREADY_EXECUTED);
-    }
-    if (plaint.completedAt) {
-      throw new AppException(PlaintError.ALREADY_COMPLETED);
-    }
-    await this.execute(plaint, dto);
-    this.mqttService.publishNotificationMessage(
-      plaint.senderUserId,
-      Notification.EXECUTED_PLAINT,
-    );
+    await this.edit(plaint, dto);
   }
 
-  async completePlaint(dto: ExtUpdatePlaintDto): Promise<void> {
-    const plaint = await this.plaintsRepository.findOneBy({ id: dto.plaintId });
-    if (plaint.completedAt) {
-      throw new AppException(PlaintError.ALREADY_COMPLETED);
-    }
+  async completePlaint(dto: ExtCompletePlaintDto): Promise<void> {
+    const plaint = await this.checkPlaintNotCompleted(dto.plaintId);
     await this.complete(plaint, dto);
     [plaint.senderUserId, plaint.receiverUserId].forEach((userId) =>
       this.mqttService.publishNotificationMessage(
@@ -99,12 +124,6 @@ export class PlaintsService {
       dto.myId,
       dto.hasRole,
     );
-    if (plaint.executedAt) {
-      throw new AppException(PlaintError.ALREADY_EXECUTED);
-    }
-    if (plaint.executedAt) {
-      throw new AppException(PlaintError.ALREADY_COMPLETED);
-    }
     await this.delete(plaint);
     this.mqttService.publishNotificationMessage(
       plaint.receiverUserId,
@@ -125,17 +144,16 @@ export class PlaintsService {
     if (plaint.senderUserId !== userId && !hasRole) {
       throw new AppException(PlaintError.NOT_SENDER);
     }
+    if (plaint.completedAt) {
+      throw new AppException(PlaintError.ALREADY_COMPLETED);
+    }
     return plaint;
   }
 
-  private async checkPlaintReceiver(
-    id: number,
-    userId: number,
-    hasRole: boolean,
-  ): Promise<Plaint> {
+  async checkPlaintNotCompleted(id: number): Promise<Plaint> {
     const plaint = await this.plaintsRepository.findOneBy({ id });
-    if (plaint.receiverUserId !== userId && !hasRole) {
-      throw new AppException(PlaintError.NOT_RECEIVER);
+    if (plaint.completedAt) {
+      throw new AppException(PlaintError.ALREADY_COMPLETED);
     }
     return plaint;
   }
@@ -146,7 +164,6 @@ export class PlaintsService {
         title: dto.title,
         senderUserId: dto.senderUserId,
         receiverUserId: dto.receiverUserId,
-        senderText: dto.text,
       });
       await this.plaintsRepository.save(plaint);
     } catch (error) {
@@ -154,26 +171,22 @@ export class PlaintsService {
     }
   }
 
-  private async execute(
-    plaint: Plaint,
-    dto: ExtUpdatePlaintDto,
-  ): Promise<void> {
+  private async edit(plaint: Plaint, dto: ExtEditPlaintDto): Promise<void> {
     try {
-      plaint.receiverText = dto.text;
-      plaint.executedAt = new Date();
+      plaint.title = dto.title;
       await this.plaintsRepository.save(plaint);
     } catch (error) {
-      throw new AppException(PlaintError.EXECUTE_FAILED);
+      throw new AppException(PlaintError.EDIT_FAILED);
     }
   }
 
   private async complete(
     plaint: Plaint,
-    dto: ExtUpdatePlaintDto,
+    dto: ExtCompletePlaintDto,
   ): Promise<void> {
     try {
       plaint.executorUserId = dto.myId;
-      plaint.executorText = dto.text;
+      plaint.text = dto.text;
       plaint.completedAt = new Date();
       await this.plaintsRepository.save(plaint);
     } catch (error) {
@@ -195,6 +208,7 @@ export class PlaintsService {
       .innerJoin('plaint.senderUser', 'senderUser')
       .innerJoin('plaint.receiverUser', 'receiverUser')
       .leftJoin('plaint.executorUser', 'executorUser')
+      .loadRelationCountAndMap('plaint.answers', 'plaint.answers')
       .where(
         new Brackets((qb) =>
           qb.where(`${!req.id}`).orWhere('plaint.id = :id', { id: req.id }),
@@ -258,17 +272,14 @@ export class PlaintsService {
         'senderUser.id',
         'senderUser.nick',
         'senderUser.avatar',
-        'plaint.senderText',
         'receiverUser.id',
         'receiverUser.nick',
         'receiverUser.avatar',
-        'plaint.receiverText',
         'executorUser.id',
         'executorUser.nick',
         'executorUser.avatar',
-        'plaint.executorText',
+        'plaint.text',
         'plaint.createdAt',
-        'plaint.executedAt',
         'plaint.completedAt',
       ]);
   }

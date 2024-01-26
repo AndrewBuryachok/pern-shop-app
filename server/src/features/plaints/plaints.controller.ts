@@ -4,17 +4,20 @@ import {
   Delete,
   Get,
   Param,
+  Patch,
   Post,
   Query,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { PlaintsService } from './plaints.service';
 import { Plaint } from './plaint.entity';
+import { Answer } from '../answers/answer.entity';
 import {
+  CompletePlaintDto,
   CreatePlaintDto,
+  EditPlaintDto,
   ExtCreatePlaintDto,
   PlaintIdDto,
-  UpdatePlaintDto,
 } from './plaint.dto';
 import { Request, Response } from '../../common/interfaces';
 import { HasRole, MyId, Public, Roles } from '../../common/decorators';
@@ -47,10 +50,24 @@ export class PlaintsController {
     return this.plaintsService.getReceivedPlaints(myId, req);
   }
 
+  @Get('answered')
+  getAnsweredPlaints(
+    @MyId() myId: number,
+    @Query() req: Request,
+  ): Promise<Response<Plaint>> {
+    return this.plaintsService.getAnsweredPlaints(myId, req);
+  }
+
   @Roles(Role.JUDGE)
   @Get('all')
   getAllPlaints(@Query() req: Request): Promise<Response<Plaint>> {
     return this.plaintsService.getAllPlaints(req);
+  }
+
+  @Public()
+  @Get(':plaintId/answers')
+  selectPlaintAnswers(@Param() { plaintId }: PlaintIdDto): Promise<Answer[]> {
+    return this.plaintsService.selectPlaintAnswers(plaintId);
   }
 
   @Post()
@@ -67,35 +84,24 @@ export class PlaintsController {
     return this.plaintsService.createPlaint(dto);
   }
 
-  @Post(':plaintId/execute')
-  executePlaint(
+  @Patch(':plaintId')
+  editPlaint(
     @MyId() myId: number,
     @HasRole(Role.JUDGE) hasRole: boolean,
     @Param() { plaintId }: PlaintIdDto,
-    @Body() dto: UpdatePlaintDto,
+    @Body() dto: EditPlaintDto,
   ): Promise<void> {
-    return this.plaintsService.executePlaint({
-      ...dto,
-      plaintId,
-      myId,
-      hasRole,
-    });
+    return this.plaintsService.editPlaint({ ...dto, plaintId, myId, hasRole });
   }
 
   @Roles(Role.JUDGE)
   @Post(':plaintId')
   completePlaint(
     @MyId() myId: number,
-    @HasRole(Role.JUDGE) hasRole: boolean,
     @Param() { plaintId }: PlaintIdDto,
-    @Body() dto: UpdatePlaintDto,
+    @Body() dto: CompletePlaintDto,
   ): Promise<void> {
-    return this.plaintsService.completePlaint({
-      ...dto,
-      plaintId,
-      myId,
-      hasRole,
-    });
+    return this.plaintsService.completePlaint({ ...dto, plaintId, myId });
   }
 
   @Delete(':plaintId')

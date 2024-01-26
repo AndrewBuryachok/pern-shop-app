@@ -568,6 +568,10 @@ describe('Without Auth', () => {
       return request(app.getHttpServer()).get('/plaints/received').expect(401);
     });
 
+    it('GET /plaints/answered', async () => {
+      return request(app.getHttpServer()).get('/plaints/answered').expect(401);
+    });
+
     it('GET /plaints/all', async () => {
       return request(app.getHttpServer())
         .get('/plaints/all')

@@ -30,6 +30,7 @@ import { SalesModule } from './features/sales/sales.module';
 import { BidsModule } from './features/bids/bids.module';
 import { TasksModule } from './features/tasks/tasks.module';
 import { PlaintsModule } from './features/plaints/plaints.module';
+import { AnswersModule } from './features/answers/answers.module';
 import { PollsModule } from './features/polls/polls.module';
 import { DiscussionsModule } from './features/discussions/discussions.module';
 import { RatingsModule } from './features/ratings/ratings.module';
@@ -81,6 +82,7 @@ import { RatingsModule } from './features/ratings/ratings.module';
     BidsModule,
     TasksModule,
     PlaintsModule,
+    AnswersModule,
     PollsModule,
     DiscussionsModule,
     RatingsModule,

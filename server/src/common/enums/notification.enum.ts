@@ -58,7 +58,7 @@ export enum Notification {
   EXECUTED_TASK = 'Executed tasks',
   COMPLETED_TASK = 'Completed tasks',
   CREATED_PLAINT = 'Created plaints',
-  EXECUTED_PLAINT = 'Executed plaints',
+  ANSWERED_PLAINT = 'Answered plaints',
   COMPLETED_PLAINT = 'Completed plaints',
   DELETED_PLAINT = 'Deleted plaints',
   CREATED_POLL = 'Created polls',
