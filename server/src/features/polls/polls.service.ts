@@ -9,6 +9,7 @@ import {
   DeletePollDto,
   ExtCompletePollDto,
   ExtCreatePollDto,
+  ExtEditPollDto,
   ExtVotePollDto,
 } from './poll.dto';
 import { Request, Response } from '../../common/interfaces';
@@ -133,8 +134,13 @@ export class PollsService {
     this.mqttService.publishNotificationMessage(0, Notification.CREATED_POLL);
   }
 
+  async editPoll(dto: ExtEditPollDto): Promise<void> {
+    const poll = await this.checkPollOwner(dto.pollId, dto.myId, dto.hasRole);
+    await this.edit(poll, dto);
+  }
+
   async completePoll(dto: ExtCompletePollDto): Promise<void> {
-    const poll = await this.pollsRepository.findOneBy({ id: dto.pollId });
+    const poll = await this.checkPollNotCompleted(dto.pollId);
     await this.complete(poll, dto);
     this.mqttService.publishNotificationMessage(
       poll.userId,
@@ -148,10 +154,7 @@ export class PollsService {
   }
 
   async votePoll(dto: ExtVotePollDto): Promise<void> {
-    const poll = await this.pollsRepository.findOneBy({ id: dto.pollId });
-    if (poll.completedAt) {
-      throw new AppException(PollError.ALREADY_COMPLETED);
-    }
+    const poll = await this.checkPollNotCompleted(dto.pollId);
     const vote = await this.votesRepository.findOneBy({
       pollId: dto.pollId,
       userId: dto.myId,
@@ -200,8 +203,10 @@ export class PollsService {
     try {
       const poll = this.pollsRepository.create({
         userId: dto.userId,
-        title: dto.title,
         text: dto.text,
+        mark: dto.mark,
+        image: dto.image,
+        video: dto.video,
       });
       await this.pollsRepository.save(poll);
     } catch (error) {
@@ -209,10 +214,22 @@ export class PollsService {
     }
   }
 
+  private async edit(poll: Poll, dto: ExtEditPollDto): Promise<void> {
+    try {
+      poll.text = dto.text;
+      poll.mark = dto.mark;
+      poll.image = dto.image;
+      poll.video = dto.video;
+      await this.pollsRepository.save(poll);
+    } catch (error) {
+      throw new AppException(PollError.EDIT_FAILED);
+    }
+  }
+
   private async complete(poll: Poll, dto: ExtCompletePollDto): Promise<void> {
     try {
-      poll.result = dto.result;
-      poll.completedAt = poll.result === Result.PROGRESS ? null : new Date();
+      poll.result = dto.type ? Result.APPROVED : Result.REJECTED;
+      poll.completedAt = new Date();
       await this.pollsRepository.save(poll);
     } catch (error) {
       throw new AppException(PollError.COMPLETE_FAILED);
@@ -286,8 +303,8 @@ export class PollsService {
       .andWhere(
         new Brackets((qb) =>
           qb
-            .where(`${!req.title}`)
-            .orWhere('poll.title ILIKE :title', { title: req.title }),
+            .where(`${!req.mark}`)
+            .orWhere('poll.mark = :mark', { mark: req.mark }),
         ),
       )
       .andWhere(
@@ -319,8 +336,10 @@ export class PollsService {
         'ownerUser.id',
         'ownerUser.nick',
         'ownerUser.avatar',
-        'poll.title',
         'poll.text',
+        'poll.mark',
+        'poll.image',
+        'poll.video',
         'poll.result',
         'poll.createdAt',
         'poll.completedAt',

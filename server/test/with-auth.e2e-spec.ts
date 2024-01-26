@@ -2131,7 +2131,7 @@ describe('With Auth', () => {
       return request(app.getHttpServer())
         .post('/polls')
         .set('Authorization', `Bearer ${user.access}`)
-        .send({ title: 'poll title', text: 'poll text' })
+        .send({ text: 'poll text', mark: 1, image: '', video: '' })
         .expect('');
     });
 
@@ -2139,7 +2139,7 @@ describe('With Auth', () => {
       return request(app.getHttpServer())
         .post('/polls')
         .set('Authorization', `Bearer ${user.access}`)
-        .send({ title: 'poll title', text: 'poll text' })
+        .send({ text: 'poll text', mark: 2, image: '', video: '' })
         .expect('');
     });
 
@@ -2155,6 +2155,14 @@ describe('With Auth', () => {
         .set('Authorization', `Bearer ${user.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0))
         .then((res) => (pollsId = res.body.result.map((p) => p.id)));
+    });
+
+    it('PATCH /polls/:pollId', async () => {
+      return request(app.getHttpServer())
+        .patch(`/polls/${pollsId[0]}`)
+        .set('Authorization', `Bearer ${user.access}`)
+        .send({ text: 'poll text', mark: 1, image: '', video: '' })
+        .expect('');
     });
 
     it('POST /polls/:pollId/votes', async () => {
@@ -2250,7 +2258,7 @@ describe('With Auth', () => {
       return request(app.getHttpServer())
         .post(`/polls/${pollsId[0]}`)
         .set('Authorization', `Bearer ${admin.access}`)
-        .send({ result: 2 })
+        .send({ type: true })
         .expect('');
     });
   });

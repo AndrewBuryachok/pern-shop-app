@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Param,
+  Patch,
   Post,
   Query,
 } from '@nestjs/common';
@@ -15,6 +16,7 @@ import { Discussion } from '../discussions/discussion.entity';
 import {
   CompletePollDto,
   CreatePollDto,
+  EditPollDto,
   ExtCreatePollDto,
   PollIdDto,
   VotePollDto,
@@ -93,6 +95,16 @@ export class PollsController {
   @Post('all')
   createUserPoll(@Body() dto: ExtCreatePollDto): Promise<void> {
     return this.pollsService.createPoll(dto);
+  }
+
+  @Patch(':pollId')
+  editPoll(
+    @MyId() myId: number,
+    @HasRole(Role.ADMIN) hasRole: boolean,
+    @Param() { pollId }: PollIdDto,
+    @Body() dto: EditPollDto,
+  ): Promise<void> {
+    return this.pollsService.editPoll({ ...dto, pollId, myId, hasRole });
   }
 
   @Roles(Role.ADMIN)

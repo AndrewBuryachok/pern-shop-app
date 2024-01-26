@@ -8,6 +8,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { User } from '../users/user.entity';
+import { Mark } from './mark.enum';
 import { Result } from './result.enum';
 import { Vote } from './vote.entity';
 import { Discussion } from '../discussions/discussion.entity';
@@ -25,10 +26,20 @@ export class Poll {
   user: User;
 
   @Column()
-  title: string;
+  text: string;
+
+  @Column({
+    type: 'enum',
+    enum: Mark,
+    default: Mark.SITE,
+  })
+  mark: Mark;
 
   @Column()
-  text: string;
+  image: string;
+
+  @Column()
+  video: string;
 
   @Column({
     type: 'enum',
