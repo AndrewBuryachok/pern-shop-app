@@ -133,12 +133,19 @@ export class ArticlesService {
     const article = await this.articlesRepository
       .createQueryBuilder('article')
       .leftJoin('article.comments', 'comment')
+      .leftJoin('comment.reply', 'reply')
+      .leftJoin('reply.user', 'replier')
       .leftJoin('comment.user', 'commenter')
       .where('article.id = :articleId', { articleId })
       .orderBy('comment.id', 'ASC')
       .select([
         'article.id',
         'comment.id',
+        'reply.id',
+        'replier.id',
+        'replier.nick',
+        'replier.avatar',
+        'reply.text',
         'commenter.id',
         'commenter.nick',
         'commenter.avatar',

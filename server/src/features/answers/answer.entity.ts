@@ -10,4 +10,11 @@ export class Answer extends Reply {
   @ManyToOne(() => Plaint, { nullable: false, onDelete: 'CASCADE' })
   @JoinColumn({ name: 'plaint_id' })
   plaint: Plaint;
+
+  @Column({ name: 'reply_id', nullable: true })
+  replyId?: number;
+
+  @ManyToOne(() => Answer, { nullable: true, onDelete: 'SET NULL' })
+  @JoinColumn({ name: 'reply_id' })
+  reply?: Answer;
 }

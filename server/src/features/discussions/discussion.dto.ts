@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Validate } from 'class-validator';
+import { Validate, ValidateIf } from 'class-validator';
 import { Type } from 'class-transformer';
 import { IsId } from '../../common/decorators';
 import { IsDiscussionExists, IsPollExists } from '../../common/constraints';
@@ -26,6 +26,12 @@ export class CreateDiscussionDto extends EditDiscussionDto {
   @IsId()
   @Validate(IsPollExists)
   pollId: number;
+
+  @ApiProperty()
+  @ValidateIf((_, value) => value !== 0)
+  @IsId()
+  @Validate(IsDiscussionExists)
+  discussionId: number;
 }
 
 export class ExtCreateDiscussionDto extends CreateDiscussionDto {

@@ -29,6 +29,15 @@ export class DiscussionsService {
       poll.userId,
       Notification.DISCUSSED_POLL,
     );
+    if (dto.discussionId) {
+      const discussion = await this.discussionsRepository.findOneBy({
+        id: dto.discussionId,
+      });
+      this.mqttService.publishNotificationMessage(
+        discussion.userId,
+        Notification.REPLIED_DISCUSSION,
+      );
+    }
   }
 
   async editDiscussion(dto: ExtEditDiscussionDto): Promise<void> {
@@ -71,6 +80,7 @@ export class DiscussionsService {
     try {
       const discussion = this.discussionsRepository.create({
         pollId: dto.pollId,
+        replyId: dto.discussionId || null,
         userId: dto.myId,
         text: dto.text,
       });

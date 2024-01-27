@@ -33,6 +33,15 @@ export class AnswersService {
         Notification.ANSWERED_PLAINT,
       ),
     );
+    if (dto.answerId) {
+      const answer = await this.answersRepository.findOneBy({
+        id: dto.answerId,
+      });
+      this.mqttService.publishNotificationMessage(
+        answer.userId,
+        Notification.REPLIED_ANSWER,
+      );
+    }
   }
 
   async editAnswer(dto: ExtEditAnswerDto): Promise<void> {
@@ -75,6 +84,7 @@ export class AnswersService {
     try {
       const answer = this.answersRepository.create({
         plaintId: dto.plaintId,
+        replyId: dto.answerId || null,
         userId: dto.myId,
         text: dto.text,
       });

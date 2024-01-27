@@ -29,6 +29,15 @@ export class CommentsService {
       article.userId,
       Notification.COMMENTED_ARTICLE,
     );
+    if (dto.commentId) {
+      const comment = await this.commentsRepository.findOneBy({
+        id: dto.commentId,
+      });
+      this.mqttService.publishNotificationMessage(
+        comment.userId,
+        Notification.REPLIED_COMMENT,
+      );
+    }
   }
 
   async editComment(dto: ExtEditCommentDto): Promise<void> {
@@ -69,6 +78,7 @@ export class CommentsService {
     try {
       const comment = this.commentsRepository.create({
         articleId: dto.articleId,
+        replyId: dto.commentId || null,
         userId: dto.myId,
         text: dto.text,
       });
