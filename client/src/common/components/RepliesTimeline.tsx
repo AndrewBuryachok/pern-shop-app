@@ -3,6 +3,8 @@ import { IAction } from '../interfaces';
 import { Reply } from '../../features/replies/reply.model';
 import SingleText from './SingleText';
 import CustomAvatar from './CustomAvatar';
+import ReplyAvatarWithText from './ReplyAvatarWithText';
+import DoubleText from './DoubleText';
 import CustomActions from './CustomActions';
 import { parseTime } from '../utils';
 
@@ -26,10 +28,13 @@ export default function RepliesTimeline(props: Props) {
           title={<SingleText text={reply.user.nick} />}
           bullet={<CustomAvatar {...reply.user} />}
         >
+          {reply.reply && <ReplyAvatarWithText {...reply.reply} />}
           <Group spacing={0} position='apart' align='flex-start' noWrap>
             <div>
-              <SingleText text={reply.text} />
-              <SingleText text={parseTime(reply.createdAt)} />
+              <DoubleText
+                text={reply.text}
+                subtext={parseTime(reply.createdAt)}
+              />
             </div>
             <CustomActions data={reply} actions={props.actions} />
           </Group>

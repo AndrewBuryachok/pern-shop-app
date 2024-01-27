@@ -5,15 +5,17 @@ import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { Poll } from './poll.model';
+import { Reply } from '../replies/reply.model';
 import { getCurrentUser } from '../auth/auth.slice';
 import { useCreateDiscussionMutation } from '../discussions/discussions.api';
 import { useSelectPollDiscussionsQuery } from './polls.api';
 import { CreateDiscussionDto } from '../discussions/discussion.dto';
 import CustomForm from '../../common/components/CustomForm';
 import RepliesTimeline from '../../common/components/RepliesTimeline';
+import ReplyAvatarWithText from '../../common/components/ReplyAvatarWithText';
 import { editDiscussionAction } from '../discussions/EditDiscussionModal';
 import { deleteDiscussionAction } from '../discussions/DeleteDiscussionModal';
-import { MAX_TEXT_LENGTH } from '../../common/constants';
+import { Color, MAX_TEXT_LENGTH } from '../../common/constants';
 
 type Props = IModal<Poll>;
 
@@ -25,6 +27,7 @@ export default function ViewPollDiscussionsModal({ data: poll }: Props) {
   const form = useForm({
     initialValues: {
       pollId: poll.id,
+      discussionId: 0,
       text: '',
     },
   });
@@ -37,6 +40,10 @@ export default function ViewPollDiscussionsModal({ data: poll }: Props) {
 
   const response = useSelectPollDiscussionsQuery(poll.id);
 
+  const discussion = response.data?.find(
+    (discussion) => discussion.id === form.values.discussionId,
+  );
+
   return (
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
@@ -46,8 +53,21 @@ export default function ViewPollDiscussionsModal({ data: poll }: Props) {
     >
       <RepliesTimeline
         {...response}
-        actions={[editDiscussionAction, deleteDiscussionAction]}
+        actions={[
+          {
+            open: (reply: Reply) =>
+              form.setFieldValue(
+                'discussionId',
+                reply.id === form.values.discussionId ? 0 : reply.id,
+              ),
+            disable: () => false,
+            color: Color.GREEN,
+          },
+          editDiscussionAction,
+          deleteDiscussionAction,
+        ]}
       />
+      {discussion && <ReplyAvatarWithText {...discussion} />}
       <Textarea
         label={t('columns.text')}
         placeholder={t('columns.text')}

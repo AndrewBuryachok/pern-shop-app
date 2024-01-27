@@ -2,6 +2,7 @@ import { CreateReplyDto } from '../replies/reply.dto';
 
 export interface CreateDiscussionDto extends CreateReplyDto {
   pollId: number;
+  discussionId: number;
 }
 
 export interface EditDiscussionDto extends CreateReplyDto {

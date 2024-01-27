@@ -5,15 +5,17 @@ import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { Article } from './article.model';
+import { Reply } from '../replies/reply.model';
 import { getCurrentUser } from '../auth/auth.slice';
 import { useCreateCommentMutation } from '../comments/comments.api';
 import { useSelectArticleCommentsQuery } from './articles.api';
 import { CreateCommentDto } from '../comments/comment.dto';
 import CustomForm from '../../common/components/CustomForm';
 import RepliesTimeline from '../../common/components/RepliesTimeline';
+import ReplyAvatarWithText from '../../common/components/ReplyAvatarWithText';
 import { editCommentAction } from '../comments/EditCommentModal';
 import { deleteCommentAction } from '../comments/DeleteCommentModal';
-import { MAX_TEXT_LENGTH } from '../../common/constants';
+import { Color, MAX_TEXT_LENGTH } from '../../common/constants';
 
 type Props = IModal<Article>;
 
@@ -25,6 +27,7 @@ export default function ViewArticleCommentsModal({ data: article }: Props) {
   const form = useForm({
     initialValues: {
       articleId: article.id,
+      commentId: 0,
       text: '',
     },
   });
@@ -37,6 +40,10 @@ export default function ViewArticleCommentsModal({ data: article }: Props) {
 
   const response = useSelectArticleCommentsQuery(article.id);
 
+  const comment = response.data?.find(
+    (comment) => comment.id === form.values.commentId,
+  );
+
   return (
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
@@ -46,8 +53,21 @@ export default function ViewArticleCommentsModal({ data: article }: Props) {
     >
       <RepliesTimeline
         {...response}
-        actions={[editCommentAction, deleteCommentAction]}
+        actions={[
+          {
+            open: (reply: Reply) =>
+              form.setFieldValue(
+                'commentId',
+                reply.id === form.values.commentId ? 0 : reply.id,
+              ),
+            disable: () => false,
+            color: Color.GREEN,
+          },
+          editCommentAction,
+          deleteCommentAction,
+        ]}
       />
+      {comment && <ReplyAvatarWithText {...comment} />}
       <Textarea
         label={t('columns.text')}
         placeholder={t('columns.text')}

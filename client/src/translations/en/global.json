@@ -314,7 +314,8 @@
     "articles": {
       "created": "Someone created article",
       "reacted": "Someone reacted to your article",
-      "commented": "Someone commented your article"
+      "commented": "Someone commented your article",
+      "replied": "Someone replied to your comment"
     },
     "cards": {
       "added": "Someone added you in card",
@@ -414,13 +415,15 @@
       "created": "Someone created plaint",
       "answered": "Someone answered to your plaint",
       "completed": "Someone completed your plaint",
-      "deleted": "Someone deleted your plaint"
+      "deleted": "Someone deleted your plaint",
+      "replied": "Someone replied to your answer"
     },
     "polls": {
       "created": "Someone created poll",
       "reacted": "Someone reacted to your poll",
       "discussed": "Someone discussed your poll",
-      "completed": "Someone completed your poll"
+      "completed": "Someone completed your poll",
+      "replied": "Someone replied to your discussion"
     },
     "ratings": {
       "created": "Someone created rating to you",
