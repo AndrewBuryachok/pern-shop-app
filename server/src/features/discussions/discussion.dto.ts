@@ -1,8 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Validate } from 'class-validator';
 import { Type } from 'class-transformer';
-import { IsId, IsText } from '../../common/decorators';
+import { IsId } from '../../common/decorators';
 import { IsDiscussionExists, IsPollExists } from '../../common/constraints';
+import { CreateReplyDto } from '../replies/reply.dto';
 
 export class DiscussionIdDto {
   @ApiProperty()
@@ -12,11 +13,7 @@ export class DiscussionIdDto {
   discussionId: number;
 }
 
-export class EditDiscussionDto {
-  @ApiProperty()
-  @IsText()
-  text: string;
-}
+export class EditDiscussionDto extends CreateReplyDto {}
 
 export class ExtEditDiscussionDto extends EditDiscussionDto {
   discussionId: number;

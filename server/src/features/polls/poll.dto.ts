@@ -1,8 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Validate } from 'class-validator';
 import { Type } from 'class-transformer';
-import { IsId, IsLink, IsMark, IsText, IsType } from '../../common/decorators';
+import { IsId, IsLink, IsMark, IsText } from '../../common/decorators';
 import { IsPollExists, IsUserExists } from '../../common/constraints';
+import { CreateReactionDto } from '../reactions/reaction.dto';
 
 export class PollIdDto {
   @ApiProperty()
@@ -45,11 +46,7 @@ export class ExtEditPollDto extends EditPollDto {
   hasRole: boolean;
 }
 
-export class CompletePollDto {
-  @ApiProperty()
-  @IsType()
-  type: number;
-}
+export class CompletePollDto extends CreateReactionDto {}
 
 export class ExtCompletePollDto extends CompletePollDto {
   pollId: number;
@@ -60,11 +57,7 @@ export class DeletePollDto extends PollIdDto {
   hasRole: boolean;
 }
 
-export class VotePollDto {
-  @ApiProperty()
-  @IsType()
-  type: boolean;
-}
+export class VotePollDto extends CreateReactionDto {}
 
 export class ExtVotePollDto extends VotePollDto {
   pollId: number;
