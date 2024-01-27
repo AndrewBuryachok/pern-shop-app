@@ -34,6 +34,7 @@ export default function EditPlaintModal({ data: plaint }: Props) {
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
       text={t('actions.edit') + ' ' + t('modals.plaints')}
+      isChanged={!form.isDirty()}
     >
       <TextInput
         label={t('columns.sender')}

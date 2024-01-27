@@ -49,6 +49,7 @@ export default function EditPollModal({ data: poll }: Props) {
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
       text={t('actions.edit') + ' ' + t('modals.polls')}
+      isChanged={!form.isDirty()}
     >
       <TextInput
         label={t('columns.owner')}

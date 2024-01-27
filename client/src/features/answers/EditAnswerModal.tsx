@@ -36,6 +36,7 @@ export default function EditAnswerModal({ data: answer }: Props) {
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
       text={t('actions.edit') + ' ' + t('modals.answers')}
+      isChanged={!form.isDirty()}
     >
       <TextInput
         label={t('columns.owner')}

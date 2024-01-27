@@ -36,6 +36,7 @@ export default function EditCommentModal({ data: comment }: Props) {
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
       text={t('actions.edit') + ' ' + t('modals.comments')}
+      isChanged={!form.isDirty()}
     >
       <TextInput
         label={t('columns.owner')}

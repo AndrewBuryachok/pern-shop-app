@@ -148,9 +148,6 @@
     "untake": "Untake",
     "subscribe": "Subscribe",
     "unsubscribe": "Unsubscribe",
-    "comment": "Comment",
-    "answer": "Answer to",
-    "discuss": "Discuss",
     "view": "View"
   },
   "components": {

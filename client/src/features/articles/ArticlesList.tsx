@@ -26,7 +26,6 @@ import { openAuthModal } from '../auth/AuthModal';
 import { viewArticleAction } from './ViewArticleModal';
 import { openViewArticleLikesModal } from './ViewArticleLikesModal';
 import { openViewArticleCommentsModal } from './ViewArticleCommentsModal';
-import { openCreateCommentModal } from '../comments/CreateCommentModal';
 
 type Props = ITableWithActions<Article>;
 
@@ -148,7 +147,9 @@ export default function ArticlesList({ actions = [], ...props }: Props) {
                 <ActionIcon
                   size={24}
                   onClick={() =>
-                    user ? openCreateCommentModal(article) : openAuthModal()
+                    user
+                      ? openViewArticleCommentsModal(article)
+                      : openAuthModal()
                   }
                 >
                   <IconMessage size={16} />
