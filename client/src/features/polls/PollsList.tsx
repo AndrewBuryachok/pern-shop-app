@@ -81,7 +81,7 @@ export default function PollsList({ actions = [], ...props }: Props) {
                 </ActionIcon>
                 <CustomAnchor
                   text={`${poll.upVotes}`}
-                  onClick={() => openViewPollVotesModal(poll)}
+                  open={() => openViewPollVotesModal(poll)}
                 />
                 <ActionIcon
                   size={24}
@@ -98,7 +98,7 @@ export default function PollsList({ actions = [], ...props }: Props) {
                 </ActionIcon>
                 <CustomAnchor
                   text={`${poll.downVotes}`}
-                  onClick={() => openViewPollVotesModal(poll)}
+                  open={() => openViewPollVotesModal(poll)}
                 />
                 <ActionIcon
                   size={24}
@@ -110,7 +110,7 @@ export default function PollsList({ actions = [], ...props }: Props) {
                 </ActionIcon>
                 <CustomAnchor
                   text={`${poll.discussions}`}
-                  onClick={() => openViewPollDiscussionsModal(poll)}
+                  open={() => openViewPollDiscussionsModal(poll)}
                 />
               </Group>
             </Stack>

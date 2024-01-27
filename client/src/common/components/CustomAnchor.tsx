@@ -2,7 +2,7 @@ import { Anchor } from '@mantine/core';
 
 type Props = {
   text: string;
-  onClick: () => void;
+  open: () => void;
 };
 
 export default function CustomAnchor(props: Props) {
@@ -10,7 +10,7 @@ export default function CustomAnchor(props: Props) {
     <Anchor
       component='button'
       type='button'
-      onClick={props.onClick}
+      onClick={props.open}
       size='xs'
       color='dimmed'
       underline

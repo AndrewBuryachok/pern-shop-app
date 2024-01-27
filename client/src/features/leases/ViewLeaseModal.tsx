@@ -1,30 +1,17 @@
 import { t } from 'i18next';
 import { useTranslation } from 'react-i18next';
-import { Select, Stack, TextInput } from '@mantine/core';
+import { Stack, TextInput } from '@mantine/core';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { Lease } from './lease.model';
-import { useSelectLeaseThingsQuery } from './leases.api';
-import RefetchAction from '../../common/components/RefetchAction';
 import CustomAvatar from '../../common/components/CustomAvatar';
-import { ThingsItemWithAmount } from '../../common/components/ThingsItemWithAmount';
-import {
-  parseCard,
-  parseCell,
-  parseKind,
-  parseTime,
-  viewThings,
-} from '../../common/utils';
+import { parseCard, parseCell, parseKind, parseTime } from '../../common/utils';
 import { Color } from '../../common/constants';
 
 type Props = IModal<Lease>;
 
 export default function ViewLeaseModal({ data: lease }: Props) {
   const [t] = useTranslation();
-
-  const { data: things, ...thingsResponse } = useSelectLeaseThingsQuery(
-    lease.id,
-  );
 
   return (
     <Stack spacing={8}>
@@ -54,6 +41,11 @@ export default function ViewLeaseModal({ data: lease }: Props) {
         readOnly
       />
       <TextInput
+        label={t('columns.kind')}
+        value={parseKind(lease.kind)}
+        readOnly
+      />
+      <TextInput
         label={t('columns.created')}
         value={parseTime(lease.createdAt)}
         readOnly
@@ -62,20 +54,6 @@ export default function ViewLeaseModal({ data: lease }: Props) {
         label={t('columns.completed')}
         value={parseTime(lease.completedAt)}
         readOnly
-      />
-      <TextInput
-        label={t('columns.kind')}
-        value={parseKind(lease.kind)}
-        readOnly
-      />
-      <Select
-        label={t('columns.things')}
-        placeholder={`${t('components.total')}: 1`}
-        rightSection={<RefetchAction {...thingsResponse} />}
-        itemComponent={ThingsItemWithAmount}
-        data={viewThings(things || [])}
-        limit={20}
-        searchable
       />
     </Stack>
   );

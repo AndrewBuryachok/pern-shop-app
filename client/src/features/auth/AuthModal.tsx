@@ -68,7 +68,7 @@ export default function AuthModal() {
       />
       <Text size='xs'>
         {t(`modals.${type}.text`)}
-        <CustomAnchor text={t(`modals.${type}.anchor`)} onClick={toggle} />
+        <CustomAnchor text={t(`modals.${type}.anchor`)} open={toggle} />
       </Text>
     </CustomForm>
   );

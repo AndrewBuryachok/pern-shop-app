@@ -98,7 +98,7 @@ export default function UserProfile({ data: user }: Props) {
                 </Text>
                 <CustomAnchor
                   text={t('actions.view').toLowerCase()}
-                  onClick={() => social.open(user)}
+                  open={() => social.open(user)}
                 />
               </Group>
               <Group spacing={8}>

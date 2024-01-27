@@ -3,10 +3,11 @@ import { City } from './city.model';
 import CustomTable from '../../common/components/CustomTable';
 import AvatarWithSingleText from '../../common/components/AvatarWithSingleText';
 import PlaceText from '../../common/components/PlaceText';
+import CustomAnchor from '../../common/components/CustomAnchor';
 import DateText from '../../common/components/DateText';
-import TotalText from '../../common/components/TotalText';
 import CustomActions from '../../common/components/CustomActions';
 import { viewCityAction } from './ViewCityModal';
+import { openViewCityUsersAction } from './ViewCityUsersModal';
 
 type Props = ITableWithActions<City>;
 
@@ -14,7 +15,7 @@ export default function CitiesTable({ actions = [], ...props }: Props) {
   return (
     <CustomTable
       minWidth={700}
-      columns={['owner', 'city', 'created', 'users', 'action']}
+      columns={['owner', 'city', 'users', 'created', 'action']}
       {...props}
     >
       {props.data?.result.map((city) => (
@@ -26,10 +27,13 @@ export default function CitiesTable({ actions = [], ...props }: Props) {
             <PlaceText {...city} />
           </td>
           <td>
-            <DateText date={city.createdAt} />
+            <CustomAnchor
+              text={`${city.users}`}
+              open={() => openViewCityUsersAction(city)}
+            />
           </td>
           <td>
-            <TotalText data={city.users} />
+            <DateText date={city.createdAt} />
           </td>
           <td>
             <CustomActions data={city} actions={[viewCityAction, ...actions]} />

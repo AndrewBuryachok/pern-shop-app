@@ -4,10 +4,11 @@ import CustomTable from '../../common/components/CustomTable';
 import AvatarWithSingleText from '../../common/components/AvatarWithSingleText';
 import SingleText from '../../common/components/SingleText';
 import PriceText from '../../common/components/PriceText';
+import CustomAnchor from '../../common/components/CustomAnchor';
 import DateText from '../../common/components/DateText';
-import TotalText from '../../common/components/TotalText';
 import CustomActions from '../../common/components/CustomActions';
 import { viewCardAction } from './ViewCardModal';
+import { openViewCardUsersAction } from './ViewCardUsersModal';
 
 type Props = ITableWithActions<Card>;
 
@@ -15,7 +16,7 @@ export default function CardsTable({ actions = [], ...props }: Props) {
   return (
     <CustomTable
       minWidth={700}
-      columns={['owner', 'card', 'balance', 'created', 'users', 'action']}
+      columns={['owner', 'card', 'balance', 'users', 'created', 'action']}
       {...props}
     >
       {props.data?.result.map((card) => (
@@ -30,10 +31,13 @@ export default function CardsTable({ actions = [], ...props }: Props) {
             <PriceText price={card.balance} />
           </td>
           <td>
-            <DateText date={card.createdAt} />
+            <CustomAnchor
+              text={`${card.users}`}
+              open={() => openViewCardUsersAction(card)}
+            />
           </td>
           <td>
-            <TotalText data={card.users} />
+            <DateText date={card.createdAt} />
           </td>
           <td>
             <CustomActions data={card} actions={[viewCardAction, ...actions]} />

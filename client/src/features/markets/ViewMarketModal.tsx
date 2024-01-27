@@ -5,18 +5,12 @@ import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { Market } from './market.model';
 import { useSelectMarketStatesQuery } from './markets.api';
-import { useSelectMarketStoresQuery } from '../stores/stores.api';
 import RefetchAction from '../../common/components/RefetchAction';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import CustomImage from '../../common/components/CustomImage';
 import CustomVideo from '../../common/components/CustomVideo';
 import { StatesItem } from '../../common/components/StatesItem';
-import {
-  parseCard,
-  parseTime,
-  viewContainers,
-  viewStates,
-} from '../../common/utils';
+import { parseCard, parseTime, viewStates } from '../../common/utils';
 import { Color } from '../../common/constants';
 
 type Props = IModal<Market>;
@@ -25,9 +19,6 @@ export default function ViewMarketModal({ data: market }: Props) {
   const [t] = useTranslation();
 
   const { data: states, ...statesResponse } = useSelectMarketStatesQuery(
-    market.id,
-  );
-  const { data: stores, ...storesResponse } = useSelectMarketStoresQuery(
     market.id,
   );
 
@@ -60,11 +51,6 @@ export default function ViewMarketModal({ data: market }: Props) {
         value={`${market.price} ${t('constants.currency')}`}
         readOnly
       />
-      <TextInput
-        label={t('columns.created')}
-        value={parseTime(market.createdAt)}
-        readOnly
-      />
       <Select
         label={t('columns.prices')}
         placeholder={`${t('components.total')}: ${states?.length || 0}`}
@@ -74,13 +60,10 @@ export default function ViewMarketModal({ data: market }: Props) {
         limit={20}
         searchable
       />
-      <Select
-        label={t('columns.stores')}
-        placeholder={`${t('components.total')}: ${stores?.length || 0}`}
-        rightSection={<RefetchAction {...storesResponse} />}
-        data={viewContainers(stores || [])}
-        limit={20}
-        searchable
+      <TextInput
+        label={t('columns.created')}
+        value={parseTime(market.createdAt)}
+        readOnly
       />
     </Stack>
   );

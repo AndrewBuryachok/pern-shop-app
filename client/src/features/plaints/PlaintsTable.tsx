@@ -3,10 +3,11 @@ import { Plaint } from './plaint.model';
 import CustomTable from '../../common/components/CustomTable';
 import AvatarWithSingleText from '../../common/components/AvatarWithSingleText';
 import SingleText from '../../common/components/SingleText';
+import CustomAnchor from '../../common/components/CustomAnchor';
 import DateText from '../../common/components/DateText';
-import TotalText from '../../common/components/TotalText';
 import CustomActions from '../../common/components/CustomActions';
 import { viewPlaintAction } from './ViewPlaintModal';
+import { openViewPlaintAnswersModal } from './ViewPlaintAnswersModal';
 
 type Props = ITableWithActions<Plaint>;
 
@@ -18,9 +19,9 @@ export default function PlaintsTable({ actions = [], ...props }: Props) {
         'sender',
         'receiver',
         'title',
-        'created',
         'answers',
         'executor',
+        'created',
         'action',
       ]}
       {...props}
@@ -37,10 +38,10 @@ export default function PlaintsTable({ actions = [], ...props }: Props) {
             <SingleText text={plaint.title} />
           </td>
           <td>
-            <DateText date={plaint.createdAt} />
-          </td>
-          <td>
-            <TotalText data={plaint.answers} />
+            <CustomAnchor
+              text={`${plaint.answers}`}
+              open={() => openViewPlaintAnswersModal(plaint)}
+            />
           </td>
           <td>
             {plaint.executorUser ? (
@@ -48,6 +49,9 @@ export default function PlaintsTable({ actions = [], ...props }: Props) {
             ) : (
               <SingleText text='-' />
             )}
+          </td>
+          <td>
+            <DateText date={plaint.createdAt} />
           </td>
           <td>
             <CustomActions
