@@ -20,7 +20,7 @@ export default function InvoicesTable({ actions = [], ...props }: Props) {
         'receiver',
         'sum',
         'description',
-        'completed',
+        'created',
         'action',
       ]}
       {...props}
@@ -48,7 +48,7 @@ export default function InvoicesTable({ actions = [], ...props }: Props) {
             <SingleText text={invoice.description || '-'} />
           </td>
           <td>
-            <DateText date={invoice.completedAt} />
+            <DateText date={invoice.createdAt} />
           </td>
           <td>
             <CustomActions

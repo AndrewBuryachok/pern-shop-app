@@ -20,7 +20,7 @@ export default function RentsTable({ actions = [], ...props }: Props) {
         'owner',
         'market',
         'sum',
-        'created',
+        'completed',
         'things',
         'action',
       ]}
@@ -45,7 +45,7 @@ export default function RentsTable({ actions = [], ...props }: Props) {
             />
           </td>
           <td>
-            <DateText date={rent.createdAt} />
+            <DateText date={rent.completedAt} />
           </td>
           <td>
             <TotalText data={rent.things} />

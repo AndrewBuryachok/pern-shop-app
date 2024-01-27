@@ -21,7 +21,7 @@ export default function LeasesTable({ actions = [], ...props }: Props) {
         'owner',
         'storage',
         'sum',
-        'created',
+        'completed',
         'kind',
         'action',
       ]}
@@ -46,7 +46,7 @@ export default function LeasesTable({ actions = [], ...props }: Props) {
             />
           </td>
           <td>
-            <DateText date={lease.createdAt} />
+            <DateText date={lease.completedAt} />
           </td>
           <td>
             <SingleText text={parseKind(lease.kind)} />
