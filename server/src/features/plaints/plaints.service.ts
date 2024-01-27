@@ -76,7 +76,7 @@ export class PlaintsService {
       .leftJoin('plaint.answers', 'answer')
       .leftJoin('answer.user', 'answerer')
       .where('plaint.id = :plaintId', { plaintId })
-      .orderBy('answer.id', 'DESC')
+      .orderBy('answer.id', 'ASC')
       .select([
         'plaint.id',
         'answer.id',

@@ -1,36 +1,13 @@
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
+import { Reaction } from '../reactions/reaction.entity';
 import { Article } from './article.entity';
-import { User } from '../users/user.entity';
 
 @Entity('likes')
-export class Like {
-  @PrimaryGeneratedColumn()
-  id: number;
-
+export class Like extends Reaction {
   @Column({ name: 'article_id' })
   articleId: number;
 
   @ManyToOne(() => Article, { nullable: false, onDelete: 'CASCADE' })
   @JoinColumn({ name: 'article_id' })
   article: Article;
-
-  @Column({ name: 'user_id' })
-  userId: number;
-
-  @ManyToOne(() => User, { nullable: false })
-  @JoinColumn({ name: 'user_id' })
-  user: User;
-
-  @Column()
-  type: boolean;
-
-  @CreateDateColumn({ type: 'timestamptz', name: 'created_at' })
-  createdAt: Date;
 }

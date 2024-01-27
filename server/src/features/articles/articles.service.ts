@@ -115,7 +115,7 @@ export class ArticlesService {
       .leftJoin('article.likes', 'like')
       .leftJoin('like.user', 'liker')
       .where('article.id = :articleId', { articleId })
-      .orderBy('like.id', 'DESC')
+      .orderBy('like.id', 'ASC')
       .select([
         'article.id',
         'like.id',
@@ -135,7 +135,7 @@ export class ArticlesService {
       .leftJoin('article.comments', 'comment')
       .leftJoin('comment.user', 'commenter')
       .where('article.id = :articleId', { articleId })
-      .orderBy('comment.id', 'DESC')
+      .orderBy('comment.id', 'ASC')
       .select([
         'article.id',
         'comment.id',
@@ -187,11 +187,13 @@ export class ArticlesService {
     } else {
       await this.removeLike(like);
     }
-    const article = await this.findArticleById(dto.articleId);
-    this.mqttService.publishNotificationMessage(
-      article.userId,
-      Notification.LIKED_ARTICLE,
-    );
+    if (!like || like.type !== dto.type) {
+      const article = await this.findArticleById(dto.articleId);
+      this.mqttService.publishNotificationMessage(
+        article.userId,
+        Notification.REACTED_ARTICLE,
+      );
+    }
   }
 
   async checkArticleExists(id: number): Promise<void> {

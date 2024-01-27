@@ -95,7 +95,7 @@ export class PollsService {
       .leftJoin('poll.votes', 'vote')
       .leftJoin('vote.user', 'voter')
       .where('poll.id = :pollId', { pollId })
-      .orderBy('vote.id', 'DESC')
+      .orderBy('vote.id', 'ASC')
       .select([
         'poll.id',
         'vote.id',
@@ -115,7 +115,7 @@ export class PollsService {
       .leftJoin('poll.discussions', 'discussion')
       .leftJoin('discussion.user', 'discussioner')
       .where('poll.id = :pollId', { pollId })
-      .orderBy('discussion.id', 'DESC')
+      .orderBy('discussion.id', 'ASC')
       .select([
         'poll.id',
         'discussion.id',
@@ -166,10 +166,12 @@ export class PollsService {
     } else {
       await this.removeVote(vote);
     }
-    this.mqttService.publishNotificationMessage(
-      poll.userId,
-      Notification.VOTED_POLL,
-    );
+    if (!vote || vote.type !== dto.type) {
+      this.mqttService.publishNotificationMessage(
+        poll.userId,
+        Notification.REACTED_POLL,
+      );
+    }
   }
 
   async checkPollExists(id: number): Promise<void> {
