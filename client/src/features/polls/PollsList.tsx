@@ -18,7 +18,6 @@ import { openAuthModal } from '../auth/AuthModal';
 import { viewPollAction } from './ViewPollModal';
 import { openViewPollVotesModal } from './ViewPollVotesModal';
 import { openViewPollDiscussionsModal } from './ViewPollDiscussionsModal';
-import { openCreateDiscussionModal } from '../discussions/CreateDiscussionModal';
 
 type Props = ITableWithActions<Poll>;
 
@@ -103,7 +102,7 @@ export default function PollsList({ actions = [], ...props }: Props) {
                 <ActionIcon
                   size={24}
                   onClick={() =>
-                    user ? openCreateDiscussionModal(poll) : openAuthModal()
+                    user ? openViewPollDiscussionsModal(poll) : openAuthModal()
                   }
                 >
                   <IconMessage size={16} />

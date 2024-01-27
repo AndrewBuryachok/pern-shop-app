@@ -53,6 +53,7 @@ export default function EditArticleModal({ data: article }: Props) {
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
       text={t('actions.edit') + ' ' + t('modals.articles')}
+      isChanged={!form.isDirty()}
     >
       <TextInput
         label={t('columns.owner')}

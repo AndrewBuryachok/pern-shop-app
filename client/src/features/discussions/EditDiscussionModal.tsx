@@ -36,6 +36,7 @@ export default function EditDiscussionModal({ data: discussion }: Props) {
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
       text={t('actions.edit') + ' ' + t('modals.discussions')}
+      isChanged={!form.isDirty()}
     >
       <TextInput
         label={t('columns.owner')}

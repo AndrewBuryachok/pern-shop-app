@@ -15,7 +15,6 @@ import {
   createUserPlaintButton,
 } from '../../features/plaints/CreatePlaintModal';
 import { editPlaintAction } from '../../features/plaints/EditPlaintModal';
-import { createAnswerAction } from '../../features/answers/CreateAnswerModal';
 import { completePlaintAction } from '../../features/plaints/CompletePlaintModal';
 import { deletePlaintAction } from '../../features/plaints/DeletePlaintModal';
 
@@ -51,10 +50,7 @@ export default function PlaintsPage() {
   }[tab];
 
   const actions = {
-    main: [createAnswerAction],
-    my: [editPlaintAction, createAnswerAction, deletePlaintAction],
-    received: [createAnswerAction],
-    answered: [createAnswerAction],
+    my: [editPlaintAction, deletePlaintAction],
     all: [editPlaintAction, completePlaintAction, deletePlaintAction],
   }[tab];
 
