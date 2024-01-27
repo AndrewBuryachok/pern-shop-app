@@ -4,10 +4,11 @@ import CustomTable from '../../common/components/CustomTable';
 import AvatarWithDoubleText from '../../common/components/AvatarWithDoubleText';
 import PlaceText from '../../common/components/PlaceText';
 import PriceText from '../../common/components/PriceText';
+import CustomAnchor from '../../common/components/CustomAnchor';
 import DateText from '../../common/components/DateText';
-import TotalText from '../../common/components/TotalText';
 import CustomActions from '../../common/components/CustomActions';
 import { viewMarketAction } from './ViewMarketModal';
+import { openViewMarketStoresAction } from './ViewMarketStoresModal';
 
 type Props = ITableWithActions<Market>;
 
@@ -15,7 +16,7 @@ export default function MarketsTable({ actions = [], ...props }: Props) {
   return (
     <CustomTable
       minWidth={700}
-      columns={['owner', 'market', 'price', 'created', 'stores', 'action']}
+      columns={['owner', 'market', 'price', 'stores', 'created', 'action']}
       {...props}
     >
       {props.data?.result.map((market) => (
@@ -30,10 +31,13 @@ export default function MarketsTable({ actions = [], ...props }: Props) {
             <PriceText {...market} />
           </td>
           <td>
-            <DateText date={market.createdAt} />
+            <CustomAnchor
+              text={`${market.stores}`}
+              open={() => openViewMarketStoresAction(market)}
+            />
           </td>
           <td>
-            <TotalText data={market.stores} />
+            <DateText date={market.createdAt} />
           </td>
           <td>
             <CustomActions

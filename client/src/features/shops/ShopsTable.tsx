@@ -3,10 +3,12 @@ import { Shop } from './shop.model';
 import CustomTable from '../../common/components/CustomTable';
 import AvatarWithSingleText from '../../common/components/AvatarWithSingleText';
 import PlaceText from '../../common/components/PlaceText';
+import CustomAnchor from '../../common/components/CustomAnchor';
 import DateText from '../../common/components/DateText';
-import TotalText from '../../common/components/TotalText';
 import CustomActions from '../../common/components/CustomActions';
 import { viewShopAction } from './ViewShopModal';
+import { openViewShopUsersAction } from './ViewShopUsersModal';
+import { openViewShopGoodsAction } from './ViewShopGoodsModal';
 
 type Props = ITableWithActions<Shop>;
 
@@ -14,7 +16,7 @@ export default function ShopsTable({ actions = [], ...props }: Props) {
   return (
     <CustomTable
       minWidth={700}
-      columns={['owner', 'shop', 'created', 'users', 'goods', 'action']}
+      columns={['owner', 'shop', 'users', 'goods', 'created', 'action']}
       {...props}
     >
       {props.data?.result.map((shop) => (
@@ -26,13 +28,19 @@ export default function ShopsTable({ actions = [], ...props }: Props) {
             <PlaceText {...shop} />
           </td>
           <td>
+            <CustomAnchor
+              text={`${shop.users}`}
+              open={() => openViewShopUsersAction(shop)}
+            />
+          </td>
+          <td>
+            <CustomAnchor
+              text={`${shop.goods}`}
+              open={() => openViewShopGoodsAction(shop)}
+            />
+          </td>
+          <td>
             <DateText date={shop.createdAt} />
-          </td>
-          <td>
-            <TotalText data={shop.users} />
-          </td>
-          <td>
-            <TotalText data={shop.goods} />
           </td>
           <td>
             <CustomActions data={shop} actions={[viewShopAction, ...actions]} />

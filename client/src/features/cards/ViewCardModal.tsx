@@ -1,22 +1,17 @@
 import { t } from 'i18next';
 import { useTranslation } from 'react-i18next';
-import { Select, Stack, TextInput } from '@mantine/core';
+import { Stack, TextInput } from '@mantine/core';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { Card } from './card.model';
-import { useSelectCardUsersQuery } from './cards.api';
-import RefetchAction from '../../common/components/RefetchAction';
 import CustomAvatar from '../../common/components/CustomAvatar';
-import { UsersItem } from '../../common/components/UsersItem';
-import { parseTime, viewUsers } from '../../common/utils';
+import { parseTime } from '../../common/utils';
 import { Color, colors } from '../../common/constants';
 
 type Props = IModal<Card>;
 
 export default function ViewCardModal({ data: card }: Props) {
   const [t] = useTranslation();
-
-  const { data: users, ...usersResponse } = useSelectCardUsersQuery(card.id);
 
   return (
     <Stack spacing={8}>
@@ -43,15 +38,6 @@ export default function ViewCardModal({ data: card }: Props) {
         label={t('columns.created')}
         value={parseTime(card.createdAt)}
         readOnly
-      />
-      <Select
-        label={t('columns.users')}
-        placeholder={`${t('components.total')}: ${users?.length || 0}`}
-        rightSection={<RefetchAction {...usersResponse} />}
-        itemComponent={UsersItem}
-        data={viewUsers(users || [])}
-        limit={20}
-        searchable
       />
     </Stack>
   );

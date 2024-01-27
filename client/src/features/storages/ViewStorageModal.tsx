@@ -5,18 +5,12 @@ import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { Storage } from './storage.model';
 import { useSelectStorageStatesQuery } from './storages.api';
-import { useSelectStorageCellsQuery } from '../cells/cells.api';
 import RefetchAction from '../../common/components/RefetchAction';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import CustomImage from '../../common/components/CustomImage';
 import CustomVideo from '../../common/components/CustomVideo';
 import { StatesItem } from '../../common/components/StatesItem';
-import {
-  parseCard,
-  parseTime,
-  viewContainers,
-  viewStates,
-} from '../../common/utils';
+import { parseCard, parseTime, viewStates } from '../../common/utils';
 import { Color } from '../../common/constants';
 
 type Props = IModal<Storage>;
@@ -25,9 +19,6 @@ export default function ViewStorageModal({ data: storage }: Props) {
   const [t] = useTranslation();
 
   const { data: states, ...statesResponse } = useSelectStorageStatesQuery(
-    storage.id,
-  );
-  const { data: cells, ...cellsResponse } = useSelectStorageCellsQuery(
     storage.id,
   );
 
@@ -60,11 +51,6 @@ export default function ViewStorageModal({ data: storage }: Props) {
         value={`${storage.price} ${t('constants.currency')}`}
         readOnly
       />
-      <TextInput
-        label={t('columns.created')}
-        value={parseTime(storage.createdAt)}
-        readOnly
-      />
       <Select
         label={t('columns.prices')}
         placeholder={`${t('components.total')}: ${states?.length || 0}`}
@@ -74,13 +60,10 @@ export default function ViewStorageModal({ data: storage }: Props) {
         limit={20}
         searchable
       />
-      <Select
-        label={t('columns.cells')}
-        placeholder={`${t('components.total')}: ${cells?.length || 0}`}
-        rightSection={<RefetchAction {...cellsResponse} />}
-        data={viewContainers(cells || [])}
-        limit={20}
-        searchable
+      <TextInput
+        label={t('columns.created')}
+        value={parseTime(storage.createdAt)}
+        readOnly
       />
     </Stack>
   );

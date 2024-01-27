@@ -4,10 +4,11 @@ import CustomTable from '../../common/components/CustomTable';
 import AvatarWithDoubleText from '../../common/components/AvatarWithDoubleText';
 import PlaceText from '../../common/components/PlaceText';
 import SumText from '../../common/components/SumText';
+import CustomAnchor from '../../common/components/CustomAnchor';
 import DateText from '../../common/components/DateText';
-import TotalText from '../../common/components/TotalText';
 import CustomActions from '../../common/components/CustomActions';
 import { viewRentAction } from './ViewRentModal';
+import { openViewRentThingsAction } from './ViewRentThingsModal';
 
 type Props = ITableWithActions<Rent>;
 
@@ -20,8 +21,8 @@ export default function RentsTable({ actions = [], ...props }: Props) {
         'owner',
         'market',
         'sum',
-        'completed',
         'things',
+        'completed',
         'action',
       ]}
       {...props}
@@ -45,10 +46,13 @@ export default function RentsTable({ actions = [], ...props }: Props) {
             />
           </td>
           <td>
-            <DateText date={rent.completedAt} />
+            <CustomAnchor
+              text={`${rent.things}`}
+              open={() => openViewRentThingsAction(rent)}
+            />
           </td>
           <td>
-            <TotalText data={rent.things} />
+            <DateText date={rent.completedAt} />
           </td>
           <td>
             <CustomActions data={rent} actions={[viewRentAction, ...actions]} />

@@ -126,7 +126,7 @@ export default function ArticlesList({ actions = [], ...props }: Props) {
                 </ActionIcon>
                 <CustomAnchor
                   text={`${article.upLikes}`}
-                  onClick={() => openViewArticleLikesModal(article)}
+                  open={() => openViewArticleLikesModal(article)}
                 />
                 <ActionIcon
                   size={24}
@@ -143,7 +143,7 @@ export default function ArticlesList({ actions = [], ...props }: Props) {
                 </ActionIcon>
                 <CustomAnchor
                   text={`${article.downLikes}`}
-                  onClick={() => openViewArticleLikesModal(article)}
+                  open={() => openViewArticleLikesModal(article)}
                 />
                 <ActionIcon
                   size={24}
@@ -155,7 +155,7 @@ export default function ArticlesList({ actions = [], ...props }: Props) {
                 </ActionIcon>
                 <CustomAnchor
                   text={`${article.comments}`}
-                  onClick={() => openViewArticleCommentsModal(article)}
+                  open={() => openViewArticleCommentsModal(article)}
                 />
               </Group>
             </Stack>

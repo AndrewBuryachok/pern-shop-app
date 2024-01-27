@@ -4,10 +4,11 @@ import CustomTable from '../../common/components/CustomTable';
 import AvatarWithDoubleText from '../../common/components/AvatarWithDoubleText';
 import PlaceText from '../../common/components/PlaceText';
 import PriceText from '../../common/components/PriceText';
+import CustomAnchor from '../../common/components/CustomAnchor';
 import DateText from '../../common/components/DateText';
-import TotalText from '../../common/components/TotalText';
 import CustomActions from '../../common/components/CustomActions';
 import { viewStorageAction } from './ViewStorageModal';
+import { openViewStorageCellsAction } from './ViewStorageCellsModal';
 
 type Props = ITableWithActions<Storage>;
 
@@ -15,7 +16,7 @@ export default function StoragesTable({ actions = [], ...props }: Props) {
   return (
     <CustomTable
       minWidth={700}
-      columns={['owner', 'storage', 'price', 'created', 'cells', 'action']}
+      columns={['owner', 'storage', 'price', 'cells', 'created', 'action']}
       {...props}
     >
       {props.data?.result.map((storage) => (
@@ -30,10 +31,13 @@ export default function StoragesTable({ actions = [], ...props }: Props) {
             <PriceText {...storage} />
           </td>
           <td>
-            <DateText date={storage.createdAt} />
+            <CustomAnchor
+              text={`${storage.cells}`}
+              open={() => openViewStorageCellsAction(storage)}
+            />
           </td>
           <td>
-            <TotalText data={storage.cells} />
+            <DateText date={storage.createdAt} />
           </td>
           <td>
             <CustomActions

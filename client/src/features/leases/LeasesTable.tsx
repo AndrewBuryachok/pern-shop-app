@@ -4,10 +4,11 @@ import CustomTable from '../../common/components/CustomTable';
 import AvatarWithDoubleText from '../../common/components/AvatarWithDoubleText';
 import PlaceText from '../../common/components/PlaceText';
 import SumText from '../../common/components/SumText';
+import CustomAnchor from '../../common/components/CustomAnchor';
 import DateText from '../../common/components/DateText';
-import SingleText from '../../common/components/SingleText';
 import CustomActions from '../../common/components/CustomActions';
 import { viewLeaseAction } from './ViewLeaseModal';
+import { openViewLeaseThingsAction } from './ViewLeaseThingsModal';
 import { parseKind } from '../../common/utils';
 
 type Props = ITableWithActions<Lease>;
@@ -21,8 +22,8 @@ export default function LeasesTable({ actions = [], ...props }: Props) {
         'owner',
         'storage',
         'sum',
-        'completed',
         'kind',
+        'completed',
         'action',
       ]}
       {...props}
@@ -46,10 +47,13 @@ export default function LeasesTable({ actions = [], ...props }: Props) {
             />
           </td>
           <td>
-            <DateText date={lease.completedAt} />
+            <CustomAnchor
+              text={parseKind(lease.kind)}
+              open={() => openViewLeaseThingsAction(lease)}
+            />
           </td>
           <td>
-            <SingleText text={parseKind(lease.kind)} />
+            <DateText date={lease.completedAt} />
           </td>
           <td>
             <CustomActions
