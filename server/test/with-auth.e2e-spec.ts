@@ -407,7 +407,7 @@ describe('With Auth', () => {
       return request(app.getHttpServer())
         .post('/comments')
         .set('Authorization', `Bearer ${user.access}`)
-        .send({ articleId: articlesId[0], text: 'comment text' })
+        .send({ articleId: articlesId[0], commentId: 0, text: 'comment text' })
         .expect('');
     });
 
@@ -2068,7 +2068,7 @@ describe('With Auth', () => {
       return request(app.getHttpServer())
         .post('/answers')
         .set('Authorization', `Bearer ${user.access}`)
-        .send({ plaintId: plaintsId[0], text: 'answer text' })
+        .send({ plaintId: plaintsId[0], answerId: 0, text: 'answer text' })
         .expect('');
     });
 
@@ -2185,7 +2185,7 @@ describe('With Auth', () => {
       return request(app.getHttpServer())
         .post('/discussions')
         .set('Authorization', `Bearer ${user.access}`)
-        .send({ pollId: pollsId[0], text: 'discussion text' })
+        .send({ pollId: pollsId[0], discussionId: 0, text: 'discussion text' })
         .expect('');
     });
 

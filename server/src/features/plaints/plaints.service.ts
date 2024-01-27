@@ -74,12 +74,19 @@ export class PlaintsService {
     const plaint = await this.plaintsRepository
       .createQueryBuilder('plaint')
       .leftJoin('plaint.answers', 'answer')
+      .leftJoin('answer.reply', 'reply')
+      .leftJoin('reply.user', 'replier')
       .leftJoin('answer.user', 'answerer')
       .where('plaint.id = :plaintId', { plaintId })
       .orderBy('answer.id', 'ASC')
       .select([
         'plaint.id',
         'answer.id',
+        'reply.id',
+        'replier.id',
+        'replier.nick',
+        'replier.avatar',
+        'reply.text',
         'answerer.id',
         'answerer.nick',
         'answerer.avatar',

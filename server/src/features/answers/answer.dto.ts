@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Validate } from 'class-validator';
+import { Validate, ValidateIf } from 'class-validator';
 import { Type } from 'class-transformer';
 import { IsId } from '../../common/decorators';
 import { IsAnswerExists, IsPlaintExists } from '../../common/constraints';
@@ -26,6 +26,12 @@ export class CreateAnswerDto extends EditAnswerDto {
   @IsId()
   @Validate(IsPlaintExists)
   plaintId: number;
+
+  @ApiProperty()
+  @ValidateIf((_, value) => value !== 0)
+  @IsId()
+  @Validate(IsAnswerExists)
+  answerId: number;
 }
 
 export class ExtCreateAnswerDto extends CreateAnswerDto {

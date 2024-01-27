@@ -113,12 +113,19 @@ export class PollsService {
     const poll = await this.pollsRepository
       .createQueryBuilder('poll')
       .leftJoin('poll.discussions', 'discussion')
+      .leftJoin('discussion.reply', 'reply')
+      .leftJoin('reply.user', 'replier')
       .leftJoin('discussion.user', 'discussioner')
       .where('poll.id = :pollId', { pollId })
       .orderBy('discussion.id', 'ASC')
       .select([
         'poll.id',
         'discussion.id',
+        'reply.id',
+        'replier.id',
+        'replier.nick',
+        'replier.avatar',
+        'reply.text',
         'discussioner.id',
         'discussioner.nick',
         'discussioner.avatar',
