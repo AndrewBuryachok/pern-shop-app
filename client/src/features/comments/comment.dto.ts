@@ -1,12 +1,13 @@
-export interface CreateCommentDto {
+import { CreateReplyDto } from '../replies/reply.dto';
+
+export interface CreateCommentDto extends CreateReplyDto {
   articleId: number;
-  text: string;
+}
+
+export interface EditCommentDto extends CreateReplyDto {
+  commentId: number;
 }
 
 export interface DeleteCommentDto {
   commentId: number;
-}
-
-export interface EditCommentDto extends DeleteCommentDto {
-  text: string;
 }

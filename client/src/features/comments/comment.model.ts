@@ -1,8 +1,3 @@
-import { SmUser } from '../users/user.model';
+import { Reply } from '../replies/reply.model';
 
-export interface Comment {
-  id: number;
-  user: SmUser;
-  text: string;
-  createdAt: Date;
-}
+export interface Comment extends Reply {}

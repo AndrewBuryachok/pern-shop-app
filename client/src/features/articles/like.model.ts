@@ -1,8 +1,5 @@
-import { SmUser } from '../users/user.model';
+import { Reaction, SmReaction } from '../reactions/reaction.model';
 
-export interface Like {
-  id: number;
-  user: SmUser;
-  type: boolean;
-  createdAt: Date;
-}
+export interface SmLike extends SmReaction {}
+
+export interface Like extends Reaction {}

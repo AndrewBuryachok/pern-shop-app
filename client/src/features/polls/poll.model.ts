@@ -1,8 +1,9 @@
+import { SmVote } from './vote.model';
 import { SmUser } from '../users/user.model';
 
 export interface SmPoll {
   id: number;
-  vote: { id: number; type: boolean };
+  vote: SmVote;
 }
 
 export interface Poll {

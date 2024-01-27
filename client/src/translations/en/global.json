@@ -316,7 +316,7 @@
     },
     "articles": {
       "created": "Someone created article",
-      "liked": "Someone liked your article",
+      "reacted": "Someone reacted to your article",
       "commented": "Someone commented your article"
     },
     "cards": {
@@ -421,7 +421,7 @@
     },
     "polls": {
       "created": "Someone created poll",
-      "voted": "Someone voted to your poll",
+      "reacted": "Someone reacted to your poll",
       "discussed": "Someone discussed your poll",
       "completed": "Someone completed your poll"
     },
@@ -435,10 +435,8 @@
     "currency": "DO",
     "increase": "Increase",
     "decrease": "Decrease",
-    "like": "Like",
-    "dislike": "Dislike",
-    "up": "Up",
-    "down": "Down",
+    "up": "Thumb up",
+    "down": "Thumb down",
     "backgrounds": {
       "Warm_Ocean": "Warm ocean",
       "Mushroom_Fields": "Mushroom fields",

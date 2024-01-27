@@ -1,8 +1,9 @@
+import { SmLike } from './like.model';
 import { SmUser } from '../users/user.model';
 
 export interface SmArticle {
   id: number;
-  like: { id: number; type: boolean };
+  like: SmLike;
 }
 
 export interface Article {
