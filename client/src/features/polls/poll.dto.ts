@@ -1,3 +1,5 @@
+import { CreateReactionDto } from '../reactions/reaction.dto';
+
 export interface CreatePollDto {
   text: string;
   mark: number;
@@ -17,10 +19,10 @@ export interface DeletePollDto {
   pollId: number;
 }
 
-export interface CompletePollDto extends DeletePollDto {
-  type: boolean;
+export interface CompletePollDto extends CreateReactionDto {
+  pollId: number;
 }
 
-export interface VotePollDto extends DeletePollDto {
-  type: boolean;
+export interface VotePollDto extends CreateReactionDto {
+  pollId: number;
 }

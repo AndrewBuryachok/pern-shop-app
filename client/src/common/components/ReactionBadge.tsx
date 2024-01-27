@@ -6,7 +6,7 @@ type Props = {
   type: boolean;
 };
 
-export default function VoteBadge(props: Props) {
+export default function ReactionBadge(props: Props) {
   const [t] = useTranslation();
 
   return (

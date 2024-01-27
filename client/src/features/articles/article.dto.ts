@@ -1,3 +1,5 @@
+import { CreateReactionDto } from '../reactions/reaction.dto';
+
 export interface CreateArticleDto {
   text: string;
   image1: string;
@@ -17,6 +19,6 @@ export interface DeleteArticleDto {
   articleId: number;
 }
 
-export interface LikeArticleDto extends DeleteArticleDto {
-  type: boolean;
+export interface LikeArticleDto extends CreateReactionDto {
+  articleId: number;
 }
