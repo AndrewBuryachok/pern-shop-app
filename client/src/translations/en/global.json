@@ -18,6 +18,9 @@
           "off": "With sound"
         }
       },
+      "notifications": {
+        "title": "Notifications"
+      },
       "account": {
         "title": "Account",
         "profile": "Profile",
