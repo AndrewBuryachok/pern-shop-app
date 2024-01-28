@@ -49,9 +49,15 @@ export class TasksService {
   }
 
   async createTask(dto: ExtCreateTaskDto): Promise<void> {
-    await this.create(dto);
+    const task = await this.create(dto);
+    this.mqttService.publishNotificationMessage(
+      0,
+      task.id,
+      Notification.CREATED_TASK,
+    );
     this.mqttService.publishNotificationMention(
       dto.text,
+      task.id,
       Notification.MENTIONED_TASK,
     );
   }
@@ -66,6 +72,7 @@ export class TasksService {
     await this.take(task, dto.userId);
     this.mqttService.publishNotificationMessage(
       task.customerUserId,
+      dto.taskId,
       Notification.TAKEN_TASK,
     );
   }
@@ -82,6 +89,7 @@ export class TasksService {
     await this.untake(task);
     this.mqttService.publishNotificationMessage(
       task.customerUserId,
+      dto.taskId,
       Notification.UNTAKEN_TASK,
     );
   }
@@ -98,6 +106,7 @@ export class TasksService {
     await this.execute(task);
     this.mqttService.publishNotificationMessage(
       task.customerUserId,
+      dto.taskId,
       Notification.EXECUTED_TASK,
     );
   }
@@ -114,6 +123,7 @@ export class TasksService {
     await this.complete(task);
     this.mqttService.publishNotificationMessage(
       task.executorUserId,
+      dto.taskId,
       Notification.COMPLETED_TASK,
     );
   }
@@ -158,7 +168,7 @@ export class TasksService {
     return task;
   }
 
-  private async create(dto: ExtCreateTaskDto): Promise<void> {
+  private async create(dto: ExtCreateTaskDto): Promise<Task> {
     try {
       const task = this.tasksRepository.create({
         customerUserId: dto.userId,
@@ -167,6 +177,7 @@ export class TasksService {
         priority: dto.priority,
       });
       await this.tasksRepository.save(task);
+      return task;
     } catch (error) {
       throw new AppException(TaskError.CREATE_FAILED);
     }

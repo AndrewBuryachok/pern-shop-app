@@ -64,9 +64,10 @@ export class InvoicesService {
       dto.myId,
       dto.hasRole,
     );
-    await this.create(dto);
+    const invoice = await this.create(dto);
     this.mqttService.publishNotificationMessage(
       dto.receiverUserId,
+      invoice.id,
       Notification.CREATED_INVOICE,
     );
   }
@@ -91,6 +92,7 @@ export class InvoicesService {
     await this.complete(invoice, dto.cardId);
     this.mqttService.publishNotificationMessage(
       invoice.senderCard.userId,
+      dto.invoiceId,
       Notification.COMPLETED_INVOICE,
     );
   }
@@ -107,6 +109,7 @@ export class InvoicesService {
     await this.delete(invoice);
     this.mqttService.publishNotificationMessage(
       invoice.receiverUserId,
+      dto.invoiceId,
       Notification.DELETED_INVOICE,
     );
   }
@@ -148,7 +151,7 @@ export class InvoicesService {
     return invoice;
   }
 
-  private async create(dto: ExtCreateInvoiceDto): Promise<void> {
+  private async create(dto: ExtCreateInvoiceDto): Promise<Invoice> {
     try {
       const invoice = this.invoicesRepository.create({
         senderCardId: dto.senderCardId,
@@ -157,6 +160,7 @@ export class InvoicesService {
         description: dto.description,
       });
       await this.invoicesRepository.save(invoice);
+      return invoice;
     } catch (error) {
       throw new AppException(InvoiceError.CREATE_FAILED);
     }

@@ -77,8 +77,12 @@ export class OrdersService {
       kind: Kind.ORDER,
     });
     await this.cardsService.decreaseCardBalance({ ...dto, sum: dto.price });
-    await this.create({ ...dto, storageId: leaseId });
-    this.mqttService.publishNotificationMessage(0, Notification.CREATED_ORDER);
+    const order = await this.create({ ...dto, storageId: leaseId });
+    this.mqttService.publishNotificationMessage(
+      0,
+      order.id,
+      Notification.CREATED_ORDER,
+    );
   }
 
   async takeOrder(dto: ExtTakeOrderDto): Promise<void> {
@@ -96,6 +100,7 @@ export class OrdersService {
     await this.take(order, dto.cardId);
     this.mqttService.publishNotificationMessage(
       order.lease.card.userId,
+      dto.orderId,
       Notification.TAKEN_ORDER,
     );
   }
@@ -112,6 +117,7 @@ export class OrdersService {
     await this.untake(order);
     this.mqttService.publishNotificationMessage(
       order.lease.card.userId,
+      dto.orderId,
       Notification.UNTAKEN_ORDER,
     );
   }
@@ -128,6 +134,7 @@ export class OrdersService {
     await this.execute(order);
     this.mqttService.publishNotificationMessage(
       order.lease.card.userId,
+      dto.orderId,
       Notification.EXECUTED_ORDER,
     );
   }
@@ -156,6 +163,7 @@ export class OrdersService {
     await this.complete(order);
     this.mqttService.publishNotificationMessage(
       order.executorCard.userId,
+      dto.orderId,
       Notification.COMPLETED_ORDER,
     );
   }
@@ -188,6 +196,7 @@ export class OrdersService {
     await this.rate(order, dto.rate);
     this.mqttService.publishNotificationMessage(
       order.executorCard.userId,
+      dto.orderId,
       Notification.RATED_ORDER,
     );
   }
@@ -232,7 +241,7 @@ export class OrdersService {
     return order;
   }
 
-  private async create(dto: ExtCreateOrderDto): Promise<void> {
+  private async create(dto: ExtCreateOrderDto): Promise<Order> {
     try {
       const order = this.ordersRepository.create({
         leaseId: dto.storageId,
@@ -244,6 +253,7 @@ export class OrdersService {
         price: dto.price,
       });
       await this.ordersRepository.save(order);
+      return order;
     } catch (error) {
       throw new AppException(OrderError.CREATE_FAILED);
     }

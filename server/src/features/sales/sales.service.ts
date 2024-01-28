@@ -61,8 +61,13 @@ export class SalesService {
   }
 
   async createSale(dto: ExtCreateSaleDto): Promise<void> {
-    await this.productsService.buyProduct(dto);
-    await this.create(dto);
+    const product = await this.productsService.buyProduct(dto);
+    const sale = await this.create(dto);
+    this.mqttService.publishNotificationMessage(
+      product.lease.card.userId,
+      sale.id,
+      Notification.CREATED_SALE,
+    );
   }
 
   async rateSale(dto: ExtRateSaleDto): Promise<void> {
@@ -70,6 +75,7 @@ export class SalesService {
     await this.rate(sale, dto.rate);
     this.mqttService.publishNotificationMessage(
       sale.product.lease.card.userId,
+      dto.saleId,
       Notification.RATED_SALE,
     );
   }
@@ -99,7 +105,7 @@ export class SalesService {
     return sale;
   }
 
-  private async create(dto: ExtCreateSaleDto): Promise<void> {
+  private async create(dto: ExtCreateSaleDto): Promise<Sale> {
     try {
       const sale = this.salesRepository.create({
         productId: dto.productId,
@@ -107,6 +113,7 @@ export class SalesService {
         amount: dto.amount,
       });
       await this.salesRepository.save(sale);
+      return sale;
     } catch (error) {
       throw new AppException(SaleError.CREATE_FAILED);
     }

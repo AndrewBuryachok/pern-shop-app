@@ -26,10 +26,11 @@ export class AnswersService {
     const plaint = await this.plaintsService.checkPlaintNotCompleted(
       dto.plaintId,
     );
-    await this.create(dto);
+    const answer = await this.create(dto);
     [plaint.senderUserId, plaint.receiverUserId].forEach((userId) =>
       this.mqttService.publishNotificationMessage(
         userId,
+        answer.id,
         Notification.ANSWERED_PLAINT,
       ),
     );
@@ -39,11 +40,13 @@ export class AnswersService {
       });
       this.mqttService.publishNotificationMessage(
         answer.userId,
+        answer.id,
         Notification.REPLIED_ANSWER,
       );
     }
     this.mqttService.publishNotificationMention(
       dto.text,
+      answer.id,
       Notification.MENTIONED_ANSWER,
     );
   }
@@ -58,6 +61,7 @@ export class AnswersService {
     await this.edit(answer, dto);
     this.mqttService.publishNotificationMention(
       dto.text,
+      dto.answerId,
       Notification.MENTIONED_ANSWER,
     );
   }
@@ -88,7 +92,7 @@ export class AnswersService {
     return answer;
   }
 
-  private async create(dto: ExtCreateAnswerDto): Promise<void> {
+  private async create(dto: ExtCreateAnswerDto): Promise<Answer> {
     try {
       const answer = this.answersRepository.create({
         plaintId: dto.plaintId,
@@ -97,6 +101,7 @@ export class AnswersService {
         text: dto.text,
       });
       await this.answersRepository.save(answer);
+      return answer;
     } catch (error) {
       throw new AppException(AnswerError.CREATE_FAILED);
     }

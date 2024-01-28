@@ -100,8 +100,12 @@ export class WaresService {
 
   async createWare(dto: ExtCreateWareDto): Promise<void> {
     await this.rentsService.checkRentOwner(dto.rentId, dto.myId, dto.hasRole);
-    await this.create(dto);
-    this.mqttService.publishNotificationMessage(0, Notification.CREATED_WARE);
+    const ware = await this.create(dto);
+    this.mqttService.publishNotificationMessage(
+      0,
+      ware.id,
+      Notification.CREATED_WARE,
+    );
   }
 
   async editWare(dto: ExtEditWareDto): Promise<void> {
@@ -114,7 +118,7 @@ export class WaresService {
     await this.complete(ware);
   }
 
-  async buyWare(dto: BuyWareDto): Promise<void> {
+  async buyWare(dto: BuyWareDto): Promise<Ware> {
     const ware = await this.waresRepository.findOne({
       relations: ['rent', 'rent.card'],
       where: { id: dto.wareId },
@@ -137,10 +141,7 @@ export class WaresService {
       description: '',
     });
     await this.buy(ware, dto.amount);
-    this.mqttService.publishNotificationMessage(
-      ware.rent.card.userId,
-      Notification.CREATED_TRADE,
-    );
+    return ware;
   }
 
   async checkWareExists(id: number): Promise<void> {
@@ -168,7 +169,7 @@ export class WaresService {
     return ware;
   }
 
-  private async create(dto: ExtCreateWareDto): Promise<void> {
+  private async create(dto: ExtCreateWareDto): Promise<Ware> {
     try {
       const ware = this.waresRepository.create({
         rentId: dto.rentId,
@@ -185,6 +186,7 @@ export class WaresService {
         price: dto.price,
       });
       await this.waresStatesRepository.save(wareState);
+      return ware;
     } catch (error) {
       throw new AppException(WareError.CREATE_FAILED);
     }

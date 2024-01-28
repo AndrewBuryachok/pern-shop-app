@@ -62,6 +62,7 @@ export class FriendsService {
     }
     this.mqttService.publishNotificationMessage(
       dto.userId,
+      dto.myId,
       Notification.ADDED_FRIEND,
     );
   }
@@ -93,17 +94,19 @@ export class FriendsService {
     }
     this.mqttService.publishNotificationMessage(
       dto.userId,
+      dto.myId,
       Notification.REMOVED_FRIEND,
     );
   }
 
-  private async create(dto: UpdateFriendDto): Promise<void> {
+  private async create(dto: UpdateFriendDto): Promise<Invitation> {
     try {
       const invitation = this.invitationsRepository.create({
         senderUserId: dto.myId,
         receiverUserId: dto.userId,
       });
       await this.invitationsRepository.save(invitation);
+      return invitation;
     } catch (error) {
       throw new AppException(FriendError.CREATE_FAILED);
     }

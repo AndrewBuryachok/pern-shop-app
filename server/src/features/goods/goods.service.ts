@@ -43,8 +43,12 @@ export class GoodsService {
 
   async createGood(dto: ExtCreateGoodDto): Promise<void> {
     await this.shopsService.checkShopUser(dto.shopId, dto.myId, dto.hasRole);
-    await this.create(dto);
-    this.mqttService.publishNotificationMessage(0, Notification.CREATED_GOOD);
+    const good = await this.create(dto);
+    this.mqttService.publishNotificationMessage(
+      0,
+      good.id,
+      Notification.CREATED_GOOD,
+    );
   }
 
   async editGood(dto: ExtEditGoodDto): Promise<void> {
@@ -76,7 +80,7 @@ export class GoodsService {
     return good;
   }
 
-  private async create(dto: ExtCreateGoodDto): Promise<void> {
+  private async create(dto: ExtCreateGoodDto): Promise<Good> {
     try {
       const good = this.goodsRepository.create({
         shopId: dto.shopId,
@@ -88,6 +92,7 @@ export class GoodsService {
         price: dto.price,
       });
       await this.goodsRepository.save(good);
+      return good;
     } catch (error) {
       throw new AppException(GoodError.CREATE_FAILED);
     }

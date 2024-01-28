@@ -56,9 +56,10 @@ export class RatingsService {
     if (rating) {
       throw new AppException(RatingError.ALREADY_HAS_RATING);
     }
-    await this.create(dto);
+    const result = await this.create(dto);
     this.mqttService.publishNotificationMessage(
       dto.receiverUserId,
+      result.id,
       Notification.CREATED_RATING,
     );
   }
@@ -72,6 +73,7 @@ export class RatingsService {
     await this.edit(rating, dto.rate);
     this.mqttService.publishNotificationMessage(
       rating.receiverUserId,
+      dto.ratingId,
       Notification.EDITED_RATING,
     );
   }
@@ -85,6 +87,7 @@ export class RatingsService {
     await this.delete(rating);
     this.mqttService.publishNotificationMessage(
       rating.receiverUserId,
+      dto.ratingId,
       Notification.DELETED_RATING,
     );
   }
@@ -105,7 +108,7 @@ export class RatingsService {
     return rating;
   }
 
-  private async create(dto: ExtCreateRatingDto): Promise<void> {
+  private async create(dto: ExtCreateRatingDto): Promise<Rating> {
     try {
       const rating = this.ratingsRepository.create({
         senderUserId: dto.senderUserId,
@@ -113,6 +116,7 @@ export class RatingsService {
         rate: dto.rate,
       });
       await this.ratingsRepository.save(rating);
+      return rating;
     } catch (error) {
       throw new AppException(RatingError.CREATE_FAILED);
     }

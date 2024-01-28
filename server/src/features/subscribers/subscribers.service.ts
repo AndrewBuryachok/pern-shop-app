@@ -32,6 +32,7 @@ export class SubscribersService {
     });
     this.mqttService.publishNotificationMessage(
       dto.userId,
+      dto.myId,
       Notification.ADDED_SUBSCRIBER,
     );
   }
@@ -43,6 +44,7 @@ export class SubscribersService {
     });
     this.mqttService.publishNotificationMessage(
       dto.userId,
+      dto.myId,
       Notification.REMOVED_SUBSCRIBER,
     );
   }

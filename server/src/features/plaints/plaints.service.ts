@@ -98,9 +98,10 @@ export class PlaintsService {
   }
 
   async createPlaint(dto: ExtCreatePlaintDto): Promise<void> {
-    await this.create(dto);
+    const plaint = await this.create(dto);
     this.mqttService.publishNotificationMessage(
       dto.receiverUserId,
+      plaint.id,
       Notification.CREATED_PLAINT,
     );
   }
@@ -120,11 +121,13 @@ export class PlaintsService {
     [plaint.senderUserId, plaint.receiverUserId].forEach((userId) =>
       this.mqttService.publishNotificationMessage(
         userId,
+        dto.plaintId,
         Notification.COMPLETED_PLAINT,
       ),
     );
     this.mqttService.publishNotificationMention(
       dto.text,
+      dto.plaintId,
       Notification.MENTIONED_PLAINT,
     );
   }
@@ -138,6 +141,7 @@ export class PlaintsService {
     await this.delete(plaint);
     this.mqttService.publishNotificationMessage(
       plaint.receiverUserId,
+      dto.plaintId,
       Notification.DELETED_PLAINT,
     );
   }
@@ -169,7 +173,7 @@ export class PlaintsService {
     return plaint;
   }
 
-  private async create(dto: ExtCreatePlaintDto): Promise<void> {
+  private async create(dto: ExtCreatePlaintDto): Promise<Plaint> {
     try {
       const plaint = this.plaintsRepository.create({
         title: dto.title,
@@ -177,6 +181,7 @@ export class PlaintsService {
         receiverUserId: dto.receiverUserId,
       });
       await this.plaintsRepository.save(plaint);
+      return plaint;
     } catch (error) {
       throw new AppException(PlaintError.CREATE_FAILED);
     }

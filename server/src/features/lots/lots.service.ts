@@ -72,11 +72,15 @@ export class LotsService {
       ...dto,
       kind: Kind.LOT,
     });
-    await this.create({ ...dto, storageId: leaseId });
-    this.mqttService.publishNotificationMessage(0, Notification.CREATED_LOT);
+    const lot = await this.create({ ...dto, storageId: leaseId });
+    this.mqttService.publishNotificationMessage(
+      0,
+      lot.id,
+      Notification.CREATED_LOT,
+    );
   }
 
-  async buyLot(dto: BuyLotDto): Promise<void> {
+  async buyLot(dto: BuyLotDto): Promise<Lot> {
     const lot = await this.lotsRepository.findOne({
       relations: ['lease', 'lease.card'],
       where: { id: dto.lotId },
@@ -92,10 +96,7 @@ export class LotsService {
     }
     await this.cardsService.decreaseCardBalance({ ...dto, sum: dto.price });
     await this.buy(lot, dto.price);
-    this.mqttService.publishNotificationMessage(
-      lot.lease.card.userId,
-      Notification.CREATED_BID,
-    );
+    return lot;
   }
 
   async completeLot(dto: CompleteLotDto): Promise<void> {
@@ -117,6 +118,7 @@ export class LotsService {
     lot.bids.forEach((bid) =>
       this.mqttService.publishNotificationMessage(
         bid.card.userId,
+        dto.lotId,
         Notification.COMPLETED_LOT,
       ),
     );
@@ -154,7 +156,7 @@ export class LotsService {
     return lot;
   }
 
-  private async create(dto: ExtCreateLotDto): Promise<void> {
+  private async create(dto: ExtCreateLotDto): Promise<Lot> {
     try {
       const lot = this.lotsRepository.create({
         leaseId: dto.storageId,
@@ -166,6 +168,7 @@ export class LotsService {
         price: dto.price,
       });
       await this.lotsRepository.save(lot);
+      return lot;
     } catch (error) {
       throw new AppException(LotError.CREATE_FAILED);
     }

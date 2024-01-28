@@ -2,12 +2,13 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Lease } from './lease.entity';
 import { CellsModule } from '../cells/cells.module';
+import { MqttModule } from '../mqtt/mqtt.module';
 import { LeasesController } from './leases.controller';
 import { LeasesService } from './leases.service';
 import { IsLeaseExists } from '../../common/constraints';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Lease]), CellsModule],
+  imports: [TypeOrmModule.forFeature([Lease]), CellsModule, MqttModule],
   controllers: [LeasesController],
   providers: [LeasesService, IsLeaseExists],
   exports: [LeasesService],

@@ -107,9 +107,10 @@ export class ProductsService {
       ...dto,
       kind: Kind.PRODUCT,
     });
-    await this.create({ ...dto, storageId: leaseId });
+    const product = await this.create({ ...dto, storageId: leaseId });
     this.mqttService.publishNotificationMessage(
       0,
+      product.id,
       Notification.CREATED_PRODUCT,
     );
   }
@@ -132,7 +133,7 @@ export class ProductsService {
     await this.complete(product);
   }
 
-  async buyProduct(dto: BuyProductDto): Promise<void> {
+  async buyProduct(dto: BuyProductDto): Promise<Product> {
     const product = await this.productsRepository.findOne({
       relations: ['lease', 'lease.card'],
       where: { id: dto.productId },
@@ -155,10 +156,7 @@ export class ProductsService {
       description: '',
     });
     await this.buy(product, dto.amount);
-    this.mqttService.publishNotificationMessage(
-      product.lease.card.userId,
-      Notification.CREATED_SALE,
-    );
+    return product;
   }
 
   async checkProductExists(id: number): Promise<void> {
@@ -186,7 +184,7 @@ export class ProductsService {
     return product;
   }
 
-  private async create(dto: ExtCreateProductDto): Promise<void> {
+  private async create(dto: ExtCreateProductDto): Promise<Product> {
     try {
       const product = this.productsRepository.create({
         leaseId: dto.storageId,
@@ -203,6 +201,7 @@ export class ProductsService {
         price: dto.price,
       });
       await this.productsStatesRepository.save(productState);
+      return product;
     } catch (error) {
       throw new AppException(ProductError.CREATE_FAILED);
     }

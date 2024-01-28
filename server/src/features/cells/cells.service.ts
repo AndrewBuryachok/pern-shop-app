@@ -62,11 +62,15 @@ export class CellsService {
       dto.hasRole,
     );
     const name = await this.checkHasNotEnough(dto.storageId);
-    await this.create({ ...dto, name });
-    this.mqttService.publishNotificationMessage(0, Notification.CREATED_CELL);
+    const cell = await this.create({ ...dto, name });
+    this.mqttService.publishNotificationMessage(
+      0,
+      cell.id,
+      Notification.CREATED_CELL,
+    );
   }
 
-  async reserveCell(dto: ReserveCellDto): Promise<number> {
+  async reserveCell(dto: ReserveCellDto): Promise<Cell> {
     const cell = await this.findFreeCell(dto.storageId);
     await this.paymentsService.createPayment({
       myId: dto.myId,
@@ -77,14 +81,10 @@ export class CellsService {
       description: '',
     });
     await this.reserve(cell);
-    this.mqttService.publishNotificationMessage(
-      cell.storage.card.userId,
-      Notification.CREATED_LEASE,
-    );
-    return cell.id;
+    return cell;
   }
 
-  async continueCell(dto: ReserveCellDto): Promise<void> {
+  async continueCell(dto: ReserveCellDto): Promise<Cell> {
     const cell = await this.cellsRepository.findOne({
       relations: ['storage', 'storage.card'],
       where: { id: dto.storageId },
@@ -98,22 +98,16 @@ export class CellsService {
       description: '',
     });
     await this.continue(cell);
-    this.mqttService.publishNotificationMessage(
-      cell.storage.card.userId,
-      Notification.CONTINUED_LEASE,
-    );
+    return cell;
   }
 
-  async unreserveCell(id: number): Promise<void> {
+  async unreserveCell(id: number): Promise<Cell> {
     const cell = await this.cellsRepository.findOne({
       relations: ['storage', 'storage.card'],
       where: { id },
     });
     await this.unreserve(cell);
-    this.mqttService.publishNotificationMessage(
-      cell.storage.card.userId,
-      Notification.COMPLETED_LEASE,
-    );
+    return cell;
   }
 
   private async checkHasNotEnough(storageId: number): Promise<number> {
@@ -145,13 +139,14 @@ export class CellsService {
     return cell;
   }
 
-  private async create(dto: ExtCreateCellDto): Promise<void> {
+  private async create(dto: ExtCreateCellDto): Promise<Cell> {
     try {
       const cell = this.cellsRepository.create({
         storageId: dto.storageId,
         name: dto.name,
       });
       await this.cellsRepository.save(cell);
+      return cell;
     } catch (error) {
       throw new AppException(CellError.CREATE_FAILED);
     }

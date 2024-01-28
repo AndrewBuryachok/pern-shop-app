@@ -3,11 +3,12 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { Bid } from './bid.entity';
 import { LotsService } from '../lots/lots.service';
+import { MqttService } from '../mqtt/mqtt.service';
 import { ExtCreateBidDto } from './bid.dto';
 import { Request, Response } from '../../common/interfaces';
 import { AppException } from '../../common/exceptions';
 import { BidError } from './bid-error.enum';
-import { Mode } from '../../common/enums';
+import { Mode, Notification } from '../../common/enums';
 
 @Injectable()
 export class BidsService {
@@ -15,6 +16,7 @@ export class BidsService {
     @InjectRepository(Bid)
     private bidsRepository: Repository<Bid>,
     private lotsService: LotsService,
+    private mqttService: MqttService,
   ) {}
 
   async getMyBids(myId: number, req: Request): Promise<Response<Bid>> {
@@ -49,15 +51,20 @@ export class BidsService {
   }
 
   async createBid(dto: ExtCreateBidDto): Promise<void> {
-    await this.lotsService.buyLot(dto);
-    await this.create(dto);
+    const lot = await this.lotsService.buyLot(dto);
+    const bid = await this.create(dto);
+    this.mqttService.publishNotificationMessage(
+      lot.lease.card.userId,
+      bid.id,
+      Notification.CREATED_BID,
+    );
   }
 
   async checkBidExists(id: number): Promise<void> {
     await this.bidsRepository.findOneByOrFail({ id });
   }
 
-  private async create(dto: ExtCreateBidDto): Promise<void> {
+  private async create(dto: ExtCreateBidDto): Promise<Bid> {
     try {
       const bid = this.bidsRepository.create({
         lotId: dto.lotId,
@@ -65,6 +72,7 @@ export class BidsService {
         price: dto.price,
       });
       await this.bidsRepository.save(bid);
+      return bid;
     } catch (error) {
       throw new AppException(BidError.CREATE_FAILED);
     }

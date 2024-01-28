@@ -93,8 +93,12 @@ export class ShopsService {
     await this.checkHasNotEnough(dto.userId);
     await this.checkNameNotUsed(dto.name);
     await this.checkCoordinatesNotUsed(dto.x, dto.y);
-    await this.create(dto);
-    this.mqttService.publishNotificationMessage(0, Notification.CREATED_SHOP);
+    const shop = await this.create(dto);
+    this.mqttService.publishNotificationMessage(
+      0,
+      shop.id,
+      Notification.CREATED_SHOP,
+    );
   }
 
   async editShop(dto: ExtEditShopDto): Promise<void> {
@@ -112,6 +116,7 @@ export class ShopsService {
     await this.addUser(shop, dto.userId);
     this.mqttService.publishNotificationMessage(
       dto.userId,
+      dto.shopId,
       Notification.ADDED_SHOP,
     );
   }
@@ -127,6 +132,7 @@ export class ShopsService {
     await this.removeUser(shop, dto.userId);
     this.mqttService.publishNotificationMessage(
       dto.userId,
+      dto.shopId,
       Notification.REMOVED_SHOP,
     );
   }
@@ -190,7 +196,7 @@ export class ShopsService {
     }
   }
 
-  private async create(dto: ExtCreateShopDto): Promise<void> {
+  private async create(dto: ExtCreateShopDto): Promise<Shop> {
     try {
       const shop = this.shopsRepository.create({
         userId: dto.userId,
@@ -203,6 +209,7 @@ export class ShopsService {
         users: [{ id: dto.userId }],
       });
       await this.shopsRepository.save(shop);
+      return shop;
     } catch (error) {
       throw new AppException(ShopError.CREATE_FAILED);
     }

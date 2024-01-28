@@ -4,12 +4,13 @@ import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { Rent } from './rent.entity';
 import { Thing } from '../things/thing.entity';
 import { StoresService } from '../stores/stores.service';
+import { MqttService } from '../mqtt/mqtt.service';
 import { ExtCreateRentDto, ExtRentIdDto } from './rent.dto';
 import { Request, Response } from '../../common/interfaces';
 import { getDateWeekAfter } from '../../common/utils';
 import { AppException } from '../../common/exceptions';
 import { RentError } from './rent-error.enum';
-import { Mode } from '../../common/enums';
+import { Mode, Notification } from '../../common/enums';
 
 @Injectable()
 export class RentsService {
@@ -17,6 +18,7 @@ export class RentsService {
     @InjectRepository(Rent)
     private rentsRepository: Repository<Rent>,
     private storesService: StoresService,
+    private mqttService: MqttService,
   ) {}
 
   async getMainRents(req: Request): Promise<Response<Rent>> {
@@ -82,24 +84,39 @@ export class RentsService {
   }
 
   async createRent(dto: ExtCreateRentDto): Promise<void> {
-    await this.storesService.reserveStore(dto);
-    await this.create(dto);
+    const store = await this.storesService.reserveStore(dto);
+    const rent = await this.create(dto);
+    this.mqttService.publishNotificationMessage(
+      store.market.card.userId,
+      rent.id,
+      Notification.CREATED_RENT,
+    );
   }
 
   async continueRent(dto: ExtRentIdDto): Promise<void> {
     const rent = await this.checkRentOwner(dto.rentId, dto.myId, dto.hasRole);
-    await this.storesService.continueStore({
+    const store = await this.storesService.continueStore({
       ...dto,
       storeId: rent.storeId,
       cardId: rent.cardId,
     });
     await this.continue(rent);
+    this.mqttService.publishNotificationMessage(
+      store.market.card.userId,
+      dto.rentId,
+      Notification.CONTINUED_RENT,
+    );
   }
 
   async completeRent(dto: ExtRentIdDto): Promise<void> {
     const rent = await this.checkRentOwner(dto.rentId, dto.myId, dto.hasRole);
-    await this.storesService.unreserveStore(rent.storeId);
+    const store = await this.storesService.unreserveStore(rent.storeId);
     await this.complete(rent);
+    this.mqttService.publishNotificationMessage(
+      store.market.card.userId,
+      dto.rentId,
+      Notification.COMPLETED_RENT,
+    );
   }
 
   async checkRentExists(id: number): Promise<void> {
@@ -124,7 +141,7 @@ export class RentsService {
     return rent;
   }
 
-  private async create(dto: ExtCreateRentDto): Promise<void> {
+  private async create(dto: ExtCreateRentDto): Promise<Rent> {
     try {
       const rent = this.rentsRepository.create({
         storeId: dto.storeId,
@@ -132,6 +149,7 @@ export class RentsService {
         completedAt: getDateWeekAfter(),
       });
       await this.rentsRepository.save(rent);
+      return rent;
     } catch (error) {
       throw new AppException(RentError.CREATE_FAILED);
     }
