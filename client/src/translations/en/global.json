@@ -293,6 +293,7 @@
     "ratings": "Rating"
   },
   "errors": {
+    "incorrect_nick": "Incorrect nick",
     "not_enough_balance": "Not enough balance"
   },
   "notifications": {
@@ -315,7 +316,9 @@
       "created": "Someone created article",
       "reacted": "Someone reacted to your article",
       "commented": "Someone commented your article",
-      "replied": "Someone replied to your comment"
+      "replied": "Someone replied to your comment",
+      "mentioned": "Someone mentioned you in article",
+      "submentioned": "Someone mentioned you in comment"
     },
     "cards": {
       "added": "Someone added you in card",
@@ -409,21 +412,26 @@
       "taken": "Someone taken your task",
       "untaken": "Someone untaken your task",
       "executed": "Someone executed your task",
-      "completed": "Someone completed your task"
+      "completed": "Someone completed your task",
+      "mentioned": "Someone mentioned you in task"
     },
     "plaints": {
       "created": "Someone created plaint",
       "answered": "Someone answered to your plaint",
       "completed": "Someone completed your plaint",
       "deleted": "Someone deleted your plaint",
-      "replied": "Someone replied to your answer"
+      "replied": "Someone replied to your answer",
+      "mentioned": "Someone mentioned you in plaint",
+      "submentioned": "Someone mentioned you in answer"
     },
     "polls": {
       "created": "Someone created poll",
       "reacted": "Someone reacted to your poll",
       "discussed": "Someone discussed your poll",
       "completed": "Someone completed your poll",
-      "replied": "Someone replied to your discussion"
+      "replied": "Someone replied to your discussion",
+      "mentioned": "Someone mentioned you in poll",
+      "submentioned": "Someone mentioned you in discussion"
     },
     "ratings": {
       "created": "Someone created rating to you",

@@ -17,7 +17,7 @@ import {
 import { UpdateSubscriberDto } from '../subscribers/subscriber.dto';
 import CustomList from '../../common/components/CustomList';
 import AvatarWithDateText from '../../common/components/AvatarWithDateText';
-import SingleText from '../../common/components/SingleText';
+import CustomHighlight from '../../common/components/CustomHighlight';
 import CustomImage from '../../common/components/CustomImage';
 import CustomVideo from '../../common/components/CustomVideo';
 import CustomAnchor from '../../common/components/CustomAnchor';
@@ -104,7 +104,7 @@ export default function ArticlesList({ actions = [], ...props }: Props) {
                   actions={[viewArticleAction, ...actions]}
                 />
               </Group>
-              <SingleText text={article.text} />
+              <CustomHighlight text={article.text} />
               {article.image1 && <CustomImage image={article.image1} />}
               {article.image2 && <CustomImage image={article.image2} />}
               {article.image3 && <CustomImage image={article.image3} />}

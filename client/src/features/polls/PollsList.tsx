@@ -7,7 +7,7 @@ import { useSelectVotedPollsQuery, useVotePollMutation } from './polls.api';
 import { VotePollDto } from './poll.dto';
 import CustomList from '../../common/components/CustomList';
 import AvatarWithDateText from '../../common/components/AvatarWithDateText';
-import SingleText from '../../common/components/SingleText';
+import CustomHighlight from '../../common/components/CustomHighlight';
 import MarkBadge from '../../common/components/MarkBadge';
 import ResultBadge from '../../common/components/ResultBadge';
 import CustomImage from '../../common/components/CustomImage';
@@ -57,7 +57,7 @@ export default function PollsList({ actions = [], ...props }: Props) {
                   actions={[viewPollAction, ...actions]}
                 />
               </Group>
-              <SingleText text={poll.text} />
+              <CustomHighlight text={poll.text} />
               <Group spacing={8}>
                 <MarkBadge {...poll} />
                 <ResultBadge {...poll} />

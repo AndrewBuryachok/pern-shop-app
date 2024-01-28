@@ -4,7 +4,7 @@ import { Reply } from '../../features/replies/reply.model';
 import SingleText from './SingleText';
 import CustomAvatar from './CustomAvatar';
 import ReplyAvatarWithText from './ReplyAvatarWithText';
-import DoubleText from './DoubleText';
+import CustomHighlight from './CustomHighlight';
 import CustomActions from './CustomActions';
 import { parseTime } from '../utils';
 
@@ -31,10 +31,8 @@ export default function RepliesTimeline(props: Props) {
           {reply.reply && <ReplyAvatarWithText {...reply.reply} />}
           <Group spacing={0} position='apart' align='flex-start' noWrap>
             <div>
-              <DoubleText
-                text={reply.text}
-                subtext={parseTime(reply.createdAt)}
-              />
+              <CustomHighlight text={reply.text} />
+              <SingleText text={parseTime(reply.createdAt)} />
             </div>
             <CustomActions data={reply} actions={props.actions} />
           </Group>
