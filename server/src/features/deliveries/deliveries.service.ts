@@ -101,13 +101,14 @@ export class DeliveriesService {
       kind: Kind.DELIVERY,
     });
     await this.cardsService.decreaseCardBalance({ ...dto, sum: dto.price });
-    await this.create({
+    const delivery = await this.create({
       ...dto,
       fromStorageId: fromLeaseId,
       toStorageId: toLeaseId,
     });
     this.mqttService.publishNotificationMessage(
       0,
+      delivery.id,
       Notification.CREATED_DELIVERY,
     );
   }
@@ -130,6 +131,7 @@ export class DeliveriesService {
     await this.take(delivery, dto.cardId);
     this.mqttService.publishNotificationMessage(
       delivery.fromLease.card.userId,
+      dto.deliveryId,
       Notification.TAKEN_DELIVERY,
     );
   }
@@ -146,6 +148,7 @@ export class DeliveriesService {
     await this.untake(delivery);
     this.mqttService.publishNotificationMessage(
       delivery.fromLease.card.userId,
+      dto.deliveryId,
       Notification.UNTAKEN_DELIVERY,
     );
   }
@@ -162,6 +165,7 @@ export class DeliveriesService {
     await this.execute(delivery);
     this.mqttService.publishNotificationMessage(
       delivery.fromLease.card.userId,
+      dto.deliveryId,
       Notification.EXECUTED_DELIVERY,
     );
   }
@@ -190,6 +194,7 @@ export class DeliveriesService {
     await this.complete(delivery);
     this.mqttService.publishNotificationMessage(
       delivery.executorCard.userId,
+      dto.deliveryId,
       Notification.COMPLETED_DELIVERY,
     );
   }
@@ -222,6 +227,7 @@ export class DeliveriesService {
     await this.rate(delivery, dto.rate);
     this.mqttService.publishNotificationMessage(
       delivery.executorCard.userId,
+      dto.deliveryId,
       Notification.RATED_DELIVERY,
     );
   }
@@ -276,7 +282,7 @@ export class DeliveriesService {
     return delivery;
   }
 
-  private async create(dto: ExtCreateDeliveryDto): Promise<void> {
+  private async create(dto: ExtCreateDeliveryDto): Promise<Delivery> {
     try {
       const delivery = this.deliveriesRepository.create({
         fromLeaseId: dto.fromStorageId,
@@ -289,6 +295,7 @@ export class DeliveriesService {
         price: dto.price,
       });
       await this.deliveriesRepository.save(delivery);
+      return delivery;
     } catch (error) {
       throw new AppException(DeliveryError.CREATE_FAILED);
     }

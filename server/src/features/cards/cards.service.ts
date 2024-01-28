@@ -85,6 +85,7 @@ export class CardsService {
     await this.addUser(card, dto.userId);
     this.mqttService.publishNotificationMessage(
       dto.userId,
+      dto.cardId,
       Notification.ADDED_CARD,
     );
   }
@@ -100,6 +101,7 @@ export class CardsService {
     await this.removeUser(card, dto.userId);
     this.mqttService.publishNotificationMessage(
       dto.userId,
+      dto.cardId,
       Notification.REMOVED_CARD,
     );
   }
@@ -174,7 +176,7 @@ export class CardsService {
     }
   }
 
-  private async create(dto: ExtCreateCardDto): Promise<void> {
+  private async create(dto: ExtCreateCardDto): Promise<Card> {
     try {
       const card = this.cardsRepository.create({
         userId: dto.userId,
@@ -183,6 +185,7 @@ export class CardsService {
         users: [{ id: dto.userId }],
       });
       await this.cardsRepository.save(card);
+      return card;
     } catch (error) {
       throw new AppException(CardError.CREATE_FAILED);
     }

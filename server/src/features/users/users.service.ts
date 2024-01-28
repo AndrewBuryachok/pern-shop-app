@@ -240,7 +240,11 @@ export class UsersService {
   async createUser(dto: CreateUserDto): Promise<User> {
     await this.checkNickNotUsed(dto.nick);
     const user = await this.create(dto);
-    this.mqttService.publishNotificationMessage(0, Notification.CREATED_USER);
+    this.mqttService.publishNotificationMessage(
+      0,
+      user.id,
+      Notification.CREATED_USER,
+    );
     return user;
   }
 

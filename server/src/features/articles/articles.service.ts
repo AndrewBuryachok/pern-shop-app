@@ -157,13 +157,15 @@ export class ArticlesService {
   }
 
   async createArticle(dto: ExtCreateArticleDto): Promise<void> {
-    await this.create(dto);
+    const article = await this.create(dto);
     this.mqttService.publishNotificationMessage(
       0,
+      article.id,
       Notification.CREATED_ARTICLE,
     );
     this.mqttService.publishNotificationMention(
       dto.text,
+      article.id,
       Notification.MENTIONED_ARTICLE,
     );
   }
@@ -177,6 +179,7 @@ export class ArticlesService {
     await this.edit(article, dto);
     this.mqttService.publishNotificationMention(
       dto.text,
+      article.id,
       Notification.MENTIONED_ARTICLE,
     );
   }
@@ -195,6 +198,7 @@ export class ArticlesService {
       articleId: dto.articleId,
       userId: dto.myId,
     });
+    const notify = !like || like.type !== dto.type;
     if (!like) {
       await this.addLike(dto);
     } else if (like.type !== dto.type) {
@@ -202,10 +206,11 @@ export class ArticlesService {
     } else {
       await this.removeLike(like);
     }
-    if (!like || like.type !== dto.type) {
+    if (notify) {
       const article = await this.findArticleById(dto.articleId);
       this.mqttService.publishNotificationMessage(
         article.userId,
+        dto.articleId,
         Notification.REACTED_ARTICLE,
       );
     }
@@ -231,7 +236,7 @@ export class ArticlesService {
     return this.articlesRepository.findOneBy({ id });
   }
 
-  private async create(dto: ExtCreateArticleDto): Promise<void> {
+  private async create(dto: ExtCreateArticleDto): Promise<Article> {
     try {
       const article = this.articlesRepository.create({
         userId: dto.userId,
@@ -242,6 +247,7 @@ export class ArticlesService {
         video: dto.video,
       });
       await this.articlesRepository.save(article);
+      return article;
     } catch (error) {
       throw new AppException(ArticleError.CREATE_FAILED);
     }

@@ -137,10 +137,15 @@ export class PollsService {
   }
 
   async createPoll(dto: ExtCreatePollDto): Promise<void> {
-    await this.create(dto);
-    this.mqttService.publishNotificationMessage(0, Notification.CREATED_POLL);
+    const poll = await this.create(dto);
+    this.mqttService.publishNotificationMessage(
+      0,
+      poll.id,
+      Notification.CREATED_POLL,
+    );
     this.mqttService.publishNotificationMention(
       dto.text,
+      poll.id,
       Notification.MENTIONED_POLL,
     );
   }
@@ -150,6 +155,7 @@ export class PollsService {
     await this.edit(poll, dto);
     this.mqttService.publishNotificationMention(
       dto.text,
+      dto.pollId,
       Notification.MENTIONED_POLL,
     );
   }
@@ -159,6 +165,7 @@ export class PollsService {
     await this.complete(poll, dto);
     this.mqttService.publishNotificationMessage(
       poll.userId,
+      dto.pollId,
       Notification.COMPLETED_POLL,
     );
   }
@@ -174,6 +181,7 @@ export class PollsService {
       pollId: dto.pollId,
       userId: dto.myId,
     });
+    const notify = !vote || vote.type !== dto.type;
     if (!vote) {
       await this.addVote(dto);
     } else if (vote.type !== dto.type) {
@@ -181,9 +189,10 @@ export class PollsService {
     } else {
       await this.removeVote(vote);
     }
-    if (!vote || vote.type !== dto.type) {
+    if (notify) {
       this.mqttService.publishNotificationMessage(
         poll.userId,
+        dto.pollId,
         Notification.REACTED_POLL,
       );
     }
@@ -216,7 +225,7 @@ export class PollsService {
     return poll;
   }
 
-  private async create(dto: ExtCreatePollDto): Promise<void> {
+  private async create(dto: ExtCreatePollDto): Promise<Poll> {
     try {
       const poll = this.pollsRepository.create({
         userId: dto.userId,
@@ -226,6 +235,7 @@ export class PollsService {
         video: dto.video,
       });
       await this.pollsRepository.save(poll);
+      return poll;
     } catch (error) {
       throw new AppException(PollError.CREATE_FAILED);
     }

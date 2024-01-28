@@ -62,11 +62,15 @@ export class StoresService {
       dto.hasRole,
     );
     const name = await this.checkHasNotEnough(dto.marketId);
-    await this.create({ ...dto, name });
-    this.mqttService.publishNotificationMessage(0, Notification.CREATED_STORE);
+    const store = await this.create({ ...dto, name });
+    this.mqttService.publishNotificationMessage(
+      0,
+      store.id,
+      Notification.CREATED_STORE,
+    );
   }
 
-  async reserveStore(dto: ReserveStoreDto): Promise<void> {
+  async reserveStore(dto: ReserveStoreDto): Promise<Store> {
     const store = await this.findFreeStore(dto.storeId);
     await this.paymentsService.createPayment({
       myId: dto.myId,
@@ -77,13 +81,10 @@ export class StoresService {
       description: '',
     });
     await this.reserve(store);
-    this.mqttService.publishNotificationMessage(
-      store.market.card.userId,
-      Notification.CREATED_RENT,
-    );
+    return store;
   }
 
-  async continueStore(dto: ReserveStoreDto): Promise<void> {
+  async continueStore(dto: ReserveStoreDto): Promise<Store> {
     const store = await this.storesRepository.findOne({
       relations: ['market', 'market.card'],
       where: { id: dto.storeId },
@@ -97,22 +98,16 @@ export class StoresService {
       description: '',
     });
     await this.continue(store);
-    this.mqttService.publishNotificationMessage(
-      store.market.card.userId,
-      Notification.CONTINUED_RENT,
-    );
+    return store;
   }
 
-  async unreserveStore(id: number): Promise<void> {
+  async unreserveStore(id: number): Promise<Store> {
     const store = await this.storesRepository.findOne({
       relations: ['market', 'market.card'],
       where: { id },
     });
     await this.unreserve(store);
-    this.mqttService.publishNotificationMessage(
-      store.market.card.userId,
-      Notification.COMPLETED_RENT,
-    );
+    return store;
   }
 
   async checkStoreExists(id: number): Promise<void> {
@@ -147,13 +142,14 @@ export class StoresService {
     return store;
   }
 
-  private async create(dto: ExtCreateStoreDto): Promise<void> {
+  private async create(dto: ExtCreateStoreDto): Promise<Store> {
     try {
       const store = this.storesRepository.create({
         marketId: dto.marketId,
         name: dto.name,
       });
       await this.storesRepository.save(store);
+      return store;
     } catch (error) {
       throw new AppException(StoreError.CREATE_FAILED);
     }

@@ -107,9 +107,10 @@ export class StoragesService {
     await this.checkHasNotEnough(dto.myId);
     await this.checkNameNotUsed(dto.name);
     await this.checkCoordinatesNotUsed(dto.x, dto.y);
-    await this.create(dto);
+    const storage = await this.create(dto);
     this.mqttService.publishNotificationMessage(
       0,
+      storage.id,
       Notification.CREATED_STORAGE,
     );
   }
@@ -172,7 +173,7 @@ export class StoragesService {
     }
   }
 
-  private async create(dto: ExtCreateStorageDto): Promise<void> {
+  private async create(dto: ExtCreateStorageDto): Promise<Storage> {
     try {
       const storage = this.storagesRepository.create({
         cardId: dto.cardId,
@@ -190,6 +191,7 @@ export class StoragesService {
         price: storage.price,
       });
       await this.storagesStatesRepository.save(storageState);
+      return storage;
     } catch (error) {
       throw new AppException(StorageError.CREATE_FAILED);
     }

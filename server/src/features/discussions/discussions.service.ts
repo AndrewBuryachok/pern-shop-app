@@ -24,9 +24,10 @@ export class DiscussionsService {
 
   async createDiscussion(dto: ExtCreateDiscussionDto): Promise<void> {
     const poll = await this.pollsService.checkPollNotCompleted(dto.pollId);
-    await this.create(dto);
+    const discussion = await this.create(dto);
     this.mqttService.publishNotificationMessage(
       poll.userId,
+      discussion.id,
       Notification.DISCUSSED_POLL,
     );
     if (dto.discussionId) {
@@ -35,11 +36,13 @@ export class DiscussionsService {
       });
       this.mqttService.publishNotificationMessage(
         discussion.userId,
+        discussion.id,
         Notification.REPLIED_DISCUSSION,
       );
     }
     this.mqttService.publishNotificationMention(
       dto.text,
+      discussion.id,
       Notification.MENTIONED_DISCUSSION,
     );
   }
@@ -54,6 +57,7 @@ export class DiscussionsService {
     await this.edit(discussion, dto);
     this.mqttService.publishNotificationMention(
       dto.text,
+      dto.discussionId,
       Notification.MENTIONED_DISCUSSION,
     );
   }
@@ -84,7 +88,7 @@ export class DiscussionsService {
     return discussion;
   }
 
-  private async create(dto: ExtCreateDiscussionDto): Promise<void> {
+  private async create(dto: ExtCreateDiscussionDto): Promise<Discussion> {
     try {
       const discussion = this.discussionsRepository.create({
         pollId: dto.pollId,
@@ -93,6 +97,7 @@ export class DiscussionsService {
         text: dto.text,
       });
       await this.discussionsRepository.save(discussion);
+      return discussion;
     } catch (error) {
       throw new AppException(DiscussionError.CREATE_FAILED);
     }

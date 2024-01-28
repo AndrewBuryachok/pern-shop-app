@@ -48,14 +48,15 @@ export class ExchangesService {
     const card = dto.type
       ? await this.cardsService.increaseCardBalance(dto)
       : await this.cardsService.decreaseCardBalance(dto);
-    this.create(dto);
+    const exchange = await this.create(dto);
     this.mqttService.publishNotificationMessage(
       card.userId,
+      exchange.id,
       Notification.CREATED_EXCHANGE,
     );
   }
 
-  private async create(dto: ExtCreateExchangeDto): Promise<void> {
+  private async create(dto: ExtCreateExchangeDto): Promise<Exchange> {
     try {
       const exchange = this.exchangesRepository.create({
         executorUserId: dto.myId,
@@ -64,6 +65,7 @@ export class ExchangesService {
         sum: dto.sum,
       });
       await this.exchangesRepository.save(exchange);
+      return exchange;
     } catch (error) {
       throw new AppException(ExchangeError.CREATE_FAILED);
     }

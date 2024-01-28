@@ -61,9 +61,13 @@ export class TradesService {
   }
 
   async createTrade(dto: ExtCreateTradeDto): Promise<void> {
-    await this.waresService.buyWare(dto);
-    await this.create(dto);
-    this.mqttService.publishNotificationMessage(0, Notification.CREATED_TASK);
+    const ware = await this.waresService.buyWare(dto);
+    const trade = await this.create(dto);
+    this.mqttService.publishNotificationMessage(
+      ware.rent.card.userId,
+      trade.id,
+      Notification.CREATED_TRADE,
+    );
   }
 
   async rateTrade(dto: ExtRateTradeDto): Promise<void> {
@@ -75,6 +79,7 @@ export class TradesService {
     await this.rate(trade, dto.rate);
     this.mqttService.publishNotificationMessage(
       trade.ware.rent.card.userId,
+      dto.tradeId,
       Notification.RATED_TRADE,
     );
   }
@@ -98,7 +103,7 @@ export class TradesService {
     return trade;
   }
 
-  private async create(dto: ExtCreateTradeDto): Promise<void> {
+  private async create(dto: ExtCreateTradeDto): Promise<Trade> {
     try {
       const trade = this.tradesRepository.create({
         wareId: dto.wareId,
@@ -106,6 +111,7 @@ export class TradesService {
         amount: dto.amount,
       });
       await this.tradesRepository.save(trade);
+      return trade;
     } catch (error) {
       throw new AppException(TradeError.CREATE_FAILED);
     }

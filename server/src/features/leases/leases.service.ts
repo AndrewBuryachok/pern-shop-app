@@ -4,12 +4,13 @@ import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { Lease } from './lease.entity';
 import { Thing } from '../things/thing.entity';
 import { CellsService } from '../cells/cells.service';
+import { MqttService } from '../mqtt/mqtt.service';
 import { ExtCreateLeaseDto, ExtLeaseIdDto } from './lease.dto';
 import { Request, Response } from '../../common/interfaces';
 import { getDateWeekAfter } from '../../common/utils';
 import { AppException } from '../../common/exceptions';
 import { LeaseError } from './lease-error.enum';
-import { Mode } from '../../common/enums';
+import { Mode, Notification } from '../../common/enums';
 
 @Injectable()
 export class LeasesService {
@@ -17,6 +18,7 @@ export class LeasesService {
     @InjectRepository(Lease)
     private leasesRepository: Repository<Lease>,
     private cellsService: CellsService,
+    private mqttService: MqttService,
   ) {}
 
   async getMainLeases(req: Request): Promise<Response<Lease>> {
@@ -110,8 +112,13 @@ export class LeasesService {
   }
 
   async createLease(dto: ExtCreateLeaseDto): Promise<number> {
-    const cellId = await this.cellsService.reserveCell(dto);
-    const lease = await this.create({ ...dto, storageId: cellId });
+    const cell = await this.cellsService.reserveCell(dto);
+    const lease = await this.create({ ...dto, storageId: cell.id });
+    this.mqttService.publishNotificationMessage(
+      cell.storage.card.userId,
+      lease.id,
+      Notification.CREATED_LEASE,
+    );
     return lease.id;
   }
 
@@ -121,12 +128,17 @@ export class LeasesService {
       dto.myId,
       dto.hasRole,
     );
-    await this.cellsService.continueCell({
+    const cell = await this.cellsService.continueCell({
       ...dto,
       storageId: lease.cellId,
       cardId: lease.cardId,
     });
     await this.continue(lease);
+    this.mqttService.publishNotificationMessage(
+      cell.storage.card.userId,
+      dto.leaseId,
+      Notification.CONTINUED_LEASE,
+    );
   }
 
   async completeLease(dto: ExtLeaseIdDto): Promise<void> {
@@ -135,8 +147,13 @@ export class LeasesService {
       dto.myId,
       dto.hasRole,
     );
-    await this.cellsService.unreserveCell(lease.cellId);
+    const cell = await this.cellsService.unreserveCell(lease.cellId);
     await this.complete(lease);
+    this.mqttService.publishNotificationMessage(
+      cell.storage.card.userId,
+      dto.leaseId,
+      Notification.COMPLETED_LEASE,
+    );
   }
 
   async checkLeaseExists(id: number): Promise<void> {

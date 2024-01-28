@@ -86,8 +86,12 @@ export class MarketsService {
     await this.checkHasNotEnough(dto.myId);
     await this.checkNameNotUsed(dto.name);
     await this.checkCoordinatesNotUsed(dto.x, dto.y);
-    await this.create(dto);
-    this.mqttService.publishNotificationMessage(0, Notification.CREATED_MARKET);
+    const market = await this.create(dto);
+    this.mqttService.publishNotificationMessage(
+      0,
+      market.id,
+      Notification.CREATED_MARKET,
+    );
   }
 
   async editMarket(dto: ExtEditMarketDto): Promise<void> {
@@ -148,7 +152,7 @@ export class MarketsService {
     }
   }
 
-  private async create(dto: ExtCreateMarketDto): Promise<void> {
+  private async create(dto: ExtCreateMarketDto): Promise<Market> {
     try {
       const market = this.marketsRepository.create({
         cardId: dto.cardId,
@@ -166,6 +170,7 @@ export class MarketsService {
         price: market.price,
       });
       await this.marketsStatesRepository.save(marketState);
+      return market;
     } catch (error) {
       throw new AppException(MarketError.CREATE_FAILED);
     }

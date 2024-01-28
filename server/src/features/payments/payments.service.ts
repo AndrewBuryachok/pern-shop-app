@@ -56,14 +56,15 @@ export class PaymentsService {
       ...dto,
       cardId: dto.receiverCardId,
     });
-    await this.create(dto);
+    const payment = await this.create(dto);
     this.mqttService.publishNotificationMessage(
       card.userId,
+      payment.id,
       Notification.CREATED_PAYMENT,
     );
   }
 
-  private async create(dto: ExtCreatePaymentDto): Promise<void> {
+  private async create(dto: ExtCreatePaymentDto): Promise<Payment> {
     try {
       const payment = this.paymentsRepository.create({
         senderCardId: dto.senderCardId,
@@ -72,6 +73,7 @@ export class PaymentsService {
         description: dto.description,
       });
       await this.paymentsRepository.save(payment);
+      return payment;
     } catch (error) {
       throw new AppException(PaymentError.CREATE_FAILED);
     }

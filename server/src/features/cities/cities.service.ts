@@ -72,8 +72,12 @@ export class CitiesService {
     await this.checkHasNotEnough(dto.userId);
     await this.checkNameNotUsed(dto.name);
     await this.checkCoordinatesNotUsed(dto.x, dto.y);
-    await this.create(dto);
-    this.mqttService.publishNotificationMessage(0, Notification.CREATED_CITY);
+    const city = await this.create(dto);
+    this.mqttService.publishNotificationMessage(
+      0,
+      city.id,
+      Notification.CREATED_CITY,
+    );
   }
 
   async editCity(dto: ExtEditCityDto): Promise<void> {
@@ -89,6 +93,7 @@ export class CitiesService {
     await this.addUser(city, dto.userId);
     this.mqttService.publishNotificationMessage(
       dto.userId,
+      dto.cityId,
       Notification.ADDED_CITY,
     );
   }
@@ -104,6 +109,7 @@ export class CitiesService {
     await this.removeUser(city, dto.userId);
     this.mqttService.publishNotificationMessage(
       dto.userId,
+      dto.cityId,
       Notification.REMOVED_CITY,
     );
   }
@@ -162,7 +168,7 @@ export class CitiesService {
     }
   }
 
-  private async create(dto: ExtCreateCityDto): Promise<void> {
+  private async create(dto: ExtCreateCityDto): Promise<City> {
     try {
       const city = this.citiesRepository.create({
         userId: dto.userId,
@@ -175,6 +181,7 @@ export class CitiesService {
         users: [{ id: dto.userId }],
       });
       await this.citiesRepository.save(city);
+      return city;
     } catch (error) {
       throw new AppException(CityError.CREATE_FAILED);
     }

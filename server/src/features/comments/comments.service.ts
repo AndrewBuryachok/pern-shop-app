@@ -23,10 +23,11 @@ export class CommentsService {
   ) {}
 
   async createComment(dto: ExtCreateCommentDto): Promise<void> {
-    await this.create(dto);
+    const comment = await this.create(dto);
     const article = await this.articlesService.findArticleById(dto.articleId);
     this.mqttService.publishNotificationMessage(
       article.userId,
+      comment.id,
       Notification.COMMENTED_ARTICLE,
     );
     if (dto.commentId) {
@@ -35,11 +36,13 @@ export class CommentsService {
       });
       this.mqttService.publishNotificationMessage(
         comment.userId,
+        comment.id,
         Notification.REPLIED_COMMENT,
       );
     }
     this.mqttService.publishNotificationMention(
       dto.text,
+      comment.id,
       Notification.MENTIONED_COMMENT,
     );
   }
@@ -53,6 +56,7 @@ export class CommentsService {
     await this.edit(comment, dto);
     this.mqttService.publishNotificationMention(
       dto.text,
+      dto.commentId,
       Notification.MENTIONED_COMMENT,
     );
   }
@@ -82,7 +86,7 @@ export class CommentsService {
     return comment;
   }
 
-  private async create(dto: ExtCreateCommentDto): Promise<void> {
+  private async create(dto: ExtCreateCommentDto): Promise<Comment> {
     try {
       const comment = this.commentsRepository.create({
         articleId: dto.articleId,
@@ -91,6 +95,7 @@ export class CommentsService {
         text: dto.text,
       });
       await this.commentsRepository.save(comment);
+      return comment;
     } catch (error) {
       throw new AppException(CommentError.CREATE_FAILED);
     }
