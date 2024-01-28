@@ -18,6 +18,9 @@
           "off": "Зі звуком"
         }
       },
+      "notifications": {
+        "title": "Повідомлення"
+      },
       "account": {
         "title": "Акаунт",
         "profile": "Профіль",

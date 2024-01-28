@@ -10,13 +10,13 @@ type Props = {
 export default function NotificationBadge(props: Props) {
   const notifications = getActiveNotifications();
 
-  const keys = Object.keys(notifications).filter((key) => notifications[key]);
+  const pages = Object.keys(notifications)
+    .map((page) => page.split('/')[0])
+    .filter((page) => props.pages.includes(page));
 
-  return keys.find((key) => props.pages.includes(key)) ? (
+  return pages.length ? (
     <Badge size='xs' variant='filled' color='red' w={16} h={16} p={0}>
-      {keys
-        .filter((key) => props.pages.includes(key))
-        .reduce((acc, cur) => acc + notifications[cur], 0)}
+      {pages.length}
     </Badge>
   ) : (
     <>{props.icon}</>

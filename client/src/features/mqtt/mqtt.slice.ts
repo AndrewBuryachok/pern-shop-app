@@ -12,14 +12,14 @@ const client = connect(import.meta.env.VITE_BROKER_URL);
 client.on('connect', () =>
   client.subscribe([
     import.meta.env.VITE_BROKER_TOPIC + 'users/#',
-    import.meta.env.VITE_BROKER_TOPIC + 'notifications/0',
+    import.meta.env.VITE_BROKER_TOPIC + 'notifications/0/#',
   ]),
 );
 
 client.on('message', (topic, message) => {
-  const userId = +topic.split('/')[2];
   const payload = message.toString();
   if (topic.split('/')[1] === 'users') {
+    const userId = +topic.split('/')[2];
     if (payload) {
       store.dispatch(addOnlineUser(userId));
     } else {
@@ -29,23 +29,26 @@ client.on('message', (topic, message) => {
       }
     }
   } else {
-    const [action, modal] = payload.toLowerCase().split(' ');
-    store.dispatch(addNotification(modal));
-    showNotification({
-      title: t('notifications.notification'),
-      message: t(`notifications.${modal}.${action}`),
-      autoClose: false,
-      onClose: () => store.dispatch(removeNotification(modal)),
-    });
-    if (!store.getState().mqtt.mute) {
-      audio.play();
+    const [route, id, action] = topic.split('/').slice(3);
+    const data = `${route}/${id}/${action}`;
+    if (payload) {
+      store.dispatch(addNotification([data, payload]));
+      showNotification({
+        title: t('notifications.notification'),
+        message: t(`notifications.${route}.${action}`),
+      });
+      if (!store.getState().mqtt.mute) {
+        audio.play();
+      }
+    } else {
+      store.dispatch(removeNotification(data));
     }
   }
 });
 
 const initialState = {
   users: [] as number[],
-  notifications: {} as { [key: string]: number },
+  notifications: {} as { [key: string]: string },
   mute: false,
 };
 
@@ -59,13 +62,11 @@ export const mqttSlice = createSlice({
     removeOnlineUser: (state, action: PayloadAction<number>) => {
       state.users = state.users.filter((user) => user !== action.payload);
     },
-    addNotification: (state, action: PayloadAction<string>) => {
-      state.notifications[action.payload] =
-        (state.notifications[action.payload] || 0) + 1;
+    addNotification: (state, action: PayloadAction<[string, string]>) => {
+      state.notifications[action.payload[0]] = action.payload[1];
     },
     removeNotification: (state, action: PayloadAction<string>) => {
-      state.notifications[action.payload] =
-        state.notifications[action.payload] - 1;
+      delete state.notifications[action.payload];
     },
     toggleMute: (state) => {
       if (state.mute) {
@@ -89,14 +90,27 @@ export const mqttSlice = createSlice({
         { retain: true },
       );
     },
+    publishNotification: (_, action: PayloadAction<string>) => {
+      client.publish(
+        import.meta.env.VITE_BROKER_TOPIC + 'notifications/' + action.payload,
+        '',
+        { retain: true },
+      );
+    },
     subscribe: (_, action: PayloadAction<number>) => {
       client.subscribe(
-        import.meta.env.VITE_BROKER_TOPIC + 'notifications/' + action.payload,
+        import.meta.env.VITE_BROKER_TOPIC +
+          'notifications/' +
+          action.payload +
+          '/#',
       );
     },
     unsubscribe: (_, action: PayloadAction<number>) => {
       client.unsubscribe(
-        import.meta.env.VITE_BROKER_TOPIC + 'notifications/' + action.payload,
+        import.meta.env.VITE_BROKER_TOPIC +
+          'notifications/' +
+          action.payload +
+          '/#',
       );
     },
   },
@@ -112,6 +126,7 @@ export const {
   toggleMute,
   publishOnline,
   publishOffline,
+  publishNotification,
   subscribe,
   unsubscribe,
 } = mqttSlice.actions;
