@@ -1,7 +1,8 @@
 import { Group } from '@mantine/core';
 import { SmReply } from '../../features/replies/reply.model';
 import CustomAvatar from './CustomAvatar';
-import DoubleText from './DoubleText';
+import SingleText from './SingleText';
+import CustomHighlight from './CustomHighlight';
 
 type Props = SmReply;
 
@@ -10,7 +11,8 @@ export default function ReplyAvatarWithText(props: Props) {
     <Group spacing={8} align='flex-start' noWrap>
       <CustomAvatar {...props.user} />
       <div>
-        <DoubleText text={props.user.nick} subtext={props.text} />
+        <SingleText text={props.user.nick} />
+        <CustomHighlight text={props.text} />
       </div>
     </Group>
   );

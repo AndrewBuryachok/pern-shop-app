@@ -30,6 +30,10 @@ export default function AuthModal() {
       nick: '',
       password: '',
     },
+    validate: {
+      nick: (value) =>
+        /^\w+$/.test(value) ? null : t('errors.incorrect_nick'),
+    },
   });
 
   const [login, { isLoading: isLoginLoading }] = useLoginMutation();
