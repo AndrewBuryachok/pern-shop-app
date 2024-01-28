@@ -50,6 +50,10 @@ export class TasksService {
 
   async createTask(dto: ExtCreateTaskDto): Promise<void> {
     await this.create(dto);
+    this.mqttService.publishNotificationMention(
+      dto.text,
+      Notification.MENTIONED_TASK,
+    );
   }
 
   async takeTask(dto: ExtTakeTaskDto): Promise<void> {

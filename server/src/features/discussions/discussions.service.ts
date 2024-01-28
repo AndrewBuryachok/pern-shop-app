@@ -38,6 +38,10 @@ export class DiscussionsService {
         Notification.REPLIED_DISCUSSION,
       );
     }
+    this.mqttService.publishNotificationMention(
+      dto.text,
+      Notification.MENTIONED_DISCUSSION,
+    );
   }
 
   async editDiscussion(dto: ExtEditDiscussionDto): Promise<void> {
@@ -48,6 +52,10 @@ export class DiscussionsService {
     );
     await this.pollsService.checkPollNotCompleted(discussion.pollId);
     await this.edit(discussion, dto);
+    this.mqttService.publishNotificationMention(
+      dto.text,
+      Notification.MENTIONED_DISCUSSION,
+    );
   }
 
   async deleteDiscussion(dto: DeleteDiscussionDto): Promise<void> {

@@ -123,6 +123,10 @@ export class PlaintsService {
         Notification.COMPLETED_PLAINT,
       ),
     );
+    this.mqttService.publishNotificationMention(
+      dto.text,
+      Notification.MENTIONED_PLAINT,
+    );
   }
 
   async deletePlaint(dto: DeletePlaintDto): Promise<void> {

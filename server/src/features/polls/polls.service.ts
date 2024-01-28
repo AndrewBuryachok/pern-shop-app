@@ -139,11 +139,19 @@ export class PollsService {
   async createPoll(dto: ExtCreatePollDto): Promise<void> {
     await this.create(dto);
     this.mqttService.publishNotificationMessage(0, Notification.CREATED_POLL);
+    this.mqttService.publishNotificationMention(
+      dto.text,
+      Notification.MENTIONED_POLL,
+    );
   }
 
   async editPoll(dto: ExtEditPollDto): Promise<void> {
     const poll = await this.checkPollOwner(dto.pollId, dto.myId, dto.hasRole);
     await this.edit(poll, dto);
+    this.mqttService.publishNotificationMention(
+      dto.text,
+      Notification.MENTIONED_POLL,
+    );
   }
 
   async completePoll(dto: ExtCompletePollDto): Promise<void> {

@@ -38,6 +38,10 @@ export class CommentsService {
         Notification.REPLIED_COMMENT,
       );
     }
+    this.mqttService.publishNotificationMention(
+      dto.text,
+      Notification.MENTIONED_COMMENT,
+    );
   }
 
   async editComment(dto: ExtEditCommentDto): Promise<void> {
@@ -47,6 +51,10 @@ export class CommentsService {
       dto.hasRole,
     );
     await this.edit(comment, dto);
+    this.mqttService.publishNotificationMention(
+      dto.text,
+      Notification.MENTIONED_COMMENT,
+    );
   }
 
   async deleteComment(dto: DeleteCommentDto): Promise<void> {
