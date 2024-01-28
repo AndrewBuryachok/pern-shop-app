@@ -5,6 +5,7 @@ import {
   IsPositive,
   IsString,
   IsUrl,
+  Matches,
   Max,
   MaxLength,
   Min,
@@ -44,6 +45,7 @@ import {
 export const IsNick = () => (target: object, key: string) => {
   IsNotEmpty()(target, key);
   IsString()(target, key);
+  Matches(/^\w+$/)(target, key);
   MinLength(MIN_NICK_LENGTH)(target, key);
   MaxLength(MAX_NICK_LENGTH)(target, key);
 };

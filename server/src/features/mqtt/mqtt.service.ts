@@ -28,6 +28,19 @@ export class MqttService {
     this.publishMessage('notifications/' + id, message);
   }
 
+  async publishNotificationMention(
+    text: string,
+    message: string,
+  ): Promise<void> {
+    const nicks = /@\w+/.exec(text) || [];
+    nicks.forEach(async (nick) => {
+      const user = await this.usersService.findUserByNick(nick.slice(1));
+      if (user) {
+        this.publishNotificationMessage(user.id, message);
+      }
+    });
+  }
+
   private publishMessage(topic: string, message: string): void {
     this.client.publish(process.env.BROKER_TOPIC + topic, message);
   }

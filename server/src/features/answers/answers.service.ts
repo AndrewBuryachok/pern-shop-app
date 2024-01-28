@@ -42,6 +42,10 @@ export class AnswersService {
         Notification.REPLIED_ANSWER,
       );
     }
+    this.mqttService.publishNotificationMention(
+      dto.text,
+      Notification.MENTIONED_ANSWER,
+    );
   }
 
   async editAnswer(dto: ExtEditAnswerDto): Promise<void> {
@@ -52,6 +56,10 @@ export class AnswersService {
     );
     await this.plaintsService.checkPlaintNotCompleted(answer.plaintId);
     await this.edit(answer, dto);
+    this.mqttService.publishNotificationMention(
+      dto.text,
+      Notification.MENTIONED_ANSWER,
+    );
   }
 
   async deleteAnswer(dto: DeleteAnswerDto): Promise<void> {

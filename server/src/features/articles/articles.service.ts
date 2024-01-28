@@ -162,6 +162,10 @@ export class ArticlesService {
       0,
       Notification.CREATED_ARTICLE,
     );
+    this.mqttService.publishNotificationMention(
+      dto.text,
+      Notification.MENTIONED_ARTICLE,
+    );
   }
 
   async editArticle(dto: ExtEditArticleDto): Promise<void> {
@@ -171,6 +175,10 @@ export class ArticlesService {
       dto.hasRole,
     );
     await this.edit(article, dto);
+    this.mqttService.publishNotificationMention(
+      dto.text,
+      Notification.MENTIONED_ARTICLE,
+    );
   }
 
   async deleteArticle(dto: DeleteArticleDto): Promise<void> {
