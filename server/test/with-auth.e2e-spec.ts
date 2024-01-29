@@ -2170,7 +2170,14 @@ describe('With Auth', () => {
       return request(app.getHttpServer())
         .post('/tasks')
         .set('Authorization', `Bearer ${user.access}`)
-        .send({ title: 'task title', text: 'task text', priority: 1 })
+        .send({
+          item: 1,
+          description: '',
+          amount: 1,
+          intake: 1,
+          kit: 1,
+          price: 10,
+        })
         .expect('');
     });
 
@@ -2178,7 +2185,14 @@ describe('With Auth', () => {
       return request(app.getHttpServer())
         .post('/tasks')
         .set('Authorization', `Bearer ${user.access}`)
-        .send({ title: 'task title', text: 'task text', priority: 1 })
+        .send({
+          item: 1,
+          description: '',
+          amount: 1,
+          intake: 1,
+          kit: 1,
+          price: 10,
+        })
         .expect('');
     });
 
@@ -2196,11 +2210,25 @@ describe('With Auth', () => {
         .then((res) => (tasksId = res.body.result.map((t) => t.id)));
     });
 
+    it('PATCH /tasks/:taskId', async () => {
+      return request(app.getHttpServer())
+        .patch(`/tasks/${tasksId[0]}`)
+        .set('Authorization', `Bearer ${user.access}`)
+        .send({
+          item: 1,
+          description: '',
+          amount: 1,
+          intake: 1,
+          kit: 1,
+          price: 10,
+        })
+        .expect('');
+    });
+
     it('POST /tasks/:taskId/take', async () => {
       return request(app.getHttpServer())
         .post(`/tasks/${tasksId[0]}/take`)
         .set('Authorization', `Bearer ${user.access}`)
-        .send({ cardId })
         .expect('');
     });
 
@@ -2214,7 +2242,7 @@ describe('With Auth', () => {
     it('GET /tasks/all', async () => {
       return request(app.getHttpServer())
         .get('/tasks/all')
-        .set('Authorization', `Bearer ${admin.access}`)
+        .set('Authorization', `Bearer ${manager.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
 
@@ -2236,7 +2264,6 @@ describe('With Auth', () => {
       return request(app.getHttpServer())
         .post(`/tasks/${tasksId[1]}/take`)
         .set('Authorization', `Bearer ${user.access}`)
-        .send({ cardId })
         .expect('');
     });
 

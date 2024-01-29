@@ -10,7 +10,6 @@ import {
 import { Transform, Type } from 'class-transformer';
 import { Role } from '../../features/users/role.enum';
 import { Kind } from '../../features/leases/kind.enum';
-import { Priority } from '../../features/tasks/priority.enum';
 import { Status } from '../../features/transportations/status.enum';
 import { Mark } from '../../features/polls/mark.enum';
 import { Result } from '../../features/polls/result.enum';
@@ -179,12 +178,6 @@ export class Request {
   @IsEnum(Kind)
   @Type(() => Number)
   kind?: Kind;
-
-  @ApiProperty({ required: false })
-  @IsOptional()
-  @IsEnum(Priority)
-  @Type(() => Number)
-  priority?: Priority;
 
   @ApiProperty({ required: false })
   @IsOptional()

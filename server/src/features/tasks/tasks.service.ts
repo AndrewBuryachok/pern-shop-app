@@ -3,7 +3,12 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { Task } from './task.entity';
 import { MqttService } from '../mqtt/mqtt.service';
-import { ExtCreateTaskDto, ExtTakeTaskDto, ExtTaskIdDto } from './task.dto';
+import {
+  ExtCreateTaskDto,
+  ExtEditTaskDto,
+  ExtTakeTaskDto,
+  ExtTaskIdDto,
+} from './task.dto';
 import { Request, Response } from '../../common/interfaces';
 import { AppException } from '../../common/exceptions';
 import { TaskError } from './task-error.enum';
@@ -55,11 +60,18 @@ export class TasksService {
       task.id,
       Notification.CREATED_TASK,
     );
-    this.mqttService.publishNotificationMention(
-      dto.text,
-      task.id,
-      Notification.MENTIONED_TASK,
+  }
+
+  async editTask(dto: ExtEditTaskDto): Promise<void> {
+    const task = await this.checkTaskCustomer(
+      dto.taskId,
+      dto.myId,
+      dto.hasRole,
     );
+    if (task.status !== Status.CREATED) {
+      throw new AppException(TaskError.NOT_CREATED);
+    }
+    await this.edit(task, dto);
   }
 
   async takeTask(dto: ExtTakeTaskDto): Promise<void> {
@@ -172,14 +184,31 @@ export class TasksService {
     try {
       const task = this.tasksRepository.create({
         customerUserId: dto.userId,
-        title: dto.title,
-        text: dto.text,
-        priority: dto.priority,
+        item: dto.item,
+        description: dto.description,
+        amount: dto.amount,
+        intake: dto.intake,
+        kit: dto.kit,
+        price: dto.price,
       });
       await this.tasksRepository.save(task);
       return task;
     } catch (error) {
       throw new AppException(TaskError.CREATE_FAILED);
+    }
+  }
+
+  private async edit(task: Task, dto: ExtEditTaskDto): Promise<void> {
+    try {
+      task.item = dto.item;
+      task.description = dto.description;
+      task.amount = dto.amount;
+      task.intake = dto.intake;
+      task.kit = dto.kit;
+      task.price = dto.price;
+      await this.tasksRepository.save(task);
+    } catch (error) {
+      throw new AppException(TaskError.EDIT_FAILED);
     }
   }
 
@@ -264,15 +293,64 @@ export class TasksService {
       .andWhere(
         new Brackets((qb) =>
           qb
-            .where(`${!req.title}`)
-            .orWhere('task.title ILIKE :title', { title: req.title }),
+            .where(`${!req.item}`)
+            .orWhere('task.item = :item', { item: req.item }),
         ),
       )
       .andWhere(
         new Brackets((qb) =>
           qb
-            .where(`${!req.priority}`)
-            .orWhere('task.priority = :priority', { priority: req.priority }),
+            .where(`${!req.description}`)
+            .orWhere('task.description ILIKE :description', {
+              description: req.description,
+            }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.minAmount}`)
+            .orWhere('task.amount >= :minAmount', { minAmount: req.minAmount }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.maxAmount}`)
+            .orWhere('task.amount <= :maxAmount', { maxAmount: req.maxAmount }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.minIntake}`)
+            .orWhere('task.intake >= :minIntake', { minIntake: req.minIntake }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.maxIntake}`)
+            .orWhere('task.intake <= :maxIntake', { maxIntake: req.maxIntake }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb.where(`${!req.kit}`).orWhere('task.kit = :kit', { kit: req.kit }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.minPrice}`)
+            .orWhere('task.price >= :minPrice', { minPrice: req.minPrice }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.maxPrice}`)
+            .orWhere('task.price <= :maxPrice', { maxPrice: req.maxPrice }),
         ),
       )
       .andWhere(
@@ -304,9 +382,12 @@ export class TasksService {
         'customerUser.id',
         'customerUser.nick',
         'customerUser.avatar',
-        'task.title',
-        'task.text',
-        'task.priority',
+        'task.item',
+        'task.description',
+        'task.amount',
+        'task.intake',
+        'task.kit',
+        'task.price',
         'task.status',
         'task.createdAt',
         'executorUser.id',
