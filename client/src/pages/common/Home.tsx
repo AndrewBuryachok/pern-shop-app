@@ -30,7 +30,7 @@ import {
   IconGardenCart,
   IconGavel,
   IconMail,
-  IconMap,
+  IconNews,
   IconPaperBag,
   IconReportMoney,
   IconScale,
@@ -62,6 +62,10 @@ export default function Home() {
       title: 'subscribers',
       icon: IconMail,
       sub: '/top',
+    },
+    {
+      title: 'reports',
+      icon: IconNews,
     },
     {
       title: 'articles',
@@ -125,10 +129,6 @@ export default function Home() {
     {
       title: 'deliveries',
       icon: IconTruck,
-    },
-    {
-      title: 'map',
-      icon: IconMap,
     },
     {
       title: 'cities',

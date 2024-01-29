@@ -5,6 +5,7 @@ export interface CreateArticleDto {
   image1: string;
   image2: string;
   image3: string;
+  video: string;
 }
 
 export interface ExtCreateArticleDto extends CreateArticleDto {

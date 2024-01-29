@@ -2,9 +2,8 @@ import { useTranslation } from 'react-i18next';
 import { Link, useLocation } from 'react-router-dom';
 import { Button, Group } from '@mantine/core';
 import { IconPlus } from '@tabler/icons';
-import { pages } from '../../app/pages';
+import { pages, tabs } from '../../app/pages';
 import { INav } from '../interfaces';
-import { getCurrentUser } from '../../features/auth/auth.slice';
 import { isUserNotHasRole } from '../utils';
 
 type Props = INav;
@@ -12,7 +11,7 @@ type Props = INav;
 export default function CustomNav(props: Props) {
   const [t] = useTranslation();
 
-  const user = getCurrentUser();
+  const notHasRole = isUserNotHasRole(props.button?.role);
 
   const active = useLocation().pathname.split('/');
 
@@ -35,7 +34,7 @@ export default function CustomNav(props: Props) {
           color={link.path === tab ? 'violet' : 'gray'}
           disabled={
             link.path !== 'main' &&
-            link.path !== 'top' &&
+            !tabs.includes(link.path!) &&
             isUserNotHasRole(link.role)
           }
           compact
@@ -49,7 +48,7 @@ export default function CustomNav(props: Props) {
           onClick={props.button.open}
           leftIcon={<IconPlus size={16} />}
           color='green'
-          disabled={!user}
+          disabled={notHasRole}
           compact
         >
           {t(`actions.${props.button.label}`)}

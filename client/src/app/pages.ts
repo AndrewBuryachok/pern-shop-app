@@ -8,6 +8,7 @@ const FriendsPage = lazy(() => import('../pages/friends/FriendsPage'));
 const SubscribersPage = lazy(
   () => import('../pages/subscribers/SubscribersPage'),
 );
+const ReportsPage = lazy(() => import('../pages/reports/ReportsPage'));
 const ArticlesPage = lazy(() => import('../pages/articles/ArticlesPage'));
 const CardsPage = lazy(() => import('../pages/cards/CardsPage'));
 const ExchangesPage = lazy(() => import('../pages/exchanges/ExchangesPage'));
@@ -36,6 +37,8 @@ const PollsPage = lazy(() => import('../pages/polls/PollsPage'));
 const RatingsPage = lazy(() => import('../pages/ratings/RatingsPage'));
 import { Role } from '../common/constants';
 
+export const tabs = ['top', 'server', 'site', 'status', 'spawn', 'hub'];
+
 export const pages = [
   { index: true, element: Home },
   { path: 'map', element: Map },
@@ -63,6 +66,18 @@ export const pages = [
     path: 'subscribers',
     element: SubscribersPage,
     nested: [{ path: 'top' }, { path: 'my' }, { path: 'received' }],
+  },
+  {
+    path: 'reports',
+    element: ReportsPage,
+    nested: [
+      { index: true },
+      { path: 'server' },
+      { path: 'site' },
+      { path: 'status' },
+      { path: 'spawn' },
+      { path: 'hub' },
+    ],
   },
   {
     path: 'articles',

@@ -37,6 +37,7 @@
     "users": "Users",
     "friends": "Friends",
     "subscribers": "Subscribers",
+    "reports": "Reports",
     "articles": "Articles",
     "likes": "Likes",
     "comments": "Comments",
@@ -80,6 +81,7 @@
     "users": "View users; add, remove roles; edit password",
     "friends": "View friends; create, add, remove friends",
     "subscribers": "View subscribers; add, remove subscribers",
+    "reports": "View reports; create, edit, delete reports; attitude, annotate reports",
     "articles": "View articles; create, edit, delete articles; like, comment articles",
     "cards": "View cards; create, edit cards; add, remove users",
     "payments": "View payments; create payments",
@@ -124,6 +126,11 @@
     "all": "All",
     "sent": "Sent",
     "received": "Received",
+    "server": "Server",
+    "site": "Site",
+    "status": "Status",
+    "spawn": "Spawn",
+    "hub": "Hub",
     "subscribed": "Subscribed",
     "liked": "Liked",
     "commented": "Commented",
@@ -249,6 +256,8 @@
     "oldpassword": "Old Password",
     "newpassword": "New Password",
     "rent": "Rent",
+    "attitudes": "Attitudes",
+    "annotations": "Annotations",
     "likes": "Likes",
     "comments": "Comments"
   },
@@ -265,6 +274,8 @@
     "users": "User",
     "friends": "Friend",
     "subscribers": "Subscriber",
+    "reports": "Report",
+    "annotations": "Annotation",
     "articles": "Article",
     "comments": "Comment",
     "cards": "Card",
@@ -314,6 +325,14 @@
     "subscribers": {
       "added": "Someone subscribed on you",
       "removed": "Someone unsubscribed from you"
+    },
+    "reports": {
+      "created": "Someone created report",
+      "reacted": "Someone reacted to your report",
+      "annotated": "Someone annotated your report",
+      "replied": "Someone replied to your annotation",
+      "mentioned": "Someone mentioned you in report",
+      "submentioned": "Someone mentioned you in annotation"
     },
     "articles": {
       "created": "Someone created article",
