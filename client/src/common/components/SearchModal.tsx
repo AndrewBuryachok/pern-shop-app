@@ -38,7 +38,6 @@ import { CardsItem } from './CardsItem';
 import { PlacesItem } from './PlacesItem';
 import { RolesItem } from './RolesItem';
 import { ColorsItem } from './ColorsItem';
-import { PrioritiesItem } from './PrioritiesItem';
 import {
   scaleDate,
   scaleMaxPrice,
@@ -59,7 +58,6 @@ import {
   selectKits,
   selectMarkets,
   selectMarks,
-  selectPriorities,
   selectResults,
   selectRoles,
   selectShops,
@@ -495,17 +493,6 @@ export default function SearchModal(props: Props) {
           searchable
           allowDeselect
           {...form.getInputProps('kind')}
-        />
-      )}
-      {props.search.priority !== undefined && (
-        <Select
-          label={t('columns.priority')}
-          placeholder={t('columns.priority')}
-          itemComponent={PrioritiesItem}
-          data={selectPriorities()}
-          searchable
-          allowDeselect
-          {...form.getInputProps('priority')}
         />
       )}
       {props.search.status !== undefined && (

@@ -27,7 +27,6 @@ export interface ISearch {
   minPrice?: number | null;
   maxPrice?: number | null;
   kind?: string | null;
-  priority?: string | null;
   status?: string | null;
   mark?: string | null;
   result?: string | null;

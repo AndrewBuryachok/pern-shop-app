@@ -226,7 +226,6 @@
     "from": "From",
     "to": "To",
     "status": "Status",
-    "priority": "Priority",
     "answers": "Answers",
     "vote": "Vote",
     "votes": "Votes",
@@ -434,8 +433,7 @@
       "taken": "Someone taken your task",
       "untaken": "Someone untaken your task",
       "executed": "Someone executed your task",
-      "completed": "Someone completed your task",
-      "mentioned": "Someone mentioned you in task"
+      "completed": "Someone completed your task"
     },
     "plaints": {
       "created": "Someone created plaint",
@@ -512,11 +510,6 @@
       "taken": "Taken",
       "executed": "Executed",
       "completed": "Completed"
-    },
-    "priorities": {
-      "high": "High",
-      "medium": "Medium",
-      "low": "Low"
     },
     "marks": {
       "site": "Site",

@@ -1,13 +1,8 @@
+import { LgThing } from '../things/thing.model';
 import { SmUser } from '../users/user.model';
 
-export interface Task {
-  id: number;
+export interface Task extends LgThing {
   customerUser: SmUser;
-  title: string;
-  text: string;
-  priority: number;
-  createdAt: Date;
   executorUser?: SmUser;
-  completedAt?: Date;
   status: number;
 }

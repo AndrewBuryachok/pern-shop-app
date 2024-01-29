@@ -9,8 +9,9 @@ import { useCompleteTaskMutation } from './tasks.api';
 import { TaskIdDto } from './task.dto';
 import CustomForm from '../../common/components/CustomForm';
 import CustomAvatar from '../../common/components/CustomAvatar';
-import PriorityIcon from '../../common/components/PriorityIcon';
-import { Color, priorities, Status } from '../../common/constants';
+import ThingImage from '../../common/components/ThingImage';
+import { parseItem, parseThingAmount } from '../../common/utils';
+import { Color, Status } from '../../common/constants';
 
 type Props = IModal<Task>;
 
@@ -42,13 +43,26 @@ export default function CompleteTaskModal({ data: task }: Props) {
         value={task.customerUser.nick}
         readOnly
       />
-      <TextInput label={t('columns.title')} value={task.title} readOnly />
-      <Textarea label={t('columns.text')} value={task.text} autosize readOnly />
       <TextInput
-        label={t('columns.priority')}
-        icon={<PriorityIcon {...task} />}
+        label={t('columns.item')}
+        icon={<ThingImage {...task} />}
         iconWidth={48}
-        value={t(`constants.priorities.${priorities[task.priority - 1]}`)}
+        value={parseItem(task.item)}
+        readOnly
+      />
+      <Textarea
+        label={t('columns.description')}
+        value={task.description || '-'}
+        readOnly
+      />
+      <TextInput
+        label={t('columns.amount')}
+        value={parseThingAmount(task)}
+        readOnly
+      />
+      <TextInput
+        label={t('columns.price')}
+        value={`${task.price} ${t('constants.currency')}`}
         readOnly
       />
     </CustomForm>

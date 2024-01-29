@@ -82,9 +82,6 @@ export const getQuery = ({ page, search }: IRequest) => {
   if (search?.kind) {
     query.append('kind', search.kind);
   }
-  if (search?.priority) {
-    query.append('priority', search.priority);
-  }
   if (search?.status) {
     query.append('status', search.status);
   }
