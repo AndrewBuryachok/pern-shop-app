@@ -21,6 +21,10 @@ describe('With Auth', () => {
   let banker: Tokens;
   let manager: Tokens;
   let judge: Tokens;
+  let spawn: Tokens;
+  let hub: Tokens;
+  let reportsId: number;
+  let annotationId: number;
   let articlesId: number;
   let commentId: number;
   let cardId: number;
@@ -142,6 +146,36 @@ describe('With Auth', () => {
       return request(app.getHttpServer())
         .post('/auth/logout')
         .set('Authorization', `Bearer ${judge.access}`)
+        .expect(201);
+    });
+
+    it('POST /auth/login as SpawnHead', async () => {
+      return request(app.getHttpServer())
+        .post('/auth/login')
+        .send({ nick: 'SpawnHead', password: 'SpawnHead' })
+        .expect(201)
+        .then((res) => (spawn = res.body));
+    });
+
+    it('POST /auth/logout as SpawnHead', async () => {
+      return request(app.getHttpServer())
+        .post('/auth/logout')
+        .set('Authorization', `Bearer ${spawn.access}`)
+        .expect(201);
+    });
+
+    it('POST /auth/login as HubHead', async () => {
+      return request(app.getHttpServer())
+        .post('/auth/login')
+        .send({ nick: 'HubHead', password: 'HubHead' })
+        .expect(201)
+        .then((res) => (hub = res.body));
+    });
+
+    it('POST /auth/logout as HubHead', async () => {
+      return request(app.getHttpServer())
+        .post('/auth/logout')
+        .set('Authorization', `Bearer ${hub.access}`)
         .expect(201);
     });
   });
@@ -383,6 +417,201 @@ describe('With Auth', () => {
     it('DELETE /subscribers/:subscriberId', async () => {
       return request(app.getHttpServer())
         .delete(`/subscribers/${user.id}`)
+        .set('Authorization', `Bearer ${user.access}`)
+        .expect('');
+    });
+  });
+
+  describe('Reports', () => {
+    it('POST /reports/server', async () => {
+      return request(app.getHttpServer())
+        .post('/reports/server')
+        .set('Authorization', `Bearer ${admin.access}`)
+        .send({
+          text: 'report text',
+          image1: '',
+          image2: '',
+          image3: '',
+          video: '',
+        })
+        .expect('');
+    });
+
+    it('POST /reports/site', async () => {
+      return request(app.getHttpServer())
+        .post('/reports/site')
+        .set('Authorization', `Bearer ${admin.access}`)
+        .send({
+          text: 'report text',
+          image1: '',
+          image2: '',
+          image3: '',
+          video: '',
+        })
+        .expect('');
+    });
+
+    it('POST /reports/status', async () => {
+      return request(app.getHttpServer())
+        .post('/reports/status')
+        .set('Authorization', `Bearer ${admin.access}`)
+        .send({
+          text: 'report text',
+          image1: '',
+          image2: '',
+          image3: '',
+          video: '',
+        })
+        .expect('');
+    });
+
+    it('POST /reports/spawn', async () => {
+      return request(app.getHttpServer())
+        .post('/reports/spawn')
+        .set('Authorization', `Bearer ${spawn.access}`)
+        .send({
+          text: 'report text',
+          image1: '',
+          image2: '',
+          image3: '',
+          video: '',
+        })
+        .expect('');
+    });
+
+    it('POST /reports/hub', async () => {
+      return request(app.getHttpServer())
+        .post('/reports/hub')
+        .set('Authorization', `Bearer ${hub.access}`)
+        .send({
+          text: 'report text',
+          image1: '',
+          image2: '',
+          image3: '',
+          video: '',
+        })
+        .expect('');
+    });
+
+    it('GET /reports', async () => {
+      return request(app.getHttpServer())
+        .get('/reports')
+        .expect((res) => expect(res.body.count).toBeGreaterThan(0))
+        .then((res) => (reportsId = res.body.result.map((r) => r.id)));
+    });
+
+    it('GET /reports/server', async () => {
+      return request(app.getHttpServer())
+        .get('/reports/server')
+        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
+    });
+
+    it('GET /reports/site', async () => {
+      return request(app.getHttpServer())
+        .get('/reports/site')
+        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
+    });
+
+    it('GET /reports/status', async () => {
+      return request(app.getHttpServer())
+        .get('/reports/status')
+        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
+    });
+
+    it('GET /reports/spawn', async () => {
+      return request(app.getHttpServer())
+        .get('/reports/spawn')
+        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
+    });
+
+    it('GET /reports/hub', async () => {
+      return request(app.getHttpServer())
+        .get('/reports/hub')
+        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
+    });
+
+    it('POST /reports/:reportId/attitudes', async () => {
+      return request(app.getHttpServer())
+        .post(`/reports/${reportsId[0]}/attitudes`)
+        .set('Authorization', `Bearer ${user.access}`)
+        .send({ type: true })
+        .expect('');
+    });
+
+    it('POST /reports/:reportId/attitudes', async () => {
+      return request(app.getHttpServer())
+        .post(`/reports/${reportsId[1]}/attitudes`)
+        .set('Authorization', `Bearer ${user.access}`)
+        .send({ type: false })
+        .expect('');
+    });
+
+    it('POST /annotations', async () => {
+      return request(app.getHttpServer())
+        .post('/annotations')
+        .set('Authorization', `Bearer ${user.access}`)
+        .send({
+          reportId: reportsId[0],
+          annotationId: 0,
+          text: 'annotation text',
+        })
+        .expect('');
+    });
+
+    it('GET /reports/attituded/select', async () => {
+      return request(app.getHttpServer())
+        .get('/reports/attituded/select')
+        .set('Authorization', `Bearer ${user.access}`)
+        .expect((res) => expect(res.body.length).toBeGreaterThan(0));
+    });
+
+    it('GET /reports/:reportId/attitudes', async () => {
+      return request(app.getHttpServer())
+        .get(`/reports/${reportsId[0]}/attitudes`)
+        .expect((res) => expect(res.body.length).toBeGreaterThan(0));
+    });
+
+    it('GET /reports/:reportId/annotations', async () => {
+      return request(app.getHttpServer())
+        .get(`/reports/${reportsId[0]}/annotations`)
+        .expect((res) => expect(res.body.length).toBeGreaterThan(0))
+        .then((res) => (annotationId = res.body[0].id));
+    });
+
+    it('PATCH /reports/:reportId', async () => {
+      return request(app.getHttpServer())
+        .patch(`/reports/${reportsId[4]}`)
+        .set('Authorization', `Bearer ${admin.access}`)
+        .send({
+          text: 'report text',
+          image1: '',
+          image2: '',
+          image3: '',
+          video: '',
+        })
+        .expect('');
+    });
+
+    it('DELETE /reports/:reportId', async () => {
+      return request(app.getHttpServer())
+        .delete(`/reports/${reportsId[4]}`)
+        .set('Authorization', `Bearer ${admin.access}`)
+        .expect('');
+    });
+  });
+
+  describe('Annotations', () => {
+    it('PATCH /annotations/:annotationId', async () => {
+      return request(app.getHttpServer())
+        .patch(`/annotations/${annotationId}`)
+        .set('Authorization', `Bearer ${user.access}`)
+        .send({ text: 'annotation text' })
+        .expect('');
+    });
+
+    it('DELETE /annotations/:annotationId', async () => {
+      return request(app.getHttpServer())
+        .delete(`/annotations/${annotationId}`)
         .set('Authorization', `Bearer ${user.access}`)
         .expect('');
     });

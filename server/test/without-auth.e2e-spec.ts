@@ -116,6 +116,14 @@ describe('Without Auth', () => {
     });
   });
 
+  describe('Reports', () => {
+    it('GET /reports/attituded/select', async () => {
+      return request(app.getHttpServer())
+        .get('/reports/attituded/select')
+        .expect(401);
+    });
+  });
+
   describe('Articles', () => {
     it('GET /articles/my', async () => {
       return request(app.getHttpServer()).get('/articles/my').expect(401);

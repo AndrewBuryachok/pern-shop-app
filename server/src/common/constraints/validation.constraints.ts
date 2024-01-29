@@ -4,6 +4,8 @@ import {
   ValidatorConstraintInterface,
 } from 'class-validator';
 import { UsersService } from '../../features/users/users.service';
+import { ReportsService } from '../../features/reports/reports.service';
+import { AnnotationsService } from '../../features/annotations/annotations.service';
 import { ArticlesService } from '../../features/articles/articles.service';
 import { CommentsService } from '../../features/comments/comments.service';
 import { CardsService } from '../../features/cards/cards.service';
@@ -46,6 +48,44 @@ export class IsUserExists implements ValidatorConstraintInterface {
 
   defaultMessage(): string {
     return 'Unknown user';
+  }
+}
+
+@Injectable()
+@ValidatorConstraint({ name: 'isReportExists', async: true })
+export class IsReportExists implements ValidatorConstraintInterface {
+  constructor(private reportsService: ReportsService) {}
+
+  async validate(value: number): Promise<boolean> {
+    try {
+      await this.reportsService.checkReportExists(value);
+    } catch (error) {
+      return false;
+    }
+    return true;
+  }
+
+  defaultMessage(): string {
+    return 'Unknown report';
+  }
+}
+
+@Injectable()
+@ValidatorConstraint({ name: 'isAnnotationExists', async: true })
+export class IsAnnotationExists implements ValidatorConstraintInterface {
+  constructor(private annotationsService: AnnotationsService) {}
+
+  async validate(value: number): Promise<boolean> {
+    try {
+      await this.annotationsService.checkAnnotationExists(value);
+    } catch (error) {
+      return false;
+    }
+    return true;
+  }
+
+  defaultMessage(): string {
+    return 'Unknown annotation';
   }
 }
 
