@@ -30,7 +30,7 @@ import CustomNavbar from './common/components/CustomNavbar';
 import CustomLoader from './common/components/CustomLoader';
 import Protected from './common/components/Protected';
 import CustomAffix from './common/components/CustomAffix';
-import { pages } from './app/pages';
+import { pages, tabs } from './app/pages';
 
 export default function App() {
   const dispatch = useAppDispatch();
@@ -113,7 +113,7 @@ export default function App() {
                             key={`${page.path} ${route.path}`}
                             {...route}
                             element={
-                              route.index || route.path === 'top' ? (
+                              route.index || tabs.includes(route.path!) ? (
                                 <page.element />
                               ) : (
                                 <Protected role={route.role}>

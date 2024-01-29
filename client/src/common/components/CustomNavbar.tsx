@@ -13,6 +13,7 @@ import {
   IconHome,
   IconMail,
   IconMap,
+  IconNews,
   IconReceipt,
   IconScale,
   IconStar,
@@ -47,6 +48,10 @@ export default function CustomNavbar(props: Props) {
       route: 'subscribers',
       icon: IconMail,
       sub: '/top',
+    },
+    {
+      route: 'reports',
+      icon: IconNews,
     },
     {
       route: 'articles',
