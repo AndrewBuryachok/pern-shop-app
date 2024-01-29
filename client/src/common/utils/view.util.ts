@@ -8,8 +8,7 @@ import { parseItem } from './parse.util';
 
 export const viewRoles = (roles: Role[]) =>
   roles.map((role) => ({
-    text: t(`constants.roles.${allRoles[role - 1]}`),
-    color: `${role}`,
+    role: `${role}`,
     value: `${role}`,
     label: t(`constants.roles.${allRoles[role - 1]}`),
     disabled: true,

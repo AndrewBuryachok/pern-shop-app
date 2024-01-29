@@ -115,8 +115,7 @@ export const selectBackgrounds = () =>
 
 export const selectRoles = () =>
   roles.map((role, index) => ({
-    text: t(`constants.roles.${role}`),
-    color: `${index + 1}`,
+    role: `${index + 1}`,
     value: `${index + 1}`,
     label: t(`constants.roles.${role}`),
   }));
