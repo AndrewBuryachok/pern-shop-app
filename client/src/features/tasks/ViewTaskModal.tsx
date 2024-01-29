@@ -5,9 +5,14 @@ import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { Task } from './task.model';
 import CustomAvatar from '../../common/components/CustomAvatar';
-import PriorityIcon from '../../common/components/PriorityIcon';
-import { parseStatus, parseTime } from '../../common/utils';
-import { Color, priorities } from '../../common/constants';
+import ThingImage from '../../common/components/ThingImage';
+import {
+  parseItem,
+  parseStatus,
+  parseThingAmount,
+  parseTime,
+} from '../../common/utils';
+import { Color } from '../../common/constants';
 
 type Props = IModal<Task>;
 
@@ -24,13 +29,26 @@ export default function ViewTaskModal({ data: task }: Props) {
         value={task.customerUser.nick}
         readOnly
       />
-      <TextInput label={t('columns.title')} value={task.title} readOnly />
-      <Textarea label={t('columns.text')} value={task.text} autosize readOnly />
       <TextInput
-        label={t('columns.priority')}
-        icon={<PriorityIcon {...task} />}
+        label={t('columns.item')}
+        icon={<ThingImage {...task} />}
         iconWidth={48}
-        value={t(`constants.priorities.${priorities[task.priority - 1]}`)}
+        value={parseItem(task.item)}
+        readOnly
+      />
+      <Textarea
+        label={t('columns.description')}
+        value={task.description || '-'}
+        readOnly
+      />
+      <TextInput
+        label={t('columns.amount')}
+        value={parseThingAmount(task)}
+        readOnly
+      />
+      <TextInput
+        label={t('columns.price')}
+        value={`${task.price} ${t('constants.currency')}`}
         readOnly
       />
       <TextInput

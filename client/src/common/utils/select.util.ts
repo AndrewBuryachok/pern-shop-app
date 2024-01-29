@@ -18,7 +18,6 @@ import {
   kinds,
   kits,
   marks,
-  priorities,
   results,
   resultsToColors,
   roles,
@@ -181,13 +180,6 @@ export const selectKinds = () =>
     color: `${index + 1}`,
     value: `${index + 1}`,
     label: t(`constants.kinds.${kind}`),
-  }));
-
-export const selectPriorities = () =>
-  priorities.map((priority, index) => ({
-    priority: index + 1,
-    value: `${index + 1}`,
-    label: t(`constants.priorities.${priority}`),
   }));
 
 export const selectStatuses = () =>

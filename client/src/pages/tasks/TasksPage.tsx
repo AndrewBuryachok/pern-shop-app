@@ -21,6 +21,7 @@ import { executeTaskAction } from '../../features/tasks/ExecuteTaskModal';
 import { completeTaskAction } from '../../features/tasks/CompleteTaskModal';
 import { untakeTaskAction } from '../../features/tasks/UntakeTaskModal';
 import { deleteTaskAction } from '../../features/tasks/DeleteTaskModal';
+import { editTaskAction } from '../../features/tasks/EditTaskModal';
 
 export default function TasksPage() {
   const tab = useLocation().pathname.split('/')[2] || 'main';
@@ -34,8 +35,15 @@ export default function TasksPage() {
     user: searchParams.get('user'),
     modes: [Mode.CUSTOMER, Mode.EXECUTOR],
     mode: searchParams.get('mode') as Mode,
-    title: searchParams.get('title') || '',
-    priority: searchParams.get('priority'),
+    item: searchParams.get('item'),
+    description: searchParams.get('description') || '',
+    minAmount: +(searchParams.get('minAmount') || 0) || null,
+    maxAmount: +(searchParams.get('maxAmount') || 0) || null,
+    minIntake: +(searchParams.get('minIntake') || 0) || null,
+    maxIntake: +(searchParams.get('maxIntake') || 0) || null,
+    kit: searchParams.get('kit'),
+    minPrice: +(searchParams.get('minPrice') || 0) || null,
+    maxPrice: +(searchParams.get('maxPrice') || 0) || null,
     status: searchParams.get('status'),
     minDate: searchParams.get('minDate'),
     maxDate: searchParams.get('maxDate'),
@@ -56,9 +64,10 @@ export default function TasksPage() {
 
   const actions = {
     main: [takeMyTaskAction],
-    my: [completeTaskAction, deleteTaskAction],
+    my: [editTaskAction, completeTaskAction, deleteTaskAction],
     taken: [untakeTaskAction, executeTaskAction],
     all: [
+      editTaskAction,
       takeUserTaskAction,
       executeTaskAction,
       completeTaskAction,

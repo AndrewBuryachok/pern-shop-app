@@ -2,11 +2,13 @@ import { ITableWithActions } from '../../common/interfaces';
 import { Task } from './task.model';
 import CustomTable from '../../common/components/CustomTable';
 import AvatarWithSingleText from '../../common/components/AvatarWithSingleText';
+import ThingImageWithText from '../../common/components/ThingImageWithText';
 import SingleText from '../../common/components/SingleText';
-import PriorityIconWithText from '../../common/components/PriorityIconWithText';
+import PriceText from '../../common/components/PriceText';
 import StatusWithSingleAvatar from '../../common/components/StatusWithSingleAvatar';
 import CustomActions from '../../common/components/CustomActions';
 import { viewTaskAction } from './ViewTaskModal';
+import { parseThingAmount } from '../../common/utils';
 
 type Props = ITableWithActions<Task>;
 
@@ -14,7 +16,7 @@ export default function TasksTable({ actions = [], ...props }: Props) {
   return (
     <CustomTable
       minWidth={900}
-      columns={['customer', 'title', 'priority', 'status', 'action']}
+      columns={['customer', 'item', 'amount', 'price', 'status', 'action']}
       {...props}
     >
       {props.data?.result.map((task) => (
@@ -23,10 +25,13 @@ export default function TasksTable({ actions = [], ...props }: Props) {
             <AvatarWithSingleText {...task.customerUser} />
           </td>
           <td>
-            <SingleText text={task.title} />
+            <ThingImageWithText {...task} />
           </td>
           <td>
-            <PriorityIconWithText {...task} />
+            <SingleText text={parseThingAmount(task)} />
+          </td>
+          <td>
+            <PriceText {...task} />
           </td>
           <td>
             <StatusWithSingleAvatar {...task} />

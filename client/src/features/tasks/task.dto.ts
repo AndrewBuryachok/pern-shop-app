@@ -1,11 +1,13 @@
-export interface CreateTaskDto {
-  title: string;
-  text: string;
-  priority: number;
-}
+import { CreateThingDto } from '../things/thing.dto';
+
+export interface CreateTaskDto extends CreateThingDto {}
 
 export interface ExtCreateTaskDto extends CreateTaskDto {
   userId: number;
+}
+
+export interface EditTaskDto extends CreateThingDto {
+  taskId: number;
 }
 
 export interface TaskIdDto {

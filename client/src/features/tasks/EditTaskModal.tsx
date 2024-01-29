@@ -4,50 +4,42 @@ import { useTranslation } from 'react-i18next';
 import { NumberInput, Select, Textarea } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
-import {
-  useCreateMyTaskMutation,
-  useCreateUserTaskMutation,
-} from './tasks.api';
-import { useSelectAllUsersQuery } from '../users/users.api';
-import { ExtCreateTaskDto } from './task.dto';
+import { IModal } from '../../common/interfaces';
+import { Task } from './task.model';
+import { useEditTaskMutation } from './tasks.api';
+import { EditTaskDto } from './task.dto';
 import CustomForm from '../../common/components/CustomForm';
-import RefetchAction from '../../common/components/RefetchAction';
-import CustomAvatar from '../../common/components/CustomAvatar';
 import ThingImage from '../../common/components/ThingImage';
 import { ThingsItem } from '../../common/components/ThingsItem';
-import { UsersItem } from '../../common/components/UsersItem';
+import { selectCategories, selectItems, selectKits } from '../../common/utils';
 import {
-  selectCategories,
-  selectItems,
-  selectKits,
-  selectUsers,
-} from '../../common/utils';
-import {
+  Color,
+  items,
   MAX_AMOUNT_VALUE,
   MAX_DESCRIPTION_LENGTH,
   MAX_INTAKE_VALUE,
   MAX_PRICE_VALUE,
+  Status,
 } from '../../common/constants';
 
-type Props = { hasRole: boolean };
+type Props = IModal<Task>;
 
-export default function CreateTaskModal({ hasRole }: Props) {
+export default function EditTaskModal({ data: task }: Props) {
   const [t] = useTranslation();
 
   const form = useForm({
     initialValues: {
-      user: '',
-      category: '',
-      item: '',
-      description: '',
-      amount: 1,
-      intake: 1,
-      kit: '',
-      price: 1,
+      taskId: task.id,
+      category: items[task.item - 1][0],
+      item: `${task.item}`,
+      description: task.description,
+      amount: task.amount,
+      intake: task.intake,
+      kit: `${task.kit}`,
+      price: task.price,
     },
-    transformValues: ({ user, item, kit, ...rest }) => ({
+    transformValues: ({ item, kit, ...rest }) => ({
       ...rest,
-      userId: +user,
       item: +item,
       kit: +kit,
     }),
@@ -55,42 +47,21 @@ export default function CreateTaskModal({ hasRole }: Props) {
 
   useEffect(() => form.setFieldValue('item', ''), [form.values.category]);
 
-  const { data: users, ...usersResponse } = useSelectAllUsersQuery(undefined, {
-    skip: !hasRole,
-  });
+  useEffect(() => form.setFieldValue('item', `${task.item}`), []);
 
-  const user = users?.find((user) => user.id === +form.values.user);
+  const [editTask, { isLoading }] = useEditTaskMutation();
 
-  const [createTask, { isLoading }] = hasRole
-    ? useCreateUserTaskMutation()
-    : useCreateMyTaskMutation();
-
-  const handleSubmit = async (dto: ExtCreateTaskDto) => {
-    await createTask(dto);
+  const handleSubmit = async (dto: EditTaskDto) => {
+    await editTask(dto);
   };
 
   return (
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={t('actions.create') + ' ' + t('modals.tasks')}
+      text={t('actions.edit') + ' ' + t('modals.tasks')}
+      isChanged={!form.isDirty()}
     >
-      {hasRole && (
-        <Select
-          label={t('columns.user')}
-          placeholder={t('columns.user')}
-          icon={user && <CustomAvatar {...user} />}
-          iconWidth={48}
-          rightSection={<RefetchAction {...usersResponse} />}
-          itemComponent={UsersItem}
-          data={selectUsers(users)}
-          limit={20}
-          searchable
-          required
-          readOnly={usersResponse.isFetching}
-          {...form.getInputProps('user')}
-        />
-      )}
       <Select
         label={t('columns.category')}
         placeholder={t('columns.category')}
@@ -153,15 +124,12 @@ export default function CreateTaskModal({ hasRole }: Props) {
   );
 }
 
-export const createTaskFactory = (hasRole: boolean) => ({
-  label: 'create',
-  open: () =>
+export const editTaskAction = {
+  open: (task: Task) =>
     openModal({
-      title: t('actions.create') + ' ' + t('modals.tasks'),
-      children: <CreateTaskModal hasRole={hasRole} />,
+      title: t('actions.edit') + ' ' + t('modals.tasks'),
+      children: <EditTaskModal data={task} />,
     }),
-});
-
-export const createMyTaskButton = createTaskFactory(false);
-
-export const createUserTaskButton = createTaskFactory(true);
+  disable: (task: Task) => task.status !== Status.CREATED,
+  color: Color.YELLOW,
+};

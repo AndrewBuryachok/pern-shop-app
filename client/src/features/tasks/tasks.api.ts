@@ -3,6 +3,7 @@ import { IRequest, IResponse } from '../../common/interfaces';
 import { Task } from './task.model';
 import {
   CreateTaskDto,
+  EditTaskDto,
   ExtCreateTaskDto,
   TakeTaskDto,
   TaskIdDto,
@@ -47,6 +48,14 @@ export const tasksApi = emptyApi.injectEndpoints({
       query: (dto) => ({
         url: '/tasks/all',
         method: 'POST',
+        body: dto,
+      }),
+      invalidatesTags: ['Task'],
+    }),
+    editTask: build.mutation<void, EditTaskDto>({
+      query: ({ taskId, ...dto }) => ({
+        url: `/tasks/${taskId}`,
+        method: 'PATCH',
         body: dto,
       }),
       invalidatesTags: ['Task'],
@@ -104,6 +113,7 @@ export const {
   useGetAllTasksQuery,
   useCreateMyTaskMutation,
   useCreateUserTaskMutation,
+  useEditTaskMutation,
   useTakeMyTaskMutation,
   useTakeUserTaskMutation,
   useUntakeTaskMutation,
