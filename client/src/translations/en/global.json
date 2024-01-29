@@ -467,6 +467,8 @@
       "banker": "Banker",
       "manager": "Manager",
       "judge": "Judge",
+      "hub": "Hub head",
+      "spawn": "Spawn head",
       "user": "User"
     },
     "colors": {

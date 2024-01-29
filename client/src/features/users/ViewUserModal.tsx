@@ -5,7 +5,7 @@ import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { User } from './user.model';
 import CustomAvatar from '../../common/components/CustomAvatar';
-import { ColorsItem } from '../../common/components/ColorsItem';
+import { RolesItem } from '../../common/components/RolesItem';
 import { parsePlace, parseTime, viewRoles } from '../../common/utils';
 import { Color } from '../../common/constants';
 
@@ -26,7 +26,7 @@ export default function ViewUserModal({ data: user }: Props) {
       />
       <Select
         label={t('columns.roles')}
-        itemComponent={ColorsItem}
+        itemComponent={RolesItem}
         placeholder={`${t('components.total')}: ${user.roles.length}`}
         data={viewRoles(user.roles)}
         searchable

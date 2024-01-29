@@ -36,6 +36,7 @@ import ThingImage from './ThingImage';
 import { ThingsItem } from './ThingsItem';
 import { CardsItem } from './CardsItem';
 import { PlacesItem } from './PlacesItem';
+import { RolesItem } from './RolesItem';
 import { ColorsItem } from './ColorsItem';
 import { PrioritiesItem } from './PrioritiesItem';
 import {
@@ -263,7 +264,7 @@ export default function SearchModal(props: Props) {
         <MultiSelect
           label={t('columns.roles')}
           placeholder={t('columns.roles')}
-          itemComponent={ColorsItem}
+          itemComponent={RolesItem}
           data={selectRoles()}
           searchable
           {...form.getInputProps('roles')}
