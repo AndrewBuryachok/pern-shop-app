@@ -5,6 +5,8 @@ import { AuthModule } from './features/auth/auth.module';
 import { UsersModule } from './features/users/users.module';
 import { FriendsModule } from './features/friends/friends.module';
 import { SubscribersModule } from './features/subscribers/subscribers.module';
+import { ReportsModule } from './features/reports/reports.module';
+import { AnnotationsModule } from './features/annotations/annotations.module';
 import { ArticlesModule } from './features/articles/articles.module';
 import { CommentsModule } from './features/comments/comments.module';
 import { CardsModule } from './features/cards/cards.module';
@@ -57,6 +59,8 @@ import { RatingsModule } from './features/ratings/ratings.module';
     UsersModule,
     FriendsModule,
     SubscribersModule,
+    ReportsModule,
+    AnnotationsModule,
     ArticlesModule,
     CommentsModule,
     CardsModule,

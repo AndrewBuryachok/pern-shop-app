@@ -1,6 +1,9 @@
 import { faker } from '@faker-js/faker';
 import { Factory, Seeder } from 'typeorm-seeding';
 import { User } from '../../features/users/user.entity';
+import { Report } from '../../features/reports/report.entity';
+import { Attitude } from '../../features/reports/attitude.entity';
+import { Annotation } from '../../features/annotations/annotation.entity';
 import { Article } from '../../features/articles/article.entity';
 import { Like } from '../../features/articles/like.entity';
 import { Comment } from '../../features/comments/comment.entity';
@@ -48,6 +51,34 @@ export default class AppSeed implements Seeder {
         return user;
       })
       .createMany(20);
+    const reports = await factory(Report)()
+      .map(async (report) => {
+        report.user = faker.helpers.arrayElement(users);
+        return report;
+      })
+      .createMany(20);
+    const allAttitudes = reports.reduce(
+      (prev, report) => [...prev, ...users.map((user) => ({ report, user }))],
+      [],
+    );
+    const randomAttitudes = [...Array(allAttitudes.length).keys()];
+    randomAttitudes.sort(() => Math.random() - 0.5);
+    let attitudeId = 0;
+    const attitudes = await factory(Attitude)()
+      .map(async (attitude) => {
+        attitude.report = allAttitudes[randomAttitudes[attitudeId]].report;
+        attitude.user = allAttitudes[randomAttitudes[attitudeId]].user;
+        attitudeId++;
+        return attitude;
+      })
+      .createMany(80);
+    const annotations = await factory(Annotation)()
+      .map(async (annotation) => {
+        annotation.report = faker.helpers.arrayElement(reports);
+        annotation.user = faker.helpers.arrayElement(users);
+        return annotation;
+      })
+      .createMany(40);
     const articles = await factory(Article)()
       .map(async (article) => {
         article.user = faker.helpers.arrayElement(users);
