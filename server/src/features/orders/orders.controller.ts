@@ -18,7 +18,7 @@ import {
   TakeOrderDto,
 } from './order.dto';
 import { Request, Response } from '../../common/interfaces';
-import { HasRole, MyId, Public, Roles } from '../../common/decorators';
+import { HasRole, MyId, MyNick, Public, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
 
 @ApiTags('orders')
@@ -65,47 +65,58 @@ export class OrdersController {
   @Post()
   createOrder(
     @MyId() myId: number,
+    @MyNick() nick: string,
     @HasRole(Role.MANAGER) hasRole: boolean,
     @Body() dto: CreateOrderDto,
   ): Promise<void> {
-    return this.ordersService.createOrder({ ...dto, myId, hasRole });
+    return this.ordersService.createOrder({ ...dto, myId, nick, hasRole });
   }
 
   @Post(':orderId/take')
   takeOrder(
     @MyId() myId: number,
+    @MyNick() nick: string,
     @HasRole(Role.MANAGER) hasRole: boolean,
     @Param() { orderId }: OrderIdDto,
     @Body() dto: TakeOrderDto,
   ): Promise<void> {
-    return this.ordersService.takeOrder({ ...dto, orderId, myId, hasRole });
+    return this.ordersService.takeOrder({
+      ...dto,
+      orderId,
+      myId,
+      nick,
+      hasRole,
+    });
   }
 
   @Delete(':orderId/take')
   untakeOrder(
     @MyId() myId: number,
+    @MyNick() nick: string,
     @HasRole(Role.MANAGER) hasRole: boolean,
     @Param() { orderId }: OrderIdDto,
   ): Promise<void> {
-    return this.ordersService.untakeOrder({ orderId, myId, hasRole });
+    return this.ordersService.untakeOrder({ orderId, myId, nick, hasRole });
   }
 
   @Post(':orderId/execute')
   executeOrder(
     @MyId() myId: number,
+    @MyNick() nick: string,
     @HasRole(Role.MANAGER) hasRole: boolean,
     @Param() { orderId }: OrderIdDto,
   ): Promise<void> {
-    return this.ordersService.executeOrder({ orderId, myId, hasRole });
+    return this.ordersService.executeOrder({ orderId, myId, nick, hasRole });
   }
 
   @Post(':orderId')
   completeOrder(
     @MyId() myId: number,
+    @MyNick() nick: string,
     @HasRole(Role.MANAGER) hasRole: boolean,
     @Param() { orderId }: OrderIdDto,
   ): Promise<void> {
-    return this.ordersService.completeOrder({ orderId, myId, hasRole });
+    return this.ordersService.completeOrder({ orderId, myId, nick, hasRole });
   }
 
   @Delete(':orderId')
@@ -120,10 +131,17 @@ export class OrdersController {
   @Patch(':orderId/rate')
   rateOrder(
     @MyId() myId: number,
+    @MyNick() nick: string,
     @HasRole(Role.MANAGER) hasRole: boolean,
     @Param() { orderId }: OrderIdDto,
     @Body() dto: RateOrderDto,
   ): Promise<void> {
-    return this.ordersService.rateOrder({ ...dto, orderId, myId, hasRole });
+    return this.ordersService.rateOrder({
+      ...dto,
+      orderId,
+      myId,
+      nick,
+      hasRole,
+    });
   }
 }

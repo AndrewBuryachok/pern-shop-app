@@ -13,7 +13,7 @@ import { Market } from './market.entity';
 import { MarketState } from './market-state.entity';
 import { CreateMarketDto, EditMarketDto, MarketIdDto } from './market.dto';
 import { Request, Response } from '../../common/interfaces';
-import { HasRole, MyId, Public, Roles } from '../../common/decorators';
+import { HasRole, MyId, MyNick, Public, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
 
 @ApiTags('markets')
@@ -69,10 +69,11 @@ export class MarketsController {
   @Post()
   createMarket(
     @MyId() myId: number,
+    @MyNick() nick: string,
     @HasRole(Role.MANAGER) hasRole: boolean,
     @Body() dto: CreateMarketDto,
   ): Promise<void> {
-    return this.marketsService.createMarket({ ...dto, myId, hasRole });
+    return this.marketsService.createMarket({ ...dto, myId, nick, hasRole });
   }
 
   @Patch(':marketId')

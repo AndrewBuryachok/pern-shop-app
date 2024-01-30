@@ -136,36 +136,38 @@ export class PollsService {
     return poll.discussions;
   }
 
-  async createPoll(dto: ExtCreatePollDto): Promise<void> {
-    const poll = await this.create(dto);
+  async createPoll(dto: ExtCreatePollDto & { nick: string }): Promise<void> {
+    await this.create(dto);
     this.mqttService.publishNotificationMessage(
       0,
-      poll.id,
+      dto.nick,
       Notification.CREATED_POLL,
     );
-    this.mqttService.publishNotificationMention(
+    await this.mqttService.publishNotificationMention(
       dto.text,
-      poll.id,
+      dto.nick,
       Notification.MENTIONED_POLL,
     );
   }
 
-  async editPoll(dto: ExtEditPollDto): Promise<void> {
+  async editPoll(dto: ExtEditPollDto & { nick: string }): Promise<void> {
     const poll = await this.checkPollOwner(dto.pollId, dto.myId, dto.hasRole);
     await this.edit(poll, dto);
-    this.mqttService.publishNotificationMention(
+    await this.mqttService.publishNotificationMention(
       dto.text,
-      dto.pollId,
+      dto.nick,
       Notification.MENTIONED_POLL,
     );
   }
 
-  async completePoll(dto: ExtCompletePollDto): Promise<void> {
+  async completePoll(
+    dto: ExtCompletePollDto & { nick: string },
+  ): Promise<void> {
     const poll = await this.checkPollNotCompleted(dto.pollId);
     await this.complete(poll, dto);
     this.mqttService.publishNotificationMessage(
       poll.userId,
-      dto.pollId,
+      dto.nick,
       Notification.COMPLETED_POLL,
     );
   }
@@ -175,7 +177,7 @@ export class PollsService {
     await this.delete(poll);
   }
 
-  async votePoll(dto: ExtVotePollDto): Promise<void> {
+  async votePoll(dto: ExtVotePollDto & { nick: string }): Promise<void> {
     const poll = await this.checkPollNotCompleted(dto.pollId);
     const vote = await this.votesRepository.findOneBy({
       pollId: dto.pollId,
@@ -192,7 +194,7 @@ export class PollsService {
     if (notify) {
       this.mqttService.publishNotificationMessage(
         poll.userId,
-        dto.pollId,
+        dto.nick,
         Notification.REACTED_POLL,
       );
     }

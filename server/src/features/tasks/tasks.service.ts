@@ -53,11 +53,11 @@ export class TasksService {
     return { result, count };
   }
 
-  async createTask(dto: ExtCreateTaskDto): Promise<void> {
-    const task = await this.create(dto);
+  async createTask(dto: ExtCreateTaskDto & { nick: string }): Promise<void> {
+    await this.create(dto);
     this.mqttService.publishNotificationMessage(
       0,
-      task.id,
+      dto.nick,
       Notification.CREATED_TASK,
     );
   }
@@ -74,7 +74,7 @@ export class TasksService {
     await this.edit(task, dto);
   }
 
-  async takeTask(dto: ExtTakeTaskDto): Promise<void> {
+  async takeTask(dto: ExtTakeTaskDto & { nick: string }): Promise<void> {
     const task = await this.tasksRepository.findOneBy({
       id: dto.taskId,
     });
@@ -84,12 +84,12 @@ export class TasksService {
     await this.take(task, dto.userId);
     this.mqttService.publishNotificationMessage(
       task.customerUserId,
-      dto.taskId,
+      dto.nick,
       Notification.TAKEN_TASK,
     );
   }
 
-  async untakeTask(dto: ExtTaskIdDto): Promise<void> {
+  async untakeTask(dto: ExtTaskIdDto & { nick: string }): Promise<void> {
     const task = await this.checkTaskExecutor(
       dto.taskId,
       dto.myId,
@@ -101,12 +101,12 @@ export class TasksService {
     await this.untake(task);
     this.mqttService.publishNotificationMessage(
       task.customerUserId,
-      dto.taskId,
+      dto.nick,
       Notification.UNTAKEN_TASK,
     );
   }
 
-  async executeTask(dto: ExtTaskIdDto): Promise<void> {
+  async executeTask(dto: ExtTaskIdDto & { nick: string }): Promise<void> {
     const task = await this.checkTaskExecutor(
       dto.taskId,
       dto.myId,
@@ -118,12 +118,12 @@ export class TasksService {
     await this.execute(task);
     this.mqttService.publishNotificationMessage(
       task.customerUserId,
-      dto.taskId,
+      dto.nick,
       Notification.EXECUTED_TASK,
     );
   }
 
-  async completeTask(dto: ExtTaskIdDto): Promise<void> {
+  async completeTask(dto: ExtTaskIdDto & { nick: string }): Promise<void> {
     const task = await this.checkTaskCustomer(
       dto.taskId,
       dto.myId,
@@ -135,7 +135,7 @@ export class TasksService {
     await this.complete(task);
     this.mqttService.publishNotificationMessage(
       task.executorUserId,
-      dto.taskId,
+      dto.nick,
       Notification.COMPLETED_TASK,
     );
   }

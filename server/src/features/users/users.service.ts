@@ -242,7 +242,7 @@ export class UsersService {
     const user = await this.create(dto);
     this.mqttService.publishNotificationMessage(
       0,
-      user.id,
+      dto.nick,
       Notification.CREATED_USER,
     );
     return user;

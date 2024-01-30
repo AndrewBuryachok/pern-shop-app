@@ -22,7 +22,7 @@ import {
   VotePollDto,
 } from './poll.dto';
 import { Request, Response } from '../../common/interfaces';
-import { HasRole, MyId, Public, Roles } from '../../common/decorators';
+import { HasRole, MyId, MyNick, Public, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
 
 @ApiTags('polls')
@@ -86,34 +86,40 @@ export class PollsController {
   @Post()
   createMyPoll(
     @MyId() myId: number,
+    @MyNick() nick: string,
     @Body() dto: CreatePollDto,
   ): Promise<void> {
-    return this.pollsService.createPoll({ ...dto, userId: myId });
+    return this.pollsService.createPoll({ ...dto, userId: myId, nick });
   }
 
   @Roles(Role.ADMIN)
   @Post('all')
-  createUserPoll(@Body() dto: ExtCreatePollDto): Promise<void> {
-    return this.pollsService.createPoll(dto);
+  createUserPoll(
+    @MyNick() nick: string,
+    @Body() dto: ExtCreatePollDto,
+  ): Promise<void> {
+    return this.pollsService.createPoll({ ...dto, nick });
   }
 
   @Patch(':pollId')
   editPoll(
     @MyId() myId: number,
+    @MyNick() nick: string,
     @HasRole(Role.ADMIN) hasRole: boolean,
     @Param() { pollId }: PollIdDto,
     @Body() dto: EditPollDto,
   ): Promise<void> {
-    return this.pollsService.editPoll({ ...dto, pollId, myId, hasRole });
+    return this.pollsService.editPoll({ ...dto, pollId, myId, nick, hasRole });
   }
 
   @Roles(Role.ADMIN)
   @Post(':pollId')
   completePoll(
+    @MyNick() nick: string,
     @Param() { pollId }: PollIdDto,
     @Body() dto: CompletePollDto,
   ): Promise<void> {
-    return this.pollsService.completePoll({ ...dto, pollId });
+    return this.pollsService.completePoll({ ...dto, pollId, nick });
   }
 
   @Delete(':pollId')
@@ -128,9 +134,10 @@ export class PollsController {
   @Post(':pollId/votes')
   votePoll(
     @MyId() myId: number,
+    @MyNick() nick: string,
     @Param() { pollId }: PollIdDto,
     @Body() dto: VotePollDto,
   ): Promise<void> {
-    return this.pollsService.votePoll({ ...dto, pollId, myId });
+    return this.pollsService.votePoll({ ...dto, pollId, myId, nick });
   }
 }

@@ -101,26 +101,28 @@ export class ReportsService {
     return report.annotations;
   }
 
-  async createReport(dto: ExtCreateReportDto): Promise<void> {
-    const report = await this.create(dto);
+  async createReport(
+    dto: ExtCreateReportDto & { nick: string },
+  ): Promise<void> {
+    await this.create(dto);
     this.mqttService.publishNotificationMessage(
       0,
-      report.id,
+      dto.nick,
       Notification.CREATED_REPORT,
     );
-    this.mqttService.publishNotificationMention(
+    await this.mqttService.publishNotificationMention(
       dto.text,
-      report.id,
+      dto.nick,
       Notification.MENTIONED_REPORT,
     );
   }
 
-  async editReport(dto: ExtEditReportDto): Promise<void> {
+  async editReport(dto: ExtEditReportDto & { nick: string }): Promise<void> {
     const report = await this.checkReportOwner(dto.reportId, dto.myId);
     await this.edit(report, dto);
-    this.mqttService.publishNotificationMention(
+    await this.mqttService.publishNotificationMention(
       dto.text,
-      report.id,
+      dto.nick,
       Notification.MENTIONED_REPORT,
     );
   }
@@ -130,7 +132,9 @@ export class ReportsService {
     await this.delete(report);
   }
 
-  async attitudeReport(dto: ExtAttitudeReportDto): Promise<void> {
+  async attitudeReport(
+    dto: ExtAttitudeReportDto & { nick: string },
+  ): Promise<void> {
     const attitude = await this.attitudesRepository.findOneBy({
       reportId: dto.reportId,
       userId: dto.myId,
@@ -147,7 +151,7 @@ export class ReportsService {
       const report = await this.findReportById(dto.reportId);
       this.mqttService.publishNotificationMessage(
         report.userId,
-        dto.reportId,
+        dto.nick,
         Notification.REACTED_REPORT,
       );
     }

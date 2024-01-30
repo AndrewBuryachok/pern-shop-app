@@ -32,7 +32,7 @@ export class FriendsService {
     return this.usersService.getReceivedFriends(myId, req);
   }
 
-  async addFriend(dto: UpdateFriendDto): Promise<void> {
+  async addFriend(dto: UpdateFriendDto & { nick: string }): Promise<void> {
     const invitation1 = await this.invitationsRepository.findOneBy({
       senderUserId: dto.myId,
       receiverUserId: dto.userId,
@@ -62,12 +62,12 @@ export class FriendsService {
     }
     this.mqttService.publishNotificationMessage(
       dto.userId,
-      dto.myId,
+      dto.nick,
       Notification.ADDED_FRIEND,
     );
   }
 
-  async removeFriend(dto: UpdateFriendDto): Promise<void> {
+  async removeFriend(dto: UpdateFriendDto & { nick: string }): Promise<void> {
     const invitation1 = await this.invitationsRepository.findOneBy({
       senderUserId: dto.myId,
       receiverUserId: dto.userId,
@@ -94,7 +94,7 @@ export class FriendsService {
     }
     this.mqttService.publishNotificationMessage(
       dto.userId,
-      dto.myId,
+      dto.nick,
       Notification.REMOVED_FRIEND,
     );
   }

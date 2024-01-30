@@ -22,36 +22,38 @@ export class AnswersService {
     private mqttService: MqttService,
   ) {}
 
-  async createAnswer(dto: ExtCreateAnswerDto): Promise<void> {
+  async createAnswer(
+    dto: ExtCreateAnswerDto & { nick: string },
+  ): Promise<void> {
     const plaint = await this.plaintsService.checkPlaintNotCompleted(
       dto.plaintId,
     );
-    const answer = await this.create(dto);
+    await this.create(dto);
     [plaint.senderUserId, plaint.receiverUserId].forEach((userId) =>
       this.mqttService.publishNotificationMessage(
         userId,
-        answer.id,
+        dto.nick,
         Notification.ANSWERED_PLAINT,
       ),
     );
     if (dto.answerId) {
-      const answer = await this.answersRepository.findOneBy({
+      const reply = await this.answersRepository.findOneBy({
         id: dto.answerId,
       });
       this.mqttService.publishNotificationMessage(
-        answer.userId,
-        answer.id,
+        reply.userId,
+        dto.nick,
         Notification.REPLIED_ANSWER,
       );
     }
-    this.mqttService.publishNotificationMention(
+    await this.mqttService.publishNotificationMention(
       dto.text,
-      answer.id,
+      dto.nick,
       Notification.MENTIONED_ANSWER,
     );
   }
 
-  async editAnswer(dto: ExtEditAnswerDto): Promise<void> {
+  async editAnswer(dto: ExtEditAnswerDto & { nick: string }): Promise<void> {
     const answer = await this.checkAnswerOwner(
       dto.answerId,
       dto.myId,
@@ -59,9 +61,9 @@ export class AnswersService {
     );
     await this.plaintsService.checkPlaintNotCompleted(answer.plaintId);
     await this.edit(answer, dto);
-    this.mqttService.publishNotificationMention(
+    await this.mqttService.publishNotificationMention(
       dto.text,
-      dto.answerId,
+      dto.nick,
       Notification.MENTIONED_ANSWER,
     );
   }

@@ -111,18 +111,20 @@ export class LeasesService {
     ];
   }
 
-  async createLease(dto: ExtCreateLeaseDto): Promise<number> {
+  async createLease(
+    dto: ExtCreateLeaseDto & { nick: string },
+  ): Promise<number> {
     const cell = await this.cellsService.reserveCell(dto);
     const lease = await this.create({ ...dto, storageId: cell.id });
     this.mqttService.publishNotificationMessage(
       cell.storage.card.userId,
-      lease.id,
+      dto.nick,
       Notification.CREATED_LEASE,
     );
     return lease.id;
   }
 
-  async continueLease(dto: ExtLeaseIdDto): Promise<void> {
+  async continueLease(dto: ExtLeaseIdDto & { nick: string }): Promise<void> {
     const lease = await this.checkLeaseOwner(
       dto.leaseId,
       dto.myId,
@@ -136,12 +138,12 @@ export class LeasesService {
     await this.continue(lease);
     this.mqttService.publishNotificationMessage(
       cell.storage.card.userId,
-      dto.leaseId,
+      dto.nick,
       Notification.CONTINUED_LEASE,
     );
   }
 
-  async completeLease(dto: ExtLeaseIdDto): Promise<void> {
+  async completeLease(dto: ExtLeaseIdDto & { nick: string }): Promise<void> {
     const lease = await this.checkLeaseOwner(
       dto.leaseId,
       dto.myId,
@@ -151,7 +153,7 @@ export class LeasesService {
     await this.complete(lease);
     this.mqttService.publishNotificationMessage(
       cell.storage.card.userId,
-      dto.leaseId,
+      dto.nick,
       Notification.COMPLETED_LEASE,
     );
   }

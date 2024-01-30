@@ -21,7 +21,7 @@ import {
 } from './card.dto';
 import { UserIdDto } from '../users/user.dto';
 import { Request, Response } from '../../common/interfaces';
-import { HasRole, MyId, Public, Roles } from '../../common/decorators';
+import { HasRole, MyId, MyNick, Public, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
 
 @ApiTags('cards')
@@ -93,20 +93,34 @@ export class CardsController {
   @Post(':cardId/users')
   addCardUser(
     @MyId() myId: number,
+    @MyNick() nick: string,
     @HasRole(Role.BANKER) hasRole: boolean,
     @Param() { cardId }: CardIdDto,
     @Body() dto: UpdateCardUserDto,
   ): Promise<void> {
-    return this.cardsService.addCardUser({ ...dto, cardId, myId, hasRole });
+    return this.cardsService.addCardUser({
+      ...dto,
+      cardId,
+      myId,
+      nick,
+      hasRole,
+    });
   }
 
   @Delete(':cardId/users')
   removeCardUser(
     @MyId() myId: number,
+    @MyNick() nick: string,
     @HasRole(Role.BANKER) hasRole: boolean,
     @Param() { cardId }: CardIdDto,
     @Body() dto: UpdateCardUserDto,
   ): Promise<void> {
-    return this.cardsService.removeCardUser({ ...dto, cardId, myId, hasRole });
+    return this.cardsService.removeCardUser({
+      ...dto,
+      cardId,
+      myId,
+      nick,
+      hasRole,
+    });
   }
 }

@@ -83,17 +83,17 @@ export class RentsService {
     return rent.wares;
   }
 
-  async createRent(dto: ExtCreateRentDto): Promise<void> {
+  async createRent(dto: ExtCreateRentDto & { nick: string }): Promise<void> {
     const store = await this.storesService.reserveStore(dto);
-    const rent = await this.create(dto);
+    await this.create(dto);
     this.mqttService.publishNotificationMessage(
       store.market.card.userId,
-      rent.id,
+      dto.nick,
       Notification.CREATED_RENT,
     );
   }
 
-  async continueRent(dto: ExtRentIdDto): Promise<void> {
+  async continueRent(dto: ExtRentIdDto & { nick: string }): Promise<void> {
     const rent = await this.checkRentOwner(dto.rentId, dto.myId, dto.hasRole);
     const store = await this.storesService.continueStore({
       ...dto,
@@ -103,18 +103,18 @@ export class RentsService {
     await this.continue(rent);
     this.mqttService.publishNotificationMessage(
       store.market.card.userId,
-      dto.rentId,
+      dto.nick,
       Notification.CONTINUED_RENT,
     );
   }
 
-  async completeRent(dto: ExtRentIdDto): Promise<void> {
+  async completeRent(dto: ExtRentIdDto & { nick: string }): Promise<void> {
     const rent = await this.checkRentOwner(dto.rentId, dto.myId, dto.hasRole);
     const store = await this.storesService.unreserveStore(rent.storeId);
     await this.complete(rent);
     this.mqttService.publishNotificationMessage(
       store.market.card.userId,
-      dto.rentId,
+      dto.nick,
       Notification.COMPLETED_RENT,
     );
   }

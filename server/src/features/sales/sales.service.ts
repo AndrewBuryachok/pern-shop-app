@@ -60,22 +60,22 @@ export class SalesService {
     return { result, count };
   }
 
-  async createSale(dto: ExtCreateSaleDto): Promise<void> {
+  async createSale(dto: ExtCreateSaleDto & { nick: string }): Promise<void> {
     const product = await this.productsService.buyProduct(dto);
-    const sale = await this.create(dto);
+    await this.create(dto);
     this.mqttService.publishNotificationMessage(
       product.lease.card.userId,
-      sale.id,
+      dto.nick,
       Notification.CREATED_SALE,
     );
   }
 
-  async rateSale(dto: ExtRateSaleDto): Promise<void> {
+  async rateSale(dto: ExtRateSaleDto & { nick: string }): Promise<void> {
     const sale = await this.checkSaleOwner(dto.saleId, dto.myId, dto.hasRole);
     await this.rate(sale, dto.rate);
     this.mqttService.publishNotificationMessage(
       sale.product.lease.card.userId,
-      dto.saleId,
+      dto.nick,
       Notification.RATED_SALE,
     );
   }

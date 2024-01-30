@@ -22,41 +22,45 @@ export class AnnotationsService {
     private mqttService: MqttService,
   ) {}
 
-  async createAnnotation(dto: ExtCreateAnnotationDto): Promise<void> {
-    const annotation = await this.create(dto);
+  async createAnnotation(
+    dto: ExtCreateAnnotationDto & { nick: string },
+  ): Promise<void> {
+    await this.create(dto);
     const report = await this.reportsService.findReportById(dto.reportId);
     this.mqttService.publishNotificationMessage(
       report.userId,
-      annotation.id,
+      dto.nick,
       Notification.ANNOTATED_REPORT,
     );
     if (dto.annotationId) {
-      const annotation = await this.annotationsRepository.findOneBy({
+      const reply = await this.annotationsRepository.findOneBy({
         id: dto.annotationId,
       });
       this.mqttService.publishNotificationMessage(
-        annotation.userId,
-        annotation.id,
+        reply.userId,
+        dto.nick,
         Notification.REPLIED_ANNOTATION,
       );
     }
-    this.mqttService.publishNotificationMention(
+    await this.mqttService.publishNotificationMention(
       dto.text,
-      annotation.id,
+      dto.nick,
       Notification.MENTIONED_ANNOTATION,
     );
   }
 
-  async editAnnotation(dto: ExtEditAnnotationDto): Promise<void> {
+  async editAnnotation(
+    dto: ExtEditAnnotationDto & { nick: string },
+  ): Promise<void> {
     const annotation = await this.checkAnnotationOwner(
       dto.annotationId,
       dto.myId,
       dto.hasRole,
     );
     await this.edit(annotation, dto);
-    this.mqttService.publishNotificationMention(
+    await this.mqttService.publishNotificationMention(
       dto.text,
-      dto.annotationId,
+      dto.nick,
       Notification.MENTIONED_ANNOTATION,
     );
   }

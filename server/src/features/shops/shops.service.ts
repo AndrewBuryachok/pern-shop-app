@@ -89,14 +89,14 @@ export class ShopsService {
     return shop.goods;
   }
 
-  async createShop(dto: ExtCreateShopDto): Promise<void> {
+  async createShop(dto: ExtCreateShopDto & { nick: string }): Promise<void> {
     await this.checkHasNotEnough(dto.userId);
     await this.checkNameNotUsed(dto.name);
     await this.checkCoordinatesNotUsed(dto.x, dto.y);
-    const shop = await this.create(dto);
+    await this.create(dto);
     this.mqttService.publishNotificationMessage(
       0,
-      shop.id,
+      dto.nick,
       Notification.CREATED_SHOP,
     );
   }
@@ -108,7 +108,9 @@ export class ShopsService {
     await this.edit(shop, dto);
   }
 
-  async addShopUser(dto: ExtUpdateShopUserDto): Promise<void> {
+  async addShopUser(
+    dto: ExtUpdateShopUserDto & { nick: string },
+  ): Promise<void> {
     const shop = await this.checkShopOwner(dto.shopId, dto.myId, dto.hasRole);
     if (shop.users.map((user) => user.id).includes(dto.userId)) {
       throw new AppException(ShopError.ALREADY_IN_SHOP);
@@ -116,12 +118,14 @@ export class ShopsService {
     await this.addUser(shop, dto.userId);
     this.mqttService.publishNotificationMessage(
       dto.userId,
-      dto.shopId,
+      dto.nick,
       Notification.ADDED_SHOP,
     );
   }
 
-  async removeShopUser(dto: ExtUpdateShopUserDto): Promise<void> {
+  async removeShopUser(
+    dto: ExtUpdateShopUserDto & { nick: string },
+  ): Promise<void> {
     const shop = await this.checkShopOwner(dto.shopId, dto.myId, dto.hasRole);
     if (dto.userId === dto.myId) {
       throw new AppException(ShopError.OWNER);
@@ -132,7 +136,7 @@ export class ShopsService {
     await this.removeUser(shop, dto.userId);
     this.mqttService.publishNotificationMessage(
       dto.userId,
-      dto.shopId,
+      dto.nick,
       Notification.REMOVED_SHOP,
     );
   }

@@ -5,7 +5,7 @@ import { Rent } from './rent.entity';
 import { Thing } from '../things/thing.entity';
 import { CreateRentDto, RentIdDto } from './rent.dto';
 import { Request, Response } from '../../common/interfaces';
-import { HasRole, MyId, Public, Roles } from '../../common/decorators';
+import { HasRole, MyId, MyNick, Public, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
 
 @ApiTags('rents')
@@ -61,27 +61,30 @@ export class RentsController {
   @Post()
   createRent(
     @MyId() myId: number,
+    @MyNick() nick: string,
     @HasRole(Role.MANAGER) hasRole: boolean,
     @Body() dto: CreateRentDto,
   ): Promise<void> {
-    return this.rentsService.createRent({ ...dto, myId, hasRole });
+    return this.rentsService.createRent({ ...dto, myId, nick, hasRole });
   }
 
   @Post(':rentId/continue')
   continueRent(
     @MyId() myId: number,
+    @MyNick() nick: string,
     @HasRole(Role.MANAGER) hasRole: boolean,
     @Param() { rentId }: RentIdDto,
   ): Promise<void> {
-    return this.rentsService.continueRent({ rentId, myId, hasRole });
+    return this.rentsService.continueRent({ rentId, myId, nick, hasRole });
   }
 
   @Post(':rentId')
   completeRent(
     @MyId() myId: number,
+    @MyNick() nick: string,
     @HasRole(Role.MANAGER) hasRole: boolean,
     @Param() { rentId }: RentIdDto,
   ): Promise<void> {
-    return this.rentsService.completeRent({ rentId, myId, hasRole });
+    return this.rentsService.completeRent({ rentId, myId, nick, hasRole });
   }
 }

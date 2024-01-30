@@ -13,7 +13,7 @@ import { GoodsService } from './goods.service';
 import { Good } from './good.entity';
 import { CreateGoodDto, EditGoodDto, GoodIdDto } from './good.dto';
 import { Request, Response } from '../../common/interfaces';
-import { HasRole, MyId, Public, Roles } from '../../common/decorators';
+import { HasRole, MyId, MyNick, Public, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
 
 @ApiTags('goods')
@@ -44,10 +44,11 @@ export class GoodsController {
   @Post()
   createGood(
     @MyId() myId: number,
+    @MyNick() nick: string,
     @HasRole(Role.MANAGER) hasRole: boolean,
     @Body() dto: CreateGoodDto,
   ): Promise<void> {
-    return this.goodsService.createGood({ ...dto, myId, hasRole });
+    return this.goodsService.createGood({ ...dto, myId, nick, hasRole });
   }
 
   @Patch(':goodId')

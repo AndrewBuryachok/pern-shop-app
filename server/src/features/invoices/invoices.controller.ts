@@ -16,7 +16,7 @@ import {
   InvoiceIdDto,
 } from './invoice.dto';
 import { Request, Response } from '../../common/interfaces';
-import { HasRole, MyId, Roles } from '../../common/decorators';
+import { HasRole, MyId, MyNick, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
 
 @ApiTags('invoices')
@@ -49,15 +49,17 @@ export class InvoicesController {
   @Post()
   createInvoice(
     @MyId() myId: number,
+    @MyNick() nick: string,
     @HasRole(Role.BANKER) hasRole: boolean,
     @Body() dto: CreateInvoiceDto,
   ): Promise<void> {
-    return this.invoicesService.createInvoice({ ...dto, myId, hasRole });
+    return this.invoicesService.createInvoice({ ...dto, myId, nick, hasRole });
   }
 
   @Post(':invoiceId')
   completeInvoice(
     @MyId() myId: number,
+    @MyNick() nick: string,
     @HasRole(Role.BANKER) hasRole: boolean,
     @Param() { invoiceId }: InvoiceIdDto,
     @Body() dto: CompleteInvoiceDto,
@@ -66,6 +68,7 @@ export class InvoicesController {
       ...dto,
       invoiceId,
       myId,
+      nick,
       hasRole,
     });
   }
@@ -73,9 +76,15 @@ export class InvoicesController {
   @Delete(':invoiceId')
   deleteInvoice(
     @MyId() myId: number,
+    @MyNick() nick: string,
     @HasRole(Role.BANKER) hasRole: boolean,
     @Param() { invoiceId }: InvoiceIdDto,
   ): Promise<void> {
-    return this.invoicesService.deleteInvoice({ invoiceId, myId, hasRole });
+    return this.invoicesService.deleteInvoice({
+      invoiceId,
+      myId,
+      nick,
+      hasRole,
+    });
   }
 }

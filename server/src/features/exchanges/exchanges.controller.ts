@@ -4,7 +4,7 @@ import { ExchangesService } from './exchanges.service';
 import { Exchange } from './exchange.entity';
 import { CreateExchangeDto } from './exchange.dto';
 import { Request, Response } from '../../common/interfaces';
-import { MyId, Roles } from '../../common/decorators';
+import { MyId, MyNick, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
 
 @ApiTags('exchanges')
@@ -30,8 +30,9 @@ export class ExchangesController {
   @Post()
   createExchange(
     @MyId() myId: number,
+    @MyNick() nick: string,
     @Body() dto: CreateExchangeDto,
   ): Promise<void> {
-    return this.exchangesService.createExchange({ ...dto, myId });
+    return this.exchangesService.createExchange({ ...dto, myId, nick });
   }
 }

@@ -12,7 +12,7 @@ import { SalesService } from './sales.service';
 import { Sale } from './sale.entity';
 import { CreateSaleDto, RateSaleDto, SaleIdDto } from './sale.dto';
 import { Request, Response } from '../../common/interfaces';
-import { HasRole, MyId, Public, Roles } from '../../common/decorators';
+import { HasRole, MyId, MyNick, Public, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
 
 @ApiTags('sales')
@@ -59,19 +59,21 @@ export class SalesController {
   @Post()
   createSale(
     @MyId() myId: number,
+    @MyNick() nick: string,
     @HasRole(Role.MANAGER) hasRole: boolean,
     @Body() dto: CreateSaleDto,
   ): Promise<void> {
-    return this.salesService.createSale({ ...dto, myId, hasRole });
+    return this.salesService.createSale({ ...dto, myId, nick, hasRole });
   }
 
   @Patch(':saleId/rate')
   rateSale(
     @MyId() myId: number,
+    @MyNick() nick: string,
     @HasRole(Role.MANAGER) hasRole: boolean,
     @Param() { saleId }: SaleIdDto,
     @Body() dto: RateSaleDto,
   ): Promise<void> {
-    return this.salesService.rateSale({ ...dto, saleId, myId, hasRole });
+    return this.salesService.rateSale({ ...dto, saleId, myId, nick, hasRole });
   }
 }

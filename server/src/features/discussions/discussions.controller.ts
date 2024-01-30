@@ -6,7 +6,7 @@ import {
   EditDiscussionDto,
   DiscussionIdDto,
 } from './discussion.dto';
-import { HasRole, MyId } from '../../common/decorators';
+import { HasRole, MyId, MyNick } from '../../common/decorators';
 import { Role } from '../users/role.enum';
 
 @ApiTags('discussions')
@@ -17,14 +17,16 @@ export class DiscussionsController {
   @Post()
   createDiscussion(
     @MyId() myId: number,
+    @MyNick() nick: string,
     @Body() dto: CreateDiscussionDto,
   ): Promise<void> {
-    return this.discussionsService.createDiscussion({ ...dto, myId });
+    return this.discussionsService.createDiscussion({ ...dto, myId, nick });
   }
 
   @Patch(':discussionId')
   editDiscussion(
     @MyId() myId: number,
+    @MyNick() nick: string,
     @HasRole(Role.ADMIN) hasRole: boolean,
     @Param() { discussionId }: DiscussionIdDto,
     @Body() dto: EditDiscussionDto,
@@ -33,6 +35,7 @@ export class DiscussionsController {
       ...dto,
       discussionId,
       myId,
+      nick,
       hasRole,
     });
   }

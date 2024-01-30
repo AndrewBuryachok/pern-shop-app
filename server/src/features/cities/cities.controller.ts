@@ -20,7 +20,7 @@ import {
   UpdateCityUserDto,
 } from './city.dto';
 import { Request, Response } from '../../common/interfaces';
-import { HasRole, MyId, Public, Roles } from '../../common/decorators';
+import { HasRole, MyId, MyNick, Public, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
 
 @ApiTags('cities')
@@ -68,15 +68,19 @@ export class CitiesController {
   @Post()
   createMyCity(
     @MyId() myId: number,
+    @MyNick() nick: string,
     @Body() dto: CreateCityDto,
   ): Promise<void> {
-    return this.citiesService.createCity({ ...dto, userId: myId });
+    return this.citiesService.createCity({ ...dto, userId: myId, nick });
   }
 
   @Roles(Role.ADMIN)
   @Post('all')
-  createUserCity(@Body() dto: ExtCreateCityDto): Promise<void> {
-    return this.citiesService.createCity(dto);
+  createUserCity(
+    @MyNick() nick: string,
+    @Body() dto: ExtCreateCityDto,
+  ): Promise<void> {
+    return this.citiesService.createCity({ ...dto, nick });
   }
 
   @Patch(':cityId')
@@ -92,20 +96,34 @@ export class CitiesController {
   @Post(':cityId/users')
   addCityUser(
     @MyId() myId: number,
+    @MyNick() nick: string,
     @HasRole(Role.ADMIN) hasRole: boolean,
     @Param() { cityId }: CityIdDto,
     @Body() dto: UpdateCityUserDto,
   ): Promise<void> {
-    return this.citiesService.addCityUser({ ...dto, cityId, myId, hasRole });
+    return this.citiesService.addCityUser({
+      ...dto,
+      cityId,
+      myId,
+      nick,
+      hasRole,
+    });
   }
 
   @Delete(':cityId/users')
   removeCityUser(
     @MyId() myId: number,
+    @MyNick() nick: string,
     @HasRole(Role.ADMIN) hasRole: boolean,
     @Param() { cityId }: CityIdDto,
     @Body() dto: UpdateCityUserDto,
   ): Promise<void> {
-    return this.citiesService.removeCityUser({ ...dto, cityId, myId, hasRole });
+    return this.citiesService.removeCityUser({
+      ...dto,
+      cityId,
+      myId,
+      nick,
+      hasRole,
+    });
   }
 }

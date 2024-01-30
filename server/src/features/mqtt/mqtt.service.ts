@@ -15,39 +15,33 @@ export class MqttService {
       this.client.subscribe(process.env.BROKER_TOPIC + 'users/#'),
     );
     this.client.on('message', (topic, message) => {
-      const userId = +topic.split('/')[2];
+      const id = +topic.split('/')[2];
       if (message.toString()) {
-        this.usersService.addUserOnline(userId);
+        this.usersService.addUserOnline(id);
       } else {
-        this.usersService.removeUserOnline(userId);
+        this.usersService.removeUserOnline(id);
       }
     });
-  }
-
-  publishNotificationMessage(
-    userId: number,
-    id: number,
-    message: string,
-  ): void {
-    const [action, route] = message.split(' ');
-    this.publishMessage(
-      `notifications/${userId}/${route}/${id}/${action}`,
-      !!userId,
-    );
   }
 
   async publishNotificationMention(
     text: string,
-    id: number,
+    nick: string,
     message: string,
   ): Promise<void> {
-    const nicks = /@\w+/.exec(text) || [];
-    nicks.forEach(async (nick) => {
-      const user = await this.usersService.findUserByNick(nick.slice(1));
+    const mentions = /@\w+/.exec(text) || [];
+    const promises = mentions.map(async (mention) => {
+      const user = await this.usersService.findUserByNick(mention.slice(1));
       if (user) {
-        this.publishNotificationMessage(user.id, id, message);
+        this.publishNotificationMessage(user.id, nick, message);
       }
     });
+    await Promise.all(promises);
+  }
+
+  publishNotificationMessage(id: number, nick: string, message: string): void {
+    const [action, page] = message.split(' ');
+    this.publishMessage(`notifications/${id}/${nick}/${action}/${page}`, !!id);
   }
 
   private publishMessage(topic: string, retain: boolean): void {

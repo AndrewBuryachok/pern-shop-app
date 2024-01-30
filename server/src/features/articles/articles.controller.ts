@@ -21,7 +21,7 @@ import {
   LikeArticleDto,
 } from './article.dto';
 import { Request, Response } from '../../common/interfaces';
-import { HasRole, MyId, Public, Roles } from '../../common/decorators';
+import { HasRole, MyId, MyNick, Public, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
 
 @ApiTags('articles')
@@ -95,20 +95,25 @@ export class ArticlesController {
   @Post()
   createMyArticle(
     @MyId() myId: number,
+    @MyNick() nick: string,
     @Body() dto: CreateArticleDto,
   ): Promise<void> {
-    return this.articlesService.createArticle({ ...dto, userId: myId });
+    return this.articlesService.createArticle({ ...dto, userId: myId, nick });
   }
 
   @Roles(Role.ADMIN)
   @Post('all')
-  createUserArticle(@Body() dto: ExtCreateArticleDto): Promise<void> {
-    return this.articlesService.createArticle(dto);
+  createUserArticle(
+    @MyNick() nick: string,
+    @Body() dto: ExtCreateArticleDto,
+  ): Promise<void> {
+    return this.articlesService.createArticle({ ...dto, nick });
   }
 
   @Patch(':articleId')
   editArticle(
     @MyId() myId: number,
+    @MyNick() nick: string,
     @HasRole(Role.ADMIN) hasRole: boolean,
     @Param() { articleId }: ArticleIdDto,
     @Body() dto: EditArticleDto,
@@ -117,6 +122,7 @@ export class ArticlesController {
       ...dto,
       articleId,
       myId,
+      nick,
       hasRole,
     });
   }
@@ -133,9 +139,10 @@ export class ArticlesController {
   @Post(':articleId/likes')
   likeArticle(
     @MyId() myId: number,
+    @MyNick() nick: string,
     @Param() { articleId }: ArticleIdDto,
     @Body() dto: LikeArticleDto,
   ): Promise<void> {
-    return this.articlesService.likeArticle({ ...dto, articleId, myId });
+    return this.articlesService.likeArticle({ ...dto, articleId, myId, nick });
   }
 }

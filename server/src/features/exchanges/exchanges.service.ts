@@ -44,14 +44,16 @@ export class ExchangesService {
     return { result, count };
   }
 
-  async createExchange(dto: ExtCreateExchangeDto): Promise<void> {
+  async createExchange(
+    dto: ExtCreateExchangeDto & { nick: string },
+  ): Promise<void> {
     const card = dto.type
       ? await this.cardsService.increaseCardBalance(dto)
       : await this.cardsService.decreaseCardBalance(dto);
-    const exchange = await this.create(dto);
+    await this.create(dto);
     this.mqttService.publishNotificationMessage(
       card.userId,
-      exchange.id,
+      dto.nick,
       Notification.CREATED_EXCHANGE,
     );
   }
