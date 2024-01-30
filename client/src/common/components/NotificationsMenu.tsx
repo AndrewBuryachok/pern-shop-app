@@ -2,17 +2,15 @@ import { useTranslation } from 'react-i18next';
 import { ActionIcon, Indicator, Menu } from '@mantine/core';
 import { IconBell, IconPoint } from '@tabler/icons';
 import { useAppDispatch } from '../../app/hooks';
-import { getCurrentUser } from '../../features/auth/auth.slice';
 import {
   getActiveNotifications,
   publishNotification,
+  removeNotification,
 } from '../../features/mqtt/mqtt.slice';
 import { parseTime } from '../utils';
 
 export default function NotificationsMenu() {
   const [t] = useTranslation();
-
-  const user = getCurrentUser();
 
   const notifications = getActiveNotifications();
 
@@ -38,23 +36,23 @@ export default function NotificationsMenu() {
       </Menu.Target>
       <Menu.Dropdown>
         <Menu.Label>{t('header.menu.notifications.title')}</Menu.Label>
-        {keys.map((notification) => (
-          <Menu.Item
-            key={notification}
-            icon={<IconPoint size={16} />}
-            onClick={() =>
-              dispatch(publishNotification(`${user?.id}/${notification}`))
-            }
-          >
-            {t(
-              `notifications.${notification.split('/')[0]}.${
-                notification.split('/')[2]
-              }`,
-            )}
-            <br />
-            {parseTime(new Date(notifications[notification]))}
-          </Menu.Item>
-        ))}
+        {keys
+          .map((notification) => [notification].concat(notification.split('/')))
+          .map(([notification, id, nick, action, page]) => (
+            <Menu.Item
+              key={notification}
+              icon={<IconPoint size={16} />}
+              onClick={() =>
+                +id
+                  ? dispatch(publishNotification(notification))
+                  : dispatch(removeNotification(notification))
+              }
+            >
+              {nick + ' ' + t(`notifications.${page}.${action}`)}
+              <br />
+              {parseTime(new Date(notifications[notification]))}
+            </Menu.Item>
+          ))}
       </Menu.Dropdown>
     </Menu>
   );

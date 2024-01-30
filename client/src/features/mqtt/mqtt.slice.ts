@@ -17,25 +17,25 @@ client.on('connect', () =>
 );
 
 client.on('message', (topic, message) => {
+  const id = +topic.split('/')[2];
   const payload = message.toString();
   if (topic.split('/')[1] === 'users') {
-    const userId = +topic.split('/')[2];
     if (payload) {
-      store.dispatch(addOnlineUser(userId));
+      store.dispatch(addOnlineUser(id));
     } else {
-      store.dispatch(removeOnlineUser(userId));
-      if (store.getState().auth.user?.id === userId) {
-        store.dispatch(publishOnline(userId));
+      store.dispatch(removeOnlineUser(id));
+      if (store.getState().auth.user?.id === id) {
+        store.dispatch(publishOnline(id));
       }
     }
   } else {
-    const [route, id, action] = topic.split('/').slice(3);
-    const data = `${route}/${id}/${action}`;
+    const [nick, action, page] = topic.split('/').slice(3);
+    const data = `${id}/${nick}/${action}/${page}`;
     if (payload) {
       store.dispatch(addNotification([data, payload]));
       showNotification({
         title: t('notifications.notification'),
-        message: t(`notifications.${route}.${action}`),
+        message: nick + ' ' + t(`notifications.${page}.${action}`),
       });
       if (!store.getState().mqtt.mute) {
         audio.play();
