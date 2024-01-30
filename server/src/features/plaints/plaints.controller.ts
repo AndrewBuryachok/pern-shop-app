@@ -20,7 +20,7 @@ import {
   PlaintIdDto,
 } from './plaint.dto';
 import { Request, Response } from '../../common/interfaces';
-import { HasRole, MyId, Public, Roles } from '../../common/decorators';
+import { HasRole, MyId, MyNick, Public, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
 
 @ApiTags('plaints')
@@ -73,15 +73,23 @@ export class PlaintsController {
   @Post()
   createMyPlaint(
     @MyId() myId: number,
+    @MyNick() nick: string,
     @Body() dto: CreatePlaintDto,
   ): Promise<void> {
-    return this.plaintsService.createPlaint({ ...dto, senderUserId: myId });
+    return this.plaintsService.createPlaint({
+      ...dto,
+      senderUserId: myId,
+      nick,
+    });
   }
 
   @Roles(Role.JUDGE)
   @Post('all')
-  createUserPlaint(@Body() dto: ExtCreatePlaintDto): Promise<void> {
-    return this.plaintsService.createPlaint(dto);
+  createUserPlaint(
+    @MyNick() nick: string,
+    @Body() dto: ExtCreatePlaintDto,
+  ): Promise<void> {
+    return this.plaintsService.createPlaint({ ...dto, nick });
   }
 
   @Patch(':plaintId')
@@ -98,18 +106,20 @@ export class PlaintsController {
   @Post(':plaintId')
   completePlaint(
     @MyId() myId: number,
+    @MyNick() nick: string,
     @Param() { plaintId }: PlaintIdDto,
     @Body() dto: CompletePlaintDto,
   ): Promise<void> {
-    return this.plaintsService.completePlaint({ ...dto, plaintId, myId });
+    return this.plaintsService.completePlaint({ ...dto, plaintId, myId, nick });
   }
 
   @Delete(':plaintId')
   deletePlaint(
     @MyId() myId: number,
+    @MyNick() nick: string,
     @HasRole(Role.JUDGE) hasRole: boolean,
     @Param() { plaintId }: PlaintIdDto,
   ): Promise<void> {
-    return this.plaintsService.deletePlaint({ plaintId, myId, hasRole });
+    return this.plaintsService.deletePlaint({ plaintId, myId, nick, hasRole });
   }
 }

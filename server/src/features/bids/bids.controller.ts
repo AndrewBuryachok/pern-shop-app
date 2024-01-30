@@ -4,7 +4,7 @@ import { BidsService } from './bids.service';
 import { Bid } from './bid.entity';
 import { CreateBidDto } from './bid.dto';
 import { Request, Response } from '../../common/interfaces';
-import { HasRole, MyId, Roles } from '../../common/decorators';
+import { HasRole, MyId, MyNick, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
 
 @ApiTags('bids')
@@ -45,9 +45,10 @@ export class BidsController {
   @Post()
   createBid(
     @MyId() myId: number,
+    @MyNick() nick: string,
     @HasRole(Role.MANAGER) hasRole: boolean,
     @Body() dto: CreateBidDto,
   ): Promise<void> {
-    return this.bidsService.createBid({ ...dto, myId, hasRole });
+    return this.bidsService.createBid({ ...dto, myId, nick, hasRole });
   }
 }

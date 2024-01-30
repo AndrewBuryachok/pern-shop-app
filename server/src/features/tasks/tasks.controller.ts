@@ -19,7 +19,7 @@ import {
   TaskIdDto,
 } from './task.dto';
 import { Request, Response } from '../../common/interfaces';
-import { HasRole, MyId, Public, Roles } from '../../common/decorators';
+import { HasRole, MyId, MyNick, Public, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
 
 @ApiTags('tasks')
@@ -58,15 +58,19 @@ export class TasksController {
   @Post()
   createMyTask(
     @MyId() myId: number,
+    @MyNick() nick: string,
     @Body() dto: CreateTaskDto,
   ): Promise<void> {
-    return this.tasksService.createTask({ ...dto, userId: myId });
+    return this.tasksService.createTask({ ...dto, userId: myId, nick });
   }
 
   @Roles(Role.MANAGER)
   @Post('all')
-  createUserTask(@Body() dto: ExtCreateTaskDto): Promise<void> {
-    return this.tasksService.createTask(dto);
+  createUserTask(
+    @MyNick() nick: string,
+    @Body() dto: ExtCreateTaskDto,
+  ): Promise<void> {
+    return this.tasksService.createTask({ ...dto, nick });
   }
 
   @Patch(':taskId')
@@ -82,45 +86,50 @@ export class TasksController {
   @Post(':taskId/take')
   takeMyTask(
     @MyId() myId: number,
+    @MyNick() nick: string,
     @Param() { taskId }: TaskIdDto,
   ): Promise<void> {
-    return this.tasksService.takeTask({ taskId, userId: myId });
+    return this.tasksService.takeTask({ taskId, userId: myId, nick });
   }
 
   @Roles(Role.MANAGER)
   @Post('all/:taskId/take')
   takeUserTask(
+    @MyNick() nick: string,
     @Param() { taskId }: TaskIdDto,
     @Body() dto: TakeTaskDto,
   ): Promise<void> {
-    return this.tasksService.takeTask({ ...dto, taskId });
+    return this.tasksService.takeTask({ ...dto, taskId, nick });
   }
 
   @Delete(':taskId/take')
   untakeTask(
     @MyId() myId: number,
+    @MyNick() nick: string,
     @HasRole(Role.MANAGER) hasRole: boolean,
     @Param() { taskId }: TaskIdDto,
   ): Promise<void> {
-    return this.tasksService.untakeTask({ taskId, myId, hasRole });
+    return this.tasksService.untakeTask({ taskId, myId, nick, hasRole });
   }
 
   @Post(':taskId/execute')
   executeTask(
     @MyId() myId: number,
+    @MyNick() nick: string,
     @HasRole(Role.MANAGER) hasRole: boolean,
     @Param() { taskId }: TaskIdDto,
   ): Promise<void> {
-    return this.tasksService.executeTask({ taskId, myId, hasRole });
+    return this.tasksService.executeTask({ taskId, myId, nick, hasRole });
   }
 
   @Post(':taskId')
   completeTask(
     @MyId() myId: number,
+    @MyNick() nick: string,
     @HasRole(Role.MANAGER) hasRole: boolean,
     @Param() { taskId }: TaskIdDto,
   ): Promise<void> {
-    return this.tasksService.completeTask({ taskId, myId, hasRole });
+    return this.tasksService.completeTask({ taskId, myId, nick, hasRole });
   }
 
   @Delete(':taskId')

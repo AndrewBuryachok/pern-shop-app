@@ -22,41 +22,43 @@ export class CommentsService {
     private mqttService: MqttService,
   ) {}
 
-  async createComment(dto: ExtCreateCommentDto): Promise<void> {
-    const comment = await this.create(dto);
+  async createComment(
+    dto: ExtCreateCommentDto & { nick: string },
+  ): Promise<void> {
+    await this.create(dto);
     const article = await this.articlesService.findArticleById(dto.articleId);
     this.mqttService.publishNotificationMessage(
       article.userId,
-      comment.id,
+      dto.nick,
       Notification.COMMENTED_ARTICLE,
     );
     if (dto.commentId) {
-      const comment = await this.commentsRepository.findOneBy({
+      const reply = await this.commentsRepository.findOneBy({
         id: dto.commentId,
       });
       this.mqttService.publishNotificationMessage(
-        comment.userId,
-        comment.id,
+        reply.userId,
+        dto.nick,
         Notification.REPLIED_COMMENT,
       );
     }
-    this.mqttService.publishNotificationMention(
+    await this.mqttService.publishNotificationMention(
       dto.text,
-      comment.id,
+      dto.nick,
       Notification.MENTIONED_COMMENT,
     );
   }
 
-  async editComment(dto: ExtEditCommentDto): Promise<void> {
+  async editComment(dto: ExtEditCommentDto & { nick: string }): Promise<void> {
     const comment = await this.checkCommentOwner(
       dto.commentId,
       dto.myId,
       dto.hasRole,
     );
     await this.edit(comment, dto);
-    this.mqttService.publishNotificationMention(
+    await this.mqttService.publishNotificationMention(
       dto.text,
-      dto.commentId,
+      dto.nick,
       Notification.MENTIONED_COMMENT,
     );
   }

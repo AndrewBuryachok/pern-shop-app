@@ -97,11 +97,13 @@ export class PlaintsService {
     return plaint.answers;
   }
 
-  async createPlaint(dto: ExtCreatePlaintDto): Promise<void> {
-    const plaint = await this.create(dto);
+  async createPlaint(
+    dto: ExtCreatePlaintDto & { nick: string },
+  ): Promise<void> {
+    await this.create(dto);
     this.mqttService.publishNotificationMessage(
       dto.receiverUserId,
-      plaint.id,
+      dto.nick,
       Notification.CREATED_PLAINT,
     );
   }
@@ -115,24 +117,26 @@ export class PlaintsService {
     await this.edit(plaint, dto);
   }
 
-  async completePlaint(dto: ExtCompletePlaintDto): Promise<void> {
+  async completePlaint(
+    dto: ExtCompletePlaintDto & { nick: string },
+  ): Promise<void> {
     const plaint = await this.checkPlaintNotCompleted(dto.plaintId);
     await this.complete(plaint, dto);
     [plaint.senderUserId, plaint.receiverUserId].forEach((userId) =>
       this.mqttService.publishNotificationMessage(
         userId,
-        dto.plaintId,
+        dto.nick,
         Notification.COMPLETED_PLAINT,
       ),
     );
-    this.mqttService.publishNotificationMention(
+    await this.mqttService.publishNotificationMention(
       dto.text,
-      dto.plaintId,
+      dto.nick,
       Notification.MENTIONED_PLAINT,
     );
   }
 
-  async deletePlaint(dto: DeletePlaintDto): Promise<void> {
+  async deletePlaint(dto: DeletePlaintDto & { nick: string }): Promise<void> {
     const plaint = await this.checkPlaintSender(
       dto.plaintId,
       dto.myId,
@@ -141,7 +145,7 @@ export class PlaintsService {
     await this.delete(plaint);
     this.mqttService.publishNotificationMessage(
       plaint.receiverUserId,
-      dto.plaintId,
+      dto.nick,
       Notification.DELETED_PLAINT,
     );
   }

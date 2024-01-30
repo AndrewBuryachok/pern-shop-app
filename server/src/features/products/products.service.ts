@@ -102,15 +102,17 @@ export class ProductsService {
     return { rate: +product.rate };
   }
 
-  async createProduct(dto: ExtCreateProductDto): Promise<void> {
+  async createProduct(
+    dto: ExtCreateProductDto & { nick: string },
+  ): Promise<void> {
     const leaseId = await this.leasesService.createLease({
       ...dto,
       kind: Kind.PRODUCT,
     });
-    const product = await this.create({ ...dto, storageId: leaseId });
+    await this.create({ ...dto, storageId: leaseId });
     this.mqttService.publishNotificationMessage(
       0,
-      product.id,
+      dto.nick,
       Notification.CREATED_PRODUCT,
     );
   }
@@ -133,7 +135,7 @@ export class ProductsService {
     await this.complete(product);
   }
 
-  async buyProduct(dto: BuyProductDto): Promise<Product> {
+  async buyProduct(dto: BuyProductDto & { nick: string }): Promise<Product> {
     const product = await this.productsRepository.findOne({
       relations: ['lease', 'lease.card'],
       where: { id: dto.productId },
@@ -149,6 +151,7 @@ export class ProductsService {
     }
     await this.paymentsService.createPayment({
       myId: dto.myId,
+      nick: dto.nick,
       hasRole: dto.hasRole,
       senderCardId: dto.cardId,
       receiverCardId: product.lease.cardId,

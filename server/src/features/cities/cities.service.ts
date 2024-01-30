@@ -67,15 +67,15 @@ export class CitiesService {
     return city.users;
   }
 
-  async createCity(dto: ExtCreateCityDto): Promise<void> {
+  async createCity(dto: ExtCreateCityDto & { nick: string }): Promise<void> {
     await this.checkNotCityUser(dto.userId);
     await this.checkHasNotEnough(dto.userId);
     await this.checkNameNotUsed(dto.name);
     await this.checkCoordinatesNotUsed(dto.x, dto.y);
-    const city = await this.create(dto);
+    await this.create(dto);
     this.mqttService.publishNotificationMessage(
       0,
-      city.id,
+      dto.nick,
       Notification.CREATED_CITY,
     );
   }
@@ -87,18 +87,22 @@ export class CitiesService {
     await this.edit(city, dto);
   }
 
-  async addCityUser(dto: ExtUpdateCityUserDto): Promise<void> {
+  async addCityUser(
+    dto: ExtUpdateCityUserDto & { nick: string },
+  ): Promise<void> {
     const city = await this.checkCityOwner(dto.cityId, dto.myId, dto.hasRole);
     await this.checkNotCityUser(dto.userId);
     await this.addUser(city, dto.userId);
     this.mqttService.publishNotificationMessage(
       dto.userId,
-      dto.cityId,
+      dto.nick,
       Notification.ADDED_CITY,
     );
   }
 
-  async removeCityUser(dto: ExtUpdateCityUserDto): Promise<void> {
+  async removeCityUser(
+    dto: ExtUpdateCityUserDto & { nick: string },
+  ): Promise<void> {
     const city = await this.checkCityOwner(dto.cityId, dto.myId, dto.hasRole);
     if (dto.userId === dto.myId) {
       throw new AppException(CityError.OWNER);
@@ -109,7 +113,7 @@ export class CitiesService {
     await this.removeUser(city, dto.userId);
     this.mqttService.publishNotificationMessage(
       dto.userId,
-      dto.cityId,
+      dto.nick,
       Notification.REMOVED_CITY,
     );
   }

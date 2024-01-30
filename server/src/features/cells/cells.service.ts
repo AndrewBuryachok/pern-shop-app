@@ -55,25 +55,26 @@ export class CellsService {
     return this.selectCellsQueryBuilder(storageId).getMany();
   }
 
-  async createCell(dto: ExtCreateCellDto): Promise<void> {
+  async createCell(dto: ExtCreateCellDto & { nick: string }): Promise<void> {
     await this.storagesService.checkStorageOwner(
       dto.storageId,
       dto.myId,
       dto.hasRole,
     );
     const name = await this.checkHasNotEnough(dto.storageId);
-    const cell = await this.create({ ...dto, name });
+    await this.create({ ...dto, name });
     this.mqttService.publishNotificationMessage(
       0,
-      cell.id,
+      dto.nick,
       Notification.CREATED_CELL,
     );
   }
 
-  async reserveCell(dto: ReserveCellDto): Promise<Cell> {
+  async reserveCell(dto: ReserveCellDto & { nick: string }): Promise<Cell> {
     const cell = await this.findFreeCell(dto.storageId);
     await this.paymentsService.createPayment({
       myId: dto.myId,
+      nick: dto.nick,
       hasRole: dto.hasRole,
       senderCardId: dto.cardId,
       receiverCardId: cell.storage.cardId,
@@ -84,13 +85,14 @@ export class CellsService {
     return cell;
   }
 
-  async continueCell(dto: ReserveCellDto): Promise<Cell> {
+  async continueCell(dto: ReserveCellDto & { nick: string }): Promise<Cell> {
     const cell = await this.cellsRepository.findOne({
       relations: ['storage', 'storage.card'],
       where: { id: dto.storageId },
     });
     await this.paymentsService.createPayment({
       myId: dto.myId,
+      nick: dto.nick,
       hasRole: dto.hasRole,
       senderCardId: dto.cardId,
       receiverCardId: cell.storage.cardId,

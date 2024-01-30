@@ -6,7 +6,7 @@ import {
   CreateAnnotationDto,
   EditAnnotationDto,
 } from './annotation.dto';
-import { HasRole, MyId } from '../../common/decorators';
+import { HasRole, MyId, MyNick } from '../../common/decorators';
 import { Role } from '../users/role.enum';
 
 @ApiTags('annotations')
@@ -17,14 +17,16 @@ export class AnnotationsController {
   @Post()
   createAnnotation(
     @MyId() myId: number,
+    @MyNick() nick: string,
     @Body() dto: CreateAnnotationDto,
   ): Promise<void> {
-    return this.annotationsService.createAnnotation({ ...dto, myId });
+    return this.annotationsService.createAnnotation({ ...dto, myId, nick });
   }
 
   @Patch(':annotationId')
   editAnnotation(
     @MyId() myId: number,
+    @MyNick() nick: string,
     @HasRole(Role.ADMIN) hasRole: boolean,
     @Param() { annotationId }: AnnotationIdDto,
     @Body() dto: EditAnnotationDto,
@@ -33,6 +35,7 @@ export class AnnotationsController {
       ...dto,
       annotationId,
       myId,
+      nick,
       hasRole,
     });
   }

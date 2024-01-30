@@ -21,7 +21,7 @@ import {
   UpdateShopUserDto,
 } from './shop.dto';
 import { Request, Response } from '../../common/interfaces';
-import { HasRole, MyId, Public, Roles } from '../../common/decorators';
+import { HasRole, MyId, MyNick, Public, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
 
 @ApiTags('shops')
@@ -75,15 +75,19 @@ export class ShopsController {
   @Post()
   createMyShop(
     @MyId() myId: number,
+    @MyNick() nick: string,
     @Body() dto: CreateShopDto,
   ): Promise<void> {
-    return this.shopsService.createShop({ ...dto, userId: myId });
+    return this.shopsService.createShop({ ...dto, userId: myId, nick });
   }
 
   @Roles(Role.MANAGER)
   @Post('all')
-  createUserShop(@Body() dto: ExtCreateShopDto): Promise<void> {
-    return this.shopsService.createShop(dto);
+  createUserShop(
+    @MyNick() nick: string,
+    @Body() dto: ExtCreateShopDto,
+  ): Promise<void> {
+    return this.shopsService.createShop({ ...dto, nick });
   }
 
   @Patch(':shopId')
@@ -99,20 +103,34 @@ export class ShopsController {
   @Post(':shopId/users')
   addShopUser(
     @MyId() myId: number,
+    @MyNick() nick: string,
     @HasRole(Role.MANAGER) hasRole: boolean,
     @Param() { shopId }: ShopIdDto,
     @Body() dto: UpdateShopUserDto,
   ): Promise<void> {
-    return this.shopsService.addShopUser({ ...dto, shopId, myId, hasRole });
+    return this.shopsService.addShopUser({
+      ...dto,
+      shopId,
+      myId,
+      nick,
+      hasRole,
+    });
   }
 
   @Delete(':shopId/users')
   removeShopUser(
     @MyId() myId: number,
+    @MyNick() nick: string,
     @HasRole(Role.MANAGER) hasRole: boolean,
     @Param() { shopId }: ShopIdDto,
     @Body() dto: UpdateShopUserDto,
   ): Promise<void> {
-    return this.shopsService.removeShopUser({ ...dto, shopId, myId, hasRole });
+    return this.shopsService.removeShopUser({
+      ...dto,
+      shopId,
+      myId,
+      nick,
+      hasRole,
+    });
   }
 }

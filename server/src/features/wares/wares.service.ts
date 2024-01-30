@@ -98,12 +98,12 @@ export class WaresService {
     return { rate: +ware.rate };
   }
 
-  async createWare(dto: ExtCreateWareDto): Promise<void> {
+  async createWare(dto: ExtCreateWareDto & { nick: string }): Promise<void> {
     await this.rentsService.checkRentOwner(dto.rentId, dto.myId, dto.hasRole);
-    const ware = await this.create(dto);
+    await this.create(dto);
     this.mqttService.publishNotificationMessage(
       0,
-      ware.id,
+      dto.nick,
       Notification.CREATED_WARE,
     );
   }
@@ -118,7 +118,7 @@ export class WaresService {
     await this.complete(ware);
   }
 
-  async buyWare(dto: BuyWareDto): Promise<Ware> {
+  async buyWare(dto: BuyWareDto & { nick: string }): Promise<Ware> {
     const ware = await this.waresRepository.findOne({
       relations: ['rent', 'rent.card'],
       where: { id: dto.wareId },
@@ -134,6 +134,7 @@ export class WaresService {
     }
     await this.paymentsService.createPayment({
       myId: dto.myId,
+      nick: dto.nick,
       hasRole: dto.hasRole,
       senderCardId: dto.cardId,
       receiverCardId: ware.rent.cardId,

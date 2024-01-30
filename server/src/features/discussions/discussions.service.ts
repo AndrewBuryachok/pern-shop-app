@@ -22,32 +22,36 @@ export class DiscussionsService {
     private mqttService: MqttService,
   ) {}
 
-  async createDiscussion(dto: ExtCreateDiscussionDto): Promise<void> {
+  async createDiscussion(
+    dto: ExtCreateDiscussionDto & { nick: string },
+  ): Promise<void> {
     const poll = await this.pollsService.checkPollNotCompleted(dto.pollId);
-    const discussion = await this.create(dto);
+    await this.create(dto);
     this.mqttService.publishNotificationMessage(
       poll.userId,
-      discussion.id,
+      dto.nick,
       Notification.DISCUSSED_POLL,
     );
     if (dto.discussionId) {
-      const discussion = await this.discussionsRepository.findOneBy({
+      const reply = await this.discussionsRepository.findOneBy({
         id: dto.discussionId,
       });
       this.mqttService.publishNotificationMessage(
-        discussion.userId,
-        discussion.id,
+        reply.userId,
+        dto.nick,
         Notification.REPLIED_DISCUSSION,
       );
     }
-    this.mqttService.publishNotificationMention(
+    await this.mqttService.publishNotificationMention(
       dto.text,
-      discussion.id,
+      dto.nick,
       Notification.MENTIONED_DISCUSSION,
     );
   }
 
-  async editDiscussion(dto: ExtEditDiscussionDto): Promise<void> {
+  async editDiscussion(
+    dto: ExtEditDiscussionDto & { nick: string },
+  ): Promise<void> {
     const discussion = await this.checkDiscussionOwner(
       dto.discussionId,
       dto.myId,
@@ -55,9 +59,9 @@ export class DiscussionsService {
     );
     await this.pollsService.checkPollNotCompleted(discussion.pollId);
     await this.edit(discussion, dto);
-    this.mqttService.publishNotificationMention(
+    await this.mqttService.publishNotificationMention(
       dto.text,
-      dto.discussionId,
+      dto.nick,
       Notification.MENTIONED_DISCUSSION,
     );
   }

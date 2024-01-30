@@ -67,15 +67,15 @@ export class LotsService {
     return lot.bids;
   }
 
-  async createLot(dto: ExtCreateLotDto): Promise<void> {
+  async createLot(dto: ExtCreateLotDto & { nick: string }): Promise<void> {
     const leaseId = await this.leasesService.createLease({
       ...dto,
       kind: Kind.LOT,
     });
-    const lot = await this.create({ ...dto, storageId: leaseId });
+    await this.create({ ...dto, storageId: leaseId });
     this.mqttService.publishNotificationMessage(
       0,
-      lot.id,
+      dto.nick,
       Notification.CREATED_LOT,
     );
   }
@@ -99,7 +99,7 @@ export class LotsService {
     return lot;
   }
 
-  async completeLot(dto: CompleteLotDto): Promise<void> {
+  async completeLot(dto: CompleteLotDto & { nick: string }): Promise<void> {
     const lot = await this.checkLotOwner(dto.lotId, dto.myId, dto.hasRole);
     const promises = lot.bids.map(
       async (bid) =>
@@ -108,6 +108,7 @@ export class LotsService {
     await Promise.all(promises);
     await this.paymentsService.createPayment({
       myId: lot.bids[0].card.userId,
+      nick: dto.nick,
       hasRole: dto.hasRole,
       senderCardId: lot.bids[0].cardId,
       receiverCardId: lot.lease.cardId,
@@ -118,7 +119,7 @@ export class LotsService {
     lot.bids.forEach((bid) =>
       this.mqttService.publishNotificationMessage(
         bid.card.userId,
-        dto.lotId,
+        dto.nick,
         Notification.COMPLETED_LOT,
       ),
     );

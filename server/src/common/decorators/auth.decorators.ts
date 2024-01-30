@@ -16,6 +16,14 @@ export const MyId = createParamDecorator(
   },
 );
 
+export const MyNick = createParamDecorator(
+  (data: unknown, context: ExecutionContext) => {
+    const request = context.switchToHttp().getRequest();
+    const user = request.user as JwtPayload;
+    return user.nick;
+  },
+);
+
 export const HasRole = createParamDecorator(
   (role: Role, context: ExecutionContext) => {
     const request = context.switchToHttp().getRequest();

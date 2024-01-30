@@ -81,15 +81,17 @@ export class MarketsService {
     return market.states;
   }
 
-  async createMarket(dto: ExtCreateMarketDto): Promise<void> {
+  async createMarket(
+    dto: ExtCreateMarketDto & { nick: string },
+  ): Promise<void> {
     await this.cardsService.checkCardUser(dto.cardId, dto.myId, dto.hasRole);
     await this.checkHasNotEnough(dto.myId);
     await this.checkNameNotUsed(dto.name);
     await this.checkCoordinatesNotUsed(dto.x, dto.y);
-    const market = await this.create(dto);
+    await this.create(dto);
     this.mqttService.publishNotificationMessage(
       0,
-      market.id,
+      dto.nick,
       Notification.CREATED_MARKET,
     );
   }

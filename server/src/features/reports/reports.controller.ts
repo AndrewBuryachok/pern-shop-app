@@ -20,7 +20,7 @@ import {
   ReportIdDto,
 } from './report.dto';
 import { Request, Response } from '../../common/interfaces';
-import { MyId, Public, Roles } from '../../common/decorators';
+import { MyId, MyNick, Public, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
 import { Mark } from './mark.enum';
 
@@ -90,11 +90,13 @@ export class ReportsController {
   @Post('server')
   createServerReport(
     @MyId() myId: number,
+    @MyNick() nick: string,
     @Body() dto: CreateReportDto,
   ): Promise<void> {
     return this.reportsService.createReport({
       ...dto,
       myId,
+      nick,
       mark: Mark.SERVER,
     });
   }
@@ -103,11 +105,13 @@ export class ReportsController {
   @Post('site')
   createSiteReport(
     @MyId() myId: number,
+    @MyNick() nick: string,
     @Body() dto: CreateReportDto,
   ): Promise<void> {
     return this.reportsService.createReport({
       ...dto,
       myId,
+      nick,
       mark: Mark.SITE,
     });
   }
@@ -116,11 +120,13 @@ export class ReportsController {
   @Post('status')
   createStatusReport(
     @MyId() myId: number,
+    @MyNick() nick: string,
     @Body() dto: CreateReportDto,
   ): Promise<void> {
     return this.reportsService.createReport({
       ...dto,
       myId,
+      nick,
       mark: Mark.STATUS,
     });
   }
@@ -129,11 +135,13 @@ export class ReportsController {
   @Post('spawn')
   createSpawnReport(
     @MyId() myId: number,
+    @MyNick() nick: string,
     @Body() dto: CreateReportDto,
   ): Promise<void> {
     return this.reportsService.createReport({
       ...dto,
       myId,
+      nick,
       mark: Mark.SPAWN,
     });
   }
@@ -142,11 +150,13 @@ export class ReportsController {
   @Post('hub')
   createHubReport(
     @MyId() myId: number,
+    @MyNick() nick: string,
     @Body() dto: CreateReportDto,
   ): Promise<void> {
     return this.reportsService.createReport({
       ...dto,
       myId,
+      nick,
       mark: Mark.HUB,
     });
   }
@@ -154,10 +164,11 @@ export class ReportsController {
   @Patch(':reportId')
   editReport(
     @MyId() myId: number,
+    @MyNick() nick: string,
     @Param() { reportId }: ReportIdDto,
     @Body() dto: EditReportDto,
   ): Promise<void> {
-    return this.reportsService.editReport({ ...dto, reportId, myId });
+    return this.reportsService.editReport({ ...dto, reportId, myId, nick });
   }
 
   @Delete(':reportId')
@@ -171,9 +182,10 @@ export class ReportsController {
   @Post(':reportId/attitudes')
   attitudeReport(
     @MyId() myId: number,
+    @MyNick() nick: string,
     @Param() { reportId }: ReportIdDto,
     @Body() dto: AttitudeReportDto,
   ): Promise<void> {
-    return this.reportsService.attitudeReport({ ...dto, reportId, myId });
+    return this.reportsService.attitudeReport({ ...dto, reportId, myId, nick });
   }
 }

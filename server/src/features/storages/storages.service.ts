@@ -102,15 +102,17 @@ export class StoragesService {
     return storage.states;
   }
 
-  async createStorage(dto: ExtCreateStorageDto): Promise<void> {
+  async createStorage(
+    dto: ExtCreateStorageDto & { nick: string },
+  ): Promise<void> {
     await this.cardsService.checkCardUser(dto.cardId, dto.myId, dto.hasRole);
     await this.checkHasNotEnough(dto.myId);
     await this.checkNameNotUsed(dto.name);
     await this.checkCoordinatesNotUsed(dto.x, dto.y);
-    const storage = await this.create(dto);
+    await this.create(dto);
     this.mqttService.publishNotificationMessage(
       0,
-      storage.id,
+      dto.nick,
       Notification.CREATED_STORAGE,
     );
   }

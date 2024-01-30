@@ -13,7 +13,7 @@ import { Product } from './product.entity';
 import { ProductState } from './product-state.entity';
 import { CreateProductDto, EditProductDto, ProductIdDto } from './product.dto';
 import { Request, Response } from '../../common/interfaces';
-import { HasRole, MyId, Public, Roles } from '../../common/decorators';
+import { HasRole, MyId, MyNick, Public, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
 
 @ApiTags('products')
@@ -74,10 +74,11 @@ export class ProductsController {
   @Post()
   createProduct(
     @MyId() myId: number,
+    @MyNick() nick: string,
     @HasRole(Role.MANAGER) hasRole: boolean,
     @Body() dto: CreateProductDto,
   ): Promise<void> {
-    return this.productsService.createProduct({ ...dto, myId, hasRole });
+    return this.productsService.createProduct({ ...dto, myId, nick, hasRole });
   }
 
   @Patch(':productId')

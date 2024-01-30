@@ -2,7 +2,7 @@ import { Body, Controller, Delete, Param, Patch, Post } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { AnswersService } from './answers.service';
 import { AnswerIdDto, CreateAnswerDto, EditAnswerDto } from './answer.dto';
-import { HasRole, MyId } from '../../common/decorators';
+import { HasRole, MyId, MyNick } from '../../common/decorators';
 import { Role } from '../users/role.enum';
 
 @ApiTags('answers')
@@ -13,14 +13,16 @@ export class AnswersController {
   @Post()
   createAnswer(
     @MyId() myId: number,
+    @MyNick() nick: string,
     @Body() dto: CreateAnswerDto,
   ): Promise<void> {
-    return this.answersService.createAnswer({ ...dto, myId });
+    return this.answersService.createAnswer({ ...dto, myId, nick });
   }
 
   @Patch(':answerId')
   editAnswer(
     @MyId() myId: number,
+    @MyNick() nick: string,
     @HasRole(Role.ADMIN) hasRole: boolean,
     @Param() { answerId }: AnswerIdDto,
     @Body() dto: EditAnswerDto,
@@ -29,6 +31,7 @@ export class AnswersController {
       ...dto,
       answerId,
       myId,
+      nick,
       hasRole,
     });
   }

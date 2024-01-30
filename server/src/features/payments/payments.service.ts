@@ -42,7 +42,9 @@ export class PaymentsService {
     return { result, count };
   }
 
-  async createPayment(dto: ExtCreatePaymentDto): Promise<void> {
+  async createPayment(
+    dto: ExtCreatePaymentDto & { nick: string },
+  ): Promise<void> {
     await this.cardsService.checkCardUser(
       dto.senderCardId,
       dto.myId,
@@ -56,10 +58,10 @@ export class PaymentsService {
       ...dto,
       cardId: dto.receiverCardId,
     });
-    const payment = await this.create(dto);
+    await this.create(dto);
     this.mqttService.publishNotificationMessage(
       card.userId,
-      payment.id,
+      dto.nick,
       Notification.CREATED_PAYMENT,
     );
   }

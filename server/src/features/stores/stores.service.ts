@@ -55,25 +55,26 @@ export class StoresService {
     return this.selectStoresQueryBuilder(marketId).getMany();
   }
 
-  async createStore(dto: ExtCreateStoreDto): Promise<void> {
+  async createStore(dto: ExtCreateStoreDto & { nick: string }): Promise<void> {
     await this.marketsService.checkMarketOwner(
       dto.marketId,
       dto.myId,
       dto.hasRole,
     );
     const name = await this.checkHasNotEnough(dto.marketId);
-    const store = await this.create({ ...dto, name });
+    await this.create({ ...dto, name });
     this.mqttService.publishNotificationMessage(
       0,
-      store.id,
+      dto.nick,
       Notification.CREATED_STORE,
     );
   }
 
-  async reserveStore(dto: ReserveStoreDto): Promise<Store> {
+  async reserveStore(dto: ReserveStoreDto & { nick: string }): Promise<Store> {
     const store = await this.findFreeStore(dto.storeId);
     await this.paymentsService.createPayment({
       myId: dto.myId,
+      nick: dto.nick,
       hasRole: dto.hasRole,
       senderCardId: dto.cardId,
       receiverCardId: store.market.cardId,
@@ -84,13 +85,14 @@ export class StoresService {
     return store;
   }
 
-  async continueStore(dto: ReserveStoreDto): Promise<Store> {
+  async continueStore(dto: ReserveStoreDto & { nick: string }): Promise<Store> {
     const store = await this.storesRepository.findOne({
       relations: ['market', 'market.card'],
       where: { id: dto.storeId },
     });
     await this.paymentsService.createPayment({
       myId: dto.myId,
+      nick: dto.nick,
       hasRole: dto.hasRole,
       senderCardId: dto.cardId,
       receiverCardId: store.market.cardId,

@@ -89,7 +89,9 @@ export class DeliveriesService {
     return { result, count };
   }
 
-  async createDelivery(dto: ExtCreateDeliveryDto): Promise<void> {
+  async createDelivery(
+    dto: ExtCreateDeliveryDto & { nick: string },
+  ): Promise<void> {
     const fromLeaseId = await this.leasesService.createLease({
       ...dto,
       storageId: dto.fromStorageId,
@@ -101,19 +103,21 @@ export class DeliveriesService {
       kind: Kind.DELIVERY,
     });
     await this.cardsService.decreaseCardBalance({ ...dto, sum: dto.price });
-    const delivery = await this.create({
+    await this.create({
       ...dto,
       fromStorageId: fromLeaseId,
       toStorageId: toLeaseId,
     });
     this.mqttService.publishNotificationMessage(
       0,
-      delivery.id,
+      dto.nick,
       Notification.CREATED_DELIVERY,
     );
   }
 
-  async takeDelivery(dto: ExtTakeDeliveryDto): Promise<void> {
+  async takeDelivery(
+    dto: ExtTakeDeliveryDto & { nick: string },
+  ): Promise<void> {
     await this.cardsService.checkCardUser(dto.cardId, dto.myId, dto.hasRole);
     const delivery = await this.deliveriesRepository.findOne({
       relations: ['fromLease', 'fromLease.card', 'toLease'],
@@ -131,12 +135,14 @@ export class DeliveriesService {
     await this.take(delivery, dto.cardId);
     this.mqttService.publishNotificationMessage(
       delivery.fromLease.card.userId,
-      dto.deliveryId,
+      dto.nick,
       Notification.TAKEN_DELIVERY,
     );
   }
 
-  async untakeDelivery(dto: ExtDeliveryIdDto): Promise<void> {
+  async untakeDelivery(
+    dto: ExtDeliveryIdDto & { nick: string },
+  ): Promise<void> {
     const delivery = await this.checkDeliveryExecutor(
       dto.deliveryId,
       dto.myId,
@@ -148,12 +154,14 @@ export class DeliveriesService {
     await this.untake(delivery);
     this.mqttService.publishNotificationMessage(
       delivery.fromLease.card.userId,
-      dto.deliveryId,
+      dto.nick,
       Notification.UNTAKEN_DELIVERY,
     );
   }
 
-  async executeDelivery(dto: ExtDeliveryIdDto): Promise<void> {
+  async executeDelivery(
+    dto: ExtDeliveryIdDto & { nick: string },
+  ): Promise<void> {
     const delivery = await this.checkDeliveryExecutor(
       dto.deliveryId,
       dto.myId,
@@ -165,12 +173,14 @@ export class DeliveriesService {
     await this.execute(delivery);
     this.mqttService.publishNotificationMessage(
       delivery.fromLease.card.userId,
-      dto.deliveryId,
+      dto.nick,
       Notification.EXECUTED_DELIVERY,
     );
   }
 
-  async completeDelivery(dto: ExtDeliveryIdDto): Promise<void> {
+  async completeDelivery(
+    dto: ExtDeliveryIdDto & { nick: string },
+  ): Promise<void> {
     const delivery = await this.checkDeliveryCustomer(
       dto.deliveryId,
       dto.myId,
@@ -185,6 +195,7 @@ export class DeliveriesService {
     });
     await this.paymentsService.createPayment({
       myId: dto.myId,
+      nick: dto.nick,
       hasRole: dto.hasRole,
       senderCardId: delivery.fromLease.cardId,
       receiverCardId: delivery.executorCardId,
@@ -194,7 +205,7 @@ export class DeliveriesService {
     await this.complete(delivery);
     this.mqttService.publishNotificationMessage(
       delivery.executorCard.userId,
-      dto.deliveryId,
+      dto.nick,
       Notification.COMPLETED_DELIVERY,
     );
   }
@@ -215,7 +226,9 @@ export class DeliveriesService {
     await this.delete(delivery);
   }
 
-  async rateDelivery(dto: ExtRateDeliveryDto): Promise<void> {
+  async rateDelivery(
+    dto: ExtRateDeliveryDto & { nick: string },
+  ): Promise<void> {
     const delivery = await this.checkDeliveryCustomer(
       dto.deliveryId,
       dto.myId,
@@ -227,7 +240,7 @@ export class DeliveriesService {
     await this.rate(delivery, dto.rate);
     this.mqttService.publishNotificationMessage(
       delivery.executorCard.userId,
-      dto.deliveryId,
+      dto.nick,
       Notification.RATED_DELIVERY,
     );
   }

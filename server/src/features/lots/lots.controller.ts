@@ -5,7 +5,7 @@ import { Lot } from './lot.entity';
 import { Bid } from '../bids/bid.entity';
 import { CreateLotDto, LotIdDto } from './lot.dto';
 import { Request, Response } from '../../common/interfaces';
-import { HasRole, MyId, Public, Roles } from '../../common/decorators';
+import { HasRole, MyId, MyNick, Public, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
 
 @ApiTags('lots')
@@ -50,18 +50,20 @@ export class LotsController {
   @Post()
   createLot(
     @MyId() myId: number,
+    @MyNick() nick: string,
     @HasRole(Role.MANAGER) hasRole: boolean,
     @Body() dto: CreateLotDto,
   ): Promise<void> {
-    return this.lotsService.createLot({ ...dto, myId, hasRole });
+    return this.lotsService.createLot({ ...dto, myId, nick, hasRole });
   }
 
   @Post(':lotId')
   completeLot(
     @MyId() myId: number,
+    @MyNick() nick: string,
     @HasRole(Role.MANAGER) hasRole: boolean,
     @Param() { lotId }: LotIdDto,
   ): Promise<void> {
-    return this.lotsService.completeLot({ lotId, myId, hasRole });
+    return this.lotsService.completeLot({ lotId, myId, nick, hasRole });
   }
 }

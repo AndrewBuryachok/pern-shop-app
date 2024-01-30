@@ -2,7 +2,7 @@ import { Body, Controller, Delete, Param, Patch, Post } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { CommentsService } from './comments.service';
 import { CommentIdDto, CreateCommentDto, EditCommentDto } from './comment.dto';
-import { HasRole, MyId } from '../../common/decorators';
+import { HasRole, MyId, MyNick } from '../../common/decorators';
 import { Role } from '../users/role.enum';
 
 @ApiTags('comments')
@@ -13,14 +13,16 @@ export class CommentsController {
   @Post()
   createComment(
     @MyId() myId: number,
+    @MyNick() nick: string,
     @Body() dto: CreateCommentDto,
   ): Promise<void> {
-    return this.commentsService.createComment({ ...dto, myId });
+    return this.commentsService.createComment({ ...dto, myId, nick });
   }
 
   @Patch(':commentId')
   editComment(
     @MyId() myId: number,
+    @MyNick() nick: string,
     @HasRole(Role.ADMIN) hasRole: boolean,
     @Param() { commentId }: CommentIdDto,
     @Body() dto: EditCommentDto,
@@ -29,6 +31,7 @@ export class CommentsController {
       ...dto,
       commentId,
       myId,
+      nick,
       hasRole,
     });
   }

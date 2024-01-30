@@ -41,12 +41,12 @@ export class GoodsService {
     return { result, count };
   }
 
-  async createGood(dto: ExtCreateGoodDto): Promise<void> {
+  async createGood(dto: ExtCreateGoodDto & { nick: string }): Promise<void> {
     await this.shopsService.checkShopUser(dto.shopId, dto.myId, dto.hasRole);
-    const good = await this.create(dto);
+    await this.create(dto);
     this.mqttService.publishNotificationMessage(
       0,
-      good.id,
+      dto.nick,
       Notification.CREATED_GOOD,
     );
   }

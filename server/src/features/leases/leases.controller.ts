@@ -5,7 +5,7 @@ import { Lease } from './lease.entity';
 import { Thing } from '../things/thing.entity';
 import { LeaseIdDto } from './lease.dto';
 import { Request, Response } from '../../common/interfaces';
-import { HasRole, MyId, Public, Roles } from '../../common/decorators';
+import { HasRole, MyId, MyNick, Public, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
 
 @ApiTags('leases')
@@ -50,18 +50,20 @@ export class LeasesController {
   @Post(':leaseId/continue')
   continueLease(
     @MyId() myId: number,
+    @MyNick() nick: string,
     @HasRole(Role.MANAGER) hasRole: boolean,
     @Param() { leaseId }: LeaseIdDto,
   ): Promise<void> {
-    return this.leasesService.continueLease({ leaseId, myId, hasRole });
+    return this.leasesService.continueLease({ leaseId, myId, nick, hasRole });
   }
 
   @Post(':leaseId')
   completeLease(
     @MyId() myId: number,
+    @MyNick() nick: string,
     @HasRole(Role.MANAGER) hasRole: boolean,
     @Param() { leaseId }: LeaseIdDto,
   ): Promise<void> {
-    return this.leasesService.completeLease({ leaseId, myId, hasRole });
+    return this.leasesService.completeLease({ leaseId, myId, nick, hasRole });
   }
 }
