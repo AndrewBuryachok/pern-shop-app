@@ -315,148 +315,148 @@
     "message": "Operation completed successfully",
     "notification": "Notification",
     "users": {
-      "created": "Someone registered"
+      "created": "registered"
     },
     "friends": {
-      "added": "Someone added you in friends",
-      "removed": "Someone removed you from friends"
+      "added": "added you in friends",
+      "removed": "removed you from friends"
     },
     "subscribers": {
-      "added": "Someone subscribed on you",
-      "removed": "Someone unsubscribed from you"
+      "added": "subscribed on you",
+      "removed": "unsubscribed from you"
     },
     "reports": {
-      "created": "Someone created report",
-      "reacted": "Someone reacted to your report",
-      "annotated": "Someone annotated your report",
-      "replied": "Someone replied to your annotation",
-      "mentioned": "Someone mentioned you in report",
-      "submentioned": "Someone mentioned you in annotation"
+      "created": "created report",
+      "reacted": "reacted to your report",
+      "annotated": "annotated your report",
+      "replied": "replied to your annotation",
+      "mentioned": "mentioned you in report",
+      "submentioned": "mentioned you in annotation"
     },
     "articles": {
-      "created": "Someone created article",
-      "reacted": "Someone reacted to your article",
-      "commented": "Someone commented your article",
-      "replied": "Someone replied to your comment",
-      "mentioned": "Someone mentioned you in article",
-      "submentioned": "Someone mentioned you in comment"
+      "created": "created article",
+      "reacted": "reacted to your article",
+      "commented": "commented your article",
+      "replied": "replied to your comment",
+      "mentioned": "mentioned you in article",
+      "submentioned": "mentioned you in comment"
     },
     "cards": {
-      "added": "Someone added you in card",
-      "removed": "Someone removed you from card"
+      "added": "added you in card",
+      "removed": "removed you from card"
     },
     "exchanges": {
-      "created": "Someone created exchange to you"
+      "created": "created exchange to you"
     },
     "payments": {
-      "created": "Someone created payment to you"
+      "created": "created payment to you"
     },
     "invoices": {
-      "created": "Someone created invoice to you",
-      "completed": "Someone completed your invoice",
-      "deleted": "Someone deleted your invoice"
+      "created": "created invoice to you",
+      "completed": "completed your invoice",
+      "deleted": "deleted your invoice"
     },
     "cities": {
-      "created": "Someone created city",
-      "added": "Someone added you in city",
-      "removed": "Someone removed you from city"
+      "created": "created city",
+      "added": "added you in city",
+      "removed": "removed you from city"
     },
     "shops": {
-      "created": "Someone created shop",
-      "added": "Someone added you in shop",
-      "removed": "Someone removed you from shop"
+      "created": "created shop",
+      "added": "added you in shop",
+      "removed": "removed you from shop"
     },
     "markets": {
-      "created": "Someone created market"
+      "created": "created market"
     },
     "storages": {
-      "created": "Someone created storage"
+      "created": "created storage"
     },
     "stores": {
-      "created": "Someone created store"
+      "created": "created store"
     },
     "cells": {
-      "created": "Someone created cell"
+      "created": "created cell"
     },
     "rents": {
-      "created": "Someone reserved your store",
-      "continued": "Someone continued your rent",
-      "completed": "Someone completed your rent"
+      "created": "reserved your store",
+      "continued": "continued your rent",
+      "completed": "completed your rent"
     },
     "leases": {
-      "created": "Someone reserved your cell",
-      "continued": "Someone continued your lease",
-      "completed": "Someone completed your lease"
+      "created": "reserved your cell",
+      "continued": "continued your lease",
+      "completed": "completed your lease"
     },
     "goods": {
-      "created": "Someone created good"
+      "created": "created good"
     },
     "wares": {
-      "created": "Someone created ware"
+      "created": "created ware"
     },
     "products": {
-      "created": "Someone created product"
+      "created": "created product"
     },
     "lots": {
-      "created": "Someone created lot",
-      "completed": "Someone completed your lot"
+      "created": "created lot",
+      "completed": "completed your lot"
     },
     "trades": {
-      "created": "Someone bought your ware",
-      "rated": "Someone rated your ware"
+      "created": "bought your ware",
+      "rated": "rated your ware"
     },
     "sales": {
-      "created": "Someone bought your product",
-      "rated": "Someone rated your product"
+      "created": "bought your product",
+      "rated": "rated your product"
     },
     "bids": {
-      "created": "Someone bought your lot"
+      "created": "bought your lot"
     },
     "orders": {
-      "created": "Someone created order",
-      "taken": "Someone taken your order",
-      "untaken": "Someone untaken your order",
-      "executed": "Someone executed your order",
-      "completed": "Someone completed your order",
-      "rated": "Someone rated your order"
+      "created": "created order",
+      "taken": "taken your order",
+      "untaken": "untaken your order",
+      "executed": "executed your order",
+      "completed": "completed your order",
+      "rated": "rated your order"
     },
     "deliveries": {
-      "created": "Someone created delivery",
-      "taken": "Someone taken your delivery",
-      "untaken": "Someone untaken your delivery",
-      "executed": "Someone executed your delivery",
-      "completed": "Someone completed your delivery",
-      "rated": "Someone rated your delivery"
+      "created": "created delivery",
+      "taken": "taken your delivery",
+      "untaken": "untaken your delivery",
+      "executed": "executed your delivery",
+      "completed": "completed your delivery",
+      "rated": "rated your delivery"
     },
     "tasks": {
-      "created": "Someone created task",
-      "taken": "Someone taken your task",
-      "untaken": "Someone untaken your task",
-      "executed": "Someone executed your task",
-      "completed": "Someone completed your task"
+      "created": "created task",
+      "taken": "taken your task",
+      "untaken": "untaken your task",
+      "executed": "executed your task",
+      "completed": "completed your task"
     },
     "plaints": {
-      "created": "Someone created plaint",
-      "answered": "Someone answered to your plaint",
-      "completed": "Someone completed your plaint",
-      "deleted": "Someone deleted your plaint",
-      "replied": "Someone replied to your answer",
-      "mentioned": "Someone mentioned you in plaint",
-      "submentioned": "Someone mentioned you in answer"
+      "created": "created plaint",
+      "answered": "answered to your plaint",
+      "completed": "completed your plaint",
+      "deleted": "deleted your plaint",
+      "replied": "replied to your answer",
+      "mentioned": "mentioned you in plaint",
+      "submentioned": "mentioned you in answer"
     },
     "polls": {
-      "created": "Someone created poll",
-      "reacted": "Someone reacted to your poll",
-      "discussed": "Someone discussed your poll",
-      "completed": "Someone completed your poll",
-      "replied": "Someone replied to your discussion",
-      "mentioned": "Someone mentioned you in poll",
-      "submentioned": "Someone mentioned you in discussion"
+      "created": "created poll",
+      "reacted": "reacted to your poll",
+      "discussed": "discussed your poll",
+      "completed": "completed your poll",
+      "replied": "replied to your discussion",
+      "mentioned": "mentioned you in poll",
+      "submentioned": "mentioned you in discussion"
     },
     "ratings": {
-      "created": "Someone created rating to you",
-      "edited": "Someone edited rating to you",
-      "deleted": "Someone deleted rating to you"
+      "created": "created rating to you",
+      "edited": "edited rating to you",
+      "deleted": "deleted rating to you"
     }
   },
   "constants": {

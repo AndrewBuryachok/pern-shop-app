@@ -11,7 +11,7 @@ export default function NotificationBadge(props: Props) {
   const notifications = getActiveNotifications();
 
   const pages = Object.keys(notifications)
-    .map((page) => page.split('/')[0])
+    .map((page) => page.split('/')[3])
     .filter((page) => props.pages.includes(page));
 
   return pages.length ? (
