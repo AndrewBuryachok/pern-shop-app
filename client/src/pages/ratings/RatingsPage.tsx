@@ -67,6 +67,7 @@ export default function RatingsPage() {
   const button = {
     top: createMyRatingButton,
     my: createMyRatingButton,
+    received: createMyRatingButton,
     all: createUserRatingButton,
   }[tab];
 

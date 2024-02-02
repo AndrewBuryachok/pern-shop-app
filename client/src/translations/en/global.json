@@ -318,8 +318,11 @@
       "created": "registered"
     },
     "friends": {
-      "added": "added you in friends",
-      "removed": "removed you from friends"
+      "invited": "invited you in friends",
+      "approved": "approved you in friends",
+      "canceled": "canceled you in friends",
+      "rejected": "rejected you in friends",
+      "deleted": "deleted you from friends"
     },
     "subscribers": {
       "added": "subscribed on you",
