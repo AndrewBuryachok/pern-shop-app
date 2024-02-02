@@ -4,7 +4,7 @@ export enum CityError {
   COORDINATES_ALREADY_USED = '400: City coordinates already used',
   ALREADY_IN_CITY = '400: User already in city',
   NOT_IN_CITY = '400: User not in city',
-  OWNER = '400: You are city owner',
+  OWNER = '400: User is city owner',
   NOT_OWNER = '403: You are not city owner',
   NOT_USER = '403: You are not city user',
   CREATE_FAILED = '500: Failed to create city',

@@ -4,7 +4,7 @@ export enum ShopError {
   COORDINATES_ALREADY_USED = '400: Shop coordinates already used',
   ALREADY_IN_SHOP = '400: User already in shop',
   NOT_IN_SHOP = '400: User not in shop',
-  OWNER = '400: You are shop owner',
+  OWNER = '400: User is shop owner',
   NOT_OWNER = '403: You are not shop owner',
   NOT_USER = '403: You are not shop user',
   CREATE_FAILED = '500: Failed to create shop',
