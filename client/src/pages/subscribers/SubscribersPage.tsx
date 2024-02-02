@@ -33,7 +33,11 @@ export default function SubscribersPage() {
     received: useGetReceivedSubscribersQuery,
   }[tab]!({ page, search });
 
-  const button = { top: addSubscriberButton, my: addSubscriberButton }[tab];
+  const button = {
+    top: addSubscriberButton,
+    my: addSubscriberButton,
+    received: addSubscriberButton,
+  }[tab];
 
   const actions = { my: [removeSubscriberAction] }[tab];
 

@@ -36,7 +36,12 @@ export default function FriendsPage() {
     received: useGetReceivedFriendsQuery,
   }[tab]!({ page, search });
 
-  const button = { top: createFriendButton, my: createFriendButton }[tab];
+  const button = {
+    top: createFriendButton,
+    my: createFriendButton,
+    sent: createFriendButton,
+    received: createFriendButton,
+  }[tab];
 
   const actions = {
     my: [removeFriendAction],
