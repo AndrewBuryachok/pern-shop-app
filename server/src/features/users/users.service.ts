@@ -108,7 +108,7 @@ export class UsersService {
         'user.invitations',
         'invitations',
         'invitation',
-        'user.id = invitation.receiverUserId',
+        'invitation.receiverUserId = user.id',
       )
       .andWhere('invitation.senderUserId = :myId', { myId })
       .getManyAndCount();
@@ -124,7 +124,7 @@ export class UsersService {
         'user.invitations',
         'invitations',
         'invitation',
-        'user.id = invitation.senderUserId',
+        'invitation.senderUserId = user.id',
       )
       .andWhere('invitation.receiverUserId = :myId', { myId })
       .getManyAndCount();
@@ -172,48 +172,48 @@ export class UsersService {
 
   async selectNotFriendsUsers(myId: number): Promise<User[]> {
     const friends = (
-      await this.selectUsersQueryBuilder()
-        .innerJoinAndMapOne(
-          'friend',
-          'user.friends',
-          'friend',
-          'friend.id = :myId',
-          { myId },
+      await this.usersRepository.findOne({
+        relations: ['friends'],
+        where: { id: myId },
+      })
+    ).friends.map((friend) => friend.id);
+    const invitations = (
+      await this.usersRepository
+        .createQueryBuilder('user')
+        .leftJoinAndMapMany(
+          'user.invitations',
+          'invitations',
+          'invitation',
+          'invitation.senderUserId = user.id',
         )
-        .getMany()
-    ).map((friend) => friend.id);
+        .where('user.id = :myId', { myId })
+        .select(['user.id', 'invitation.receiverUserId'])
+        .getOne()
+    )['invitations'].map((invitation) => invitation.receiverUserId);
     const users = await this.selectUsersQueryBuilder().getMany();
-    return users.filter((user) => !friends.includes(user.id));
+    return users.filter(
+      (user) => !friends.includes(user.id) && !invitations.includes(user.id),
+    );
   }
 
   async selectNotSubscribedUsers(myId: number): Promise<User[]> {
     const subscribers = (
-      await this.selectUsersQueryBuilder()
-        .innerJoinAndMapOne(
-          'subscriber',
-          'user.receivedSubscribers',
-          'subscriber',
-          'subscriber.id = :myId',
-          { myId },
-        )
-        .getMany()
-    ).map((subscriber) => subscriber.id);
+      await this.usersRepository.findOne({
+        relations: ['sentSubscribers'],
+        where: { id: myId },
+      })
+    ).sentSubscribers.map((subscriber) => subscriber.id);
     const users = await this.selectUsersQueryBuilder().getMany();
     return users.filter((user) => !subscribers.includes(user.id));
   }
 
   async selectNotRatedUsers(myId: number): Promise<User[]> {
     const raters = (
-      await this.selectUsersQueryBuilder()
-        .innerJoinAndMapOne(
-          'rating',
-          'user.receivedRatings',
-          'rating',
-          'rating.senderUserId = :myId',
-          { myId },
-        )
-        .getMany()
-    ).map((user) => user.id);
+      await this.usersRepository.findOne({
+        relations: ['sentRatings'],
+        where: { id: myId },
+      })
+    ).sentRatings.map((rating) => rating.receiverUserId);
     raters.push(myId);
     const users = await this.selectUsersQueryBuilder().getMany();
     return users.filter((user) => !raters.includes(user.id));
