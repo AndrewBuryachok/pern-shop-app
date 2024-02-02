@@ -362,7 +362,8 @@
     "cities": {
       "created": "created city",
       "added": "added you in city",
-      "removed": "removed you from city"
+      "removed": "removed you from city",
+      "left": "left your city"
     },
     "shops": {
       "created": "created shop",
