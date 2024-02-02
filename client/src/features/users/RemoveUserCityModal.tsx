@@ -61,7 +61,10 @@ export const removeUserCityAction = {
     }),
   disable: (user: User) => {
     const me = getCurrentUser()!;
-    return user.city!.user.id !== me.id || user.id === me.id;
+    return (
+      user.city!.user.id === user.id ||
+      (user.city!.user.id !== me.id && user.id !== me.id)
+    );
   },
   color: Color.RED,
 };
