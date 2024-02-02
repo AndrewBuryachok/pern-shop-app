@@ -47,6 +47,11 @@ export class FriendsService {
     if (!invitation2) {
       await this.usersService.checkNotFriends(dto.myId, dto.userId);
       await this.create(dto);
+      this.mqttService.publishNotificationMessage(
+        dto.userId,
+        dto.nick,
+        Notification.INVITED_FRIEND,
+      );
     } else {
       await this.usersService.addUserFriend({
         senderUserId: dto.myId,
@@ -59,12 +64,12 @@ export class FriendsService {
         });
       }
       await this.delete(invitation2);
+      this.mqttService.publishNotificationMessage(
+        dto.userId,
+        dto.nick,
+        Notification.APPROVED_FRIEND,
+      );
     }
-    this.mqttService.publishNotificationMessage(
-      dto.userId,
-      dto.nick,
-      Notification.ADDED_FRIEND,
-    );
   }
 
   async removeFriend(dto: UpdateFriendDto & { nick: string }): Promise<void> {
@@ -78,8 +83,18 @@ export class FriendsService {
     });
     if (invitation1) {
       await this.delete(invitation1);
+      this.mqttService.publishNotificationMessage(
+        dto.userId,
+        dto.nick,
+        Notification.CANCELED_FRIEND,
+      );
     } else if (invitation2) {
       await this.delete(invitation2);
+      this.mqttService.publishNotificationMessage(
+        dto.userId,
+        dto.nick,
+        Notification.REJECTED_FRIEND,
+      );
     } else {
       await this.usersService.removeUserFriend({
         senderUserId: dto.myId,
@@ -91,12 +106,12 @@ export class FriendsService {
           receiverUserId: dto.myId,
         });
       }
+      this.mqttService.publishNotificationMessage(
+        dto.userId,
+        dto.nick,
+        Notification.DELETED_FRIENDS,
+      );
     }
-    this.mqttService.publishNotificationMessage(
-      dto.userId,
-      dto.nick,
-      Notification.REMOVED_FRIEND,
-    );
   }
 
   private async create(dto: UpdateFriendDto): Promise<Invitation> {

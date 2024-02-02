@@ -1,7 +1,10 @@
 export enum Notification {
   CREATED_USER = 'created users',
-  ADDED_FRIEND = 'added friends',
-  REMOVED_FRIEND = 'removed friends',
+  INVITED_FRIEND = 'invited friends',
+  APPROVED_FRIEND = 'approved friends',
+  CANCELED_FRIEND = 'canceled friends',
+  REJECTED_FRIEND = 'rejected friends',
+  DELETED_FRIENDS = 'deleted friends',
   ADDED_SUBSCRIBER = 'added subscribers',
   REMOVED_SUBSCRIBER = 'removed subscribers',
   CREATED_REPORT = 'created reports',
