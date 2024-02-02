@@ -5,7 +5,7 @@ export enum CardError {
   NOT_ENOUGH_BALANCE = '400: Card has not enough balance',
   ALREADY_IN_CARD = '400: User already in card',
   NOT_IN_CARD = '400: User not in card',
-  OWNER = '400: You are card owner',
+  OWNER = '400: User is card owner',
   NOT_OWNER = '403: You are not card owner',
   NOT_USER = '403: You are not card user',
   CREATE_FAILED = '500: Failed to create card',

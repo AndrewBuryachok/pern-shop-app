@@ -103,19 +103,30 @@ export class CitiesService {
   async removeCityUser(
     dto: ExtUpdateCityUserDto & { nick: string },
   ): Promise<void> {
-    const city = await this.checkCityOwner(dto.cityId, dto.myId, dto.hasRole);
-    if (dto.userId === dto.myId) {
+    const city =
+      dto.userId === dto.myId
+        ? await this.findCityById(dto.cityId)
+        : await this.checkCityOwner(dto.cityId, dto.myId, dto.hasRole);
+    if (city.userId === dto.userId) {
       throw new AppException(CityError.OWNER);
     }
     if (!city.users.map((user) => user.id).includes(dto.userId)) {
       throw new AppException(CityError.NOT_IN_CITY);
     }
     await this.removeUser(city, dto.userId);
-    this.mqttService.publishNotificationMessage(
-      dto.userId,
-      dto.nick,
-      Notification.REMOVED_CITY,
-    );
+    if (dto.userId !== dto.myId) {
+      this.mqttService.publishNotificationMessage(
+        city.userId,
+        dto.nick,
+        Notification.LEFT_CITY,
+      );
+    } else {
+      this.mqttService.publishNotificationMessage(
+        dto.userId,
+        dto.nick,
+        Notification.REMOVED_CITY,
+      );
+    }
   }
 
   async checkCityExists(id: number): Promise<void> {
@@ -137,10 +148,7 @@ export class CitiesService {
     userId: number,
     hasRole: boolean,
   ): Promise<City> {
-    const city = await this.citiesRepository.findOne({
-      relations: ['users'],
-      where: { id },
-    });
+    const city = await this.findCityById(id);
     if (city.userId !== userId && !hasRole) {
       throw new AppException(CityError.NOT_OWNER);
     }
@@ -170,6 +178,13 @@ export class CitiesService {
     if (city && (!id || city.id !== id)) {
       throw new AppException(CityError.COORDINATES_ALREADY_USED);
     }
+  }
+
+  private findCityById(id: number): Promise<City> {
+    return this.citiesRepository.findOne({
+      relations: ['users'],
+      where: { id },
+    });
   }
 
   private async create(dto: ExtCreateCityDto): Promise<City> {
