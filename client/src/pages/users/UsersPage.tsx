@@ -54,6 +54,8 @@ export default function UsersPage() {
       setSearch={setSearch}
       button={button}
       actions={actions}
+      column='time'
+      callback={(user) => Math.floor(user.time! / 6) / 10}
     />
   );
 }
