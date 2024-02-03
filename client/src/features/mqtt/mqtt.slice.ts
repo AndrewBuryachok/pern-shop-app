@@ -79,7 +79,7 @@ export const mqttSlice = createSlice({
     publishOnline: (_, action: PayloadAction<number>) => {
       client.publish(
         import.meta.env.VITE_BROKER_TOPIC + 'users/' + action.payload,
-        'online',
+        new Date().toISOString(),
         { retain: true },
       );
     },
@@ -134,6 +134,15 @@ export const {
 export const getOnlineUsers = () => useAppSelector((state) => state.mqtt.users);
 
 export const getActiveNotifications = () =>
-  useAppSelector((state) => state.mqtt.notifications);
+  useAppSelector((state) =>
+    Object.keys(state.mqtt.notifications).map((notification) => ({
+      key: notification,
+      id: notification.split('/')[0],
+      nick: notification.split('/')[1],
+      action: notification.split('/')[2],
+      page: notification.split('/')[3],
+      date: state.mqtt.notifications[notification],
+    })),
+  );
 
 export const getMute = () => useAppSelector((state) => state.mqtt.mute);

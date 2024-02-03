@@ -8,15 +8,13 @@ type Props = {
 };
 
 export default function NotificationBadge(props: Props) {
-  const notifications = getActiveNotifications();
+  const notifications = getActiveNotifications().filter(({ page }) =>
+    props.pages.includes(page),
+  );
 
-  const pages = Object.keys(notifications)
-    .map((page) => page.split('/')[3])
-    .filter((page) => props.pages.includes(page));
-
-  return pages.length ? (
+  return notifications.length ? (
     <Badge size='xs' variant='filled' color='red' w={16} h={16} p={0}>
-      {pages.length}
+      {notifications.length}
     </Badge>
   ) : (
     <>{props.icon}</>
