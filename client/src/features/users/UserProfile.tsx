@@ -186,6 +186,12 @@ export default function UserProfile({ data: user }: Props) {
               </div>
               <div>
                 <Text size='sm' weight='bold'>
+                  {t('columns.time')}
+                </Text>
+                <SingleText text={`${Math.floor(user.time / 6) / 10}`} />
+              </div>
+              <div>
+                <Text size='sm' weight='bold'>
                   {t('columns.city')}
                 </Text>
                 <Group spacing={8}>

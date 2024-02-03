@@ -181,6 +181,7 @@
     "roles": "Roles",
     "owner": "Owner",
     "city": "City",
+    "time": "Hours",
     "friends": "Friends",
     "subscribers": "Subscribers",
     "raters": "Raters",
