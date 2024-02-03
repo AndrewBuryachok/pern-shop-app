@@ -113,4 +113,19 @@ export class User {
 
   @OneToMany(() => Rating, (rating) => rating.receiverUser)
   receivedRatings: Rating[];
+
+  @Column({ default: 0 })
+  rank: number;
+
+  @Column({ type: 'timestamptz', name: 'ranked_at_1', nullable: true })
+  rankedAt1?: Date;
+
+  @Column({ type: 'timestamptz', name: 'ranked_at_2', nullable: true })
+  rankedAt2?: Date;
+
+  @Column({ type: 'timestamptz', name: 'ranked_at_3', nullable: true })
+  rankedAt3?: Date;
+
+  @Column({ type: 'timestamptz', name: 'ranked_at_4', nullable: true })
+  rankedAt4?: Date;
 }

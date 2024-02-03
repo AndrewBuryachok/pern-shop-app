@@ -8,6 +8,7 @@ export enum UserError {
   NOT_HAS_SUBSCRIBER = '400: У пользователя нет подписки',
   ALREADY_HAS_IGNORER = '400: У пользователя уже есть игнорирование',
   NOT_HAS_IGNORER = '400: У пользователя нет игнорирования',
+  ALREADY_RANKED = '400: Вы уже голосовали',
   NOT_OWNER = '403: Вы не владелец профиля',
   UNKNOWN = '404: Неизвестный пользователь',
   CREATE_FAILED = '500: Не удалось создать пользователя',
@@ -25,4 +26,5 @@ export enum UserError {
   REMOVE_SUBSCRIBER_FAILED = '500: Не удалось убрать подписку пользовалелю',
   ADD_IGNORER_FAILED = '500: Не удалось добавить игнорирование пользовалелю',
   REMOVE_IGNORER_FAILED = '500: Не удалось убрать игнорирование пользовалелю',
+  ADD_RANK_FAILED = '500: Failed to add user rank',
 }

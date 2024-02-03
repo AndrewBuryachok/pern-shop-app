@@ -24,3 +24,4 @@ export const MAX_KIT_VALUE = 3;
 export const MAX_KIND_VALUE = 4;
 export const MAX_MARK_VALUE = 2;
 export const MAX_RATE_VALUE = 5;
+export const MAX_RANK_VALUE = 4;
