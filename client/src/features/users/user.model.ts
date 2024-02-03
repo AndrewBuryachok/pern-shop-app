@@ -19,6 +19,7 @@ export interface User extends MdUser {
   subscribersCount?: number;
   ignorersCount?: number;
   ratersCount?: number;
+  rank?: number;
 }
 
 export interface ExtUser extends User {

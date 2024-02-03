@@ -16,3 +16,7 @@ export interface UpdateUserRoleDto {
   userId: number;
   role: number;
 }
+
+export interface RankUserDto {
+  rank: number;
+}
