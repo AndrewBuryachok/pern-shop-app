@@ -14,6 +14,7 @@ import { User } from './user.entity';
 import {
   EditUserPasswordDto,
   EditUserProfileDto,
+  RankUserDto,
   UpdateUserRoleDto,
   UserIdDto,
   UserNickDto,
@@ -61,6 +62,12 @@ export class UsersController {
   @Get('ratings')
   getRatingsUsers(@Query() req: Request): Promise<Response<User>> {
     return this.usersService.getRatingsUsers(req);
+  }
+
+  @Public()
+  @Get('ranks')
+  getRanksUsers(@Query() req: Request): Promise<Response<User>> {
+    return this.usersService.getRanksUsers(req);
   }
 
   @Get('my')
@@ -150,5 +157,15 @@ export class UsersController {
     @Body() dto: UpdateUserRoleDto,
   ): Promise<void> {
     return this.usersService.removeUserRole({ ...dto, userId });
+  }
+
+  @Get('me/ranks')
+  getMyRanks(@MyId() myId: number): Promise<User> {
+    return this.usersService.getMyRanks(myId);
+  }
+
+  @Post('me/ranks')
+  addMyRank(@MyId() myId: number, @Body() dto: RankUserDto): Promise<void> {
+    return this.usersService.addMyRank({ ...dto, myId });
   }
 }

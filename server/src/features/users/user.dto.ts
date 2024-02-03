@@ -7,6 +7,7 @@ import {
   IsId,
   IsNick,
   IsPassword,
+  IsRank,
   IsRole,
 } from '../../common/decorators';
 import { IsUserExists } from '../../common/constraints';
@@ -96,4 +97,14 @@ export class UpdateUserSubscriberDto {
 export class UpdateUserIgnorerDto {
   senderUserId: number;
   receiverUserId: number;
+}
+
+export class RankUserDto {
+  @ApiProperty()
+  @IsRank()
+  rank: number;
+}
+
+export class ExtRankUserDto extends RankUserDto {
+  myId: number;
 }

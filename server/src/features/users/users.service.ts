@@ -6,6 +6,7 @@ import {
   CreateUserDto,
   ExtEditUserPasswordDto,
   ExtEditUserProfileDto,
+  ExtRankUserDto,
   ExtUpdateUserRoleDto,
   UpdateUserFriendDto,
   UpdateUserIgnorerDto,
@@ -104,6 +105,17 @@ export class UsersService {
     return { result, count };
   }
 
+  async getRanksUsers(req: Request): Promise<Response<User>> {
+    const [result, count] = await this.getUsersQueryBuilder(req)
+      .addSelect(['user.rank'])
+      .orderBy('user.rank', 'DESC')
+      .addOrderBy('user.type', 'DESC')
+      .addOrderBy('user.onlineAt', 'DESC')
+      .addOrderBy('user.id', 'DESC')
+      .getManyAndCount();
+    return { result, count };
+  }
+
   async getMyUsers(myId: number, req: Request): Promise<Response<User>> {
     const [result, count] = await this.getExtUsersQueryBuilder(req)
       .leftJoin('city.users', 'cityUsers')
@@ -145,6 +157,17 @@ export class UsersService {
       'user.ratersCount',
       'user.receivedRatings',
     );
+  }
+
+  getMyRanks(myId: number): Promise<User> {
+    return this.usersRepository
+      .createQueryBuilder('user')
+      .where('user.id = :myId', { myId })
+      .select("user.rankedAt1 > NOW() - INTERVAL '1 day'", 'rank1')
+      .addSelect("user.rankedAt2 > NOW() - INTERVAL '1 day'", 'rank2')
+      .addSelect("user.rankedAt3 > NOW() - INTERVAL '1 day'", 'rank3')
+      .addSelect("user.rankedAt4 > NOW() - INTERVAL '1 day'", 'rank4')
+      .getRawOne();
   }
 
   selectAllUsers(): Promise<User[]> {
@@ -389,6 +412,20 @@ export class UsersService {
     await this.removeIgnorer(user, dto.receiverUserId);
   }
 
+  async addMyRank(dto: ExtRankUserDto): Promise<void> {
+    const ranks = await this.getMyRanks(dto.myId);
+    if (
+      (dto.rank === 1 && ranks['rank1']) ||
+      (dto.rank === 2 && ranks['rank2']) ||
+      (dto.rank === 3 && ranks['rank3']) ||
+      (dto.rank === 4 && ranks['rank4'])
+    ) {
+      throw new AppException(UserError.ALREADY_RANKED);
+    }
+    const user = await this.usersRepository.findOneBy({ id: dto.myId });
+    await this.addRank(user, dto.rank);
+  }
+
   async checkUserExists(id: number): Promise<void> {
     await this.usersRepository.findOneByOrFail({ id });
   }
@@ -579,6 +616,24 @@ export class UsersService {
       await this.usersRepository.save(user);
     } catch (error) {
       throw new AppException(UserError.REMOVE_IGNORER_FAILED);
+    }
+  }
+
+  private async addRank(user: User, rank: number): Promise<void> {
+    try {
+      if (rank === 1) {
+        user.rankedAt1 = new Date();
+      } else if (rank === 2) {
+        user.rankedAt2 = new Date();
+      } else if (rank === 3) {
+        user.rankedAt3 = new Date();
+      } else {
+        user.rankedAt4 = new Date();
+      }
+      user.rank++;
+      await this.usersRepository.save(user);
+    } catch (error) {
+      throw new AppException(UserError.ADD_RANK_FAILED);
     }
   }
 
