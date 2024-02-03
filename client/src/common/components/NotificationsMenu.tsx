@@ -12,17 +12,17 @@ import { parseTime } from '../utils';
 export default function NotificationsMenu() {
   const [t] = useTranslation();
 
-  const notifications = getActiveNotifications();
-
-  const keys = Object.keys(notifications);
-
   const dispatch = useAppDispatch();
+
+  const notifications = [...getActiveNotifications()].sort((a, b) =>
+    b.date.localeCompare(a.date),
+  );
 
   return (
     <Menu offset={4} position='bottom-end' trigger='hover'>
       <Menu.Target>
         <Indicator
-          label={keys.length}
+          label={notifications.length}
           overflowCount={9}
           showZero={false}
           dot={false}
@@ -36,23 +36,21 @@ export default function NotificationsMenu() {
       </Menu.Target>
       <Menu.Dropdown>
         <Menu.Label>{t('header.menu.notifications.title')}</Menu.Label>
-        {keys
-          .map((notification) => [notification].concat(notification.split('/')))
-          .map(([notification, id, nick, action, page]) => (
-            <Menu.Item
-              key={notification}
-              icon={<IconPoint size={16} />}
-              onClick={() =>
-                +id
-                  ? dispatch(publishNotification(notification))
-                  : dispatch(removeNotification(notification))
-              }
-            >
-              {nick + ' ' + t(`notifications.${page}.${action}`)}
-              <br />
-              {parseTime(new Date(notifications[notification]))}
-            </Menu.Item>
-          ))}
+        {notifications.map(({ key, id, nick, action, page, date }) => (
+          <Menu.Item
+            key={key}
+            icon={<IconPoint size={16} />}
+            onClick={() =>
+              +id
+                ? dispatch(publishNotification(key))
+                : dispatch(removeNotification(key))
+            }
+          >
+            {nick} {t(`notifications.${page}.${action}`)}
+            <br />
+            {parseTime(new Date(date))}
+          </Menu.Item>
+        ))}
       </Menu.Dropdown>
     </Menu>
   );
