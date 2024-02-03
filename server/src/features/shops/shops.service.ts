@@ -62,7 +62,8 @@ export class ShopsService {
       .createQueryBuilder('shop')
       .leftJoin('shop.users', 'user')
       .where('shop.id = :shopId', { shopId })
-      .orderBy('user.onlineAt', 'DESC')
+      .orderBy('user.type', 'DESC')
+      .addOrderBy('user.onlineAt', 'DESC')
       .addOrderBy('user.nick', 'ASC')
       .select(['shop.id', 'user.id', 'user.nick', 'user.avatar'])
       .getOne();
