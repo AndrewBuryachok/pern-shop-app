@@ -84,6 +84,8 @@ export default function RatingsPage() {
       search={search}
       setSearch={setSearch}
       button={button}
+      column='raters'
+      callback={(user) => user.ratersCount!}
     />
   ) : (
     <RatingsTable

@@ -50,6 +50,8 @@ export default function SubscribersPage() {
       setSearch={setSearch}
       button={button}
       actions={actions}
+      column='subscribers'
+      callback={(user) => user.subscribersCount!}
     />
   );
 }

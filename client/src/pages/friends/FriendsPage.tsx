@@ -58,6 +58,8 @@ export default function FriendsPage() {
       setSearch={setSearch}
       button={button}
       actions={actions}
+      column='friends'
+      callback={(user) => user.friendsCount!}
     />
   );
 }
