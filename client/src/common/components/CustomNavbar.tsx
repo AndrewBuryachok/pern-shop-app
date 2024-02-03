@@ -21,6 +21,7 @@ import {
   IconBuildingStore,
   IconBuildingWarehouse,
   IconBulb,
+  IconChartBar,
   IconChecklist,
   IconDeviceGamepad,
   IconMap,
@@ -106,6 +107,11 @@ export default function CustomNavbar(props: Props) {
     {
       route: 'users',
       icon: IconUsers,
+    },
+    {
+      route: 'ranks',
+      icon: IconChartBar,
+      sub: '/top',
     },
     {
       route: 'games',

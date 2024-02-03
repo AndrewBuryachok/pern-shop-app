@@ -38,6 +38,7 @@ const TasksPage = lazy(() => import('../pages/tasks/TasksPage'));
 const PlaintsPage = lazy(() => import('../pages/plaints/PlaintsPage'));
 const PollsPage = lazy(() => import('../pages/polls/PollsPage'));
 const RatingsPage = lazy(() => import('../pages/ratings/RatingsPage'));
+const RanksPage = lazy(() => import('../pages/ranks/RanksPage'));
 import { Role } from '../common/constants';
 
 export const tabs = ['top', 'server', 'site', 'status', 'spawn', 'hub', 'end'];
@@ -337,6 +338,11 @@ export const pages = [
       { path: 'received' },
       { path: 'all', role: Role.JUDGE },
     ],
+  },
+  {
+    path: 'ranks',
+    element: RanksPage,
+    nested: [{ path: 'top' }],
   },
   { path: '*', element: NotFound },
 ];

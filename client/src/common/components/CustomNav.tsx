@@ -4,12 +4,21 @@ import { Button, Group } from '@mantine/core';
 import { IconPlus } from '@tabler/icons';
 import { pages, tabs } from '../../app/pages';
 import { INav } from '../interfaces';
+import { getCurrentUser } from '../../features/auth/auth.slice';
+import { openAuthModal } from '../../features/auth/AuthModal';
+import {
+  useAddMyRankMutation,
+  useGetMyRanksQuery,
+} from '../../features/users/users.api';
+import { RankUserDto } from '../../features/users/user.dto';
 import { isUserNotHasRole } from '../utils';
 
 type Props = INav;
 
 export default function CustomNav(props: Props) {
   const [t] = useTranslation();
+
+  const user = getCurrentUser();
 
   const notHasRole = isUserNotHasRole(props.button?.role);
 
@@ -32,6 +41,39 @@ export default function CustomNav(props: Props) {
       ...route,
       path: index ? 'main' : route.path,
     }));
+
+  const { data, ...ranksResponse } = useGetMyRanksQuery(undefined, {
+    skip: active[1] !== 'ranks' || !user,
+  });
+
+  const ranks = [
+    {
+      label: 'TMonitoring',
+      value: data?.rank1,
+      link: 'https://tmonitoring.com/server/minesquare',
+    },
+    {
+      label: 'MinecraftInside',
+      value: data?.rank2,
+      link: 'https://minecraft-inside.ru/top/server/17890/vote',
+    },
+    {
+      label: 'HotMc',
+      value: data?.rank3,
+      link: 'https://hotmc.ru/vote-200633',
+    },
+    {
+      label: 'MinecraftRating',
+      value: data?.rank4,
+      link: 'https://minecraftrating.ru/vote/93158',
+    },
+  ];
+
+  const [addRank] = useAddMyRankMutation();
+
+  const handleSubmit = async (dto: RankUserDto) => {
+    await addRank(dto);
+  };
 
   return (
     <Group spacing={8}>
@@ -63,6 +105,26 @@ export default function CustomNav(props: Props) {
           {t(`actions.${props.button.label}`)}
         </Button>
       )}
+      {active[1] === 'ranks' &&
+        ranks.map((rank, index) => (
+          <Button
+            key={rank.label}
+            component='a'
+            href={rank.link}
+            target='_blank'
+            onClick={() =>
+              user ? handleSubmit({ rank: index + 1 }) : openAuthModal()
+            }
+            leftIcon={<IconPlus size={16} />}
+            color='green'
+            loading={ranksResponse.isFetching}
+            loaderPosition='center'
+            disabled={rank.value}
+            compact
+          >
+            {rank.label}
+          </Button>
+        ))}
     </Group>
   );
 }

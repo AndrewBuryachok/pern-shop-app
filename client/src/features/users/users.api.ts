@@ -4,6 +4,7 @@ import { ExtUser, SmUser, User } from './user.model';
 import {
   EditUserPasswordDto,
   EditUserProfileDto,
+  RankUserDto,
   UpdateUserRoleDto,
 } from './user.dto';
 import { getQuery } from '../../common/utils';
@@ -45,6 +46,12 @@ export const usersApi = emptyApi.injectEndpoints({
         url: `/users/ratings?${getQuery(req)}`,
       }),
       providesTags: ['User', 'Rating'],
+    }),
+    getRanksUsers: build.query<IResponse<User>, IRequest>({
+      query: (req) => ({
+        url: `/users/ranks?${getQuery(req)}`,
+      }),
+      providesTags: ['User', 'Rank'],
     }),
     getMyUsers: build.query<IResponse<User>, IRequest>({
       query: (req) => ({
@@ -131,6 +138,23 @@ export const usersApi = emptyApi.injectEndpoints({
       }),
       invalidatesTags: ['User'],
     }),
+    getMyRanks: build.query<
+      { rank1: boolean; rank2: boolean; rank3: boolean; rank4: boolean },
+      void
+    >({
+      query: () => ({
+        url: '/users/me/ranks',
+      }),
+      providesTags: ['Auth', 'Rank'],
+    }),
+    addMyRank: build.mutation<void, RankUserDto>({
+      query: (dto) => ({
+        url: '/users/me/ranks',
+        method: 'POST',
+        body: dto,
+      }),
+      invalidatesTags: ['Rank'],
+    }),
   }),
 });
 
@@ -141,6 +165,7 @@ export const {
   useGetSubscribersUsersQuery,
   useGetIgnorersUsersQuery,
   useGetRatingsUsersQuery,
+  useGetRanksUsersQuery,
   useGetMyUsersQuery,
   useGetAllUsersQuery,
   useSelectAllUsersQuery,
@@ -154,4 +179,6 @@ export const {
   useEditUserPasswordMutation,
   useAddUserRoleMutation,
   useRemoveUserRoleMutation,
+  useGetMyRanksQuery,
+  useAddMyRankMutation,
 } = usersApi;
