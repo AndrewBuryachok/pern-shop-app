@@ -17,6 +17,7 @@ export interface User extends MdUser {
 }
 
 export interface ExtUser extends User {
+  time: number;
   background: number;
   discord: string;
   twitch: string;

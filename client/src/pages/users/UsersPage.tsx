@@ -5,6 +5,7 @@ import {
   useGetAllUsersQuery,
   useGetMainUsersQuery,
   useGetMyUsersQuery,
+  useGetTopUsersQuery,
 } from '../../features/users/users.api';
 import UsersTable from '../../features/users/UsersTable';
 import { addUserCityButton } from '../../features/users/AddUserCityModal';
@@ -32,6 +33,7 @@ export default function UsersPage() {
 
   const response = {
     main: useGetMainUsersQuery,
+    top: useGetTopUsersQuery,
     my: useGetMyUsersQuery,
     all: useGetAllUsersQuery,
   }[tab]!({ page, search });
