@@ -13,12 +13,35 @@ export class SubscribersService {
     private mqttService: MqttService,
   ) {}
 
-  getMySubscribers(myId: number, req: Request): Promise<Response<User>> {
-    return this.usersService.getMySubscribers(myId, req);
+  async getMySubscribers(myId: number, req: Request): Promise<Response<User>> {
+    const [result, count] = await this.usersService
+      .getSubscribersQueryBuilder(req)
+      .innerJoinAndMapOne(
+        'subscriber',
+        'user.receivedSubscribers',
+        'subscriber',
+        'subscriber.id = :myId',
+        { myId },
+      )
+      .getManyAndCount();
+    return { result, count };
   }
 
-  getReceivedSubscribers(myId: number, req: Request): Promise<Response<User>> {
-    return this.usersService.getReceivedSubscribers(myId, req);
+  async getReceivedSubscribers(
+    myId: number,
+    req: Request,
+  ): Promise<Response<User>> {
+    const [result, count] = await this.usersService
+      .getSubscribersQueryBuilder(req)
+      .innerJoinAndMapOne(
+        'subscriber',
+        'user.sentSubscribers',
+        'subscriber',
+        'subscriber.id = :myId',
+        { myId },
+      )
+      .getManyAndCount();
+    return { result, count };
   }
 
   selectMySubscribers(myId: number): Promise<User[]> {

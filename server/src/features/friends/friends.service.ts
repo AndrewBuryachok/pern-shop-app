@@ -20,16 +20,44 @@ export class FriendsService {
     private mqttService: MqttService,
   ) {}
 
-  getMyFriends(myId: number, req: Request): Promise<Response<User>> {
-    return this.usersService.getMyFriends(myId, req);
+  async getMyFriends(myId: number, req: Request): Promise<Response<User>> {
+    const [result, count] = await this.usersService
+      .getFriendsQueryBuilder(req)
+      .leftJoin('user.friends', 'friend')
+      .andWhere('friend.id = :myId', { myId })
+      .getManyAndCount();
+    return { result, count };
   }
 
-  getSentFriends(myId: number, req: Request): Promise<Response<User>> {
-    return this.usersService.getSentFriends(myId, req);
+  async getSentFriends(myId: number, req: Request): Promise<Response<User>> {
+    const [result, count] = await this.usersService
+      .getFriendsQueryBuilder(req)
+      .leftJoinAndMapMany(
+        'user.invitations',
+        'invitations',
+        'invitation',
+        'invitation.receiverUserId = user.id',
+      )
+      .andWhere('invitation.senderUserId = :myId', { myId })
+      .getManyAndCount();
+    return { result, count };
   }
 
-  getReceivedFriends(myId: number, req: Request): Promise<Response<User>> {
-    return this.usersService.getReceivedFriends(myId, req);
+  async getReceivedFriends(
+    myId: number,
+    req: Request,
+  ): Promise<Response<User>> {
+    const [result, count] = await this.usersService
+      .getFriendsQueryBuilder(req)
+      .leftJoinAndMapMany(
+        'user.invitations',
+        'invitations',
+        'invitation',
+        'invitation.senderUserId = user.id',
+      )
+      .andWhere('invitation.receiverUserId = :myId', { myId })
+      .getManyAndCount();
+    return { result, count };
   }
 
   async addFriend(dto: UpdateFriendDto & { nick: string }): Promise<void> {
