@@ -33,6 +33,12 @@ export class UsersController {
   }
 
   @Public()
+  @Get('top')
+  getTopUsers(@Query() req: Request): Promise<Response<User>> {
+    return this.usersService.getTopUsers(req);
+  }
+
+  @Public()
   @Get('friends')
   getFriendsUsers(@Query() req: Request): Promise<Response<User>> {
     return this.usersService.getFriendsUsers(req);

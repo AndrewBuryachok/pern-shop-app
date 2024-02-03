@@ -35,6 +35,16 @@ export class UsersService {
     return { result, count };
   }
 
+  async getTopUsers(req: Request): Promise<Response<User>> {
+    const [result, count] = await this.getUsersQueryBuilder(req)
+      .orderBy('user.time', 'DESC')
+      .addOrderBy('user.type', 'DESC')
+      .addOrderBy('user.onlineAt', 'DESC')
+      .addOrderBy('user.id', 'DESC')
+      .getManyAndCount();
+    return { result, count };
+  }
+
   async getFriendsUsers(req: Request): Promise<Response<User>> {
     const [result, count] = await this.getUsersQueryBuilder(req)
       .leftJoin('user.friends', 'friend')
@@ -437,6 +447,8 @@ export class UsersService {
 
   private async removeOnline(user: User): Promise<void> {
     try {
+      const time = (new Date().getTime() - user.onlineAt.getTime()) / 60000;
+      user.time += time;
       user.type = false;
       user.onlineAt = new Date();
       await this.usersRepository.save(user);
@@ -572,12 +584,9 @@ export class UsersService {
       )
       .andWhere(
         new Brackets((qb) =>
-          qb.where(`${req.type !== 1}`).orWhere('user.onlineAt IS NULL'),
-        ),
-      )
-      .andWhere(
-        new Brackets((qb) =>
-          qb.where(`${req.type !== -1}`).orWhere('user.onlineAt IS NOT NULL'),
+          qb
+            .where(`${!req.type}`)
+            .orWhere('user.type = :type', { type: req.type === 1 }),
         ),
       )
       .andWhere(
@@ -606,6 +615,7 @@ export class UsersService {
         'user.roles',
         'user.createdAt',
         'user.onlineAt',
+        'user.type',
         'city.id',
         'ownerUser.id',
         'ownerUser.nick',
@@ -619,6 +629,7 @@ export class UsersService {
   private async getUserProfile(userId: number): Promise<User> {
     const user = await this.getUsersQueryBuilder({ id: userId })
       .addSelect([
+        'user.time',
         'user.background',
         'user.discord',
         'user.twitch',

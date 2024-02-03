@@ -28,9 +28,6 @@ export class User {
   @Column({ nullable: true })
   token?: string;
 
-  @Column({ default: false })
-  type: boolean;
-
   @Column({ default: '' })
   avatar: string;
 
@@ -54,6 +51,12 @@ export class User {
 
   @Column({ type: 'timestamptz', name: 'online_at', nullable: true })
   onlineAt?: Date;
+
+  @Column({ default: false })
+  type: boolean;
+
+  @Column({ default: 0 })
+  time: number;
 
   @Column({ name: 'city_id', nullable: true })
   cityId?: number;
