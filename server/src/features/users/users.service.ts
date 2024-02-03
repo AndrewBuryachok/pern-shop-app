@@ -29,14 +29,14 @@ export class UsersService {
   ) {}
 
   async getMainUsers(req: Request): Promise<Response<User>> {
-    const [result, count] = await this.getUsersQueryBuilder(
+    const [result, count] = await this.getExtUsersQueryBuilder(
       req,
     ).getManyAndCount();
     return { result, count };
   }
 
   async getTopUsers(req: Request): Promise<Response<User>> {
-    const [result, count] = await this.getUsersQueryBuilder(req)
+    const [result, count] = await this.getExtUsersQueryBuilder(req)
       .orderBy('user.time', 'DESC')
       .addOrderBy('user.type', 'DESC')
       .addOrderBy('user.onlineAt', 'DESC')
@@ -46,7 +46,7 @@ export class UsersService {
   }
 
   async getFriendsUsers(req: Request): Promise<Response<User>> {
-    const [result, count] = await this.getUsersQueryBuilder(req)
+    const [result, count] = await this.getFriendsQueryBuilder(req)
       .leftJoin('user.friends', 'friend')
       .groupBy('user.id')
       .addGroupBy('city.id')
@@ -61,7 +61,7 @@ export class UsersService {
   }
 
   async getSubscribersUsers(req: Request): Promise<Response<User>> {
-    const [result, count] = await this.getUsersQueryBuilder(req)
+    const [result, count] = await this.getSubscribersQueryBuilder(req)
       .leftJoin('user.receivedSubscribers', 'subscriber')
       .groupBy('user.id')
       .addGroupBy('city.id')
@@ -76,7 +76,7 @@ export class UsersService {
   }
 
   async getRatingsUsers(req: Request): Promise<Response<User>> {
-    const [result, count] = await this.getUsersQueryBuilder(req)
+    const [result, count] = await this.getRatingsQueryBuilder(req)
       .leftJoin('user.receivedRatings', 'rating')
       .groupBy('user.id')
       .addGroupBy('city.id')
@@ -93,7 +93,7 @@ export class UsersService {
   }
 
   async getMyUsers(myId: number, req: Request): Promise<Response<User>> {
-    const [result, count] = await this.getUsersQueryBuilder(req)
+    const [result, count] = await this.getExtUsersQueryBuilder(req)
       .leftJoin('city.users', 'cityUsers')
       .andWhere('cityUsers.id = :myId', { myId })
       .getManyAndCount();
@@ -101,76 +101,31 @@ export class UsersService {
   }
 
   async getAllUsers(req: Request): Promise<Response<User>> {
-    const [result, count] = await this.getUsersQueryBuilder(
+    const [result, count] = await this.getExtUsersQueryBuilder(
       req,
     ).getManyAndCount();
     return { result, count };
   }
 
-  async getMyFriends(myId: number, req: Request): Promise<Response<User>> {
-    const [result, count] = await this.getUsersQueryBuilder(req)
-      .leftJoin('user.friends', 'friend')
-      .andWhere('friend.id = :myId', { myId })
-      .getManyAndCount();
-    return { result, count };
+  getFriendsQueryBuilder(req: Request): SelectQueryBuilder<User> {
+    return this.getUsersQueryBuilder(req).loadRelationCountAndMap(
+      'user.friendsCount',
+      'user.friends',
+    );
   }
 
-  async getSentFriends(myId: number, req: Request): Promise<Response<User>> {
-    const [result, count] = await this.getUsersQueryBuilder(req)
-      .leftJoinAndMapMany(
-        'user.invitations',
-        'invitations',
-        'invitation',
-        'invitation.receiverUserId = user.id',
-      )
-      .andWhere('invitation.senderUserId = :myId', { myId })
-      .getManyAndCount();
-    return { result, count };
+  getSubscribersQueryBuilder(req: Request): SelectQueryBuilder<User> {
+    return this.getUsersQueryBuilder(req).loadRelationCountAndMap(
+      'user.subscribersCount',
+      'user.receivedSubscribers',
+    );
   }
 
-  async getReceivedFriends(
-    myId: number,
-    req: Request,
-  ): Promise<Response<User>> {
-    const [result, count] = await this.getUsersQueryBuilder(req)
-      .leftJoinAndMapMany(
-        'user.invitations',
-        'invitations',
-        'invitation',
-        'invitation.senderUserId = user.id',
-      )
-      .andWhere('invitation.receiverUserId = :myId', { myId })
-      .getManyAndCount();
-    return { result, count };
-  }
-
-  async getMySubscribers(myId: number, req: Request): Promise<Response<User>> {
-    const [result, count] = await this.getUsersQueryBuilder(req)
-      .innerJoinAndMapOne(
-        'subscriber',
-        'user.receivedSubscribers',
-        'subscriber',
-        'subscriber.id = :myId',
-        { myId },
-      )
-      .getManyAndCount();
-    return { result, count };
-  }
-
-  async getReceivedSubscribers(
-    myId: number,
-    req: Request,
-  ): Promise<Response<User>> {
-    const [result, count] = await this.getUsersQueryBuilder(req)
-      .innerJoinAndMapOne(
-        'subscriber',
-        'user.sentSubscribers',
-        'subscriber',
-        'subscriber.id = :myId',
-        { myId },
-      )
-      .getManyAndCount();
-    return { result, count };
+  getRatingsQueryBuilder(req: Request): SelectQueryBuilder<User> {
+    return this.getUsersQueryBuilder(req).loadRelationCountAndMap(
+      'user.ratersCount',
+      'user.receivedRatings',
+    );
   }
 
   selectAllUsers(): Promise<User[]> {
@@ -447,8 +402,8 @@ export class UsersService {
 
   private async removeOnline(user: User): Promise<void> {
     try {
-      const time = (new Date().getTime() - user.onlineAt.getTime()) / 60000;
-      user.time += time;
+      const diff = (new Date().getTime() - user.onlineAt.getTime()) / 60000;
+      user.time += Math.floor(diff);
       user.type = false;
       user.onlineAt = new Date();
       await this.usersRepository.save(user);
@@ -549,6 +504,10 @@ export class UsersService {
       .addOrderBy('user.onlineAt', 'DESC')
       .addOrderBy('user.nick', 'ASC')
       .select(['user.id', 'user.nick', 'user.avatar']);
+  }
+
+  private getExtUsersQueryBuilder(req: Request): SelectQueryBuilder<User> {
+    return this.getUsersQueryBuilder(req).addSelect(['user.time']);
   }
 
   private getUsersQueryBuilder(req: Request): SelectQueryBuilder<User> {
