@@ -42,6 +42,7 @@ export class UsersService {
       .addGroupBy('city.id')
       .addGroupBy('ownerUser.id')
       .orderBy('user_friends', 'DESC', 'NULLS LAST')
+      .addOrderBy('user.type', 'DESC')
       .addOrderBy('user.onlineAt', 'DESC')
       .addOrderBy('user.id', 'DESC')
       .addSelect('COUNT(friend.id)', 'user_friends')
@@ -56,6 +57,7 @@ export class UsersService {
       .addGroupBy('city.id')
       .addGroupBy('ownerUser.id')
       .orderBy('user_subscribers', 'DESC', 'NULLS LAST')
+      .addOrderBy('user.type', 'DESC')
       .addOrderBy('user.onlineAt', 'DESC')
       .addOrderBy('user.id', 'DESC')
       .addSelect('COUNT(subscriber.id)', 'user_subscribers')
@@ -71,6 +73,7 @@ export class UsersService {
       .addGroupBy('ownerUser.id')
       .orderBy('user_rating', 'DESC', 'NULLS LAST')
       .addOrderBy('user_ratings', 'DESC', 'NULLS LAST')
+      .addOrderBy('user.type', 'DESC')
       .addOrderBy('user.onlineAt', 'DESC')
       .addOrderBy('user.id', 'DESC')
       .addSelect('AVG(rating.rate)', 'user_rating')
@@ -260,12 +263,16 @@ export class UsersService {
 
   async addUserOnline(id: number): Promise<void> {
     const user = await this.usersRepository.findOneBy({ id });
-    await this.addOnline(user);
+    if (!user.type) {
+      await this.addOnline(user);
+    }
   }
 
   async removeUserOnline(id: number): Promise<void> {
     const user = await this.usersRepository.findOneBy({ id });
-    await this.removeOnline(user);
+    if (user.type) {
+      await this.removeOnline(user);
+    }
   }
 
   async editUserProfile(dto: ExtEditUserProfileDto): Promise<void> {
@@ -420,7 +427,8 @@ export class UsersService {
 
   private async addOnline(user: User): Promise<void> {
     try {
-      user.onlineAt = null;
+      user.type = true;
+      user.onlineAt = new Date();
       await this.usersRepository.save(user);
     } catch (error) {
       throw new AppException(UserError.ADD_ONLINE_FAILED);
@@ -429,6 +437,7 @@ export class UsersService {
 
   private async removeOnline(user: User): Promise<void> {
     try {
+      user.type = false;
       user.onlineAt = new Date();
       await this.usersRepository.save(user);
     } catch (error) {
@@ -524,7 +533,8 @@ export class UsersService {
   private selectUsersQueryBuilder(): SelectQueryBuilder<User> {
     return this.usersRepository
       .createQueryBuilder('user')
-      .orderBy('user.onlineAt', 'DESC')
+      .orderBy('user.type', 'DESC')
+      .addOrderBy('user.onlineAt', 'DESC')
       .addOrderBy('user.nick', 'ASC')
       .select(['user.id', 'user.nick', 'user.avatar']);
   }
@@ -584,7 +594,8 @@ export class UsersService {
             .orWhere('user.createdAt <= :maxDate', { maxDate: req.maxDate }),
         ),
       )
-      .orderBy('user.onlineAt', 'DESC')
+      .orderBy('user.type', 'DESC')
+      .addOrderBy('user.onlineAt', 'DESC')
       .addOrderBy('user.id', 'DESC')
       .skip(req.skip)
       .take(req.take)

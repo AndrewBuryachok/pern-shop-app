@@ -58,7 +58,8 @@ export class CardsService {
       .createQueryBuilder('card')
       .leftJoin('card.users', 'user')
       .where('card.id = :cardId', { cardId })
-      .orderBy('user.onlineAt', 'DESC')
+      .orderBy('user.type', 'DESC')
+      .addOrderBy('user.onlineAt', 'DESC')
       .addOrderBy('user.nick', 'ASC')
       .select(['card.id', 'user.id', 'user.nick', 'user.avatar'])
       .getOne();

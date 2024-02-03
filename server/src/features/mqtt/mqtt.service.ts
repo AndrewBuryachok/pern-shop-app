@@ -5,6 +5,8 @@ import { UsersService } from '../users/users.service';
 @Injectable()
 export class MqttService {
   private client: MqttClient;
+  private users = new Set<number>();
+  private notifications = new Map<string, Date>();
 
   constructor(
     @Inject(forwardRef(() => UsersService))
@@ -12,16 +14,64 @@ export class MqttService {
   ) {
     this.client = connect(process.env.BROKER_URL);
     this.client.on('connect', () =>
-      this.client.subscribe(process.env.BROKER_TOPIC + 'users/#'),
+      this.client.subscribe([
+        process.env.BROKER_TOPIC + 'users/#',
+        process.env.BROKER_TOPIC + 'notifications/#',
+      ]),
     );
     this.client.on('message', (topic, message) => {
       const id = +topic.split('/')[2];
-      if (message.toString()) {
-        this.usersService.addUserOnline(id);
+      const payload = message.toString();
+      if (topic.split('/')[1] === 'users') {
+        if (payload) {
+          if (!this.users.has(id)) {
+            this.usersService.addUserOnline(id);
+          }
+          this.users.add(id);
+        } else {
+          if (this.users.has(id)) {
+            this.usersService.removeUserOnline(id);
+          }
+          this.users.delete(id);
+        }
       } else {
-        this.usersService.removeUserOnline(id);
+        const [nick, action, page] = topic.split('/').slice(3);
+        const data = `${id}/${nick}/${action}/${page}`;
+        if (payload) {
+          if (id) {
+            this.notifications.set(data, new Date(payload));
+          }
+        } else {
+          this.notifications.delete(data);
+        }
       }
     });
+  }
+
+  async getCurrentUsers(): Promise<number[]> {
+    const result = [];
+    const keys = this.users.keys();
+    for (const user of keys) {
+      this.publishMessage(`users/${user}`, '', true);
+      result.push(user);
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+    }
+    return result;
+  }
+
+  async getCurrentNotifications(): Promise<string[]> {
+    const result = [];
+    const keys = this.notifications.keys();
+    const date = new Date();
+    date.setDate(date.getDate() - 3);
+    for (const notification of keys) {
+      if (this.notifications.get(notification).getTime() < date.getTime()) {
+        this.publishMessage(`notifications/${notification}`, '', true);
+        result.push(notification);
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+      }
+    }
+    return result;
   }
 
   async publishNotificationMention(
@@ -41,14 +91,20 @@ export class MqttService {
 
   publishNotificationMessage(id: number, nick: string, message: string): void {
     const [action, page] = message.split(' ');
-    this.publishMessage(`notifications/${id}/${nick}/${action}/${page}`, !!id);
+    this.publishMessage(
+      `notifications/${id}/${nick}/${action}/${page}`,
+      new Date().toISOString(),
+      !!id,
+    );
   }
 
-  private publishMessage(topic: string, retain: boolean): void {
-    this.client.publish(
-      process.env.BROKER_TOPIC + topic,
-      new Date().toISOString(),
-      { retain },
-    );
+  private publishMessage(
+    topic: string,
+    message: string,
+    retain: boolean,
+  ): void {
+    this.client.publish(process.env.BROKER_TOPIC + topic, message, {
+      retain,
+    });
   }
 }
