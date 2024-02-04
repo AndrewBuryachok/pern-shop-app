@@ -1,3 +1,4 @@
+import { useLocation } from 'react-router-dom';
 import { ITableWithActions } from '../../common/interfaces';
 import { User } from './user.model';
 import CustomTable from '../../common/components/CustomTable';
@@ -8,6 +9,7 @@ import PlaceWithSingleAvatar from '../../common/components/PlaceWithSingleAvatar
 import DateText from '../../common/components/DateText';
 import CustomActions from '../../common/components/CustomActions';
 import { viewUserAction } from './ViewUserModal';
+import { ROWS_PER_PAGE } from '../../common/constants';
 
 type Props = ITableWithActions<User> & {
   column: string;
@@ -15,10 +17,13 @@ type Props = ITableWithActions<User> & {
 };
 
 export default function UsersTable({ actions = [], ...props }: Props) {
+  const active = useLocation().pathname.split('/')[2] || 'main';
+
   return (
     <CustomTable
       minWidth={1000}
       columns={[
+        ...(active === 'top' ? ['top'] : []),
         'user',
         'roles',
         'city',
@@ -29,8 +34,15 @@ export default function UsersTable({ actions = [], ...props }: Props) {
       ]}
       {...props}
     >
-      {props.data?.result.map((user) => (
+      {props.data?.result.map((user, index) => (
         <tr key={user.id}>
+          {active === 'top' && (
+            <td>
+              <SingleText
+                text={`${(props.page - 1) * ROWS_PER_PAGE + index + 1}`}
+              />
+            </td>
+          )}
           <td>
             <AvatarWithSingleText {...user} />
           </td>
