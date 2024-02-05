@@ -403,8 +403,7 @@
       "created": "created product"
     },
     "lots": {
-      "created": "created lot",
-      "completed": "completed your lot"
+      "created": "created lot"
     },
     "trades": {
       "created": "bought your ware",
@@ -415,7 +414,8 @@
       "rated": "rated your product"
     },
     "bids": {
-      "created": "bought your lot"
+      "created": "bought your lot",
+      "completed": "completed your lot"
     },
     "orders": {
       "created": "created order",

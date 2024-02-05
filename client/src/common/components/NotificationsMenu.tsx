@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 import { ActionIcon, Indicator, Menu } from '@mantine/core';
 import { IconBell, IconPoint } from '@tabler/icons';
 import { useAppDispatch } from '../../app/hooks';
@@ -8,6 +9,7 @@ import {
   removeNotification,
 } from '../../features/mqtt/mqtt.slice';
 import { parseTime } from '../utils';
+import { notificationToTab } from '../enums';
 
 export default function NotificationsMenu() {
   const [t] = useTranslation();
@@ -36,12 +38,22 @@ export default function NotificationsMenu() {
       </Menu.Target>
       <Menu.Dropdown>
         <Menu.Label>{t('header.menu.notifications.title')}</Menu.Label>
-        {notifications.map(({ key, id, nick, action, page, date }) => (
+        {notifications.map(({ key, userId, nick, action, page, id, date }) => (
           <Menu.Item
             key={key}
             icon={<IconPoint size={16} />}
+            component={Link}
+            to={`/${page}/${
+              notificationToTab
+                .find(
+                  (notification) =>
+                    notification.split(' ')[0] === action &&
+                    notification.split(' ')[1] === page,
+                )!
+                .split(' ')[2]
+            }?id=${id}`.replace('/main', '')}
             onClick={() =>
-              +id
+              +userId
                 ? dispatch(publishNotification(key))
                 : dispatch(removeNotification(key))
             }
