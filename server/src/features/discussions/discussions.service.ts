@@ -28,6 +28,7 @@ export class DiscussionsService {
     const poll = await this.pollsService.checkPollNotCompleted(dto.pollId);
     await this.create(dto);
     this.mqttService.publishNotificationMessage(
+      dto.pollId,
       poll.userId,
       dto.nick,
       Notification.DISCUSSED_POLL,
@@ -37,12 +38,14 @@ export class DiscussionsService {
         id: dto.discussionId,
       });
       this.mqttService.publishNotificationMessage(
+        dto.pollId,
         reply.userId,
         dto.nick,
         Notification.REPLIED_DISCUSSION,
       );
     }
     await this.mqttService.publishNotificationMention(
+      dto.pollId,
       dto.text,
       dto.nick,
       Notification.MENTIONED_DISCUSSION,
@@ -60,6 +63,7 @@ export class DiscussionsService {
     await this.pollsService.checkPollNotCompleted(discussion.pollId);
     await this.edit(discussion, dto);
     await this.mqttService.publishNotificationMention(
+      discussion.pollId,
       dto.text,
       dto.nick,
       Notification.MENTIONED_DISCUSSION,

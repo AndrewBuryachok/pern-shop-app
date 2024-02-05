@@ -28,6 +28,7 @@ export class AnnotationsService {
     await this.create(dto);
     const report = await this.reportsService.findReportById(dto.reportId);
     this.mqttService.publishNotificationMessage(
+      dto.reportId,
       report.userId,
       dto.nick,
       Notification.ANNOTATED_REPORT,
@@ -37,12 +38,14 @@ export class AnnotationsService {
         id: dto.annotationId,
       });
       this.mqttService.publishNotificationMessage(
+        dto.reportId,
         reply.userId,
         dto.nick,
         Notification.REPLIED_ANNOTATION,
       );
     }
     await this.mqttService.publishNotificationMention(
+      dto.reportId,
       dto.text,
       dto.nick,
       Notification.MENTIONED_ANNOTATION,
@@ -59,6 +62,7 @@ export class AnnotationsService {
     );
     await this.edit(annotation, dto);
     await this.mqttService.publishNotificationMention(
+      annotation.reportId,
       dto.text,
       dto.nick,
       Notification.MENTIONED_ANNOTATION,

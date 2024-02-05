@@ -109,8 +109,9 @@ export class StoragesService {
     await this.checkHasNotEnough(dto.myId);
     await this.checkNameNotUsed(dto.name);
     await this.checkCoordinatesNotUsed(dto.x, dto.y);
-    await this.create(dto);
+    const storage = await this.create(dto);
     this.mqttService.publishNotificationMessage(
+      storage.id,
       0,
       dto.nick,
       Notification.CREATED_STORAGE,

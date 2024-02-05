@@ -24,9 +24,9 @@ export class PlaintsService {
   ) {}
 
   async getMainPlaints(req: Request): Promise<Response<Plaint>> {
-    const [result, count] = await this.getPlaintsQueryBuilder(req)
-      .andWhere('plaint.completedAt IS NULL')
-      .getManyAndCount();
+    const [result, count] = await this.getPlaintsQueryBuilder(
+      req,
+    ).getManyAndCount();
     return { result, count };
   }
 
@@ -100,8 +100,9 @@ export class PlaintsService {
   async createPlaint(
     dto: ExtCreatePlaintDto & { nick: string },
   ): Promise<void> {
-    await this.create(dto);
+    const plaint = await this.create(dto);
     this.mqttService.publishNotificationMessage(
+      plaint.id,
       dto.receiverUserId,
       dto.nick,
       Notification.CREATED_PLAINT,
@@ -124,12 +125,14 @@ export class PlaintsService {
     await this.complete(plaint, dto);
     [plaint.senderUserId, plaint.receiverUserId].forEach((userId) =>
       this.mqttService.publishNotificationMessage(
+        dto.plaintId,
         userId,
         dto.nick,
         Notification.COMPLETED_PLAINT,
       ),
     );
     await this.mqttService.publishNotificationMention(
+      dto.plaintId,
       dto.text,
       dto.nick,
       Notification.MENTIONED_PLAINT,
@@ -144,6 +147,7 @@ export class PlaintsService {
     );
     await this.delete(plaint);
     this.mqttService.publishNotificationMessage(
+      dto.plaintId,
       plaint.receiverUserId,
       dto.nick,
       Notification.DELETED_PLAINT,

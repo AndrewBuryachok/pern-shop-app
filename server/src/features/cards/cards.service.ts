@@ -87,6 +87,7 @@ export class CardsService {
     }
     await this.addUser(card, dto.userId);
     this.mqttService.publishNotificationMessage(
+      dto.cardId,
       dto.userId,
       dto.nick,
       Notification.ADDED_CARD,
@@ -105,6 +106,7 @@ export class CardsService {
     }
     await this.removeUser(card, dto.userId);
     this.mqttService.publishNotificationMessage(
+      dto.cardId,
       dto.userId,
       dto.nick,
       Notification.REMOVED_CARD,

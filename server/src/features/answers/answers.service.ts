@@ -31,6 +31,7 @@ export class AnswersService {
     await this.create(dto);
     [plaint.senderUserId, plaint.receiverUserId].forEach((userId) =>
       this.mqttService.publishNotificationMessage(
+        dto.plaintId,
         userId,
         dto.nick,
         Notification.ANSWERED_PLAINT,
@@ -41,12 +42,14 @@ export class AnswersService {
         id: dto.answerId,
       });
       this.mqttService.publishNotificationMessage(
+        dto.plaintId,
         reply.userId,
         dto.nick,
         Notification.REPLIED_ANSWER,
       );
     }
     await this.mqttService.publishNotificationMention(
+      dto.plaintId,
       dto.text,
       dto.nick,
       Notification.MENTIONED_ANSWER,
@@ -62,6 +65,7 @@ export class AnswersService {
     await this.plaintsService.checkPlaintNotCompleted(answer.plaintId);
     await this.edit(answer, dto);
     await this.mqttService.publishNotificationMention(
+      answer.plaintId,
       dto.text,
       dto.nick,
       Notification.MENTIONED_ANSWER,

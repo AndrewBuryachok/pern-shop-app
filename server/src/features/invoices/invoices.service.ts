@@ -66,8 +66,9 @@ export class InvoicesService {
       dto.myId,
       dto.hasRole,
     );
-    await this.create(dto);
+    const invoice = await this.create(dto);
     this.mqttService.publishNotificationMessage(
+      invoice.id,
       dto.receiverUserId,
       dto.nick,
       Notification.CREATED_INVOICE,
@@ -96,6 +97,7 @@ export class InvoicesService {
     });
     await this.complete(invoice, dto.cardId);
     this.mqttService.publishNotificationMessage(
+      dto.invoiceId,
       invoice.senderCard.userId,
       dto.nick,
       Notification.COMPLETED_INVOICE,
@@ -113,6 +115,7 @@ export class InvoicesService {
     }
     await this.delete(invoice);
     this.mqttService.publishNotificationMessage(
+      dto.invoiceId,
       invoice.receiverUserId,
       dto.nick,
       Notification.DELETED_INVOICE,

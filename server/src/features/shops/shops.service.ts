@@ -94,8 +94,9 @@ export class ShopsService {
     await this.checkHasNotEnough(dto.userId);
     await this.checkNameNotUsed(dto.name);
     await this.checkCoordinatesNotUsed(dto.x, dto.y);
-    await this.create(dto);
+    const shop = await this.create(dto);
     this.mqttService.publishNotificationMessage(
+      shop.id,
       0,
       dto.nick,
       Notification.CREATED_SHOP,
@@ -118,6 +119,7 @@ export class ShopsService {
     }
     await this.addUser(shop, dto.userId);
     this.mqttService.publishNotificationMessage(
+      dto.shopId,
       dto.userId,
       dto.nick,
       Notification.ADDED_SHOP,
@@ -136,6 +138,7 @@ export class ShopsService {
     }
     await this.removeUser(shop, dto.userId);
     this.mqttService.publishNotificationMessage(
+      dto.shopId,
       dto.userId,
       dto.nick,
       Notification.REMOVED_SHOP,

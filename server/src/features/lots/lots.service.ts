@@ -72,8 +72,9 @@ export class LotsService {
       ...dto,
       kind: Kind.LOT,
     });
-    await this.create({ ...dto, storageId: leaseId });
+    const lot = await this.create({ ...dto, storageId: leaseId });
     this.mqttService.publishNotificationMessage(
+      lot.id,
       0,
       dto.nick,
       Notification.CREATED_LOT,
@@ -118,9 +119,10 @@ export class LotsService {
     await this.complete(lot);
     lot.bids.forEach((bid) =>
       this.mqttService.publishNotificationMessage(
+        bid.id,
         bid.card.userId,
         dto.nick,
-        Notification.COMPLETED_LOT,
+        Notification.COMPLETED_BID,
       ),
     );
   }

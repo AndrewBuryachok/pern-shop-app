@@ -103,12 +103,13 @@ export class DeliveriesService {
       kind: Kind.DELIVERY,
     });
     await this.cardsService.decreaseCardBalance({ ...dto, sum: dto.price });
-    await this.create({
+    const delivery = await this.create({
       ...dto,
       fromStorageId: fromLeaseId,
       toStorageId: toLeaseId,
     });
     this.mqttService.publishNotificationMessage(
+      delivery.id,
       0,
       dto.nick,
       Notification.CREATED_DELIVERY,
@@ -134,6 +135,7 @@ export class DeliveriesService {
     }
     await this.take(delivery, dto.cardId);
     this.mqttService.publishNotificationMessage(
+      dto.deliveryId,
       delivery.fromLease.card.userId,
       dto.nick,
       Notification.TAKEN_DELIVERY,
@@ -153,6 +155,7 @@ export class DeliveriesService {
     }
     await this.untake(delivery);
     this.mqttService.publishNotificationMessage(
+      dto.deliveryId,
       delivery.fromLease.card.userId,
       dto.nick,
       Notification.UNTAKEN_DELIVERY,
@@ -172,6 +175,7 @@ export class DeliveriesService {
     }
     await this.execute(delivery);
     this.mqttService.publishNotificationMessage(
+      dto.deliveryId,
       delivery.fromLease.card.userId,
       dto.nick,
       Notification.EXECUTED_DELIVERY,
@@ -204,6 +208,7 @@ export class DeliveriesService {
     });
     await this.complete(delivery);
     this.mqttService.publishNotificationMessage(
+      dto.deliveryId,
       delivery.executorCard.userId,
       dto.nick,
       Notification.COMPLETED_DELIVERY,
@@ -239,6 +244,7 @@ export class DeliveriesService {
     }
     await this.rate(delivery, dto.rate);
     this.mqttService.publishNotificationMessage(
+      dto.deliveryId,
       delivery.executorCard.userId,
       dto.nick,
       Notification.RATED_DELIVERY,

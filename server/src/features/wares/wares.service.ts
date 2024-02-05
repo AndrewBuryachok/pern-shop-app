@@ -100,8 +100,9 @@ export class WaresService {
 
   async createWare(dto: ExtCreateWareDto & { nick: string }): Promise<void> {
     await this.rentsService.checkRentOwner(dto.rentId, dto.myId, dto.hasRole);
-    await this.create(dto);
+    const ware = await this.create(dto);
     this.mqttService.publishNotificationMessage(
+      ware.id,
       0,
       dto.nick,
       Notification.CREATED_WARE,

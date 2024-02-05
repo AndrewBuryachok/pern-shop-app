@@ -117,6 +117,7 @@ export class LeasesService {
     const cell = await this.cellsService.reserveCell(dto);
     const lease = await this.create({ ...dto, storageId: cell.id });
     this.mqttService.publishNotificationMessage(
+      lease.id,
       cell.storage.card.userId,
       dto.nick,
       Notification.CREATED_LEASE,
@@ -137,6 +138,7 @@ export class LeasesService {
     });
     await this.continue(lease);
     this.mqttService.publishNotificationMessage(
+      dto.leaseId,
       cell.storage.card.userId,
       dto.nick,
       Notification.CONTINUED_LEASE,
@@ -152,6 +154,7 @@ export class LeasesService {
     const cell = await this.cellsService.unreserveCell(lease.cellId);
     await this.complete(lease);
     this.mqttService.publishNotificationMessage(
+      dto.leaseId,
       cell.storage.card.userId,
       dto.nick,
       Notification.COMPLETED_LEASE,

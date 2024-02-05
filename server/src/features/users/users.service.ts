@@ -209,6 +209,7 @@ export class UsersService {
     await this.checkNickNotUsed(dto.nick);
     const user = await this.create(dto);
     this.mqttService.publishNotificationMessage(
+      user.id,
       0,
       dto.nick,
       Notification.CREATED_USER,

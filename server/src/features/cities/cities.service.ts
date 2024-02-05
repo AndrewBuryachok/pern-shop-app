@@ -73,8 +73,9 @@ export class CitiesService {
     await this.checkHasNotEnough(dto.userId);
     await this.checkNameNotUsed(dto.name);
     await this.checkCoordinatesNotUsed(dto.x, dto.y);
-    await this.create(dto);
+    const city = await this.create(dto);
     this.mqttService.publishNotificationMessage(
+      city.id,
       0,
       dto.nick,
       Notification.CREATED_CITY,
@@ -95,6 +96,7 @@ export class CitiesService {
     await this.checkNotCityUser(dto.userId);
     await this.addUser(city, dto.userId);
     this.mqttService.publishNotificationMessage(
+      dto.cityId,
       dto.userId,
       dto.nick,
       Notification.ADDED_CITY,
@@ -117,12 +119,14 @@ export class CitiesService {
     await this.removeUser(city, dto.userId);
     if (dto.userId !== dto.myId) {
       this.mqttService.publishNotificationMessage(
+        dto.cityId,
         city.userId,
         dto.nick,
         Notification.LEFT_CITY,
       );
     } else {
       this.mqttService.publishNotificationMessage(
+        dto.cityId,
         dto.userId,
         dto.nick,
         Notification.REMOVED_CITY,

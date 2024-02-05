@@ -62,8 +62,9 @@ export class SalesService {
 
   async createSale(dto: ExtCreateSaleDto & { nick: string }): Promise<void> {
     const product = await this.productsService.buyProduct(dto);
-    await this.create(dto);
+    const sale = await this.create(dto);
     this.mqttService.publishNotificationMessage(
+      sale.id,
       product.lease.card.userId,
       dto.nick,
       Notification.CREATED_SALE,
@@ -74,6 +75,7 @@ export class SalesService {
     const sale = await this.checkSaleOwner(dto.saleId, dto.myId, dto.hasRole);
     await this.rate(sale, dto.rate);
     this.mqttService.publishNotificationMessage(
+      dto.saleId,
       sale.product.lease.card.userId,
       dto.nick,
       Notification.RATED_SALE,

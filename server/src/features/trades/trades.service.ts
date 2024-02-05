@@ -62,8 +62,9 @@ export class TradesService {
 
   async createTrade(dto: ExtCreateTradeDto & { nick: string }): Promise<void> {
     const ware = await this.waresService.buyWare(dto);
-    await this.create(dto);
+    const trade = await this.create(dto);
     this.mqttService.publishNotificationMessage(
+      trade.id,
       ware.rent.card.userId,
       dto.nick,
       Notification.CREATED_TRADE,
@@ -78,6 +79,7 @@ export class TradesService {
     );
     await this.rate(trade, dto.rate);
     this.mqttService.publishNotificationMessage(
+      dto.tradeId,
       trade.ware.rent.card.userId,
       dto.nick,
       Notification.RATED_TRADE,
