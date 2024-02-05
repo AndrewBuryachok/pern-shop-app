@@ -10,7 +10,7 @@ export default function LinkedAvatar(props: Props) {
     <CustomIndicator {...props}>
       <Avatar
         component={Link}
-        to={`/users/${props.id}`}
+        to={`/users/${props.nick}`}
         size={32}
         src={`${import.meta.env.VITE_AVATAR_URL}${
           import.meta.env.VITE_HEAD_ROUTE

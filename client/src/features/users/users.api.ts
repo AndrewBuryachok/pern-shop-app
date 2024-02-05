@@ -82,9 +82,9 @@ export const usersApi = emptyApi.injectEndpoints({
       }),
       providesTags: ['Auth', 'User', 'Rating'],
     }),
-    getSingleUser: build.query<ExtUser, number>({
-      query: (userId) => ({
-        url: `/users/${userId}`,
+    getSingleUser: build.query<ExtUser, string>({
+      query: (nick) => ({
+        url: `/users/${nick}`,
       }),
       providesTags: ['User'],
     }),
