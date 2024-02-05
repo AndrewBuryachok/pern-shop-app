@@ -199,9 +199,9 @@ export class UsersService {
       .getMany();
   }
 
-  async getSingleUser(userId: number): Promise<User> {
-    const profile = await this.getUserProfile(userId);
-    const stats = await this.getUserStatsAndRates(userId);
+  async getSingleUser(nick: string): Promise<User> {
+    const profile = await this.getUserProfile(nick);
+    const stats = await this.getUserStatsAndRates(profile.id);
     return { ...profile, ...stats };
   }
 
@@ -585,8 +585,9 @@ export class UsersService {
       ]);
   }
 
-  private async getUserProfile(userId: number): Promise<User> {
-    const user = await this.getUsersQueryBuilder({ id: userId })
+  private async getUserProfile(nick: string): Promise<User> {
+    const user = await this.getUsersQueryBuilder({})
+      .where('user.nick = :nick', { nick })
       .addSelect([
         'user.time',
         'user.background',
@@ -595,13 +596,16 @@ export class UsersService {
         'user.youtube',
       ])
       .getOne();
+    if (!user) {
+      throw new AppException(UserError.UNKNOWN);
+    }
     user.friends = await this.selectUsersQueryBuilder()
       .innerJoinAndMapOne(
         'friend',
         'user.friends',
         'friend',
         'friend.id = :userId',
-        { userId },
+        { userId: user.id },
       )
       .getMany();
     user['subscribers'] = await this.selectUsersQueryBuilder()
@@ -610,7 +614,7 @@ export class UsersService {
         'user.sentSubscribers',
         'subscriber',
         'subscriber.id = :userId',
-        { userId },
+        { userId: user.id },
       )
       .getMany();
     user['raters'] = await this.selectUsersQueryBuilder()
@@ -619,7 +623,7 @@ export class UsersService {
         'user.sentRatings',
         'rating',
         'rating.receiverUserId = :userId',
-        { userId },
+        { userId: user.id },
       )
       .getMany();
     return user;

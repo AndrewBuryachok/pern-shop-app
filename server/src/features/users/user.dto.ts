@@ -19,6 +19,12 @@ export class UserIdDto {
   userId: number;
 }
 
+export class UserNickDto {
+  @ApiProperty()
+  @IsNick()
+  nick: string;
+}
+
 export class EditUserProfileDto {
   @ApiProperty()
   @IsContact()

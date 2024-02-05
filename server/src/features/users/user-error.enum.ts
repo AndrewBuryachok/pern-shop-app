@@ -7,6 +7,7 @@ export enum UserError {
   ALREADY_HAS_SUBSCRIBER = '400: User already has subscriber',
   NOT_HAS_SUBSCRIBER = '400: User has not subscriber',
   NOT_OWNER = '403: You are not profile owner',
+  UNKNOWN = '404: Unknown user',
   CREATE_FAILED = '500: Failed to create user',
   ADD_TOKEN_FAILED = '500: Failed to add user token',
   REMOVE_TOKEN_FAILED = '500: Failed to remove user token',
