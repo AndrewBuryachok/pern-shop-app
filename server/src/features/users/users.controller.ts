@@ -16,6 +16,7 @@ import {
   EditUserProfileDto,
   UpdateUserRoleDto,
   UserIdDto,
+  UserNickDto,
 } from './user.dto';
 import { Request, Response } from '../../common/interfaces';
 import { HasRole, MyId, Public, Roles } from '../../common/decorators';
@@ -98,9 +99,9 @@ export class UsersController {
   }
 
   @Public()
-  @Get(':userId')
-  getSingleUser(@Param() { userId }: UserIdDto): Promise<User> {
-    return this.usersService.getSingleUser(userId);
+  @Get(':nick')
+  getSingleUser(@Param() { nick }: UserNickDto): Promise<User> {
+    return this.usersService.getSingleUser(nick);
   }
 
   @Patch(':userId/profile')
