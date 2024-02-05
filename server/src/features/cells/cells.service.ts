@@ -62,8 +62,9 @@ export class CellsService {
       dto.hasRole,
     );
     const name = await this.checkHasNotEnough(dto.storageId);
-    await this.create({ ...dto, name });
+    const cell = await this.create({ ...dto, name });
     this.mqttService.publishNotificationMessage(
+      cell.id,
       0,
       dto.nick,
       Notification.CREATED_CELL,

@@ -109,8 +109,9 @@ export class ProductsService {
       ...dto,
       kind: Kind.PRODUCT,
     });
-    await this.create({ ...dto, storageId: leaseId });
+    const product = await this.create({ ...dto, storageId: leaseId });
     this.mqttService.publishNotificationMessage(
+      product.id,
       0,
       dto.nick,
       Notification.CREATED_PRODUCT,

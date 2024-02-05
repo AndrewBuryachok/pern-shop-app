@@ -88,8 +88,9 @@ export class MarketsService {
     await this.checkHasNotEnough(dto.myId);
     await this.checkNameNotUsed(dto.name);
     await this.checkCoordinatesNotUsed(dto.x, dto.y);
-    await this.create(dto);
+    const market = await this.create(dto);
     this.mqttService.publishNotificationMessage(
+      market.id,
       0,
       dto.nick,
       Notification.CREATED_MARKET,

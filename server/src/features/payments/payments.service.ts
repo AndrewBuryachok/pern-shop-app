@@ -58,8 +58,9 @@ export class PaymentsService {
       ...dto,
       cardId: dto.receiverCardId,
     });
-    await this.create(dto);
+    const payment = await this.create(dto);
     this.mqttService.publishNotificationMessage(
+      payment.id,
       card.userId,
       dto.nick,
       Notification.CREATED_PAYMENT,

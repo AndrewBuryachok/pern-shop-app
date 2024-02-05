@@ -76,6 +76,7 @@ export class FriendsService {
       await this.usersService.checkNotFriends(dto.myId, dto.userId);
       await this.create(dto);
       this.mqttService.publishNotificationMessage(
+        dto.myId,
         dto.userId,
         dto.nick,
         Notification.INVITED_FRIEND,
@@ -93,6 +94,7 @@ export class FriendsService {
       }
       await this.delete(invitation2);
       this.mqttService.publishNotificationMessage(
+        dto.myId,
         dto.userId,
         dto.nick,
         Notification.APPROVED_FRIEND,
@@ -112,6 +114,7 @@ export class FriendsService {
     if (invitation1) {
       await this.delete(invitation1);
       this.mqttService.publishNotificationMessage(
+        dto.myId,
         dto.userId,
         dto.nick,
         Notification.CANCELED_FRIEND,
@@ -119,6 +122,7 @@ export class FriendsService {
     } else if (invitation2) {
       await this.delete(invitation2);
       this.mqttService.publishNotificationMessage(
+        dto.myId,
         dto.userId,
         dto.nick,
         Notification.REJECTED_FRIEND,
@@ -135,6 +139,7 @@ export class FriendsService {
         });
       }
       this.mqttService.publishNotificationMessage(
+        dto.myId,
         dto.userId,
         dto.nick,
         Notification.DELETED_FRIENDS,

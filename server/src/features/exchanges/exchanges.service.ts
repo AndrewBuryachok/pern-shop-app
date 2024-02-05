@@ -50,8 +50,9 @@ export class ExchangesService {
     const card = dto.type
       ? await this.cardsService.increaseCardBalance(dto)
       : await this.cardsService.decreaseCardBalance(dto);
-    await this.create(dto);
+    const exchange = await this.create(dto);
     this.mqttService.publishNotificationMessage(
+      exchange.id,
       card.userId,
       dto.nick,
       Notification.CREATED_EXCHANGE,

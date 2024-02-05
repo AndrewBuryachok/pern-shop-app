@@ -54,8 +54,9 @@ export class TasksService {
   }
 
   async createTask(dto: ExtCreateTaskDto & { nick: string }): Promise<void> {
-    await this.create(dto);
+    const task = await this.create(dto);
     this.mqttService.publishNotificationMessage(
+      task.id,
       0,
       dto.nick,
       Notification.CREATED_TASK,
@@ -83,6 +84,7 @@ export class TasksService {
     }
     await this.take(task, dto.userId);
     this.mqttService.publishNotificationMessage(
+      dto.taskId,
       task.customerUserId,
       dto.nick,
       Notification.TAKEN_TASK,
@@ -100,6 +102,7 @@ export class TasksService {
     }
     await this.untake(task);
     this.mqttService.publishNotificationMessage(
+      dto.taskId,
       task.customerUserId,
       dto.nick,
       Notification.UNTAKEN_TASK,
@@ -117,6 +120,7 @@ export class TasksService {
     }
     await this.execute(task);
     this.mqttService.publishNotificationMessage(
+      dto.taskId,
       task.customerUserId,
       dto.nick,
       Notification.EXECUTED_TASK,
@@ -134,6 +138,7 @@ export class TasksService {
     }
     await this.complete(task);
     this.mqttService.publishNotificationMessage(
+      dto.taskId,
       task.executorUserId,
       dto.nick,
       Notification.COMPLETED_TASK,

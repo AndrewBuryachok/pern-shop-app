@@ -56,6 +56,7 @@ export class SubscribersService {
       receiverUserId: dto.userId,
     });
     this.mqttService.publishNotificationMessage(
+      dto.myId,
       dto.userId,
       dto.nick,
       Notification.ADDED_SUBSCRIBER,
@@ -70,6 +71,7 @@ export class SubscribersService {
       receiverUserId: dto.userId,
     });
     this.mqttService.publishNotificationMessage(
+      dto.myId,
       dto.userId,
       dto.nick,
       Notification.REMOVED_SUBSCRIBER,

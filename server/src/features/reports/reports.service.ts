@@ -104,13 +104,15 @@ export class ReportsService {
   async createReport(
     dto: ExtCreateReportDto & { nick: string },
   ): Promise<void> {
-    await this.create(dto);
+    const report = await this.create(dto);
     this.mqttService.publishNotificationMessage(
+      report.id,
       0,
       dto.nick,
       Notification.CREATED_REPORT,
     );
     await this.mqttService.publishNotificationMention(
+      report.id,
       dto.text,
       dto.nick,
       Notification.MENTIONED_REPORT,
@@ -121,6 +123,7 @@ export class ReportsService {
     const report = await this.checkReportOwner(dto.reportId, dto.myId);
     await this.edit(report, dto);
     await this.mqttService.publishNotificationMention(
+      dto.reportId,
       dto.text,
       dto.nick,
       Notification.MENTIONED_REPORT,
@@ -150,6 +153,7 @@ export class ReportsService {
     if (notify) {
       const report = await this.findReportById(dto.reportId);
       this.mqttService.publishNotificationMessage(
+        dto.reportId,
         report.userId,
         dto.nick,
         Notification.REACTED_REPORT,

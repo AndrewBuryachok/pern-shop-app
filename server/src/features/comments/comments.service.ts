@@ -28,6 +28,7 @@ export class CommentsService {
     await this.create(dto);
     const article = await this.articlesService.findArticleById(dto.articleId);
     this.mqttService.publishNotificationMessage(
+      dto.articleId,
       article.userId,
       dto.nick,
       Notification.COMMENTED_ARTICLE,
@@ -37,12 +38,14 @@ export class CommentsService {
         id: dto.commentId,
       });
       this.mqttService.publishNotificationMessage(
+        dto.articleId,
         reply.userId,
         dto.nick,
         Notification.REPLIED_COMMENT,
       );
     }
     await this.mqttService.publishNotificationMention(
+      dto.articleId,
       dto.text,
       dto.nick,
       Notification.MENTIONED_COMMENT,
@@ -57,6 +60,7 @@ export class CommentsService {
     );
     await this.edit(comment, dto);
     await this.mqttService.publishNotificationMention(
+      comment.articleId,
       dto.text,
       dto.nick,
       Notification.MENTIONED_COMMENT,

@@ -20,25 +20,24 @@ export class MqttService {
       ]),
     );
     this.client.on('message', (topic, message) => {
-      const id = +topic.split('/')[2];
+      const userId = +topic.split('/')[2];
       const payload = message.toString();
       if (topic.split('/')[1] === 'users') {
         if (payload) {
-          if (!this.users.has(id)) {
-            this.usersService.addUserOnline(id);
+          if (!this.users.has(userId)) {
+            this.usersService.addUserOnline(userId);
           }
-          this.users.add(id);
+          this.users.add(userId);
         } else {
-          if (this.users.has(id)) {
-            this.usersService.removeUserOnline(id);
+          if (this.users.has(userId)) {
+            this.usersService.removeUserOnline(userId);
           }
-          this.users.delete(id);
+          this.users.delete(userId);
         }
       } else {
-        const [nick, action, page] = topic.split('/').slice(3);
-        const data = `${id}/${nick}/${action}/${page}`;
+        const data = topic.split('/').slice(2).join('/');
         if (payload) {
-          if (id) {
+          if (userId) {
             this.notifications.set(data, new Date(payload));
           }
         } else {
@@ -75,6 +74,7 @@ export class MqttService {
   }
 
   async publishNotificationMention(
+    id: number,
     text: string,
     nick: string,
     message: string,
@@ -83,18 +83,23 @@ export class MqttService {
     const promises = mentions.map(async (mention) => {
       const user = await this.usersService.findUserByNick(mention.slice(1));
       if (user) {
-        this.publishNotificationMessage(user.id, nick, message);
+        this.publishNotificationMessage(id, user.id, nick, message);
       }
     });
     await Promise.all(promises);
   }
 
-  publishNotificationMessage(id: number, nick: string, message: string): void {
+  publishNotificationMessage(
+    id: number,
+    userId: number,
+    nick: string,
+    message: string,
+  ): void {
     const [action, page] = message.split(' ');
     this.publishMessage(
-      `notifications/${id}/${nick}/${action}/${page}`,
+      `notifications/${userId}/${nick}/${action}/${page}/${id}`,
       new Date().toISOString(),
-      !!id,
+      !!userId,
     );
   }
 

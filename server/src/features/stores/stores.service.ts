@@ -62,8 +62,9 @@ export class StoresService {
       dto.hasRole,
     );
     const name = await this.checkHasNotEnough(dto.marketId);
-    await this.create({ ...dto, name });
+    const store = await this.create({ ...dto, name });
     this.mqttService.publishNotificationMessage(
+      store.id,
       0,
       dto.nick,
       Notification.CREATED_STORE,

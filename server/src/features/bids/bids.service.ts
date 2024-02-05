@@ -52,8 +52,9 @@ export class BidsService {
 
   async createBid(dto: ExtCreateBidDto & { nick: string }): Promise<void> {
     const lot = await this.lotsService.buyLot(dto);
-    await this.create(dto);
+    const bid = await this.create(dto);
     this.mqttService.publishNotificationMessage(
+      bid.id,
       lot.lease.card.userId,
       dto.nick,
       Notification.CREATED_BID,

@@ -159,13 +159,15 @@ export class ArticlesService {
   async createArticle(
     dto: ExtCreateArticleDto & { nick: string },
   ): Promise<void> {
-    await this.create(dto);
+    const article = await this.create(dto);
     this.mqttService.publishNotificationMessage(
+      article.id,
       0,
       dto.nick,
       Notification.CREATED_ARTICLE,
     );
     await this.mqttService.publishNotificationMention(
+      article.id,
       dto.text,
       dto.nick,
       Notification.MENTIONED_ARTICLE,
@@ -180,6 +182,7 @@ export class ArticlesService {
     );
     await this.edit(article, dto);
     await this.mqttService.publishNotificationMention(
+      dto.articleId,
       dto.text,
       dto.nick,
       Notification.MENTIONED_ARTICLE,
@@ -211,6 +214,7 @@ export class ArticlesService {
     if (notify) {
       const article = await this.findArticleById(dto.articleId);
       this.mqttService.publishNotificationMessage(
+        dto.articleId,
         article.userId,
         dto.nick,
         Notification.REACTED_ARTICLE,

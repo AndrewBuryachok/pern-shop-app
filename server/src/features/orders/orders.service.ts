@@ -77,8 +77,9 @@ export class OrdersService {
       kind: Kind.ORDER,
     });
     await this.cardsService.decreaseCardBalance({ ...dto, sum: dto.price });
-    await this.create({ ...dto, storageId: leaseId });
+    const order = await this.create({ ...dto, storageId: leaseId });
     this.mqttService.publishNotificationMessage(
+      order.id,
       0,
       dto.nick,
       Notification.CREATED_ORDER,
@@ -99,6 +100,7 @@ export class OrdersService {
     }
     await this.take(order, dto.cardId);
     this.mqttService.publishNotificationMessage(
+      dto.orderId,
       order.lease.card.userId,
       dto.nick,
       Notification.TAKEN_ORDER,
@@ -116,6 +118,7 @@ export class OrdersService {
     }
     await this.untake(order);
     this.mqttService.publishNotificationMessage(
+      dto.orderId,
       order.lease.card.userId,
       dto.nick,
       Notification.UNTAKEN_ORDER,
@@ -133,6 +136,7 @@ export class OrdersService {
     }
     await this.execute(order);
     this.mqttService.publishNotificationMessage(
+      dto.orderId,
       order.lease.card.userId,
       dto.nick,
       Notification.EXECUTED_ORDER,
@@ -163,6 +167,7 @@ export class OrdersService {
     });
     await this.complete(order);
     this.mqttService.publishNotificationMessage(
+      dto.orderId,
       order.executorCard.userId,
       dto.nick,
       Notification.COMPLETED_ORDER,
@@ -196,6 +201,7 @@ export class OrdersService {
     }
     await this.rate(order, dto.rate);
     this.mqttService.publishNotificationMessage(
+      dto.orderId,
       order.executorCard.userId,
       dto.nick,
       Notification.RATED_ORDER,
