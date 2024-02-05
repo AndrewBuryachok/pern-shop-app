@@ -52,7 +52,7 @@ export const pages = [
       { path: 'all', role: Role.ADMIN },
     ],
   },
-  { path: 'users/:userId', element: SingleUser },
+  { path: 'users/:nick', element: SingleUser },
   {
     path: 'friends',
     element: FriendsPage,

@@ -54,7 +54,7 @@ export default function AccountMenu() {
             <Menu.Item
               icon={<IconUser size={16} />}
               component={Link}
-              to={`/users/${user.id}`}
+              to={`/users/${user.nick}`}
             >
               {t('header.menu.account.profile')}
             </Menu.Item>

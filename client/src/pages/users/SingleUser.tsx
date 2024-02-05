@@ -8,11 +8,11 @@ import CustomLoader from '../../common/components/CustomLoader';
 export default function SingleUser() {
   const [t] = useTranslation();
 
-  const { userId } = useParams();
+  const { nick } = useParams();
 
-  const { data: user } = useGetSingleUserQuery(+userId!);
+  const { data: user } = useGetSingleUserQuery(nick!);
 
-  useDocumentTitle(t('navbar.user') + ' ' + (user?.nick || ''));
+  useDocumentTitle(t('navbar.user') + ' ' + nick);
 
   return user ? <UserProfile data={user} /> : <CustomLoader />;
 }
