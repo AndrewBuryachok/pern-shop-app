@@ -17,21 +17,21 @@ client.on('connect', () =>
 );
 
 client.on('message', (topic, message) => {
-  const id = +topic.split('/')[2];
+  const userId = +topic.split('/')[2];
   const payload = message.toString();
   if (topic.split('/')[1] === 'users') {
     if (payload) {
-      store.dispatch(addOnlineUser(id));
+      store.dispatch(addOnlineUser(userId));
     } else {
-      store.dispatch(removeOnlineUser(id));
-      if (store.getState().auth.user?.id === id) {
-        store.dispatch(publishOnline(id));
+      store.dispatch(removeOnlineUser(userId));
+      if (store.getState().auth.user?.id === userId) {
+        store.dispatch(publishOnline(userId));
       }
     }
   } else {
-    const [nick, action, page] = topic.split('/').slice(3);
-    const data = `${id}/${nick}/${action}/${page}`;
+    const data = topic.split('/').slice(2).join('/');
     if (payload) {
+      const [nick, action, page] = topic.split('/').slice(3);
       store.dispatch(addNotification([data, payload]));
       showNotification({
         title: t('notifications.notification'),
@@ -137,10 +137,11 @@ export const getActiveNotifications = () =>
   useAppSelector((state) =>
     Object.keys(state.mqtt.notifications).map((notification) => ({
       key: notification,
-      id: notification.split('/')[0],
+      userId: notification.split('/')[0],
       nick: notification.split('/')[1],
       action: notification.split('/')[2],
       page: notification.split('/')[3],
+      id: notification.split('/')[4],
       date: state.mqtt.notifications[notification],
     })),
   );
