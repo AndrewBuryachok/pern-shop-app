@@ -9,14 +9,20 @@ export class MqttController {
   constructor(private mqttService: MqttService) {}
 
   @Public()
-  @Get('users')
-  getCurrentUsers(): Promise<number[]> {
-    return this.mqttService.getCurrentUsers();
+  @Get('online')
+  getOnlineUsers(): number[] {
+    return this.mqttService.getOnlineUsers();
+  }
+
+  @Public()
+  @Get('offline')
+  getOfflineUsers(): number[] {
+    return this.mqttService.getOfflineUsers();
   }
 
   @Public()
   @Get('notifications')
-  getCurrentNotifications(): Promise<string[]> {
+  getCurrentNotifications(): string[] {
     return this.mqttService.getCurrentNotifications();
   }
 }
