@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { Link, useLocation } from 'react-router-dom';
 import { Navbar, NavLink, ScrollArea } from '@mantine/core';
+import { hideNotification } from '@mantine/notifications';
 import {
   IconArticle,
   IconBasket,
@@ -21,6 +22,7 @@ import {
   IconUsers,
   IconWallet,
 } from '@tabler/icons';
+import { getActiveNotifications } from '../../features/mqtt/mqtt.slice';
 import NotificationBadge from './NotificationBadge';
 
 type Props = {
@@ -29,6 +31,8 @@ type Props = {
 
 export default function CustomNavbar(props: Props) {
   const [t] = useTranslation();
+
+  const notifications = getActiveNotifications();
 
   const links = [
     {
@@ -150,6 +154,13 @@ export default function CustomNavbar(props: Props) {
                   component={Link}
                   to={`${route}${link.sub || ''}`}
                   active={route === active}
+                  onClick={() =>
+                    notifications
+                      .filter((notification) => notification.page === route)
+                      .forEach((notification) =>
+                        hideNotification(notification.key),
+                      )
+                  }
                 />
               ))}
             </NavLink>
@@ -168,6 +179,11 @@ export default function CustomNavbar(props: Props) {
                 link.sub || ''
               }`}
               active={link.route === active}
+              onClick={() =>
+                notifications
+                  .filter((notification) => notification.page === link.route)
+                  .forEach((notification) => hideNotification(notification.key))
+              }
             />
           ),
         )}

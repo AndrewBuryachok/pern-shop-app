@@ -9,6 +9,7 @@ import {
 import {
   useFullscreen,
   useHotkeys,
+  useInterval,
   useLocalStorage,
   useToggle,
   useWindowEvent,
@@ -37,8 +38,19 @@ export default function App() {
 
   const user = getCurrentUser();
 
+  const interval = useInterval(() => dispatch(publishOnline(user!.id)), 900000);
+
   useEffect(() => {
     if (user) {
+      interval.start();
+    } else {
+      interval.stop();
+    }
+  }, [user]);
+
+  useEffect(() => {
+    if (user) {
+      interval.start();
       dispatch(publishOnline(user.id));
       dispatch(subscribe(user.id));
     }
@@ -46,6 +58,7 @@ export default function App() {
 
   const handler = () => {
     if (user) {
+      interval.stop();
       dispatch(publishOffline(user.id));
       dispatch(unsubscribe(user.id));
     }

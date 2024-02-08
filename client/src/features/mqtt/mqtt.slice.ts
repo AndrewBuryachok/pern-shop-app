@@ -29,19 +29,25 @@ client.on('message', (topic, message) => {
       }
     }
   } else {
-    const data = topic.split('/').slice(2).join('/');
+    const notification = topic.split('/').slice(2).join('/');
     if (payload) {
       const [nick, action, page] = topic.split('/').slice(3);
-      store.dispatch(addNotification([data, payload]));
+      store.dispatch(addNotification([notification, payload]));
       showNotification({
+        id: notification,
         title: t('notifications.notification'),
         message: nick + ' ' + t(`notifications.${page}.${action}`),
+        autoClose: false,
+        onClose: () =>
+          userId
+            ? store.dispatch(publishNotification(notification))
+            : store.dispatch(removeNotification(notification)),
       });
       if (!store.getState().mqtt.mute) {
         audio.play();
       }
     } else {
-      store.dispatch(removeNotification(data));
+      store.dispatch(removeNotification(notification));
     }
   }
 });

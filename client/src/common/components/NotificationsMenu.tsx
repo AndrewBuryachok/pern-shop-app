@@ -1,20 +1,14 @@
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { ActionIcon, Indicator, Menu } from '@mantine/core';
+import { hideNotification } from '@mantine/notifications';
 import { IconBell, IconPoint } from '@tabler/icons';
-import { useAppDispatch } from '../../app/hooks';
-import {
-  getActiveNotifications,
-  publishNotification,
-  removeNotification,
-} from '../../features/mqtt/mqtt.slice';
+import { getActiveNotifications } from '../../features/mqtt/mqtt.slice';
 import { parseTime } from '../utils';
 import { notificationToTab } from '../enums';
 
 export default function NotificationsMenu() {
   const [t] = useTranslation();
-
-  const dispatch = useAppDispatch();
 
   const notifications = [...getActiveNotifications()].sort((a, b) =>
     b.date.localeCompare(a.date),
@@ -38,7 +32,7 @@ export default function NotificationsMenu() {
       </Menu.Target>
       <Menu.Dropdown>
         <Menu.Label>{t('header.menu.notifications.title')}</Menu.Label>
-        {notifications.map(({ key, userId, nick, action, page, id, date }) => (
+        {notifications.map(({ key, nick, action, page, id, date }) => (
           <Menu.Item
             key={key}
             icon={<IconPoint size={16} />}
@@ -52,11 +46,7 @@ export default function NotificationsMenu() {
                 )!
                 .split(' ')[2]
             }?id=${id}`.replace('/main', '')}
-            onClick={() =>
-              +userId
-                ? dispatch(publishNotification(key))
-                : dispatch(removeNotification(key))
-            }
+            onClick={() => hideNotification(key)}
           >
             {nick} {t(`notifications.${page}.${action}`)}
             <br />
