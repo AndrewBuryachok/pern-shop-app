@@ -5,7 +5,8 @@ import { UsersService } from '../users/users.service';
 @Injectable()
 export class MqttService {
   private client: MqttClient;
-  private users = new Set<number>();
+  private onlineUsers = new Map<number, Date>();
+  private offlineUsers = new Map<number, Date>();
   private notifications = new Map<string, Date>();
 
   constructor(
@@ -19,55 +20,78 @@ export class MqttService {
         process.env.BROKER_TOPIC + 'notifications/#',
       ]),
     );
-    this.client.on('message', (topic, message) => {
+    this.client.on('message', async (topic, message) => {
       const userId = +topic.split('/')[2];
       const payload = message.toString();
       if (topic.split('/')[1] === 'users') {
         if (payload) {
-          if (!this.users.has(userId)) {
-            this.usersService.addUserOnline(userId);
+          if (!this.onlineUsers.has(userId)) {
+            await this.usersService.addUserOnline(userId);
           }
-          this.users.add(userId);
+          this.onlineUsers.set(userId, new Date());
+          this.offlineUsers.delete(userId);
         } else {
-          if (this.users.has(userId)) {
-            this.usersService.removeUserOnline(userId);
+          if (this.onlineUsers.has(userId)) {
+            await this.usersService.removeUserOnline(userId);
           }
-          this.users.delete(userId);
+          this.onlineUsers.delete(userId);
+          this.offlineUsers.set(userId, new Date());
         }
       } else {
-        const data = topic.split('/').slice(2).join('/');
+        const notification = topic.split('/').slice(2).join('/');
         if (payload) {
           if (userId) {
-            this.notifications.set(data, new Date(payload));
+            this.notifications.set(notification, new Date(payload));
+          } else {
+            for (const user of this.offlineUsers.keys()) {
+              this.publishMessage(
+                `notifications/${user}${notification.slice(1)}`,
+                payload,
+                true,
+              );
+            }
           }
         } else {
-          this.notifications.delete(data);
+          this.notifications.delete(notification);
         }
       }
     });
   }
 
-  async getCurrentUsers(): Promise<number[]> {
+  getOnlineUsers(): number[] {
     const result = [];
-    const keys = this.users.keys();
-    for (const user of keys) {
-      this.publishMessage(`users/${user}`, '', true);
-      result.push(user);
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+    const date = new Date();
+    date.setMinutes(date.getMinutes() - 15);
+    for (const user of this.onlineUsers.keys()) {
+      if (this.onlineUsers.get(user).getTime() < date.getTime()) {
+        this.publishMessage(`users/${user}`, '', true);
+        result.push(user);
+      }
     }
     return result;
   }
 
-  async getCurrentNotifications(): Promise<string[]> {
+  getOfflineUsers(): number[] {
     const result = [];
-    const keys = this.notifications.keys();
+    const date = new Date();
+    date.setDate(date.getDate() - 1);
+    for (const user of this.offlineUsers.keys()) {
+      if (this.offlineUsers.get(user).getTime() < date.getTime()) {
+        this.offlineUsers.delete(user);
+        result.push(user);
+      }
+    }
+    return result;
+  }
+
+  getCurrentNotifications(): string[] {
+    const result = [];
     const date = new Date();
     date.setDate(date.getDate() - 3);
-    for (const notification of keys) {
+    for (const notification of this.notifications.keys()) {
       if (this.notifications.get(notification).getTime() < date.getTime()) {
         this.publishMessage(`notifications/${notification}`, '', true);
         result.push(notification);
-        await new Promise((resolve) => setTimeout(resolve, 1000));
       }
     }
     return result;
