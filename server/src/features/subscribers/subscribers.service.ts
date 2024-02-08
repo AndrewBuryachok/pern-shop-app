@@ -4,6 +4,8 @@ import { UsersService } from '../users/users.service';
 import { MqttService } from '../mqtt/mqtt.service';
 import { UpdateSubscriberDto } from './subscriber.dto';
 import { Request, Response } from '../../common/interfaces';
+import { AppException } from '../../common/exceptions';
+import { SubscriberError } from './subscriber-error.enum';
 import { Notification } from '../../common/enums';
 
 @Injectable()
@@ -51,6 +53,9 @@ export class SubscribersService {
   async addSubscriber(
     dto: UpdateSubscriberDto & { nick: string },
   ): Promise<void> {
+    if (dto.userId === dto.myId) {
+      throw new AppException(SubscriberError.SENDER);
+    }
     await this.usersService.addUserSubscriber({
       senderUserId: dto.myId,
       receiverUserId: dto.userId,

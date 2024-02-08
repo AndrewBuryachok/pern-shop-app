@@ -61,11 +61,14 @@ export class FriendsService {
   }
 
   async addFriend(dto: UpdateFriendDto & { nick: string }): Promise<void> {
+    if (dto.userId === dto.myId) {
+      throw new AppException(FriendError.SENDER);
+    }
     const invitation1 = await this.invitationsRepository.findOneBy({
       senderUserId: dto.myId,
       receiverUserId: dto.userId,
     });
-    if (invitation1 && dto.myId !== dto.userId) {
+    if (invitation1) {
       throw new AppException(FriendError.ALREADY_INVITED);
     }
     const invitation2 = await this.invitationsRepository.findOneBy({
@@ -86,12 +89,10 @@ export class FriendsService {
         senderUserId: dto.myId,
         receiverUserId: dto.userId,
       });
-      if (dto.myId !== dto.userId) {
-        await this.usersService.addUserFriend({
-          senderUserId: dto.userId,
-          receiverUserId: dto.myId,
-        });
-      }
+      await this.usersService.addUserFriend({
+        senderUserId: dto.userId,
+        receiverUserId: dto.myId,
+      });
       await this.delete(invitation2);
       this.mqttService.publishNotificationMessage(
         dto.myId,
@@ -132,12 +133,10 @@ export class FriendsService {
         senderUserId: dto.myId,
         receiverUserId: dto.userId,
       });
-      if (dto.myId !== dto.userId) {
-        await this.usersService.removeUserFriend({
-          senderUserId: dto.userId,
-          receiverUserId: dto.myId,
-        });
-      }
+      await this.usersService.removeUserFriend({
+        senderUserId: dto.userId,
+        receiverUserId: dto.myId,
+      });
       this.mqttService.publishNotificationMessage(
         dto.myId,
         dto.userId,

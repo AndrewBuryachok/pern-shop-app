@@ -200,6 +200,7 @@ export class UsersService {
         .select(['user.id', 'invitation.receiverUserId'])
         .getOne()
     )['invitations'].map((invitation) => invitation.receiverUserId);
+    friends.push(myId);
     const users = await this.selectUsersQueryBuilder().getMany();
     return users.filter(
       (user) => !friends.includes(user.id) && !invitations.includes(user.id),
@@ -213,6 +214,7 @@ export class UsersService {
         where: { id: myId },
       })
     ).sentSubscribers.map((subscriber) => subscriber.id);
+    subscribers.push(myId);
     const users = await this.selectUsersQueryBuilder().getMany();
     return users.filter((user) => !subscribers.includes(user.id));
   }
