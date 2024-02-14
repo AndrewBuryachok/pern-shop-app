@@ -4,4 +4,5 @@ export enum Mark {
   STATUS = 3,
   SPAWN = 4,
   HUB = 5,
+  END = 6,
 }

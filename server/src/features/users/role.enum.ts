@@ -5,4 +5,5 @@ export enum Role {
   JUDGE = 4,
   HUB = 5,
   SPAWN = 6,
+  END = 7,
 }

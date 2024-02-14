@@ -55,6 +55,14 @@ export default class TestSeed implements Seeder {
       .create();
     await factory(User)()
       .map(async (user) => {
+        user.nick = 'EndHead';
+        user.password = await hashData(user.nick);
+        user.roles = [Role.END];
+        return user;
+      })
+      .create();
+    await factory(User)()
+      .map(async (user) => {
         user.nick = 'User';
         user.password = await hashData(user.nick);
         user.roles = [];
