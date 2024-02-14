@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useLocation, useSearchParams } from 'react-router-dom';
 import { ISearch } from '../../common/interfaces';
 import {
+  useGetEndReportsQuery,
   useGetHubReportsQuery,
   useGetMainReportsQuery,
   useGetServerReportsQuery,
@@ -11,6 +12,7 @@ import {
 } from '../../features/reports/reports.api';
 import ReportsList from '../../features/reports/ReportsList';
 import {
+  createEndReportButton,
   createHubReportButton,
   createServerReportButton,
   createSiteReportButton,
@@ -41,6 +43,7 @@ export default function ReportsPage() {
     status: useGetStatusReportsQuery,
     spawn: useGetSpawnReportsQuery,
     hub: useGetHubReportsQuery,
+    end: useGetEndReportsQuery,
   }[tab]!({ page, search });
 
   const button = {
@@ -49,6 +52,7 @@ export default function ReportsPage() {
     status: createStatusReportButton,
     spawn: createSpawnReportButton,
     hub: createHubReportButton,
+    end: createEndReportButton,
   }[tab];
 
   const actions = [editReportAction, deleteReportAction];

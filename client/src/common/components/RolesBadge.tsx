@@ -17,7 +17,7 @@ export default function RolesBadge(props: Props) {
         </Badge>
       ))}
       {!props.roles.length && (
-        <Badge size='xs' color='violet'>
+        <Badge size='xs' color='gray'>
           {t('constants.roles.user')}
         </Badge>
       )}

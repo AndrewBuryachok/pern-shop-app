@@ -131,6 +131,7 @@
     "status": "Status",
     "spawn": "Spawn",
     "hub": "Hub",
+    "end": "End",
     "subscribed": "Subscribed",
     "liked": "Liked",
     "commented": "Commented",
@@ -491,6 +492,7 @@
       "judge": "Judge",
       "hub": "Hub head",
       "spawn": "Spawn head",
+      "end": "End head",
       "user": "User"
     },
     "colors": {
