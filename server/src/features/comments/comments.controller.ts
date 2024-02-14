@@ -23,7 +23,7 @@ export class CommentsController {
   editComment(
     @MyId() myId: number,
     @MyNick() nick: string,
-    @HasRole(Role.ADMIN) hasRole: boolean,
+    @HasRole(Role.JUDGE) hasRole: boolean,
     @Param() { commentId }: CommentIdDto,
     @Body() dto: EditCommentDto,
   ): Promise<void> {
@@ -39,7 +39,7 @@ export class CommentsController {
   @Delete(':commentId')
   deleteComment(
     @MyId() myId: number,
-    @HasRole(Role.ADMIN) hasRole: boolean,
+    @HasRole(Role.JUDGE) hasRole: boolean,
     @Param() { commentId }: CommentIdDto,
   ): Promise<void> {
     return this.commentsService.deleteComment({ commentId, myId, hasRole });

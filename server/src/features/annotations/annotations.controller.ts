@@ -27,7 +27,7 @@ export class AnnotationsController {
   editAnnotation(
     @MyId() myId: number,
     @MyNick() nick: string,
-    @HasRole(Role.ADMIN) hasRole: boolean,
+    @HasRole(Role.JUDGE) hasRole: boolean,
     @Param() { annotationId }: AnnotationIdDto,
     @Body() dto: EditAnnotationDto,
   ): Promise<void> {
@@ -43,7 +43,7 @@ export class AnnotationsController {
   @Delete(':annotationId')
   deleteAnnotation(
     @MyId() myId: number,
-    @HasRole(Role.ADMIN) hasRole: boolean,
+    @HasRole(Role.JUDGE) hasRole: boolean,
     @Param() { annotationId }: AnnotationIdDto,
   ): Promise<void> {
     return this.annotationsService.deleteAnnotation({

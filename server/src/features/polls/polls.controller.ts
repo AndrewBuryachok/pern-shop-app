@@ -60,7 +60,7 @@ export class PollsController {
     return this.pollsService.getDiscussedPolls(myId, req);
   }
 
-  @Roles(Role.ADMIN)
+  @Roles(Role.JUDGE)
   @Get('all')
   getAllPolls(@Query() req: Request): Promise<Response<Poll>> {
     return this.pollsService.getAllPolls(req);
@@ -92,7 +92,7 @@ export class PollsController {
     return this.pollsService.createPoll({ ...dto, userId: myId, nick });
   }
 
-  @Roles(Role.ADMIN)
+  @Roles(Role.JUDGE)
   @Post('all')
   createUserPoll(
     @MyNick() nick: string,
@@ -112,7 +112,7 @@ export class PollsController {
     return this.pollsService.editPoll({ ...dto, pollId, myId, nick, hasRole });
   }
 
-  @Roles(Role.ADMIN)
+  @Roles(Role.JUDGE)
   @Post(':pollId')
   completePoll(
     @MyNick() nick: string,

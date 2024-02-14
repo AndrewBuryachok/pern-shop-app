@@ -23,7 +23,7 @@ export class AnswersController {
   editAnswer(
     @MyId() myId: number,
     @MyNick() nick: string,
-    @HasRole(Role.ADMIN) hasRole: boolean,
+    @HasRole(Role.JUDGE) hasRole: boolean,
     @Param() { answerId }: AnswerIdDto,
     @Body() dto: EditAnswerDto,
   ): Promise<void> {
@@ -39,7 +39,7 @@ export class AnswersController {
   @Delete(':answerId')
   deleteAnswer(
     @MyId() myId: number,
-    @HasRole(Role.ADMIN) hasRole: boolean,
+    @HasRole(Role.JUDGE) hasRole: boolean,
     @Param() { answerId }: AnswerIdDto,
   ): Promise<void> {
     return this.answersService.deleteAnswer({

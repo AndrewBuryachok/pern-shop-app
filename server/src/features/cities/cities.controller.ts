@@ -42,7 +42,7 @@ export class CitiesController {
     return this.citiesService.getMyCities(myId, req);
   }
 
-  @Roles(Role.ADMIN)
+  @Roles(Role.MANAGER)
   @Get('all')
   getAllCities(@Query() req: Request): Promise<Response<City>> {
     return this.citiesService.getAllCities(req);
@@ -74,7 +74,7 @@ export class CitiesController {
     return this.citiesService.createCity({ ...dto, userId: myId, nick });
   }
 
-  @Roles(Role.ADMIN)
+  @Roles(Role.MANAGER)
   @Post('all')
   createUserCity(
     @MyNick() nick: string,
@@ -86,7 +86,7 @@ export class CitiesController {
   @Patch(':cityId')
   editCity(
     @MyId() myId: number,
-    @HasRole(Role.ADMIN) hasRole: boolean,
+    @HasRole(Role.MANAGER) hasRole: boolean,
     @Param() { cityId }: CityIdDto,
     @Body() dto: EditCityDto,
   ): Promise<void> {
@@ -97,7 +97,7 @@ export class CitiesController {
   addCityUser(
     @MyId() myId: number,
     @MyNick() nick: string,
-    @HasRole(Role.ADMIN) hasRole: boolean,
+    @HasRole(Role.MANAGER) hasRole: boolean,
     @Param() { cityId }: CityIdDto,
     @Body() dto: UpdateCityUserDto,
   ): Promise<void> {
@@ -114,7 +114,7 @@ export class CitiesController {
   removeCityUser(
     @MyId() myId: number,
     @MyNick() nick: string,
-    @HasRole(Role.ADMIN) hasRole: boolean,
+    @HasRole(Role.MANAGER) hasRole: boolean,
     @Param() { cityId }: CityIdDto,
     @Body() dto: UpdateCityUserDto,
   ): Promise<void> {

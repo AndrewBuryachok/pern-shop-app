@@ -699,7 +699,7 @@ describe('With Auth', () => {
     it('GET /articles/all', async () => {
       return request(app.getHttpServer())
         .get('/articles/all')
-        .set('Authorization', `Bearer ${admin.access}`)
+        .set('Authorization', `Bearer ${judge.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
 
@@ -953,7 +953,7 @@ describe('With Auth', () => {
     it('GET /cities/all', async () => {
       return request(app.getHttpServer())
         .get('/cities/all')
-        .set('Authorization', `Bearer ${admin.access}`)
+        .set('Authorization', `Bearer ${manager.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
 
@@ -2488,7 +2488,7 @@ describe('With Auth', () => {
     it('GET /polls/all', async () => {
       return request(app.getHttpServer())
         .get('/polls/all')
-        .set('Authorization', `Bearer ${admin.access}`)
+        .set('Authorization', `Bearer ${judge.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
   });
@@ -2519,7 +2519,7 @@ describe('With Auth', () => {
     it('POST /polls/:pollId', async () => {
       return request(app.getHttpServer())
         .post(`/polls/${pollsId[0]}`)
-        .set('Authorization', `Bearer ${admin.access}`)
+        .set('Authorization', `Bearer ${judge.access}`)
         .send({ type: true })
         .expect('');
     });

@@ -27,7 +27,7 @@ export class DiscussionsController {
   editDiscussion(
     @MyId() myId: number,
     @MyNick() nick: string,
-    @HasRole(Role.ADMIN) hasRole: boolean,
+    @HasRole(Role.JUDGE) hasRole: boolean,
     @Param() { discussionId }: DiscussionIdDto,
     @Body() dto: EditDiscussionDto,
   ): Promise<void> {
@@ -43,7 +43,7 @@ export class DiscussionsController {
   @Delete(':discussionId')
   deleteDiscussion(
     @MyId() myId: number,
-    @HasRole(Role.ADMIN) hasRole: boolean,
+    @HasRole(Role.JUDGE) hasRole: boolean,
     @Param() { discussionId }: DiscussionIdDto,
   ): Promise<void> {
     return this.discussionsService.deleteDiscussion({

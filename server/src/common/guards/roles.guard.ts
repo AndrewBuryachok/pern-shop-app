@@ -14,6 +14,8 @@ export class RolesGuard implements CanActivate {
       context.getHandler(),
       context.getClass(),
     ]);
-    return !roles || roles.some((role) => user.roles.includes(role));
+    return (
+      !roles || [Role.ADMIN, ...roles].some((role) => user.roles.includes(role))
+    );
   }
 }

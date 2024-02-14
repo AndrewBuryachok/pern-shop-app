@@ -28,7 +28,7 @@ export const HasRole = createParamDecorator(
   (role: Role, context: ExecutionContext) => {
     const request = context.switchToHttp().getRequest();
     const user = request.user as ExtJwtPayload;
-    return user.roles.includes(role);
+    return [role, Role.ADMIN].some((role) => user.roles.includes(role));
   },
 );
 

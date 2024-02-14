@@ -67,7 +67,7 @@ export class ArticlesController {
     return this.articlesService.getCommentedArticles(myId, req);
   }
 
-  @Roles(Role.ADMIN)
+  @Roles(Role.JUDGE)
   @Get('all')
   getAllArticles(@Query() req: Request): Promise<Response<Article>> {
     return this.articlesService.getAllArticles(req);
@@ -101,7 +101,7 @@ export class ArticlesController {
     return this.articlesService.createArticle({ ...dto, userId: myId, nick });
   }
 
-  @Roles(Role.ADMIN)
+  @Roles(Role.JUDGE)
   @Post('all')
   createUserArticle(
     @MyNick() nick: string,
