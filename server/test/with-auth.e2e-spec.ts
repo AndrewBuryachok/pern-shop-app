@@ -23,6 +23,7 @@ describe('With Auth', () => {
   let judge: Tokens;
   let spawn: Tokens;
   let hub: Tokens;
+  let end: Tokens;
   let reportsId: number;
   let annotationId: number;
   let articlesId: number;
@@ -176,6 +177,21 @@ describe('With Auth', () => {
       return request(app.getHttpServer())
         .post('/auth/logout')
         .set('Authorization', `Bearer ${hub.access}`)
+        .expect(201);
+    });
+
+    it('POST /auth/login as EndHead', async () => {
+      return request(app.getHttpServer())
+        .post('/auth/login')
+        .send({ nick: 'EndHead', password: 'EndHead' })
+        .expect(201)
+        .then((res) => (end = res.body));
+    });
+
+    it('POST /auth/logout as EndHead', async () => {
+      return request(app.getHttpServer())
+        .post('/auth/logout')
+        .set('Authorization', `Bearer ${end.access}`)
         .expect(201);
     });
   });
@@ -499,6 +515,20 @@ describe('With Auth', () => {
         .expect('');
     });
 
+    it('POST /reports/end', async () => {
+      return request(app.getHttpServer())
+        .post('/reports/end')
+        .set('Authorization', `Bearer ${end.access}`)
+        .send({
+          text: 'report text',
+          image1: '',
+          image2: '',
+          image3: '',
+          video: '',
+        })
+        .expect('');
+    });
+
     it('GET /reports', async () => {
       return request(app.getHttpServer())
         .get('/reports')
@@ -533,6 +563,12 @@ describe('With Auth', () => {
     it('GET /reports/hub', async () => {
       return request(app.getHttpServer())
         .get('/reports/hub')
+        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
+    });
+
+    it('GET /reports/end', async () => {
+      return request(app.getHttpServer())
+        .get('/reports/end')
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
 

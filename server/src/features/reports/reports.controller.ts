@@ -65,6 +65,12 @@ export class ReportsController {
     return this.reportsService.getMarkReports(Mark.HUB, req);
   }
 
+  @Public()
+  @Get('end')
+  getEndReports(@Query() req: Request): Promise<Response<Report>> {
+    return this.reportsService.getMarkReports(Mark.END, req);
+  }
+
   @Get('attituded/select')
   selectAttitudedReports(@MyId() myId: number): Promise<Report[]> {
     return this.reportsService.selectAttitudedReports(myId);
@@ -158,6 +164,21 @@ export class ReportsController {
       myId,
       nick,
       mark: Mark.HUB,
+    });
+  }
+
+  @Roles(Role.END)
+  @Post('end')
+  createEndReport(
+    @MyId() myId: number,
+    @MyNick() nick: string,
+    @Body() dto: CreateReportDto,
+  ): Promise<void> {
+    return this.reportsService.createReport({
+      ...dto,
+      myId,
+      nick,
+      mark: Mark.END,
     });
   }
 
