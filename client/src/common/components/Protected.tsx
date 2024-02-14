@@ -4,23 +4,23 @@ import { useTranslation } from 'react-i18next';
 import { Modal } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import AuthModal from '../../features/auth/AuthModal';
-import { Role } from '../constants';
 import { isUserNotHasRole } from '../utils';
+import { Role } from '../constants';
 
 type Props = {
   children: ReactNode;
   role?: Role;
 };
 
-export default function Protected({ children, role }: Props) {
+export default function Protected(props: Props) {
   const navigate = useNavigate();
 
   const [t] = useTranslation();
 
   const [opened, { close }] = useDisclosure(true);
 
-  if (isUserNotHasRole(role)) {
-    if (!role) {
+  if (isUserNotHasRole(props.role)) {
+    if (!props.role) {
       return (
         <Modal
           title={t('modals.auth')}
@@ -38,5 +38,5 @@ export default function Protected({ children, role }: Props) {
     return <Navigate to='/' replace />;
   }
 
-  return <>{children}</>;
+  return <>{props.children}</>;
 }
