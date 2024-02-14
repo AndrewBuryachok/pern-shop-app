@@ -5,6 +5,7 @@ import { useDebouncedValue } from '@mantine/hooks';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import {
+  useCreateEndReportMutation,
   useCreateHubReportMutation,
   useCreateServerReportMutation,
   useCreateSiteReportMutation,
@@ -43,6 +44,7 @@ export default function CreateReportModal({ mark }: Props) {
     useCreateStatusReportMutation,
     useCreateSpawnReportMutation,
     useCreateHubReportMutation,
+    useCreateEndReportMutation,
   ][mark]();
 
   const handleSubmit = async (dto: CreateReportDto) => {
@@ -102,7 +104,9 @@ export const createReportFactory = (mark: number) => ({
       title: t('actions.create') + ' ' + t('modals.reports'),
       children: <CreateReportModal mark={mark} />,
     }),
-  role: [Role.ADMIN, Role.ADMIN, Role.ADMIN, Role.SPAWN, Role.HUB][mark],
+  role: [Role.ADMIN, Role.ADMIN, Role.ADMIN, Role.SPAWN, Role.HUB, Role.END][
+    mark
+  ],
 });
 
 export const createServerReportButton = createReportFactory(0);
@@ -114,3 +118,5 @@ export const createStatusReportButton = createReportFactory(2);
 export const createSpawnReportButton = createReportFactory(3);
 
 export const createHubReportButton = createReportFactory(4);
+
+export const createEndReportButton = createReportFactory(5);

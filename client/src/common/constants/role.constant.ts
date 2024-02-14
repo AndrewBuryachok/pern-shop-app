@@ -7,8 +7,17 @@ export enum Role {
   JUDGE = 4,
   HUB = 5,
   SPAWN = 6,
+  END = 7,
 }
 
-export const roles = ['admin', 'banker', 'manager', 'judge', 'hub', 'spawn'];
+export const roles = [
+  'admin',
+  'banker',
+  'manager',
+  'judge',
+  'hub',
+  'spawn',
+  'end',
+];
 
-export const rolesToColors = colors.concat(['pink', 'teal']);
+export const rolesToColors = colors.concat(['pink', 'teal', 'violet']);

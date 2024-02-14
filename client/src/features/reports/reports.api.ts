@@ -49,6 +49,12 @@ export const reportsApi = emptyApi.injectEndpoints({
       }),
       providesTags: ['Report', 'Attitude', 'Annotation'],
     }),
+    getEndReports: build.query<IResponse<Report>, IRequest>({
+      query: (req) => ({
+        url: `/reports/end?${getQuery(req)}`,
+      }),
+      providesTags: ['Report', 'Attitude', 'Annotation'],
+    }),
     selectAttitudedReports: build.query<SmReport[], void>({
       query: () => ({
         url: '/reports/attituded/select',
@@ -107,6 +113,14 @@ export const reportsApi = emptyApi.injectEndpoints({
       }),
       invalidatesTags: ['Report'],
     }),
+    createEndReport: build.mutation<void, CreateReportDto>({
+      query: (dto) => ({
+        url: '/reports/end',
+        method: 'POST',
+        body: dto,
+      }),
+      invalidatesTags: ['Report'],
+    }),
     editReport: build.mutation<void, EditReportDto>({
       query: ({ reportId, ...dto }) => ({
         url: `/reports/${reportId}`,
@@ -140,6 +154,7 @@ export const {
   useGetStatusReportsQuery,
   useGetSpawnReportsQuery,
   useGetHubReportsQuery,
+  useGetEndReportsQuery,
   useSelectAttitudedReportsQuery,
   useSelectReportAttitudesQuery,
   useSelectReportAnnotationsQuery,
@@ -148,6 +163,7 @@ export const {
   useCreateStatusReportMutation,
   useCreateSpawnReportMutation,
   useCreateHubReportMutation,
+  useCreateEndReportMutation,
   useEditReportMutation,
   useDeleteReportMutation,
   useAttitudeReportMutation,
