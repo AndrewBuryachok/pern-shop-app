@@ -12,7 +12,10 @@ export const customMin = (required: number, optional?: number) =>
 
 export const isUserHasRole = (role?: Role) => {
   const user = getCurrentUser();
-  return user && (!role || user.roles.includes(role));
+  return (
+    user &&
+    (!role || [Role.ADMIN, role].some((role) => user.roles.includes(role)))
+  );
 };
 
 export const isUserNotHasRole = (role?: Role) => !isUserHasRole(role);

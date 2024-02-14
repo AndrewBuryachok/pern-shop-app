@@ -61,7 +61,7 @@ export const deleteCommentAction = {
     }),
   disable: (comment: Comment) => {
     const user = getCurrentUser();
-    return comment.user.id !== user?.id && isUserNotHasRole(Role.ADMIN);
+    return comment.user.id !== user?.id && isUserNotHasRole(Role.JUDGE);
   },
   color: Color.RED,
 };

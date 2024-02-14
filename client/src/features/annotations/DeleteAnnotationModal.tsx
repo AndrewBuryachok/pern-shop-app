@@ -61,7 +61,7 @@ export const deleteAnnotationAction = {
     }),
   disable: (annotation: Annotation) => {
     const user = getCurrentUser();
-    return annotation.user.id !== user?.id && isUserNotHasRole(Role.ADMIN);
+    return annotation.user.id !== user?.id && isUserNotHasRole(Role.JUDGE);
   },
   color: Color.RED,
 };

@@ -89,7 +89,7 @@ export const pages = [
       { path: 'subscribed' },
       { path: 'liked' },
       { path: 'commented' },
-      { path: 'all', role: Role.ADMIN },
+      { path: 'all', role: Role.JUDGE },
     ],
   },
   {
@@ -122,7 +122,7 @@ export const pages = [
     nested: [
       { index: true },
       { path: 'my' },
-      { path: 'all', role: Role.ADMIN },
+      { path: 'all', role: Role.MANAGER },
     ],
   },
   {
@@ -310,7 +310,7 @@ export const pages = [
       { path: 'my' },
       { path: 'voted' },
       { path: 'discussed' },
-      { path: 'all', role: Role.ADMIN },
+      { path: 'all', role: Role.JUDGE },
     ],
   },
   {
@@ -320,7 +320,7 @@ export const pages = [
       { path: 'top' },
       { path: 'my' },
       { path: 'received' },
-      { path: 'all', role: Role.ADMIN },
+      { path: 'all', role: Role.JUDGE },
     ],
   },
   { path: '*', element: NotFound },
