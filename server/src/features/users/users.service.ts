@@ -88,6 +88,33 @@ export class UsersService {
     return { result, count };
   }
 
+  async getCardsUsers(req: Request): Promise<Response<User>> {
+    const [result, count] = await this.getUsersQueryBuilder(req)
+      .leftJoin('user.cards', 'card')
+      .groupBy('user.id')
+      .addGroupBy('city.id')
+      .addGroupBy('ownerUser.id')
+      .orderBy('user_cards', 'DESC', 'NULLS LAST')
+      .addOrderBy('user.type', 'DESC')
+      .addOrderBy('user.onlineAt', 'DESC')
+      .addOrderBy('user.id', 'DESC')
+      .addSelect('SUM(card.balance)', 'user_cards')
+      .getManyAndCount();
+    const users = await this.usersRepository
+      .createQueryBuilder('user')
+      .leftJoin('user.cards', 'card')
+      .where('user.id IN(:...ids)', { ids: result.map((user) => user.id) })
+      .groupBy('user.id')
+      .select('user.id', 'id')
+      .addSelect('SUM(card.balance)', 'balance')
+      .getRawMany();
+    result.forEach(
+      (user) =>
+        (user['cardsCount'] = users.find((u) => u.id === user.id).balance),
+    );
+    return { result, count };
+  }
+
   async getRatingsUsers(req: Request): Promise<Response<User>> {
     const [result, count] = await this.getRatingsQueryBuilder(req)
       .leftJoin('user.receivedRatings', 'rating')

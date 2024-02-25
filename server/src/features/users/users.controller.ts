@@ -59,6 +59,12 @@ export class UsersController {
   }
 
   @Public()
+  @Get('cards')
+  getCardsUsers(@Query() req: Request): Promise<Response<User>> {
+    return this.usersService.getCardsUsers(req);
+  }
+
+  @Public()
   @Get('ratings')
   getRatingsUsers(@Query() req: Request): Promise<Response<User>> {
     return this.usersService.getRatingsUsers(req);
