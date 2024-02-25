@@ -18,6 +18,7 @@ export interface User extends MdUser {
   friendsCount?: number;
   subscribersCount?: number;
   ignorersCount?: number;
+  cardsCount?: number;
   ratersCount?: number;
   rank?: number;
 }

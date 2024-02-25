@@ -1,10 +1,12 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useLocation, useSearchParams } from 'react-router-dom';
 import { ISearch } from '../../common/interfaces';
+import { useGetCardsUsersQuery } from '../../features/users/users.api';
 import {
   useGetAllCardsQuery,
   useGetMyCardsQuery,
 } from '../../features/cards/cards.api';
+import UsersTable from '../../features/users/UsersTable';
 import CardsTable from '../../features/cards/CardsTable';
 import {
   createMyCardButton,
@@ -30,27 +32,66 @@ export default function CardsPage() {
 
   const [page, setPage] = useState(+(searchParams.get('page') || 1));
 
-  const [search, setSearch] = useState<ISearch>({
-    id: +(searchParams.get('id') || 0) || null,
-    user: searchParams.get('user'),
-    card: searchParams.get('card'),
-  });
+  const [search, setSearch] = useState<ISearch>({});
 
-  const response = {
+  useEffect(
+    () =>
+      setSearch(
+        tab === 'top'
+          ? {
+              id: +(searchParams.get('id') || 0) || null,
+              user: searchParams.get('user'),
+              roles: searchParams.get('roles')?.split(',') || [],
+              city: searchParams.get('city'),
+              type: searchParams.get('type'),
+              minDate: searchParams.get('minDate'),
+              maxDate: searchParams.get('maxDate'),
+            }
+          : {
+              id: +(searchParams.get('id') || 0) || null,
+              user: searchParams.get('user'),
+              card: searchParams.get('card'),
+            },
+      ),
+    [tab],
+  );
+
+  const usersResponse = useGetCardsUsersQuery(
+    { page, search },
+    { skip: tab !== 'top' },
+  );
+
+  const cardsResponse = {
+    top: useGetMyCardsQuery,
     my: useGetMyCardsQuery,
     all: useGetAllCardsQuery,
-  }[tab]!({ page, search });
+  }[tab]!({ page, search }, { skip: tab === 'top' });
 
-  const button = { my: createMyCardButton, all: createUserCardButton }[tab];
+  const button = {
+    top: createMyCardButton,
+    my: createMyCardButton,
+    all: createUserCardButton,
+  }[tab];
 
   const actions = {
     my: [editMyCardAction, addMyCardUserAction, removeMyCardUserAction],
     all: [editUserCardAction, addUserCardUserAction, removeUserCardUserAction],
   }[tab];
 
-  return (
+  return tab === 'top' ? (
+    <UsersTable
+      {...usersResponse}
+      page={page}
+      setPage={setPage}
+      search={search}
+      setSearch={setSearch}
+      button={button}
+      column='balance'
+      callback={(user) => user.cardsCount!}
+    />
+  ) : (
     <CardsTable
-      {...response}
+      {...cardsResponse}
       page={page}
       setPage={setPage}
       search={search}

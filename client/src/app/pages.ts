@@ -111,7 +111,11 @@ export const pages = [
   {
     path: 'cards',
     element: CardsPage,
-    nested: [{ path: 'my' }, { path: 'all', role: Role.BANKER }],
+    nested: [
+      { path: 'top' },
+      { path: 'my' },
+      { path: 'all', role: Role.BANKER },
+    ],
   },
   {
     path: 'exchanges',

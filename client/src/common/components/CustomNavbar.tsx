@@ -77,7 +77,7 @@ export default function CustomNavbar(props: Props) {
     {
       route: 'wallet',
       icon: IconWallet,
-      nested: ['cards/my', 'payments/my', 'exchanges/my', 'invoices/my'],
+      nested: ['cards/top', 'payments/my', 'exchanges/my', 'invoices/my'],
     },
     {
       route: 'trading',
