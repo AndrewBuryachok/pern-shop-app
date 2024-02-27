@@ -1,7 +1,7 @@
 export enum RentError {
-  ALREADY_COMPLETED = '400: Rent already completed',
-  NOT_OWNER = '403: You are not rent owner',
-  CREATE_FAILED = '500: Failed to create rent',
-  CONTINUE_FAILED = '500: Failed to continue rent',
-  COMPLETE_FAILED = '500: Failed to complete rent',
+  ALREADY_COMPLETED = '400: Аренду уже завершено',
+  NOT_OWNER = '403: Вы не владелец аренды',
+  CREATE_FAILED = '500: Не удалось создать аренду',
+  CONTINUE_FAILED = '500: Не удалось продолжить аренду',
+  COMPLETE_FAILED = '500: Не удалось завершить аренду',
 }

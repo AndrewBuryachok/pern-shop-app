@@ -47,7 +47,7 @@ export class IsUserExists implements ValidatorConstraintInterface {
   }
 
   defaultMessage(): string {
-    return 'Unknown user';
+    return 'Неизвестный пользователь';
   }
 }
 
@@ -66,7 +66,7 @@ export class IsReportExists implements ValidatorConstraintInterface {
   }
 
   defaultMessage(): string {
-    return 'Unknown report';
+    return 'Неизвестная новость';
   }
 }
 
@@ -85,7 +85,7 @@ export class IsAnnotationExists implements ValidatorConstraintInterface {
   }
 
   defaultMessage(): string {
-    return 'Unknown annotation';
+    return 'Неизвестный комментарий';
   }
 }
 
@@ -104,7 +104,7 @@ export class IsArticleExists implements ValidatorConstraintInterface {
   }
 
   defaultMessage(): string {
-    return 'Unknown article';
+    return 'Неизвестная публикация';
   }
 }
 
@@ -123,7 +123,7 @@ export class IsCommentExists implements ValidatorConstraintInterface {
   }
 
   defaultMessage(): string {
-    return 'Unknown comment';
+    return 'Неизвестный комментарий';
   }
 }
 
@@ -142,7 +142,7 @@ export class IsCardExists implements ValidatorConstraintInterface {
   }
 
   defaultMessage(): string {
-    return 'Unknown card';
+    return 'Неизвестная карта';
   }
 }
 
@@ -161,7 +161,7 @@ export class IsInvoiceExists implements ValidatorConstraintInterface {
   }
 
   defaultMessage(): string {
-    return 'Unknown invoice';
+    return 'Неизвестный счет';
   }
 }
 
@@ -180,7 +180,7 @@ export class IsCityExists implements ValidatorConstraintInterface {
   }
 
   defaultMessage(): string {
-    return 'Unknown city';
+    return 'Неизвестный город';
   }
 }
 
@@ -199,7 +199,7 @@ export class IsShopExists implements ValidatorConstraintInterface {
   }
 
   defaultMessage(): string {
-    return 'Unknown shop';
+    return 'Неизвестный магазин';
   }
 }
 
@@ -218,7 +218,7 @@ export class IsMarketExists implements ValidatorConstraintInterface {
   }
 
   defaultMessage(): string {
-    return 'Unknown market';
+    return 'Неизвестный рынок';
   }
 }
 
@@ -237,7 +237,7 @@ export class IsStorageExists implements ValidatorConstraintInterface {
   }
 
   defaultMessage(): string {
-    return 'Unknown storage';
+    return 'Неизвестный склад';
   }
 }
 
@@ -256,7 +256,7 @@ export class IsStoreExists implements ValidatorConstraintInterface {
   }
 
   defaultMessage(): string {
-    return 'Unknown store';
+    return 'Неизвестная палатка';
   }
 }
 
@@ -275,7 +275,7 @@ export class IsRentExists implements ValidatorConstraintInterface {
   }
 
   defaultMessage(): string {
-    return 'Unknown rent';
+    return 'Неизвестная аренда';
   }
 }
 
@@ -294,7 +294,7 @@ export class IsLeaseExists implements ValidatorConstraintInterface {
   }
 
   defaultMessage(): string {
-    return 'Unknown lease';
+    return 'Неизвестный прокат';
   }
 }
 
@@ -313,7 +313,7 @@ export class IsGoodExists implements ValidatorConstraintInterface {
   }
 
   defaultMessage(): string {
-    return 'Unknown good';
+    return 'Неизвестный товар';
   }
 }
 
@@ -332,7 +332,7 @@ export class IsWareExists implements ValidatorConstraintInterface {
   }
 
   defaultMessage(): string {
-    return 'Unknown ware';
+    return 'Неизвестное изделие';
   }
 }
 
@@ -351,7 +351,7 @@ export class IsProductExists implements ValidatorConstraintInterface {
   }
 
   defaultMessage(): string {
-    return 'Unknown product';
+    return 'Неизвестный продукт';
   }
 }
 
@@ -370,7 +370,7 @@ export class IsLotExists implements ValidatorConstraintInterface {
   }
 
   defaultMessage(): string {
-    return 'Unknown lot';
+    return 'Неизвестный лот';
   }
 }
 
@@ -389,7 +389,7 @@ export class IsTradeExists implements ValidatorConstraintInterface {
   }
 
   defaultMessage(): string {
-    return 'Unknown trade';
+    return 'Неизвестный торг';
   }
 }
 
@@ -408,7 +408,7 @@ export class IsSaleExists implements ValidatorConstraintInterface {
   }
 
   defaultMessage(): string {
-    return 'Unknown sale';
+    return 'Неизвестный сбыт';
   }
 }
 
@@ -427,7 +427,7 @@ export class IsOrderExists implements ValidatorConstraintInterface {
   }
 
   defaultMessage(): string {
-    return 'Unknown order';
+    return 'Неизвестный заказ';
   }
 }
 
@@ -446,7 +446,7 @@ export class IsDeliveryExists implements ValidatorConstraintInterface {
   }
 
   defaultMessage(): string {
-    return 'Unknown delivery';
+    return 'Неизвестная доставка';
   }
 }
 
@@ -465,7 +465,7 @@ export class IsTaskExists implements ValidatorConstraintInterface {
   }
 
   defaultMessage(): string {
-    return 'Unknown task';
+    return 'Неизвестное объявление';
   }
 }
 
@@ -484,7 +484,7 @@ export class IsPlaintExists implements ValidatorConstraintInterface {
   }
 
   defaultMessage(): string {
-    return 'Unknown plaint';
+    return 'Неизвестная жалоба';
   }
 }
 
@@ -503,7 +503,7 @@ export class IsAnswerExists implements ValidatorConstraintInterface {
   }
 
   defaultMessage(): string {
-    return 'Unknown answer';
+    return 'Неизвестный ответ';
   }
 }
 
@@ -522,7 +522,7 @@ export class IsPollExists implements ValidatorConstraintInterface {
   }
 
   defaultMessage(): string {
-    return 'Unknown poll';
+    return 'Неизвестная идея';
   }
 }
 
@@ -541,7 +541,7 @@ export class IsDiscussionExists implements ValidatorConstraintInterface {
   }
 
   defaultMessage(): string {
-    return 'Unknown discussion';
+    return 'Неизвестное обсуждение';
   }
 }
 
@@ -560,6 +560,6 @@ export class IsRatingExists implements ValidatorConstraintInterface {
   }
 
   defaultMessage(): string {
-    return 'Unknown rating';
+    return 'Неизвестный рейтинг';
   }
 }

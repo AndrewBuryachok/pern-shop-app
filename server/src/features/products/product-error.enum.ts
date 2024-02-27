@@ -1,10 +1,10 @@
 export enum ProductError {
-  ALREADY_EXPIRED = '400: Product already expired',
-  ALREADY_COMPLETED = '400: Product already completed',
-  NOT_ENOUGH_AMOUNT = '400: Product has not enough amount',
-  NOT_OWNER = '403: You are not product owner',
-  CREATE_FAILED = '500: Failed to create product',
-  EDIT_FAILED = '500: Failed to edit product',
-  COMPLETE_FAILED = '500: Failed to complete product',
-  BUY_FAILED = '500: Failed to buy product',
+  ALREADY_EXPIRED = '400: Продукт уже просрочено',
+  ALREADY_COMPLETED = '400: Продукт уже завершено',
+  NOT_ENOUGH_AMOUNT = '400: У продукта недостаточно слотов',
+  NOT_OWNER = '403: Вы не владелец продукта',
+  CREATE_FAILED = '500: Не удалось создать продукт',
+  EDIT_FAILED = '500: Не удалось редактировать продукт',
+  COMPLETE_FAILED = '500: Не удалось завершить продукт',
+  BUY_FAILED = '500: Не удалось купить продукт',
 }

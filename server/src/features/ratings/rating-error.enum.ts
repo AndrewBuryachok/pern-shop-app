@@ -1,8 +1,8 @@
 export enum RatingError {
-  ALREADY_HAS_RATING = '400: User already has rating',
-  SENDER = '400: User is rating sender',
-  NOT_SENDER = '403: You are not rating sender',
-  CREATE_FAILED = '500: Failed to create rating',
-  EDIT_FAILED = '500: Failed to edit rating',
-  DELETE_FAILED = '500: Failed to delete rating',
+  ALREADY_HAS_RATING = '400: У пользователя уже есть рейтинг',
+  SENDER = '400: Пользователь является отправителем',
+  NOT_SENDER = '403: Вы не отправитель рейтинга',
+  CREATE_FAILED = '500: Не удалось создать рейтинг',
+  EDIT_FAILED = '500: Не удалось редактировать рейтинг',
+  DELETE_FAILED = '500: Не удалось удалить рейтинг',
 }

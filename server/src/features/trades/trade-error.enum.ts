@@ -1,5 +1,5 @@
 export enum TradeError {
-  NOT_OWNER = '403: You are not trade owner',
-  CREATE_FAILED = '500: Failed to create trade',
-  RATE_FAILED = '500: Failed to rate trade',
+  NOT_OWNER = '403: Вы не владелец торга',
+  CREATE_FAILED = '500: Не удалось создать торг',
+  RATE_FAILED = '500: Не удалось оценить торг',
 }

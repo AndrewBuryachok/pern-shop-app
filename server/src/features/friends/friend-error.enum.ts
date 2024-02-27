@@ -1,5 +1,5 @@
 export enum FriendError {
-  ALREADY_INVITED = '400: You already invited user',
-  CREATE_FAILED = '500: Failed to create invitation',
-  DELETE_FAILED = '500: Failed to delete invitation',
+  ALREADY_INVITED = '400: Вы уже пригласили пользователя',
+  CREATE_FAILED = '500: Не удалось создать приглашение',
+  DELETE_FAILED = '500: Не удалось удалить приглашение',
 }

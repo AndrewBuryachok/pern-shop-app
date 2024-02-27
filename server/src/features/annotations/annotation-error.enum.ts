@@ -1,6 +1,6 @@
 export enum AnnotationError {
-  NOT_OWNER = '403: You are not annotation owner',
-  CREATE_FAILED = '500: Failed to create annotation',
-  EDIT_FAILED = '500: Failed to edit annotation',
-  DELETE_FAILED = '500: Failed to delete annotation',
+  NOT_OWNER = '403: Вы не владелец комментария',
+  CREATE_FAILED = '500: Не удалось создать комментарий',
+  EDIT_FAILED = '500: Не удалось редактировать комментарий',
+  DELETE_FAILED = '500: Не удалось удалить комментарий',
 }
