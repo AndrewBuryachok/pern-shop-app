@@ -1,3 +1,3 @@
 export enum ExchangeError {
-  CREATE_FAILED = '500: Failed to create exchange',
+  CREATE_FAILED = '500: Не удалось создать транзакцию',
 }

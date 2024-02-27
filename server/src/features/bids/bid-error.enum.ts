@@ -1,3 +1,3 @@
 export enum BidError {
-  CREATE_FAILED = '500: Failed to create bid',
+  CREATE_FAILED = '500: Не удалось создать ставку',
 }

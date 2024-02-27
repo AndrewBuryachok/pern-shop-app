@@ -1,3 +1,3 @@
 export enum PaymentError {
-  CREATE_FAILED = '500: Failed to create payment',
+  CREATE_FAILED = '500: Не удалось создать перевод',
 }

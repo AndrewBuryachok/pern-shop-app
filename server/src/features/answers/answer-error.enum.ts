@@ -1,6 +1,6 @@
 export enum AnswerError {
-  NOT_OWNER = '403: You are not answer owner',
-  CREATE_FAILED = '500: Failed to create answer',
-  EDIT_FAILED = '500: Failed to edit answer',
-  DELETE_FAILED = '500: Failed to delete answer',
+  NOT_OWNER = '403: Вы не владелец ответа',
+  CREATE_FAILED = '500: Не удалось создать ответ',
+  EDIT_FAILED = '500: Не удалось редактировать ответ',
+  DELETE_FAILED = '500: Не удалось удалить ответ',
 }

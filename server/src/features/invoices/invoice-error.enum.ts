@@ -1,8 +1,8 @@
 export enum InvoiceError {
-  ALREADY_COMPLETED = '400: Invoice already completed',
-  NOT_SENDER = '403: You are not invoice sender',
-  NOT_RECEIVER = '403: You are not invoice receiver',
-  CREATE_FAILED = '500: Failed to create invoice',
-  COMPLETE_FAILED = '500: Failed to complete invoice',
-  DELETE_FAILED = '500: Failed to delete invoice',
+  ALREADY_COMPLETED = '400: Счет уже завершено',
+  NOT_SENDER = '403: Вы не отправитель счета',
+  NOT_RECEIVER = '403: Вы не получатель счета',
+  CREATE_FAILED = '500: Не удалось создать счет',
+  COMPLETE_FAILED = '500: Не удалось завершить счет',
+  DELETE_FAILED = '500: Не удалось удалить счет',
 }
