@@ -74,7 +74,13 @@
     "polls": "Идеи",
     "votes": "Голоса",
     "discussions": "Обсуждения",
-    "ratings": "Рейтинги"
+    "ratings": "Рейтинги",
+    "games": "Игры",
+    "snake": "Змейка",
+    "minesweeper": "Сапер",
+    "lightsout": "Тушите Свет",
+    "memory": "Память",
+    "2048": "2048"
   },
   "footer": {
     "links": {

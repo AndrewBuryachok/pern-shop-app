@@ -74,7 +74,13 @@
     "polls": "Ідеї",
     "votes": "Голоса",
     "discussions": "Обговорення",
-    "ratings": "Рейтинги"
+    "ratings": "Рейтинги",
+    "games": "Ігри",
+    "snake": "Змійка",
+    "minesweeper": "Сапер",
+    "lightsout": "Гасіть Світло",
+    "memory": "Пам'ять",
+    "2048": "2048"
   },
   "footer": {
     "links": {

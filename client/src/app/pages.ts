@@ -1,6 +1,7 @@
 import { lazy } from 'react';
 const NotFound = lazy(() => import('../pages/common/NotFound'));
 const Donate = lazy(() => import('../pages/common/Donate'));
+const Games = lazy(() => import('../pages/common/Games'));
 const Map = lazy(() => import('../pages/map/Map'));
 const Dynmap = lazy(() => import('../pages/map/Dynmap'));
 const UsersPage = lazy(() => import('../pages/users/UsersPage'));
@@ -43,6 +44,11 @@ export const tabs = ['top', 'server', 'site', 'status', 'spawn', 'hub', 'end'];
 
 export const pages = [
   { path: 'donate', element: Donate },
+  { path: 'snake', element: Games },
+  { path: 'minesweeper', element: Games },
+  { path: 'lightsout', element: Games },
+  { path: 'memory', element: Games },
+  { path: '2048', element: Games },
   { path: 'map', element: Map },
   { path: 'dynmap', element: Dynmap },
   {
