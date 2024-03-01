@@ -22,6 +22,7 @@ import {
   IconBuildingWarehouse,
   IconBulb,
   IconChecklist,
+  IconDeviceGamepad,
   IconMap,
   IconNews,
   IconPackage,
@@ -105,6 +106,11 @@ export default function CustomNavbar(props: Props) {
     {
       route: 'users',
       icon: IconUsers,
+    },
+    {
+      route: 'games',
+      icon: IconDeviceGamepad,
+      nested: ['snake', 'minesweeper', 'lightsout', 'memory', '2048'],
     },
   ];
 
