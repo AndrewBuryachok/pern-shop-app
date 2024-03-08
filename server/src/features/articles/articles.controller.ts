@@ -11,6 +11,7 @@ import {
 import { ApiTags } from '@nestjs/swagger';
 import { ArticlesService } from './articles.service';
 import { Article } from './article.entity';
+import { ArticleView } from './article-view.entity';
 import { Like } from './like.entity';
 import { Comment } from '../comments/comment.entity';
 import {
@@ -73,9 +74,22 @@ export class ArticlesController {
     return this.articlesService.getAllArticles(req);
   }
 
+  @Get('viewed/select')
+  selectViewedArticles(@MyId() myId: number): Promise<number[]> {
+    return this.articlesService.selectViewedArticles(myId);
+  }
+
   @Get('liked/select')
   selectLikedArticles(@MyId() myId: number): Promise<Article[]> {
     return this.articlesService.selectLikedArticles(myId);
+  }
+
+  @Public()
+  @Get(':articleId/views')
+  selectArticleViews(
+    @Param() { articleId }: ArticleIdDto,
+  ): Promise<ArticleView[]> {
+    return this.articlesService.selectArticleViews(articleId);
   }
 
   @Public()
@@ -134,6 +148,14 @@ export class ArticlesController {
     @Param() { articleId }: ArticleIdDto,
   ): Promise<void> {
     return this.articlesService.deleteArticle({ articleId, myId, hasRole });
+  }
+
+  @Post(':articleId/views')
+  viewArticle(
+    @MyId() myId: number,
+    @Param() { articleId }: ArticleIdDto,
+  ): Promise<void> {
+    return this.articlesService.viewArticle({ articleId, myId });
   }
 
   @Post(':articleId/likes')

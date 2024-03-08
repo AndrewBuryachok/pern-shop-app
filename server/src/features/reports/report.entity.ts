@@ -9,6 +9,7 @@ import {
 } from 'typeorm';
 import { User } from '../users/user.entity';
 import { Mark } from './mark.enum';
+import { ReportView } from './report-view.entity';
 import { Attitude } from './attitude.entity';
 import { Annotation } from '../annotations/annotation.entity';
 
@@ -48,6 +49,9 @@ export class Report {
 
   @CreateDateColumn({ type: 'timestamptz', name: 'created_at' })
   createdAt: Date;
+
+  @OneToMany(() => ReportView, (view) => view.report)
+  views: ReportView[];
 
   @OneToMany(() => Attitude, (attitude) => attitude.report)
   attitudes: Attitude[];

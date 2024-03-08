@@ -2,9 +2,11 @@ import { faker } from '@faker-js/faker';
 import { Factory, Seeder } from 'typeorm-seeding';
 import { User } from '../../features/users/user.entity';
 import { Report } from '../../features/reports/report.entity';
+import { ReportView } from '../../features/reports/report-view.entity';
 import { Attitude } from '../../features/reports/attitude.entity';
 import { Annotation } from '../../features/annotations/annotation.entity';
 import { Article } from '../../features/articles/article.entity';
+import { ArticleView } from '../../features/articles/article-view.entity';
 import { Like } from '../../features/articles/like.entity';
 import { Comment } from '../../features/comments/comment.entity';
 import { Card } from '../../features/cards/card.entity';
@@ -36,6 +38,7 @@ import { Task } from '../../features/tasks/task.entity';
 import { Plaint } from '../../features/plaints/plaint.entity';
 import { Answer } from '../../features/answers/answer.entity';
 import { Poll } from '../../features/polls/poll.entity';
+import { PollView } from '../../features/polls/poll-view.entity';
 import { Vote } from '../../features/polls/vote.entity';
 import { Discussion } from '../../features/discussions/discussion.entity';
 import { Rating } from '../../features/ratings/rating.entity';
@@ -57,17 +60,28 @@ export default class AppSeed implements Seeder {
         return report;
       })
       .createMany(20);
-    const allAttitudes = reports.reduce(
+    const reportsUsers = reports.reduce(
       (prev, report) => [...prev, ...users.map((user) => ({ report, user }))],
       [],
     );
-    const randomAttitudes = [...Array(allAttitudes.length).keys()];
+    const randomReportsViews = [...Array(reportsUsers.length).keys()];
+    randomReportsViews.sort(() => Math.random() - 0.5);
+    let reportViewId = 0;
+    await factory(ReportView)()
+      .map(async (view) => {
+        view.report = reportsUsers[randomReportsViews[reportViewId]].report;
+        view.user = reportsUsers[randomReportsViews[reportViewId]].user;
+        reportViewId++;
+        return view;
+      })
+      .createMany(80);
+    const randomAttitudes = [...Array(reportsUsers.length).keys()];
     randomAttitudes.sort(() => Math.random() - 0.5);
     let attitudeId = 0;
     const attitudes = await factory(Attitude)()
       .map(async (attitude) => {
-        attitude.report = allAttitudes[randomAttitudes[attitudeId]].report;
-        attitude.user = allAttitudes[randomAttitudes[attitudeId]].user;
+        attitude.report = reportsUsers[randomAttitudes[attitudeId]].report;
+        attitude.user = reportsUsers[randomAttitudes[attitudeId]].user;
         attitudeId++;
         return attitude;
       })
@@ -85,17 +99,29 @@ export default class AppSeed implements Seeder {
         return article;
       })
       .createMany(20);
-    const allLikes = articles.reduce(
+    const articlesUsers = articles.reduce(
       (prev, article) => [...prev, ...users.map((user) => ({ article, user }))],
       [],
     );
-    const randomLikes = [...Array(allLikes.length).keys()];
+    const randomArticlesViews = [...Array(articlesUsers.length).keys()];
+    randomArticlesViews.sort(() => Math.random() - 0.5);
+    let articleViewId = 0;
+    await factory(ArticleView)()
+      .map(async (view) => {
+        view.article =
+          articlesUsers[randomArticlesViews[articleViewId]].article;
+        view.user = articlesUsers[randomArticlesViews[articleViewId]].user;
+        articleViewId++;
+        return view;
+      })
+      .createMany(80);
+    const randomLikes = [...Array(articlesUsers.length).keys()];
     randomLikes.sort(() => Math.random() - 0.5);
     let likeId = 0;
     const likes = await factory(Like)()
       .map(async (like) => {
-        like.article = allLikes[randomLikes[likeId]].article;
-        like.user = allLikes[randomLikes[likeId]].user;
+        like.article = articlesUsers[randomLikes[likeId]].article;
+        like.user = articlesUsers[randomLikes[likeId]].user;
         likeId++;
         return like;
       })
@@ -466,17 +492,28 @@ export default class AppSeed implements Seeder {
         return poll;
       })
       .createMany(10);
-    const allVotes = polls.reduce(
+    const pollsUsers = polls.reduce(
       (prev, poll) => [...prev, ...users.map((user) => ({ poll, user }))],
       [],
     );
-    const randomVotes = [...Array(allVotes.length).keys()];
+    const randomPollViews = [...Array(pollsUsers.length).keys()];
+    randomPollViews.sort(() => Math.random() - 0.5);
+    let pollViewId = 0;
+    await factory(PollView)()
+      .map(async (view) => {
+        view.poll = pollsUsers[randomPollViews[pollViewId]].poll;
+        view.user = pollsUsers[randomPollViews[pollViewId]].user;
+        pollViewId++;
+        return view;
+      })
+      .createMany(80);
+    const randomVotes = [...Array(pollsUsers.length).keys()];
     randomVotes.sort(() => Math.random() - 0.5);
     let voteId = 0;
     const votes = await factory(Vote)()
       .map(async (vote) => {
-        vote.poll = allVotes[randomVotes[voteId]].poll;
-        vote.user = allVotes[randomVotes[voteId]].user;
+        vote.poll = pollsUsers[randomVotes[voteId]].poll;
+        vote.user = pollsUsers[randomVotes[voteId]].user;
         voteId++;
         return vote;
       })

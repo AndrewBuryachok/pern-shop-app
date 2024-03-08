@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { Poll } from './poll.entity';
+import { PollView } from './poll-view.entity';
 import { Vote } from './vote.entity';
 import { Discussion } from '../discussions/discussion.entity';
 import { MqttService } from '../mqtt/mqtt.service';
@@ -11,6 +12,7 @@ import {
   ExtCreatePollDto,
   ExtEditPollDto,
   ExtVotePollDto,
+  ViewPollDto,
 } from './poll.dto';
 import { Request, Response } from '../../common/interfaces';
 import { AppException } from '../../common/exceptions';
@@ -23,6 +25,8 @@ export class PollsService {
   constructor(
     @InjectRepository(Poll)
     private pollsRepository: Repository<Poll>,
+    @InjectRepository(PollView)
+    private viewsRepository: Repository<PollView>,
     @InjectRepository(Vote)
     private votesRepository: Repository<Vote>,
     private mqttService: MqttService,
@@ -75,6 +79,21 @@ export class PollsService {
     return { result, count };
   }
 
+  async selectViewedPolls(myId: number): Promise<number[]> {
+    const polls = await this.pollsRepository
+      .createQueryBuilder('poll')
+      .innerJoinAndMapOne(
+        'myView',
+        'poll.views',
+        'myView',
+        'myView.userId = :myId',
+        { myId },
+      )
+      .select(['poll.id'])
+      .getMany();
+    return polls.map((poll) => poll.id);
+  }
+
   selectVotedPolls(myId: number): Promise<Poll[]> {
     return this.pollsRepository
       .createQueryBuilder('poll')
@@ -87,6 +106,25 @@ export class PollsService {
       )
       .select(['poll.id', 'myVote.id', 'myVote.type'])
       .getMany();
+  }
+
+  async selectPollViews(pollId: number): Promise<PollView[]> {
+    const poll = await this.pollsRepository
+      .createQueryBuilder('poll')
+      .leftJoin('poll.views', 'view')
+      .leftJoin('view.user', 'viewer')
+      .where('poll.id = :pollId', { pollId })
+      .orderBy('view.id', 'ASC')
+      .select([
+        'poll.id',
+        'view.id',
+        'viewer.id',
+        'viewer.nick',
+        'viewer.avatar',
+        'view.createdAt',
+      ])
+      .getOne();
+    return poll.views;
   }
 
   async selectPollVotes(pollId: number): Promise<Vote[]> {
@@ -179,6 +217,17 @@ export class PollsService {
   async deletePoll(dto: DeletePollDto): Promise<void> {
     const poll = await this.checkPollOwner(dto.pollId, dto.myId, dto.hasRole);
     await this.delete(poll);
+  }
+
+  async viewPoll(dto: ViewPollDto): Promise<void> {
+    const view = await this.viewsRepository.findOneBy({
+      pollId: dto.pollId,
+      userId: dto.myId,
+    });
+    if (view) {
+      throw new AppException(PollError.ALREADY_VIEWED);
+    }
+    await this.addView(dto);
   }
 
   async votePoll(dto: ExtVotePollDto & { nick: string }): Promise<void> {
@@ -278,6 +327,18 @@ export class PollsService {
     }
   }
 
+  private async addView(dto: ViewPollDto): Promise<void> {
+    try {
+      const view = this.viewsRepository.create({
+        pollId: dto.pollId,
+        userId: dto.myId,
+      });
+      await this.viewsRepository.save(view);
+    } catch (error) {
+      throw new AppException(PollError.ADD_VIEW_FAILED);
+    }
+  }
+
   private async addVote(dto: ExtVotePollDto): Promise<void> {
     try {
       const vote = this.votesRepository.create({
@@ -312,6 +373,7 @@ export class PollsService {
     return this.pollsRepository
       .createQueryBuilder('poll')
       .innerJoin('poll.user', 'ownerUser')
+      .loadRelationCountAndMap('poll.views', 'poll.views')
       .loadRelationCountAndMap('poll.upVotes', 'poll.votes', 'upVote', (qb) =>
         qb.where('upVote.type'),
       )

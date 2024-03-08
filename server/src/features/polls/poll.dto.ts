@@ -57,6 +57,11 @@ export class DeletePollDto extends PollIdDto {
   hasRole: boolean;
 }
 
+export class ViewPollDto {
+  pollId: number;
+  myId: number;
+}
+
 export class VotePollDto extends CreateReactionDto {}
 
 export class ExtVotePollDto extends VotePollDto {

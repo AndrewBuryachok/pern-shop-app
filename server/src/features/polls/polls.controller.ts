@@ -11,6 +11,7 @@ import {
 import { ApiTags } from '@nestjs/swagger';
 import { PollsService } from './polls.service';
 import { Poll } from './poll.entity';
+import { PollView } from './poll-view.entity';
 import { Vote } from './vote.entity';
 import { Discussion } from '../discussions/discussion.entity';
 import {
@@ -66,9 +67,20 @@ export class PollsController {
     return this.pollsService.getAllPolls(req);
   }
 
+  @Get('viewed/select')
+  selectViewedPolls(@MyId() myId: number): Promise<number[]> {
+    return this.pollsService.selectViewedPolls(myId);
+  }
+
   @Get('voted/select')
   selectVotedPolls(@MyId() myId: number): Promise<Poll[]> {
     return this.pollsService.selectVotedPolls(myId);
+  }
+
+  @Public()
+  @Get(':pollId/views')
+  selectPollViews(@Param() { pollId }: PollIdDto): Promise<PollView[]> {
+    return this.pollsService.selectPollViews(pollId);
   }
 
   @Public()
@@ -129,6 +141,14 @@ export class PollsController {
     @Param() { pollId }: PollIdDto,
   ): Promise<void> {
     return this.pollsService.deletePoll({ pollId, myId, hasRole });
+  }
+
+  @Post(':pollId/views')
+  viewPoll(
+    @MyId() myId: number,
+    @Param() { pollId }: PollIdDto,
+  ): Promise<void> {
+    return this.pollsService.viewPoll({ pollId, myId });
   }
 
   @Post(':pollId/votes')

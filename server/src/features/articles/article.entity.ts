@@ -8,6 +8,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { User } from '../users/user.entity';
+import { ArticleView } from './article-view.entity';
 import { Like } from './like.entity';
 import { Comment } from '../comments/comment.entity';
 
@@ -40,6 +41,9 @@ export class Article {
 
   @CreateDateColumn({ type: 'timestamptz', name: 'created_at' })
   createdAt: Date;
+
+  @OneToMany(() => ArticleView, (view) => view.article)
+  views: ArticleView[];
 
   @OneToMany(() => Like, (like) => like.article)
   likes: Like[];

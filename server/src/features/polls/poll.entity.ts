@@ -10,6 +10,7 @@ import {
 import { User } from '../users/user.entity';
 import { Mark } from './mark.enum';
 import { Result } from './result.enum';
+import { PollView } from './poll-view.entity';
 import { Vote } from './vote.entity';
 import { Discussion } from '../discussions/discussion.entity';
 
@@ -53,6 +54,9 @@ export class Poll {
 
   @Column({ type: 'timestamptz', name: 'completed_at', nullable: true })
   completedAt?: Date;
+
+  @OneToMany(() => PollView, (view) => view.poll)
+  views: PollView[];
 
   @OneToMany(() => Vote, (vote) => vote.poll)
   votes: Vote[];

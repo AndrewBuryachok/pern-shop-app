@@ -11,6 +11,7 @@ import {
 import { ApiTags } from '@nestjs/swagger';
 import { ReportsService } from './reports.service';
 import { Report } from './report.entity';
+import { ReportView } from './report-view.entity';
 import { Attitude } from './attitude.entity';
 import { Annotation } from '../annotations/annotation.entity';
 import {
@@ -71,9 +72,20 @@ export class ReportsController {
     return this.reportsService.getMarkReports(Mark.END, req);
   }
 
+  @Get('viewed/select')
+  selectViewedReports(@MyId() myId: number): Promise<number[]> {
+    return this.reportsService.selectViewedReports(myId);
+  }
+
   @Get('attituded/select')
   selectAttitudedReports(@MyId() myId: number): Promise<Report[]> {
     return this.reportsService.selectAttitudedReports(myId);
+  }
+
+  @Public()
+  @Get(':reportId/views')
+  selectReportViews(@Param() { reportId }: ReportIdDto): Promise<ReportView[]> {
+    return this.reportsService.selectReportViews(reportId);
   }
 
   @Public()
@@ -198,6 +210,14 @@ export class ReportsController {
     @Param() { reportId }: ReportIdDto,
   ): Promise<void> {
     return this.reportsService.deleteReport({ reportId, myId });
+  }
+
+  @Post(':reportId/views')
+  viewReport(
+    @MyId() myId: number,
+    @Param() { reportId }: ReportIdDto,
+  ): Promise<void> {
+    return this.reportsService.viewReport({ reportId, myId });
   }
 
   @Post(':reportId/attitudes')

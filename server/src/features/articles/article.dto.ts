@@ -55,6 +55,11 @@ export class DeleteArticleDto extends ArticleIdDto {
   hasRole: boolean;
 }
 
+export class ViewArticleDto {
+  articleId: number;
+  myId: number;
+}
+
 export class LikeArticleDto extends CreateReactionDto {}
 
 export class ExtLikeArticleDto extends LikeArticleDto {
