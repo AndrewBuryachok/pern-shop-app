@@ -1,6 +1,7 @@
 import { emptyApi } from '../../app/empty.api';
 import { IRequest, IResponse } from '../../common/interfaces';
 import { Article, SmArticle } from './article.model';
+import { ArticleView } from './article-view.model';
 import { Like } from './like.model';
 import { Comment } from '../comments/comment.model';
 import {
@@ -9,6 +10,7 @@ import {
   EditArticleDto,
   ExtCreateArticleDto,
   LikeArticleDto,
+  ViewArticleDto,
 } from './article.dto';
 import { getQuery } from '../../common/utils';
 
@@ -50,11 +52,23 @@ export const articlesApi = emptyApi.injectEndpoints({
       }),
       providesTags: ['Auth', 'Article', 'Like', 'Comment'],
     }),
+    selectViewedArticles: build.query<number[], void>({
+      query: () => ({
+        url: '/articles/viewed/select',
+      }),
+      providesTags: ['Auth', 'ArticleView'],
+    }),
     selectLikedArticles: build.query<SmArticle[], void>({
       query: () => ({
         url: '/articles/liked/select',
       }),
-      providesTags: ['Auth', 'Article', 'Like'],
+      providesTags: ['Auth', 'Like'],
+    }),
+    selectArticleViews: build.query<ArticleView[], number>({
+      query: (articleId) => ({
+        url: `/articles/${articleId}/views`,
+      }),
+      providesTags: ['ArticleView'],
     }),
     selectArticleLikes: build.query<Like[], number>({
       query: (articleId) => ({
@@ -99,6 +113,13 @@ export const articlesApi = emptyApi.injectEndpoints({
       }),
       invalidatesTags: ['Article'],
     }),
+    viewArticle: build.mutation<void, ViewArticleDto>({
+      query: ({ articleId }) => ({
+        url: `/articles/${articleId}/views`,
+        method: 'POST',
+      }),
+      invalidatesTags: ['ArticleView'],
+    }),
     likeArticle: build.mutation<void, LikeArticleDto>({
       query: ({ articleId, ...dto }) => ({
         url: `/articles/${articleId}/likes`,
@@ -117,12 +138,15 @@ export const {
   useGetLikedArticlesQuery,
   useGetCommentedArticlesQuery,
   useGetAllArticlesQuery,
+  useSelectViewedArticlesQuery,
   useSelectLikedArticlesQuery,
+  useSelectArticleViewsQuery,
   useSelectArticleLikesQuery,
   useSelectArticleCommentsQuery,
   useCreateMyArticleMutation,
   useCreateUserArticleMutation,
   useEditArticleMutation,
   useDeleteArticleMutation,
+  useViewArticleMutation,
   useLikeArticleMutation,
 } = articlesApi;

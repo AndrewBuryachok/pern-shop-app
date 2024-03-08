@@ -1,6 +1,7 @@
 import { emptyApi } from '../../app/empty.api';
 import { IRequest, IResponse } from '../../common/interfaces';
 import { Report, SmReport } from './report.model';
+import { ReportView } from './report-view.model';
 import { Attitude } from './attitude.model';
 import { Annotation } from '../annotations/annotation.model';
 import {
@@ -8,6 +9,7 @@ import {
   DeleteReportDto,
   EditReportDto,
   AttitudeReportDto,
+  ViewReportDto,
 } from './report.dto';
 import { getQuery } from '../../common/utils';
 
@@ -55,11 +57,23 @@ export const reportsApi = emptyApi.injectEndpoints({
       }),
       providesTags: ['Report', 'Attitude', 'Annotation'],
     }),
+    selectViewedReports: build.query<number[], void>({
+      query: () => ({
+        url: '/reports/viewed/select',
+      }),
+      providesTags: ['Auth', 'ReportView'],
+    }),
     selectAttitudedReports: build.query<SmReport[], void>({
       query: () => ({
         url: '/reports/attituded/select',
       }),
-      providesTags: ['Auth', 'Report', 'Attitude'],
+      providesTags: ['Auth', 'Attitude'],
+    }),
+    selectReportViews: build.query<ReportView[], number>({
+      query: (reportId) => ({
+        url: `/reports/${reportId}/views`,
+      }),
+      providesTags: ['ReportView'],
     }),
     selectReportAttitudes: build.query<Attitude[], number>({
       query: (reportId) => ({
@@ -136,6 +150,13 @@ export const reportsApi = emptyApi.injectEndpoints({
       }),
       invalidatesTags: ['Report'],
     }),
+    viewReport: build.mutation<void, ViewReportDto>({
+      query: ({ reportId }) => ({
+        url: `/reports/${reportId}/views`,
+        method: 'POST',
+      }),
+      invalidatesTags: ['ReportView'],
+    }),
     attitudeReport: build.mutation<void, AttitudeReportDto>({
       query: ({ reportId, ...dto }) => ({
         url: `/reports/${reportId}/attitudes`,
@@ -155,7 +176,9 @@ export const {
   useGetSpawnReportsQuery,
   useGetHubReportsQuery,
   useGetEndReportsQuery,
+  useSelectViewedReportsQuery,
   useSelectAttitudedReportsQuery,
+  useSelectReportViewsQuery,
   useSelectReportAttitudesQuery,
   useSelectReportAnnotationsQuery,
   useCreateServerReportMutation,
@@ -166,5 +189,6 @@ export const {
   useCreateEndReportMutation,
   useEditReportMutation,
   useDeleteReportMutation,
+  useViewReportMutation,
   useAttitudeReportMutation,
 } = reportsApi;

@@ -16,6 +16,10 @@ export interface DeleteReportDto {
   reportId: number;
 }
 
+export interface ViewReportDto {
+  reportId: number;
+}
+
 export interface AttitudeReportDto extends CreateReactionDto {
   reportId: number;
 }

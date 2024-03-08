@@ -10,7 +10,11 @@ import { showNotification } from '@mantine/notifications';
 
 export const logger: Middleware =
   (api: MiddlewareAPI) => (next) => (action) => {
-    if (isFulfilled(action) && action.meta.arg.type !== 'query') {
+    if (
+      isFulfilled(action) &&
+      action.meta.arg.type !== 'query' &&
+      !action.meta.arg.endpointName.includes('view')
+    ) {
       closeAllModals();
       showNotification({
         title: t('notifications.success'),

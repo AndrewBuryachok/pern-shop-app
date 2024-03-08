@@ -20,6 +20,10 @@ export interface DeleteArticleDto {
   articleId: number;
 }
 
+export interface ViewArticleDto {
+  articleId: number;
+}
+
 export interface LikeArticleDto extends CreateReactionDto {
   articleId: number;
 }

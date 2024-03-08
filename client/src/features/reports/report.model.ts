@@ -15,6 +15,7 @@ export interface Report {
   image3: string;
   video: string;
   createdAt: Date;
+  views: number;
   upAttitudes: number;
   downAttitudes: number;
   annotations: number;

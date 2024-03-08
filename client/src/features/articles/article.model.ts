@@ -15,6 +15,7 @@ export interface Article {
   image3: string;
   video: string;
   createdAt: Date;
+  views: number;
   upLikes: number;
   downLikes: number;
   comments: number;

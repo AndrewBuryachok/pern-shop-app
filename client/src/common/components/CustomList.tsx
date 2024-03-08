@@ -18,6 +18,7 @@ export default function CustomList<T>(props: Props<T>) {
                   <Skeleton w={64} h={24} />
                   <Skeleton w={64} h={24} />
                   <Skeleton w={64} h={24} />
+                  <Skeleton w={64} h={24} />
                 </Group>
               </Stack>
             </Paper>
