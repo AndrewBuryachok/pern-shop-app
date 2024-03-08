@@ -23,6 +23,10 @@ export interface CompletePollDto extends CreateReactionDto {
   pollId: number;
 }
 
+export interface ViewPollDto {
+  pollId: number;
+}
+
 export interface VotePollDto extends CreateReactionDto {
   pollId: number;
 }

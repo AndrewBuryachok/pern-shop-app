@@ -16,6 +16,7 @@ export interface Poll {
   result: number;
   createdAt: Date;
   completedAt?: Date;
+  views: number;
   upVotes: number;
   downVotes: number;
   discussions: number;

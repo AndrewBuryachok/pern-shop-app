@@ -1,6 +1,7 @@
 import { emptyApi } from '../../app/empty.api';
 import { IRequest, IResponse } from '../../common/interfaces';
 import { Poll, SmPoll } from './poll.model';
+import { PollView } from './poll-view.model';
 import { Vote } from './vote.model';
 import { Discussion } from '../discussions/discussion.model';
 import {
@@ -9,6 +10,7 @@ import {
   DeletePollDto,
   EditPollDto,
   ExtCreatePollDto,
+  ViewPollDto,
   VotePollDto,
 } from './poll.dto';
 import { getQuery } from '../../common/utils';
@@ -45,11 +47,23 @@ export const pollsApi = emptyApi.injectEndpoints({
       }),
       providesTags: ['Auth', 'Poll', 'Vote', 'Discussion'],
     }),
+    selectViewedPolls: build.query<number[], void>({
+      query: () => ({
+        url: '/polls/viewed/select',
+      }),
+      providesTags: ['Auth', 'PollView'],
+    }),
     selectVotedPolls: build.query<SmPoll[], void>({
       query: () => ({
         url: '/polls/voted/select',
       }),
-      providesTags: ['Auth', 'Poll', 'Vote'],
+      providesTags: ['Auth', 'Vote'],
+    }),
+    selectPollViews: build.query<PollView[], number>({
+      query: (pollId) => ({
+        url: `/polls/${pollId}/views`,
+      }),
+      providesTags: ['PollView'],
     }),
     selectPollVotes: build.query<Vote[], number>({
       query: (pollId) => ({
@@ -102,6 +116,13 @@ export const pollsApi = emptyApi.injectEndpoints({
       }),
       invalidatesTags: ['Poll'],
     }),
+    viewPoll: build.mutation<void, ViewPollDto>({
+      query: ({ pollId }) => ({
+        url: `/polls/${pollId}/views`,
+        method: 'POST',
+      }),
+      invalidatesTags: ['PollView'],
+    }),
     votePoll: build.mutation<void, VotePollDto>({
       query: ({ pollId, ...dto }) => ({
         url: `/polls/${pollId}/votes`,
@@ -119,7 +140,9 @@ export const {
   useGetVotedPollsQuery,
   useGetDiscussedPollsQuery,
   useGetAllPollsQuery,
+  useSelectViewedPollsQuery,
   useSelectVotedPollsQuery,
+  useSelectPollViewsQuery,
   useSelectPollVotesQuery,
   useSelectPollDiscussionsQuery,
   useCreateMyPollMutation,
@@ -127,5 +150,6 @@ export const {
   useEditPollMutation,
   useCompletePollMutation,
   useDeletePollMutation,
+  useViewPollMutation,
   useVotePollMutation,
 } = pollsApi;
