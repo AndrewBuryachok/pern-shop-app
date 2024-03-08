@@ -51,6 +51,11 @@ export class DeleteReportDto extends ReportIdDto {
   myId: number;
 }
 
+export class ViewReportDto {
+  reportId: number;
+  myId: number;
+}
+
 export class AttitudeReportDto extends CreateReactionDto {}
 
 export class ExtAttitudeReportDto extends AttitudeReportDto {

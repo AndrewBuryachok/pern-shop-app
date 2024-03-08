@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { Article } from './article.entity';
+import { ArticleView } from './article-view.entity';
 import { Like } from './like.entity';
 import { Comment } from '../comments/comment.entity';
 import { MqttService } from '../mqtt/mqtt.service';
@@ -10,6 +11,7 @@ import {
   ExtCreateArticleDto,
   ExtEditArticleDto,
   ExtLikeArticleDto,
+  ViewArticleDto,
 } from './article.dto';
 import { Request, Response } from '../../common/interfaces';
 import { AppException } from '../../common/exceptions';
@@ -21,6 +23,8 @@ export class ArticlesService {
   constructor(
     @InjectRepository(Article)
     private articlesRepository: Repository<Article>,
+    @InjectRepository(ArticleView)
+    private viewsRepository: Repository<ArticleView>,
     @InjectRepository(Like)
     private likesRepository: Repository<Like>,
     private mqttService: MqttService,
@@ -95,6 +99,21 @@ export class ArticlesService {
     return { result, count };
   }
 
+  async selectViewedArticles(myId: number): Promise<number[]> {
+    const articles = await this.articlesRepository
+      .createQueryBuilder('article')
+      .innerJoinAndMapOne(
+        'myView',
+        'article.views',
+        'myView',
+        'myView.userId = :myId',
+        { myId },
+      )
+      .select(['article.id'])
+      .getMany();
+    return articles.map((article) => article.id);
+  }
+
   selectLikedArticles(myId: number): Promise<Article[]> {
     return this.articlesRepository
       .createQueryBuilder('article')
@@ -107,6 +126,25 @@ export class ArticlesService {
       )
       .select(['article.id', 'myLike.id', 'myLike.type'])
       .getMany();
+  }
+
+  async selectArticleViews(articleId: number): Promise<ArticleView[]> {
+    const article = await this.articlesRepository
+      .createQueryBuilder('article')
+      .leftJoin('article.views', 'view')
+      .leftJoin('view.user', 'viewer')
+      .where('article.id = :articleId', { articleId })
+      .orderBy('view.id', 'ASC')
+      .select([
+        'article.id',
+        'view.id',
+        'viewer.id',
+        'viewer.nick',
+        'viewer.avatar',
+        'view.createdAt',
+      ])
+      .getOne();
+    return article.views;
   }
 
   async selectArticleLikes(articleId: number): Promise<Like[]> {
@@ -198,6 +236,17 @@ export class ArticlesService {
     await this.delete(article);
   }
 
+  async viewArticle(dto: ViewArticleDto): Promise<void> {
+    const view = await this.viewsRepository.findOneBy({
+      articleId: dto.articleId,
+      userId: dto.myId,
+    });
+    if (view) {
+      throw new AppException(ArticleError.ALREADY_VIEWED);
+    }
+    await this.addView(dto);
+  }
+
   async likeArticle(dto: ExtLikeArticleDto & { nick: string }): Promise<void> {
     const like = await this.likesRepository.findOneBy({
       articleId: dto.articleId,
@@ -280,6 +329,18 @@ export class ArticlesService {
     }
   }
 
+  private async addView(dto: ViewArticleDto): Promise<void> {
+    try {
+      const view = this.viewsRepository.create({
+        articleId: dto.articleId,
+        userId: dto.myId,
+      });
+      await this.viewsRepository.save(view);
+    } catch (error) {
+      throw new AppException(ArticleError.ADD_VIEW_FAILED);
+    }
+  }
+
   private async addLike(dto: ExtLikeArticleDto): Promise<void> {
     try {
       const like = this.likesRepository.create({
@@ -314,6 +375,7 @@ export class ArticlesService {
     return this.articlesRepository
       .createQueryBuilder('article')
       .innerJoin('article.user', 'ownerUser')
+      .loadRelationCountAndMap('article.views', 'article.views')
       .loadRelationCountAndMap(
         'article.upLikes',
         'article.likes',

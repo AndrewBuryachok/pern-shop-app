@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { Report } from './report.entity';
+import { ReportView } from './report-view.entity';
 import { Attitude } from './attitude.entity';
 import { Annotation } from '../annotations/annotation.entity';
 import { MqttService } from '../mqtt/mqtt.service';
@@ -10,6 +11,7 @@ import {
   ExtAttitudeReportDto,
   ExtCreateReportDto,
   ExtEditReportDto,
+  ViewReportDto,
 } from './report.dto';
 import { Request, Response } from '../../common/interfaces';
 import { AppException } from '../../common/exceptions';
@@ -21,6 +23,8 @@ export class ReportsService {
   constructor(
     @InjectRepository(Report)
     private reportsRepository: Repository<Report>,
+    @InjectRepository(ReportView)
+    private viewsRepository: Repository<ReportView>,
     @InjectRepository(Attitude)
     private attitudesRepository: Repository<Attitude>,
     private mqttService: MqttService,
@@ -40,6 +44,21 @@ export class ReportsService {
     return { result, count };
   }
 
+  async selectViewedReports(myId: number): Promise<number[]> {
+    const reports = await this.reportsRepository
+      .createQueryBuilder('report')
+      .innerJoinAndMapOne(
+        'myView',
+        'report.views',
+        'myView',
+        'myView.userId = :myId',
+        { myId },
+      )
+      .select(['report.id'])
+      .getMany();
+    return reports.map((report) => report.id);
+  }
+
   selectAttitudedReports(myId: number): Promise<Report[]> {
     return this.reportsRepository
       .createQueryBuilder('report')
@@ -52,6 +71,25 @@ export class ReportsService {
       )
       .select(['report.id', 'myAttitude.id', 'myAttitude.type'])
       .getMany();
+  }
+
+  async selectReportViews(reportId: number): Promise<ReportView[]> {
+    const report = await this.reportsRepository
+      .createQueryBuilder('report')
+      .leftJoin('report.views', 'view')
+      .leftJoin('view.user', 'viewer')
+      .where('report.id = :reportId', { reportId })
+      .orderBy('view.id', 'ASC')
+      .select([
+        'report.id',
+        'view.id',
+        'viewer.id',
+        'viewer.nick',
+        'viewer.avatar',
+        'view.createdAt',
+      ])
+      .getOne();
+    return report.views;
   }
 
   async selectReportAttitudes(reportId: number): Promise<Attitude[]> {
@@ -135,6 +173,17 @@ export class ReportsService {
     await this.delete(report);
   }
 
+  async viewReport(dto: ViewReportDto): Promise<void> {
+    const view = await this.viewsRepository.findOneBy({
+      reportId: dto.reportId,
+      userId: dto.myId,
+    });
+    if (view) {
+      throw new AppException(ReportError.ALREADY_VIEWED);
+    }
+    await this.addView(dto);
+  }
+
   async attitudeReport(
     dto: ExtAttitudeReportDto & { nick: string },
   ): Promise<void> {
@@ -216,6 +265,18 @@ export class ReportsService {
     }
   }
 
+  private async addView(dto: ViewReportDto): Promise<void> {
+    try {
+      const view = this.viewsRepository.create({
+        reportId: dto.reportId,
+        userId: dto.myId,
+      });
+      await this.viewsRepository.save(view);
+    } catch (error) {
+      throw new AppException(ReportError.ADD_VIEW_FAILED);
+    }
+  }
+
   private async addAttitude(dto: ExtAttitudeReportDto): Promise<void> {
     try {
       const attitude = this.attitudesRepository.create({
@@ -253,6 +314,7 @@ export class ReportsService {
     return this.reportsRepository
       .createQueryBuilder('report')
       .innerJoin('report.user', 'ownerUser')
+      .loadRelationCountAndMap('report.views', 'report.views')
       .loadRelationCountAndMap(
         'report.upAttitudes',
         'report.attitudes',
