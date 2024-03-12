@@ -236,6 +236,12 @@ describe('With Auth', () => {
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
 
+    it('GET /users/ignorers', async () => {
+      return request(app.getHttpServer())
+        .get('/users/ignorers')
+        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
+    });
+
     it('GET /users/ratings', async () => {
       return request(app.getHttpServer())
         .get('/users/ratings')
@@ -278,6 +284,13 @@ describe('With Auth', () => {
     it('GET /users/not-subscribed/select', async () => {
       return request(app.getHttpServer())
         .get('/users/not-subscribed/select')
+        .set('Authorization', `Bearer ${user.access}`)
+        .expect((res) => expect(res.body.length).toBeGreaterThan(0));
+    });
+
+    it('GET /users/not-ignored/select', async () => {
+      return request(app.getHttpServer())
+        .get('/users/not-ignored/select')
         .set('Authorization', `Bearer ${user.access}`)
         .expect((res) => expect(res.body.length).toBeGreaterThan(0));
     });
@@ -439,6 +452,43 @@ describe('With Auth', () => {
     it('DELETE /subscribers/:subscriberId', async () => {
       return request(app.getHttpServer())
         .delete(`/subscribers/${user.id}`)
+        .set('Authorization', `Bearer ${user.access}`)
+        .expect('');
+    });
+  });
+
+  describe('Ignorers', () => {
+    it('POST /ignorers/:ignorerId', async () => {
+      return request(app.getHttpServer())
+        .post(`/ignorers/${user.id}`)
+        .set('Authorization', `Bearer ${user.access}`)
+        .expect('');
+    });
+
+    it('GET /ignorers/my', async () => {
+      return request(app.getHttpServer())
+        .get('/ignorers/my')
+        .set('Authorization', `Bearer ${user.access}`)
+        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
+    });
+
+    it('GET /ignorers/received', async () => {
+      return request(app.getHttpServer())
+        .get('/ignorers/received')
+        .set('Authorization', `Bearer ${user.access}`)
+        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
+    });
+
+    it('GET /ignorers/my/select', async () => {
+      return request(app.getHttpServer())
+        .get('/ignorers/my/select')
+        .set('Authorization', `Bearer ${user.access}`)
+        .expect((res) => expect(res.body.length).toBeGreaterThan(0));
+    });
+
+    it('DELETE /ignorers/:ignorerId', async () => {
+      return request(app.getHttpServer())
+        .delete(`/ignorers/${user.id}`)
         .set('Authorization', `Bearer ${user.access}`)
         .expect('');
     });

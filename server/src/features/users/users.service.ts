@@ -9,6 +9,7 @@ import {
   ExtEditUserProfileDto,
   ExtUpdateUserRoleDto,
   UpdateUserFriendDto,
+  UpdateUserIgnorerDto,
   UpdateUserSubscriberDto,
   UpdateUserTokenDto,
 } from './user.dto';
@@ -75,6 +76,21 @@ export class UsersService {
     return { result, count };
   }
 
+  async getIgnorersUsers(req: Request): Promise<Response<User>> {
+    const [result, count] = await this.getIgnorersQueryBuilder(req)
+      .leftJoin('user.receivedIgnorers', 'ignorer')
+      .groupBy('user.id')
+      .addGroupBy('city.id')
+      .addGroupBy('ownerUser.id')
+      .orderBy('user_ignorers', 'DESC', 'NULLS LAST')
+      .addOrderBy('user.type', 'DESC')
+      .addOrderBy('user.onlineAt', 'DESC')
+      .addOrderBy('user.id', 'DESC')
+      .addSelect('COUNT(ignorer.id)', 'user_ignorers')
+      .getManyAndCount();
+    return { result, count };
+  }
+
   async getRatingsUsers(req: Request): Promise<Response<User>> {
     const [result, count] = await this.getRatingsQueryBuilder(req)
       .leftJoin('user.receivedRatings', 'rating')
@@ -118,6 +134,13 @@ export class UsersService {
     return this.getUsersQueryBuilder(req).loadRelationCountAndMap(
       'user.subscribersCount',
       'user.receivedSubscribers',
+    );
+  }
+
+  getIgnorersQueryBuilder(req: Request): SelectQueryBuilder<User> {
+    return this.getUsersQueryBuilder(req).loadRelationCountAndMap(
+      'user.ignorersCount',
+      'user.receivedIgnorers',
     );
   }
 
@@ -175,6 +198,17 @@ export class UsersService {
     return users.filter((user) => !subscribers.includes(user.id));
   }
 
+  async selectNotIgnoredUsers(myId: number): Promise<User[]> {
+    const ignorers = (
+      await this.usersRepository.findOne({
+        relations: ['sentIgnorers'],
+        where: { id: myId },
+      })
+    ).sentIgnorers.map((ignorer) => ignorer.id);
+    const users = await this.selectUsersQueryBuilder().getMany();
+    return users.filter((user) => !ignorers.includes(user.id));
+  }
+
   async selectNotRatedUsers(myId: number): Promise<User[]> {
     const raters = (
       await this.usersRepository.findOne({
@@ -194,6 +228,18 @@ export class UsersService {
         'user.receivedSubscribers',
         'subscriber',
         'subscriber.id = :myId',
+        { myId },
+      )
+      .getMany();
+  }
+
+  selectMyIgnorers(myId: number): Promise<User[]> {
+    return this.selectUsersQueryBuilder()
+      .innerJoinAndMapOne(
+        'ignorer',
+        'user.receivedIgnorers',
+        'ignorer',
+        'ignorer.id = :myId',
         { myId },
       )
       .getMany();
@@ -325,6 +371,32 @@ export class UsersService {
       throw new AppException(UserError.NOT_HAS_SUBSCRIBER);
     }
     await this.removeSubscriber(user, dto.receiverUserId);
+  }
+
+  async addUserIgnorer(dto: UpdateUserIgnorerDto): Promise<void> {
+    const user = await this.usersRepository.findOne({
+      relations: ['sentIgnorers'],
+      where: { id: dto.senderUserId },
+    });
+    if (
+      user.sentIgnorers.find((ignorer) => ignorer.id === dto.receiverUserId)
+    ) {
+      throw new AppException(UserError.ALREADY_HAS_IGNORER);
+    }
+    await this.addIgnorer(user, dto.receiverUserId);
+  }
+
+  async removeUserIgnorer(dto: UpdateUserIgnorerDto): Promise<void> {
+    const user = await this.usersRepository.findOne({
+      relations: ['sentIgnorers'],
+      where: { id: dto.senderUserId },
+    });
+    if (
+      !user.sentIgnorers.find((ignorer) => ignorer.id === dto.receiverUserId)
+    ) {
+      throw new AppException(UserError.NOT_HAS_IGNORER);
+    }
+    await this.removeIgnorer(user, dto.receiverUserId);
   }
 
   async checkUserExists(id: number): Promise<void> {
@@ -495,6 +567,28 @@ export class UsersService {
       await this.usersRepository.save(user);
     } catch (error) {
       throw new AppException(UserError.REMOVE_SUBSCRIBER_FAILED);
+    }
+  }
+
+  private async addIgnorer(user: User, userId: number): Promise<void> {
+    try {
+      const ignorer = new User();
+      ignorer.id = userId;
+      user.sentIgnorers.push(ignorer);
+      await this.usersRepository.save(user);
+    } catch (error) {
+      throw new AppException(UserError.ADD_IGNORER_FAILED);
+    }
+  }
+
+  private async removeIgnorer(user: User, userId: number): Promise<void> {
+    try {
+      user.sentIgnorers = user.sentIgnorers.filter(
+        (user) => user.id !== userId,
+      );
+      await this.usersRepository.save(user);
+    } catch (error) {
+      throw new AppException(UserError.REMOVE_IGNORER_FAILED);
     }
   }
 
