@@ -17,7 +17,9 @@ import {
   useAddSubscriberMutation,
   useRemoveSubscriberMutation,
 } from '../subscribers/subscribers.api';
+import { useAddIgnorerMutation } from '../ignorers/ignorers.api';
 import { UpdateSubscriberDto } from '../subscribers/subscriber.dto';
+import { UpdateIgnorerDto } from '../ignorers/ignorer.dto';
 import AvatarWithDateText from '../../common/components/AvatarWithDateText';
 import CustomHighlight from '../../common/components/CustomHighlight';
 import CustomImage from '../../common/components/CustomImage';
@@ -38,6 +40,7 @@ type Props = {
     downLiked?: SmArticle;
   };
   isSubscribersLoading: boolean;
+  isIgnorersLoading: boolean;
   isViewedLoading: boolean;
   isLikedLoading: boolean;
   actions: IAction<Article>[];
@@ -58,6 +61,12 @@ export default function ArticlePaper({ article, ...props }: Props) {
 
   const handleUnsubscribeSubmit = async (dto: UpdateSubscriberDto) => {
     await removeSubscriber(dto);
+  };
+
+  const [addIgnorer] = useAddIgnorerMutation();
+
+  const handleIgnoreSubmit = async (dto: UpdateIgnorerDto) => {
+    await addIgnorer(dto);
   };
 
   const [viewArticle] = useViewArticleMutation();
@@ -102,6 +111,19 @@ export default function ArticlePaper({ article, ...props }: Props) {
               {article.subscribed
                 ? t('actions.unsubscribe')
                 : t('actions.subscribe')}
+            </Button>
+            <Button
+              color='red'
+              loading={props.isIgnorersLoading}
+              loaderPosition='center'
+              onClick={() =>
+                user
+                  ? handleIgnoreSubmit({ userId: article.user.id })
+                  : openAuthModal()
+              }
+              compact
+            >
+              {t('actions.ignore')}
             </Button>
           </Group>
           <CustomActions

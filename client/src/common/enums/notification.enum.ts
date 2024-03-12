@@ -7,6 +7,8 @@ export const notificationToTab = [
   'deleted friends my',
   'added subscribers received',
   'removed subscribers received',
+  'added ignorers received',
+  'removed ignorers received',
   'created reports main',
   'reacted reports main',
   'commented reports main',

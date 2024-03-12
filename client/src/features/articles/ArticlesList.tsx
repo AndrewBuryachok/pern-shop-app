@@ -6,6 +6,7 @@ import {
   useSelectViewedArticlesQuery,
 } from './articles.api';
 import { useSelectMySubscribersQuery } from '../subscribers/subscribers.api';
+import { useSelectMyIgnorersQuery } from '../ignorers/ignorers.api';
 import CustomList from '../../common/components/CustomList';
 import ArticlePaper from './ArticlePaper';
 
@@ -17,6 +18,11 @@ export default function ArticlesList({ actions = [], ...props }: Props) {
   const { data: subscribers, ...subscribersResponse } =
     useSelectMySubscribersQuery(undefined, { skip: !user });
 
+  const { data: ignorers, ...ignorersResponse } = useSelectMyIgnorersQuery(
+    undefined,
+    { skip: !user },
+  );
+
   const { data: viewedArticles, ...viewedArticlesResponse } =
     useSelectViewedArticlesQuery(undefined, { skip: !user });
 
@@ -26,6 +32,10 @@ export default function ArticlesList({ actions = [], ...props }: Props) {
   return (
     <CustomList {...props}>
       {props.data?.result
+        .filter(
+          (article) =>
+            !ignorers?.find((ignorer) => ignorer.id === article.user.id),
+        )
         .map((article) => ({
           ...article,
           subscribed: !!subscribers?.find(
@@ -46,6 +56,7 @@ export default function ArticlesList({ actions = [], ...props }: Props) {
             key={article.id}
             article={article}
             isSubscribersLoading={subscribersResponse.isFetching}
+            isIgnorersLoading={ignorersResponse.isFetching}
             isViewedLoading={viewedArticlesResponse.isFetching}
             isLikedLoading={likedArticlesResponse.isFetching}
             actions={actions}
