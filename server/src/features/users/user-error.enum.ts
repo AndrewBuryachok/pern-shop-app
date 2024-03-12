@@ -6,6 +6,8 @@ export enum UserError {
   NOT_HAS_FRIEND = '400: User has not friend',
   ALREADY_HAS_SUBSCRIBER = '400: User already has subscriber',
   NOT_HAS_SUBSCRIBER = '400: User has not subscriber',
+  ALREADY_HAS_IGNORER = '400: User already has ignorer',
+  NOT_HAS_IGNORER = '400: User has not ignorer',
   NOT_OWNER = '403: You are not profile owner',
   UNKNOWN = '404: Unknown user',
   CREATE_FAILED = '500: Failed to create user',
@@ -21,4 +23,6 @@ export enum UserError {
   REMOVE_FRIEND_FAILED = '500: Failed to remove user friend',
   ADD_SUBSCRIBER_FAILED = '500: Failed to add user subscriber',
   REMOVE_SUBSCRIBER_FAILED = '500: Failed to remove user subscriber',
+  ADD_IGNORER_FAILED = '500: Failed to add user ignorer',
+  REMOVE_IGNORER_FAILED = '500: Failed to remove user ignorer',
 }

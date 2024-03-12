@@ -116,6 +116,22 @@ describe('Without Auth', () => {
     });
   });
 
+  describe('Ignorers', () => {
+    it('GET /ignorers/my', async () => {
+      return request(app.getHttpServer()).get('/ignorers/my').expect(401);
+    });
+
+    it('GET /ignorers/received', async () => {
+      return request(app.getHttpServer()).get('/ignorers/received').expect(401);
+    });
+
+    it('GET /ignorers/my/select', async () => {
+      return request(app.getHttpServer())
+        .get('/ignorers/my/select')
+        .expect(401);
+    });
+  });
+
   describe('Reports', () => {
     it('GET /reports/attituded/select', async () => {
       return request(app.getHttpServer())
