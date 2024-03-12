@@ -17,6 +17,7 @@ export interface User extends MdUser {
   time?: number;
   friendsCount?: number;
   subscribersCount?: number;
+  ignorersCount?: number;
   ratersCount?: number;
 }
 

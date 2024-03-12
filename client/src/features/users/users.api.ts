@@ -34,6 +34,12 @@ export const usersApi = emptyApi.injectEndpoints({
       }),
       providesTags: ['User', 'Subscriber'],
     }),
+    getIgnorersUsers: build.query<IResponse<User>, IRequest>({
+      query: (req) => ({
+        url: `/users/ignorers?${getQuery(req)}`,
+      }),
+      providesTags: ['User', 'Ignorer'],
+    }),
     getRatingsUsers: build.query<IResponse<User>, IRequest>({
       query: (req) => ({
         url: `/users/ratings?${getQuery(req)}`,
@@ -75,6 +81,12 @@ export const usersApi = emptyApi.injectEndpoints({
         url: '/users/not-subscribed/select',
       }),
       providesTags: ['Auth', 'User', 'Subscriber'],
+    }),
+    selectNotIgnoredUsers: build.query<SmUser[], void>({
+      query: () => ({
+        url: '/users/not-ignored/select',
+      }),
+      providesTags: ['Auth', 'User', 'Ignorer'],
     }),
     selectNotRatedUsers: build.query<SmUser[], void>({
       query: () => ({
@@ -127,6 +139,7 @@ export const {
   useGetTopUsersQuery,
   useGetFriendsUsersQuery,
   useGetSubscribersUsersQuery,
+  useGetIgnorersUsersQuery,
   useGetRatingsUsersQuery,
   useGetMyUsersQuery,
   useGetAllUsersQuery,
@@ -134,6 +147,7 @@ export const {
   useSelectNotCitizensUsersQuery,
   useSelectNotFriendsUsersQuery,
   useSelectNotSubscribedUsersQuery,
+  useSelectNotIgnoredUsersQuery,
   useSelectNotRatedUsersQuery,
   useGetSingleUserQuery,
   useEditUserProfileMutation,
