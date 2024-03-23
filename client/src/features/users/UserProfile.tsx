@@ -22,6 +22,8 @@ import {
   IconPencil,
 } from '@tabler/icons';
 import { ExtUser } from './user.model';
+import { getCurrentUser } from '../auth/auth.slice';
+import { openAuthModal } from '../auth/AuthModal';
 import ProfileAvatar from '../../common/components/ProfileAvatar';
 import LinkedAvatar from '../../common/components/LinkedAvatar';
 import RolesBadge from '../../common/components/RolesBadge';
@@ -34,6 +36,7 @@ import { editUserProfileAction } from './EditUserProfileModal';
 import { openViewUserFriendsModal } from './ViewUserFriendsModal';
 import { openViewUserSubscribersModal } from './ViewUserSubscribersModal';
 import { openViewUserRatersModal } from './ViewUserRatersModal';
+import { openViewUserMessagesModal } from './ViewUserMessagesModal';
 import { colors } from '../../common/constants';
 
 type Props = {
@@ -42,6 +45,8 @@ type Props = {
 
 export default function UserProfile({ data: user }: Props) {
   const [t] = useTranslation();
+
+  const me = getCurrentUser();
 
   const contacts = [
     {
@@ -150,6 +155,14 @@ export default function UserProfile({ data: user }: Props) {
                     </Button>
                   ),
               )}
+              <Button
+                onClick={() =>
+                  me ? openViewUserMessagesModal(user) : openAuthModal()
+                }
+                compact
+              >
+                {t('actions.message')}
+              </Button>
             </Stack>
           </Paper>
         </Stack>

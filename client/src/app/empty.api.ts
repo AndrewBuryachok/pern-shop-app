@@ -6,6 +6,7 @@ export const emptyApi = createApi({
   tagTypes: [
     'Auth',
     'User',
+    'Message',
     'Friend',
     'Subscriber',
     'Ignorer',
