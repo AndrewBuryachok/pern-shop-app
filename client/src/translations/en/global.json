@@ -159,6 +159,7 @@
     "delete": "Delete",
     "remove": "Remove",
     "untake": "Untake",
+    "message": "Send Message",
     "subscribe": "Subscribe",
     "unsubscribe": "Unsubscribe",
     "ignore": "Ignore",
@@ -186,6 +187,7 @@
     "owner": "Owner",
     "city": "City",
     "time": "Hours",
+    "messages": "Messages",
     "friends": "Friends",
     "subscribers": "Subscribers",
     "ignorers": "Ignorers",
@@ -278,6 +280,7 @@
       "anchor": "Login"
     },
     "users": "User",
+    "messages": "Message",
     "friends": "Friend",
     "subscribers": "Subscriber",
     "ignorers": "Ignorer",
@@ -323,7 +326,8 @@
     "message": "Operation completed successfully",
     "notification": "Notification",
     "users": {
-      "created": "registered"
+      "created": "registered",
+      "messaged": "sent you message"
     },
     "friends": {
       "invited": "invited you in friends",
