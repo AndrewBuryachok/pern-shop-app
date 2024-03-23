@@ -24,6 +24,7 @@ describe('With Auth', () => {
   let spawn: Tokens;
   let hub: Tokens;
   let end: Tokens;
+  let messageId: number;
   let reportsId: number;
   let annotationId: number;
   let articlesId: number;
@@ -337,6 +338,43 @@ describe('With Auth', () => {
         .delete(`/users/${user.id}/roles`)
         .set('Authorization', `Bearer ${admin.access}`)
         .send({ userId: user.id, role: 1 })
+        .expect('');
+    });
+  });
+
+  describe('Messages', () => {
+    it('POST /messages', async () => {
+      return request(app.getHttpServer())
+        .post('/messages')
+        .set('Authorization', `Bearer ${user.access}`)
+        .send({
+          userId: user.id,
+          messageId: 0,
+          text: 'message text',
+        })
+        .expect('');
+    });
+
+    it('GET /messages/:userId', async () => {
+      return request(app.getHttpServer())
+        .get(`/messages/${user.id}`)
+        .set('Authorization', `Bearer ${user.access}`)
+        .expect((res) => expect(res.body.length).toBeGreaterThan(0))
+        .then((res) => (messageId = res.body[0].id));
+    });
+
+    it('PATCH /messages/:messageId', async () => {
+      return request(app.getHttpServer())
+        .patch(`/messages/${messageId}`)
+        .set('Authorization', `Bearer ${user.access}`)
+        .send({ text: 'message text' })
+        .expect('');
+    });
+
+    it('DELETE /messages/:messageId', async () => {
+      return request(app.getHttpServer())
+        .delete(`/messages/${messageId}`)
+        .set('Authorization', `Bearer ${user.access}`)
         .expect('');
     });
   });
