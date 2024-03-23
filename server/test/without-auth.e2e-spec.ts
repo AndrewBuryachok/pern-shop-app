@@ -84,6 +84,14 @@ describe('Without Auth', () => {
     });
   });
 
+  describe('Messages', () => {
+    it('GET /messages/:userId', async () => {
+      return request(app.getHttpServer())
+        .get(`/messages/${user.id}`)
+        .expect(401);
+    });
+  });
+
   describe('Friends', () => {
     it('GET /friends/my', async () => {
       return request(app.getHttpServer()).get('/friends/my').expect(401);

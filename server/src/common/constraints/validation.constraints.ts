@@ -4,6 +4,7 @@ import {
   ValidatorConstraintInterface,
 } from 'class-validator';
 import { UsersService } from '../../features/users/users.service';
+import { MessagesService } from '../../features/messages/messages.service';
 import { ReportsService } from '../../features/reports/reports.service';
 import { AnnotationsService } from '../../features/annotations/annotations.service';
 import { ArticlesService } from '../../features/articles/articles.service';
@@ -48,6 +49,25 @@ export class IsUserExists implements ValidatorConstraintInterface {
 
   defaultMessage(): string {
     return 'Unknown user';
+  }
+}
+
+@Injectable()
+@ValidatorConstraint({ name: 'isMessageExists', async: true })
+export class IsMessageExists implements ValidatorConstraintInterface {
+  constructor(private messagesService: MessagesService) {}
+
+  async validate(value: number): Promise<boolean> {
+    try {
+      await this.messagesService.checkMessageExists(value);
+    } catch (error) {
+      return false;
+    }
+    return true;
+  }
+
+  defaultMessage(): string {
+    return 'Unknown message';
   }
 }
 

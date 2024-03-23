@@ -3,6 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './features/auth/auth.module';
 import { UsersModule } from './features/users/users.module';
+import { MessagesModule } from './features/messages/messages.module';
 import { FriendsModule } from './features/friends/friends.module';
 import { SubscribersModule } from './features/subscribers/subscribers.module';
 import { IgnorersModule } from './features/ignorers/ignorers.module';
@@ -58,6 +59,7 @@ import { RatingsModule } from './features/ratings/ratings.module';
     }),
     AuthModule,
     UsersModule,
+    MessagesModule,
     FriendsModule,
     SubscribersModule,
     IgnorersModule,

@@ -1,6 +1,7 @@
 import { faker } from '@faker-js/faker';
 import { Factory, Seeder } from 'typeorm-seeding';
 import { User } from '../../features/users/user.entity';
+import { Message } from '../../features/messages/message.entity';
 import { Report } from '../../features/reports/report.entity';
 import { ReportView } from '../../features/reports/report-view.entity';
 import { Attitude } from '../../features/reports/attitude.entity';
@@ -54,6 +55,13 @@ export default class AppSeed implements Seeder {
         return user;
       })
       .createMany(20);
+    const messages = await factory(Message)()
+      .map(async (message) => {
+        message.chat = faker.helpers.arrayElement(users);
+        message.user = faker.helpers.arrayElement(users);
+        return message;
+      })
+      .createMany(40);
     const reports = await factory(Report)()
       .map(async (report) => {
         report.user = faker.helpers.arrayElement(users);
