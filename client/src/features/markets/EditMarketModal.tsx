@@ -17,7 +17,6 @@ import {
   MAX_DESCRIPTION_LENGTH,
   MAX_LINK_LENGTH,
   MAX_NAME_LENGTH,
-  MAX_PRICE_VALUE,
   MIN_COORDINATE_VALUE,
   MIN_NAME_LENGTH,
 } from '../../common/constants';
@@ -36,7 +35,6 @@ export default function EditMarketModal({ data: market }: Props) {
       description: market.description,
       x: market.x,
       y: market.y,
-      price: market.price,
     },
   });
 
@@ -99,14 +97,6 @@ export default function EditMarketModal({ data: market }: Props) {
         min={MIN_COORDINATE_VALUE}
         max={MAX_COORDINATE_VALUE}
         {...form.getInputProps('y')}
-      />
-      <NumberInput
-        label={t('columns.price')}
-        placeholder={t('columns.price')}
-        required
-        min={1}
-        max={MAX_PRICE_VALUE}
-        {...form.getInputProps('price')}
       />
     </CustomForm>
   );

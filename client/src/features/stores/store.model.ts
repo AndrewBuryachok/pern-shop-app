@@ -1,5 +1,6 @@
 import { Container } from '../containers/container.model';
 import { MdMarket, SmMarket } from '../markets/market.model';
+import { SmMarketTag } from '../markets-tags/market-tag.model';
 
 export interface SmStore extends Container {}
 
@@ -9,6 +10,7 @@ export interface MdStore extends SmStore {
 
 export interface LgStore extends SmStore {
   market: MdMarket;
+  marketTag: SmMarketTag;
 }
 
 export interface Store extends LgStore {

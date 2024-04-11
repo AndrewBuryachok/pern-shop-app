@@ -34,6 +34,12 @@ export const getQuery = ({ page, search }: IRequest) => {
   if (search?.storage) {
     query.append('storage', search.storage);
   }
+  if (search?.marketTag) {
+    query.append('marketTag', search.marketTag);
+  }
+  if (search?.storageTag) {
+    query.append('storageTag', search.storageTag);
+  }
   if (search?.store) {
     query.append('store', search.store);
   }

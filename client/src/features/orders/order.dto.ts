@@ -5,7 +5,7 @@ import {
 } from '../transportations/transportation.dto';
 
 export interface CreateOrderDto extends CreateTransportationDto {
-  storageId: number;
+  storageTagId: number;
 }
 
 export interface TakeOrderDto extends TakeTransportationDto {

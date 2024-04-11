@@ -24,13 +24,13 @@ export default function CellsTable({ actions = [], ...props }: Props) {
             <AvatarWithDoubleText {...cell.storage.card} />
           </td>
           <td>
-            <PlaceText {...cell.storage} withoutPrice />
+            <PlaceText {...cell.storage} />
           </td>
           <td>
             <SingleText text={`#${cell.name}`} />
           </td>
           <td>
-            <PriceText {...cell.storage} />
+            <PriceText {...cell.storageTag} />
           </td>
           <td>
             <DateText date={cell.reservedUntil} />

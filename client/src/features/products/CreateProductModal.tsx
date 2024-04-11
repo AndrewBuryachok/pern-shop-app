@@ -5,7 +5,7 @@ import { NumberInput, Select, Textarea } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { useCreateProductMutation } from './products.api';
-import { useSelectFreeStoragesQuery } from '../storages/storages.api';
+import { useSelectFreeTagsQuery } from '../storages-tags/storages-tags.api';
 import { useSelectAllUsersQuery } from '../users/users.api';
 import {
   useSelectMyCardsQuery,
@@ -19,13 +19,12 @@ import ThingImage from '../../common/components/ThingImage';
 import { UsersItem } from '../../common/components/UsersItem';
 import { ThingsItem } from '../../common/components/ThingsItem';
 import { CardsItem } from '../../common/components/CardsItem';
-import { PlacesItem } from '../../common/components/PlacesItem';
 import {
   selectCardsWithBalance,
   selectCategories,
   selectItems,
   selectKits,
-  selectStoragesWithPrice,
+  selectTagsWithStorage,
   selectUsers,
 } from '../../common/utils';
 import {
@@ -40,12 +39,12 @@ type Props = { hasRole: boolean };
 export default function CreateProductModal({ hasRole }: Props) {
   const [t] = useTranslation();
 
-  const storage = { price: 0 };
+  const storageTag = { price: 0 };
   const myCard = { balance: 0 };
 
   const form = useForm({
     initialValues: {
-      storage: '',
+      storageTag: '',
       user: '',
       card: '',
       category: '',
@@ -56,22 +55,25 @@ export default function CreateProductModal({ hasRole }: Props) {
       kit: '',
       price: 1,
     },
-    transformValues: ({ storage, card, item, kit, ...rest }) => ({
+    transformValues: ({ storageTag, card, item, kit, ...rest }) => ({
       ...rest,
-      storageId: +storage,
+      storageTagId: +storageTag,
       cardId: +card,
       item: +item,
       kit: +kit,
     }),
     validate: {
       card: () =>
-        myCard.balance < storage.price ? t('errors.not_enough_balance') : null,
+        myCard.balance < storageTag.price
+          ? t('errors.not_enough_balance')
+          : null,
     },
   });
 
   useEffect(() => form.setFieldValue('item', ''), [form.values.category]);
 
-  const { data: storages, ...storagesResponse } = useSelectFreeStoragesQuery();
+  const { data: storagesTags, ...storagesTagsResponse } =
+    useSelectFreeTagsQuery();
   const { data: users, ...usersResponse } = useSelectAllUsersQuery(undefined, {
     skip: !hasRole,
   });
@@ -83,9 +85,10 @@ export default function CreateProductModal({ hasRole }: Props) {
 
   const user = users?.find((user) => user.id === +form.values.user);
 
-  storage.price =
-    storages?.find((storage) => storage.id === +form.values.storage)?.price ||
-    0;
+  storageTag.price =
+    storagesTags?.find(
+      (storageTag) => storageTag.id === +form.values.storageTag,
+    )?.price || 0;
   myCard.balance =
     cards?.find((card) => card.id === +form.values.card)?.balance || 0;
 
@@ -104,14 +107,13 @@ export default function CreateProductModal({ hasRole }: Props) {
       <Select
         label={t('columns.storage')}
         placeholder={t('columns.storage')}
-        rightSection={<RefetchAction {...storagesResponse} />}
-        itemComponent={PlacesItem}
-        data={selectStoragesWithPrice(storages)}
+        rightSection={<RefetchAction {...storagesTagsResponse} />}
+        data={selectTagsWithStorage(storagesTags)}
         limit={20}
         searchable
         required
-        readOnly={storagesResponse.isFetching}
-        {...form.getInputProps('storage')}
+        readOnly={storagesTagsResponse.isFetching}
+        {...form.getInputProps('storageTag')}
       />
       {hasRole && (
         <Select

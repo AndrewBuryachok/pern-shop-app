@@ -42,7 +42,7 @@ export default function RentsTable({ actions = [], ...props }: Props) {
             <SumText
               fromId={rent.card.user.id}
               toId={rent.store.market.card.user.id}
-              sum={rent.store.market.price}
+              sum={rent.store.marketTag.price}
             />
           </td>
           <td>

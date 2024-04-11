@@ -9,11 +9,12 @@ import {
   useSelectAllStoragesQuery,
   useSelectMyStoragesQuery,
 } from '../storages/storages.api';
+import { useSelectStorageTagsQuery } from '../storages-tags/storages-tags.api';
 import { CreateCellDto } from './cell.dto';
 import CustomForm from '../../common/components/CustomForm';
 import RefetchAction from '../../common/components/RefetchAction';
 import { PlacesItem } from '../../common/components/PlacesItem';
-import { selectStorages } from '../../common/utils';
+import { selectStorages, selectTags } from '../../common/utils';
 
 type Props = { hasRole: boolean };
 
@@ -23,24 +24,29 @@ export default function CreateCellModal({ hasRole }: Props) {
   const form = useForm({
     initialValues: {
       storage: '',
+      storageTag: '',
       name: '',
     },
-    transformValues: ({ storage, ...rest }) => ({
+    transformValues: ({ storageTag, ...rest }) => ({
       ...rest,
-      storageId: +storage,
+      storageTagId: +storageTag,
     }),
   });
 
   const { data: storages, ...storagesResponse } = hasRole
     ? useSelectAllStoragesQuery()
     : useSelectMyStoragesQuery();
+  const { data: storagesTags, ...storagesTagsResponse } =
+    useSelectStorageTagsQuery(+form.values.storage, {
+      skip: !form.values.storage,
+    });
 
   const storage = storages?.find(
     (storage) => storage.id === +form.values.storage,
   );
 
   useEffect(
-    () => form.setFieldValue('name', storage ? `#${storage.cells + 1}` : ''),
+    () => form.setFieldValue('name', storage ? `#${storage.cells + 1}` : '-'),
     [form.values.storage],
   );
 
@@ -67,6 +73,22 @@ export default function CreateCellModal({ hasRole }: Props) {
         required
         readOnly={storagesResponse.isFetching}
         {...form.getInputProps('storage')}
+      />
+      <Select
+        label={t('columns.tag')}
+        placeholder={t('columns.tag')}
+        rightSection={
+          <RefetchAction
+            {...storagesTagsResponse}
+            skip={!form.values.storage}
+          />
+        }
+        data={selectTags(storagesTags)}
+        limit={20}
+        searchable
+        required
+        readOnly={storagesTagsResponse.isFetching}
+        {...form.getInputProps('storageTag')}
       />
       <TextInput
         label={t('columns.name')}

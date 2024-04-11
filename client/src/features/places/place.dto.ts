@@ -7,10 +7,6 @@ export interface CreatePlaceDto {
   y: number;
 }
 
-export interface CreatePlaceWithPriceDto extends CreatePlaceDto {
-  price: number;
-}
-
-export interface CreatePlaceWithCardDto extends CreatePlaceWithPriceDto {
+export interface CreatePlaceWithCardDto extends CreatePlaceDto {
   cardId: number;
 }

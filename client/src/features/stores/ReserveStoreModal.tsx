@@ -42,7 +42,7 @@ export default function ReserveStoreModal({ data: store, hasRole }: Props) {
     transformValues: ({ card, ...rest }) => ({ ...rest, cardId: +card }),
     validate: {
       card: () =>
-        myCard.balance < store.market.price
+        myCard.balance < store.marketTag.price
           ? t('errors.not_enough_balance')
           : null,
     },
@@ -90,7 +90,7 @@ export default function ReserveStoreModal({ data: store, hasRole }: Props) {
       />
       <TextInput
         label={t('columns.price')}
-        value={`${store.market.price} ${t('constants.currency')}`}
+        value={`${store.marketTag.price} ${t('constants.currency')}`}
         readOnly
       />
       {hasRole && (

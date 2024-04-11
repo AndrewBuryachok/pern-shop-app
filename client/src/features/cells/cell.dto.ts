@@ -1,3 +1,3 @@
 export interface CreateCellDto {
-  storageId: number;
+  storageTagId: number;
 }

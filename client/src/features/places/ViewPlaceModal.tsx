@@ -73,13 +73,6 @@ export default function PlaceModal({ data: place }: Props) {
       />
       <TextInput label={t('columns.x')} value={place.x} readOnly />
       <TextInput label={t('columns.y')} value={place.y} readOnly />
-      {place.price && (
-        <TextInput
-          label={t('columns.price')}
-          value={`${place.price} ${t('constants.currency')}`}
-          readOnly
-        />
-      )}
       <TextInput
         label={t('columns.created')}
         value={parseTime(place.createdAt)}

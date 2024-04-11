@@ -36,7 +36,7 @@ export default function ContinueRentModal({ data: rent, hasRole }: Props) {
     },
     validate: {
       card: () =>
-        myCard.balance < rent.store.market.price
+        myCard.balance < rent.store.marketTag.price
           ? t('errors.not_enough_balance')
           : null,
     },
@@ -88,13 +88,13 @@ export default function ContinueRentModal({ data: rent, hasRole }: Props) {
         readOnly
       />
       <TextInput
-        label={t('columns.storage')}
+        label={t('columns.market')}
         value={parseStore(rent.store)}
         readOnly
       />
       <TextInput
         label={t('columns.sum')}
-        value={`${rent.store.market.price} ${t('constants.currency')}`}
+        value={`${rent.store.marketTag.price} ${t('constants.currency')}`}
         readOnly
       />
     </CustomForm>

@@ -26,7 +26,13 @@ export const cellsApi = emptyApi.injectEndpoints({
     }),
     selectStorageCells: build.query<SmCell[], number>({
       query: (storageId) => ({
-        url: `/cells/${storageId}/select`,
+        url: `/cells/${storageId}/storages`,
+      }),
+      providesTags: ['Cell'],
+    }),
+    selectTagCells: build.query<SmCell[], number>({
+      query: (storageTagId) => ({
+        url: `/cells/${storageTagId}/tags`,
       }),
       providesTags: ['Cell'],
     }),
@@ -46,5 +52,6 @@ export const {
   useGetMyCellsQuery,
   useGetAllCellsQuery,
   useSelectStorageCellsQuery,
+  useSelectTagCellsQuery,
   useCreateCellMutation,
 } = cellsApi;

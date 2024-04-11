@@ -6,7 +6,6 @@ interface Props extends React.ComponentPropsWithoutRef<'div'> {
   name: string;
   x: number;
   y: number;
-  price?: number;
   container?: number;
 }
 

@@ -24,13 +24,13 @@ export default function StoresTable({ actions = [], ...props }: Props) {
             <AvatarWithDoubleText {...store.market.card} />
           </td>
           <td>
-            <PlaceText {...store.market} withoutPrice />
+            <PlaceText {...store.market} />
           </td>
           <td>
             <SingleText text={`#${store.name}`} />
           </td>
           <td>
-            <PriceText {...store.market} />
+            <PriceText {...store.marketTag} />
           </td>
           <td>
             <DateText date={store.reservedUntil} />

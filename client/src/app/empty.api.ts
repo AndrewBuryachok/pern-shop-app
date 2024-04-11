@@ -26,6 +26,8 @@ export const emptyApi = createApi({
     'Shop',
     'Market',
     'Storage',
+    'MarketTag',
+    'StorageTag',
     'Store',
     'Cell',
     'Rent',

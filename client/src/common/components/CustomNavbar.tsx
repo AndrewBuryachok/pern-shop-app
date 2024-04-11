@@ -10,6 +10,7 @@ import {
   IconChartBar,
   IconChecklist,
   IconContainer,
+  IconDiscount,
   IconFriends,
   IconHome,
   IconMail,
@@ -80,7 +81,7 @@ export default function CustomNavbar(props: Props) {
     },
     {
       route: 'purchases',
-      icon: IconTags,
+      icon: IconDiscount,
       nested: ['trades', 'sales', 'bids'],
       sub: '/my',
     },
@@ -97,6 +98,11 @@ export default function CustomNavbar(props: Props) {
       route: 'places',
       icon: IconBuildingCommunity,
       nested: ['cities', 'shops', 'markets', 'storages'],
+    },
+    {
+      route: 'tags',
+      icon: IconTags,
+      nested: ['markets-tags', 'storages-tags'],
     },
     {
       route: 'containers',

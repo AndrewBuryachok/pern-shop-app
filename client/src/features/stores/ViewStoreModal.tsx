@@ -31,7 +31,7 @@ export default function ViewStoreModal({ data: store }: Props) {
       <TextInput label={t('columns.store')} value={`#${store.name}`} readOnly />
       <TextInput
         label={t('columns.price')}
-        value={`${store.market.price} ${t('constants.currency')}`}
+        value={`${store.marketTag.price} ${t('constants.currency')}`}
         readOnly
       />
       <TextInput

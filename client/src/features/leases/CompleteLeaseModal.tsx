@@ -56,7 +56,7 @@ export default function CompleteLeaseModal({ data: lease }: Props) {
       />
       <TextInput
         label={t('columns.sum')}
-        value={`${lease.cell.storage.price} ${t('constants.currency')}`}
+        value={`${lease.cell.storageTag.price} ${t('constants.currency')}`}
         readOnly
       />
     </CustomForm>

@@ -3,11 +3,11 @@ import { Market } from './market.model';
 import CustomTable from '../../common/components/CustomTable';
 import AvatarWithDoubleText from '../../common/components/AvatarWithDoubleText';
 import PlaceText from '../../common/components/PlaceText';
-import PriceText from '../../common/components/PriceText';
 import CustomAnchor from '../../common/components/CustomAnchor';
 import DateText from '../../common/components/DateText';
 import CustomActions from '../../common/components/CustomActions';
 import { viewMarketAction } from './ViewMarketModal';
+import { openViewMarketTagsAction } from './ViewMarketTagsModal';
 import { openViewMarketStoresAction } from './ViewMarketStoresModal';
 
 type Props = ITableWithActions<Market>;
@@ -16,7 +16,7 @@ export default function MarketsTable({ actions = [], ...props }: Props) {
   return (
     <CustomTable
       minWidth={700}
-      columns={['owner', 'market', 'price', 'stores', 'created', 'action']}
+      columns={['owner', 'market', 'tags', 'stores', 'created', 'action']}
       {...props}
     >
       {props.data?.result.map((market) => (
@@ -25,10 +25,13 @@ export default function MarketsTable({ actions = [], ...props }: Props) {
             <AvatarWithDoubleText {...market.card} />
           </td>
           <td>
-            <PlaceText {...market} withoutPrice />
+            <PlaceText {...market} />
           </td>
           <td>
-            <PriceText {...market} />
+            <CustomAnchor
+              text={`${market.tags}`}
+              open={() => openViewMarketTagsAction(market)}
+            />
           </td>
           <td>
             <CustomAnchor

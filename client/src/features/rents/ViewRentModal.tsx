@@ -31,13 +31,13 @@ export default function ViewRentModal({ data: rent }: Props) {
         readOnly
       />
       <TextInput
-        label={t('columns.storage')}
+        label={t('columns.market')}
         value={parseStore(rent.store)}
         readOnly
       />
       <TextInput
         label={t('columns.sum')}
-        value={`${rent.store.market.price} ${t('constants.currency')}`}
+        value={`${rent.store.marketTag.price} ${t('constants.currency')}`}
         readOnly
       />
       <TextInput

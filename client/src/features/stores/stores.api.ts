@@ -26,7 +26,13 @@ export const storesApi = emptyApi.injectEndpoints({
     }),
     selectMarketStores: build.query<SmStore[], number>({
       query: (marketId) => ({
-        url: `/stores/${marketId}/select`,
+        url: `/stores/${marketId}/markets`,
+      }),
+      providesTags: ['Store'],
+    }),
+    selectTagStores: build.query<SmStore[], number>({
+      query: (marketTagId) => ({
+        url: `/stores/${marketTagId}/tags`,
       }),
       providesTags: ['Store'],
     }),
@@ -46,5 +52,6 @@ export const {
   useGetMyStoresQuery,
   useGetAllStoresQuery,
   useSelectMarketStoresQuery,
+  useSelectTagStoresQuery,
   useCreateStoreMutation,
 } = storesApi;

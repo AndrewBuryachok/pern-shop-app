@@ -5,7 +5,7 @@ import { NumberInput, Select, Textarea } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { useCreateDeliveryMutation } from './deliveries.api';
-import { useSelectFreeStoragesQuery } from '../storages/storages.api';
+import { useSelectFreeTagsQuery } from '../storages-tags/storages-tags.api';
 import { useSelectAllUsersQuery } from '../users/users.api';
 import {
   useSelectMyCardsQuery,
@@ -19,14 +19,13 @@ import ThingImage from '../../common/components/ThingImage';
 import { UsersItem } from '../../common/components/UsersItem';
 import { ThingsItem } from '../../common/components/ThingsItem';
 import { CardsItem } from '../../common/components/CardsItem';
-import { PlacesItem } from '../../common/components/PlacesItem';
 import {
   customMin,
   selectCardsWithBalance,
   selectCategories,
   selectItems,
   selectKits,
-  selectStoragesWithPrice,
+  selectTagsWithStorage,
   selectUsers,
 } from '../../common/utils';
 import {
@@ -42,13 +41,13 @@ export default function CreateDeliveryModal({ hasRole }: Props) {
   const [t] = useTranslation();
 
   const myCard = { balance: 0 };
-  const fromStorage = { price: 0 };
-  const toStorage = { price: 0 };
+  const fromStorageTag = { price: 0 };
+  const toStorageTag = { price: 0 };
 
   const form = useForm({
     initialValues: {
-      fromStorage: '',
-      toStorage: '',
+      fromStorageTag: '',
+      toStorageTag: '',
       user: '',
       card: '',
       category: '',
@@ -60,23 +59,24 @@ export default function CreateDeliveryModal({ hasRole }: Props) {
       price: 1,
     },
     transformValues: ({
-      fromStorage,
-      toStorage,
+      fromStorageTag,
+      toStorageTag,
       card,
       item,
       kit,
       ...rest
     }) => ({
       ...rest,
-      fromStorageId: +fromStorage,
-      toStorageId: +toStorage,
+      fromStorageTagId: +fromStorageTag,
+      toStorageTagId: +toStorageTag,
       cardId: +card,
       item: +item,
       kit: +kit,
     }),
     validate: {
       card: (_, values) =>
-        myCard.balance < fromStorage.price + toStorage.price + values.price
+        myCard.balance <
+        fromStorageTag.price + toStorageTag.price + values.price
           ? t('errors.not_enough_balance')
           : null,
     },
@@ -84,7 +84,8 @@ export default function CreateDeliveryModal({ hasRole }: Props) {
 
   useEffect(() => form.setFieldValue('item', ''), [form.values.category]);
 
-  const { data: storages, ...storagesResponse } = useSelectFreeStoragesQuery();
+  const { data: storagesTags, ...storagesTagsResponse } =
+    useSelectFreeTagsQuery();
   const { data: users, ...usersResponse } = useSelectAllUsersQuery(undefined, {
     skip: !hasRole,
   });
@@ -96,12 +97,14 @@ export default function CreateDeliveryModal({ hasRole }: Props) {
 
   const user = users?.find((user) => user.id === +form.values.user);
 
-  fromStorage.price =
-    storages?.find((storage) => storage.id === +form.values.fromStorage)
-      ?.price || 0;
-  toStorage.price =
-    storages?.find((storage) => storage.id === +form.values.toStorage)?.price ||
-    0;
+  fromStorageTag.price =
+    storagesTags?.find(
+      (storageTag) => storageTag.id === +form.values.fromStorageTag,
+    )?.price || 0;
+  toStorageTag.price =
+    storagesTags?.find(
+      (storageTag) => storageTag.id === +form.values.toStorageTag,
+    )?.price || 0;
   myCard.balance =
     cards?.find((card) => card.id === +form.values.card)?.balance || 0;
 
@@ -120,26 +123,24 @@ export default function CreateDeliveryModal({ hasRole }: Props) {
       <Select
         label={t('columns.storage') + ' ' + t('columns.from')}
         placeholder={t('columns.storage') + ' ' + t('columns.from')}
-        rightSection={<RefetchAction {...storagesResponse} />}
-        itemComponent={PlacesItem}
-        data={selectStoragesWithPrice(storages)}
+        rightSection={<RefetchAction {...storagesTagsResponse} />}
+        data={selectTagsWithStorage(storagesTags)}
         limit={20}
         searchable
         required
-        readOnly={storagesResponse.isFetching}
-        {...form.getInputProps('fromStorage')}
+        readOnly={storagesTagsResponse.isFetching}
+        {...form.getInputProps('fromStorageTag')}
       />
       <Select
         label={t('columns.storage') + ' ' + t('columns.to')}
         placeholder={t('columns.storage') + ' ' + t('columns.to')}
-        rightSection={<RefetchAction {...storagesResponse} />}
-        itemComponent={PlacesItem}
-        data={selectStoragesWithPrice(storages)}
+        rightSection={<RefetchAction {...storagesTagsResponse} />}
+        data={selectTagsWithStorage(storagesTags)}
         limit={20}
         searchable
         required
-        readOnly={storagesResponse.isFetching}
-        {...form.getInputProps('toStorage')}
+        readOnly={storagesTagsResponse.isFetching}
+        {...form.getInputProps('toStorageTag')}
       />
       {hasRole && (
         <Select
@@ -226,7 +227,7 @@ export default function CreateDeliveryModal({ hasRole }: Props) {
         min={1}
         max={customMin(
           MAX_PRICE_VALUE,
-          myCard.balance - fromStorage.price - toStorage.price,
+          myCard.balance - fromStorageTag.price - toStorageTag.price,
         )}
         {...form.getInputProps('price')}
       />

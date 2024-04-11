@@ -5,8 +5,8 @@ import {
 } from '../transportations/transportation.dto';
 
 export interface CreateDeliveryDto extends CreateTransportationDto {
-  fromStorageId: number;
-  toStorageId: number;
+  fromStorageTagId: number;
+  toStorageTagId: number;
 }
 
 export interface TakeDeliveryDto extends TakeTransportationDto {

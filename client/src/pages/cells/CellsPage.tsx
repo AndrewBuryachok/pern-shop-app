@@ -24,6 +24,7 @@ export default function CellsPage() {
     user: searchParams.get('user'),
     card: searchParams.get('card'),
     storage: searchParams.get('storage'),
+    storageTag: searchParams.get('storageTag'),
     cell: searchParams.get('cell'),
     minPrice: +(searchParams.get('minPrice') || 0) || null,
     maxPrice: +(searchParams.get('maxPrice') || 0) || null,

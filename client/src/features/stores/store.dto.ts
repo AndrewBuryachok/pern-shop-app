@@ -1,3 +1,3 @@
 export interface CreateStoreDto {
-  marketId: number;
+  marketTagId: number;
 }

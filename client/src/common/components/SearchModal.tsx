@@ -26,8 +26,16 @@ import { useSelectAllCitiesQuery } from '../../features/cities/cities.api';
 import { useSelectAllShopsQuery } from '../../features/shops/shops.api';
 import { useSelectMainMarketsQuery } from '../../features/markets/markets.api';
 import { useSelectMainStoragesQuery } from '../../features/storages/storages.api';
-import { useSelectMarketStoresQuery } from '../../features/stores/stores.api';
-import { useSelectStorageCellsQuery } from '../../features/cells/cells.api';
+import { useSelectMarketTagsQuery } from '../../features/markets-tags/markets-tags.api';
+import { useSelectStorageTagsQuery } from '../../features/storages-tags/storages-tags.api';
+import {
+  useSelectMarketStoresQuery,
+  useSelectTagStoresQuery,
+} from '../../features/stores/stores.api';
+import {
+  useSelectStorageCellsQuery,
+  useSelectTagCellsQuery,
+} from '../../features/cells/cells.api';
 import CustomForm from './CustomForm';
 import RefetchAction from './RefetchAction';
 import CustomAvatar from './CustomAvatar';
@@ -63,6 +71,7 @@ import {
   selectShops,
   selectStatuses,
   selectStorages,
+  selectTags,
   selectUsers,
   unscaleDate,
   unscaleMaxPrice,
@@ -135,16 +144,28 @@ export default function SearchModal(props: Props) {
   }, [form.values.roles]);
 
   useEffect(() => {
+    if (form.values.marketTag !== undefined) {
+      form.setFieldValue('marketTag', null);
+    }
+  }, [form.values.market]);
+
+  useEffect(() => {
+    if (form.values.storageTag !== undefined) {
+      form.setFieldValue('storageTag', null);
+    }
+  }, [form.values.storage]);
+
+  useEffect(() => {
     if (form.values.store !== undefined) {
       form.setFieldValue('store', null);
     }
-  }, [form.values.market]);
+  }, [form.values.marketTag]);
 
   useEffect(() => {
     if (form.values.cell !== undefined) {
       form.setFieldValue('cell', null);
     }
-  }, [form.values.storage]);
+  }, [form.values.storageTag]);
 
   useEffect(() => {
     if (form.values.item !== undefined) {
@@ -174,14 +195,28 @@ export default function SearchModal(props: Props) {
     undefined,
     { skip: props.search.storage === undefined },
   );
-  const { data: stores, ...storesResponse } = useSelectMarketStoresQuery(
-    +(form.values.market || ''),
-    { skip: props.search.store === undefined || !form.values.market },
-  );
-  const { data: cells, ...cellsResponse } = useSelectStorageCellsQuery(
-    +(form.values.storage || ''),
-    { skip: props.search.cell === undefined || !form.values.storage },
-  );
+  const { data: marketsTags, ...marketsTagsResponse } =
+    useSelectMarketTagsQuery(+(form.values.market || ''), {
+      skip: props.search.marketTag === undefined || !form.values.market,
+    });
+  const { data: storagesTags, ...storagesTagsResponse } =
+    useSelectStorageTagsQuery(+(form.values.storage || ''), {
+      skip: props.search.storageTag === undefined || !form.values.storage,
+    });
+  const { data: stores, ...storesResponse } = form.values.marketTag
+    ? useSelectTagStoresQuery(+(form.values.marketTag || ''), {
+        skip: props.search.store !== undefined || !form.values.marketTag,
+      })
+    : useSelectMarketStoresQuery(+(form.values.market || ''), {
+        skip: props.search.store === undefined || !form.values.market,
+      });
+  const { data: cells, ...cellsResponse } = form.values.storageTag
+    ? useSelectTagCellsQuery(+(form.values.storageTag || ''), {
+        skip: props.search.cell !== undefined || !form.values.storageTag,
+      })
+    : useSelectStorageCellsQuery(+(form.values.storage || ''), {
+        skip: props.search.cell === undefined || !form.values.storage,
+      });
 
   const user = users?.find((user) => user.id === +form.values.user!);
 
@@ -321,6 +356,42 @@ export default function SearchModal(props: Props) {
           allowDeselect
           readOnly={storagesResponse.isFetching}
           {...form.getInputProps('storage')}
+        />
+      )}
+      {props.search.marketTag !== undefined && (
+        <Select
+          label={t('columns.tag')}
+          placeholder={`${t('components.total')}: ${marketsTags?.length || 0}`}
+          rightSection={
+            <RefetchAction
+              {...marketsTagsResponse}
+              skip={!form.values.market}
+            />
+          }
+          data={selectTags(marketsTags)}
+          limit={20}
+          searchable
+          allowDeselect
+          readOnly={marketsTagsResponse.isFetching}
+          {...form.getInputProps('marketTag')}
+        />
+      )}
+      {props.search.storageTag !== undefined && (
+        <Select
+          label={t('columns.tag')}
+          placeholder={`${t('components.total')}: ${storagesTags?.length || 0}`}
+          rightSection={
+            <RefetchAction
+              {...storagesTagsResponse}
+              skip={!form.values.storage}
+            />
+          }
+          data={selectTags(storagesTags)}
+          limit={20}
+          searchable
+          allowDeselect
+          readOnly={storagesTagsResponse.isFetching}
+          {...form.getInputProps('storageTag')}
         />
       )}
       {props.search.store !== undefined && (

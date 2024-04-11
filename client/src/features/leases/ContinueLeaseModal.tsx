@@ -36,7 +36,7 @@ export default function ContinueLeaseModal({ data: lease, hasRole }: Props) {
     },
     validate: {
       card: () =>
-        myCard.balance < lease.cell.storage.price
+        myCard.balance < lease.cell.storageTag.price
           ? t('errors.not_enough_balance')
           : null,
     },
@@ -94,7 +94,7 @@ export default function ContinueLeaseModal({ data: lease, hasRole }: Props) {
       />
       <TextInput
         label={t('columns.sum')}
-        value={`${lease.cell.storage.price} ${t('constants.currency')}`}
+        value={`${lease.cell.storageTag.price} ${t('constants.currency')}`}
         readOnly
       />
     </CustomForm>

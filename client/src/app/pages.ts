@@ -19,6 +19,12 @@ const CitiesPage = lazy(() => import('../pages/cities/CitiesPage'));
 const ShopsPage = lazy(() => import('../pages/shops/ShopsPage'));
 const MarketsPage = lazy(() => import('../pages/markets/MarketsPage'));
 const StoragesPage = lazy(() => import('../pages/storages/StoragesPage'));
+const MarketsTagsPage = lazy(
+  () => import('../pages/markets-tags/MarketsTagsPage'),
+);
+const StoragesTagsPage = lazy(
+  () => import('../pages/storages-tags/StoragesTagsPage'),
+);
 const StoresPage = lazy(() => import('../pages/stores/StoresPage'));
 const CellsPage = lazy(() => import('../pages/cells/CellsPage'));
 const RentsPage = lazy(() => import('../pages/rents/RentsPage'));
@@ -153,6 +159,24 @@ export const pages = [
   {
     path: 'storages',
     element: StoragesPage,
+    nested: [
+      { index: true },
+      { path: 'my' },
+      { path: 'all', role: Role.MANAGER },
+    ],
+  },
+  {
+    path: 'markets-tags',
+    element: MarketsTagsPage,
+    nested: [
+      { index: true },
+      { path: 'my' },
+      { path: 'all', role: Role.MANAGER },
+    ],
+  },
+  {
+    path: 'storages-tags',
+    element: StoragesTagsPage,
     nested: [
       { index: true },
       { path: 'my' },

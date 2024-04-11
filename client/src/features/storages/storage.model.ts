@@ -2,10 +2,6 @@ import { Place, PlaceWithCard } from '../places/place.model';
 
 export interface SmStorage extends Place {}
 
-export interface SmStorageWithPrice extends SmStorage {
-  price: number;
-}
-
 export interface MdStorage extends PlaceWithCard {}
 
 export interface Storage extends MdStorage {
@@ -13,6 +9,7 @@ export interface Storage extends MdStorage {
   video: string;
   description: string;
   createdAt: Date;
+  tags: number;
   cells: number;
 }
 

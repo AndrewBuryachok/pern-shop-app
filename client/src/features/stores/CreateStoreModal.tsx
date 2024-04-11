@@ -9,11 +9,12 @@ import {
   useSelectAllMarketsQuery,
   useSelectMyMarketsQuery,
 } from '../markets/markets.api';
+import { useSelectMarketTagsQuery } from '../markets-tags/markets-tags.api';
 import { CreateStoreDto } from './store.dto';
 import CustomForm from '../../common/components/CustomForm';
 import RefetchAction from '../../common/components/RefetchAction';
 import { PlacesItem } from '../../common/components/PlacesItem';
-import { selectMarkets } from '../../common/utils';
+import { selectMarkets, selectTags } from '../../common/utils';
 
 type Props = { hasRole: boolean };
 
@@ -23,22 +24,27 @@ export default function CreateStoreModal({ hasRole }: Props) {
   const form = useForm({
     initialValues: {
       market: '',
+      marketTag: '',
       name: '',
     },
-    transformValues: ({ market, ...rest }) => ({
+    transformValues: ({ marketTag, ...rest }) => ({
       ...rest,
-      marketId: +market,
+      marketTagId: +marketTag,
     }),
   });
 
   const { data: markets, ...marketsResponse } = hasRole
     ? useSelectAllMarketsQuery()
     : useSelectMyMarketsQuery();
+  const { data: marketsTags, ...marketsTagsResponse } =
+    useSelectMarketTagsQuery(+form.values.market, {
+      skip: !form.values.market,
+    });
 
   const market = markets?.find((market) => market.id === +form.values.market);
 
   useEffect(
-    () => form.setFieldValue('name', market ? `#${market.stores + 1}` : ''),
+    () => form.setFieldValue('name', market ? `#${market.stores + 1}` : '-'),
     [form.values.market],
   );
 
@@ -65,6 +71,19 @@ export default function CreateStoreModal({ hasRole }: Props) {
         required
         readOnly={marketsResponse.isFetching}
         {...form.getInputProps('market')}
+      />
+      <Select
+        label={t('columns.tag')}
+        placeholder={t('columns.tag')}
+        rightSection={
+          <RefetchAction {...marketsTagsResponse} skip={!form.values.market} />
+        }
+        data={selectTags(marketsTags)}
+        limit={20}
+        searchable
+        required
+        readOnly={marketsTagsResponse.isFetching}
+        {...form.getInputProps('marketTag')}
       />
       <TextInput
         label={t('columns.name')}

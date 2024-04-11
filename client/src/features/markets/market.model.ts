@@ -9,6 +9,7 @@ export interface Market extends MdMarket {
   video: string;
   description: string;
   createdAt: Date;
+  tags: number;
   stores: number;
 }
 

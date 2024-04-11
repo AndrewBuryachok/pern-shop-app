@@ -1,7 +1,7 @@
 import { CreateThingDto } from '../things/thing.dto';
 
 export interface CreateLotDto extends CreateThingDto {
-  storageId: number;
+  storageTagId: number;
   cardId: number;
 }
 

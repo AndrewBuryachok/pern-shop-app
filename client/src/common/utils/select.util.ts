@@ -4,12 +4,12 @@ import { MdCard, MdCardWithBalance } from '../../features/cards/card.model';
 import { SmCity } from '../../features/cities/city.model';
 import { SmShop } from '../../features/shops/shop.model';
 import { SmMarket } from '../../features/markets/market.model';
-import {
-  SmStorage,
-  SmStorageWithPrice,
-} from '../../features/storages/storage.model';
+import { SmStorage } from '../../features/storages/storage.model';
+import { SmTag } from '../../features/tags/tag.model';
+import { MdStorageTag } from '../../features/storages-tags/storage-tag.model';
 import { Container } from '../../features/containers/container.model';
 import { SelectRent } from '../../features/rents/rent.model';
+import { parsePlace } from './parse.util';
 import {
   backgrounds,
   categories,
@@ -83,13 +83,17 @@ export const selectStorages = (storages?: SmStorage[]) =>
     label: `${storage.name} (${storage.x} ${storage.y})`,
   })) || [];
 
-export const selectStoragesWithPrice = (storages?: SmStorageWithPrice[]) =>
-  storages?.map((storage) => ({
-    ...storage,
-    value: `${storage.id}`,
-    label: `${storage.name} (${storage.x} ${storage.y}) ${storage.price} ${t(
-      'constants.currency',
-    )}`,
+export const selectTags = (tags?: SmTag[]) =>
+  tags?.map((tag) => ({
+    value: `${tag.id}`,
+    label: `${tag.name} ${tag.price} ${t('constants.currency')}`,
+  })) || [];
+
+export const selectTagsWithStorage = (tags?: MdStorageTag[]) =>
+  tags?.map((tag) => ({
+    value: `${tag.id}`,
+    label: `${tag.name} ${tag.price} ${t('constants.currency')}`,
+    group: parsePlace(tag.storage),
   })) || [];
 
 export const selectContainers = (containers?: Container[]) =>

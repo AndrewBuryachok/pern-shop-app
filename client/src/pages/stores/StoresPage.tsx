@@ -28,6 +28,7 @@ export default function StoresPage() {
     user: searchParams.get('user'),
     card: searchParams.get('card'),
     market: searchParams.get('market'),
+    marketTag: searchParams.get('marketTag'),
     store: searchParams.get('store'),
     minPrice: +(searchParams.get('minPrice') || 0) || null,
     maxPrice: +(searchParams.get('maxPrice') || 0) || null,
