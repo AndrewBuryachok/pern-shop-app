@@ -115,7 +115,7 @@ export class LeasesService {
     dto: ExtCreateLeaseDto & { nick: string },
   ): Promise<number> {
     const cell = await this.cellsService.reserveCell(dto);
-    const lease = await this.create({ ...dto, storageId: cell.id });
+    const lease = await this.create({ ...dto, storageTagId: cell.id });
     this.mqttService.publishNotificationMessage(
       lease.id,
       cell.storage.card.userId,
@@ -133,7 +133,7 @@ export class LeasesService {
     );
     const cell = await this.cellsService.continueCell({
       ...dto,
-      storageId: lease.cellId,
+      storageTagId: lease.cellId,
       cardId: lease.cardId,
     });
     await this.continue(lease);
@@ -186,7 +186,7 @@ export class LeasesService {
   private async create(dto: ExtCreateLeaseDto): Promise<Lease> {
     try {
       const lease = this.leasesRepository.create({
-        cellId: dto.storageId,
+        cellId: dto.storageTagId,
         cardId: dto.cardId,
         kind: dto.kind,
         completedAt: getDateWeekAfter(),
@@ -223,11 +223,16 @@ export class LeasesService {
       .innerJoin('cell.storage', 'storage')
       .innerJoin('storage.card', 'ownerCard')
       .innerJoin('ownerCard.user', 'ownerUser')
+      .innerJoin('cell.storageTag', 'storageTag')
       .innerJoin('lease.card', 'renterCard')
       .innerJoin('renterCard.user', 'renterUser')
-      .leftJoin('storage.states', 'state', 'state.createdAt < lease.createdAt')
       .leftJoin(
-        'storage.states',
+        'storageTag.states',
+        'state',
+        'state.createdAt < lease.createdAt',
+      )
+      .leftJoin(
+        'storageTag.states',
         'next',
         'state.createdAt < next.createdAt AND next.createdAt < lease.createdAt',
       )
@@ -289,6 +294,15 @@ export class LeasesService {
       .andWhere(
         new Brackets((qb) =>
           qb
+            .where(`${!req.storageTag}`)
+            .orWhere('storageTag.id = :storageTagId', {
+              storageTagId: req.storageTag,
+            }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
             .where(`${!req.cell}`)
             .orWhere('cell.id = :cellId', { cellId: req.cell }),
         ),
@@ -344,6 +358,8 @@ export class LeasesService {
         'storage.name',
         'storage.x',
         'storage.y',
+        'storageTag.id',
+        'storageTag.name',
         'state.price',
         'cell.name',
         'renterCard.id',

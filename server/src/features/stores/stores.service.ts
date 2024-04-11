@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { Store } from './store.entity';
-import { MarketsService } from '../markets/markets.service';
+import { MarketsTagsService } from '../markets-tags/markets-tags.service';
 import { PaymentsService } from '../payments/payments.service';
 import { MqttService } from '../mqtt/mqtt.service';
 import { ExtCreateStoreDto, ReserveStoreDto } from './store.dto';
@@ -18,7 +18,7 @@ export class StoresService {
   constructor(
     @InjectRepository(Store)
     private storesRepository: Repository<Store>,
-    private marketsService: MarketsService,
+    private marketsTagsService: MarketsTagsService,
     private paymentsService: PaymentsService,
     private mqttService: MqttService,
   ) {}
@@ -52,17 +52,25 @@ export class StoresService {
   }
 
   selectMarketStores(marketId: number): Promise<Store[]> {
-    return this.selectStoresQueryBuilder(marketId).getMany();
+    return this.selectStoresQueryBuilder(marketId)
+      .where('store.marketId = :marketId', { marketId })
+      .getMany();
+  }
+
+  selectTagStores(marketTagId: number): Promise<Store[]> {
+    return this.selectStoresQueryBuilder(marketTagId)
+      .where('store.marketTagId = :marketTagId', { marketTagId })
+      .getMany();
   }
 
   async createStore(dto: ExtCreateStoreDto & { nick: string }): Promise<void> {
-    await this.marketsService.checkMarketOwner(
-      dto.marketId,
+    const { marketId } = await this.marketsTagsService.checkMarketTagOwner(
+      dto.marketTagId,
       dto.myId,
       dto.hasRole,
     );
-    const name = await this.checkHasNotEnough(dto.marketId);
-    const store = await this.create({ ...dto, name });
+    const name = await this.checkHasNotEnough(marketId);
+    const store = await this.create({ ...dto, marketId, name });
     this.mqttService.publishNotificationMessage(
       store.id,
       0,
@@ -79,7 +87,7 @@ export class StoresService {
       hasRole: dto.hasRole,
       senderCardId: dto.cardId,
       receiverCardId: store.market.cardId,
-      sum: store.market.price,
+      sum: store.marketTag.price,
       description: '',
     });
     await this.reserve(store);
@@ -88,7 +96,7 @@ export class StoresService {
 
   async continueStore(dto: ReserveStoreDto & { nick: string }): Promise<Store> {
     const store = await this.storesRepository.findOne({
-      relations: ['market', 'market.card'],
+      relations: ['market', 'market.card', 'marketTag'],
       where: { id: dto.storeId },
     });
     await this.paymentsService.createPayment({
@@ -97,7 +105,7 @@ export class StoresService {
       hasRole: dto.hasRole,
       senderCardId: dto.cardId,
       receiverCardId: store.market.cardId,
-      sum: store.market.price,
+      sum: store.marketTag.price,
       description: '',
     });
     await this.continue(store);
@@ -130,6 +138,7 @@ export class StoresService {
       .createQueryBuilder('store')
       .innerJoinAndSelect('store.market', 'market')
       .innerJoinAndSelect('market.card', 'card')
+      .innerJoinAndSelect('store.marketTag', 'marketTag')
       .where('store.id = :storeId', { storeId })
       .andWhere(
         new Brackets((qb) =>
@@ -149,6 +158,7 @@ export class StoresService {
     try {
       const store = this.storesRepository.create({
         marketId: dto.marketId,
+        marketTagId: dto.marketTagId,
         name: dto.name,
       });
       await this.storesRepository.save(store);
@@ -190,7 +200,6 @@ export class StoresService {
   ): SelectQueryBuilder<Store> {
     return this.storesRepository
       .createQueryBuilder('store')
-      .where('store.marketId = :marketId', { marketId })
       .orderBy('store.name', 'ASC')
       .select(['store.id', 'store.name']);
   }
@@ -201,6 +210,7 @@ export class StoresService {
       .innerJoin('store.market', 'market')
       .innerJoin('market.card', 'ownerCard')
       .innerJoin('ownerCard.user', 'ownerUser')
+      .innerJoin('store.marketTag', 'marketTag')
       .where(
         new Brackets((qb) =>
           qb.where(`${!req.id}`).orWhere('store.id = :id', { id: req.id }),
@@ -229,6 +239,13 @@ export class StoresService {
       )
       .andWhere(
         new Brackets((qb) =>
+          qb.where(`${!req.marketTag}`).orWhere('marketTag.id = :marketTagId', {
+            marketTagId: req.marketTag,
+          }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
           qb
             .where(`${!req.store}`)
             .orWhere('store.id = :storeId', { storeId: req.store }),
@@ -236,16 +253,16 @@ export class StoresService {
       )
       .andWhere(
         new Brackets((qb) =>
-          qb
-            .where(`${!req.minPrice}`)
-            .orWhere('market.price >= :minPrice', { minPrice: req.minPrice }),
+          qb.where(`${!req.minPrice}`).orWhere('marketTag.price >= :minPrice', {
+            minPrice: req.minPrice,
+          }),
         ),
       )
       .andWhere(
         new Brackets((qb) =>
-          qb
-            .where(`${!req.maxPrice}`)
-            .orWhere('market.price <= :maxPrice', { maxPrice: req.maxPrice }),
+          qb.where(`${!req.maxPrice}`).orWhere('marketTag.price <= :maxPrice', {
+            maxPrice: req.maxPrice,
+          }),
         ),
       )
       .orderBy('store.id', 'DESC')
@@ -263,7 +280,9 @@ export class StoresService {
         'market.name',
         'market.x',
         'market.y',
-        'market.price',
+        'marketTag.id',
+        'marketTag.name',
+        'marketTag.price',
         'store.name',
         'store.reservedUntil',
       ]);

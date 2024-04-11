@@ -201,11 +201,12 @@ export class RentsService {
       .innerJoin('store.market', 'market')
       .innerJoin('market.card', 'ownerCard')
       .innerJoin('ownerCard.user', 'ownerUser')
+      .innerJoin('store.marketTag', 'marketTag')
       .innerJoin('rent.card', 'renterCard')
       .innerJoin('renterCard.user', 'renterUser')
-      .leftJoin('market.states', 'state', 'state.createdAt < rent.createdAt')
+      .leftJoin('marketTag.states', 'state', 'state.createdAt < rent.createdAt')
       .leftJoin(
-        'market.states',
+        'marketTag.states',
         'next',
         'state.createdAt < next.createdAt AND next.createdAt < rent.createdAt',
       )
@@ -267,6 +268,13 @@ export class RentsService {
       )
       .andWhere(
         new Brackets((qb) =>
+          qb.where(`${!req.marketTag}`).orWhere('marketTag.id = :marketTagId', {
+            marketTagId: req.marketTag,
+          }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
           qb
             .where(`${!req.store}`)
             .orWhere('store.id = :storeId', { storeId: req.store }),
@@ -316,6 +324,8 @@ export class RentsService {
         'market.name',
         'market.x',
         'market.y',
+        'marketTag.id',
+        'marketTag.name',
         'state.price',
         'store.name',
         'renterCard.id',

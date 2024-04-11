@@ -10,7 +10,6 @@ import {
 import { ApiTags } from '@nestjs/swagger';
 import { StoragesService } from './storages.service';
 import { Storage } from './storage.entity';
-import { StorageState } from './storage-state.entity';
 import { CreateStorageDto, EditStorageDto, StorageIdDto } from './storage.dto';
 import { Request, Response } from '../../common/interfaces';
 import { HasRole, MyId, MyNick, Public, Roles } from '../../common/decorators';
@@ -56,20 +55,6 @@ export class StoragesController {
   @Get('all/select')
   selectAllStorages(): Promise<Storage[]> {
     return this.storagesService.selectAllStorages();
-  }
-
-  @Public()
-  @Get('free/select')
-  selectFreeStorages(): Promise<Storage[]> {
-    return this.storagesService.selectFreeStorages();
-  }
-
-  @Public()
-  @Get(':storageId/states')
-  selectStorageStates(
-    @Param() { storageId }: StorageIdDto,
-  ): Promise<StorageState[]> {
-    return this.storagesService.selectStorageStates(storageId);
   }
 
   @Post()

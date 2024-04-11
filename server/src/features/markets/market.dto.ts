@@ -3,10 +3,7 @@ import { Validate } from 'class-validator';
 import { Type } from 'class-transformer';
 import { IsId } from '../../common/decorators';
 import { IsMarketExists } from '../../common/constraints';
-import {
-  CreatePlaceWithCardDto,
-  EditPlaceWithPriceDto,
-} from '../places/place.dto';
+import { CreatePlaceDto, CreatePlaceWithCardDto } from '../places/place.dto';
 
 export class MarketIdDto {
   @ApiProperty()
@@ -23,7 +20,7 @@ export class ExtCreateMarketDto extends CreateMarketDto {
   hasRole: boolean;
 }
 
-export class EditMarketDto extends EditPlaceWithPriceDto {}
+export class EditMarketDto extends CreatePlaceDto {}
 
 export class ExtEditMarketDto extends EditMarketDto {
   marketId: number;

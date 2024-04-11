@@ -19,6 +19,8 @@ import { CitiesModule } from './features/cities/cities.module';
 import { ShopsModule } from './features/shops/shops.module';
 import { MarketsModule } from './features/markets/markets.module';
 import { StoragesModule } from './features/storages/storages.module';
+import { MarketsTagsModule } from './features/markets-tags/markets-tags.module';
+import { StoragesTagsModule } from './features/storages-tags/storages-tags.module';
 import { StoresModule } from './features/stores/stores.module';
 import { CellsModule } from './features/cells/cells.module';
 import { RentsModule } from './features/rents/rents.module';
@@ -75,6 +77,8 @@ import { RatingsModule } from './features/ratings/ratings.module';
     ShopsModule,
     MarketsModule,
     StoragesModule,
+    MarketsTagsModule,
+    StoragesTagsModule,
     StoresModule,
     CellsModule,
     RentsModule,

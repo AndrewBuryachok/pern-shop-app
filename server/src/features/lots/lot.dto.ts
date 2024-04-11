@@ -5,7 +5,7 @@ import { IsId } from '../../common/decorators';
 import {
   IsCardExists,
   IsLotExists,
-  IsStorageExists,
+  IsStorageTagExists,
 } from '../../common/constraints';
 import { CreateThingDto } from '../things/thing.dto';
 import { ExtCreateBidDto } from '../bids/bid.dto';
@@ -21,8 +21,8 @@ export class LotIdDto {
 export class CreateLotDto extends CreateThingDto {
   @ApiProperty()
   @IsId()
-  @Validate(IsStorageExists)
-  storageId: number;
+  @Validate(IsStorageTagExists)
+  storageTagId: number;
 
   @ApiProperty()
   @IsId()

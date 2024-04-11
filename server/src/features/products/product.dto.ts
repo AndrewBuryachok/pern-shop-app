@@ -5,7 +5,7 @@ import { IsId } from '../../common/decorators';
 import {
   IsCardExists,
   IsProductExists,
-  IsStorageExists,
+  IsStorageTagExists,
 } from '../../common/constraints';
 import { CreateThingDto } from '../things/thing.dto';
 import { ExtEditStateDto } from '../states/state.dto';
@@ -22,8 +22,8 @@ export class ProductIdDto {
 export class CreateProductDto extends CreateThingDto {
   @ApiProperty()
   @IsId()
-  @Validate(IsStorageExists)
-  storageId: number;
+  @Validate(IsStorageTagExists)
+  storageTagId: number;
 
   @ApiProperty()
   @IsId()

@@ -77,7 +77,7 @@ export class OrdersService {
       kind: Kind.ORDER,
     });
     await this.cardsService.decreaseCardBalance({ ...dto, sum: dto.price });
-    const order = await this.create({ ...dto, storageId: leaseId });
+    const order = await this.create({ ...dto, storageTagId: leaseId });
     this.mqttService.publishNotificationMessage(
       order.id,
       0,
@@ -251,7 +251,7 @@ export class OrdersService {
   private async create(dto: ExtCreateOrderDto): Promise<Order> {
     try {
       const order = this.ordersRepository.create({
-        leaseId: dto.storageId,
+        leaseId: dto.storageTagId,
         item: dto.item,
         description: dto.description,
         amount: dto.amount,

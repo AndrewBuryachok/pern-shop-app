@@ -3,7 +3,7 @@ import { Validate } from 'class-validator';
 import { Type } from 'class-transformer';
 import { IsId } from '../../common/decorators';
 import { IsCityExists, IsUserExists } from '../../common/constraints';
-import { CreatePlaceDto, EditPlaceDto } from '../places/place.dto';
+import { CreatePlaceDto } from '../places/place.dto';
 import { UserIdDto } from '../users/user.dto';
 
 export class CityIdDto {
@@ -23,7 +23,7 @@ export class ExtCreateCityDto extends CreateCityDto {
   userId: number;
 }
 
-export class EditCityDto extends EditPlaceDto {}
+export class EditCityDto extends CreatePlaceDto {}
 
 export class ExtEditCityDto extends EditCityDto {
   cityId: number;

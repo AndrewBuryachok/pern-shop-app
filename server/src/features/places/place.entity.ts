@@ -50,7 +50,4 @@ export abstract class PlaceWithCard extends Place {
   @ManyToOne(() => Card, { nullable: false })
   @JoinColumn({ name: 'card_id' })
   card: Card;
-
-  @Column()
-  price: number;
 }

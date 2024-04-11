@@ -87,6 +87,18 @@ export class Request {
   @IsOptional()
   @IsInt()
   @Type(() => Number)
+  marketTag?: number;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsInt()
+  @Type(() => Number)
+  storageTag?: number;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsInt()
+  @Type(() => Number)
   store?: number;
 
   @ApiProperty({ required: false })

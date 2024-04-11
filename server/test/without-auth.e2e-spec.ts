@@ -334,6 +334,32 @@ describe('Without Auth', () => {
     });
   });
 
+  describe('Markets Tags', () => {
+    it('GET /markets-tags/my', async () => {
+      return request(app.getHttpServer()).get('/markets-tags/my').expect(401);
+    });
+
+    it('GET /markets-tags/all', async () => {
+      return request(app.getHttpServer())
+        .get('/markets-tags/all')
+        .set('Authorization', `Bearer ${user.access}`)
+        .expect(403);
+    });
+  });
+
+  describe('Storages Tags', () => {
+    it('GET /storages-tags/my', async () => {
+      return request(app.getHttpServer()).get('/storages-tags/my').expect(401);
+    });
+
+    it('GET /storages-tags/all', async () => {
+      return request(app.getHttpServer())
+        .get('/storages-tags/all')
+        .set('Authorization', `Bearer ${user.access}`)
+        .expect(403);
+    });
+  });
+
   describe('Stores', () => {
     it('GET /stores/my', async () => {
       return request(app.getHttpServer()).get('/stores/my').expect(401);

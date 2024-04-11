@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { Cell } from './cell.entity';
-import { StoragesService } from '../storages/storages.service';
+import { StoragesTagsService } from '../storages-tags/storages-tags.service';
 import { PaymentsService } from '../payments/payments.service';
 import { MqttService } from '../mqtt/mqtt.service';
 import { ExtCreateCellDto, ReserveCellDto } from './cell.dto';
@@ -18,7 +18,7 @@ export class CellsService {
   constructor(
     @InjectRepository(Cell)
     private cellsRepository: Repository<Cell>,
-    private storagesService: StoragesService,
+    private storagesTagsService: StoragesTagsService,
     private paymentsService: PaymentsService,
     private mqttService: MqttService,
   ) {}
@@ -52,17 +52,25 @@ export class CellsService {
   }
 
   selectStorageCells(storageId: number): Promise<Cell[]> {
-    return this.selectCellsQueryBuilder(storageId).getMany();
+    return this.selectCellsQueryBuilder(storageId)
+      .where('cell.storageId = :storageId', { storageId })
+      .getMany();
+  }
+
+  selectTagCells(storageTagId: number): Promise<Cell[]> {
+    return this.selectCellsQueryBuilder(storageTagId)
+      .where('cell.storageTagId = :storageTagId', { storageTagId })
+      .getMany();
   }
 
   async createCell(dto: ExtCreateCellDto & { nick: string }): Promise<void> {
-    await this.storagesService.checkStorageOwner(
-      dto.storageId,
+    const { storageId } = await this.storagesTagsService.checkStorageTagOwner(
+      dto.storageTagId,
       dto.myId,
       dto.hasRole,
     );
-    const name = await this.checkHasNotEnough(dto.storageId);
-    const cell = await this.create({ ...dto, name });
+    const name = await this.checkHasNotEnough(storageId);
+    const cell = await this.create({ ...dto, storageId, name });
     this.mqttService.publishNotificationMessage(
       cell.id,
       0,
@@ -72,14 +80,14 @@ export class CellsService {
   }
 
   async reserveCell(dto: ReserveCellDto & { nick: string }): Promise<Cell> {
-    const cell = await this.findFreeCell(dto.storageId);
+    const cell = await this.findFreeCell(dto.storageTagId);
     await this.paymentsService.createPayment({
       myId: dto.myId,
       nick: dto.nick,
       hasRole: dto.hasRole,
       senderCardId: dto.cardId,
       receiverCardId: cell.storage.cardId,
-      sum: cell.storage.price,
+      sum: cell.storageTag.price,
       description: '',
     });
     await this.reserve(cell);
@@ -88,8 +96,8 @@ export class CellsService {
 
   async continueCell(dto: ReserveCellDto & { nick: string }): Promise<Cell> {
     const cell = await this.cellsRepository.findOne({
-      relations: ['storage', 'storage.card'],
-      where: { id: dto.storageId },
+      relations: ['storage', 'storage.card', 'storageTag'],
+      where: { id: dto.storageTagId },
     });
     await this.paymentsService.createPayment({
       myId: dto.myId,
@@ -97,7 +105,7 @@ export class CellsService {
       hasRole: dto.hasRole,
       senderCardId: dto.cardId,
       receiverCardId: cell.storage.cardId,
-      sum: cell.storage.price,
+      sum: cell.storageTag.price,
       description: '',
     });
     await this.continue(cell);
@@ -121,12 +129,13 @@ export class CellsService {
     return count + 1;
   }
 
-  private async findFreeCell(storageId: number): Promise<Cell> {
+  private async findFreeCell(storageTagId: number): Promise<Cell> {
     const cell = await this.cellsRepository
       .createQueryBuilder('cell')
       .innerJoinAndSelect('cell.storage', 'storage')
       .innerJoinAndSelect('storage.card', 'card')
-      .where('storage.id = :storageId', { storageId })
+      .innerJoinAndSelect('cell.storageTag', 'storageTag')
+      .where('storageTag.id = :storageTagId', { storageTagId })
       .andWhere(
         new Brackets((qb) =>
           qb
@@ -146,6 +155,7 @@ export class CellsService {
     try {
       const cell = this.cellsRepository.create({
         storageId: dto.storageId,
+        storageTagId: dto.storageTagId,
         name: dto.name,
       });
       await this.cellsRepository.save(cell);
@@ -185,7 +195,6 @@ export class CellsService {
   private selectCellsQueryBuilder(storageId: number): SelectQueryBuilder<Cell> {
     return this.cellsRepository
       .createQueryBuilder('cell')
-      .where('cell.storageId = :storageId', { storageId })
       .orderBy('cell.name', 'ASC')
       .select(['cell.id', 'cell.name']);
   }
@@ -196,6 +205,7 @@ export class CellsService {
       .innerJoin('cell.storage', 'storage')
       .innerJoin('storage.card', 'ownerCard')
       .innerJoin('ownerCard.user', 'ownerUser')
+      .innerJoin('cell.storageTag', 'storageTag')
       .where(
         new Brackets((qb) =>
           qb.where(`${!req.id}`).orWhere('cell.id = :id', { id: req.id }),
@@ -225,6 +235,15 @@ export class CellsService {
       .andWhere(
         new Brackets((qb) =>
           qb
+            .where(`${!req.storageTag}`)
+            .orWhere('storageTag.id = :storageTagId', {
+              storageTagId: req.storageTag,
+            }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
             .where(`${!req.cell}`)
             .orWhere('cell.id = :cellId', { cellId: req.cell }),
         ),
@@ -233,14 +252,18 @@ export class CellsService {
         new Brackets((qb) =>
           qb
             .where(`${!req.minPrice}`)
-            .orWhere('storage.price >= :minPrice', { minPrice: req.minPrice }),
+            .orWhere('storageTag.price >= :minPrice', {
+              minPrice: req.minPrice,
+            }),
         ),
       )
       .andWhere(
         new Brackets((qb) =>
           qb
             .where(`${!req.maxPrice}`)
-            .orWhere('storage.price <= :maxPrice', { maxPrice: req.maxPrice }),
+            .orWhere('storageTag.price <= :maxPrice', {
+              maxPrice: req.maxPrice,
+            }),
         ),
       )
       .orderBy('cell.id', 'DESC')
@@ -258,7 +281,9 @@ export class CellsService {
         'storage.name',
         'storage.x',
         'storage.y',
-        'storage.price',
+        'storageTag.id',
+        'storageTag.name',
+        'storageTag.price',
         'cell.name',
         'cell.reservedUntil',
       ]);

@@ -35,6 +35,8 @@ describe('With Auth', () => {
   let shopId: number;
   let marketId: number;
   let storageId: number;
+  let marketTagId: number;
+  let storageTagId: number;
   let storeId: number;
   let rentId: number;
   let leaseId: number;
@@ -1273,7 +1275,6 @@ describe('With Auth', () => {
           description: '',
           x: -500,
           y: 500,
-          price: 5,
         })
         .expect('');
     });
@@ -1330,15 +1331,8 @@ describe('With Auth', () => {
           description: '',
           x: -500,
           y: 500,
-          price: 10,
         })
         .expect('');
-    });
-
-    it('GET /markets/:marketId/states', async () => {
-      return request(app.getHttpServer())
-        .get(`/markets/${marketId}/states`)
-        .expect((res) => expect(res.body.length).toBeGreaterThan(0));
     });
   });
 
@@ -1355,7 +1349,6 @@ describe('With Auth', () => {
           description: '',
           x: -500,
           y: -500,
-          price: 5,
         })
         .expect('');
     });
@@ -1412,14 +1405,123 @@ describe('With Auth', () => {
           description: '',
           x: -500,
           y: -500,
+        })
+        .expect('');
+    });
+  });
+
+  describe('Markets Tags', () => {
+    it('POST /markets-tags', async () => {
+      return request(app.getHttpServer())
+        .post('/markets-tags')
+        .set('Authorization', `Bearer ${user.access}`)
+        .send({
+          marketId,
+          name: 'My Tag',
+          price: 5,
+        })
+        .expect('');
+    });
+
+    it('GET /markets-tags', async () => {
+      return request(app.getHttpServer())
+        .get('/markets-tags')
+        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
+    });
+
+    it('GET /markets-tags/my', async () => {
+      return request(app.getHttpServer())
+        .get('/markets-tags/my')
+        .set('Authorization', `Bearer ${user.access}`)
+        .expect((res) => expect(res.body.count).toBeGreaterThan(0))
+        .then((res) => (marketTagId = res.body.result[0].id));
+    });
+
+    it('GET /markets-tags/all', async () => {
+      return request(app.getHttpServer())
+        .get('/markets-tags/all')
+        .set('Authorization', `Bearer ${manager.access}`)
+        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
+    });
+
+    it('GET /markets-tags/:marketId/select', async () => {
+      return request(app.getHttpServer())
+        .get(`/markets-tags/${marketId}/select`)
+        .expect((res) => expect(res.body.length).toBeGreaterThan(0));
+    });
+
+    it('PATCH /markets-tags/:marketTagId', async () => {
+      return request(app.getHttpServer())
+        .patch(`/markets-tags/${marketTagId}`)
+        .set('Authorization', `Bearer ${user.access}`)
+        .send({
+          name: 'My Tag',
           price: 10,
         })
         .expect('');
     });
 
-    it('GET /storages/:storageId/states', async () => {
+    it('GET /markets-tags/:marketTagId/states', async () => {
       return request(app.getHttpServer())
-        .get(`/storages/${storageId}/states`)
+        .get(`/markets-tags/${marketTagId}/states`)
+        .expect((res) => expect(res.body.length).toBeGreaterThan(0));
+    });
+  });
+
+  describe('Storages Tags', () => {
+    it('POST /storages-tags', async () => {
+      return request(app.getHttpServer())
+        .post('/storages-tags')
+        .set('Authorization', `Bearer ${user.access}`)
+        .send({
+          storageId,
+          name: 'My Tag',
+          price: 5,
+        })
+        .expect('');
+    });
+
+    it('GET /storages-tags', async () => {
+      return request(app.getHttpServer())
+        .get('/storages-tags')
+        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
+    });
+
+    it('GET /storages-tags/my', async () => {
+      return request(app.getHttpServer())
+        .get('/storages-tags/my')
+        .set('Authorization', `Bearer ${user.access}`)
+        .expect((res) => expect(res.body.count).toBeGreaterThan(0))
+        .then((res) => (storageTagId = res.body.result[0].id));
+    });
+
+    it('GET /storages-tags/all', async () => {
+      return request(app.getHttpServer())
+        .get('/storages-tags/all')
+        .set('Authorization', `Bearer ${manager.access}`)
+        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
+    });
+
+    it('GET /storages-tags/:storageId/select', async () => {
+      return request(app.getHttpServer())
+        .get(`/storages-tags/${storageId}/select`)
+        .expect((res) => expect(res.body.length).toBeGreaterThan(0));
+    });
+
+    it('PATCH /storages-tags/:storageTagId', async () => {
+      return request(app.getHttpServer())
+        .patch(`/storages-tags/${storageTagId}`)
+        .set('Authorization', `Bearer ${user.access}`)
+        .send({
+          name: 'My Tag',
+          price: 10,
+        })
+        .expect('');
+    });
+
+    it('GET /storages-tags/:storageTagId/states', async () => {
+      return request(app.getHttpServer())
+        .get(`/storages-tags/${storageTagId}/states`)
         .expect((res) => expect(res.body.length).toBeGreaterThan(0));
     });
   });
@@ -1429,7 +1531,7 @@ describe('With Auth', () => {
       return request(app.getHttpServer())
         .post('/stores')
         .set('Authorization', `Bearer ${user.access}`)
-        .send({ marketId })
+        .send({ marketTagId })
         .expect('');
     });
 
@@ -1454,9 +1556,15 @@ describe('With Auth', () => {
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
 
-    it('GET /stores/:marketId/select', async () => {
+    it('GET /stores/:marketId/markets', async () => {
       return request(app.getHttpServer())
-        .get(`/stores/${marketId}/select`)
+        .get(`/stores/${marketId}/markets`)
+        .expect((res) => expect(res.body.length).toBeGreaterThan(0));
+    });
+
+    it('GET /stores/:marketTagId/tags', async () => {
+      return request(app.getHttpServer())
+        .get(`/stores/${marketTagId}/tags`)
         .expect((res) => expect(res.body.length).toBeGreaterThan(0));
     });
   });
@@ -1466,7 +1574,7 @@ describe('With Auth', () => {
       return request(app.getHttpServer())
         .post('/cells')
         .set('Authorization', `Bearer ${user.access}`)
-        .send({ storageId })
+        .send({ storageTagId })
         .expect('');
     });
 
@@ -1474,7 +1582,7 @@ describe('With Auth', () => {
       return request(app.getHttpServer())
         .post('/cells')
         .set('Authorization', `Bearer ${user.access}`)
-        .send({ storageId })
+        .send({ storageTagId })
         .expect('');
     });
 
@@ -1482,7 +1590,7 @@ describe('With Auth', () => {
       return request(app.getHttpServer())
         .post('/cells')
         .set('Authorization', `Bearer ${user.access}`)
-        .send({ storageId })
+        .send({ storageTagId })
         .expect('');
     });
 
@@ -1490,7 +1598,7 @@ describe('With Auth', () => {
       return request(app.getHttpServer())
         .post('/cells')
         .set('Authorization', `Bearer ${user.access}`)
-        .send({ storageId })
+        .send({ storageTagId })
         .expect('');
     });
 
@@ -1498,7 +1606,7 @@ describe('With Auth', () => {
       return request(app.getHttpServer())
         .post('/cells')
         .set('Authorization', `Bearer ${user.access}`)
-        .send({ storageId })
+        .send({ storageTagId })
         .expect('');
     });
 
@@ -1506,7 +1614,7 @@ describe('With Auth', () => {
       return request(app.getHttpServer())
         .post('/cells')
         .set('Authorization', `Bearer ${user.access}`)
-        .send({ storageId })
+        .send({ storageTagId })
         .expect('');
     });
 
@@ -1514,7 +1622,7 @@ describe('With Auth', () => {
       return request(app.getHttpServer())
         .post('/cells')
         .set('Authorization', `Bearer ${user.access}`)
-        .send({ storageId })
+        .send({ storageTagId })
         .expect('');
     });
 
@@ -1522,7 +1630,7 @@ describe('With Auth', () => {
       return request(app.getHttpServer())
         .post('/cells')
         .set('Authorization', `Bearer ${user.access}`)
-        .send({ storageId })
+        .send({ storageTagId })
         .expect('');
     });
 
@@ -1546,15 +1654,21 @@ describe('With Auth', () => {
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
 
-    it('GET /cells/:storageId/select', async () => {
+    it('GET /cells/:storageId/storages', async () => {
       return request(app.getHttpServer())
-        .get(`/cells/${storageId}/select`)
+        .get(`/cells/${storageId}/storages`)
         .expect((res) => expect(res.body.length).toBeGreaterThan(0));
     });
 
-    it('GET /storages/free/select', async () => {
+    it('GET /cells/:storageTagId/tags', async () => {
       return request(app.getHttpServer())
-        .get('/storages/free/select')
+        .get(`/cells/${storageTagId}/tags`)
+        .expect((res) => expect(res.body.length).toBeGreaterThan(0));
+    });
+
+    it('GET /storages-tags/free/select', async () => {
+      return request(app.getHttpServer())
+        .get('/storages-tags/free/select')
         .expect((res) => expect(res.body.length).toBeGreaterThan(0));
     });
   });
@@ -1779,7 +1893,7 @@ describe('With Auth', () => {
         .post('/products')
         .set('Authorization', `Bearer ${user.access}`)
         .send({
-          storageId,
+          storageTagId,
           cardId,
           item: 1,
           description: '',
@@ -1855,7 +1969,7 @@ describe('With Auth', () => {
         .post('/lots')
         .set('Authorization', `Bearer ${user.access}`)
         .send({
-          storageId,
+          storageTagId,
           cardId,
           item: 1,
           description: '',
@@ -1923,7 +2037,7 @@ describe('With Auth', () => {
         .post('/orders')
         .set('Authorization', `Bearer ${user.access}`)
         .send({
-          storageId,
+          storageTagId,
           cardId,
           item: 1,
           description: '',
@@ -1940,7 +2054,7 @@ describe('With Auth', () => {
         .post('/orders')
         .set('Authorization', `Bearer ${user.access}`)
         .send({
-          storageId,
+          storageTagId,
           cardId,
           item: 1,
           description: '',
@@ -2046,8 +2160,8 @@ describe('With Auth', () => {
         .post('/deliveries')
         .set('Authorization', `Bearer ${user.access}`)
         .send({
-          fromStorageId: storageId,
-          toStorageId: storageId,
+          fromStorageTagId: storageTagId,
+          toStorageTagId: storageTagId,
           cardId,
           item: 1,
           description: '',
@@ -2064,8 +2178,8 @@ describe('With Auth', () => {
         .post('/deliveries')
         .set('Authorization', `Bearer ${user.access}`)
         .send({
-          fromStorageId: storageId,
-          toStorageId: storageId,
+          fromStorageTagId: storageTagId,
+          toStorageTagId: storageTagId,
           cardId,
           item: 1,
           description: '',

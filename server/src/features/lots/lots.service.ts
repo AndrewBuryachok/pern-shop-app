@@ -72,7 +72,7 @@ export class LotsService {
       ...dto,
       kind: Kind.LOT,
     });
-    const lot = await this.create({ ...dto, storageId: leaseId });
+    const lot = await this.create({ ...dto, storageTagId: leaseId });
     this.mqttService.publishNotificationMessage(
       lot.id,
       0,
@@ -162,7 +162,7 @@ export class LotsService {
   private async create(dto: ExtCreateLotDto): Promise<Lot> {
     try {
       const lot = this.lotsRepository.create({
-        leaseId: dto.storageId,
+        leaseId: dto.storageTagId,
         item: dto.item,
         description: dto.description,
         amount: dto.amount,

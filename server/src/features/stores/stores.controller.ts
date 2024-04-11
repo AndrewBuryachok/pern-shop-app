@@ -4,6 +4,7 @@ import { StoresService } from './stores.service';
 import { Store } from './store.entity';
 import { CreateStoreDto } from './store.dto';
 import { MarketIdDto } from '../markets/market.dto';
+import { MarketTagIdDto } from '../markets-tags/market-tag.dto';
 import { Request, Response } from '../../common/interfaces';
 import { HasRole, MyId, MyNick, Public, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
@@ -34,9 +35,15 @@ export class StoresController {
   }
 
   @Public()
-  @Get(':marketId/select')
+  @Get(':marketId/markets')
   selectMarketStores(@Param() { marketId }: MarketIdDto): Promise<Store[]> {
     return this.storesService.selectMarketStores(marketId);
+  }
+
+  @Public()
+  @Get(':marketTagId/tags')
+  selectTagStores(@Param() { marketTagId }: MarketTagIdDto): Promise<Store[]> {
+    return this.storesService.selectTagStores(marketTagId);
   }
 
   @Post()

@@ -3,7 +3,7 @@ import { Validate } from 'class-validator';
 import { Type } from 'class-transformer';
 import { IsId } from '../../common/decorators';
 import { IsShopExists, IsUserExists } from '../../common/constraints';
-import { CreatePlaceDto, EditPlaceDto } from '../places/place.dto';
+import { CreatePlaceDto } from '../places/place.dto';
 import { UserIdDto } from '../users/user.dto';
 
 export class ShopIdDto {
@@ -23,7 +23,7 @@ export class ExtCreateShopDto extends CreateShopDto {
   userId: number;
 }
 
-export class EditShopDto extends EditPlaceDto {}
+export class EditShopDto extends CreatePlaceDto {}
 
 export class ExtEditShopDto extends EditShopDto {
   shopId: number;

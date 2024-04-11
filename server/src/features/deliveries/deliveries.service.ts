@@ -94,19 +94,19 @@ export class DeliveriesService {
   ): Promise<void> {
     const fromLeaseId = await this.leasesService.createLease({
       ...dto,
-      storageId: dto.fromStorageId,
+      storageTagId: dto.fromStorageTagId,
       kind: Kind.DELIVERY,
     });
     const toLeaseId = await this.leasesService.createLease({
       ...dto,
-      storageId: dto.toStorageId,
+      storageTagId: dto.toStorageTagId,
       kind: Kind.DELIVERY,
     });
     await this.cardsService.decreaseCardBalance({ ...dto, sum: dto.price });
     const delivery = await this.create({
       ...dto,
-      fromStorageId: fromLeaseId,
-      toStorageId: toLeaseId,
+      fromStorageTagId: fromLeaseId,
+      toStorageTagId: toLeaseId,
     });
     this.mqttService.publishNotificationMessage(
       delivery.id,
@@ -304,8 +304,8 @@ export class DeliveriesService {
   private async create(dto: ExtCreateDeliveryDto): Promise<Delivery> {
     try {
       const delivery = this.deliveriesRepository.create({
-        fromLeaseId: dto.fromStorageId,
-        toLeaseId: dto.toStorageId,
+        fromLeaseId: dto.fromStorageTagId,
+        toLeaseId: dto.toStorageTagId,
         item: dto.item,
         description: dto.description,
         amount: dto.amount,

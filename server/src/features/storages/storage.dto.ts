@@ -3,10 +3,7 @@ import { Validate } from 'class-validator';
 import { Type } from 'class-transformer';
 import { IsId } from '../../common/decorators';
 import { IsStorageExists } from '../../common/constraints';
-import {
-  CreatePlaceWithCardDto,
-  EditPlaceWithPriceDto,
-} from '../places/place.dto';
+import { CreatePlaceDto, CreatePlaceWithCardDto } from '../places/place.dto';
 
 export class StorageIdDto {
   @ApiProperty()
@@ -23,7 +20,7 @@ export class ExtCreateStorageDto extends CreateStorageDto {
   hasRole: boolean;
 }
 
-export class EditStorageDto extends EditPlaceWithPriceDto {}
+export class EditStorageDto extends CreatePlaceDto {}
 
 export class ExtEditStorageDto extends EditStorageDto {
   storageId: number;

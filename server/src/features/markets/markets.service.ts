@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { Market } from './market.entity';
-import { MarketState } from './market-state.entity';
 import { CardsService } from '../cards/cards.service';
 import { MqttService } from '../mqtt/mqtt.service';
 import { ExtCreateMarketDto, ExtEditMarketDto } from './market.dto';
@@ -17,8 +16,6 @@ export class MarketsService {
   constructor(
     @InjectRepository(Market)
     private marketsRepository: Repository<Market>,
-    @InjectRepository(MarketState)
-    private marketsStatesRepository: Repository<MarketState>,
     private cardsService: CardsService,
     private mqttService: MqttService,
   ) {}
@@ -62,23 +59,6 @@ export class MarketsService {
     return this.selectMarketsQueryBuilder()
       .loadRelationCountAndMap('market.stores', 'market.stores')
       .getMany();
-  }
-
-  async selectMarketStates(marketId: number): Promise<MarketState[]> {
-    const market = await this.marketsRepository
-      .createQueryBuilder('market')
-      .leftJoin('market.states', 'state')
-      .where('market.id = :marketId', { marketId })
-      .orderBy('state.id', 'DESC')
-      .select([
-        'market.id',
-        'market.price',
-        'state.id',
-        'state.price',
-        'state.createdAt',
-      ])
-      .getOne();
-    return market.states;
   }
 
   async createMarket(
@@ -165,14 +145,8 @@ export class MarketsService {
         description: dto.description,
         x: dto.x,
         y: dto.y,
-        price: dto.price,
       });
       await this.marketsRepository.save(market);
-      const marketState = this.marketsStatesRepository.create({
-        marketId: market.id,
-        price: market.price,
-      });
-      await this.marketsStatesRepository.save(marketState);
       return market;
     } catch (error) {
       throw new AppException(MarketError.CREATE_FAILED);
@@ -181,22 +155,13 @@ export class MarketsService {
 
   private async edit(market: Market, dto: ExtEditMarketDto): Promise<void> {
     try {
-      const equal = market.price === dto.price;
       market.name = dto.name;
       market.image = dto.image;
       market.video = dto.video;
       market.description = dto.description;
       market.x = dto.x;
       market.y = dto.y;
-      market.price = dto.price;
       await this.marketsRepository.save(market);
-      if (!equal) {
-        const marketState = this.marketsStatesRepository.create({
-          marketId: market.id,
-          price: market.price,
-        });
-        await this.marketsStatesRepository.save(marketState);
-      }
     } catch (error) {
       throw new AppException(MarketError.EDIT_FAILED);
     }
@@ -214,6 +179,7 @@ export class MarketsService {
       .createQueryBuilder('market')
       .innerJoin('market.card', 'ownerCard')
       .innerJoin('ownerCard.user', 'ownerUser')
+      .loadRelationCountAndMap('market.tags', 'market.tags')
       .loadRelationCountAndMap('market.stores', 'market.stores')
       .where(
         new Brackets((qb) =>
@@ -241,20 +207,6 @@ export class MarketsService {
             .orWhere('market.id = :marketId', { marketId: req.market }),
         ),
       )
-      .andWhere(
-        new Brackets((qb) =>
-          qb
-            .where(`${!req.minPrice}`)
-            .orWhere('market.price >= :minPrice', { minPrice: req.minPrice }),
-        ),
-      )
-      .andWhere(
-        new Brackets((qb) =>
-          qb
-            .where(`${!req.maxPrice}`)
-            .orWhere('market.price <= :maxPrice', { maxPrice: req.maxPrice }),
-        ),
-      )
       .orderBy('market.id', 'DESC')
       .skip(req.skip)
       .take(req.take)
@@ -272,7 +224,6 @@ export class MarketsService {
         'market.description',
         'market.x',
         'market.y',
-        'market.price',
         'market.createdAt',
       ]);
   }

@@ -15,6 +15,8 @@ import { CitiesService } from '../../features/cities/cities.service';
 import { ShopsService } from '../../features/shops/shops.service';
 import { MarketsService } from '../../features/markets/markets.service';
 import { StoragesService } from '../../features/storages/storages.service';
+import { MarketsTagsService } from '../../features/markets-tags/markets-tags.service';
+import { StoragesTagsService } from '../../features/storages-tags/storages-tags.service';
 import { StoresService } from '../../features/stores/stores.service';
 import { RentsService } from '../../features/rents/rents.service';
 import { LeasesService } from '../../features/leases/leases.service';
@@ -258,6 +260,44 @@ export class IsStorageExists implements ValidatorConstraintInterface {
 
   defaultMessage(): string {
     return 'Unknown storage';
+  }
+}
+
+@Injectable()
+@ValidatorConstraint({ name: 'isMarketTagExists', async: true })
+export class IsMarketTagExists implements ValidatorConstraintInterface {
+  constructor(private marketsTagsService: MarketsTagsService) {}
+
+  async validate(value: number): Promise<boolean> {
+    try {
+      await this.marketsTagsService.checkMarketTagExists(value);
+    } catch (error) {
+      return false;
+    }
+    return true;
+  }
+
+  defaultMessage(): string {
+    return 'Unknown market tag';
+  }
+}
+
+@Injectable()
+@ValidatorConstraint({ name: 'isStorageTagExists', async: true })
+export class IsStorageTagExists implements ValidatorConstraintInterface {
+  constructor(private storagesTagsService: StoragesTagsService) {}
+
+  async validate(value: number): Promise<boolean> {
+    try {
+      await this.storagesTagsService.checkStorageTagExists(value);
+    } catch (error) {
+      return false;
+    }
+    return true;
+  }
+
+  defaultMessage(): string {
+    return 'Unknown storage tag';
   }
 }
 

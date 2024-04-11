@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Validate } from 'class-validator';
 import { Type } from 'class-transformer';
 import { IsId } from '../../common/decorators';
-import { IsMarketExists, IsStoreExists } from '../../common/constraints';
+import { IsMarketTagExists, IsStoreExists } from '../../common/constraints';
 
 export class StoreIdDto {
   @ApiProperty()
@@ -15,13 +15,14 @@ export class StoreIdDto {
 export class CreateStoreDto {
   @ApiProperty()
   @IsId()
-  @Validate(IsMarketExists)
-  marketId: number;
+  @Validate(IsMarketTagExists)
+  marketTagId: number;
 }
 
 export class ExtCreateStoreDto extends CreateStoreDto {
   myId: number;
   hasRole: boolean;
+  marketId?: number;
   name?: number;
 }
 

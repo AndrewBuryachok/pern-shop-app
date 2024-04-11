@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { Storage } from './storage.entity';
-import { StorageState } from './storage-state.entity';
 import { CardsService } from '../cards/cards.service';
 import { MqttService } from '../mqtt/mqtt.service';
 import { ExtCreateStorageDto, ExtEditStorageDto } from './storage.dto';
@@ -17,8 +16,6 @@ export class StoragesService {
   constructor(
     @InjectRepository(Storage)
     private storagesRepository: Repository<Storage>,
-    @InjectRepository(StorageState)
-    private storagesStatesRepository: Repository<StorageState>,
     private cardsService: CardsService,
     private mqttService: MqttService,
   ) {}
@@ -62,44 +59,6 @@ export class StoragesService {
     return this.selectStoragesQueryBuilder()
       .loadRelationCountAndMap('storage.cells', 'storage.cells')
       .getMany();
-  }
-
-  async selectFreeStorages(): Promise<Storage[]> {
-    const storages = await this.selectStoragesQueryBuilder()
-      .loadRelationCountAndMap(
-        'storage.cellsCount',
-        'storage.cells',
-        'cell',
-        (qb) =>
-          qb
-            .where('cell.reservedUntil IS NULL')
-            .orWhere('cell.reservedUntil < NOW()'),
-      )
-      .addSelect('storage.price')
-      .getMany();
-    return storages
-      .filter((storage) => storage['cellsCount'] > 0)
-      .map((storage) => {
-        delete storage['cellsCount'];
-        return storage;
-      });
-  }
-
-  async selectStorageStates(storageId: number): Promise<StorageState[]> {
-    const storage = await this.storagesRepository
-      .createQueryBuilder('storage')
-      .leftJoin('storage.states', 'state')
-      .where('storage.id = :storageId', { storageId })
-      .orderBy('state.id', 'DESC')
-      .select([
-        'storage.id',
-        'storage.price',
-        'state.id',
-        'state.price',
-        'state.createdAt',
-      ])
-      .getOne();
-    return storage.states;
   }
 
   async createStorage(
@@ -186,14 +145,8 @@ export class StoragesService {
         description: dto.description,
         x: dto.x,
         y: dto.y,
-        price: dto.price,
       });
       await this.storagesRepository.save(storage);
-      const storageState = this.storagesStatesRepository.create({
-        storageId: storage.id,
-        price: storage.price,
-      });
-      await this.storagesStatesRepository.save(storageState);
       return storage;
     } catch (error) {
       throw new AppException(StorageError.CREATE_FAILED);
@@ -202,22 +155,13 @@ export class StoragesService {
 
   private async edit(storage: Storage, dto: ExtEditStorageDto): Promise<void> {
     try {
-      const equal = storage.price === dto.price;
       storage.name = dto.name;
       storage.image = dto.image;
       storage.video = dto.video;
       storage.description = dto.description;
       storage.x = dto.x;
       storage.y = dto.y;
-      storage.price = dto.price;
       await this.storagesRepository.save(storage);
-      if (!equal) {
-        const storageState = this.storagesStatesRepository.create({
-          storageId: storage.id,
-          price: storage.price,
-        });
-        await this.storagesStatesRepository.save(storageState);
-      }
     } catch (error) {
       throw new AppException(StorageError.EDIT_FAILED);
     }
@@ -235,6 +179,7 @@ export class StoragesService {
       .createQueryBuilder('storage')
       .innerJoin('storage.card', 'ownerCard')
       .innerJoin('ownerCard.user', 'ownerUser')
+      .loadRelationCountAndMap('storage.tags', 'storage.tags')
       .loadRelationCountAndMap('storage.cells', 'storage.cells')
       .where(
         new Brackets((qb) =>
@@ -262,20 +207,6 @@ export class StoragesService {
             .orWhere('storage.id = :storageId', { storageId: req.storage }),
         ),
       )
-      .andWhere(
-        new Brackets((qb) =>
-          qb
-            .where(`${!req.minPrice}`)
-            .orWhere('storage.price >= :minPrice', { minPrice: req.minPrice }),
-        ),
-      )
-      .andWhere(
-        new Brackets((qb) =>
-          qb
-            .where(`${!req.maxPrice}`)
-            .orWhere('storage.price <= :maxPrice', { maxPrice: req.maxPrice }),
-        ),
-      )
       .orderBy('storage.id', 'DESC')
       .skip(req.skip)
       .take(req.take)
@@ -293,7 +224,6 @@ export class StoragesService {
         'storage.description',
         'storage.x',
         'storage.y',
-        'storage.price',
         'storage.createdAt',
       ]);
   }

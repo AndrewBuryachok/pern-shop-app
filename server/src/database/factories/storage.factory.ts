@@ -20,6 +20,5 @@ define(Storage, (faker: Faker) => {
     Math.floor(
       Math.random() * (MAX_COORDINATE_VALUE - MIN_COORDINATE_VALUE + 1),
     ) + MIN_COORDINATE_VALUE;
-  storage.price = Math.floor(Math.random() * 32) + 1;
   return storage;
 });
