@@ -158,7 +158,11 @@ export class ReportsService {
   }
 
   async editReport(dto: ExtEditReportDto & { nick: string }): Promise<void> {
-    const report = await this.checkReportOwner(dto.reportId, dto.myId);
+    const report = await this.checkReportOwner(
+      dto.reportId,
+      dto.myId,
+      dto.hasRole,
+    );
     await this.edit(report, dto);
     await this.mqttService.publishNotificationMention(
       dto.reportId,
@@ -169,7 +173,11 @@ export class ReportsService {
   }
 
   async deleteReport(dto: DeleteReportDto): Promise<void> {
-    const report = await this.checkReportOwner(dto.reportId, dto.myId);
+    const report = await this.checkReportOwner(
+      dto.reportId,
+      dto.myId,
+      dto.hasRole,
+    );
     await this.delete(report);
   }
 
@@ -214,9 +222,13 @@ export class ReportsService {
     await this.reportsRepository.findOneByOrFail({ id });
   }
 
-  async checkReportOwner(id: number, userId: number): Promise<Report> {
+  async checkReportOwner(
+    id: number,
+    userId: number,
+    hasRole: boolean,
+  ): Promise<Report> {
     const report = await this.reportsRepository.findOneBy({ id });
-    if (report.userId !== userId) {
+    if (report.userId !== userId && !hasRole) {
       throw new AppException(ReportError.NOT_OWNER);
     }
     return report;

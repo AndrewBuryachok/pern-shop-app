@@ -6,4 +6,6 @@ export enum Role {
   HUB = 5,
   SPAWN = 6,
   END = 7,
+  PRESIDENT = 8,
+  FBI = 9,
 }

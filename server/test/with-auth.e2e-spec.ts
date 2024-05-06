@@ -24,6 +24,8 @@ describe('With Auth', () => {
   let spawn: Tokens;
   let hub: Tokens;
   let end: Tokens;
+  let president: Tokens;
+  let fbi: Tokens;
   let messageId: number;
   let reportsId: number;
   let annotationId: number;
@@ -195,6 +197,36 @@ describe('With Auth', () => {
       return request(app.getHttpServer())
         .post('/auth/logout')
         .set('Authorization', `Bearer ${end.access}`)
+        .expect(201);
+    });
+
+    it('POST /auth/login as President', async () => {
+      return request(app.getHttpServer())
+        .post('/auth/login')
+        .send({ nick: 'President', password: 'President' })
+        .expect(201)
+        .then((res) => (president = res.body));
+    });
+
+    it('POST /auth/logout as President', async () => {
+      return request(app.getHttpServer())
+        .post('/auth/logout')
+        .set('Authorization', `Bearer ${president.access}`)
+        .expect(201);
+    });
+
+    it('POST /auth/login as FbiHead', async () => {
+      return request(app.getHttpServer())
+        .post('/auth/login')
+        .send({ nick: 'FbiHead', password: 'FbiHead' })
+        .expect(201)
+        .then((res) => (fbi = res.body));
+    });
+
+    it('POST /auth/logout as FbiHead', async () => {
+      return request(app.getHttpServer())
+        .post('/auth/logout')
+        .set('Authorization', `Bearer ${fbi.access}`)
         .expect(201);
     });
   });
@@ -538,7 +570,7 @@ describe('With Auth', () => {
     it('POST /reports/server', async () => {
       return request(app.getHttpServer())
         .post('/reports/server')
-        .set('Authorization', `Bearer ${admin.access}`)
+        .set('Authorization', `Bearer ${president.access}`)
         .send({
           text: 'report text',
           image1: '',
@@ -552,7 +584,7 @@ describe('With Auth', () => {
     it('POST /reports/site', async () => {
       return request(app.getHttpServer())
         .post('/reports/site')
-        .set('Authorization', `Bearer ${admin.access}`)
+        .set('Authorization', `Bearer ${president.access}`)
         .send({
           text: 'report text',
           image1: '',
@@ -566,7 +598,7 @@ describe('With Auth', () => {
     it('POST /reports/status', async () => {
       return request(app.getHttpServer())
         .post('/reports/status')
-        .set('Authorization', `Bearer ${admin.access}`)
+        .set('Authorization', `Bearer ${president.access}`)
         .send({
           text: 'report text',
           image1: '',
@@ -732,8 +764,8 @@ describe('With Auth', () => {
 
     it('PATCH /reports/:reportId', async () => {
       return request(app.getHttpServer())
-        .patch(`/reports/${reportsId[4]}`)
-        .set('Authorization', `Bearer ${admin.access}`)
+        .patch(`/reports/${reportsId[0]}`)
+        .set('Authorization', `Bearer ${president.access}`)
         .send({
           text: 'report text',
           image1: '',
@@ -746,8 +778,8 @@ describe('With Auth', () => {
 
     it('DELETE /reports/:reportId', async () => {
       return request(app.getHttpServer())
-        .delete(`/reports/${reportsId[4]}`)
-        .set('Authorization', `Bearer ${admin.access}`)
+        .delete(`/reports/${reportsId[1]}`)
+        .set('Authorization', `Bearer ${president.access}`)
         .expect('');
     });
   });
@@ -865,7 +897,7 @@ describe('With Auth', () => {
     it('GET /articles/all', async () => {
       return request(app.getHttpServer())
         .get('/articles/all')
-        .set('Authorization', `Bearer ${admin.access}`)
+        .set('Authorization', `Bearer ${fbi.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
 
@@ -2786,7 +2818,7 @@ describe('With Auth', () => {
     it('GET /polls/all', async () => {
       return request(app.getHttpServer())
         .get('/polls/all')
-        .set('Authorization', `Bearer ${admin.access}`)
+        .set('Authorization', `Bearer ${president.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
   });
@@ -2817,7 +2849,7 @@ describe('With Auth', () => {
     it('POST /polls/:pollId', async () => {
       return request(app.getHttpServer())
         .post(`/polls/${pollsId[0]}`)
-        .set('Authorization', `Bearer ${admin.access}`)
+        .set('Authorization', `Bearer ${president.access}`)
         .send({ type: true })
         .expect('');
     });

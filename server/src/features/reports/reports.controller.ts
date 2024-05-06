@@ -21,7 +21,7 @@ import {
   ReportIdDto,
 } from './report.dto';
 import { Request, Response } from '../../common/interfaces';
-import { MyId, MyNick, Public, Roles } from '../../common/decorators';
+import { HasRole, MyId, MyNick, Public, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
 import { Mark } from './mark.enum';
 
@@ -104,7 +104,7 @@ export class ReportsController {
     return this.reportsService.selectReportAnnotations(reportId);
   }
 
-  @Roles(Role.ADMIN)
+  @Roles(Role.PRESIDENT)
   @Post('server')
   createServerReport(
     @MyId() myId: number,
@@ -119,7 +119,7 @@ export class ReportsController {
     });
   }
 
-  @Roles(Role.ADMIN)
+  @Roles(Role.PRESIDENT)
   @Post('site')
   createSiteReport(
     @MyId() myId: number,
@@ -134,7 +134,7 @@ export class ReportsController {
     });
   }
 
-  @Roles(Role.ADMIN)
+  @Roles(Role.PRESIDENT)
   @Post('status')
   createStatusReport(
     @MyId() myId: number,
@@ -198,18 +198,26 @@ export class ReportsController {
   editReport(
     @MyId() myId: number,
     @MyNick() nick: string,
+    @HasRole(Role.PRESIDENT) hasRole: boolean,
     @Param() { reportId }: ReportIdDto,
     @Body() dto: EditReportDto,
   ): Promise<void> {
-    return this.reportsService.editReport({ ...dto, reportId, myId, nick });
+    return this.reportsService.editReport({
+      ...dto,
+      reportId,
+      myId,
+      nick,
+      hasRole,
+    });
   }
 
   @Delete(':reportId')
   deleteReport(
     @MyId() myId: number,
+    @HasRole(Role.PRESIDENT) hasRole: boolean,
     @Param() { reportId }: ReportIdDto,
   ): Promise<void> {
-    return this.reportsService.deleteReport({ reportId, myId });
+    return this.reportsService.deleteReport({ reportId, myId, hasRole });
   }
 
   @Post(':reportId/views')

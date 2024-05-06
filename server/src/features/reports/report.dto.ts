@@ -45,10 +45,12 @@ export class EditReportDto extends CreateReportDto {}
 export class ExtEditReportDto extends CreateReportDto {
   reportId: number;
   myId: number;
+  hasRole: boolean;
 }
 
 export class DeleteReportDto extends ReportIdDto {
   myId: number;
+  hasRole: boolean;
 }
 
 export class ViewReportDto {
