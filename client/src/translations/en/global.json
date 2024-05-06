@@ -515,6 +515,8 @@
       "hub": "Hub head",
       "spawn": "Spawn head",
       "end": "End head",
+      "president": "President",
+      "fbi": "Fbi",
       "user": "User"
     },
     "colors": {

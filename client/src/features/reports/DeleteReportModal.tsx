@@ -75,7 +75,7 @@ export const deleteReportAction = {
     }),
   disable: (report: Report) => {
     const user = getCurrentUser();
-    return isUserNotHasRole(Role.ADMIN) && report.user.id !== user?.id;
+    return isUserNotHasRole(Role.PRESIDENT) && report.user.id !== user?.id;
   },
   color: Color.RED,
 };

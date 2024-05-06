@@ -102,7 +102,7 @@ export const pages = [
       { path: 'subscribed' },
       { path: 'liked' },
       { path: 'commented' },
-      { path: 'all', role: Role.ADMIN },
+      { path: 'all', role: Role.FBI },
     ],
   },
   {
@@ -341,7 +341,7 @@ export const pages = [
       { path: 'my' },
       { path: 'voted' },
       { path: 'discussed' },
-      { path: 'all', role: Role.ADMIN },
+      { path: 'all', role: Role.PRESIDENT },
     ],
   },
   {

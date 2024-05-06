@@ -104,9 +104,14 @@ export const createReportFactory = (mark: number) => ({
       title: t('actions.create') + ' ' + t('modals.reports'),
       children: <CreateReportModal mark={mark} />,
     }),
-  role: [Role.ADMIN, Role.ADMIN, Role.ADMIN, Role.SPAWN, Role.HUB, Role.END][
-    mark
-  ],
+  role: [
+    Role.PRESIDENT,
+    Role.PRESIDENT,
+    Role.PRESIDENT,
+    Role.SPAWN,
+    Role.HUB,
+    Role.END,
+  ][mark],
 });
 
 export const createServerReportButton = createReportFactory(0);
