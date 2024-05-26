@@ -92,8 +92,3 @@ export class UpdateUserSubscriberDto {
   senderUserId: number;
   receiverUserId: number;
 }
-
-export class UpdateUserIgnorerDto {
-  senderUserId: number;
-  receiverUserId: number;
-}

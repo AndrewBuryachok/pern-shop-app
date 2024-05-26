@@ -6,7 +6,6 @@ import { UsersModule } from './features/users/users.module';
 import { MessagesModule } from './features/messages/messages.module';
 import { FriendsModule } from './features/friends/friends.module';
 import { SubscribersModule } from './features/subscribers/subscribers.module';
-import { IgnorersModule } from './features/ignorers/ignorers.module';
 import { ReportsModule } from './features/reports/reports.module';
 import { AnnotationsModule } from './features/annotations/annotations.module';
 import { ArticlesModule } from './features/articles/articles.module';
@@ -64,7 +63,6 @@ import { RatingsModule } from './features/ratings/ratings.module';
     MessagesModule,
     FriendsModule,
     SubscribersModule,
-    IgnorersModule,
     ReportsModule,
     AnnotationsModule,
     ArticlesModule,
