@@ -8,7 +8,6 @@ const FriendsPage = lazy(() => import('../pages/friends/FriendsPage'));
 const SubscribersPage = lazy(
   () => import('../pages/subscribers/SubscribersPage'),
 );
-const IgnorersPage = lazy(() => import('../pages/ignorers/IgnorersPage'));
 const ReportsPage = lazy(() => import('../pages/reports/ReportsPage'));
 const ArticlesPage = lazy(() => import('../pages/articles/ArticlesPage'));
 const CardsPage = lazy(() => import('../pages/cards/CardsPage'));
@@ -73,11 +72,6 @@ export const pages = [
   {
     path: 'subscribers',
     element: SubscribersPage,
-    nested: [{ path: 'top' }, { path: 'my' }, { path: 'received' }],
-  },
-  {
-    path: 'ignorers',
-    element: IgnorersPage,
     nested: [{ path: 'top' }, { path: 'my' }, { path: 'received' }],
   },
   {

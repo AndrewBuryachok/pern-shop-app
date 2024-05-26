@@ -30,7 +30,6 @@ import {
   IconGardenCart,
   IconGavel,
   IconMail,
-  IconMailOff,
   IconMap,
   IconNews,
   IconPaperBag,
@@ -63,11 +62,6 @@ export default function Home() {
     {
       title: 'subscribers',
       icon: IconMail,
-      sub: '/top',
-    },
-    {
-      title: 'ignorers',
-      icon: IconMailOff,
       sub: '/top',
     },
     {

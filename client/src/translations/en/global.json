@@ -37,7 +37,6 @@
     "users": "Users",
     "friends": "Friends",
     "subscribers": "Subscribers",
-    "ignorers": "Ignorers",
     "reports": "Reports",
     "articles": "Articles",
     "likes": "Likes",
@@ -85,7 +84,6 @@
     "users": "View users; add, remove roles; edit password",
     "friends": "View friends; create, add, remove friends",
     "subscribers": "View subscribers; add, remove subscribers",
-    "ignorers": "View ignorers; add, remove ignorers",
     "reports": "View reports; create, edit, delete reports; attitude, annotate reports",
     "articles": "View articles; create, edit, delete articles; like, comment articles",
     "cards": "View cards; create, edit cards; add, remove users",
@@ -167,7 +165,6 @@
     "message": "Send Message",
     "subscribe": "Subscribe",
     "unsubscribe": "Unsubscribe",
-    "ignore": "Ignore",
     "view": "View"
   },
   "components": {
@@ -195,7 +192,6 @@
     "messages": "Messages",
     "friends": "Friends",
     "subscribers": "Subscribers",
-    "ignorers": "Ignorers",
     "raters": "Raters",
     "rating": "Rating",
     "created": "Created",
@@ -290,7 +286,6 @@
     "messages": "Message",
     "friends": "Friend",
     "subscribers": "Subscriber",
-    "ignorers": "Ignorer",
     "reports": "Report",
     "annotations": "Annotation",
     "articles": "Article",
@@ -347,10 +342,6 @@
     "subscribers": {
       "added": "subscribed on you",
       "removed": "unsubscribed from you"
-    },
-    "ignorers": {
-      "added": "ignored you",
-      "removed": "unignored you"
     },
     "reports": {
       "created": "created report",
