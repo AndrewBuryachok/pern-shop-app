@@ -1,6 +1,7 @@
 export interface CreatePlaintDto {
   receiverUserId: number;
   title: string;
+  text: string;
 }
 
 export interface ExtCreatePlaintDto extends CreatePlaintDto {
