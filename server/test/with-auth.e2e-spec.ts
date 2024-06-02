@@ -2553,7 +2553,11 @@ describe('With Auth', () => {
       return request(app.getHttpServer())
         .post('/plaints')
         .set('Authorization', `Bearer ${user.access}`)
-        .send({ receiverUserId: user.id, title: 'plaint title' })
+        .send({
+          receiverUserId: user.id,
+          title: 'plaint title',
+          text: 'plaint text',
+        })
         .expect('');
     });
 
@@ -2561,7 +2565,11 @@ describe('With Auth', () => {
       return request(app.getHttpServer())
         .post('/plaints')
         .set('Authorization', `Bearer ${user.access}`)
-        .send({ receiverUserId: user.id, title: 'plaint title' })
+        .send({
+          receiverUserId: user.id,
+          title: 'plaint title',
+          text: 'plaint text',
+        })
         .expect('');
     });
 

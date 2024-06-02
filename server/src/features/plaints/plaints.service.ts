@@ -20,6 +20,8 @@ export class PlaintsService {
   constructor(
     @InjectRepository(Plaint)
     private plaintsRepository: Repository<Plaint>,
+    @InjectRepository(Answer)
+    private answersRepository: Repository<Answer>,
     private mqttService: MqttService,
   ) {}
 
@@ -189,6 +191,12 @@ export class PlaintsService {
         receiverUserId: dto.receiverUserId,
       });
       await this.plaintsRepository.save(plaint);
+      const answer = this.answersRepository.create({
+        plaintId: plaint.id,
+        userId: dto.senderUserId,
+        text: dto.text,
+      });
+      await this.answersRepository.save(answer);
       return plaint;
     } catch (error) {
       throw new AppException(PlaintError.CREATE_FAILED);

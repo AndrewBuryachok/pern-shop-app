@@ -29,6 +29,10 @@ export class CreatePlaintDto extends EditPlaintDto {
   @IsId()
   @Validate(IsUserExists)
   receiverUserId: number;
+
+  @ApiProperty()
+  @IsText()
+  text: string;
 }
 
 export class ExtCreatePlaintDto extends CreatePlaintDto {
