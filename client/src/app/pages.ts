@@ -2,6 +2,7 @@ import { lazy } from 'react';
 const Home = lazy(() => import('../pages/common/Home'));
 const NotFound = lazy(() => import('../pages/common/NotFound'));
 const Map = lazy(() => import('../pages/map/Map'));
+const Logger = lazy(() => import('../pages/common/Logger'));
 const UsersPage = lazy(() => import('../pages/users/UsersPage'));
 const SingleUser = lazy(() => import('../pages/users/SingleUser'));
 const FriendsPage = lazy(() => import('../pages/friends/FriendsPage'));
@@ -48,6 +49,7 @@ export const tabs = ['top', 'server', 'site', 'status', 'spawn', 'hub', 'end'];
 export const pages = [
   { index: true, element: Home },
   { path: 'map', element: Map },
+  { path: 'logs', element: Logger },
   {
     path: 'users',
     element: UsersPage,
