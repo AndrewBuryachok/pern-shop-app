@@ -7,7 +7,12 @@ import { appConfig } from './config/app.config';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.enableCors();
-  app.use(morgan('tiny'));
+  morgan.token('user', (req) => req.user?.nick);
+  app.use(
+    morgan(
+      ':user :method :url :status :res[content-length] - :response-time ms',
+    ),
+  );
   appConfig(app);
   const config = new DocumentBuilder()
     .setTitle('Shop API')

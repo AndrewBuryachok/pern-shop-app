@@ -39,6 +39,7 @@ import { AnswersModule } from './features/answers/answers.module';
 import { PollsModule } from './features/polls/polls.module';
 import { DiscussionsModule } from './features/discussions/discussions.module';
 import { RatingsModule } from './features/ratings/ratings.module';
+import { LoggerModule } from './features/logger/logger.module';
 
 @Module({
   imports: [
@@ -96,6 +97,7 @@ import { RatingsModule } from './features/ratings/ratings.module';
     PollsModule,
     DiscussionsModule,
     RatingsModule,
+    LoggerModule,
   ],
 })
 export class AppModule {}
