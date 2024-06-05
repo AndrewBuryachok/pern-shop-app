@@ -8,4 +8,5 @@ export enum Role {
   END = 7,
   PRESIDENT = 8,
   FBI = 9,
+  STREAMER = 10,
 }

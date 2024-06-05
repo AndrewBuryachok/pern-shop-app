@@ -99,6 +99,12 @@ export class UsersController {
   }
 
   @Public()
+  @Get('twitch/select')
+  selectTwitchUsers(): Promise<{ live: string[]; unlive: string[] }> {
+    return this.usersService.selectTwitchUsers();
+  }
+
+  @Public()
   @Get(':nick')
   getSingleUser(@Param() { nick }: UserNickDto): Promise<User> {
     return this.usersService.getSingleUser(nick);

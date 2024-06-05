@@ -2,6 +2,7 @@ import { Inject, Injectable, forwardRef } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { User } from './user.entity';
+import { TwitchService } from '../twitch/twitch.service';
 import { MqttService } from '../mqtt/mqtt.service';
 import {
   CreateUserDto,
@@ -24,6 +25,7 @@ export class UsersService {
   constructor(
     @InjectRepository(User)
     private usersRepository: Repository<User>,
+    private twitchService: TwitchService,
     @Inject(forwardRef(() => MqttService))
     private mqttService: MqttService,
   ) {}
@@ -185,6 +187,18 @@ export class UsersService {
     raters.push(myId);
     const users = await this.selectUsersQueryBuilder().getMany();
     return users.filter((user) => !raters.includes(user.id));
+  }
+
+  async selectTwitchUsers(): Promise<{ live: string[]; unlive: string[] }> {
+    const users = await this.selectUsersQueryBuilder()
+      .where(':role = ANY(user.roles)', { role: Role.STREAMER })
+      .andWhere("user.twitch != ''")
+      .addSelect('user.twitch')
+      .getMany();
+    const streamers = users.map((user) => user.twitch.toLowerCase());
+    const live = await this.twitchService.getStreams(streamers);
+    const unlive = streamers.filter((user) => !live.includes(user));
+    return { live, unlive };
   }
 
   selectMySubscribers(myId: number): Promise<User[]> {
