@@ -130,70 +130,78 @@ export default function CustomNavbar(props: Props) {
   const active = useLocation().pathname.split('/')[1] || 'home';
 
   return (
-    <Navbar
-      p='md'
-      hiddenBreakpoint='sm'
-      hidden={!props.opened}
-      width={{ sm: 200, lg: 300 }}
-      withBorder={!props.opened}
-    >
-      <Navbar.Section component={ScrollArea} grow>
-        {links.map((link) =>
-          link.nested ? (
-            <NavLink
-              key={link.route}
-              label={t(`navbar.${link.route}`)}
-              icon={
-                <NotificationBadge
-                  pages={link.nested}
-                  icon={<link.icon size={16} />}
-                />
-              }
-              active={link.nested.includes(active)}
-              childrenOffset={28}
-            >
-              {link.nested.map((route) => (
+    <>
+      {props.opened && (
+        <Navbar
+          p='md'
+          hiddenBreakpoint='sm'
+          hidden={!props.opened}
+          width={{ sm: 200, lg: 300 }}
+          withBorder={false}
+        >
+          <Navbar.Section component={ScrollArea} grow>
+            {links.map((link) =>
+              link.nested ? (
                 <NavLink
-                  key={route}
-                  label={t(`navbar.${route}`)}
-                  icon={<NotificationBadge pages={[route]} />}
+                  key={link.route}
+                  label={t(`navbar.${link.route}`)}
+                  icon={
+                    <NotificationBadge
+                      pages={link.nested}
+                      icon={<link.icon size={16} />}
+                    />
+                  }
+                  active={link.nested.includes(active)}
+                  childrenOffset={28}
+                >
+                  {link.nested.map((route) => (
+                    <NavLink
+                      key={route}
+                      label={t(`navbar.${route}`)}
+                      icon={<NotificationBadge pages={[route]} />}
+                      component={Link}
+                      to={`${route}${link.sub || ''}`}
+                      active={route === active}
+                      onClick={() =>
+                        notifications
+                          .filter((notification) => notification.page === route)
+                          .forEach((notification) =>
+                            hideNotification(notification.key),
+                          )
+                      }
+                    />
+                  ))}
+                </NavLink>
+              ) : (
+                <NavLink
+                  key={link.route}
+                  label={t(`navbar.${link.route}`)}
+                  icon={
+                    <NotificationBadge
+                      pages={[link.route]}
+                      icon={<link.icon size={16} />}
+                    />
+                  }
                   component={Link}
-                  to={`${route}${link.sub || ''}`}
-                  active={route === active}
+                  to={`/${link.route === 'home' ? '' : link.route}${
+                    link.sub || ''
+                  }`}
+                  active={link.route === active}
                   onClick={() =>
                     notifications
-                      .filter((notification) => notification.page === route)
+                      .filter(
+                        (notification) => notification.page === link.route,
+                      )
                       .forEach((notification) =>
                         hideNotification(notification.key),
                       )
                   }
                 />
-              ))}
-            </NavLink>
-          ) : (
-            <NavLink
-              key={link.route}
-              label={t(`navbar.${link.route}`)}
-              icon={
-                <NotificationBadge
-                  pages={[link.route]}
-                  icon={<link.icon size={16} />}
-                />
-              }
-              component={Link}
-              to={`/${link.route === 'home' ? '' : link.route}${
-                link.sub || ''
-              }`}
-              active={link.route === active}
-              onClick={() =>
-                notifications
-                  .filter((notification) => notification.page === link.route)
-                  .forEach((notification) => hideNotification(notification.key))
-              }
-            />
-          ),
-        )}
-      </Navbar.Section>
-    </Navbar>
+              ),
+            )}
+          </Navbar.Section>
+        </Navbar>
+      )}
+    </>
   );
 }

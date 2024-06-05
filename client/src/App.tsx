@@ -7,11 +7,12 @@ import {
   MantineProvider,
 } from '@mantine/core';
 import {
+  useDisclosure,
   useFullscreen,
   useHotkeys,
   useInterval,
   useLocalStorage,
-  useToggle,
+  useMediaQuery,
   useWindowEvent,
 } from '@mantine/hooks';
 import { ModalsProvider } from '@mantine/modals';
@@ -28,6 +29,7 @@ import {
 } from './features/mqtt/mqtt.slice';
 import CustomHeader from './common/components/CustomHeader';
 import CustomNavbar from './common/components/CustomNavbar';
+import CustomAside from './common/components/CustomAside';
 import CustomLoader from './common/components/CustomLoader';
 import Protected from './common/components/Protected';
 import CustomAffix from './common/components/CustomAffix';
@@ -88,7 +90,22 @@ export default function App() {
     ['M', () => dispatch(toggleMute())],
   ]);
 
-  const [opened, toggle] = useToggle();
+  const matches = useMediaQuery('(min-width: 768px)');
+
+  const [openedN, { toggle: toggleN, open: openN, close: closeN }] =
+    useDisclosure(false);
+  const [openedA, { toggle: toggleA, open: openA, close: closeA }] =
+    useDisclosure(false);
+
+  useEffect(() => {
+    if (matches) {
+      openN();
+      openA();
+    } else {
+      closeN();
+      closeA();
+    }
+  }, [matches]);
 
   return (
     <ColorSchemeProvider
@@ -112,9 +129,16 @@ export default function App() {
                   width: '100%',
                 },
               })}
-              navbarOffsetBreakpoint='sm'
-              navbar={<CustomNavbar opened={opened} />}
-              header={<CustomHeader opened={opened} toggle={toggle} />}
+              header={
+                <CustomHeader
+                  openedN={openedN}
+                  openedA={openedA}
+                  toggleN={toggleN}
+                  toggleA={toggleA}
+                />
+              }
+              navbar={<CustomNavbar opened={openedN} />}
+              aside={<CustomAside opened={openedA} />}
             >
               <Suspense fallback={<CustomLoader />}>
                 <Routes>

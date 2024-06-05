@@ -13,7 +13,7 @@ export default function CustomPage<T>(props: Props<T>) {
   const active = useLocation().pathname.split('/');
 
   return (
-    <Container size='xl' px={0}>
+    <Container size='md' px={0}>
       <Stack spacing={8}>
         <CustomNav {...props} />
         {['goods', 'wares', 'products'].includes(active[1]) &&

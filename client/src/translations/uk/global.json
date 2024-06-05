@@ -2,6 +2,9 @@
   "header": {
     "title": "Магазин",
     "menu": {
+      "streamers": {
+        "title": "Стримери"
+      },
       "settings": {
         "title": "Налаштування",
         "language": "Мова UK",
@@ -508,6 +511,7 @@
       "end": "Голова енду",
       "president": "Президент",
       "fbi": "ФБР",
+      "streamer": "Стрімер",
       "user": "Користувач"
     },
     "colors": {

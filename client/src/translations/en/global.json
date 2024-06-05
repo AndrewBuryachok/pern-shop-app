@@ -2,6 +2,9 @@
   "header": {
     "title": "Shop",
     "menu": {
+      "streamers": {
+        "title": "Streamers"
+      },
       "settings": {
         "title": "Settings",
         "language": "Language EN",
@@ -508,6 +511,7 @@
       "end": "End head",
       "president": "President",
       "fbi": "Fbi",
+      "streamer": "Streamer",
       "user": "User"
     },
     "colors": {

@@ -10,6 +10,7 @@ export enum Role {
   END = 7,
   PRESIDENT = 8,
   FBI = 9,
+  STREAMER = 10,
 }
 
 export const roles = [
@@ -22,6 +23,7 @@ export const roles = [
   'end',
   'president',
   'fbi',
+  'streamer',
 ];
 
 export const rolesToColors = colors.concat([
@@ -30,4 +32,5 @@ export const rolesToColors = colors.concat([
   'violet',
   'orange',
   'cyan',
+  'grape',
 ]);
