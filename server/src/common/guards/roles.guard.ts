@@ -15,7 +15,10 @@ export class RolesGuard implements CanActivate {
       context.getClass(),
     ]);
     return (
-      !roles || [Role.ADMIN, ...roles].some((role) => user.roles.includes(role))
+      !roles ||
+      [Role.ADMIN, Role.INSPECTOR, ...roles].some((role) =>
+        user.roles.includes(role),
+      )
     );
   }
 }
