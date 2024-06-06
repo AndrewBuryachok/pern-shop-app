@@ -9,15 +9,9 @@ export class MqttController {
   constructor(private mqttService: MqttService) {}
 
   @Public()
-  @Get('online')
-  getOnlineUsers(): number[] {
-    return this.mqttService.getOnlineUsers();
-  }
-
-  @Public()
-  @Get('offline')
-  getOfflineUsers(): number[] {
-    return this.mqttService.getOfflineUsers();
+  @Get('users')
+  getCurrentUsers(): number[] {
+    return this.mqttService.getCurrentUsers();
   }
 
   @Public()

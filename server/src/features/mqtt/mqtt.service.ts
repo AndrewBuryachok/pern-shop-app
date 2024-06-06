@@ -5,8 +5,7 @@ import { UsersService } from '../users/users.service';
 @Injectable()
 export class MqttService {
   private client: MqttClient;
-  private onlineUsers = new Map<number, Date>();
-  private offlineUsers = new Map<number, Date>();
+  private users = new Map<number, Date>();
   private notifications = new Map<string, Date>();
 
   constructor(
@@ -25,17 +24,15 @@ export class MqttService {
       const payload = message.toString();
       if (topic.split('/')[1] === 'users') {
         if (payload) {
-          if (!this.onlineUsers.has(userId)) {
+          if (!this.users.has(userId)) {
             await this.usersService.addUserOnline(userId);
           }
-          this.onlineUsers.set(userId, new Date());
-          this.offlineUsers.delete(userId);
+          this.users.set(userId, new Date());
         } else {
-          if (this.onlineUsers.has(userId)) {
+          if (this.users.has(userId)) {
             await this.usersService.removeUserOnline(userId);
           }
-          this.onlineUsers.delete(userId);
-          this.offlineUsers.set(userId, new Date());
+          this.users.delete(userId);
         }
       } else {
         const notification = topic.split('/').slice(2).join('/');
@@ -43,13 +40,14 @@ export class MqttService {
           if (userId) {
             this.notifications.set(notification, new Date(payload));
           } else {
-            for (const user of this.offlineUsers.keys()) {
+            const users = await this.usersService.selectOfflineUsers();
+            users.forEach((user) =>
               this.publishMessage(
-                `notifications/${user}${notification.slice(1)}`,
+                `notifications/${user.id}${notification.slice(1)}`,
                 payload,
                 true,
-              );
-            }
+              ),
+            );
           }
         } else {
           this.notifications.delete(notification);
@@ -58,26 +56,13 @@ export class MqttService {
     });
   }
 
-  getOnlineUsers(): number[] {
+  getCurrentUsers(): number[] {
     const result = [];
     const date = new Date();
     date.setMinutes(date.getMinutes() - 15);
-    for (const user of this.onlineUsers.keys()) {
-      if (this.onlineUsers.get(user).getTime() < date.getTime()) {
+    for (const user of this.users.keys()) {
+      if (this.users.get(user).getTime() < date.getTime()) {
         this.publishMessage(`users/${user}`, '', true);
-        result.push(user);
-      }
-    }
-    return result;
-  }
-
-  getOfflineUsers(): number[] {
-    const result = [];
-    const date = new Date();
-    date.setDate(date.getDate() - 1);
-    for (const user of this.offlineUsers.keys()) {
-      if (this.offlineUsers.get(user).getTime() < date.getTime()) {
-        this.offlineUsers.delete(user);
         result.push(user);
       }
     }
