@@ -1,6 +1,4 @@
-import { useState } from 'react';
 import { useLocation, useSearchParams } from 'react-router-dom';
-import { ISearch } from '../../common/interfaces';
 import {
   useGetAllArticlesQuery,
   useGetCommentedArticlesQuery,
@@ -22,14 +20,13 @@ export default function ArticlesPage() {
 
   const [searchParams] = useSearchParams();
 
-  const [page, setPage] = useState(+(searchParams.get('page') || 1));
-
-  const [search, setSearch] = useState<ISearch>({
+  const search = {
+    page: +(searchParams.get('page') || 1),
     id: +(searchParams.get('id') || 0) || null,
     user: searchParams.get('user'),
     minDate: searchParams.get('minDate'),
     maxDate: searchParams.get('maxDate'),
-  });
+  };
 
   const response = {
     main: useGetMainArticlesQuery,
@@ -38,7 +35,7 @@ export default function ArticlesPage() {
     liked: useGetLikedArticlesQuery,
     commented: useGetCommentedArticlesQuery,
     all: useGetAllArticlesQuery,
-  }[tab]!({ page, search });
+  }[tab]!(search);
 
   const button = {
     main: createMyArticleButton,
@@ -55,10 +52,7 @@ export default function ArticlesPage() {
   return (
     <ArticlesList
       {...response}
-      page={page}
-      setPage={setPage}
       search={search}
-      setSearch={setSearch}
       button={button}
       actions={actions}
     />

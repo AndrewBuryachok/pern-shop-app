@@ -1,6 +1,4 @@
-import { useState } from 'react';
 import { useLocation, useSearchParams } from 'react-router-dom';
-import { ISearch } from '../../common/interfaces';
 import {
   useGetAllGoodsQuery,
   useGetMainGoodsQuery,
@@ -19,9 +17,8 @@ export default function GoodsPage() {
 
   const [searchParams] = useSearchParams();
 
-  const [page, setPage] = useState(+(searchParams.get('page') || 1));
-
-  const [search, setSearch] = useState<ISearch>({
+  const search = {
+    page: +(searchParams.get('page') || 1),
     id: +(searchParams.get('id') || 0) || null,
     user: searchParams.get('user'),
     shop: searchParams.get('shop'),
@@ -36,13 +33,13 @@ export default function GoodsPage() {
     maxPrice: +(searchParams.get('maxPrice') || 0) || null,
     minDate: searchParams.get('minDate'),
     maxDate: searchParams.get('maxDate'),
-  });
+  };
 
   const response = {
     main: useGetMainGoodsQuery,
     my: useGetMyGoodsQuery,
     all: useGetAllGoodsQuery,
-  }[tab]!({ page, search });
+  }[tab]!(search);
 
   const button = {
     main: createMyGoodButton,
@@ -58,10 +55,7 @@ export default function GoodsPage() {
   return (
     <GoodsTable
       {...response}
-      page={page}
-      setPage={setPage}
       search={search}
-      setSearch={setSearch}
       button={button}
       actions={actions}
     />

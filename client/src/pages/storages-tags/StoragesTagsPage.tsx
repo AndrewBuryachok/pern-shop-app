@@ -1,6 +1,4 @@
-import { useState } from 'react';
 import { useLocation, useSearchParams } from 'react-router-dom';
-import { ISearch } from '../../common/interfaces';
 import {
   useGetAllStoragesTagsQuery,
   useGetMainStoragesTagsQuery,
@@ -18,9 +16,8 @@ export default function StoragesTagsPage() {
 
   const [searchParams] = useSearchParams();
 
-  const [page, setPage] = useState(+(searchParams.get('page') || 1));
-
-  const [search, setSearch] = useState<ISearch>({
+  const search = {
+    page: +(searchParams.get('page') || 1),
     id: +(searchParams.get('id') || 0) || null,
     user: searchParams.get('user'),
     card: searchParams.get('card'),
@@ -28,13 +25,13 @@ export default function StoragesTagsPage() {
     storageTag: searchParams.get('storageTag'),
     minPrice: +(searchParams.get('minPrice') || 0) || null,
     maxPrice: +(searchParams.get('maxPrice') || 0) || null,
-  });
+  };
 
   const response = {
     main: useGetMainStoragesTagsQuery,
     my: useGetMyStoragesTagsQuery,
     all: useGetAllStoragesTagsQuery,
-  }[tab]!({ page, search });
+  }[tab]!(search);
 
   const button = {
     main: createMyStorageTagButton,
@@ -49,10 +46,7 @@ export default function StoragesTagsPage() {
   return (
     <StoragesTagsTable
       {...response}
-      page={page}
-      setPage={setPage}
       search={search}
-      setSearch={setSearch}
       button={button}
       actions={actions}
     />

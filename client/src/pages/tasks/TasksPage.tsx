@@ -1,6 +1,4 @@
-import { useState } from 'react';
 import { useLocation, useSearchParams } from 'react-router-dom';
-import { ISearch } from '../../common/interfaces';
 import { Mode } from '../../common/enums';
 import {
   useGetAllTasksQuery,
@@ -28,9 +26,8 @@ export default function TasksPage() {
 
   const [searchParams] = useSearchParams();
 
-  const [page, setPage] = useState(+(searchParams.get('page') || 1));
-
-  const [search, setSearch] = useState<ISearch>({
+  const search = {
+    page: +(searchParams.get('page') || 1),
     id: +(searchParams.get('id') || 0) || null,
     user: searchParams.get('user'),
     modes: [Mode.CUSTOMER, Mode.EXECUTOR],
@@ -47,14 +44,14 @@ export default function TasksPage() {
     status: searchParams.get('status'),
     minDate: searchParams.get('minDate'),
     maxDate: searchParams.get('maxDate'),
-  });
+  };
 
   const response = {
     main: useGetMainTasksQuery,
     my: useGetMyTasksQuery,
     taken: useGetTakenTasksQuery,
     all: useGetAllTasksQuery,
-  }[tab]!({ page, search });
+  }[tab]!(search);
 
   const button = {
     main: createMyTaskButton,
@@ -79,10 +76,7 @@ export default function TasksPage() {
   return (
     <TasksTable
       {...response}
-      page={page}
-      setPage={setPage}
       search={search}
-      setSearch={setSearch}
       button={button}
       actions={actions}
     />

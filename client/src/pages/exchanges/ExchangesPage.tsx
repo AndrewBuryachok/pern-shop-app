@@ -1,6 +1,4 @@
-import { useState } from 'react';
 import { useLocation, useSearchParams } from 'react-router-dom';
-import { ISearch } from '../../common/interfaces';
 import { Mode } from '../../common/enums';
 import {
   useGetAllExchangesQuery,
@@ -14,9 +12,8 @@ export default function ExchangesPage() {
 
   const [searchParams] = useSearchParams();
 
-  const [page, setPage] = useState(+(searchParams.get('page') || 1));
-
-  const [search, setSearch] = useState<ISearch>({
+  const search = {
+    page: +(searchParams.get('page') || 1),
     id: +(searchParams.get('id') || 0) || null,
     user: searchParams.get('user'),
     card: searchParams.get('card'),
@@ -27,23 +24,14 @@ export default function ExchangesPage() {
     maxSum: +(searchParams.get('maxSum') || 0) || null,
     minDate: searchParams.get('minDate'),
     maxDate: searchParams.get('maxDate'),
-  });
+  };
 
   const response = {
     my: useGetMyExchangesQuery,
     all: useGetAllExchangesQuery,
-  }[tab]!({ page, search });
+  }[tab]!(search);
 
   const button = { all: createExchangeButton }[tab];
 
-  return (
-    <ExchangesTable
-      {...response}
-      page={page}
-      setPage={setPage}
-      search={search}
-      setSearch={setSearch}
-      button={button}
-    />
-  );
+  return <ExchangesTable {...response} search={search} button={button} />;
 }

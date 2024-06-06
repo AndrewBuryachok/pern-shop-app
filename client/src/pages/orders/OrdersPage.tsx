@@ -1,6 +1,4 @@
-import { useState } from 'react';
 import { useLocation, useSearchParams } from 'react-router-dom';
-import { ISearch } from '../../common/interfaces';
 import { Mode } from '../../common/enums';
 import {
   useGetAllOrdersQuery,
@@ -29,9 +27,8 @@ export default function OrdersPage() {
 
   const [searchParams] = useSearchParams();
 
-  const [page, setPage] = useState(+(searchParams.get('page') || 1));
-
-  const [search, setSearch] = useState<ISearch>({
+  const search = {
+    page: +(searchParams.get('page') || 1),
     id: +(searchParams.get('id') || 0) || null,
     user: searchParams.get('user'),
     card: searchParams.get('card'),
@@ -52,7 +49,7 @@ export default function OrdersPage() {
     rate: +(searchParams.get('rate') || 0) || null,
     minDate: searchParams.get('minDate'),
     maxDate: searchParams.get('maxDate'),
-  });
+  };
 
   const response = {
     main: useGetMainOrdersQuery,
@@ -60,7 +57,7 @@ export default function OrdersPage() {
     taken: useGetTakenOrdersQuery,
     placed: useGetPlacedOrdersQuery,
     all: useGetAllOrdersQuery,
-  }[tab]!({ page, search });
+  }[tab]!(search);
 
   const button = {
     main: createMyOrderButton,
@@ -85,10 +82,7 @@ export default function OrdersPage() {
   return (
     <OrdersTable
       {...response}
-      page={page}
-      setPage={setPage}
       search={search}
-      setSearch={setSearch}
       button={button}
       actions={actions}
     />

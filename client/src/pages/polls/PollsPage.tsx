@@ -1,6 +1,4 @@
-import { useState } from 'react';
 import { useLocation, useSearchParams } from 'react-router-dom';
-import { ISearch } from '../../common/interfaces';
 import {
   useGetAllPollsQuery,
   useGetDiscussedPollsQuery,
@@ -22,16 +20,15 @@ export default function PollsPage() {
 
   const [searchParams] = useSearchParams();
 
-  const [page, setPage] = useState(+(searchParams.get('page') || 1));
-
-  const [search, setSearch] = useState<ISearch>({
+  const search = {
+    page: +(searchParams.get('page') || 1),
     id: +(searchParams.get('id') || 0) || null,
     user: searchParams.get('user'),
     mark: searchParams.get('mark'),
     result: searchParams.get('result'),
     minDate: searchParams.get('minDate'),
     maxDate: searchParams.get('maxDate'),
-  });
+  };
 
   const response = {
     main: useGetMainPollsQuery,
@@ -39,7 +36,7 @@ export default function PollsPage() {
     voted: useGetVotedPollsQuery,
     discussed: useGetDiscussedPollsQuery,
     all: useGetAllPollsQuery,
-  }[tab]!({ page, search });
+  }[tab]!(search);
 
   const button = {
     main: createMyPollButton,
@@ -55,10 +52,7 @@ export default function PollsPage() {
   return (
     <PollsList
       {...response}
-      page={page}
-      setPage={setPage}
       search={search}
-      setSearch={setSearch}
       button={button}
       actions={actions}
     />

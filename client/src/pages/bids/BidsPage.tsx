@@ -1,6 +1,4 @@
-import { useState } from 'react';
 import { useLocation, useSearchParams } from 'react-router-dom';
-import { ISearch } from '../../common/interfaces';
 import { Mode } from '../../common/enums';
 import {
   useGetAllBidsQuery,
@@ -15,9 +13,8 @@ export default function BidsPage() {
 
   const [searchParams] = useSearchParams();
 
-  const [page, setPage] = useState(+(searchParams.get('page') || 1));
-
-  const [search, setSearch] = useState<ISearch>({
+  const search = {
+    page: +(searchParams.get('page') || 1),
     id: +(searchParams.get('id') || 0) || null,
     user: searchParams.get('user'),
     card: searchParams.get('card'),
@@ -36,22 +33,14 @@ export default function BidsPage() {
     maxPrice: +(searchParams.get('maxPrice') || 0) || null,
     minDate: searchParams.get('minDate'),
     maxDate: searchParams.get('maxDate'),
-  });
+  };
 
   const response = {
     my: useGetMyBidsQuery,
     sold: useGetSoldBidsQuery,
     placed: useGetPlacedBidsQuery,
     all: useGetAllBidsQuery,
-  }[tab]!({ page, search });
+  }[tab]!(search);
 
-  return (
-    <BidsTable
-      {...response}
-      page={page}
-      setPage={setPage}
-      search={search}
-      setSearch={setSearch}
-    />
-  );
+  return <BidsTable {...response} search={search} />;
 }

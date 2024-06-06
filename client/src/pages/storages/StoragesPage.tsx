@@ -1,6 +1,4 @@
-import { useState } from 'react';
 import { useLocation, useSearchParams } from 'react-router-dom';
-import { ISearch } from '../../common/interfaces';
 import {
   useGetAllStoragesQuery,
   useGetMainStoragesQuery,
@@ -18,22 +16,19 @@ export default function StoragesPage() {
 
   const [searchParams] = useSearchParams();
 
-  const [page, setPage] = useState(+(searchParams.get('page') || 1));
-
-  const [search, setSearch] = useState<ISearch>({
+  const search = {
+    page: +(searchParams.get('page') || 1),
     id: +(searchParams.get('id') || 0) || null,
     user: searchParams.get('user'),
     card: searchParams.get('card'),
     storage: searchParams.get('storage'),
-    minPrice: +(searchParams.get('minPrice') || 0) || null,
-    maxPrice: +(searchParams.get('maxPrice') || 0) || null,
-  });
+  };
 
   const response = {
     main: useGetMainStoragesQuery,
     my: useGetMyStoragesQuery,
     all: useGetAllStoragesQuery,
-  }[tab]!({ page, search });
+  }[tab]!(search);
 
   const button = {
     main: createMyStorageButton,
@@ -46,10 +41,7 @@ export default function StoragesPage() {
   return (
     <StoragesTable
       {...response}
-      page={page}
-      setPage={setPage}
       search={search}
-      setSearch={setSearch}
       button={button}
       actions={actions}
     />

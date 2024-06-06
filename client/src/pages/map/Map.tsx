@@ -22,10 +22,18 @@ export default function Map() {
     { x1: '50%', x2: '0%', y1: '50%', y2: '50%' },
   ];
 
-  const { data: cities, isLoading: isLoading1 } = useGetMainCitiesQuery({});
-  const { data: shops, isLoading: isLoading2 } = useGetMainShopsQuery({});
-  const { data: markets, isLoading: isLoading3 } = useGetMainMarketsQuery({});
-  const { data: storages, isLoading: isLoading4 } = useGetMainStoragesQuery({});
+  const { data: cities, isLoading: isLoading1 } = useGetMainCitiesQuery({
+    page: 0,
+  });
+  const { data: shops, isLoading: isLoading2 } = useGetMainShopsQuery({
+    page: 0,
+  });
+  const { data: markets, isLoading: isLoading3 } = useGetMainMarketsQuery({
+    page: 0,
+  });
+  const { data: storages, isLoading: isLoading4 } = useGetMainStoragesQuery({
+    page: 0,
+  });
 
   const isLoading = isLoading1 || isLoading2 || isLoading3 || isLoading4;
 

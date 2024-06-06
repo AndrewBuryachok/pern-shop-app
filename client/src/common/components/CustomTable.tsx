@@ -44,9 +44,9 @@ export default function CustomTable<T>(props: Props<T>) {
               <caption style={{ marginTop: 0 }}>
                 {props.data?.result.length
                   ? `${t('components.pagination.from')} ${
-                      (props.page - 1) * ROWS_PER_PAGE + 1
+                      (props.search.page - 1) * ROWS_PER_PAGE + 1
                     } ${t('components.pagination.to')} ${Math.min(
-                      props.page * ROWS_PER_PAGE,
+                      props.search.page * ROWS_PER_PAGE,
                       props.data.count,
                     )} ${t('components.pagination.of')} ${props.data.count}`
                   : t('components.pagination.no')}

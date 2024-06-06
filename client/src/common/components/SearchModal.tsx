@@ -85,7 +85,6 @@ import { MAX_AMOUNT_VALUE, MAX_INTAKE_VALUE, items } from '../constants';
 
 type Props = {
   search: ISearch;
-  setSearch: (search: ISearch) => void;
   isFetching: boolean;
 };
 
@@ -111,6 +110,7 @@ export default function SearchModal(props: Props) {
     },
     transformValues: ({ category, modes, ...rest }) => ({
       ...rest,
+      page: 0,
       minSum: scaleMinSum(rest.minSum),
       maxSum: scaleMaxSum(rest.maxSum),
       minAmount: scaleMinSearch(rest.minAmount),
@@ -221,16 +221,15 @@ export default function SearchModal(props: Props) {
   const user = users?.find((user) => user.id === +form.values.user!);
 
   const handleSubmit = (search: ISearch) => {
-    const updatedSearchParams = new URLSearchParams(searchParams);
+    const newSearchParams = new URLSearchParams(searchParams);
     for (const [key, value] of Object.entries(search)) {
       if (value && (!Array.isArray(value) || value.length)) {
-        updatedSearchParams.set(key, value);
+        newSearchParams.set(key, value);
       } else {
-        updatedSearchParams.delete(key);
+        newSearchParams.delete(key);
       }
     }
-    setSearchParams(updatedSearchParams);
-    props.setSearch({ ...props.search, ...search });
+    setSearchParams(newSearchParams);
     closeAllModals();
   };
 
@@ -321,12 +320,13 @@ export default function SearchModal(props: Props) {
         <Select
           label={t('columns.shop')}
           placeholder={`${t('components.total')}: ${shops?.length || 0}`}
-          rightSection={<RefetchAction {...citiesResponse} />}
+          rightSection={<RefetchAction {...shopsResponse} />}
           itemComponent={PlacesItem}
           data={selectShops(shops)}
           limit={20}
           searchable
           allowDeselect
+          readOnly={shopsResponse.isFetching}
           {...form.getInputProps('shop')}
         />
       )}

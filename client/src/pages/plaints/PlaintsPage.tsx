@@ -1,6 +1,4 @@
-import { useState } from 'react';
 import { useLocation, useSearchParams } from 'react-router-dom';
-import { ISearch } from '../../common/interfaces';
 import { Mode } from '../../common/enums';
 import {
   useGetAllPlaintsQuery,
@@ -23,9 +21,8 @@ export default function PlaintsPage() {
 
   const [searchParams] = useSearchParams();
 
-  const [page, setPage] = useState(+(searchParams.get('page') || 1));
-
-  const [search, setSearch] = useState<ISearch>({
+  const search = {
+    page: +(searchParams.get('page') || 1),
     id: +(searchParams.get('id') || 0) || null,
     user: searchParams.get('user'),
     modes: [Mode.SENDER, Mode.RECEIVER, Mode.EXECUTOR],
@@ -33,7 +30,7 @@ export default function PlaintsPage() {
     title: searchParams.get('title') || '',
     minDate: searchParams.get('minDate'),
     maxDate: searchParams.get('maxDate'),
-  });
+  };
 
   const response = {
     main: useGetMainPlaintsQuery,
@@ -41,7 +38,7 @@ export default function PlaintsPage() {
     received: useGetReceivedPlaintsQuery,
     answered: useGetAnsweredPlaintsQuery,
     all: useGetAllPlaintsQuery,
-  }[tab]!({ page, search });
+  }[tab]!(search);
 
   const button = {
     main: createMyPlaintButton,
@@ -57,10 +54,7 @@ export default function PlaintsPage() {
   return (
     <PlaintsTable
       {...response}
-      page={page}
-      setPage={setPage}
       search={search}
-      setSearch={setSearch}
       button={button}
       actions={actions}
     />

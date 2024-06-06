@@ -1,31 +1,31 @@
-import { useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Pagination } from '@mantine/core';
-import { IPagination } from '../interfaces/pagination.interface';
+import { ROWS_PER_PAGE } from '../constants';
 
-type Props = IPagination & {
-  total?: number;
+type Props = {
+  page: number;
+  count?: number;
   isFetching: boolean;
 };
 
 export default function CustomHead(props: Props) {
   const [searchParams, setSearchParams] = useSearchParams();
 
-  useEffect(() => {
+  const handleChange = (page: number) => {
     const newSearchParams = new URLSearchParams(searchParams);
-    if (props.page === 1) {
+    if (page === 1) {
       newSearchParams.delete('page');
     } else {
-      newSearchParams.set('page', `${props.page}`);
+      newSearchParams.set('page', `${page}`);
     }
     setSearchParams(newSearchParams);
-  }, [props.page]);
+  };
 
   return (
     <Pagination
-      total={props.total || 1}
+      total={props.count ? Math.ceil(props.count / ROWS_PER_PAGE) : 1}
       page={props.page}
-      onChange={props.setPage}
+      onChange={handleChange}
       withControls={false}
       disabled={props.isFetching}
     />

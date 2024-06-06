@@ -1,6 +1,4 @@
-import { useState } from 'react';
 import { useLocation, useSearchParams } from 'react-router-dom';
-import { ISearch } from '../../common/interfaces';
 import { Mode } from '../../common/enums';
 import {
   useGetAllSalesQuery,
@@ -16,9 +14,8 @@ export default function SalesPage() {
 
   const [searchParams] = useSearchParams();
 
-  const [page, setPage] = useState(+(searchParams.get('page') || 1));
-
-  const [search, setSearch] = useState<ISearch>({
+  const search = {
+    page: +(searchParams.get('page') || 1),
     id: +(searchParams.get('id') || 0) || null,
     user: searchParams.get('user'),
     card: searchParams.get('card'),
@@ -38,25 +35,16 @@ export default function SalesPage() {
     rate: +(searchParams.get('rate') || 0) || null,
     minDate: searchParams.get('minDate'),
     maxDate: searchParams.get('maxDate'),
-  });
+  };
 
   const response = {
     my: useGetMySalesQuery,
     sold: useGetSoldSalesQuery,
     placed: useGetPlacedSalesQuery,
     all: useGetAllSalesQuery,
-  }[tab]!({ page, search });
+  }[tab]!(search);
 
   const actions = { my: [rateSaleAction], all: [rateSaleAction] }[tab];
 
-  return (
-    <SalesTable
-      {...response}
-      page={page}
-      setPage={setPage}
-      search={search}
-      setSearch={setSearch}
-      actions={actions}
-    />
-  );
+  return <SalesTable {...response} search={search} actions={actions} />;
 }

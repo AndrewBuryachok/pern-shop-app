@@ -1,6 +1,4 @@
-import { useState } from 'react';
 import { useLocation, useSearchParams } from 'react-router-dom';
-import { ISearch } from '../../common/interfaces';
 import {
   useGetAllShopsQuery,
   useGetMainShopsQuery,
@@ -29,19 +27,18 @@ export default function ShopsPage() {
 
   const [searchParams] = useSearchParams();
 
-  const [page, setPage] = useState(+(searchParams.get('page') || 1));
-
-  const [search, setSearch] = useState<ISearch>({
+  const search = {
+    page: +(searchParams.get('page') || 1),
     id: +(searchParams.get('id') || 0) || null,
     user: searchParams.get('user'),
     shop: searchParams.get('shop'),
-  });
+  };
 
   const response = {
     main: useGetMainShopsQuery,
     my: useGetMyShopsQuery,
     all: useGetAllShopsQuery,
-  }[tab]!({ page, search });
+  }[tab]!(search);
 
   const button = {
     main: createMyShopButton,
@@ -57,10 +54,7 @@ export default function ShopsPage() {
   return (
     <ShopsTable
       {...response}
-      page={page}
-      setPage={setPage}
       search={search}
-      setSearch={setSearch}
       button={button}
       actions={actions}
     />

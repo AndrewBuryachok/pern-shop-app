@@ -1,110 +1,110 @@
 import { IRequest } from '../interfaces';
 import { ROWS_PER_PAGE } from '../constants';
 
-export const getQuery = ({ page, search }: IRequest) => {
+export const getQuery = (req: IRequest) => {
   const query = new URLSearchParams();
-  if (page) {
-    query.append('skip', `${(page - 1) * ROWS_PER_PAGE}`);
+  if (req.page) {
+    query.append('skip', `${(req.page - 1) * ROWS_PER_PAGE}`);
     query.append('take', `${ROWS_PER_PAGE}`);
   }
-  if (search?.id) {
-    query.append('id', `${search.id}`);
+  if (req?.id) {
+    query.append('id', `${req.id}`);
   }
-  if (search?.user) {
-    query.append('user', search.user);
+  if (req?.user) {
+    query.append('user', req.user);
   }
-  if (search?.card) {
-    query.append('card', search.card);
+  if (req?.card) {
+    query.append('card', req.card);
   }
-  if (search?.mode) {
-    query.append('mode', search.mode);
+  if (req?.mode) {
+    query.append('mode', req.mode);
   }
-  if (search?.roles?.length) {
-    query.append('roles', search.roles.join());
+  if (req?.roles?.length) {
+    query.append('roles', req.roles.join());
   }
-  if (search?.city) {
-    query.append('city', search.city);
+  if (req?.city) {
+    query.append('city', req.city);
   }
-  if (search?.shop) {
-    query.append('shop', search.shop);
+  if (req?.shop) {
+    query.append('shop', req.shop);
   }
-  if (search?.market) {
-    query.append('market', search.market);
+  if (req?.market) {
+    query.append('market', req.market);
   }
-  if (search?.storage) {
-    query.append('storage', search.storage);
+  if (req?.storage) {
+    query.append('storage', req.storage);
   }
-  if (search?.marketTag) {
-    query.append('marketTag', search.marketTag);
+  if (req?.marketTag) {
+    query.append('marketTag', req.marketTag);
   }
-  if (search?.storageTag) {
-    query.append('storageTag', search.storageTag);
+  if (req?.storageTag) {
+    query.append('storageTag', req.storageTag);
   }
-  if (search?.store) {
-    query.append('store', search.store);
+  if (req?.store) {
+    query.append('store', req.store);
   }
-  if (search?.cell) {
-    query.append('cell', search.cell);
+  if (req?.cell) {
+    query.append('cell', req.cell);
   }
-  if (search?.item) {
-    query.append('item', search.item);
+  if (req?.item) {
+    query.append('item', req.item);
   }
-  if (search?.title) {
-    query.append('title', search.title);
+  if (req?.title) {
+    query.append('title', req.title);
   }
-  if (search?.description) {
-    query.append('description', search.description);
+  if (req?.description) {
+    query.append('description', req.description);
   }
-  if (search?.type) {
-    query.append('type', search.type);
+  if (req?.type) {
+    query.append('type', req.type);
   }
-  if (search?.minSum) {
-    query.append('minSum', `${search.minSum}`);
+  if (req?.minSum) {
+    query.append('minSum', `${req.minSum}`);
   }
-  if (search?.maxSum) {
-    query.append('maxSum', `${search.maxSum}`);
+  if (req?.maxSum) {
+    query.append('maxSum', `${req.maxSum}`);
   }
-  if (search?.minAmount) {
-    query.append('minAmount', `${search.minAmount}`);
+  if (req?.minAmount) {
+    query.append('minAmount', `${req.minAmount}`);
   }
-  if (search?.maxAmount) {
-    query.append('maxAmount', `${search.maxAmount}`);
+  if (req?.maxAmount) {
+    query.append('maxAmount', `${req.maxAmount}`);
   }
-  if (search?.minIntake) {
-    query.append('minIntake', `${search.minIntake}`);
+  if (req?.minIntake) {
+    query.append('minIntake', `${req.minIntake}`);
   }
-  if (search?.maxIntake) {
-    query.append('maxIntake', `${search.maxIntake}`);
+  if (req?.maxIntake) {
+    query.append('maxIntake', `${req.maxIntake}`);
   }
-  if (search?.kit) {
-    query.append('kit', search.kit);
+  if (req?.kit) {
+    query.append('kit', req.kit);
   }
-  if (search?.minPrice) {
-    query.append('minPrice', `${search.minPrice}`);
+  if (req?.minPrice) {
+    query.append('minPrice', `${req.minPrice}`);
   }
-  if (search?.maxPrice) {
-    query.append('maxPrice', `${search.maxPrice}`);
+  if (req?.maxPrice) {
+    query.append('maxPrice', `${req.maxPrice}`);
   }
-  if (search?.kind) {
-    query.append('kind', search.kind);
+  if (req?.kind) {
+    query.append('kind', req.kind);
   }
-  if (search?.status) {
-    query.append('status', search.status);
+  if (req?.status) {
+    query.append('status', req.status);
   }
-  if (search?.mark) {
-    query.append('mark', search.mark);
+  if (req?.mark) {
+    query.append('mark', req.mark);
   }
-  if (search?.result) {
-    query.append('result', search.result);
+  if (req?.result) {
+    query.append('result', req.result);
   }
-  if (search?.rate) {
-    query.append('rate', `${search.rate}`);
+  if (req?.rate) {
+    query.append('rate', `${req.rate}`);
   }
-  if (search?.minDate) {
-    query.append('minDate', search.minDate);
+  if (req?.minDate) {
+    query.append('minDate', req.minDate);
   }
-  if (search?.maxDate) {
-    query.append('maxDate', search.maxDate);
+  if (req?.maxDate) {
+    query.append('maxDate', req.maxDate);
   }
   return query.toString();
 };

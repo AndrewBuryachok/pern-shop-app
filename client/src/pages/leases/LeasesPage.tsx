@@ -1,6 +1,4 @@
-import { useState } from 'react';
 import { useLocation, useSearchParams } from 'react-router-dom';
-import { ISearch } from '../../common/interfaces';
 import { Mode } from '../../common/enums';
 import {
   useGetAllLeasesQuery,
@@ -20,9 +18,8 @@ export default function LeasesPage() {
 
   const [searchParams] = useSearchParams();
 
-  const [page, setPage] = useState(+(searchParams.get('page') || 1));
-
-  const [search, setSearch] = useState<ISearch>({
+  const search = {
+    page: +(searchParams.get('page') || 1),
     id: +(searchParams.get('id') || 0) || null,
     user: searchParams.get('user'),
     card: searchParams.get('card'),
@@ -35,28 +32,19 @@ export default function LeasesPage() {
     kind: searchParams.get('kind'),
     minDate: searchParams.get('minDate'),
     maxDate: searchParams.get('maxDate'),
-  });
+  };
 
   const response = {
     main: useGetMainLeasesQuery,
     my: useGetMyLeasesQuery,
     received: useGetReceivedLeasesQuery,
     all: useGetAllLeasesQuery,
-  }[tab]!({ page, search });
+  }[tab]!(search);
 
   const actions = {
     my: [continueMyLeaseAction, completeLeaseAction],
     all: [continueUserLeaseAction, completeLeaseAction],
   }[tab];
 
-  return (
-    <LeasesTable
-      {...response}
-      page={page}
-      setPage={setPage}
-      search={search}
-      setSearch={setSearch}
-      actions={actions}
-    />
-  );
+  return <LeasesTable {...response} search={search} actions={actions} />;
 }

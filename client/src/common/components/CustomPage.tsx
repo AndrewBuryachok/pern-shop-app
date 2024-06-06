@@ -5,7 +5,6 @@ import CustomNav from './CustomNav';
 import CustomStats from './CustomStats';
 import CustomHead from './CustomHead';
 import CustomPagination from './CustomPagination';
-import { ROWS_PER_PAGE } from '../constants';
 
 type Props<T> = IPage<T>;
 
@@ -21,8 +20,9 @@ export default function CustomPage<T>(props: Props<T>) {
         <CustomHead {...props} />
         {props.children}
         <CustomPagination
-          {...props}
-          total={props.data && Math.ceil(props.data.count / ROWS_PER_PAGE)}
+          page={props.search.page}
+          count={props.data?.count}
+          isFetching={props.isFetching}
         />
       </Stack>
     </Container>

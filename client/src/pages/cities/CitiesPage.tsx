@@ -1,6 +1,4 @@
-import { useState } from 'react';
 import { useLocation, useSearchParams } from 'react-router-dom';
-import { ISearch } from '../../common/interfaces';
 import {
   useGetAllCitiesQuery,
   useGetMainCitiesQuery,
@@ -29,19 +27,18 @@ export default function CitiesPage() {
 
   const [searchParams] = useSearchParams();
 
-  const [page, setPage] = useState(+(searchParams.get('page') || 1));
-
-  const [search, setSearch] = useState<ISearch>({
+  const search = {
+    page: +(searchParams.get('page') || 1),
     id: +(searchParams.get('id') || 0) || null,
     user: searchParams.get('user'),
     city: searchParams.get('city'),
-  });
+  };
 
   const response = {
     main: useGetMainCitiesQuery,
     my: useGetMyCitiesQuery,
     all: useGetAllCitiesQuery,
-  }[tab]!({ page, search });
+  }[tab]!(search);
 
   const button = {
     main: createMyCityButton,
@@ -57,10 +54,7 @@ export default function CitiesPage() {
   return (
     <CitiesTable
       {...response}
-      page={page}
-      setPage={setPage}
       search={search}
-      setSearch={setSearch}
       button={button}
       actions={actions}
     />
