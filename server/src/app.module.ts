@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { RedisModule } from '@liaoliaots/nestjs-redis';
 import { AuthModule } from './features/auth/auth.module';
 import { UsersModule } from './features/users/users.module';
 import { MessagesModule } from './features/messages/messages.module';
@@ -57,6 +58,13 @@ import { LoggerModule } from './features/logger/logger.module';
         entities: [],
         synchronize: true,
         autoLoadEntities: true,
+      }),
+    }),
+    RedisModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        config: { url: configService.get('REDIS_URL') },
       }),
     }),
     AuthModule,

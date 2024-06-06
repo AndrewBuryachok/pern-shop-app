@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { InjectRedis } from '@liaoliaots/nestjs-redis';
+import { Redis } from 'ioredis';
 import { Log } from './log.entity';
 import { Request } from '../../common/interfaces';
 import { AppException } from '../../common/exceptions';
@@ -8,15 +10,15 @@ import { LogError } from './log-error.enum';
 
 @Injectable()
 export class LoggerService {
-  private ips = new Set<string>();
-
   constructor(
     @InjectRepository(Log)
     private logsRepository: Repository<Log>,
+    @InjectRedis()
+    private redis: Redis,
   ) {}
 
-  addIp(ip: string): void {
-    this.ips.add(ip);
+  async addIp(ip: string): Promise<void> {
+    await this.redis.sadd('ips', ip);
   }
 
   getLogs(req: Request): Promise<Log[]> {
@@ -30,8 +32,8 @@ export class LoggerService {
   }
 
   async createLog(): Promise<void> {
-    const count = this.ips.size;
-    this.ips.clear();
+    const count = await this.redis.scard('ips');
+    await this.redis.del('ips');
     await this.create(count);
   }
 

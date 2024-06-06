@@ -6,10 +6,10 @@ import { LoggerService } from './logger.service';
 export class LoggerMiddleware implements NestMiddleware {
   constructor(private loggerService: LoggerService) {}
 
-  use(req: Request, res: Response, next: NextFunction) {
+  async use(req: Request, res: Response, next: NextFunction) {
     const ip = req.headers['x-forwarded-for']?.toString().split(',')[0];
     if (ip) {
-      this.loggerService.addIp(ip);
+      await this.loggerService.addIp(ip);
     }
     next();
   }
