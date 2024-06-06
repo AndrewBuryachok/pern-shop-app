@@ -1,36 +1,41 @@
-import { colors } from './color.constant';
-
 export enum Role {
   ADMIN = 1,
-  BANKER = 2,
-  MANAGER = 3,
-  JUDGE = 4,
+  INSPECTOR = 2,
+  PRESIDENT = 3,
+  SPAWN = 4,
   HUB = 5,
-  SPAWN = 6,
-  END = 7,
-  PRESIDENT = 8,
-  FBI = 9,
-  STREAMER = 10,
+  END = 6,
+  MANAGER = 7,
+  BANKER = 8,
+  JUDGE = 9,
+  FBI = 10,
+  STREAMER = 11,
 }
 
 export const roles = [
   'admin',
-  'banker',
-  'manager',
-  'judge',
-  'hub',
-  'spawn',
-  'end',
+  'inspector',
   'president',
+  'spawn',
+  'hub',
+  'end',
+  'manager',
+  'banker',
+  'judge',
   'fbi',
   'streamer',
 ];
 
-export const rolesToColors = colors.concat([
-  'pink',
-  'teal',
-  'violet',
+export const rolesToColors = [
+  'red',
+  'indigo',
   'orange',
+  'teal',
+  'pink',
+  'violet',
+  'green',
+  'yellow',
+  'blue',
   'cyan',
   'grape',
-]);
+];
