@@ -5,7 +5,7 @@ import { MdStore } from '../../features/stores/store.model';
 import { MdCell } from '../../features/cells/cell.model';
 import { Trade } from '../../features/trades/trade.model';
 import { Sale } from '../../features/sales/sale.model';
-import { items, kinds, kits, statuses } from '../constants';
+import { Color, items, kinds, kits, statuses } from '../constants';
 
 type Coordinates = {
   x: number;
@@ -13,7 +13,13 @@ type Coordinates = {
 };
 
 export const parseCoordinates = ({ x, y }: Coordinates) =>
-  Math.abs(x) <= Math.abs(y) ? (y >= 0 ? 1 : 2) : x >= 0 ? 3 : 4;
+  Math.abs(x) <= Math.abs(y)
+    ? y >= 0
+      ? Color.GREEN
+      : Color.BLUE
+    : x >= 0
+    ? Color.RED
+    : Color.YELLOW;
 
 export const parseDate = (date: Date) => ({
   date: new Date(date).toLocaleDateString(i18next.language, {
