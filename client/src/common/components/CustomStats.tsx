@@ -40,7 +40,7 @@ export default function CustomStats() {
         <Paper key={stat.label} p={8}>
           <Group spacing={0} position='apart'>
             <div>
-              <Text size='xs' weight='bold' color='dimmed'>
+              <Text size='sm' weight='bold' color='dimmed'>
                 {`${t('components.new')} ${t(
                   `navbar.${stat.label}`,
                 )}`.toUpperCase()}

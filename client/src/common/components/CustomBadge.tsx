@@ -9,7 +9,7 @@ type Props = {
 export default function CustomBadge(props: Props) {
   return (
     <Group spacing={0}>
-      <Badge size='xs' color={props.color ? colors[props.color - 1] : 'gray'}>
+      <Badge size='sm' color={props.color ? colors[props.color - 1] : 'gray'}>
         {props.text}
       </Badge>
     </Group>

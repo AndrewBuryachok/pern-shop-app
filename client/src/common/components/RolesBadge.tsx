@@ -12,12 +12,12 @@ export default function RolesBadge(props: Props) {
   return (
     <Group spacing={4}>
       {props.roles.map((role) => (
-        <Badge key={role} size='xs' color={rolesToColors[role - 1]}>
+        <Badge key={role} size='sm' color={rolesToColors[role - 1]}>
           {t(`constants.roles.${roles[role - 1]}`)}
         </Badge>
       ))}
       {!props.roles.length && (
-        <Badge size='xs' color='gray'>
+        <Badge size='sm' color='gray'>
           {t('constants.roles.user')}
         </Badge>
       )}

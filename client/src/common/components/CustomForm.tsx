@@ -19,7 +19,7 @@ export default function CustomForm(props: Props) {
         <LoadingOverlay visible={props.isLoading} />
         {props.children}
         {props.text && (
-          <Text size='xs'>
+          <Text size='sm'>
             {props.text.charAt(0) + props.text.substring(1).toLowerCase()}?
           </Text>
         )}

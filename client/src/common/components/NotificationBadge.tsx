@@ -13,7 +13,7 @@ export default function NotificationBadge(props: Props) {
   );
 
   return notifications.length ? (
-    <Badge size='xs' variant='filled' color='red' w={16} h={16} p={0}>
+    <Badge size='sm' variant='filled' color='red' w={16} h={16} p={0}>
       {notifications.length}
     </Badge>
   ) : (

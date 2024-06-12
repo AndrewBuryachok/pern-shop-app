@@ -11,7 +11,7 @@ type Props = {
 export default function SingleText(props: Props) {
   return (
     <Text
-      size='xs'
+      size='sm'
       weight={props.bold ? 'bold' : undefined}
       color={
         props.color

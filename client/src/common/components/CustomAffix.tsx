@@ -11,7 +11,7 @@ export default function CustomAffix() {
         <Group spacing={4}>
           <Badge w={8} h={8} p={0} variant='filled' color='green' />
           <IconUsers size={16} />
-          <Text size='xs'>{users.length}</Text>
+          <Text size='sm'>{users.length}</Text>
         </Group>
       </Paper>
     </Affix>

@@ -70,7 +70,7 @@ export default function AuthModal() {
         maxLength={MAX_PASSWORD_LENGTH}
         {...form.getInputProps('password')}
       />
-      <Text size='xs'>
+      <Text size='sm'>
         {t(`modals.${type}.text`)}
         <CustomAnchor text={t(`modals.${type}.anchor`)} open={toggle} />
       </Text>

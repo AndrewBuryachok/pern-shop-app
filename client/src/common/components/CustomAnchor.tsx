@@ -11,7 +11,7 @@ export default function CustomAnchor(props: Props) {
       component='button'
       type='button'
       onClick={props.open}
-      size='xs'
+      size='sm'
       color='dimmed'
       underline
     >
