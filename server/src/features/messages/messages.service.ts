@@ -20,6 +20,37 @@ export class MessagesService {
     private mqttService: MqttService,
   ) {}
 
+  async getMyMessages(myId: number): Promise<Message[]> {
+    const messages = await this.messagesRepository
+      .createQueryBuilder('message')
+      .where('message.userId = :myId OR message.chatId = :myId', { myId })
+      .groupBy('LEAST(message.userId, message.chatId)')
+      .addGroupBy('GREATEST(message.userId, message.chatId)')
+      .select('MAX(message.id)', 'id')
+      .getRawMany();
+    if (!messages.length) {
+      return [];
+    }
+    return this.messagesRepository
+      .createQueryBuilder('message')
+      .innerJoin('message.user', 'senderUser')
+      .innerJoin('message.chat', 'receiverUser')
+      .where('message.id IN(:...ids)', { ids: messages.map((m) => m.id) })
+      .orderBy('message.id', 'DESC')
+      .select([
+        'message.id',
+        'senderUser.id',
+        'senderUser.nick',
+        'senderUser.avatar',
+        'receiverUser.id',
+        'receiverUser.nick',
+        'receiverUser.avatar',
+        'message.text',
+        'message.createdAt',
+      ])
+      .getMany();
+  }
+
   getUserMessages(myId: number, userId: number): Promise<Message[]> {
     return this.messagesRepository
       .createQueryBuilder('message')

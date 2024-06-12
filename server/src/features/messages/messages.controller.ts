@@ -19,6 +19,11 @@ import { MyId, MyNick } from '../../common/decorators';
 export class MessagesController {
   constructor(private messagesService: MessagesService) {}
 
+  @Get('my')
+  getMyMessages(@MyId() myId: number): Promise<Message[]> {
+    return this.messagesService.getMyMessages(myId);
+  }
+
   @Get(':userId')
   getUserMessages(
     @MyId() myId: number,

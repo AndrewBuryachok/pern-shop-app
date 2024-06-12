@@ -105,6 +105,12 @@ export class UsersController {
   }
 
   @Public()
+  @Get(':nick/select')
+  selectSingleUser(@Param() { nick }: UserNickDto): Promise<User> {
+    return this.usersService.selectSingleUser(nick);
+  }
+
+  @Public()
   @Get(':nick')
   getSingleUser(@Param() { nick }: UserNickDto): Promise<User> {
     return this.usersService.getSingleUser(nick);
