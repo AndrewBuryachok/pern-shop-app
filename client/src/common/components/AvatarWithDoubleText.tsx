@@ -14,6 +14,7 @@ export default function AvatarWithDoubleText(props: Props) {
           text={props.user.nick}
           subtext={props.name}
           color={props.color}
+          bold
         />
       </div>
     </Group>

@@ -4,6 +4,7 @@ import { ActionIcon, Indicator, Menu } from '@mantine/core';
 import { hideNotification } from '@mantine/notifications';
 import { IconBell, IconPoint } from '@tabler/icons';
 import { getActiveNotifications } from '../../features/mqtt/mqtt.slice';
+import DoubleText from './DoubleText';
 import { parseTime } from '../utils';
 import { notificationToTab } from '../enums';
 
@@ -48,9 +49,12 @@ export default function NotificationsMenu() {
             }?id=${id}`.replace('/main', '')}
             onClick={() => hideNotification(key)}
           >
-            {nick} {t(`notifications.${page}.${action}`)}
-            <br />
-            {parseTime(new Date(date))}
+            <DoubleText
+              text={nick + ' ' + t(`notifications.${page}.${action}`)}
+              subtext={parseTime(new Date(date))}
+              bold
+              dimmed
+            />
           </Menu.Item>
         ))}
       </Menu.Dropdown>

@@ -20,10 +20,10 @@ export default function ViewsTimeline(props: Props) {
       {props.data?.map((view) => (
         <Timeline.Item
           key={view.id}
-          title={<SingleText text={view.user.nick} />}
+          title={<SingleText text={view.user.nick} bold />}
           bullet={<CustomAvatar {...view.user} />}
         >
-          <SingleText text={parseTime(view.createdAt)} />
+          <SingleText text={parseTime(view.createdAt)} dimmed />
         </Timeline.Item>
       ))}
     </Timeline>

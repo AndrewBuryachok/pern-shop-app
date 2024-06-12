@@ -19,7 +19,7 @@ export default function ThingImageWithText(props: Props) {
         <SingleText text={text} />
       ) : (
         <div>
-          <DoubleText text={text} subtext={props.description} />
+          <DoubleText text={text} subtext={props.description} dimmed />
         </div>
       )}
     </Group>

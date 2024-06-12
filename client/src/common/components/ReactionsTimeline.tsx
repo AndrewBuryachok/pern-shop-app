@@ -21,11 +21,11 @@ export default function ReactionsTimeline(props: Props) {
       {props.data?.map((reaction) => (
         <Timeline.Item
           key={reaction.id}
-          title={<SingleText text={reaction.user.nick} />}
+          title={<SingleText text={reaction.user.nick} bold />}
           bullet={<CustomAvatar {...reaction.user} />}
         >
           <ReactionBadge {...reaction} />
-          <SingleText text={parseTime(reaction.createdAt)} />
+          <SingleText text={parseTime(reaction.createdAt)} dimmed />
         </Timeline.Item>
       ))}
     </Timeline>

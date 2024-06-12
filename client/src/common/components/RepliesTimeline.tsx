@@ -25,14 +25,14 @@ export default function RepliesTimeline(props: Props) {
       {props.data?.map((reply) => (
         <Timeline.Item
           key={reply.id}
-          title={<SingleText text={reply.user.nick} />}
+          title={<SingleText text={reply.user.nick} bold />}
           bullet={<CustomAvatar {...reply.user} />}
         >
           {reply.reply && <ReplyAvatarWithText {...reply.reply} />}
           <Group spacing={0} position='apart' align='flex-start' noWrap>
             <div>
               <CustomHighlight text={reply.text} />
-              <SingleText text={parseTime(reply.createdAt)} />
+              <SingleText text={parseTime(reply.createdAt)} dimmed />
             </div>
             <CustomActions data={reply} actions={props.actions} />
           </Group>

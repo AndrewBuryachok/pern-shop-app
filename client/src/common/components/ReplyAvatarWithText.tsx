@@ -11,7 +11,7 @@ export default function ReplyAvatarWithText(props: Props) {
     <Group spacing={8} align='flex-start' noWrap>
       <CustomAvatar {...props.user} />
       <div>
-        <SingleText text={props.user.nick} />
+        <SingleText text={props.user.nick} bold />
         <CustomHighlight text={props.text} />
       </div>
     </Group>

@@ -9,7 +9,7 @@ export default function CustomAvatarWithText(props: Props) {
   return (
     <Group spacing={8}>
       <CustomAvatar {...props} />
-      <SingleText text={props.nick} />
+      <SingleText text={props.nick} bold />
     </Group>
   );
 }

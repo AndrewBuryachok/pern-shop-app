@@ -23,7 +23,7 @@ export const CardsItem = forwardRef<HTMLDivElement, Props>(
           avatar={props.avatar}
         />
         <div>
-          <SingleText text={props.nick} />
+          <SingleText text={props.nick} bold />
           <Group spacing={8}>
             <SingleText text={props.name} color={+props.color} />
             {props.balance !== undefined && <PriceText price={props.balance} />}

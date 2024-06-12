@@ -1,4 +1,4 @@
-import i18next, { t } from 'i18next';
+import { t } from 'i18next';
 import { MdCard } from '../../features/cards/card.model';
 import { Place } from '../../features/places/place.model';
 import { MdStore } from '../../features/stores/store.model';
@@ -22,12 +22,8 @@ export const parseCoordinates = ({ x, y }: Coordinates) =>
     : Color.YELLOW;
 
 export const parseDate = (date: Date) => ({
-  date: new Date(date).toLocaleDateString(i18next.language, {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-  }),
-  time: new Date(date).toLocaleTimeString(i18next.language),
+  date: new Date(date).toLocaleDateString('uk'),
+  time: new Date(date).toLocaleTimeString('uk'),
 });
 
 export const parseTime = (date?: Date) => {

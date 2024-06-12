@@ -9,7 +9,7 @@ export default function AvatarWithSingleText(props: Props) {
   return (
     <Group spacing={8}>
       <LinkedAvatar {...props} />
-      <SingleText text={props.nick} />
+      <SingleText text={props.nick} bold />
     </Group>
   );
 }
