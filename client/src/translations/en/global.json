@@ -40,6 +40,8 @@
     "users": "Users",
     "friends": "Friends",
     "subscribers": "Subscribers",
+    "chat": "Chat",
+    "chats": "Chats",
     "reports": "Reports",
     "articles": "Articles",
     "likes": "Likes",
@@ -166,6 +168,8 @@
     "remove": "Remove",
     "untake": "Untake",
     "message": "Send Message",
+    "friend": "Add to Friends",
+    "unfriend": "Remove from Friends",
     "subscribe": "Subscribe",
     "unsubscribe": "Unsubscribe",
     "view": "View"
@@ -332,8 +336,7 @@
     "message": "Operation completed successfully",
     "notification": "Notification",
     "users": {
-      "created": "registered",
-      "messaged": "sent you message"
+      "created": "registered"
     },
     "friends": {
       "invited": "invited you in friends",
@@ -345,6 +348,9 @@
     "subscribers": {
       "added": "subscribed on you",
       "removed": "unsubscribed from you"
+    },
+    "chats": {
+      "messaged": "надістав вам повідомлення"
     },
     "reports": {
       "created": "created report",

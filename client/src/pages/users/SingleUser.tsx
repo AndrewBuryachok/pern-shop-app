@@ -10,9 +10,9 @@ export default function SingleUser() {
 
   const { nick } = useParams();
 
-  const { data: user } = useGetSingleUserQuery(nick!);
-
   useDocumentTitle(t('navbar.user') + ' ' + nick);
+
+  const { data: user } = useGetSingleUserQuery(nick!);
 
   return user ? <UserProfile data={user} /> : <CustomLoader />;
 }

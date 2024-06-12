@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 import {
   ActionIcon,
   Button,
@@ -23,7 +24,14 @@ import {
 } from '@tabler/icons';
 import { ExtUser } from './user.model';
 import { getCurrentUser } from '../auth/auth.slice';
-import { openAuthModal } from '../auth/AuthModal';
+import {
+  useAddFriendMutation,
+  useRemoveFriendMutation,
+} from '../friends/friends.api';
+import {
+  useAddSubscriberMutation,
+  useRemoveSubscriberMutation,
+} from '../subscribers/subscribers.api';
 import ProfileAvatar from '../../common/components/ProfileAvatar';
 import LinkedAvatar from '../../common/components/LinkedAvatar';
 import RolesBadge from '../../common/components/RolesBadge';
@@ -32,11 +40,11 @@ import SingleText from '../../common/components/SingleText';
 import DateText from '../../common/components/DateText';
 import PlaceText from '../../common/components/PlaceText';
 import CustomAnchor from '../../common/components/CustomAnchor';
+import { openAuthModal } from '../auth/AuthModal';
 import { editUserProfileAction } from './EditUserProfileModal';
 import { openViewUserFriendsModal } from './ViewUserFriendsModal';
 import { openViewUserSubscribersModal } from './ViewUserSubscribersModal';
 import { openViewUserRatersModal } from './ViewUserRatersModal';
-import { openViewUserMessagesModal } from './ViewUserMessagesModal';
 import { colors } from '../../common/constants';
 
 type Props = {
@@ -47,6 +55,30 @@ export default function UserProfile({ data: user }: Props) {
   const [t] = useTranslation();
 
   const me = getCurrentUser();
+
+  const [addFriend] = useAddFriendMutation();
+
+  const handleFriend = async () => {
+    await addFriend({ userId: user.id });
+  };
+
+  const [removeFriend] = useRemoveFriendMutation();
+
+  const handleUnfriend = async () => {
+    await removeFriend({ userId: user.id });
+  };
+
+  const [addSubscriber] = useAddSubscriberMutation();
+
+  const handleSubscribe = async () => {
+    await addSubscriber({ userId: user.id });
+  };
+
+  const [removeSubscriber] = useRemoveSubscriberMutation();
+
+  const handleUnsubscribe = async () => {
+    await removeSubscriber({ userId: user.id });
+  };
 
   const contacts = [
     {
@@ -155,13 +187,38 @@ export default function UserProfile({ data: user }: Props) {
                     </Button>
                   ),
               )}
+              <Button component={Link} to={`/chats/${user.nick}`} compact>
+                {t('actions.message')}
+              </Button>
               <Button
-                onClick={() =>
-                  me ? openViewUserMessagesModal(user) : openAuthModal()
+                onClick={
+                  me
+                    ? user.friends.find((u) => u.id === me.id)
+                      ? handleUnfriend
+                      : handleFriend
+                    : openAuthModal
                 }
+                color={user.friends.find((u) => u.id === me?.id) && 'gray'}
                 compact
               >
-                {t('actions.message')}
+                {user.friends.find((u) => u.id === me?.id)
+                  ? t('actions.unfriend')
+                  : t('actions.friend')}
+              </Button>
+              <Button
+                onClick={
+                  me
+                    ? user.subscribers.find((u) => u.id === me.id)
+                      ? handleUnsubscribe
+                      : handleSubscribe
+                    : openAuthModal
+                }
+                color={user.subscribers.find((u) => u.id === me?.id) && 'gray'}
+                compact
+              >
+                {user.subscribers.find((u) => u.id === me?.id)
+                  ? t('actions.unsubscribe')
+                  : t('actions.subscribe')}
               </Button>
             </Stack>
           </Paper>

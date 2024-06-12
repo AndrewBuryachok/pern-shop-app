@@ -14,6 +14,7 @@ import {
   IconFriends,
   IconHome,
   IconMail,
+  IconMailbox,
   IconMap,
   IconNews,
   IconReceipt,
@@ -53,6 +54,11 @@ export default function CustomNavbar(props: Props) {
       route: 'subscribers',
       icon: IconMail,
       sub: '/top',
+    },
+    {
+      route: 'chats',
+      icon: IconMailbox,
+      sub: '/my',
     },
     {
       route: 'reports',

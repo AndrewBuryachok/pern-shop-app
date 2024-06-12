@@ -1,6 +1,6 @@
 export const notificationToTab = [
   'created users main',
-  'messaged users main',
+  'messaged chats main',
   'invited friends received',
   'approved friends my',
   'canceled friends received',

@@ -1,5 +1,5 @@
 import { emptyApi } from '../../app/empty.api';
-import { Message } from './message.model';
+import { Message, SmMessage } from './message.model';
 import {
   CreateMessageDto,
   DeleteMessageDto,
@@ -8,11 +8,17 @@ import {
 
 export const messagesApi = emptyApi.injectEndpoints({
   endpoints: (build) => ({
+    getMyMessages: build.query<SmMessage[], void>({
+      query: () => ({
+        url: '/messages/my',
+      }),
+      providesTags: ['Auth', 'Message'],
+    }),
     getUserMessages: build.query<Message[], number>({
       query: (userId) => ({
         url: `/messages/${userId}`,
       }),
-      providesTags: ['Message'],
+      providesTags: ['Auth', 'Message'],
     }),
     createMessage: build.mutation<void, CreateMessageDto>({
       query: (dto) => ({
@@ -41,6 +47,7 @@ export const messagesApi = emptyApi.injectEndpoints({
 });
 
 export const {
+  useGetMyMessagesQuery,
   useGetUserMessagesQuery,
   useCreateMessageMutation,
   useEditMessageMutation,

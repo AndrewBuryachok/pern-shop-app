@@ -38,15 +38,19 @@ export default function NotificationsMenu() {
             key={key}
             icon={<IconPoint size={16} />}
             component={Link}
-            to={`/${page}/${
-              notificationToTab
-                .find(
-                  (notification) =>
-                    notification.split(' ')[0] === action &&
-                    notification.split(' ')[1] === page,
-                )!
-                .split(' ')[2]
-            }?id=${id}`.replace('/main', '')}
+            to={
+              page === 'chats'
+                ? `/${page}/${nick}`
+                : `/${page}/${
+                    notificationToTab
+                      .find(
+                        (notification) =>
+                          notification.split(' ')[0] === action &&
+                          notification.split(' ')[1] === page,
+                      )!
+                      .split(' ')[2]
+                  }?id=${id}`.replace('/main', '')
+            }
             onClick={() => hideNotification(key)}
           >
             <DoubleText
