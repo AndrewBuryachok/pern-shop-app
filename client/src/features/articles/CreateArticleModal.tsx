@@ -88,31 +88,39 @@ export default function CreateArticleModal({ hasRole }: Props) {
       <Textarea
         label={t('columns.image')}
         placeholder={t('columns.image')}
+        autosize
         maxLength={MAX_LINK_LENGTH}
         {...form.getInputProps('image1')}
       />
-      <CustomImage image={image1} />
-      <Textarea
-        label={t('columns.image')}
-        placeholder={t('columns.image')}
-        maxLength={MAX_LINK_LENGTH}
-        {...form.getInputProps('image2')}
-      />
-      <CustomImage image={image2} />
-      <Textarea
-        label={t('columns.image')}
-        placeholder={t('columns.image')}
-        maxLength={MAX_LINK_LENGTH}
-        {...form.getInputProps('image3')}
-      />
-      <CustomImage image={image3} />
+      {image1 && <CustomImage image={image1} />}
+      {image1 && (
+        <Textarea
+          label={t('columns.image')}
+          placeholder={t('columns.image')}
+          autosize
+          maxLength={MAX_LINK_LENGTH}
+          {...form.getInputProps('image2')}
+        />
+      )}
+      {image2 && <CustomImage image={image2} />}
+      {image2 && (
+        <Textarea
+          label={t('columns.image')}
+          placeholder={t('columns.image')}
+          autosize
+          maxLength={MAX_LINK_LENGTH}
+          {...form.getInputProps('image3')}
+        />
+      )}
+      {image3 && <CustomImage image={image3} />}
       <Textarea
         label={t('columns.video')}
         placeholder={t('columns.video')}
+        autosize
         maxLength={MAX_LINK_LENGTH}
         {...form.getInputProps('video')}
       />
-      <CustomVideo video={video} />
+      {video && <CustomVideo video={video} />}
     </CustomForm>
   );
 }

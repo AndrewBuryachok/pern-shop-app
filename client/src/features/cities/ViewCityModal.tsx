@@ -26,12 +26,16 @@ export default function ViewCityModal({ data: city }: Props) {
         readOnly
       />
       <TextInput label={t('columns.city')} value={city.name} readOnly />
-      <Input.Wrapper label={t('columns.image')}>
-        <CustomImage image={city.image} />
-      </Input.Wrapper>
-      <Input.Wrapper label={t('columns.video')}>
-        <CustomVideo video={city.video} />
-      </Input.Wrapper>
+      {city.image && (
+        <Input.Wrapper label={t('columns.image')}>
+          <CustomImage image={city.image} />
+        </Input.Wrapper>
+      )}
+      {city.video && (
+        <Input.Wrapper label={t('columns.video')}>
+          <CustomVideo video={city.video} />
+        </Input.Wrapper>
+      )}
       <Textarea
         label={t('columns.description')}
         value={city.description || '-'}

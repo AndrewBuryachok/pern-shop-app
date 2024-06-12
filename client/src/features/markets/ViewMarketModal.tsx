@@ -26,12 +26,16 @@ export default function ViewMarketModal({ data: market }: Props) {
         readOnly
       />
       <TextInput label={t('columns.market')} value={market.name} readOnly />
-      <Input.Wrapper label={t('columns.image')}>
-        <CustomImage image={market.image} />
-      </Input.Wrapper>
-      <Input.Wrapper label={t('columns.video')}>
-        <CustomVideo video={market.video} />
-      </Input.Wrapper>
+      {market.image && (
+        <Input.Wrapper label={t('columns.image')}>
+          <CustomImage image={market.image} />
+        </Input.Wrapper>
+      )}
+      {market.video && (
+        <Input.Wrapper label={t('columns.video')}>
+          <CustomVideo video={market.video} />
+        </Input.Wrapper>
+      )}
       <Textarea
         label={t('columns.description')}
         value={market.description || '-'}

@@ -26,12 +26,16 @@ export default function ViewShopModal({ data: shop }: Props) {
         readOnly
       />
       <TextInput label={t('columns.shop')} value={shop.name} readOnly />
-      <Input.Wrapper label={t('columns.image')}>
-        <CustomImage image={shop.image} />
-      </Input.Wrapper>
-      <Input.Wrapper label={t('columns.video')}>
-        <CustomVideo video={shop.video} />
-      </Input.Wrapper>
+      {shop.image && (
+        <Input.Wrapper label={t('columns.image')}>
+          <CustomImage image={shop.image} />
+        </Input.Wrapper>
+      )}
+      {shop.video && (
+        <Input.Wrapper label={t('columns.video')}>
+          <CustomVideo video={shop.video} />
+        </Input.Wrapper>
+      )}
       <Textarea
         label={t('columns.description')}
         value={shop.description || '-'}

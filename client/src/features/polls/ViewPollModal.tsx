@@ -36,12 +36,16 @@ export default function ViewPollModal({ data: poll }: Props) {
         value={t(`constants.results.${results[poll.result - 1]}`)}
         readOnly
       />
-      <Input.Wrapper label={t('columns.image')}>
-        <CustomImage image={poll.image} />
-      </Input.Wrapper>
-      <Input.Wrapper label={t('columns.video')}>
-        <CustomVideo video={poll.video} />
-      </Input.Wrapper>
+      {poll.image && (
+        <Input.Wrapper label={t('columns.image')}>
+          <CustomImage image={poll.image} />
+        </Input.Wrapper>
+      )}
+      {poll.video && (
+        <Input.Wrapper label={t('columns.video')}>
+          <CustomVideo video={poll.video} />
+        </Input.Wrapper>
+      )}
       <TextInput
         label={t('columns.created')}
         value={parseTime(poll.createdAt)}

@@ -60,12 +60,16 @@ export default function PlaceModal({ data: place }: Props) {
         readOnly
       />
       <TextInput label={t('columns.place')} value={place.name} readOnly />
-      <Input.Wrapper label={t('columns.image')}>
-        <CustomImage image={place.image} />
-      </Input.Wrapper>
-      <Input.Wrapper label={t('columns.video')}>
-        <CustomVideo video={place.video} />
-      </Input.Wrapper>
+      {place.image && (
+        <Input.Wrapper label={t('columns.image')}>
+          <CustomImage image={place.image} />
+        </Input.Wrapper>
+      )}
+      {place.video && (
+        <Input.Wrapper label={t('columns.video')}>
+          <CustomVideo video={place.video} />
+        </Input.Wrapper>
+      )}
       <Textarea
         label={t('columns.description')}
         value={place.description || '-'}

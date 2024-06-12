@@ -77,17 +77,19 @@ export default function EditPollModal({ data: poll }: Props) {
       <Textarea
         label={t('columns.image')}
         placeholder={t('columns.image')}
+        autosize
         maxLength={MAX_LINK_LENGTH}
         {...form.getInputProps('image')}
       />
-      <CustomImage image={image} />
+      {image && <CustomImage image={image} />}
       <Textarea
         label={t('columns.video')}
         placeholder={t('columns.video')}
+        autosize
         maxLength={MAX_LINK_LENGTH}
         {...form.getInputProps('video')}
       />
-      <CustomVideo video={video} />
+      {video && <CustomVideo video={video} />}
     </CustomForm>
   );
 }

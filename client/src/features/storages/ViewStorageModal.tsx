@@ -26,12 +26,16 @@ export default function ViewStorageModal({ data: storage }: Props) {
         readOnly
       />
       <TextInput label={t('columns.storage')} value={storage.name} readOnly />
-      <Input.Wrapper label={t('columns.image')}>
-        <CustomImage image={storage.image} />
-      </Input.Wrapper>
-      <Input.Wrapper label={t('columns.video')}>
-        <CustomVideo video={storage.video} />
-      </Input.Wrapper>
+      {storage.image && (
+        <Input.Wrapper label={t('columns.image')}>
+          <CustomImage image={storage.image} />
+        </Input.Wrapper>
+      )}
+      {storage.video && (
+        <Input.Wrapper label={t('columns.video')}>
+          <CustomVideo video={storage.video} />
+        </Input.Wrapper>
+      )}
       <Textarea
         label={t('columns.description')}
         value={storage.description || '-'}

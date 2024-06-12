@@ -31,18 +31,26 @@ export default function ViewArticleModal({ data: article }: Props) {
         autosize
         readOnly
       />
-      <Input.Wrapper label={t('columns.image')}>
-        <CustomImage image={article.image1} />
-      </Input.Wrapper>
-      <Input.Wrapper label={t('columns.image')}>
-        <CustomImage image={article.image2} />
-      </Input.Wrapper>
-      <Input.Wrapper label={t('columns.image')}>
-        <CustomImage image={article.image3} />
-      </Input.Wrapper>
-      <Input.Wrapper label={t('columns.video')}>
-        <CustomVideo video={article.video} />
-      </Input.Wrapper>
+      {article.image1 && (
+        <Input.Wrapper label={t('columns.image')}>
+          <CustomImage image={article.image1} />
+        </Input.Wrapper>
+      )}
+      {article.image2 && (
+        <Input.Wrapper label={t('columns.image')}>
+          <CustomImage image={article.image2} />
+        </Input.Wrapper>
+      )}
+      {article.image3 && (
+        <Input.Wrapper label={t('columns.image')}>
+          <CustomImage image={article.image3} />
+        </Input.Wrapper>
+      )}
+      {article.video && (
+        <Input.Wrapper label={t('columns.video')}>
+          <CustomVideo video={article.video} />
+        </Input.Wrapper>
+      )}
       <TextInput
         label={t('columns.created')}
         value={parseTime(article.createdAt)}

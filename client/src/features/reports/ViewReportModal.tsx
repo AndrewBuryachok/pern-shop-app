@@ -31,18 +31,26 @@ export default function ViewReportModal({ data: report }: Props) {
         autosize
         readOnly
       />
-      <Input.Wrapper label={t('columns.image')}>
-        <CustomImage image={report.image1} />
-      </Input.Wrapper>
-      <Input.Wrapper label={t('columns.image')}>
-        <CustomImage image={report.image2} />
-      </Input.Wrapper>
-      <Input.Wrapper label={t('columns.image')}>
-        <CustomImage image={report.image3} />
-      </Input.Wrapper>
-      <Input.Wrapper label={t('columns.video')}>
-        <CustomVideo video={report.video} />
-      </Input.Wrapper>
+      {report.image1 && (
+        <Input.Wrapper label={t('columns.image')}>
+          <CustomImage image={report.image1} />
+        </Input.Wrapper>
+      )}
+      {report.image2 && (
+        <Input.Wrapper label={t('columns.image')}>
+          <CustomImage image={report.image2} />
+        </Input.Wrapper>
+      )}
+      {report.image3 && (
+        <Input.Wrapper label={t('columns.image')}>
+          <CustomImage image={report.image3} />
+        </Input.Wrapper>
+      )}
+      {report.video && (
+        <Input.Wrapper label={t('columns.video')}>
+          <CustomVideo video={report.video} />
+        </Input.Wrapper>
+      )}
       <TextInput
         label={t('columns.created')}
         value={parseTime(report.createdAt)}
