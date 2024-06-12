@@ -10,14 +10,14 @@ import { parseTime } from '../utils';
 
 type Props = {
   data?: Reply[];
-  isLoading: boolean;
+  isFetching: boolean;
   actions: IAction<Reply>[];
 };
 
 export default function RepliesTimeline(props: Props) {
   return (
     <Timeline bulletSize={32}>
-      {props.isLoading && (
+      {props.isFetching && (
         <Timeline.Item title={<Skeleton w={64} h={16} />}>
           <Skeleton w={128} h={16} />
         </Timeline.Item>

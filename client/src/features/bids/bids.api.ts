@@ -2,6 +2,7 @@ import { emptyApi } from '../../app/empty.api';
 import { IRequest, IResponse } from '../../common/interfaces';
 import { Bid } from './bid.model';
 import { CreateBidDto } from './bid.dto';
+import { lotsApi } from '../lots/lots.api';
 import { getQuery } from '../../common/utils';
 
 export const bidsApi = emptyApi.injectEndpoints({
@@ -36,7 +37,27 @@ export const bidsApi = emptyApi.injectEndpoints({
         method: 'POST',
         body: dto,
       }),
-      invalidatesTags: ['Bid', 'Lot', 'Card'],
+      invalidatesTags: ['Bid', 'Card'],
+      onQueryStarted(dto, { dispatch, queryFulfilled, getState }) {
+        const endpoints = lotsApi.util.selectInvalidatedBy(getState(), ['Lot']);
+        endpoints
+          .filter((endpoint) => endpoint.endpointName === 'getMainLots')
+          .forEach((endpoint) => {
+            const patchResult = dispatch(
+              lotsApi.util.updateQueryData(
+                'getMainLots',
+                endpoint.originalArgs,
+                (draft) => {
+                  const lot = draft.result.find((lot) => lot.id === dto.lotId);
+                  if (lot) {
+                    lot.price = dto.price;
+                  }
+                },
+              ),
+            );
+            queryFulfilled.catch(patchResult.undo);
+          });
+      },
     }),
   }),
 });

@@ -6,13 +6,13 @@ import { parseTime } from '../utils';
 
 type Props = {
   data?: View[];
-  isLoading: boolean;
+  isFetching: boolean;
 };
 
 export default function ViewsTimeline(props: Props) {
   return (
     <Timeline bulletSize={32}>
-      {props.isLoading && (
+      {props.isFetching && (
         <Timeline.Item title={<Skeleton w={64} h={16} />}>
           <Skeleton w={128} h={16} />
         </Timeline.Item>

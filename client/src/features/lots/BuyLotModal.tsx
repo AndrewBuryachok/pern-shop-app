@@ -143,7 +143,7 @@ export const buyLotFactory = (hasRole: boolean) => ({
       title: t('actions.buy') + ' ' + t('modals.lots'),
       children: <BuyLotModal data={lot} hasRole={hasRole} />,
     }),
-  disable: () => false,
+  disable: (lot: Lot) => !!lot.completedAt,
   color: Color.GREEN,
 });
 

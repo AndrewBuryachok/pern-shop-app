@@ -25,20 +25,45 @@ export default function Map() {
     { x1: '50%', x2: '50%', y1: '50%', y2: '0%' },
   ];
 
-  const { data: cities, isLoading: isLoading1 } = useGetMainCitiesQuery({
+  const {
+    data: cities,
+    isFetching: isFetching1,
+    refetch: refetch1,
+  } = useGetMainCitiesQuery({
     page: 0,
   });
-  const { data: shops, isLoading: isLoading2 } = useGetMainShopsQuery({
+  const {
+    data: shops,
+    isFetching: isFetching2,
+    refetch: refetch2,
+  } = useGetMainShopsQuery({
     page: 0,
   });
-  const { data: markets, isLoading: isLoading3 } = useGetMainMarketsQuery({
+  const {
+    data: markets,
+    isFetching: isFetching3,
+    refetch: refetch3,
+  } = useGetMainMarketsQuery({
     page: 0,
   });
-  const { data: storages, isLoading: isLoading4 } = useGetMainStoragesQuery({
+  const {
+    data: storages,
+    isFetching: isFetching4,
+    refetch: refetch4,
+  } = useGetMainStoragesQuery({
     page: 0,
   });
 
-  const isLoading = isLoading1 || isLoading2 || isLoading3 || isLoading4;
+  const isFetching = isFetching1 || isFetching2 || isFetching3 || isFetching4;
+
+  const refetch = () => {
+    if (!isFetching) {
+      refetch1();
+      refetch2();
+      refetch3();
+      refetch4();
+    }
+  };
 
   return (
     <div ref={ref} style={{ width: '100%', height: '100%' }}>
@@ -49,7 +74,7 @@ export default function Map() {
               <line
                 key={index}
                 {...line}
-                stroke={theme.colors[isLoading ? 'gray' : colors[index]][7]}
+                stroke={theme.colors[isFetching ? 'gray' : colors[index]][7]}
                 strokeWidth={2}
               ></line>
             ))}
@@ -57,9 +82,11 @@ export default function Map() {
               cx='50%'
               cy='50%'
               r={8}
-              fill={theme.colors.violet[7]}
+              fill={isFetching ? 'gray' : theme.colors.violet[7]}
+              cursor={isFetching ? 'not-allowed' : 'pointer'}
+              onClick={refetch}
             ></circle>
-            {!isLoading &&
+            {!isFetching &&
               [
                 cities?.result.map((city) => ({
                   ...city,

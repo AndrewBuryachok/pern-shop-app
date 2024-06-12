@@ -30,3 +30,8 @@ export interface ViewPollDto {
 export interface VotePollDto extends CreateReactionDto {
   pollId: number;
 }
+
+export interface ExtVotePollDto extends VotePollDto {
+  upVoted: boolean;
+  downVoted: boolean;
+}

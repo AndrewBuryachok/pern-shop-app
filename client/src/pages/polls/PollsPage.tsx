@@ -45,8 +45,9 @@ export default function PollsPage() {
   }[tab];
 
   const actions = {
+    main: [editPollAction, deletePollAction],
     my: [editPollAction, deletePollAction],
-    all: [editPollAction, completePollAction, deletePollAction],
+    all: [completePollAction, editPollAction, deletePollAction],
   }[tab];
 
   return (

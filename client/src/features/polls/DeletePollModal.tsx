@@ -5,13 +5,15 @@ import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { Poll } from './poll.model';
+import { getCurrentUser } from '../auth/auth.slice';
 import { useDeletePollMutation } from './polls.api';
 import { DeletePollDto } from './poll.dto';
 import CustomForm from '../../common/components/CustomForm';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import CustomImage from '../../common/components/CustomImage';
 import CustomVideo from '../../common/components/CustomVideo';
-import { Color, marks } from '../../common/constants';
+import { isUserNotHasRole } from '../../common/utils';
+import { Color, marks, Role } from '../../common/constants';
 
 type Props = IModal<Poll>;
 
@@ -69,6 +71,12 @@ export const deletePollAction = {
       title: t('actions.delete') + ' ' + t('modals.polls'),
       children: <DeletePollModal data={poll} />,
     }),
-  disable: (poll: Poll) => !!poll.completedAt,
+  disable: (poll: Poll) => {
+    const user = getCurrentUser();
+    return (
+      (isUserNotHasRole(Role.PRESIDENT) && poll.user.id !== user?.id) ||
+      !!poll.completedAt
+    );
+  },
   color: Color.RED,
 };

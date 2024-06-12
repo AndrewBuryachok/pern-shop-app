@@ -143,7 +143,7 @@ export const buyProductFactory = (hasRole: boolean) => ({
       title: t('actions.buy') + ' ' + t('modals.products'),
       children: <BuyProductModal data={product} hasRole={hasRole} />,
     }),
-  disable: () => false,
+  disable: (product: Product) => !product.amount || !!product.completedAt,
   color: Color.GREEN,
 });
 

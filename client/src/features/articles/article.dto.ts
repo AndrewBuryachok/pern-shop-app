@@ -27,3 +27,8 @@ export interface ViewArticleDto {
 export interface LikeArticleDto extends CreateReactionDto {
   articleId: number;
 }
+
+export interface ExtLikeArticleDto extends LikeArticleDto {
+  upLiked: boolean;
+  downLiked: boolean;
+}

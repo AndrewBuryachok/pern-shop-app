@@ -10,8 +10,8 @@ import {
   DeletePollDto,
   EditPollDto,
   ExtCreatePollDto,
+  ExtVotePollDto,
   ViewPollDto,
-  VotePollDto,
 } from './poll.dto';
 import { getQuery } from '../../common/utils';
 
@@ -21,31 +21,31 @@ export const pollsApi = emptyApi.injectEndpoints({
       query: (req) => ({
         url: `/polls?${getQuery(req)}`,
       }),
-      providesTags: ['Poll', 'Vote', 'Discussion'],
+      providesTags: ['Poll'],
     }),
     getMyPolls: build.query<IResponse<Poll>, IRequest>({
       query: (req) => ({
         url: `/polls/my?${getQuery(req)}`,
       }),
-      providesTags: ['Auth', 'Poll', 'Vote', 'Discussion'],
+      providesTags: ['Auth', 'Poll'],
     }),
     getVotedPolls: build.query<IResponse<Poll>, IRequest>({
       query: (req) => ({
         url: `/polls/voted?${getQuery(req)}`,
       }),
-      providesTags: ['Auth', 'Poll', 'Vote', 'Discussion'],
+      providesTags: ['Auth', 'Poll', 'Vote'],
     }),
     getDiscussedPolls: build.query<IResponse<Poll>, IRequest>({
       query: (req) => ({
         url: `/polls/discussed?${getQuery(req)}`,
       }),
-      providesTags: ['Auth', 'Poll', 'Vote', 'Discussion'],
+      providesTags: ['Auth', 'Poll', 'Discussion'],
     }),
     getAllPolls: build.query<IResponse<Poll>, IRequest>({
       query: (req) => ({
         url: `/polls/all?${getQuery(req)}`,
       }),
-      providesTags: ['Auth', 'Poll', 'Vote', 'Discussion'],
+      providesTags: ['Auth', 'Poll'],
     }),
     selectViewedPolls: build.query<number[], void>({
       query: () => ({
@@ -122,14 +122,116 @@ export const pollsApi = emptyApi.injectEndpoints({
         method: 'POST',
       }),
       invalidatesTags: ['PollView'],
+      onQueryStarted(dto, { dispatch, queryFulfilled, getState }) {
+        const endpoints = pollsApi.util.selectInvalidatedBy(getState(), [
+          'Poll',
+        ]);
+        endpoints
+          .filter((endpoint) => endpoint.endpointName === 'getMainPolls')
+          .forEach((endpoint) => {
+            const patchResult = dispatch(
+              pollsApi.util.updateQueryData(
+                'getMainPolls',
+                endpoint.originalArgs,
+                (draft) => {
+                  const poll = draft.result.find(
+                    (poll) => poll.id === dto.pollId,
+                  );
+                  if (poll) {
+                    poll.views++;
+                  }
+                },
+              ),
+            );
+            queryFulfilled.catch(patchResult.undo);
+          });
+        const patchResult = dispatch(
+          pollsApi.util.updateQueryData(
+            'selectViewedPolls',
+            undefined,
+            (draft) => {
+              draft.push(dto.pollId);
+            },
+          ),
+        );
+        queryFulfilled.catch(patchResult.undo);
+      },
     }),
-    votePoll: build.mutation<void, VotePollDto>({
+    votePoll: build.mutation<void, ExtVotePollDto>({
       query: ({ pollId, ...dto }) => ({
         url: `/polls/${pollId}/votes`,
         method: 'POST',
         body: dto,
       }),
       invalidatesTags: ['Vote'],
+      onQueryStarted(dto, { dispatch, queryFulfilled, getState }) {
+        const endpoints = pollsApi.util.selectInvalidatedBy(getState(), [
+          'Poll',
+        ]);
+        endpoints
+          .filter((endpoint) => endpoint.endpointName === 'getMainPolls')
+          .forEach((endpoint) => {
+            const patchResult = dispatch(
+              pollsApi.util.updateQueryData(
+                'getMainPolls',
+                endpoint.originalArgs,
+                (draft) => {
+                  const poll = draft.result.find(
+                    (poll) => poll.id === dto.pollId,
+                  );
+                  if (poll) {
+                    if (dto.upVoted || dto.downVoted) {
+                      if (dto.upVoted === dto.type) {
+                        if (dto.type) {
+                          poll.upVotes--;
+                        } else {
+                          poll.downVotes--;
+                        }
+                      } else {
+                        if (dto.type) {
+                          poll.upVotes++;
+                          poll.downVotes--;
+                        } else {
+                          poll.downVotes++;
+                          poll.upVotes--;
+                        }
+                      }
+                    } else {
+                      if (dto.type) {
+                        poll.upVotes++;
+                      } else {
+                        poll.downVotes++;
+                      }
+                    }
+                  }
+                },
+              ),
+            );
+            queryFulfilled.catch(patchResult.undo);
+          });
+        const patchResult = dispatch(
+          pollsApi.util.updateQueryData(
+            'selectVotedPolls',
+            undefined,
+            (draft) => {
+              if (dto.upVoted || dto.downVoted) {
+                if (dto.upVoted === dto.type) {
+                  draft = draft.filter((poll) => poll.id === dto.pollId);
+                } else {
+                  draft.find((poll) => poll.id === dto.pollId)!.vote.type =
+                    dto.type;
+                }
+              } else {
+                draft.push({
+                  id: dto.pollId,
+                  vote: { id: 0, type: dto.type },
+                });
+              }
+            },
+          ),
+        );
+        queryFulfilled.catch(patchResult.undo);
+      },
     }),
   }),
 });

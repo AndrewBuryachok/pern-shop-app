@@ -8,7 +8,7 @@ import {
   CreateReportDto,
   DeleteReportDto,
   EditReportDto,
-  AttitudeReportDto,
+  ExtAttitudeReportDto,
   ViewReportDto,
 } from './report.dto';
 import { getQuery } from '../../common/utils';
@@ -19,43 +19,43 @@ export const reportsApi = emptyApi.injectEndpoints({
       query: (req) => ({
         url: `/reports?${getQuery(req)}`,
       }),
-      providesTags: ['Report', 'Attitude', 'Annotation'],
+      providesTags: ['Report'],
     }),
     getServerReports: build.query<IResponse<Report>, IRequest>({
       query: (req) => ({
         url: `/reports/server?${getQuery(req)}`,
       }),
-      providesTags: ['Report', 'Attitude', 'Annotation'],
+      providesTags: ['Report'],
     }),
     getSiteReports: build.query<IResponse<Report>, IRequest>({
       query: (req) => ({
         url: `/reports/site?${getQuery(req)}`,
       }),
-      providesTags: ['Report', 'Attitude', 'Annotation'],
+      providesTags: ['Report'],
     }),
     getStatusReports: build.query<IResponse<Report>, IRequest>({
       query: (req) => ({
         url: `/reports/status?${getQuery(req)}`,
       }),
-      providesTags: ['Report', 'Attitude', 'Annotation'],
+      providesTags: ['Report'],
     }),
     getSpawnReports: build.query<IResponse<Report>, IRequest>({
       query: (req) => ({
         url: `/reports/spawn?${getQuery(req)}`,
       }),
-      providesTags: ['Report', 'Attitude', 'Annotation'],
+      providesTags: ['Report'],
     }),
     getHubReports: build.query<IResponse<Report>, IRequest>({
       query: (req) => ({
         url: `/reports/hub?${getQuery(req)}`,
       }),
-      providesTags: ['Report', 'Attitude', 'Annotation'],
+      providesTags: ['Report'],
     }),
     getEndReports: build.query<IResponse<Report>, IRequest>({
       query: (req) => ({
         url: `/reports/end?${getQuery(req)}`,
       }),
-      providesTags: ['Report', 'Attitude', 'Annotation'],
+      providesTags: ['Report'],
     }),
     selectViewedReports: build.query<number[], void>({
       query: () => ({
@@ -156,14 +156,117 @@ export const reportsApi = emptyApi.injectEndpoints({
         method: 'POST',
       }),
       invalidatesTags: ['ReportView'],
+      onQueryStarted(dto, { dispatch, queryFulfilled, getState }) {
+        const endpoints = reportsApi.util.selectInvalidatedBy(getState(), [
+          'Report',
+        ]);
+        endpoints
+          .filter((endpoint) => endpoint.endpointName === 'getMainReports')
+          .forEach((endpoint) => {
+            const patchResult = dispatch(
+              reportsApi.util.updateQueryData(
+                'getMainReports',
+                endpoint.originalArgs,
+                (draft) => {
+                  const report = draft.result.find(
+                    (report) => report.id === dto.reportId,
+                  );
+                  if (report) {
+                    report.views++;
+                  }
+                },
+              ),
+            );
+            queryFulfilled.catch(patchResult.undo);
+          });
+        const patchResult = dispatch(
+          reportsApi.util.updateQueryData(
+            'selectViewedReports',
+            undefined,
+            (draft) => {
+              draft.push(dto.reportId);
+            },
+          ),
+        );
+        queryFulfilled.catch(patchResult.undo);
+      },
     }),
-    attitudeReport: build.mutation<void, AttitudeReportDto>({
-      query: ({ reportId, ...dto }) => ({
+    attitudeReport: build.mutation<void, ExtAttitudeReportDto>({
+      query: ({ reportId, upAttituded, downAttituded, ...dto }) => ({
         url: `/reports/${reportId}/attitudes`,
         method: 'POST',
         body: dto,
       }),
       invalidatesTags: ['Attitude'],
+      onQueryStarted(dto, { dispatch, queryFulfilled, getState }) {
+        const endpoints = reportsApi.util.selectInvalidatedBy(getState(), [
+          'Report',
+        ]);
+        endpoints
+          .filter((endpoint) => endpoint.endpointName === 'getMainReports')
+          .forEach((endpoint) => {
+            const patchResult = dispatch(
+              reportsApi.util.updateQueryData(
+                'getMainReports',
+                endpoint.originalArgs,
+                (draft) => {
+                  const report = draft.result.find(
+                    (report) => report.id === dto.reportId,
+                  );
+                  if (report) {
+                    if (dto.upAttituded || dto.downAttituded) {
+                      if (dto.upAttituded === dto.type) {
+                        if (dto.type) {
+                          report.upAttitudes--;
+                        } else {
+                          report.downAttitudes--;
+                        }
+                      } else {
+                        if (dto.type) {
+                          report.upAttitudes++;
+                          report.downAttitudes--;
+                        } else {
+                          report.downAttitudes++;
+                          report.upAttitudes--;
+                        }
+                      }
+                    } else {
+                      if (dto.type) {
+                        report.upAttitudes++;
+                      } else {
+                        report.downAttitudes++;
+                      }
+                    }
+                  }
+                },
+              ),
+            );
+            queryFulfilled.catch(patchResult.undo);
+          });
+        const patchResult = dispatch(
+          reportsApi.util.updateQueryData(
+            'selectAttitudedReports',
+            undefined,
+            (draft) => {
+              if (dto.upAttituded || dto.downAttituded) {
+                if (dto.upAttituded === dto.type) {
+                  draft = draft.filter((report) => report.id === dto.reportId);
+                } else {
+                  draft.find(
+                    (report) => report.id === dto.reportId,
+                  )!.attitude.type = dto.type;
+                }
+              } else {
+                draft.push({
+                  id: dto.reportId,
+                  attitude: { id: 0, type: dto.type },
+                });
+              }
+            },
+          ),
+        );
+        queryFulfilled.catch(patchResult.undo);
+      },
     }),
   }),
 });

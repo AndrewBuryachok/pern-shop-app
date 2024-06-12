@@ -50,7 +50,11 @@ export default function ReportPaper({ report, ...props }: Props) {
   const [attitudeReport] = useAttitudeReportMutation();
 
   const handleAttitudeSubmit = async (dto: AttitudeReportDto) => {
-    await attitudeReport(dto);
+    await attitudeReport({
+      ...dto,
+      upAttituded: !!report.upAttituded,
+      downAttituded: !!report.downAttituded,
+    });
   };
 
   const { ref, entry } = useIntersection();

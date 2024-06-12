@@ -69,7 +69,11 @@ export default function ArticlePaper({ article, ...props }: Props) {
   const [likeArticle] = useLikeArticleMutation();
 
   const handleLikeSubmit = async (dto: LikeArticleDto) => {
-    await likeArticle(dto);
+    await likeArticle({
+      ...dto,
+      upLiked: !!article.upLiked,
+      downLiked: !!article.downLiked,
+    });
   };
 
   const { ref, entry } = useIntersection();

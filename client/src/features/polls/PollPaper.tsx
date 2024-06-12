@@ -49,7 +49,11 @@ export default function PollPaper({ poll, ...props }: Props) {
   const [votePoll] = useVotePollMutation();
 
   const handleVoteSubmit = async (dto: VotePollDto) => {
-    await votePoll(dto);
+    await votePoll({
+      ...dto,
+      upVoted: !!poll.upVoted,
+      downVoted: !!poll.downVoted,
+    });
   };
 
   const { ref, entry } = useIntersection();

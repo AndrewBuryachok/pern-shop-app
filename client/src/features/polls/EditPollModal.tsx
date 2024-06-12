@@ -6,17 +6,19 @@ import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { Poll } from './poll.model';
+import { getCurrentUser } from '../auth/auth.slice';
 import { useEditPollMutation } from './polls.api';
 import { EditPollDto } from './poll.dto';
 import CustomForm from '../../common/components/CustomForm';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import CustomImage from '../../common/components/CustomImage';
 import CustomVideo from '../../common/components/CustomVideo';
-import { selectMarks } from '../../common/utils';
+import { isUserNotHasRole, selectMarks } from '../../common/utils';
 import {
   Color,
   MAX_LINK_LENGTH,
   MAX_TEXT_LENGTH,
+  Role,
 } from '../../common/constants';
 
 type Props = IModal<Poll>;
@@ -100,6 +102,12 @@ export const editPollAction = {
       title: t('actions.edit') + ' ' + t('modals.polls'),
       children: <EditPollModal data={poll} />,
     }),
-  disable: (poll: Poll) => !!poll.completedAt,
+  disable: (poll: Poll) => {
+    const user = getCurrentUser();
+    return (
+      (isUserNotHasRole(Role.PRESIDENT) && poll.user.id !== user?.id) ||
+      !!poll.completedAt
+    );
+  },
   color: Color.YELLOW,
 };
