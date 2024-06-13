@@ -335,9 +335,6 @@
     "error": "Error",
     "message": "Operation completed successfully",
     "notification": "Notification",
-    "users": {
-      "created": "registered"
-    },
     "friends": {
       "invited": "invited you in friends",
       "approved": "approved you in friends",
@@ -399,12 +396,6 @@
     },
     "storages": {
       "created": "created storage"
-    },
-    "stores": {
-      "created": "created store"
-    },
-    "cells": {
-      "created": "created cell"
     },
     "rents": {
       "created": "reserved your store",

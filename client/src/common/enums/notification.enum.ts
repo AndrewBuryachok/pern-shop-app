@@ -1,5 +1,4 @@
 export const notificationToTab = [
-  'created users main',
   'messaged chats main',
   'invited friends received',
   'approved friends my',
@@ -36,8 +35,6 @@ export const notificationToTab = [
   'removed shops my',
   'created markets main',
   'created storages main',
-  'created stores main',
-  'created cells main',
   'created rents received',
   'continued rents received',
   'completed rents received',
