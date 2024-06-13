@@ -4,14 +4,12 @@ import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { Store } from './store.entity';
 import { MarketsTagsService } from '../markets-tags/markets-tags.service';
 import { PaymentsService } from '../payments/payments.service';
-import { MqttService } from '../mqtt/mqtt.service';
 import { ExtCreateStoreDto, ReserveStoreDto } from './store.dto';
 import { Request, Response } from '../../common/interfaces';
 import { getDateWeekAfter } from '../../common/utils';
 import { MAX_STORES_NUMBER } from '../../common/constants';
 import { AppException } from '../../common/exceptions';
 import { StoreError } from './store-error.enum';
-import { Notification } from '../../common/enums';
 
 @Injectable()
 export class StoresService {
@@ -20,7 +18,6 @@ export class StoresService {
     private storesRepository: Repository<Store>,
     private marketsTagsService: MarketsTagsService,
     private paymentsService: PaymentsService,
-    private mqttService: MqttService,
   ) {}
 
   async getMainStores(req: Request): Promise<Response<Store>> {
@@ -63,20 +60,14 @@ export class StoresService {
       .getMany();
   }
 
-  async createStore(dto: ExtCreateStoreDto & { nick: string }): Promise<void> {
+  async createStore(dto: ExtCreateStoreDto): Promise<void> {
     const { marketId } = await this.marketsTagsService.checkMarketTagOwner(
       dto.marketTagId,
       dto.myId,
       dto.hasRole,
     );
     const name = await this.checkHasNotEnough(marketId);
-    const store = await this.create({ ...dto, marketId, name });
-    this.mqttService.publishNotificationMessage(
-      store.id,
-      0,
-      dto.nick,
-      Notification.CREATED_STORE,
-    );
+    await this.create({ ...dto, marketId, name });
   }
 
   async reserveStore(dto: ReserveStoreDto & { nick: string }): Promise<Store> {

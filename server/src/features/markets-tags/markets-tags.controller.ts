@@ -18,7 +18,7 @@ import {
 } from './market-tag.dto';
 import { MarketIdDto } from '../markets/market.dto';
 import { Request, Response } from '../../common/interfaces';
-import { HasRole, MyId, MyNick, Public, Roles } from '../../common/decorators';
+import { HasRole, MyId, Public, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
 
 @ApiTags('markets-tags')
@@ -63,14 +63,12 @@ export class MarketsTagsController {
   @Post()
   createMarketTag(
     @MyId() myId: number,
-    @MyNick() nick: string,
     @HasRole(Role.MANAGER) hasRole: boolean,
     @Body() dto: CreateMarketTagDto,
   ): Promise<void> {
     return this.marketsTagsService.createMarketTag({
       ...dto,
       myId,
-      nick,
       hasRole,
     });
   }

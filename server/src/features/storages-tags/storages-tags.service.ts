@@ -94,9 +94,7 @@ export class StoragesTagsService {
     return storageTag.states;
   }
 
-  async createStorageTag(
-    dto: ExtCreateStorageTagDto & { nick: string },
-  ): Promise<void> {
+  async createStorageTag(dto: ExtCreateStorageTagDto): Promise<void> {
     await this.storagesService.checkStorageOwner(
       dto.storageId,
       dto.myId,

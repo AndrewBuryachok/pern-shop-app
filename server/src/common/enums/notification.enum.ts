@@ -1,5 +1,4 @@
 export enum Notification {
-  CREATED_USER = 'created users',
   MESSAGED_USER = 'messaged chats',
   INVITED_FRIEND = 'invited friends',
   APPROVED_FRIEND = 'approved friends',
@@ -36,8 +35,6 @@ export enum Notification {
   REMOVED_SHOP = 'removed shops',
   CREATED_MARKET = 'created markets',
   CREATED_STORAGE = 'created storages',
-  CREATED_STORE = 'created stores',
-  CREATED_CELL = 'created cells',
   CREATED_RENT = 'created rents',
   CONTINUED_RENT = 'continued rents',
   COMPLETED_RENT = 'completed rents',

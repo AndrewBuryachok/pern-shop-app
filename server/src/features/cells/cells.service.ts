@@ -4,14 +4,12 @@ import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { Cell } from './cell.entity';
 import { StoragesTagsService } from '../storages-tags/storages-tags.service';
 import { PaymentsService } from '../payments/payments.service';
-import { MqttService } from '../mqtt/mqtt.service';
 import { ExtCreateCellDto, ReserveCellDto } from './cell.dto';
 import { Request, Response } from '../../common/interfaces';
 import { getDateWeekAfter } from '../../common/utils';
 import { MAX_CELLS_NUMBER } from '../../common/constants';
 import { AppException } from '../../common/exceptions';
 import { CellError } from './cell-error.enum';
-import { Notification } from '../../common/enums';
 
 @Injectable()
 export class CellsService {
@@ -20,7 +18,6 @@ export class CellsService {
     private cellsRepository: Repository<Cell>,
     private storagesTagsService: StoragesTagsService,
     private paymentsService: PaymentsService,
-    private mqttService: MqttService,
   ) {}
 
   async getMainCells(req: Request): Promise<Response<Cell>> {
@@ -63,20 +60,14 @@ export class CellsService {
       .getMany();
   }
 
-  async createCell(dto: ExtCreateCellDto & { nick: string }): Promise<void> {
+  async createCell(dto: ExtCreateCellDto): Promise<void> {
     const { storageId } = await this.storagesTagsService.checkStorageTagOwner(
       dto.storageTagId,
       dto.myId,
       dto.hasRole,
     );
     const name = await this.checkHasNotEnough(storageId);
-    const cell = await this.create({ ...dto, storageId, name });
-    this.mqttService.publishNotificationMessage(
-      cell.id,
-      0,
-      dto.nick,
-      Notification.CREATED_CELL,
-    );
+    await this.create({ ...dto, storageId, name });
   }
 
   async reserveCell(dto: ReserveCellDto & { nick: string }): Promise<Cell> {

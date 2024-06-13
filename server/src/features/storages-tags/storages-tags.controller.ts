@@ -18,7 +18,7 @@ import {
 } from './storage-tag.dto';
 import { StorageIdDto } from '../storages/storage.dto';
 import { Request, Response } from '../../common/interfaces';
-import { HasRole, MyId, MyNick, Public, Roles } from '../../common/decorators';
+import { HasRole, MyId, Public, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
 
 @ApiTags('storages-tags')
@@ -71,14 +71,12 @@ export class StoragesTagsController {
   @Post()
   createStorageTag(
     @MyId() myId: number,
-    @MyNick() nick: string,
     @HasRole(Role.MANAGER) hasRole: boolean,
     @Body() dto: CreateStorageTagDto,
   ): Promise<void> {
     return this.storagesTagsService.createStorageTag({
       ...dto,
       myId,
-      nick,
       hasRole,
     });
   }

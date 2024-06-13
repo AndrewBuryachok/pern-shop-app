@@ -67,9 +67,7 @@ export class MarketsTagsService {
     return marketTag.states;
   }
 
-  async createMarketTag(
-    dto: ExtCreateMarketTagDto & { nick: string },
-  ): Promise<void> {
+  async createMarketTag(dto: ExtCreateMarketTagDto): Promise<void> {
     await this.marketsService.checkMarketOwner(
       dto.marketId,
       dto.myId,

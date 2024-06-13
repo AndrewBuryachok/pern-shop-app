@@ -6,7 +6,7 @@ import { CreateStoreDto } from './store.dto';
 import { MarketIdDto } from '../markets/market.dto';
 import { MarketTagIdDto } from '../markets-tags/market-tag.dto';
 import { Request, Response } from '../../common/interfaces';
-import { HasRole, MyId, MyNick, Public, Roles } from '../../common/decorators';
+import { HasRole, MyId, Public, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
 
 @ApiTags('stores')
@@ -49,10 +49,9 @@ export class StoresController {
   @Post()
   createStore(
     @MyId() myId: number,
-    @MyNick() nick: string,
     @HasRole(Role.MANAGER) hasRole: boolean,
     @Body() dto: CreateStoreDto,
   ): Promise<void> {
-    return this.storesService.createStore({ ...dto, myId, nick, hasRole });
+    return this.storesService.createStore({ ...dto, myId, hasRole });
   }
 }
