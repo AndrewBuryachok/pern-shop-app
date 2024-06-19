@@ -65,7 +65,7 @@ export const editDiscussionAction = {
     }),
   disable: (discussion: Discussion) => {
     const user = getCurrentUser();
-    return discussion.user.id !== user?.id && isUserNotHasRole(Role.FBI);
+    return discussion.user.id !== user?.id && isUserNotHasRole(Role.INSPECTOR);
   },
   color: Color.YELLOW,
 };

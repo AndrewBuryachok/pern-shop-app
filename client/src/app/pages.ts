@@ -104,7 +104,7 @@ export const pages = [
       { path: 'subscribed' },
       { path: 'liked' },
       { path: 'commented' },
-      { path: 'all', role: Role.FBI },
+      { path: 'all', role: Role.INSPECTOR },
     ],
   },
   {
@@ -137,7 +137,7 @@ export const pages = [
     nested: [
       { index: true },
       { path: 'my' },
-      { path: 'all', role: Role.ADMIN },
+      { path: 'all', role: Role.INSPECTOR },
     ],
   },
   {
@@ -146,7 +146,7 @@ export const pages = [
     nested: [
       { index: true },
       { path: 'my' },
-      { path: 'all', role: Role.MANAGER },
+      { path: 'all', role: Role.MERCHANT },
     ],
   },
   {
@@ -155,7 +155,7 @@ export const pages = [
     nested: [
       { index: true },
       { path: 'my' },
-      { path: 'all', role: Role.MANAGER },
+      { path: 'all', role: Role.MERCHANT },
     ],
   },
   {
@@ -164,7 +164,7 @@ export const pages = [
     nested: [
       { index: true },
       { path: 'my' },
-      { path: 'all', role: Role.MANAGER },
+      { path: 'all', role: Role.MERCHANT },
     ],
   },
   {
@@ -173,7 +173,7 @@ export const pages = [
     nested: [
       { index: true },
       { path: 'my' },
-      { path: 'all', role: Role.MANAGER },
+      { path: 'all', role: Role.MERCHANT },
     ],
   },
   {
@@ -182,7 +182,7 @@ export const pages = [
     nested: [
       { index: true },
       { path: 'my' },
-      { path: 'all', role: Role.MANAGER },
+      { path: 'all', role: Role.MERCHANT },
     ],
   },
   {
@@ -191,7 +191,7 @@ export const pages = [
     nested: [
       { index: true },
       { path: 'my' },
-      { path: 'all', role: Role.MANAGER },
+      { path: 'all', role: Role.MERCHANT },
     ],
   },
   {
@@ -200,7 +200,7 @@ export const pages = [
     nested: [
       { index: true },
       { path: 'my' },
-      { path: 'all', role: Role.MANAGER },
+      { path: 'all', role: Role.MERCHANT },
     ],
   },
   {
@@ -210,7 +210,7 @@ export const pages = [
       { index: true },
       { path: 'my' },
       { path: 'received' },
-      { path: 'all', role: Role.MANAGER },
+      { path: 'all', role: Role.MERCHANT },
     ],
   },
   {
@@ -220,7 +220,7 @@ export const pages = [
       { index: true },
       { path: 'my' },
       { path: 'received' },
-      { path: 'all', role: Role.MANAGER },
+      { path: 'all', role: Role.MERCHANT },
     ],
   },
   {
@@ -229,7 +229,7 @@ export const pages = [
     nested: [
       { index: true },
       { path: 'my' },
-      { path: 'all', role: Role.MANAGER },
+      { path: 'all', role: Role.MERCHANT },
     ],
   },
   {
@@ -239,7 +239,7 @@ export const pages = [
       { index: true },
       { path: 'my' },
       { path: 'placed' },
-      { path: 'all', role: Role.MANAGER },
+      { path: 'all', role: Role.MERCHANT },
     ],
   },
   {
@@ -249,7 +249,7 @@ export const pages = [
       { index: true },
       { path: 'my' },
       { path: 'placed' },
-      { path: 'all', role: Role.MANAGER },
+      { path: 'all', role: Role.MERCHANT },
     ],
   },
   {
@@ -259,7 +259,7 @@ export const pages = [
       { index: true },
       { path: 'my' },
       { path: 'placed' },
-      { path: 'all', role: Role.MANAGER },
+      { path: 'all', role: Role.MERCHANT },
     ],
   },
   {
@@ -270,7 +270,7 @@ export const pages = [
       { path: 'my' },
       { path: 'taken' },
       { path: 'placed' },
-      { path: 'all', role: Role.MANAGER },
+      { path: 'all', role: Role.MERCHANT },
     ],
   },
   {
@@ -281,7 +281,7 @@ export const pages = [
       { path: 'my' },
       { path: 'taken' },
       { path: 'placed' },
-      { path: 'all', role: Role.MANAGER },
+      { path: 'all', role: Role.MERCHANT },
     ],
   },
   {
@@ -291,7 +291,7 @@ export const pages = [
       { path: 'my' },
       { path: 'sold' },
       { path: 'placed' },
-      { path: 'all', role: Role.MANAGER },
+      { path: 'all', role: Role.MERCHANT },
     ],
   },
   {
@@ -301,7 +301,7 @@ export const pages = [
       { path: 'my' },
       { path: 'sold' },
       { path: 'placed' },
-      { path: 'all', role: Role.MANAGER },
+      { path: 'all', role: Role.MERCHANT },
     ],
   },
   {
@@ -311,7 +311,7 @@ export const pages = [
       { path: 'my' },
       { path: 'sold' },
       { path: 'placed' },
-      { path: 'all', role: Role.MANAGER },
+      { path: 'all', role: Role.MERCHANT },
     ],
   },
   {
@@ -321,7 +321,7 @@ export const pages = [
       { index: true },
       { path: 'my' },
       { path: 'taken' },
-      { path: 'all', role: Role.MANAGER },
+      { path: 'all', role: Role.MERCHANT },
     ],
   },
   {
@@ -332,7 +332,7 @@ export const pages = [
       { path: 'my' },
       { path: 'received' },
       { path: 'answered' },
-      { path: 'all', role: Role.JUDGE },
+      { path: 'all', role: Role.INSPECTOR },
     ],
   },
   {
@@ -343,7 +343,7 @@ export const pages = [
       { path: 'my' },
       { path: 'voted' },
       { path: 'discussed' },
-      { path: 'all', role: Role.PRESIDENT },
+      { path: 'all', role: Role.INSPECTOR },
     ],
   },
   {
@@ -353,7 +353,7 @@ export const pages = [
       { path: 'top' },
       { path: 'my' },
       { path: 'received' },
-      { path: 'all', role: Role.ADMIN },
+      { path: 'all', role: Role.INSPECTOR },
     ],
   },
   { path: '*', element: NotFound },

@@ -65,7 +65,7 @@ export const editAnswerAction = {
     }),
   disable: (answer: Answer) => {
     const user = getCurrentUser();
-    return answer.user.id !== user?.id && isUserNotHasRole(Role.FBI);
+    return answer.user.id !== user?.id && isUserNotHasRole(Role.INSPECTOR);
   },
   color: Color.YELLOW,
 };

@@ -501,14 +501,11 @@
     "roles": {
       "admin": "Admin",
       "inspector": "Inspector",
-      "president": "President",
+      "merchant": "Merchant",
+      "banker": "Banker",
       "spawn": "Spawn head",
       "hub": "Hub head",
       "end": "End head",
-      "manager": "Manager",
-      "banker": "Banker",
-      "judge": "Judge",
-      "fbi": "Fbi",
       "streamer": "Streamer",
       "user": "User"
     },

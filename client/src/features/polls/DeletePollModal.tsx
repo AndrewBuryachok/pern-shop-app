@@ -74,7 +74,7 @@ export const deletePollAction = {
   disable: (poll: Poll) => {
     const user = getCurrentUser();
     return (
-      (isUserNotHasRole(Role.PRESIDENT) && poll.user.id !== user?.id) ||
+      (isUserNotHasRole(Role.INSPECTOR) && poll.user.id !== user?.id) ||
       !!poll.completedAt
     );
   },

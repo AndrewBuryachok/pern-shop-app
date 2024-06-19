@@ -113,9 +113,9 @@ export const createReportFactory = (mark: number) => ({
       children: <CreateReportModal mark={mark} />,
     }),
   role: [
-    Role.PRESIDENT,
-    Role.PRESIDENT,
-    Role.PRESIDENT,
+    Role.INSPECTOR,
+    Role.INSPECTOR,
+    Role.INSPECTOR,
     Role.SPAWN,
     Role.HUB,
     Role.END,

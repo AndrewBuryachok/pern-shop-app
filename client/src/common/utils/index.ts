@@ -14,10 +14,7 @@ export const isUserHasRole = (role?: Role) => {
   const user = getCurrentUser();
   return (
     user &&
-    (!role ||
-      [Role.ADMIN, Role.INSPECTOR, role].some((role) =>
-        user.roles.includes(role),
-      ))
+    (!role || [Role.ADMIN, role].some((role) => user.roles.includes(role)))
   );
 };
 
