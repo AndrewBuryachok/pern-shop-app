@@ -58,7 +58,7 @@ export class PlaintsController {
     return this.plaintsService.getAnsweredPlaints(myId, req);
   }
 
-  @Roles(Role.JUDGE)
+  @Roles(Role.INSPECTOR)
   @Get('all')
   getAllPlaints(@Query() req: Request): Promise<Response<Plaint>> {
     return this.plaintsService.getAllPlaints(req);
@@ -83,7 +83,7 @@ export class PlaintsController {
     });
   }
 
-  @Roles(Role.JUDGE)
+  @Roles(Role.INSPECTOR)
   @Post('all')
   createUserPlaint(
     @MyNick() nick: string,
@@ -95,14 +95,14 @@ export class PlaintsController {
   @Patch(':plaintId')
   editPlaint(
     @MyId() myId: number,
-    @HasRole(Role.JUDGE) hasRole: boolean,
+    @HasRole(Role.INSPECTOR) hasRole: boolean,
     @Param() { plaintId }: PlaintIdDto,
     @Body() dto: EditPlaintDto,
   ): Promise<void> {
     return this.plaintsService.editPlaint({ ...dto, plaintId, myId, hasRole });
   }
 
-  @Roles(Role.JUDGE)
+  @Roles(Role.INSPECTOR)
   @Post(':plaintId')
   completePlaint(
     @MyId() myId: number,
@@ -117,7 +117,7 @@ export class PlaintsController {
   deletePlaint(
     @MyId() myId: number,
     @MyNick() nick: string,
-    @HasRole(Role.JUDGE) hasRole: boolean,
+    @HasRole(Role.INSPECTOR) hasRole: boolean,
     @Param() { plaintId }: PlaintIdDto,
   ): Promise<void> {
     return this.plaintsService.deletePlaint({ plaintId, myId, nick, hasRole });

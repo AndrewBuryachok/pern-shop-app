@@ -43,7 +43,7 @@ export class ShopsController {
     return this.shopsService.getMyShops(myId, req);
   }
 
-  @Roles(Role.MANAGER)
+  @Roles(Role.MERCHANT)
   @Get('all')
   getAllShops(@Query() req: Request): Promise<Response<Shop>> {
     return this.shopsService.getAllShops(req);
@@ -81,7 +81,7 @@ export class ShopsController {
     return this.shopsService.createShop({ ...dto, userId: myId, nick });
   }
 
-  @Roles(Role.MANAGER)
+  @Roles(Role.MERCHANT)
   @Post('all')
   createUserShop(
     @MyNick() nick: string,
@@ -93,7 +93,7 @@ export class ShopsController {
   @Patch(':shopId')
   editShop(
     @MyId() myId: number,
-    @HasRole(Role.MANAGER) hasRole: boolean,
+    @HasRole(Role.MERCHANT) hasRole: boolean,
     @Param() { shopId }: ShopIdDto,
     @Body() dto: EditShopDto,
   ): Promise<void> {
@@ -104,7 +104,7 @@ export class ShopsController {
   addShopUser(
     @MyId() myId: number,
     @MyNick() nick: string,
-    @HasRole(Role.MANAGER) hasRole: boolean,
+    @HasRole(Role.MERCHANT) hasRole: boolean,
     @Param() { shopId }: ShopIdDto,
     @Body() dto: UpdateShopUserDto,
   ): Promise<void> {
@@ -121,7 +121,7 @@ export class ShopsController {
   removeShopUser(
     @MyId() myId: number,
     @MyNick() nick: string,
-    @HasRole(Role.MANAGER) hasRole: boolean,
+    @HasRole(Role.MERCHANT) hasRole: boolean,
     @Param() { shopId }: ShopIdDto,
     @Body() dto: UpdateShopUserDto,
   ): Promise<void> {

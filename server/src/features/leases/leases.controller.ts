@@ -35,7 +35,7 @@ export class LeasesController {
     return this.leasesService.getReceivedLeases(myId, req);
   }
 
-  @Roles(Role.MANAGER)
+  @Roles(Role.MERCHANT)
   @Get('all')
   getAllLeases(@Query() req: Request): Promise<Response<Lease>> {
     return this.leasesService.getAllLeases(req);
@@ -51,7 +51,7 @@ export class LeasesController {
   continueLease(
     @MyId() myId: number,
     @MyNick() nick: string,
-    @HasRole(Role.MANAGER) hasRole: boolean,
+    @HasRole(Role.MERCHANT) hasRole: boolean,
     @Param() { leaseId }: LeaseIdDto,
   ): Promise<void> {
     return this.leasesService.continueLease({ leaseId, myId, nick, hasRole });
@@ -61,7 +61,7 @@ export class LeasesController {
   completeLease(
     @MyId() myId: number,
     @MyNick() nick: string,
-    @HasRole(Role.MANAGER) hasRole: boolean,
+    @HasRole(Role.MERCHANT) hasRole: boolean,
     @Param() { leaseId }: LeaseIdDto,
   ): Promise<void> {
     return this.leasesService.completeLease({ leaseId, myId, nick, hasRole });

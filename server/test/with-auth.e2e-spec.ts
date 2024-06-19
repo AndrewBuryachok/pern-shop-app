@@ -18,14 +18,12 @@ describe('With Auth', () => {
   let app: INestApplication;
   let user: Tokens;
   let admin: Tokens;
+  let inspector: Tokens;
   let banker: Tokens;
-  let manager: Tokens;
-  let judge: Tokens;
+  let merchant: Tokens;
   let spawn: Tokens;
   let hub: Tokens;
   let end: Tokens;
-  let president: Tokens;
-  let fbi: Tokens;
   let messageId: number;
   let reportsId: number;
   let annotationId: number;
@@ -110,6 +108,21 @@ describe('With Auth', () => {
         .expect(201);
     });
 
+    it('POST /auth/login as Inspector', async () => {
+      return request(app.getHttpServer())
+        .post('/auth/login')
+        .send({ nick: 'Inspector', password: 'Inspector' })
+        .expect(201)
+        .then((res) => (inspector = res.body));
+    });
+
+    it('POST /auth/logout as Inspector', async () => {
+      return request(app.getHttpServer())
+        .post('/auth/logout')
+        .set('Authorization', `Bearer ${inspector.access}`)
+        .expect(201);
+    });
+
     it('POST /auth/login as Banker', async () => {
       return request(app.getHttpServer())
         .post('/auth/login')
@@ -125,33 +138,18 @@ describe('With Auth', () => {
         .expect(201);
     });
 
-    it('POST /auth/login as Manager', async () => {
+    it('POST /auth/login as Merchant', async () => {
       return request(app.getHttpServer())
         .post('/auth/login')
-        .send({ nick: 'Manager', password: 'Manager' })
+        .send({ nick: 'Merchant', password: 'Merchant' })
         .expect(201)
-        .then((res) => (manager = res.body));
+        .then((res) => (merchant = res.body));
     });
 
-    it('POST /auth/logout as Manager', async () => {
+    it('POST /auth/logout as Merchant', async () => {
       return request(app.getHttpServer())
         .post('/auth/logout')
-        .set('Authorization', `Bearer ${manager.access}`)
-        .expect(201);
-    });
-
-    it('POST /auth/login as Judge', async () => {
-      return request(app.getHttpServer())
-        .post('/auth/login')
-        .send({ nick: 'Judge', password: 'Judge' })
-        .expect(201)
-        .then((res) => (judge = res.body));
-    });
-
-    it('POST /auth/logout as Judge', async () => {
-      return request(app.getHttpServer())
-        .post('/auth/logout')
-        .set('Authorization', `Bearer ${judge.access}`)
+        .set('Authorization', `Bearer ${merchant.access}`)
         .expect(201);
     });
 
@@ -197,36 +195,6 @@ describe('With Auth', () => {
       return request(app.getHttpServer())
         .post('/auth/logout')
         .set('Authorization', `Bearer ${end.access}`)
-        .expect(201);
-    });
-
-    it('POST /auth/login as President', async () => {
-      return request(app.getHttpServer())
-        .post('/auth/login')
-        .send({ nick: 'President', password: 'President' })
-        .expect(201)
-        .then((res) => (president = res.body));
-    });
-
-    it('POST /auth/logout as President', async () => {
-      return request(app.getHttpServer())
-        .post('/auth/logout')
-        .set('Authorization', `Bearer ${president.access}`)
-        .expect(201);
-    });
-
-    it('POST /auth/login as FbiHead', async () => {
-      return request(app.getHttpServer())
-        .post('/auth/login')
-        .send({ nick: 'FbiHead', password: 'FbiHead' })
-        .expect(201)
-        .then((res) => (fbi = res.body));
-    });
-
-    it('POST /auth/logout as FbiHead', async () => {
-      return request(app.getHttpServer())
-        .post('/auth/logout')
-        .set('Authorization', `Bearer ${fbi.access}`)
         .expect(201);
     });
   });
@@ -520,7 +488,7 @@ describe('With Auth', () => {
     it('POST /reports/server', async () => {
       return request(app.getHttpServer())
         .post('/reports/server')
-        .set('Authorization', `Bearer ${president.access}`)
+        .set('Authorization', `Bearer ${inspector.access}`)
         .send({
           text: 'report text',
           image1: '',
@@ -534,7 +502,7 @@ describe('With Auth', () => {
     it('POST /reports/site', async () => {
       return request(app.getHttpServer())
         .post('/reports/site')
-        .set('Authorization', `Bearer ${president.access}`)
+        .set('Authorization', `Bearer ${inspector.access}`)
         .send({
           text: 'report text',
           image1: '',
@@ -548,7 +516,7 @@ describe('With Auth', () => {
     it('POST /reports/status', async () => {
       return request(app.getHttpServer())
         .post('/reports/status')
-        .set('Authorization', `Bearer ${president.access}`)
+        .set('Authorization', `Bearer ${inspector.access}`)
         .send({
           text: 'report text',
           image1: '',
@@ -715,7 +683,7 @@ describe('With Auth', () => {
     it('PATCH /reports/:reportId', async () => {
       return request(app.getHttpServer())
         .patch(`/reports/${reportsId[0]}`)
-        .set('Authorization', `Bearer ${president.access}`)
+        .set('Authorization', `Bearer ${admin.access}`)
         .send({
           text: 'report text',
           image1: '',
@@ -729,7 +697,7 @@ describe('With Auth', () => {
     it('DELETE /reports/:reportId', async () => {
       return request(app.getHttpServer())
         .delete(`/reports/${reportsId[1]}`)
-        .set('Authorization', `Bearer ${president.access}`)
+        .set('Authorization', `Bearer ${admin.access}`)
         .expect('');
     });
   });
@@ -847,7 +815,7 @@ describe('With Auth', () => {
     it('GET /articles/all', async () => {
       return request(app.getHttpServer())
         .get('/articles/all')
-        .set('Authorization', `Bearer ${fbi.access}`)
+        .set('Authorization', `Bearer ${inspector.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
 
@@ -1189,7 +1157,7 @@ describe('With Auth', () => {
     it('GET /shops/all', async () => {
       return request(app.getHttpServer())
         .get('/shops/all')
-        .set('Authorization', `Bearer ${manager.access}`)
+        .set('Authorization', `Bearer ${merchant.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
 
@@ -1278,7 +1246,7 @@ describe('With Auth', () => {
     it('GET /markets/all', async () => {
       return request(app.getHttpServer())
         .get('/markets/all')
-        .set('Authorization', `Bearer ${manager.access}`)
+        .set('Authorization', `Bearer ${merchant.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
 
@@ -1298,7 +1266,7 @@ describe('With Auth', () => {
     it('GET /markets/all/select', async () => {
       return request(app.getHttpServer())
         .get('/markets/all/select')
-        .set('Authorization', `Bearer ${manager.access}`)
+        .set('Authorization', `Bearer ${merchant.access}`)
         .expect((res) => expect(res.body.length).toBeGreaterThan(0));
     });
 
@@ -1352,7 +1320,7 @@ describe('With Auth', () => {
     it('GET /storages/all', async () => {
       return request(app.getHttpServer())
         .get('/storages/all')
-        .set('Authorization', `Bearer ${manager.access}`)
+        .set('Authorization', `Bearer ${merchant.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
 
@@ -1372,7 +1340,7 @@ describe('With Auth', () => {
     it('GET /storages/all/select', async () => {
       return request(app.getHttpServer())
         .get('/storages/all/select')
-        .set('Authorization', `Bearer ${manager.access}`)
+        .set('Authorization', `Bearer ${merchant.access}`)
         .expect((res) => expect(res.body.length).toBeGreaterThan(0));
     });
 
@@ -1422,7 +1390,7 @@ describe('With Auth', () => {
     it('GET /markets-tags/all', async () => {
       return request(app.getHttpServer())
         .get('/markets-tags/all')
-        .set('Authorization', `Bearer ${manager.access}`)
+        .set('Authorization', `Bearer ${merchant.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
 
@@ -1480,7 +1448,7 @@ describe('With Auth', () => {
     it('GET /storages-tags/all', async () => {
       return request(app.getHttpServer())
         .get('/storages-tags/all')
-        .set('Authorization', `Bearer ${manager.access}`)
+        .set('Authorization', `Bearer ${merchant.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
 
@@ -1534,7 +1502,7 @@ describe('With Auth', () => {
     it('GET /stores/all', async () => {
       return request(app.getHttpServer())
         .get('/stores/all')
-        .set('Authorization', `Bearer ${manager.access}`)
+        .set('Authorization', `Bearer ${merchant.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
 
@@ -1632,7 +1600,7 @@ describe('With Auth', () => {
     it('GET /cells/all', async () => {
       return request(app.getHttpServer())
         .get('/cells/all')
-        .set('Authorization', `Bearer ${manager.access}`)
+        .set('Authorization', `Bearer ${merchant.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
 
@@ -1688,7 +1656,7 @@ describe('With Auth', () => {
     it('GET /rents/all', async () => {
       return request(app.getHttpServer())
         .get('/rents/all')
-        .set('Authorization', `Bearer ${manager.access}`)
+        .set('Authorization', `Bearer ${merchant.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
 
@@ -1702,7 +1670,7 @@ describe('With Auth', () => {
     it('GET /rents/all/select', async () => {
       return request(app.getHttpServer())
         .get('/rents/all/select')
-        .set('Authorization', `Bearer ${manager.access}`)
+        .set('Authorization', `Bearer ${merchant.access}`)
         .expect((res) => expect(res.body.length).toBeGreaterThan(0));
     });
 
@@ -1763,7 +1731,7 @@ describe('With Auth', () => {
     it('GET /goods/all', async () => {
       return request(app.getHttpServer())
         .get('/goods/all')
-        .set('Authorization', `Bearer ${manager.access}`)
+        .set('Authorization', `Bearer ${merchant.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
 
@@ -1821,7 +1789,7 @@ describe('With Auth', () => {
     it('GET /wares/all', async () => {
       return request(app.getHttpServer())
         .get('/wares/all')
-        .set('Authorization', `Bearer ${manager.access}`)
+        .set('Authorization', `Bearer ${merchant.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
 
@@ -1911,7 +1879,7 @@ describe('With Auth', () => {
     it('GET /products/all', async () => {
       return request(app.getHttpServer())
         .get('/products/all')
-        .set('Authorization', `Bearer ${manager.access}`)
+        .set('Authorization', `Bearer ${merchant.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
 
@@ -1987,7 +1955,7 @@ describe('With Auth', () => {
     it('GET /lots/all', async () => {
       return request(app.getHttpServer())
         .get('/lots/all')
-        .set('Authorization', `Bearer ${manager.access}`)
+        .set('Authorization', `Bearer ${merchant.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
 
@@ -2087,7 +2055,7 @@ describe('With Auth', () => {
     it('GET /orders/all', async () => {
       return request(app.getHttpServer())
         .get('/orders/all')
-        .set('Authorization', `Bearer ${manager.access}`)
+        .set('Authorization', `Bearer ${merchant.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
 
@@ -2212,7 +2180,7 @@ describe('With Auth', () => {
     it('GET /deliveries/all', async () => {
       return request(app.getHttpServer())
         .get('/deliveries/all')
-        .set('Authorization', `Bearer ${manager.access}`)
+        .set('Authorization', `Bearer ${merchant.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
 
@@ -2286,7 +2254,7 @@ describe('With Auth', () => {
     it('GET /leases/all', async () => {
       return request(app.getHttpServer())
         .get('/leases/all')
-        .set('Authorization', `Bearer ${manager.access}`)
+        .set('Authorization', `Bearer ${merchant.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
 
@@ -2337,7 +2305,7 @@ describe('With Auth', () => {
     it('GET /trades/all', async () => {
       return request(app.getHttpServer())
         .get('/trades/all')
-        .set('Authorization', `Bearer ${manager.access}`)
+        .set('Authorization', `Bearer ${merchant.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
 
@@ -2382,7 +2350,7 @@ describe('With Auth', () => {
     it('GET /sales/all', async () => {
       return request(app.getHttpServer())
         .get('/sales/all')
-        .set('Authorization', `Bearer ${manager.access}`)
+        .set('Authorization', `Bearer ${merchant.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
 
@@ -2426,7 +2394,7 @@ describe('With Auth', () => {
     it('GET /bids/all', async () => {
       return request(app.getHttpServer())
         .get('/bids/all')
-        .set('Authorization', `Bearer ${manager.access}`)
+        .set('Authorization', `Bearer ${merchant.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
   });
@@ -2508,7 +2476,7 @@ describe('With Auth', () => {
     it('GET /tasks/all', async () => {
       return request(app.getHttpServer())
         .get('/tasks/all')
-        .set('Authorization', `Bearer ${manager.access}`)
+        .set('Authorization', `Bearer ${merchant.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
 
@@ -2612,7 +2580,7 @@ describe('With Auth', () => {
     it('GET /plaints/all', async () => {
       return request(app.getHttpServer())
         .get('/plaints/all')
-        .set('Authorization', `Bearer ${judge.access}`)
+        .set('Authorization', `Bearer ${inspector.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
   });
@@ -2643,7 +2611,7 @@ describe('With Auth', () => {
     it('POST /plaints/:plaintId', async () => {
       return request(app.getHttpServer())
         .post(`/plaints/${plaintsId[0]}`)
-        .set('Authorization', `Bearer ${judge.access}`)
+        .set('Authorization', `Bearer ${inspector.access}`)
         .send({ text: 'plaint text' })
         .expect('');
     });
@@ -2776,7 +2744,7 @@ describe('With Auth', () => {
     it('GET /polls/all', async () => {
       return request(app.getHttpServer())
         .get('/polls/all')
-        .set('Authorization', `Bearer ${president.access}`)
+        .set('Authorization', `Bearer ${inspector.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
   });
@@ -2807,7 +2775,7 @@ describe('With Auth', () => {
     it('POST /polls/:pollId', async () => {
       return request(app.getHttpServer())
         .post(`/polls/${pollsId[0]}`)
-        .set('Authorization', `Bearer ${president.access}`)
+        .set('Authorization', `Bearer ${inspector.access}`)
         .send({ type: true })
         .expect('');
     });

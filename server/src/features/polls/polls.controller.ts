@@ -61,7 +61,7 @@ export class PollsController {
     return this.pollsService.getDiscussedPolls(myId, req);
   }
 
-  @Roles(Role.PRESIDENT)
+  @Roles(Role.INSPECTOR)
   @Get('all')
   getAllPolls(@Query() req: Request): Promise<Response<Poll>> {
     return this.pollsService.getAllPolls(req);
@@ -104,7 +104,7 @@ export class PollsController {
     return this.pollsService.createPoll({ ...dto, userId: myId, nick });
   }
 
-  @Roles(Role.PRESIDENT)
+  @Roles(Role.INSPECTOR)
   @Post('all')
   createUserPoll(
     @MyNick() nick: string,
@@ -117,14 +117,14 @@ export class PollsController {
   editPoll(
     @MyId() myId: number,
     @MyNick() nick: string,
-    @HasRole(Role.PRESIDENT) hasRole: boolean,
+    @HasRole(Role.INSPECTOR) hasRole: boolean,
     @Param() { pollId }: PollIdDto,
     @Body() dto: EditPollDto,
   ): Promise<void> {
     return this.pollsService.editPoll({ ...dto, pollId, myId, nick, hasRole });
   }
 
-  @Roles(Role.PRESIDENT)
+  @Roles(Role.INSPECTOR)
   @Post(':pollId')
   completePoll(
     @MyNick() nick: string,
@@ -137,7 +137,7 @@ export class PollsController {
   @Delete(':pollId')
   deletePoll(
     @MyId() myId: number,
-    @HasRole(Role.PRESIDENT) hasRole: boolean,
+    @HasRole(Role.INSPECTOR) hasRole: boolean,
     @Param() { pollId }: PollIdDto,
   ): Promise<void> {
     return this.pollsService.deletePoll({ pollId, myId, hasRole });

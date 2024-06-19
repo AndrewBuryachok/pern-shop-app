@@ -42,7 +42,7 @@ export class RatingsController {
     return this.ratingsService.getReceivedRatings(myId, req);
   }
 
-  @Roles(Role.ADMIN)
+  @Roles(Role.INSPECTOR)
   @Get('all')
   getAllRatings(@Query() req: Request): Promise<Response<Rating>> {
     return this.ratingsService.getAllRatings(req);
@@ -61,7 +61,7 @@ export class RatingsController {
     });
   }
 
-  @Roles(Role.ADMIN)
+  @Roles(Role.INSPECTOR)
   @Post('all')
   createUserRating(
     @MyNick() nick: string,
@@ -74,7 +74,7 @@ export class RatingsController {
   editRating(
     @MyId() myId: number,
     @MyNick() nick: string,
-    @HasRole(Role.ADMIN) hasRole: boolean,
+    @HasRole(Role.INSPECTOR) hasRole: boolean,
     @Param() { ratingId }: RatingIdDto,
     @Body() dto: EditRatingDto,
   ): Promise<void> {
@@ -91,7 +91,7 @@ export class RatingsController {
   deleteRating(
     @MyId() myId: number,
     @MyNick() nick: string,
-    @HasRole(Role.ADMIN) hasRole: boolean,
+    @HasRole(Role.INSPECTOR) hasRole: boolean,
     @Param() { ratingId }: RatingIdDto,
   ): Promise<void> {
     return this.ratingsService.deleteRating({ ratingId, myId, nick, hasRole });

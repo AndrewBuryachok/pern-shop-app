@@ -68,7 +68,7 @@ export class ArticlesController {
     return this.articlesService.getCommentedArticles(myId, req);
   }
 
-  @Roles(Role.FBI)
+  @Roles(Role.INSPECTOR)
   @Get('all')
   getAllArticles(@Query() req: Request): Promise<Response<Article>> {
     return this.articlesService.getAllArticles(req);
@@ -115,7 +115,7 @@ export class ArticlesController {
     return this.articlesService.createArticle({ ...dto, userId: myId, nick });
   }
 
-  @Roles(Role.FBI)
+  @Roles(Role.INSPECTOR)
   @Post('all')
   createUserArticle(
     @MyNick() nick: string,
@@ -128,7 +128,7 @@ export class ArticlesController {
   editArticle(
     @MyId() myId: number,
     @MyNick() nick: string,
-    @HasRole(Role.FBI) hasRole: boolean,
+    @HasRole(Role.INSPECTOR) hasRole: boolean,
     @Param() { articleId }: ArticleIdDto,
     @Body() dto: EditArticleDto,
   ): Promise<void> {
@@ -144,7 +144,7 @@ export class ArticlesController {
   @Delete(':articleId')
   deleteArticle(
     @MyId() myId: number,
-    @HasRole(Role.FBI) hasRole: boolean,
+    @HasRole(Role.INSPECTOR) hasRole: boolean,
     @Param() { articleId }: ArticleIdDto,
   ): Promise<void> {
     return this.articlesService.deleteArticle({ articleId, myId, hasRole });

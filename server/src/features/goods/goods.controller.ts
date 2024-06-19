@@ -35,7 +35,7 @@ export class GoodsController {
     return this.goodsService.getMyGoods(myId, req);
   }
 
-  @Roles(Role.MANAGER)
+  @Roles(Role.MERCHANT)
   @Get('all')
   getAllGoods(@Query() req: Request): Promise<Response<Good>> {
     return this.goodsService.getAllGoods(req);
@@ -45,7 +45,7 @@ export class GoodsController {
   createGood(
     @MyId() myId: number,
     @MyNick() nick: string,
-    @HasRole(Role.MANAGER) hasRole: boolean,
+    @HasRole(Role.MERCHANT) hasRole: boolean,
     @Body() dto: CreateGoodDto,
   ): Promise<void> {
     return this.goodsService.createGood({ ...dto, myId, nick, hasRole });
@@ -54,7 +54,7 @@ export class GoodsController {
   @Patch(':goodId')
   editGood(
     @MyId() myId: number,
-    @HasRole(Role.MANAGER) hasRole: boolean,
+    @HasRole(Role.MERCHANT) hasRole: boolean,
     @Param() { goodId }: GoodIdDto,
     @Body() dto: EditGoodDto,
   ): Promise<void> {
@@ -64,7 +64,7 @@ export class GoodsController {
   @Delete(':goodId')
   deleteGood(
     @MyId() myId: number,
-    @HasRole(Role.MANAGER) hasRole: boolean,
+    @HasRole(Role.MERCHANT) hasRole: boolean,
     @Param() { goodId }: GoodIdDto,
   ): Promise<void> {
     return this.goodsService.deleteGood({ goodId, myId, hasRole });

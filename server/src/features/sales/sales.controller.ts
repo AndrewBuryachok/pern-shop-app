@@ -50,7 +50,7 @@ export class SalesController {
     return this.salesService.getPlacedSales(myId, req);
   }
 
-  @Roles(Role.MANAGER)
+  @Roles(Role.MERCHANT)
   @Get('all')
   getAllSales(@Query() req: Request): Promise<Response<Sale>> {
     return this.salesService.getAllSales(req);
@@ -60,7 +60,7 @@ export class SalesController {
   createSale(
     @MyId() myId: number,
     @MyNick() nick: string,
-    @HasRole(Role.MANAGER) hasRole: boolean,
+    @HasRole(Role.MERCHANT) hasRole: boolean,
     @Body() dto: CreateSaleDto,
   ): Promise<void> {
     return this.salesService.createSale({ ...dto, myId, nick, hasRole });
@@ -70,7 +70,7 @@ export class SalesController {
   rateSale(
     @MyId() myId: number,
     @MyNick() nick: string,
-    @HasRole(Role.MANAGER) hasRole: boolean,
+    @HasRole(Role.MERCHANT) hasRole: boolean,
     @Param() { saleId }: SaleIdDto,
     @Body() dto: RateSaleDto,
   ): Promise<void> {

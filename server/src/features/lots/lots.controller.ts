@@ -35,7 +35,7 @@ export class LotsController {
     return this.lotsService.getPlacedLots(myId, req);
   }
 
-  @Roles(Role.MANAGER)
+  @Roles(Role.MERCHANT)
   @Get('all')
   getAllLots(@Query() req: Request): Promise<Response<Lot>> {
     return this.lotsService.getAllLots(req);
@@ -51,7 +51,7 @@ export class LotsController {
   createLot(
     @MyId() myId: number,
     @MyNick() nick: string,
-    @HasRole(Role.MANAGER) hasRole: boolean,
+    @HasRole(Role.MERCHANT) hasRole: boolean,
     @Body() dto: CreateLotDto,
   ): Promise<void> {
     return this.lotsService.createLot({ ...dto, myId, nick, hasRole });
@@ -61,7 +61,7 @@ export class LotsController {
   completeLot(
     @MyId() myId: number,
     @MyNick() nick: string,
-    @HasRole(Role.MANAGER) hasRole: boolean,
+    @HasRole(Role.MERCHANT) hasRole: boolean,
     @Param() { lotId }: LotIdDto,
   ): Promise<void> {
     return this.lotsService.completeLot({ lotId, myId, nick, hasRole });

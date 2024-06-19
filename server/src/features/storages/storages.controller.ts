@@ -34,7 +34,7 @@ export class StoragesController {
     return this.storagesService.getMyStorages(myId, req);
   }
 
-  @Roles(Role.MANAGER)
+  @Roles(Role.MERCHANT)
   @Get('all')
   getAllStorages(@Query() req: Request): Promise<Response<Storage>> {
     return this.storagesService.getAllStorages(req);
@@ -51,7 +51,7 @@ export class StoragesController {
     return this.storagesService.selectMyStorages(myId);
   }
 
-  @Roles(Role.MANAGER)
+  @Roles(Role.MERCHANT)
   @Get('all/select')
   selectAllStorages(): Promise<Storage[]> {
     return this.storagesService.selectAllStorages();
@@ -61,7 +61,7 @@ export class StoragesController {
   createStorage(
     @MyId() myId: number,
     @MyNick() nick: string,
-    @HasRole(Role.MANAGER) hasRole: boolean,
+    @HasRole(Role.MERCHANT) hasRole: boolean,
     @Body() dto: CreateStorageDto,
   ): Promise<void> {
     return this.storagesService.createStorage({ ...dto, myId, nick, hasRole });
@@ -70,7 +70,7 @@ export class StoragesController {
   @Patch(':storageId')
   editStorage(
     @MyId() myId: number,
-    @HasRole(Role.MANAGER) hasRole: boolean,
+    @HasRole(Role.MERCHANT) hasRole: boolean,
     @Param() { storageId }: StorageIdDto,
     @Body() dto: EditStorageDto,
   ): Promise<void> {

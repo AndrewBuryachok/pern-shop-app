@@ -28,7 +28,7 @@ export class StoresController {
     return this.storesService.getMyStores(myId, req);
   }
 
-  @Roles(Role.MANAGER)
+  @Roles(Role.MERCHANT)
   @Get('all')
   getAllStores(@Query() req: Request): Promise<Response<Store>> {
     return this.storesService.getAllStores(req);
@@ -49,7 +49,7 @@ export class StoresController {
   @Post()
   createStore(
     @MyId() myId: number,
-    @HasRole(Role.MANAGER) hasRole: boolean,
+    @HasRole(Role.MERCHANT) hasRole: boolean,
     @Body() dto: CreateStoreDto,
   ): Promise<void> {
     return this.storesService.createStore({ ...dto, myId, hasRole });

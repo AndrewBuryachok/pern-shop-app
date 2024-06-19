@@ -104,7 +104,7 @@ export class ReportsController {
     return this.reportsService.selectReportAnnotations(reportId);
   }
 
-  @Roles(Role.PRESIDENT)
+  @Roles(Role.INSPECTOR)
   @Post('server')
   createServerReport(
     @MyId() myId: number,
@@ -119,7 +119,7 @@ export class ReportsController {
     });
   }
 
-  @Roles(Role.PRESIDENT)
+  @Roles(Role.INSPECTOR)
   @Post('site')
   createSiteReport(
     @MyId() myId: number,
@@ -134,7 +134,7 @@ export class ReportsController {
     });
   }
 
-  @Roles(Role.PRESIDENT)
+  @Roles(Role.INSPECTOR)
   @Post('status')
   createStatusReport(
     @MyId() myId: number,
@@ -198,7 +198,7 @@ export class ReportsController {
   editReport(
     @MyId() myId: number,
     @MyNick() nick: string,
-    @HasRole(Role.PRESIDENT) hasRole: boolean,
+    @HasRole(Role.INSPECTOR) hasRole: boolean,
     @Param() { reportId }: ReportIdDto,
     @Body() dto: EditReportDto,
   ): Promise<void> {
@@ -214,7 +214,7 @@ export class ReportsController {
   @Delete(':reportId')
   deleteReport(
     @MyId() myId: number,
-    @HasRole(Role.PRESIDENT) hasRole: boolean,
+    @HasRole(Role.INSPECTOR) hasRole: boolean,
     @Param() { reportId }: ReportIdDto,
   ): Promise<void> {
     return this.reportsService.deleteReport({ reportId, myId, hasRole });

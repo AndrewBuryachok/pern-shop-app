@@ -36,7 +36,7 @@ export class BidsController {
     return this.bidsService.getPlacedBids(myId, req);
   }
 
-  @Roles(Role.MANAGER)
+  @Roles(Role.MERCHANT)
   @Get('all')
   getAllBids(@Query() req: Request): Promise<Response<Bid>> {
     return this.bidsService.getAllBids(req);
@@ -46,7 +46,7 @@ export class BidsController {
   createBid(
     @MyId() myId: number,
     @MyNick() nick: string,
-    @HasRole(Role.MANAGER) hasRole: boolean,
+    @HasRole(Role.MERCHANT) hasRole: boolean,
     @Body() dto: CreateBidDto,
   ): Promise<void> {
     return this.bidsService.createBid({ ...dto, myId, nick, hasRole });

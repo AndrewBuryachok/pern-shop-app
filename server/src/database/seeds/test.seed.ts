@@ -15,6 +15,14 @@ export default class TestSeed implements Seeder {
       .create();
     await factory(User)()
       .map(async (user) => {
+        user.nick = 'Inspector';
+        user.password = await hashData(user.nick);
+        user.roles = [Role.INSPECTOR];
+        return user;
+      })
+      .create();
+    await factory(User)()
+      .map(async (user) => {
         user.nick = 'Banker';
         user.password = await hashData(user.nick);
         user.roles = [Role.BANKER];
@@ -23,25 +31,9 @@ export default class TestSeed implements Seeder {
       .create();
     await factory(User)()
       .map(async (user) => {
-        user.nick = 'Manager';
+        user.nick = 'Merchant';
         user.password = await hashData(user.nick);
-        user.roles = [Role.MANAGER];
-        return user;
-      })
-      .create();
-    await factory(User)()
-      .map(async (user) => {
-        user.nick = 'Judge';
-        user.password = await hashData(user.nick);
-        user.roles = [Role.JUDGE];
-        return user;
-      })
-      .create();
-    await factory(User)()
-      .map(async (user) => {
-        user.nick = 'HubHead';
-        user.password = await hashData(user.nick);
-        user.roles = [Role.HUB];
+        user.roles = [Role.MERCHANT];
         return user;
       })
       .create();
@@ -55,25 +47,17 @@ export default class TestSeed implements Seeder {
       .create();
     await factory(User)()
       .map(async (user) => {
+        user.nick = 'HubHead';
+        user.password = await hashData(user.nick);
+        user.roles = [Role.HUB];
+        return user;
+      })
+      .create();
+    await factory(User)()
+      .map(async (user) => {
         user.nick = 'EndHead';
         user.password = await hashData(user.nick);
         user.roles = [Role.END];
-        return user;
-      })
-      .create();
-    await factory(User)()
-      .map(async (user) => {
-        user.nick = 'President';
-        user.password = await hashData(user.nick);
-        user.roles = [Role.PRESIDENT];
-        return user;
-      })
-      .create();
-    await factory(User)()
-      .map(async (user) => {
-        user.nick = 'FbiHead';
-        user.password = await hashData(user.nick);
-        user.roles = [Role.FBI];
         return user;
       })
       .create();

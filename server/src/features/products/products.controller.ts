@@ -49,7 +49,7 @@ export class ProductsController {
     return this.productsService.getPlacedProducts(myId, req);
   }
 
-  @Roles(Role.MANAGER)
+  @Roles(Role.MERCHANT)
   @Get('all')
   getAllProducts(@Query() req: Request): Promise<Response<Product>> {
     return this.productsService.getAllProducts(req);
@@ -75,7 +75,7 @@ export class ProductsController {
   createProduct(
     @MyId() myId: number,
     @MyNick() nick: string,
-    @HasRole(Role.MANAGER) hasRole: boolean,
+    @HasRole(Role.MERCHANT) hasRole: boolean,
     @Body() dto: CreateProductDto,
   ): Promise<void> {
     return this.productsService.createProduct({ ...dto, myId, nick, hasRole });
@@ -84,7 +84,7 @@ export class ProductsController {
   @Patch(':productId')
   editProduct(
     @MyId() myId: number,
-    @HasRole(Role.MANAGER) hasRole: boolean,
+    @HasRole(Role.MERCHANT) hasRole: boolean,
     @Param() { productId }: ProductIdDto,
     @Body() dto: EditProductDto,
   ): Promise<void> {
@@ -99,7 +99,7 @@ export class ProductsController {
   @Post(':productId')
   completeProduct(
     @MyId() myId: number,
-    @HasRole(Role.MANAGER) hasRole: boolean,
+    @HasRole(Role.MERCHANT) hasRole: boolean,
     @Param() { productId }: ProductIdDto,
   ): Promise<void> {
     return this.productsService.completeProduct({ productId, myId, hasRole });

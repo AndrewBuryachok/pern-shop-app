@@ -56,7 +56,7 @@ export class OrdersController {
     return this.ordersService.getPlacedOrders(myId, req);
   }
 
-  @Roles(Role.MANAGER)
+  @Roles(Role.MERCHANT)
   @Get('all')
   getAllOrders(@Query() req: Request): Promise<Response<Order>> {
     return this.ordersService.getAllOrders(req);
@@ -66,7 +66,7 @@ export class OrdersController {
   createOrder(
     @MyId() myId: number,
     @MyNick() nick: string,
-    @HasRole(Role.MANAGER) hasRole: boolean,
+    @HasRole(Role.MERCHANT) hasRole: boolean,
     @Body() dto: CreateOrderDto,
   ): Promise<void> {
     return this.ordersService.createOrder({ ...dto, myId, nick, hasRole });
@@ -76,7 +76,7 @@ export class OrdersController {
   takeOrder(
     @MyId() myId: number,
     @MyNick() nick: string,
-    @HasRole(Role.MANAGER) hasRole: boolean,
+    @HasRole(Role.MERCHANT) hasRole: boolean,
     @Param() { orderId }: OrderIdDto,
     @Body() dto: TakeOrderDto,
   ): Promise<void> {
@@ -93,7 +93,7 @@ export class OrdersController {
   untakeOrder(
     @MyId() myId: number,
     @MyNick() nick: string,
-    @HasRole(Role.MANAGER) hasRole: boolean,
+    @HasRole(Role.MERCHANT) hasRole: boolean,
     @Param() { orderId }: OrderIdDto,
   ): Promise<void> {
     return this.ordersService.untakeOrder({ orderId, myId, nick, hasRole });
@@ -103,7 +103,7 @@ export class OrdersController {
   executeOrder(
     @MyId() myId: number,
     @MyNick() nick: string,
-    @HasRole(Role.MANAGER) hasRole: boolean,
+    @HasRole(Role.MERCHANT) hasRole: boolean,
     @Param() { orderId }: OrderIdDto,
   ): Promise<void> {
     return this.ordersService.executeOrder({ orderId, myId, nick, hasRole });
@@ -113,7 +113,7 @@ export class OrdersController {
   completeOrder(
     @MyId() myId: number,
     @MyNick() nick: string,
-    @HasRole(Role.MANAGER) hasRole: boolean,
+    @HasRole(Role.MERCHANT) hasRole: boolean,
     @Param() { orderId }: OrderIdDto,
   ): Promise<void> {
     return this.ordersService.completeOrder({ orderId, myId, nick, hasRole });
@@ -122,7 +122,7 @@ export class OrdersController {
   @Delete(':orderId')
   deleteOrder(
     @MyId() myId: number,
-    @HasRole(Role.MANAGER) hasRole: boolean,
+    @HasRole(Role.MERCHANT) hasRole: boolean,
     @Param() { orderId }: OrderIdDto,
   ): Promise<void> {
     return this.ordersService.deleteOrder({ orderId, myId, hasRole });
@@ -132,7 +132,7 @@ export class OrdersController {
   rateOrder(
     @MyId() myId: number,
     @MyNick() nick: string,
-    @HasRole(Role.MANAGER) hasRole: boolean,
+    @HasRole(Role.MERCHANT) hasRole: boolean,
     @Param() { orderId }: OrderIdDto,
     @Body() dto: RateOrderDto,
   ): Promise<void> {

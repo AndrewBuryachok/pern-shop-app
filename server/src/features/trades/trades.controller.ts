@@ -50,7 +50,7 @@ export class TradesController {
     return this.tradesService.getPlacedTrades(myId, req);
   }
 
-  @Roles(Role.MANAGER)
+  @Roles(Role.MERCHANT)
   @Get('all')
   getAllTrades(@Query() req: Request): Promise<Response<Trade>> {
     return this.tradesService.getAllTrades(req);
@@ -60,7 +60,7 @@ export class TradesController {
   createTrade(
     @MyId() myId: number,
     @MyNick() nick: string,
-    @HasRole(Role.MANAGER) hasRole: boolean,
+    @HasRole(Role.MERCHANT) hasRole: boolean,
     @Body() dto: CreateTradeDto,
   ): Promise<void> {
     return this.tradesService.createTrade({ ...dto, myId, nick, hasRole });
@@ -70,7 +70,7 @@ export class TradesController {
   rateTrade(
     @MyId() myId: number,
     @MyNick() nick: string,
-    @HasRole(Role.MANAGER) hasRole: boolean,
+    @HasRole(Role.MERCHANT) hasRole: boolean,
     @Param() { tradeId }: TradeIdDto,
     @Body() dto: RateTradeDto,
   ): Promise<void> {

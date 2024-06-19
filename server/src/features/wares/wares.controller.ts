@@ -49,7 +49,7 @@ export class WaresController {
     return this.waresService.getPlacedWares(myId, req);
   }
 
-  @Roles(Role.MANAGER)
+  @Roles(Role.MERCHANT)
   @Get('all')
   getAllWares(@Query() req: Request): Promise<Response<Ware>> {
     return this.waresService.getAllWares(req);
@@ -71,7 +71,7 @@ export class WaresController {
   createWare(
     @MyId() myId: number,
     @MyNick() nick: string,
-    @HasRole(Role.MANAGER) hasRole: boolean,
+    @HasRole(Role.MERCHANT) hasRole: boolean,
     @Body() dto: CreateWareDto,
   ): Promise<void> {
     return this.waresService.createWare({ ...dto, myId, nick, hasRole });
@@ -80,7 +80,7 @@ export class WaresController {
   @Patch(':wareId')
   editWare(
     @MyId() myId: number,
-    @HasRole(Role.MANAGER) hasRole: boolean,
+    @HasRole(Role.MERCHANT) hasRole: boolean,
     @Param() { wareId }: WareIdDto,
     @Body() dto: EditWareDto,
   ): Promise<void> {
@@ -90,7 +90,7 @@ export class WaresController {
   @Post(':wareId')
   completeWare(
     @MyId() myId: number,
-    @HasRole(Role.MANAGER) hasRole: boolean,
+    @HasRole(Role.MERCHANT) hasRole: boolean,
     @Param() { wareId }: WareIdDto,
   ): Promise<void> {
     return this.waresService.completeWare({ wareId, myId, hasRole });

@@ -49,7 +49,7 @@ export class TasksController {
     return this.tasksService.getTakenTasks(myId, req);
   }
 
-  @Roles(Role.MANAGER)
+  @Roles(Role.MERCHANT)
   @Get('all')
   getAllTasks(@Query() req: Request): Promise<Response<Task>> {
     return this.tasksService.getAllTasks(req);
@@ -64,7 +64,7 @@ export class TasksController {
     return this.tasksService.createTask({ ...dto, userId: myId, nick });
   }
 
-  @Roles(Role.MANAGER)
+  @Roles(Role.MERCHANT)
   @Post('all')
   createUserTask(
     @MyNick() nick: string,
@@ -76,7 +76,7 @@ export class TasksController {
   @Patch(':taskId')
   editTask(
     @MyId() myId: number,
-    @HasRole(Role.MANAGER) hasRole: boolean,
+    @HasRole(Role.MERCHANT) hasRole: boolean,
     @Param() { taskId }: TaskIdDto,
     @Body() dto: EditTaskDto,
   ): Promise<void> {
@@ -92,7 +92,7 @@ export class TasksController {
     return this.tasksService.takeTask({ taskId, userId: myId, nick });
   }
 
-  @Roles(Role.MANAGER)
+  @Roles(Role.MERCHANT)
   @Post('all/:taskId/take')
   takeUserTask(
     @MyNick() nick: string,
@@ -106,7 +106,7 @@ export class TasksController {
   untakeTask(
     @MyId() myId: number,
     @MyNick() nick: string,
-    @HasRole(Role.MANAGER) hasRole: boolean,
+    @HasRole(Role.MERCHANT) hasRole: boolean,
     @Param() { taskId }: TaskIdDto,
   ): Promise<void> {
     return this.tasksService.untakeTask({ taskId, myId, nick, hasRole });
@@ -116,7 +116,7 @@ export class TasksController {
   executeTask(
     @MyId() myId: number,
     @MyNick() nick: string,
-    @HasRole(Role.MANAGER) hasRole: boolean,
+    @HasRole(Role.MERCHANT) hasRole: boolean,
     @Param() { taskId }: TaskIdDto,
   ): Promise<void> {
     return this.tasksService.executeTask({ taskId, myId, nick, hasRole });
@@ -126,7 +126,7 @@ export class TasksController {
   completeTask(
     @MyId() myId: number,
     @MyNick() nick: string,
-    @HasRole(Role.MANAGER) hasRole: boolean,
+    @HasRole(Role.MERCHANT) hasRole: boolean,
     @Param() { taskId }: TaskIdDto,
   ): Promise<void> {
     return this.tasksService.completeTask({ taskId, myId, nick, hasRole });
@@ -135,7 +135,7 @@ export class TasksController {
   @Delete(':taskId')
   deleteTask(
     @MyId() myId: number,
-    @HasRole(Role.MANAGER) hasRole: boolean,
+    @HasRole(Role.MERCHANT) hasRole: boolean,
     @Param() { taskId }: TaskIdDto,
   ): Promise<void> {
     return this.tasksService.deleteTask({ taskId, myId, hasRole });
