@@ -32,11 +32,11 @@ export default function ArticlesList({ actions = [], ...props }: Props) {
             (subscriber) => subscriber.id === article.user.id,
           ),
           viewed: !!viewedArticles?.includes(article.id),
-          upLiked: likedArticles?.find(
+          upLiked: !!likedArticles?.find(
             (likedArticle) =>
               likedArticle.id === article.id && likedArticle.like.type,
           ),
-          downLiked: likedArticles?.find(
+          downLiked: !!likedArticles?.find(
             (likedArticle) =>
               likedArticle.id === article.id && !likedArticle.like.type,
           ),

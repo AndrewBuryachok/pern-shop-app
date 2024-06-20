@@ -25,11 +25,11 @@ export default function ReportsList({ actions = [], ...props }: Props) {
         .map((report) => ({
           ...report,
           viewed: !!viewedReports?.includes(report.id),
-          upAttituded: attitudedReports?.find(
+          upAttituded: !!attitudedReports?.find(
             (attitudedReport) =>
               attitudedReport.id === report.id && attitudedReport.attitude.type,
           ),
-          downAttituded: attitudedReports?.find(
+          downAttituded: !!attitudedReports?.find(
             (attitudedReport) =>
               attitudedReport.id === report.id &&
               !attitudedReport.attitude.type,
@@ -40,7 +40,7 @@ export default function ReportsList({ actions = [], ...props }: Props) {
             key={report.id}
             report={report}
             isViewedLoading={viewedReportsResponse.isFetching}
-            isAttitutedLoading={attitudedReportsResponse.isFetching}
+            isAttitudedLoading={attitudedReportsResponse.isFetching}
             actions={actions}
           />
         ))}

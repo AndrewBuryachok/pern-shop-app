@@ -7,7 +7,7 @@ import {
   useGetMyPlaintsQuery,
   useGetReceivedPlaintsQuery,
 } from '../../features/plaints/plaints.api';
-import PlaintsTable from '../../features/plaints/PlaintsTable';
+import PlaintsList from '../../features/plaints/PlaintsList';
 import {
   createMyPlaintButton,
   createUserPlaintButton,
@@ -52,7 +52,7 @@ export default function PlaintsPage() {
   }[tab];
 
   return (
-    <PlaintsTable
+    <PlaintsList
       {...response}
       search={search}
       button={button}

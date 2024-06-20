@@ -168,11 +168,13 @@
     "remove": "Remove",
     "untake": "Untake",
     "message": "Send Message",
+    "reply": "Reply",
     "friend": "Add to Friends",
     "unfriend": "Remove from Friends",
     "subscribe": "Subscribe",
     "unsubscribe": "Unsubscribe",
-    "view": "View"
+    "view": "View",
+    "hide": "Hide"
   },
   "components": {
     "submit": "Submit",
@@ -196,7 +198,6 @@
     "owner": "Owner",
     "city": "City",
     "time": "Hours",
-    "messages": "Messages",
     "friends": "Friends",
     "subscribers": "Subscribers",
     "raters": "Raters",
@@ -277,7 +278,8 @@
     "attitudes": "Attitudes",
     "annotations": "Annotations",
     "likes": "Likes",
-    "comments": "Comments"
+    "comments": "Comments",
+    "reply": "Comment"
   },
   "modals": {
     "auth": "Auth",

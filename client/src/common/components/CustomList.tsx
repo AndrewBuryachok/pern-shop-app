@@ -14,10 +14,11 @@ export default function CustomList<T>(props: Props<T>) {
                 <Skeleton w={128} h={32} />
                 <Skeleton h={32} />
                 <Skeleton h={200} />
-                <Group spacing={8}>
-                  <Skeleton w={64} h={24} />
-                  <Skeleton w={64} h={24} />
-                  <Skeleton w={64} h={24} />
+                <Group spacing={0} position='apart'>
+                  <Group spacing={8}>
+                    <Skeleton w={64} h={24} />
+                    <Skeleton w={64} h={24} />
+                  </Group>
                   <Skeleton w={64} h={24} />
                 </Group>
               </Stack>

@@ -86,6 +86,35 @@ export const reportsApi = emptyApi.injectEndpoints({
         url: `/reports/${reportId}/annotations`,
       }),
       providesTags: ['Annotation'],
+      async onQueryStarted(reportId, { dispatch, queryFulfilled, getState }) {
+        const { data: annotations } = await queryFulfilled;
+        const endpoints = reportsApi.util.selectInvalidatedBy(getState(), [
+          'Report',
+        ]);
+        endpoints
+          .filter((endpoint) => endpoint.endpointName === 'getMainReports')
+          .forEach((endpoint) => {
+            const patchResult = dispatch(
+              reportsApi.util.updateQueryData(
+                'getMainReports',
+                endpoint.originalArgs,
+                (draft) => {
+                  const report = draft.result.find(
+                    (report) => report.id === reportId,
+                  );
+                  if (report) {
+                    if (annotations.length) {
+                      report.annotation = annotations[annotations.length - 1];
+                    } else {
+                      report.annotation = undefined;
+                    }
+                  }
+                },
+              ),
+            );
+            queryFulfilled.catch(patchResult.undo);
+          });
+      },
     }),
     createServerReport: build.mutation<void, CreateReportDto>({
       query: (dto) => ({

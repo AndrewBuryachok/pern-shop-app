@@ -25,11 +25,11 @@ import {
 } from '../../features/messages/messages.api';
 import { CreateMessageDto } from '../../features/messages/message.dto';
 import AvatarWithSingleText from '../../common/components/AvatarWithSingleText';
-import RepliesTimeline from '../../common/components/RepliesTimeline';
-import ReplyAvatarWithText from '../../common/components/ReplyAvatarWithText';
+import MessagesTimeline from '../../common/components/MessagesTimeline';
+import ReplyAvatarWithClose from '../../common/components/ReplyAvatarWithClose';
 import { editMessageAction } from '../../features/messages/EditMessageModal';
 import { deleteMessageAction } from '../../features/messages/DeleteMessageModal';
-import { Color, MAX_TEXT_LENGTH } from '../../common/constants';
+import { MAX_TEXT_LENGTH } from '../../common/constants';
 
 export default function SingleChat() {
   const [t] = useTranslation();
@@ -104,25 +104,19 @@ export default function SingleChat() {
           radius={0}
           style={{ flex: 1 }}
         >
-          <RepliesTimeline
+          <MessagesTimeline
             {...response}
-            actions={[
-              {
-                open: (reply: Reply) =>
-                  form.setFieldValue(
-                    'messageId',
-                    reply.id === form.values.messageId ? 0 : reply.id,
-                  ),
-                disable: () => false,
-                color: Color.GREEN,
-              },
-              editMessageAction,
-              deleteMessageAction,
-            ]}
+            actions={[editMessageAction, deleteMessageAction]}
+            reply={(reply: Reply) => form.setFieldValue('messageId', reply.id)}
           />
           <div ref={targetRef}></div>
         </Paper>
-        {message && <ReplyAvatarWithText {...message} />}
+        {message && (
+          <ReplyAvatarWithClose
+            {...message}
+            close={() => form.setFieldValue('messageId', 0)}
+          />
+        )}
         <form onSubmit={form.onSubmit(handleSubmit)}>
           <Textarea
             placeholder={t('columns.text')}

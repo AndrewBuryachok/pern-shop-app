@@ -13,21 +13,22 @@ type Props = {
 export default function ReactionsTimeline(props: Props) {
   return (
     <Timeline bulletSize={32}>
-      {props.isFetching && (
-        <Timeline.Item title={<Skeleton w={64} h={16} />}>
-          <Skeleton w={128} h={16} />
-        </Timeline.Item>
-      )}
-      {props.data?.map((reaction) => (
-        <Timeline.Item
-          key={reaction.id}
-          title={<SingleText text={reaction.user.nick} bold />}
-          bullet={<CustomAvatar {...reaction.user} />}
-        >
-          <ReactionBadge {...reaction} />
-          <SingleText text={parseTime(reaction.createdAt)} dimmed />
-        </Timeline.Item>
-      ))}
+      {props.isFetching
+        ? [...Array(5).keys()].map((key) => (
+            <Timeline.Item key={key} title={<Skeleton w={64} h={16} />}>
+              <Skeleton w={128} h={16} />
+            </Timeline.Item>
+          ))
+        : props.data?.map((reaction) => (
+            <Timeline.Item
+              key={reaction.id}
+              title={<SingleText text={reaction.user.nick} bold />}
+              bullet={<CustomAvatar {...reaction.user} />}
+            >
+              <ReactionBadge {...reaction} />
+              <SingleText text={parseTime(reaction.createdAt)} dimmed />
+            </Timeline.Item>
+          ))}
     </Timeline>
   );
 }

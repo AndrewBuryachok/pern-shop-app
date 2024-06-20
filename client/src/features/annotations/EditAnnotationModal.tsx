@@ -65,7 +65,7 @@ export const editAnnotationAction = {
     }),
   disable: (annotation: Annotation) => {
     const user = getCurrentUser();
-    return annotation.user.id !== user?.id && isUserNotHasRole(Role.INSPECTOR);
+    return isUserNotHasRole(Role.INSPECTOR) && annotation.user.id !== user?.id;
   },
   color: Color.YELLOW,
 };

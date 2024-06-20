@@ -1,4 +1,5 @@
 import { SmUser } from '../users/user.model';
+import { SmAnswer } from '../answers/answer.model';
 
 export interface Plaint {
   id: number;
@@ -10,4 +11,5 @@ export interface Plaint {
   createdAt: Date;
   completedAt?: Date;
   answers: number;
+  answer?: SmAnswer;
 }

@@ -48,6 +48,35 @@ export const plaintsApi = emptyApi.injectEndpoints({
         url: `/plaints/${plaintId}/answers`,
       }),
       providesTags: ['Answer'],
+      async onQueryStarted(plaintId, { dispatch, queryFulfilled, getState }) {
+        const { data: answers } = await queryFulfilled;
+        const endpoints = plaintsApi.util.selectInvalidatedBy(getState(), [
+          'Plaint',
+        ]);
+        endpoints
+          .filter((endpoint) => endpoint.endpointName === 'getMainPlaints')
+          .forEach((endpoint) => {
+            const patchResult = dispatch(
+              plaintsApi.util.updateQueryData(
+                'getMainPlaints',
+                endpoint.originalArgs,
+                (draft) => {
+                  const plaint = draft.result.find(
+                    (plaint) => plaint.id === plaintId,
+                  );
+                  if (plaint) {
+                    if (answers.length) {
+                      plaint.answer = answers[answers.length - 1];
+                    } else {
+                      plaint.answer = undefined;
+                    }
+                  }
+                },
+              ),
+            );
+            queryFulfilled.catch(patchResult.undo);
+          });
+      },
     }),
     createMyPlaint: build.mutation<void, CreatePlaintDto>({
       query: (dto) => ({

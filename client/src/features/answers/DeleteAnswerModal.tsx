@@ -61,7 +61,7 @@ export const deleteAnswerAction = {
     }),
   disable: (answer: Answer) => {
     const user = getCurrentUser();
-    return answer.user.id !== user?.id && isUserNotHasRole(Role.INSPECTOR);
+    return isUserNotHasRole(Role.INSPECTOR) && answer.user.id !== user?.id;
   },
   color: Color.RED,
 };

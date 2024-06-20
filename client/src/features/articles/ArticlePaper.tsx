@@ -1,15 +1,10 @@
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ActionIcon, Button, Group, Paper, Stack } from '@mantine/core';
+import { Button, Group, Paper, Stack } from '@mantine/core';
 import { useIntersection } from '@mantine/hooks';
-import {
-  IconEye,
-  IconMessage,
-  IconThumbDown,
-  IconThumbUp,
-} from '@tabler/icons';
+import { IconEye, IconThumbDown, IconThumbUp } from '@tabler/icons';
 import { IAction } from '../../common/interfaces';
-import { Article, SmArticle } from './article.model';
+import { Article } from './article.model';
 import { getCurrentUser } from '../auth/auth.slice';
 import { useLikeArticleMutation, useViewArticleMutation } from './articles.api';
 import { LikeArticleDto, ViewArticleDto } from './article.dto';
@@ -22,20 +17,18 @@ import AvatarWithDateText from '../../common/components/AvatarWithDateText';
 import CustomHighlight from '../../common/components/CustomHighlight';
 import CustomImage from '../../common/components/CustomImage';
 import CustomVideo from '../../common/components/CustomVideo';
-import CustomAnchor from '../../common/components/CustomAnchor';
 import CustomActions from '../../common/components/CustomActions';
+import ViewArticleCommentsModal from './ViewArticleCommentsModal';
 import { openAuthModal } from '../auth/AuthModal';
 import { viewArticleAction } from './ViewArticleModal';
 import { openViewArticleViewsModal } from './ViewArticleViewsModal';
-import { openViewArticleLikesModal } from './ViewArticleLikesModal';
-import { openViewArticleCommentsModal } from './ViewArticleCommentsModal';
 
 type Props = {
   article: Article & {
     subscribed: boolean;
     viewed: boolean;
-    upLiked?: SmArticle;
-    downLiked?: SmArticle;
+    upLiked: boolean;
+    downLiked: boolean;
   };
   isSubscribersLoading: boolean;
   isViewedLoading: boolean;
@@ -118,66 +111,50 @@ export default function ArticlePaper({ article, ...props }: Props) {
         {article.image2 && <CustomImage image={article.image2} />}
         {article.image3 && <CustomImage image={article.image3} />}
         {article.video && <CustomVideo video={article.video} />}
-        <Group spacing={8}>
-          <ActionIcon
+        <Group spacing={0} position='apart'>
+          <Group spacing={8}>
+            <Button
+              leftIcon={<IconThumbUp size={16} />}
+              variant={article.upLiked ? 'filled' : 'light'}
+              color={article.upLiked ? 'violet' : 'gray'}
+              loading={props.isLikedLoading}
+              onClick={() =>
+                user
+                  ? handleLikeSubmit({ articleId: article.id, type: true })
+                  : openAuthModal()
+              }
+              compact
+            >
+              {article.upLikes}
+            </Button>
+            <Button
+              leftIcon={<IconThumbDown size={16} />}
+              variant={article.downLiked ? 'filled' : 'light'}
+              color={article.downLiked ? 'violet' : 'gray'}
+              loading={props.isLikedLoading}
+              onClick={() =>
+                user
+                  ? handleLikeSubmit({ articleId: article.id, type: false })
+                  : openAuthModal()
+              }
+              compact
+            >
+              {article.downLikes}
+            </Button>
+          </Group>
+          <Button
             ref={ref}
-            size={24}
+            leftIcon={<IconEye size={16} />}
+            variant='light'
+            color='gray'
             loading={props.isViewedLoading}
             onClick={() => openViewArticleViewsModal(article)}
+            compact
           >
-            <IconEye size={16} />
-          </ActionIcon>
-          <CustomAnchor
-            text={`${article.views}`}
-            open={() => openViewArticleViewsModal(article)}
-          />
-          <ActionIcon
-            size={24}
-            variant={article.upLiked && 'filled'}
-            color={article.upLiked && 'violet'}
-            loading={props.isLikedLoading}
-            onClick={() =>
-              user
-                ? handleLikeSubmit({ articleId: article.id, type: true })
-                : openAuthModal()
-            }
-          >
-            <IconThumbUp size={16} />
-          </ActionIcon>
-          <CustomAnchor
-            text={`${article.upLikes}`}
-            open={() => openViewArticleLikesModal(article)}
-          />
-          <ActionIcon
-            size={24}
-            variant={article.downLiked && 'filled'}
-            color={article.downLiked && 'violet'}
-            loading={props.isLikedLoading}
-            onClick={() =>
-              user
-                ? handleLikeSubmit({ articleId: article.id, type: false })
-                : openAuthModal()
-            }
-          >
-            <IconThumbDown size={16} />
-          </ActionIcon>
-          <CustomAnchor
-            text={`${article.downLikes}`}
-            open={() => openViewArticleLikesModal(article)}
-          />
-          <ActionIcon
-            size={24}
-            onClick={() =>
-              user ? openViewArticleCommentsModal(article) : openAuthModal()
-            }
-          >
-            <IconMessage size={16} />
-          </ActionIcon>
-          <CustomAnchor
-            text={`${article.comments}`}
-            open={() => openViewArticleCommentsModal(article)}
-          />
+            {article.views}
+          </Button>
         </Group>
+        <ViewArticleCommentsModal data={article} />
       </Stack>
     </Paper>
   );

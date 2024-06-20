@@ -27,10 +27,10 @@ export default function PollsList({ actions = [], ...props }: Props) {
         .map((poll) => ({
           ...poll,
           viewed: !!viewedPolls?.includes(poll.id),
-          upVoted: votedPolls?.find(
+          upVoted: !!votedPolls?.find(
             (votedPoll) => votedPoll.id === poll.id && votedPoll.vote.type,
           ),
-          downVoted: votedPolls?.find(
+          downVoted: !!votedPolls?.find(
             (votedPoll) => votedPoll.id === poll.id && !votedPoll.vote.type,
           ),
         }))

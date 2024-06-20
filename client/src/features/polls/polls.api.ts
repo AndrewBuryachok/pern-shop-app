@@ -76,6 +76,33 @@ export const pollsApi = emptyApi.injectEndpoints({
         url: `/polls/${pollId}/discussions`,
       }),
       providesTags: ['Discussion'],
+      async onQueryStarted(pollId, { dispatch, queryFulfilled, getState }) {
+        const { data: discussions } = await queryFulfilled;
+        const endpoints = pollsApi.util.selectInvalidatedBy(getState(), [
+          'Poll',
+        ]);
+        endpoints
+          .filter((endpoint) => endpoint.endpointName === 'getMainPolls')
+          .forEach((endpoint) => {
+            const patchResult = dispatch(
+              pollsApi.util.updateQueryData(
+                'getMainPolls',
+                endpoint.originalArgs,
+                (draft) => {
+                  const poll = draft.result.find((poll) => poll.id === pollId);
+                  if (poll) {
+                    if (discussions.length) {
+                      poll.discussion = discussions[discussions.length - 1];
+                    } else {
+                      poll.discussion = undefined;
+                    }
+                  }
+                },
+              ),
+            );
+            queryFulfilled.catch(patchResult.undo);
+          });
+      },
     }),
     createMyPoll: build.mutation<void, CreatePollDto>({
       query: (dto) => ({
