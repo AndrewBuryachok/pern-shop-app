@@ -25,8 +25,8 @@ export class DiscussionsService {
   async createDiscussion(
     dto: ExtCreateDiscussionDto & { nick: string },
   ): Promise<void> {
-    const poll = await this.pollsService.checkPollNotCompleted(dto.pollId);
     await this.create(dto);
+    const poll = await this.pollsService.findPollById(dto.pollId);
     this.mqttService.publishNotificationMessage(
       dto.pollId,
       poll.userId,

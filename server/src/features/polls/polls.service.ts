@@ -164,6 +164,7 @@ export class PollsService {
         'replier.nick',
         'replier.avatar',
         'reply.text',
+        'reply.createdAt',
         'discussioner.id',
         'discussioner.nick',
         'discussioner.avatar',
@@ -231,7 +232,6 @@ export class PollsService {
   }
 
   async votePoll(dto: ExtVotePollDto & { nick: string }): Promise<void> {
-    const poll = await this.checkPollNotCompleted(dto.pollId);
     const vote = await this.votesRepository.findOneBy({
       pollId: dto.pollId,
       userId: dto.myId,
@@ -245,6 +245,7 @@ export class PollsService {
       await this.removeVote(vote);
     }
     if (notify) {
+      const poll = await this.findPollById(dto.pollId);
       this.mqttService.publishNotificationMessage(
         dto.pollId,
         poll.userId,
@@ -279,6 +280,10 @@ export class PollsService {
       throw new AppException(PollError.ALREADY_COMPLETED);
     }
     return poll;
+  }
+
+  findPollById(id: number): Promise<Poll> {
+    return this.pollsRepository.findOneBy({ id });
   }
 
   private async create(dto: ExtCreatePollDto): Promise<Poll> {
@@ -384,6 +389,13 @@ export class PollsService {
         (qb) => qb.where('NOT downVote.type'),
       )
       .loadRelationCountAndMap('poll.discussions', 'poll.discussions')
+      .leftJoinAndMapOne(
+        'poll.discussion',
+        'poll.discussions',
+        'discussion',
+        'discussion.id = (SELECT MAX(d.id) FROM discussions AS d WHERE d.poll_id = poll.id)',
+      )
+      .leftJoin('discussion.user', 'discusser')
       .where(
         new Brackets((qb) =>
           qb.where(`${!req.id}`).orWhere('poll.id = :id', { id: req.id }),
@@ -437,6 +449,12 @@ export class PollsService {
         'poll.image',
         'poll.video',
         'poll.result',
+        'discussion.id',
+        'discusser.id',
+        'discusser.nick',
+        'discusser.avatar',
+        'discussion.text',
+        'discussion.createdAt',
         'poll.createdAt',
         'poll.completedAt',
       ]);

@@ -25,10 +25,8 @@ export class AnswersService {
   async createAnswer(
     dto: ExtCreateAnswerDto & { nick: string },
   ): Promise<void> {
-    const plaint = await this.plaintsService.checkPlaintNotCompleted(
-      dto.plaintId,
-    );
     await this.create(dto);
+    const plaint = await this.plaintsService.findPlaintById(dto.plaintId);
     [plaint.senderUserId, plaint.receiverUserId].forEach((userId) =>
       this.mqttService.publishNotificationMessage(
         dto.plaintId,

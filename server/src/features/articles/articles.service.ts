@@ -184,6 +184,7 @@ export class ArticlesService {
         'replier.nick',
         'replier.avatar',
         'reply.text',
+        'reply.createdAt',
         'commenter.id',
         'commenter.nick',
         'commenter.avatar',
@@ -389,6 +390,13 @@ export class ArticlesService {
         (qb) => qb.where('NOT downLike.type'),
       )
       .loadRelationCountAndMap('article.comments', 'article.comments')
+      .leftJoinAndMapOne(
+        'article.comment',
+        'article.comments',
+        'comment',
+        'comment.id = (SELECT MAX(c.id) FROM comments AS c WHERE c.article_id = article.id)',
+      )
+      .leftJoin('comment.user', 'commenter')
       .where(
         new Brackets((qb) =>
           qb.where(`${!req.id}`).orWhere('article.id = :id', { id: req.id }),
@@ -428,6 +436,12 @@ export class ArticlesService {
         'article.image2',
         'article.image3',
         'article.video',
+        'comment.id',
+        'commenter.id',
+        'commenter.nick',
+        'commenter.avatar',
+        'comment.text',
+        'comment.createdAt',
         'article.createdAt',
       ]);
   }

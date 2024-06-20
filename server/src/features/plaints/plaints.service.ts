@@ -89,6 +89,7 @@ export class PlaintsService {
         'replier.nick',
         'replier.avatar',
         'reply.text',
+        'reply.createdAt',
         'answerer.id',
         'answerer.nick',
         'answerer.avatar',
@@ -183,6 +184,10 @@ export class PlaintsService {
     return plaint;
   }
 
+  findPlaintById(id: number): Promise<Plaint> {
+    return this.plaintsRepository.findOneBy({ id });
+  }
+
   private async create(dto: ExtCreatePlaintDto): Promise<Plaint> {
     try {
       const plaint = this.plaintsRepository.create({
@@ -241,6 +246,13 @@ export class PlaintsService {
       .innerJoin('plaint.receiverUser', 'receiverUser')
       .leftJoin('plaint.executorUser', 'executorUser')
       .loadRelationCountAndMap('plaint.answers', 'plaint.answers')
+      .leftJoinAndMapOne(
+        'plaint.answer',
+        'plaint.answers',
+        'answer',
+        'answer.id = (SELECT MAX(a.id) FROM answers AS a WHERE a.plaint_id = plaint.id)',
+      )
+      .leftJoin('answer.user', 'answerer')
       .where(
         new Brackets((qb) =>
           qb.where(`${!req.id}`).orWhere('plaint.id = :id', { id: req.id }),
@@ -311,6 +323,12 @@ export class PlaintsService {
         'executorUser.nick',
         'executorUser.avatar',
         'plaint.text',
+        'answer.id',
+        'answerer.id',
+        'answerer.nick',
+        'answerer.avatar',
+        'answer.text',
+        'answer.createdAt',
         'plaint.createdAt',
         'plaint.completedAt',
       ]);

@@ -67,6 +67,7 @@ export class MessagesService {
         'replier.nick',
         'replier.avatar',
         'reply.text',
+        'reply.createdAt',
         'messager.id',
         'messager.nick',
         'messager.avatar',
