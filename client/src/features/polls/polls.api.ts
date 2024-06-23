@@ -65,9 +65,15 @@ export const pollsApi = emptyApi.injectEndpoints({
       }),
       providesTags: ['PollView'],
     }),
-    selectPollVotes: build.query<Vote[], number>({
+    selectPollUpVotes: build.query<Vote[], number>({
       query: (pollId) => ({
-        url: `/polls/${pollId}/votes`,
+        url: `/polls/${pollId}/upVotes`,
+      }),
+      providesTags: ['Vote'],
+    }),
+    selectPollDownVotes: build.query<Vote[], number>({
+      query: (pollId) => ({
+        url: `/polls/${pollId}/downVotes`,
       }),
       providesTags: ['Vote'],
     }),
@@ -272,7 +278,8 @@ export const {
   useSelectViewedPollsQuery,
   useSelectVotedPollsQuery,
   useSelectPollViewsQuery,
-  useSelectPollVotesQuery,
+  useSelectPollUpVotesQuery,
+  useSelectPollDownVotesQuery,
   useSelectPollDiscussionsQuery,
   useCreateMyPollMutation,
   useCreateUserPollMutation,

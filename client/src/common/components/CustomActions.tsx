@@ -52,7 +52,7 @@ export default function CustomActions<T>(props: Props<T>) {
   );
 
   return (
-    <Menu offset={4} position='left' trigger='hover'>
+    <Menu zIndex={100} offset={4} position='left' trigger='hover'>
       <Menu.Target>
         <ActionIcon size={24}>
           <IconDots size={16} />

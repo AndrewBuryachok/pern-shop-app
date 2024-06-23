@@ -70,9 +70,15 @@ export const articlesApi = emptyApi.injectEndpoints({
       }),
       providesTags: ['ArticleView'],
     }),
-    selectArticleLikes: build.query<Like[], number>({
+    selectArticleUpLikes: build.query<Like[], number>({
       query: (articleId) => ({
-        url: `/articles/${articleId}/likes`,
+        url: `/articles/${articleId}/upLikes`,
+      }),
+      providesTags: ['Like'],
+    }),
+    selectArticleDownLikes: build.query<Like[], number>({
+      query: (articleId) => ({
+        url: `/articles/${articleId}/downLikes`,
       }),
       providesTags: ['Like'],
     }),
@@ -275,7 +281,8 @@ export const {
   useSelectViewedArticlesQuery,
   useSelectLikedArticlesQuery,
   useSelectArticleViewsQuery,
-  useSelectArticleLikesQuery,
+  useSelectArticleUpLikesQuery,
+  useSelectArticleDownLikesQuery,
   useSelectArticleCommentsQuery,
   useCreateMyArticleMutation,
   useCreateUserArticleMutation,

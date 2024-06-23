@@ -75,9 +75,15 @@ export const reportsApi = emptyApi.injectEndpoints({
       }),
       providesTags: ['ReportView'],
     }),
-    selectReportAttitudes: build.query<Attitude[], number>({
+    selectReportUpAttitudes: build.query<Attitude[], number>({
       query: (reportId) => ({
-        url: `/reports/${reportId}/attitudes`,
+        url: `/reports/${reportId}/upAttitudes`,
+      }),
+      providesTags: ['Attitude'],
+    }),
+    selectReportDownAttitudes: build.query<Attitude[], number>({
+      query: (reportId) => ({
+        url: `/reports/${reportId}/downAttitudes`,
       }),
       providesTags: ['Attitude'],
     }),
@@ -311,7 +317,8 @@ export const {
   useSelectViewedReportsQuery,
   useSelectAttitudedReportsQuery,
   useSelectReportViewsQuery,
-  useSelectReportAttitudesQuery,
+  useSelectReportUpAttitudesQuery,
+  useSelectReportDownAttitudesQuery,
   useSelectReportAnnotationsQuery,
   useCreateServerReportMutation,
   useCreateSiteReportMutation,

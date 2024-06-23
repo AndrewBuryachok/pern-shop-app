@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { Button, Group, Paper, Stack } from '@mantine/core';
+import { Button, Group, Menu, Paper, Stack } from '@mantine/core';
 import { useIntersection } from '@mantine/hooks';
 import { IconEye, IconThumbDown, IconThumbUp } from '@tabler/icons';
 import { IAction } from '../../common/interfaces';
@@ -15,10 +15,11 @@ import CustomHighlight from '../../common/components/CustomHighlight';
 import CustomImage from '../../common/components/CustomImage';
 import CustomVideo from '../../common/components/CustomVideo';
 import CustomActions from '../../common/components/CustomActions';
+import ViewReportViewsMenu from './ViewReportViewsMenu';
+import ViewReportAttitudesMenu from './ViewReportAttitudesMenu';
 import ViewReportAnnotationsModal from './ViewReportAnnotationsModal';
 import { openAuthModal } from '../auth/AuthModal';
 import { viewReportAction } from './ViewReportModal';
-import { openViewReportViewsModal } from './ViewReportViewsModal';
 
 type Props = {
   report: Report & {
@@ -75,46 +76,90 @@ export default function ReportPaper({ report, ...props }: Props) {
         {report.video && <CustomVideo video={report.video} />}
         <Group spacing={0} position='apart'>
           <Group spacing={8}>
-            <Button
-              leftIcon={<IconThumbUp size={16} />}
-              variant={report.upAttituded ? 'filled' : 'light'}
-              color={report.upAttituded ? 'violet' : 'gray'}
-              loading={props.isAttitudedLoading}
-              onClick={() =>
-                user
-                  ? handleAttitudeSubmit({ reportId: report.id, type: true })
-                  : openAuthModal()
-              }
-              compact
+            <Menu
+              zIndex={100}
+              offset={4}
+              position='top-start'
+              trigger='hover'
+              withArrow
             >
-              {report.upAttitudes}
-            </Button>
-            <Button
-              leftIcon={<IconThumbDown size={16} />}
-              variant={report.downAttituded ? 'filled' : 'light'}
-              color={report.downAttituded ? 'violet' : 'gray'}
-              loading={props.isAttitudedLoading}
-              onClick={() =>
-                user
-                  ? handleAttitudeSubmit({ reportId: report.id, type: false })
-                  : openAuthModal()
-              }
-              compact
+              <Menu.Target>
+                <Button
+                  leftIcon={<IconThumbUp size={16} />}
+                  variant={report.upAttituded ? 'filled' : 'light'}
+                  color={report.upAttituded ? 'violet' : 'gray'}
+                  loading={props.isAttitudedLoading}
+                  onClick={() =>
+                    user
+                      ? handleAttitudeSubmit({
+                          reportId: report.id,
+                          type: true,
+                        })
+                      : openAuthModal()
+                  }
+                  compact
+                >
+                  {report.upAttitudes}
+                </Button>
+              </Menu.Target>
+              <Menu.Dropdown>
+                <ViewReportAttitudesMenu data={report} type={true} />
+              </Menu.Dropdown>
+            </Menu>
+            <Menu
+              zIndex={100}
+              offset={4}
+              position='top-start'
+              trigger='hover'
+              withArrow
             >
-              {report.downAttitudes}
-            </Button>
+              <Menu.Target>
+                <Button
+                  leftIcon={<IconThumbDown size={16} />}
+                  variant={report.downAttituded ? 'filled' : 'light'}
+                  color={report.downAttituded ? 'violet' : 'gray'}
+                  loading={props.isAttitudedLoading}
+                  onClick={() =>
+                    user
+                      ? handleAttitudeSubmit({
+                          reportId: report.id,
+                          type: false,
+                        })
+                      : openAuthModal()
+                  }
+                  compact
+                >
+                  {report.downAttitudes}
+                </Button>
+              </Menu.Target>
+              <Menu.Dropdown>
+                <ViewReportAttitudesMenu data={report} type={false} />
+              </Menu.Dropdown>
+            </Menu>
           </Group>
-          <Button
-            ref={ref}
-            leftIcon={<IconEye size={16} />}
-            variant='light'
-            color='gray'
-            loading={props.isViewedLoading}
-            onClick={() => openViewReportViewsModal(report)}
-            compact
+          <Menu
+            zIndex={100}
+            offset={4}
+            position='top-end'
+            trigger='hover'
+            withArrow
           >
-            {report.views}
-          </Button>
+            <Menu.Target>
+              <Button
+                ref={ref}
+                leftIcon={<IconEye size={16} />}
+                variant='light'
+                color='gray'
+                loading={props.isViewedLoading}
+                compact
+              >
+                {report.views}
+              </Button>
+            </Menu.Target>
+            <Menu.Dropdown>
+              <ViewReportViewsMenu data={report} />
+            </Menu.Dropdown>
+          </Menu>
         </Group>
         <ViewReportAnnotationsModal data={report} />
       </Stack>

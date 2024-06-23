@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { Button, Group, Paper, Stack } from '@mantine/core';
+import { Button, Group, Menu, Paper, Stack } from '@mantine/core';
 import { useIntersection } from '@mantine/hooks';
 import { IconEye, IconThumbDown, IconThumbUp } from '@tabler/icons';
 import { IAction } from '../../common/interfaces';
@@ -14,10 +14,11 @@ import ResultBadge from '../../common/components/ResultBadge';
 import CustomImage from '../../common/components/CustomImage';
 import CustomVideo from '../../common/components/CustomVideo';
 import CustomActions from '../../common/components/CustomActions';
+import ViewPollViewsMenu from './ViewPollViewsMenu';
+import ViewPollVotesMenu from './ViewPollVotesMenu';
 import ViewPollDiscussionsModal from './ViewPollDiscussionsModal';
 import { openAuthModal } from '../auth/AuthModal';
 import { viewPollAction } from './ViewPollModal';
-import { openViewPollViewsModal } from './ViewPollViewsModal';
 
 type Props = {
   poll: Poll & {
@@ -76,46 +77,84 @@ export default function PollPaper({ poll, ...props }: Props) {
         {poll.video && <CustomVideo video={poll.video} />}
         <Group spacing={0} position='apart'>
           <Group spacing={8}>
-            <Button
-              leftIcon={<IconThumbUp size={16} />}
-              variant={poll.upVoted ? 'filled' : 'light'}
-              color={poll.upVoted ? 'violet' : 'gray'}
-              loading={props.isVotedLoading}
-              onClick={() =>
-                user
-                  ? handleVoteSubmit({ pollId: poll.id, type: true })
-                  : openAuthModal()
-              }
-              compact
+            <Menu
+              zIndex={100}
+              offset={4}
+              position='top-start'
+              trigger='hover'
+              withArrow
             >
-              {poll.upVotes}
-            </Button>
-            <Button
-              leftIcon={<IconThumbDown size={16} />}
-              variant={poll.downVoted ? 'filled' : 'light'}
-              color={poll.downVoted ? 'violet' : 'gray'}
-              loading={props.isVotedLoading}
-              onClick={() =>
-                user
-                  ? handleVoteSubmit({ pollId: poll.id, type: false })
-                  : openAuthModal()
-              }
-              compact
+              <Menu.Target>
+                <Button
+                  leftIcon={<IconThumbUp size={16} />}
+                  variant={poll.upVoted ? 'filled' : 'light'}
+                  color={poll.upVoted ? 'violet' : 'gray'}
+                  loading={props.isVotedLoading}
+                  onClick={() =>
+                    user
+                      ? handleVoteSubmit({ pollId: poll.id, type: true })
+                      : openAuthModal()
+                  }
+                  compact
+                >
+                  {poll.upVotes}
+                </Button>
+              </Menu.Target>
+              <Menu.Dropdown>
+                <ViewPollVotesMenu data={poll} type={true} />
+              </Menu.Dropdown>
+            </Menu>
+            <Menu
+              zIndex={100}
+              offset={4}
+              position='top-start'
+              trigger='hover'
+              withArrow
             >
-              {poll.downVotes}
-            </Button>
+              <Menu.Target>
+                <Button
+                  leftIcon={<IconThumbDown size={16} />}
+                  variant={poll.downVoted ? 'filled' : 'light'}
+                  color={poll.downVoted ? 'violet' : 'gray'}
+                  loading={props.isVotedLoading}
+                  onClick={() =>
+                    user
+                      ? handleVoteSubmit({ pollId: poll.id, type: false })
+                      : openAuthModal()
+                  }
+                  compact
+                >
+                  {poll.downVotes}
+                </Button>
+              </Menu.Target>
+              <Menu.Dropdown>
+                <ViewPollVotesMenu data={poll} type={false} />
+              </Menu.Dropdown>
+            </Menu>
           </Group>
-          <Button
-            ref={ref}
-            leftIcon={<IconEye size={16} />}
-            variant='light'
-            color='gray'
-            loading={props.isViewedLoading}
-            onClick={() => openViewPollViewsModal(poll)}
-            compact
+          <Menu
+            zIndex={100}
+            offset={4}
+            position='top-end'
+            trigger='hover'
+            withArrow
           >
-            {poll.views}
-          </Button>
+            <Menu.Target>
+              <Button
+                ref={ref}
+                leftIcon={<IconEye size={16} />}
+                variant='light'
+                color='gray'
+                loading={props.isViewedLoading}
+                compact
+              >
+                {poll.views}
+              </Button>
+            </Menu.Target>
+            <Menu.Dropdown>
+              <ViewPollViewsMenu data={poll} />
+            </Menu.Dropdown>
+          </Menu>
         </Group>
         <ViewPollDiscussionsModal data={poll} />
       </Stack>

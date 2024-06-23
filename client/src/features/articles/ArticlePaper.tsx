@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Group, Paper, Stack } from '@mantine/core';
+import { Button, Group, Menu, Paper, Stack } from '@mantine/core';
 import { useIntersection } from '@mantine/hooks';
 import { IconEye, IconThumbDown, IconThumbUp } from '@tabler/icons';
 import { IAction } from '../../common/interfaces';
@@ -18,10 +18,11 @@ import CustomHighlight from '../../common/components/CustomHighlight';
 import CustomImage from '../../common/components/CustomImage';
 import CustomVideo from '../../common/components/CustomVideo';
 import CustomActions from '../../common/components/CustomActions';
+import ViewArticleViewsMenu from './ViewArticleViewsMenu';
+import ViewArticleLikesMenu from './ViewArticleLikesMenu';
 import ViewArticleCommentsModal from './ViewArticleCommentsModal';
 import { openAuthModal } from '../auth/AuthModal';
 import { viewArticleAction } from './ViewArticleModal';
-import { openViewArticleViewsModal } from './ViewArticleViewsModal';
 
 type Props = {
   article: Article & {
@@ -113,46 +114,84 @@ export default function ArticlePaper({ article, ...props }: Props) {
         {article.video && <CustomVideo video={article.video} />}
         <Group spacing={0} position='apart'>
           <Group spacing={8}>
-            <Button
-              leftIcon={<IconThumbUp size={16} />}
-              variant={article.upLiked ? 'filled' : 'light'}
-              color={article.upLiked ? 'violet' : 'gray'}
-              loading={props.isLikedLoading}
-              onClick={() =>
-                user
-                  ? handleLikeSubmit({ articleId: article.id, type: true })
-                  : openAuthModal()
-              }
-              compact
+            <Menu
+              zIndex={100}
+              offset={4}
+              position='top-start'
+              trigger='hover'
+              withArrow
             >
-              {article.upLikes}
-            </Button>
-            <Button
-              leftIcon={<IconThumbDown size={16} />}
-              variant={article.downLiked ? 'filled' : 'light'}
-              color={article.downLiked ? 'violet' : 'gray'}
-              loading={props.isLikedLoading}
-              onClick={() =>
-                user
-                  ? handleLikeSubmit({ articleId: article.id, type: false })
-                  : openAuthModal()
-              }
-              compact
+              <Menu.Target>
+                <Button
+                  leftIcon={<IconThumbUp size={16} />}
+                  variant={article.upLiked ? 'filled' : 'light'}
+                  color={article.upLiked ? 'violet' : 'gray'}
+                  loading={props.isLikedLoading}
+                  onClick={() =>
+                    user
+                      ? handleLikeSubmit({ articleId: article.id, type: true })
+                      : openAuthModal()
+                  }
+                  compact
+                >
+                  {article.upLikes}
+                </Button>
+              </Menu.Target>
+              <Menu.Dropdown>
+                <ViewArticleLikesMenu data={article} type={true} />
+              </Menu.Dropdown>
+            </Menu>
+            <Menu
+              zIndex={100}
+              offset={4}
+              position='top-start'
+              trigger='hover'
+              withArrow
             >
-              {article.downLikes}
-            </Button>
+              <Menu.Target>
+                <Button
+                  leftIcon={<IconThumbDown size={16} />}
+                  variant={article.downLiked ? 'filled' : 'light'}
+                  color={article.downLiked ? 'violet' : 'gray'}
+                  loading={props.isLikedLoading}
+                  onClick={() =>
+                    user
+                      ? handleLikeSubmit({ articleId: article.id, type: false })
+                      : openAuthModal()
+                  }
+                  compact
+                >
+                  {article.downLikes}
+                </Button>
+              </Menu.Target>
+              <Menu.Dropdown>
+                <ViewArticleLikesMenu data={article} type={false} />
+              </Menu.Dropdown>
+            </Menu>
           </Group>
-          <Button
-            ref={ref}
-            leftIcon={<IconEye size={16} />}
-            variant='light'
-            color='gray'
-            loading={props.isViewedLoading}
-            onClick={() => openViewArticleViewsModal(article)}
-            compact
+          <Menu
+            zIndex={100}
+            offset={4}
+            position='top-end'
+            trigger='hover'
+            withArrow
           >
-            {article.views}
-          </Button>
+            <Menu.Target>
+              <Button
+                ref={ref}
+                leftIcon={<IconEye size={16} />}
+                variant='light'
+                color='gray'
+                loading={props.isViewedLoading}
+                compact
+              >
+                {article.views}
+              </Button>
+            </Menu.Target>
+            <Menu.Dropdown>
+              <ViewArticleViewsMenu data={article} />
+            </Menu.Dropdown>
+          </Menu>
         </Group>
         <ViewArticleCommentsModal data={article} />
       </Stack>
