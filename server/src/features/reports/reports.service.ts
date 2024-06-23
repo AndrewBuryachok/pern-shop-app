@@ -79,7 +79,7 @@ export class ReportsService {
       .leftJoin('report.views', 'view')
       .leftJoin('view.user', 'viewer')
       .where('report.id = :reportId', { reportId })
-      .orderBy('view.id', 'ASC')
+      .orderBy('view.id', 'DESC')
       .select([
         'report.id',
         'view.id',
@@ -92,13 +92,18 @@ export class ReportsService {
     return report.views;
   }
 
-  async selectReportAttitudes(reportId: number): Promise<Attitude[]> {
+  async selectReportAttitudes(
+    reportId: number,
+    type: boolean,
+  ): Promise<Attitude[]> {
     const report = await this.reportsRepository
       .createQueryBuilder('report')
-      .leftJoin('report.attitudes', 'attitude')
+      .leftJoin('report.attitudes', 'attitude', 'attitude.type = :type', {
+        type,
+      })
       .leftJoin('attitude.user', 'attituder')
       .where('report.id = :reportId', { reportId })
-      .orderBy('attitude.id', 'ASC')
+      .orderBy('attitude.id', 'DESC')
       .select([
         'report.id',
         'attitude.id',

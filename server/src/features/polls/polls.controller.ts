@@ -84,9 +84,15 @@ export class PollsController {
   }
 
   @Public()
-  @Get(':pollId/votes')
-  selectPollVotes(@Param() { pollId }: PollIdDto): Promise<Vote[]> {
-    return this.pollsService.selectPollVotes(pollId);
+  @Get(':pollId/upVotes')
+  selectPollUpVotes(@Param() { pollId }: PollIdDto): Promise<Vote[]> {
+    return this.pollsService.selectPollVotes(pollId, true);
+  }
+
+  @Public()
+  @Get(':pollId/downVotes')
+  selectPollDownVotes(@Param() { pollId }: PollIdDto): Promise<Vote[]> {
+    return this.pollsService.selectPollVotes(pollId, false);
   }
 
   @Public()

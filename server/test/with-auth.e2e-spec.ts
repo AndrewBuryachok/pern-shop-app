@@ -667,9 +667,15 @@ describe('With Auth', () => {
         .expect((res) => expect(res.body.length).toBeGreaterThan(0));
     });
 
-    it('GET /reports/:reportId/attitudes', async () => {
+    it('GET /reports/:reportId/upAttitudes', async () => {
       return request(app.getHttpServer())
-        .get(`/reports/${reportsId[0]}/attitudes`)
+        .get(`/reports/${reportsId[0]}/upAttitudes`)
+        .expect((res) => expect(res.body.length).toBeGreaterThan(0));
+    });
+
+    it('GET /reports/:reportId/downAttitudes', async () => {
+      return request(app.getHttpServer())
+        .get(`/reports/${reportsId[1]}/downAttitudes`)
         .expect((res) => expect(res.body.length).toBeGreaterThan(0));
     });
 
@@ -799,9 +805,15 @@ describe('With Auth', () => {
         .expect((res) => expect(res.body.length).toBeGreaterThan(0));
     });
 
-    it('GET /articles/:articleId/likes', async () => {
+    it('GET /articles/:articleId/upLikes', async () => {
       return request(app.getHttpServer())
-        .get(`/articles/${articlesId[0]}/likes`)
+        .get(`/articles/${articlesId[0]}/upLikes`)
+        .expect((res) => expect(res.body.length).toBeGreaterThan(0));
+    });
+
+    it('GET /articles/:articleId/downLikes', async () => {
+      return request(app.getHttpServer())
+        .get(`/articles/${articlesId[1]}/downLikes`)
         .expect((res) => expect(res.body.length).toBeGreaterThan(0));
     });
 
@@ -2728,9 +2740,15 @@ describe('With Auth', () => {
         .expect((res) => expect(res.body.length).toBeGreaterThan(0));
     });
 
-    it('GET /polls/:pollId/votes', async () => {
+    it('GET /polls/:pollId/upVotes', async () => {
       return request(app.getHttpServer())
-        .get(`/polls/${pollsId[0]}/votes`)
+        .get(`/polls/${pollsId[0]}/upVotes`)
+        .expect((res) => expect(res.body.length).toBeGreaterThan(0));
+    });
+
+    it('GET /polls/:pollId/downVotes', async () => {
+      return request(app.getHttpServer())
+        .get(`/polls/${pollsId[1]}/downVotes`)
         .expect((res) => expect(res.body.length).toBeGreaterThan(0));
     });
 

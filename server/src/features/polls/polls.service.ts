@@ -114,7 +114,7 @@ export class PollsService {
       .leftJoin('poll.views', 'view')
       .leftJoin('view.user', 'viewer')
       .where('poll.id = :pollId', { pollId })
-      .orderBy('view.id', 'ASC')
+      .orderBy('view.id', 'DESC')
       .select([
         'poll.id',
         'view.id',
@@ -127,13 +127,13 @@ export class PollsService {
     return poll.views;
   }
 
-  async selectPollVotes(pollId: number): Promise<Vote[]> {
+  async selectPollVotes(pollId: number, type: boolean): Promise<Vote[]> {
     const poll = await this.pollsRepository
       .createQueryBuilder('poll')
-      .leftJoin('poll.votes', 'vote')
+      .leftJoin('poll.votes', 'vote', 'vote.type = :type', { type })
       .leftJoin('vote.user', 'voter')
       .where('poll.id = :pollId', { pollId })
-      .orderBy('vote.id', 'ASC')
+      .orderBy('vote.id', 'DESC')
       .select([
         'poll.id',
         'vote.id',

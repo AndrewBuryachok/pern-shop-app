@@ -134,7 +134,7 @@ export class ArticlesService {
       .leftJoin('article.views', 'view')
       .leftJoin('view.user', 'viewer')
       .where('article.id = :articleId', { articleId })
-      .orderBy('view.id', 'ASC')
+      .orderBy('view.id', 'DESC')
       .select([
         'article.id',
         'view.id',
@@ -147,13 +147,13 @@ export class ArticlesService {
     return article.views;
   }
 
-  async selectArticleLikes(articleId: number): Promise<Like[]> {
+  async selectArticleLikes(articleId: number, type: boolean): Promise<Like[]> {
     const article = await this.articlesRepository
       .createQueryBuilder('article')
-      .leftJoin('article.likes', 'like')
+      .leftJoin('article.likes', 'like', 'like.type = :type', { type })
       .leftJoin('like.user', 'liker')
       .where('article.id = :articleId', { articleId })
-      .orderBy('like.id', 'ASC')
+      .orderBy('like.id', 'DESC')
       .select([
         'article.id',
         'like.id',

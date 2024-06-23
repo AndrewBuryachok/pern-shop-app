@@ -93,9 +93,17 @@ export class ArticlesController {
   }
 
   @Public()
-  @Get(':articleId/likes')
-  selectArticleLikes(@Param() { articleId }: ArticleIdDto): Promise<Like[]> {
-    return this.articlesService.selectArticleLikes(articleId);
+  @Get(':articleId/upLikes')
+  selectArticleUpLikes(@Param() { articleId }: ArticleIdDto): Promise<Like[]> {
+    return this.articlesService.selectArticleLikes(articleId, true);
+  }
+
+  @Public()
+  @Get(':articleId/downLikes')
+  selectArticleDownLikes(
+    @Param() { articleId }: ArticleIdDto,
+  ): Promise<Like[]> {
+    return this.articlesService.selectArticleLikes(articleId, false);
   }
 
   @Public()

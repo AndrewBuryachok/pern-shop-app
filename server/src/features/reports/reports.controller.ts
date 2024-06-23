@@ -89,11 +89,19 @@ export class ReportsController {
   }
 
   @Public()
-  @Get(':reportId/attitudes')
-  selectReportAttitudes(
+  @Get(':reportId/upAttitudes')
+  selectReportUpAttitudes(
     @Param() { reportId }: ReportIdDto,
   ): Promise<Attitude[]> {
-    return this.reportsService.selectReportAttitudes(reportId);
+    return this.reportsService.selectReportAttitudes(reportId, true);
+  }
+
+  @Public()
+  @Get(':reportId/downAttitudes')
+  selectReportDownAttitudes(
+    @Param() { reportId }: ReportIdDto,
+  ): Promise<Attitude[]> {
+    return this.reportsService.selectReportAttitudes(reportId, false);
   }
 
   @Public()
