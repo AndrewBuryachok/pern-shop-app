@@ -3,7 +3,6 @@ import { Receipt } from '../receipts/receipt.entity';
 import { Cell } from '../cells/cell.entity';
 import { Kind } from './kind.enum';
 import { Product } from '../products/product.entity';
-import { Lot } from '../lots/lot.entity';
 import { Order } from '../orders/order.entity';
 import { Delivery } from '../deliveries/delivery.entity';
 
@@ -21,9 +20,6 @@ export class Lease extends Receipt {
 
   @OneToMany(() => Product, (product) => product.lease)
   products: Product[];
-
-  @OneToMany(() => Lot, (lot) => lot.lease)
-  lots: Lot[];
 
   @OneToMany(() => Order, (order) => order.lease)
   orders: Order[];

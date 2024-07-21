@@ -58,7 +58,6 @@ export class LeasesService {
     const lease = await this.leasesRepository
       .createQueryBuilder('lease')
       .leftJoin('lease.products', 'product')
-      .leftJoin('lease.lots', 'lot')
       .leftJoin('lease.orders', 'order')
       .leftJoin('lease.fromDeliveries', 'fromDelivery')
       .leftJoin('lease.toDeliveries', 'toDelivery')
@@ -72,13 +71,6 @@ export class LeasesService {
         'product.intake',
         'product.kit',
         'product.price',
-        'lot.id',
-        'lot.item',
-        'lot.description',
-        'lot.amount',
-        'lot.intake',
-        'lot.kit',
-        'lot.price',
         'order.id',
         'order.item',
         'order.description',
@@ -104,7 +96,6 @@ export class LeasesService {
       .getOne();
     return [
       ...lease.products,
-      ...lease.lots,
       ...lease.orders,
       ...lease.fromDeliveries,
       ...lease.toDeliveries,

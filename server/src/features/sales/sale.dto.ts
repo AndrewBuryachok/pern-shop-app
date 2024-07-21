@@ -3,10 +3,7 @@ import { Validate } from 'class-validator';
 import { Type } from 'class-transformer';
 import { IsId } from '../../common/decorators';
 import { IsProductExists, IsSaleExists } from '../../common/constraints';
-import {
-  CreatePurchaseWithAmountDto,
-  RatePurchaseDto,
-} from '../purchases/purchase.dto';
+import { CreatePurchaseDto, RatePurchaseDto } from '../purchases/purchase.dto';
 
 export class SaleIdDto {
   @ApiProperty()
@@ -16,7 +13,7 @@ export class SaleIdDto {
   saleId: number;
 }
 
-export class CreateSaleDto extends CreatePurchaseWithAmountDto {
+export class CreateSaleDto extends CreatePurchaseDto {
   @ApiProperty()
   @IsId()
   @Validate(IsProductExists)

@@ -44,7 +44,6 @@ describe('With Auth', () => {
   let goodId: number;
   let wareId: number;
   let productId: number;
-  let lotId: number;
   let tradeId: number;
   let saleId: number;
   let ordersId: number;
@@ -1595,14 +1594,6 @@ describe('With Auth', () => {
         .expect('');
     });
 
-    it('POST /cells', async () => {
-      return request(app.getHttpServer())
-        .post('/cells')
-        .set('Authorization', `Bearer ${user.access}`)
-        .send({ storageTagId })
-        .expect('');
-    });
-
     it('GET /cells', async () => {
       return request(app.getHttpServer())
         .get('/cells')
@@ -1935,74 +1926,6 @@ describe('With Auth', () => {
     it('GET /products/:productId/states', async () => {
       return request(app.getHttpServer())
         .get(`/products/${productId}/states`)
-        .expect((res) => expect(res.body.length).toBeGreaterThan(0));
-    });
-  });
-
-  describe('Lots', () => {
-    it('POST /lots', async () => {
-      return request(app.getHttpServer())
-        .post('/lots')
-        .set('Authorization', `Bearer ${user.access}`)
-        .send({
-          storageTagId,
-          cardId,
-          item: 1,
-          description: '',
-          amount: 1,
-          intake: 1,
-          kit: 1,
-          price: 5,
-        })
-        .expect('');
-    });
-
-    it('GET /lots', async () => {
-      return request(app.getHttpServer())
-        .get('/lots')
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
-    });
-
-    it('GET /lots/my', async () => {
-      return request(app.getHttpServer())
-        .get('/lots/my')
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0))
-        .then((res) => (lotId = res.body.result[0].id));
-    });
-
-    it('GET /lots/placed', async () => {
-      return request(app.getHttpServer())
-        .get('/lots/placed')
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
-    });
-
-    it('GET /lots/all', async () => {
-      return request(app.getHttpServer())
-        .get('/lots/all')
-        .set('Authorization', `Bearer ${merchant.access}`)
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
-    });
-
-    it('POST /bids', async () => {
-      return request(app.getHttpServer())
-        .post('/bids')
-        .set('Authorization', `Bearer ${user.access}`)
-        .send({ lotId, cardId, price: 20 })
-        .expect('');
-    });
-
-    it('POST /lots/:lotId', async () => {
-      return request(app.getHttpServer())
-        .post(`/lots/${lotId}`)
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect('');
-    });
-
-    it('GET /lots/:lotId/bids', async () => {
-      return request(app.getHttpServer())
-        .get(`/lots/${lotId}/bids`)
         .expect((res) => expect(res.body.length).toBeGreaterThan(0));
     });
   });
@@ -2392,36 +2315,6 @@ describe('With Auth', () => {
       return request(app.getHttpServer())
         .get(`/products/${productId}/rating`)
         .expect((res) => expect(res.body.rate).toBeGreaterThan(0));
-    });
-  });
-
-  describe('Bids', () => {
-    it('GET /bids/my', async () => {
-      return request(app.getHttpServer())
-        .get('/bids/my')
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
-    });
-
-    it('GET /bids/sold', async () => {
-      return request(app.getHttpServer())
-        .get('/bids/sold')
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
-    });
-
-    it('GET /bids/placed', async () => {
-      return request(app.getHttpServer())
-        .get('/bids/placed')
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
-    });
-
-    it('GET /bids/all', async () => {
-      return request(app.getHttpServer())
-        .get('/bids/all')
-        .set('Authorization', `Bearer ${merchant.access}`)
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
   });
 

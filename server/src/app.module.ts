@@ -28,12 +28,10 @@ import { LeasesModule } from './features/leases/leases.module';
 import { GoodsModule } from './features/goods/goods.module';
 import { WaresModule } from './features/wares/wares.module';
 import { ProductsModule } from './features/products/products.module';
-import { LotsModule } from './features/lots/lots.module';
 import { OrdersModule } from './features/orders/orders.module';
 import { DeliveriesModule } from './features/deliveries/deliveries.module';
 import { TradesModule } from './features/trades/trades.module';
 import { SalesModule } from './features/sales/sales.module';
-import { BidsModule } from './features/bids/bids.module';
 import { TasksModule } from './features/tasks/tasks.module';
 import { PlaintsModule } from './features/plaints/plaints.module';
 import { AnswersModule } from './features/answers/answers.module';
@@ -93,12 +91,10 @@ import { LoggerModule } from './features/logger/logger.module';
     GoodsModule,
     WaresModule,
     ProductsModule,
-    LotsModule,
     OrdersModule,
     DeliveriesModule,
     TradesModule,
     SalesModule,
-    BidsModule,
     TasksModule,
     PlaintsModule,
     AnswersModule,

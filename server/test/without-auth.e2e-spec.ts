@@ -462,23 +462,6 @@ describe('Without Auth', () => {
     });
   });
 
-  describe('Lots', () => {
-    it('GET /lots/my', async () => {
-      return request(app.getHttpServer()).get('/lots/my').expect(401);
-    });
-
-    it('GET /lots/placed', async () => {
-      return request(app.getHttpServer()).get('/lots/placed').expect(401);
-    });
-
-    it('GET /lots/all', async () => {
-      return request(app.getHttpServer())
-        .get('/lots/all')
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect(403);
-    });
-  });
-
   describe('Trades', () => {
     it('GET /trades/my', async () => {
       return request(app.getHttpServer()).get('/trades/my').expect(401);
@@ -516,27 +499,6 @@ describe('Without Auth', () => {
     it('GET /sales/all', async () => {
       return request(app.getHttpServer())
         .get('/sales/all')
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect(403);
-    });
-  });
-
-  describe('Bids', () => {
-    it('GET /bids/my', async () => {
-      return request(app.getHttpServer()).get('/bids/my').expect(401);
-    });
-
-    it('GET /bids/sold', async () => {
-      return request(app.getHttpServer()).get('/bids/sold').expect(401);
-    });
-
-    it('GET /bids/placed', async () => {
-      return request(app.getHttpServer()).get('/bids/placed').expect(401);
-    });
-
-    it('GET /bids/all', async () => {
-      return request(app.getHttpServer())
-        .get('/bids/all')
         .set('Authorization', `Bearer ${user.access}`)
         .expect(403);
     });
