@@ -6,6 +6,7 @@ import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { Lease } from './lease.model';
 import { useContinueLeaseMutation } from './leases.api';
+import { useSelectCellTagQuery } from '../cells/cells.api';
 import {
   useSelectMyCardsQuery,
   useSelectUserCardsWithBalanceQuery,
@@ -29,6 +30,8 @@ export default function ContinueLeaseModal({ data: lease, hasRole }: Props) {
 
   const myCard = { balance: 0 };
 
+  const { data: tag, ...tagResponse } = useSelectCellTagQuery(lease.cell.id);
+
   const form = useForm({
     initialValues: {
       leaseId: lease.id,
@@ -36,7 +39,7 @@ export default function ContinueLeaseModal({ data: lease, hasRole }: Props) {
     },
     validate: {
       card: () =>
-        myCard.balance < lease.cell.storageTag.price
+        !tag || myCard.balance < tag.price
           ? t('errors.not_enough_balance')
           : null,
     },
@@ -68,18 +71,6 @@ export default function ContinueLeaseModal({ data: lease, hasRole }: Props) {
         value={parseCard(lease.card)}
         readOnly
       />
-      <Select
-        label={t('columns.card')}
-        placeholder={t('columns.card')}
-        rightSection={<RefetchAction {...cardsResponse} />}
-        itemComponent={CardsItem}
-        data={selectCardsWithBalance(cards)}
-        limit={20}
-        searchable
-        required
-        readOnly
-        {...form.getInputProps('card')}
-      />
       <TextInput
         label={t('columns.owner')}
         icon={<CustomAvatar {...lease.cell.storage.card.user} />}
@@ -94,8 +85,23 @@ export default function ContinueLeaseModal({ data: lease, hasRole }: Props) {
       />
       <TextInput
         label={t('columns.sum')}
-        value={`${lease.cell.storageTag.price} ${t('constants.currency')}`}
+        value={`${tag?.price || '-'} ${t('constants.currency')}`}
+        rightSection={<RefetchAction {...tagResponse} />}
         readOnly
+      />
+      <Select
+        label={t('columns.card')}
+        placeholder={t('columns.card')}
+        rightSection={<RefetchAction {...cardsResponse} />}
+        itemComponent={CardsItem}
+        data={selectCardsWithBalance(
+          cards?.filter((card) => card.id === lease.card.id),
+        )}
+        limit={20}
+        searchable
+        required
+        readOnly
+        {...form.getInputProps('card')}
       />
     </CustomForm>
   );

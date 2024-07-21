@@ -1,6 +1,7 @@
 import { emptyApi } from '../../app/empty.api';
 import { IRequest, IResponse } from '../../common/interfaces';
 import { SmStore, Store } from './store.model';
+import { SmMarketTag } from '../markets-tags/market-tag.model';
 import { CreateStoreDto } from './store.dto';
 import { getQuery } from '../../common/utils';
 
@@ -36,6 +37,12 @@ export const storesApi = emptyApi.injectEndpoints({
       }),
       providesTags: ['Store'],
     }),
+    selectStoreTag: build.query<SmMarketTag, number>({
+      query: (storeId) => ({
+        url: `/stores/${storeId}/tag`,
+      }),
+      providesTags: ['MarketTag'],
+    }),
     createStore: build.mutation<void, CreateStoreDto>({
       query: (dto) => ({
         url: '/stores',
@@ -53,5 +60,6 @@ export const {
   useGetAllStoresQuery,
   useSelectMarketStoresQuery,
   useSelectTagStoresQuery,
+  useSelectStoreTagQuery,
   useCreateStoreMutation,
 } = storesApi;
