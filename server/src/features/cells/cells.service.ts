@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { Cell } from './cell.entity';
+import { StorageTag } from '../storages-tags/storage-tag.entity';
 import { StoragesTagsService } from '../storages-tags/storages-tags.service';
 import { PaymentsService } from '../payments/payments.service';
 import { ExtCreateCellDto, ReserveCellDto } from './cell.dto';
@@ -49,15 +50,25 @@ export class CellsService {
   }
 
   selectStorageCells(storageId: number): Promise<Cell[]> {
-    return this.selectCellsQueryBuilder(storageId)
+    return this.selectCellsQueryBuilder()
       .where('cell.storageId = :storageId', { storageId })
       .getMany();
   }
 
   selectTagCells(storageTagId: number): Promise<Cell[]> {
-    return this.selectCellsQueryBuilder(storageTagId)
+    return this.selectCellsQueryBuilder()
       .where('cell.storageTagId = :storageTagId', { storageTagId })
       .getMany();
+  }
+
+  async selectCellTag(cellId: number): Promise<StorageTag> {
+    const cell = await this.cellsRepository
+      .createQueryBuilder('cell')
+      .innerJoin('cell.storageTag', 'tag')
+      .where('cell.id = :cellId', { cellId })
+      .select(['cell.id', 'tag.id', 'tag.name', 'tag.price'])
+      .getOne();
+    return cell.storageTag;
   }
 
   async createCell(dto: ExtCreateCellDto): Promise<void> {
@@ -110,6 +121,10 @@ export class CellsService {
     });
     await this.unreserve(cell);
     return cell;
+  }
+
+  async checkCellExists(id: number): Promise<void> {
+    await this.cellsRepository.findOneByOrFail({ id });
   }
 
   private async checkHasNotEnough(storageId: number): Promise<number> {
@@ -183,7 +198,7 @@ export class CellsService {
     }
   }
 
-  private selectCellsQueryBuilder(storageId: number): SelectQueryBuilder<Cell> {
+  private selectCellsQueryBuilder(): SelectQueryBuilder<Cell> {
     return this.cellsRepository
       .createQueryBuilder('cell')
       .orderBy('cell.name', 'ASC')

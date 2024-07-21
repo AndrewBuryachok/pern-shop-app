@@ -2,7 +2,8 @@ import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { StoresService } from './stores.service';
 import { Store } from './store.entity';
-import { CreateStoreDto } from './store.dto';
+import { MarketTag } from '../markets-tags/market-tag.entity';
+import { CreateStoreDto, StoreIdDto } from './store.dto';
 import { MarketIdDto } from '../markets/market.dto';
 import { MarketTagIdDto } from '../markets-tags/market-tag.dto';
 import { Request, Response } from '../../common/interfaces';
@@ -44,6 +45,12 @@ export class StoresController {
   @Get(':marketTagId/tags')
   selectTagStores(@Param() { marketTagId }: MarketTagIdDto): Promise<Store[]> {
     return this.storesService.selectTagStores(marketTagId);
+  }
+
+  @Public()
+  @Get(':storeId/tag')
+  selectStoreTag(@Param() { storeId }: StoreIdDto): Promise<MarketTag> {
+    return this.storesService.selectStoreTag(storeId);
   }
 
   @Post()

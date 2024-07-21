@@ -18,6 +18,7 @@ import { StoragesService } from '../../features/storages/storages.service';
 import { MarketsTagsService } from '../../features/markets-tags/markets-tags.service';
 import { StoragesTagsService } from '../../features/storages-tags/storages-tags.service';
 import { StoresService } from '../../features/stores/stores.service';
+import { CellsService } from '../../features/cells/cells.service';
 import { RentsService } from '../../features/rents/rents.service';
 import { LeasesService } from '../../features/leases/leases.service';
 import { GoodsService } from '../../features/goods/goods.service';
@@ -317,6 +318,25 @@ export class IsStoreExists implements ValidatorConstraintInterface {
 
   defaultMessage(): string {
     return 'Unknown store';
+  }
+}
+
+@Injectable()
+@ValidatorConstraint({ name: 'isCellExists', async: true })
+export class IsCellExists implements ValidatorConstraintInterface {
+  constructor(private cellsService: CellsService) {}
+
+  async validate(value: number): Promise<boolean> {
+    try {
+      await this.cellsService.checkCellExists(value);
+    } catch (error) {
+      return false;
+    }
+    return true;
+  }
+
+  defaultMessage(): string {
+    return 'Unknown cell';
   }
 }
 

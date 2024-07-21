@@ -38,6 +38,7 @@ describe('With Auth', () => {
   let marketTagId: number;
   let storageTagId: number;
   let storeId: number;
+  let cellId: number;
   let rentId: number;
   let leaseId: number;
   let goodId: number;
@@ -1529,6 +1530,12 @@ describe('With Auth', () => {
         .get(`/stores/${marketTagId}/tags`)
         .expect((res) => expect(res.body.length).toBeGreaterThan(0));
     });
+
+    it('GET /stores/:storeId/tag', async () => {
+      return request(app.getHttpServer())
+        .get(`/stores/${storeId}/tag`)
+        .expect((res) => expect(res.body.id).toBeGreaterThan(0));
+    });
   });
 
   describe('Cells', () => {
@@ -1606,7 +1613,8 @@ describe('With Auth', () => {
       return request(app.getHttpServer())
         .get('/cells/my')
         .set('Authorization', `Bearer ${user.access}`)
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
+        .expect((res) => expect(res.body.count).toBeGreaterThan(0))
+        .then((res) => (cellId = res.body.result[0].id));
     });
 
     it('GET /cells/all', async () => {
@@ -1626,6 +1634,12 @@ describe('With Auth', () => {
       return request(app.getHttpServer())
         .get(`/cells/${storageTagId}/tags`)
         .expect((res) => expect(res.body.length).toBeGreaterThan(0));
+    });
+
+    it('GET /cells/:cellId/tag', async () => {
+      return request(app.getHttpServer())
+        .get(`/cells/${cellId}/tag`)
+        .expect((res) => expect(res.body.id).toBeGreaterThan(0));
     });
 
     it('GET /storages-tags/free/select', async () => {

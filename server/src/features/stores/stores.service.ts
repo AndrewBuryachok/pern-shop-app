@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { Store } from './store.entity';
+import { MarketTag } from '../markets-tags/market-tag.entity';
 import { MarketsTagsService } from '../markets-tags/markets-tags.service';
 import { PaymentsService } from '../payments/payments.service';
 import { ExtCreateStoreDto, ReserveStoreDto } from './store.dto';
@@ -49,15 +50,25 @@ export class StoresService {
   }
 
   selectMarketStores(marketId: number): Promise<Store[]> {
-    return this.selectStoresQueryBuilder(marketId)
+    return this.selectStoresQueryBuilder()
       .where('store.marketId = :marketId', { marketId })
       .getMany();
   }
 
   selectTagStores(marketTagId: number): Promise<Store[]> {
-    return this.selectStoresQueryBuilder(marketTagId)
+    return this.selectStoresQueryBuilder()
       .where('store.marketTagId = :marketTagId', { marketTagId })
       .getMany();
+  }
+
+  async selectStoreTag(storeId: number): Promise<MarketTag> {
+    const store = await this.storesRepository
+      .createQueryBuilder('store')
+      .innerJoin('store.marketTag', 'tag')
+      .where('store.id = :storeId', { storeId })
+      .select(['store.id', 'tag.id', 'tag.name', 'tag.price'])
+      .getOne();
+    return store.marketTag;
   }
 
   async createStore(dto: ExtCreateStoreDto): Promise<void> {
@@ -186,9 +197,7 @@ export class StoresService {
     }
   }
 
-  private selectStoresQueryBuilder(
-    marketId: number,
-  ): SelectQueryBuilder<Store> {
+  private selectStoresQueryBuilder(): SelectQueryBuilder<Store> {
     return this.storesRepository
       .createQueryBuilder('store')
       .orderBy('store.name', 'ASC')

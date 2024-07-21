@@ -2,7 +2,8 @@ import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { CellsService } from './cells.service';
 import { Cell } from './cell.entity';
-import { CreateCellDto } from './cell.dto';
+import { StorageTag } from '../storages-tags/storage-tag.entity';
+import { CellIdDto, CreateCellDto } from './cell.dto';
 import { StorageIdDto } from '../storages/storage.dto';
 import { StorageTagIdDto } from '../storages-tags/storage-tag.dto';
 import { Request, Response } from '../../common/interfaces';
@@ -44,6 +45,12 @@ export class CellsController {
   @Get(':storageTagId/tags')
   selectTagCells(@Param() { storageTagId }: StorageTagIdDto): Promise<Cell[]> {
     return this.cellsService.selectTagCells(storageTagId);
+  }
+
+  @Public()
+  @Get(':cellId/tag')
+  selectCellTag(@Param() { cellId }: CellIdDto): Promise<StorageTag> {
+    return this.cellsService.selectCellTag(cellId);
   }
 
   @Post()

@@ -5,6 +5,7 @@ import { StoragesTagsModule } from '../storages-tags/storages-tags.module';
 import { PaymentsModule } from '../payments/payments.module';
 import { CellsController } from './cells.controller';
 import { CellsService } from './cells.service';
+import { IsCellExists } from '../../common/constraints';
 
 @Module({
   imports: [
@@ -13,7 +14,7 @@ import { CellsService } from './cells.service';
     PaymentsModule,
   ],
   controllers: [CellsController],
-  providers: [CellsService],
+  providers: [CellsService, IsCellExists],
   exports: [CellsService],
 })
 export class CellsModule {}
