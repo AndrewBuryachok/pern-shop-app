@@ -77,12 +77,12 @@ export default function CustomNavbar(props: Props) {
     {
       route: 'things',
       icon: IconBasket,
-      nested: ['goods', 'wares', 'products', 'lots'],
+      nested: ['goods', 'wares', 'products'],
     },
     {
       route: 'purchases',
       icon: IconDiscount,
-      nested: ['trades', 'sales', 'bids'],
+      nested: ['trades', 'sales'],
       sub: '/my',
     },
     {

@@ -28,7 +28,6 @@ import {
   IconFileDollar,
   IconFriends,
   IconGardenCart,
-  IconGavel,
   IconMail,
   IconMailbox,
   IconMap,
@@ -39,7 +38,6 @@ import {
   IconShoppingBag,
   IconShoppingCart,
   IconStar,
-  IconTags,
   IconTrolley,
   IconTruck,
   IconUsers,
@@ -111,10 +109,6 @@ export default function Home() {
       icon: IconShoppingCart,
     },
     {
-      title: 'lots',
-      icon: IconGavel,
-    },
-    {
       title: 'trades',
       icon: IconPaperBag,
       sub: '/my',
@@ -122,11 +116,6 @@ export default function Home() {
     {
       title: 'sales',
       icon: IconGardenCart,
-      sub: '/my',
-    },
-    {
-      title: 'bids',
-      icon: IconTags,
       sub: '/my',
     },
     {

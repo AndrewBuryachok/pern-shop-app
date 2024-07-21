@@ -33,12 +33,10 @@ const LeasesPage = lazy(() => import('../pages/leases/LeasesPage'));
 const GoodsPage = lazy(() => import('../pages/goods/GoodsPage'));
 const WaresPage = lazy(() => import('../pages/wares/WaresPage'));
 const ProductsPage = lazy(() => import('../pages/products/ProductsPage'));
-const LotsPage = lazy(() => import('../pages/lots/LotsPage'));
 const OrdersPage = lazy(() => import('../pages/orders/OrdersPage'));
 const DeliveriesPage = lazy(() => import('../pages/deliveries/DeliveriesPage'));
 const TradesPage = lazy(() => import('../pages/trades/TradesPage'));
 const SalesPage = lazy(() => import('../pages/sales/SalesPage'));
-const BidsPage = lazy(() => import('../pages/bids/BidsPage'));
 const TasksPage = lazy(() => import('../pages/tasks/TasksPage'));
 const PlaintsPage = lazy(() => import('../pages/plaints/PlaintsPage'));
 const PollsPage = lazy(() => import('../pages/polls/PollsPage'));
@@ -253,16 +251,6 @@ export const pages = [
     ],
   },
   {
-    path: 'lots',
-    element: LotsPage,
-    nested: [
-      { index: true },
-      { path: 'my' },
-      { path: 'placed' },
-      { path: 'all', role: Role.MERCHANT },
-    ],
-  },
-  {
     path: 'orders',
     element: OrdersPage,
     nested: [
@@ -297,16 +285,6 @@ export const pages = [
   {
     path: 'sales',
     element: SalesPage,
-    nested: [
-      { path: 'my' },
-      { path: 'sold' },
-      { path: 'placed' },
-      { path: 'all', role: Role.MERCHANT },
-    ],
-  },
-  {
-    path: 'bids',
-    element: BidsPage,
     nested: [
       { path: 'my' },
       { path: 'sold' },
