@@ -3,9 +3,10 @@ import { MdCard } from '../../features/cards/card.model';
 import { Place } from '../../features/places/place.model';
 import { MdStore } from '../../features/stores/store.model';
 import { MdCell } from '../../features/cells/cell.model';
+import { MdDrawer } from '../../features/drawers/drawer.model';
 import { Trade } from '../../features/trades/trade.model';
 import { Sale } from '../../features/sales/sale.model';
-import { Color, items, kinds, kits, statuses } from '../constants';
+import { Color, items, kits, statuses } from '../constants';
 
 type Coordinates = {
   x: number;
@@ -43,6 +44,9 @@ export const parseStore = (store: MdStore) =>
 export const parseCell = (cell: MdCell) =>
   `${parsePlace(cell.storage)} #${cell.name}`;
 
+export const parseDrawer = (drawer: MdDrawer) =>
+  `${parsePlace(drawer.station)} #${drawer.name}`;
+
 export const parseItem = (item: number) =>
   t(`constants.items.${items[item - 1].split(': ')[1]}`);
 
@@ -64,9 +68,6 @@ export const parseSaleAmount = (sale: Sale) =>
   `${sale.amount} * ${sale.product.intake} ${t(
     `constants.kits.${kits[sale.product.kit - 1]}`,
   )}`;
-
-export const parseKind = (kind: number) =>
-  t(`constants.kinds.${kinds[kind - 1]}`);
 
 export const parseStatus = (status: number) =>
   t(`constants.statuses.${statuses[status - 1]}`);

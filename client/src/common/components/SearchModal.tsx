@@ -26,6 +26,7 @@ import { useSelectAllCitiesQuery } from '../../features/cities/cities.api';
 import { useSelectAllShopsQuery } from '../../features/shops/shops.api';
 import { useSelectMainMarketsQuery } from '../../features/markets/markets.api';
 import { useSelectMainStoragesQuery } from '../../features/storages/storages.api';
+import { useSelectMainStationsQuery } from '../../features/stations/stations.api';
 import { useSelectMarketTagsQuery } from '../../features/markets-tags/markets-tags.api';
 import { useSelectStorageTagsQuery } from '../../features/storages-tags/storages-tags.api';
 import {
@@ -36,6 +37,7 @@ import {
   useSelectStorageCellsQuery,
   useSelectTagCellsQuery,
 } from '../../features/cells/cells.api';
+import { useSelectStationDrawersQuery } from '../../features/drawers/drawers.api';
 import CustomForm from './CustomForm';
 import RefetchAction from './RefetchAction';
 import CustomAvatar from './CustomAvatar';
@@ -62,13 +64,13 @@ import {
   selectCities,
   selectContainers,
   selectItems,
-  selectKinds,
   selectKits,
   selectMarkets,
   selectMarks,
   selectResults,
   selectRoles,
   selectShops,
+  selectStations,
   selectStatuses,
   selectStorages,
   selectTags,
@@ -168,6 +170,12 @@ export default function SearchModal(props: Props) {
   }, [form.values.storageTag]);
 
   useEffect(() => {
+    if (form.values.drawer !== undefined) {
+      form.setFieldValue('drawer', null);
+    }
+  }, [form.values.station]);
+
+  useEffect(() => {
     if (form.values.item !== undefined) {
       form.setFieldValue('item', null);
     }
@@ -195,6 +203,10 @@ export default function SearchModal(props: Props) {
     undefined,
     { skip: props.search.storage === undefined },
   );
+  const { data: stations, ...stationsResponse } = useSelectMainStationsQuery(
+    undefined,
+    { skip: props.search.station === undefined },
+  );
   const { data: marketsTags, ...marketsTagsResponse } =
     useSelectMarketTagsQuery(+(form.values.market || ''), {
       skip: props.search.marketTag === undefined || !form.values.market,
@@ -217,6 +229,10 @@ export default function SearchModal(props: Props) {
     : useSelectStorageCellsQuery(+(form.values.storage || ''), {
         skip: props.search.cell === undefined || !form.values.storage,
       });
+  const { data: drawers, ...drawersResponse } = useSelectStationDrawersQuery(
+    +(form.values.station || ''),
+    { skip: props.search.drawer === undefined || !form.values.station },
+  );
 
   const user = users?.find((user) => user.id === +form.values.user!);
 
@@ -358,6 +374,20 @@ export default function SearchModal(props: Props) {
           {...form.getInputProps('storage')}
         />
       )}
+      {props.search.station !== undefined && (
+        <Select
+          label={t('columns.station')}
+          placeholder={`${t('components.total')}: ${stations?.length || 0}`}
+          rightSection={<RefetchAction {...stationsResponse} />}
+          itemComponent={PlacesItem}
+          data={selectStations(stations)}
+          limit={20}
+          searchable
+          allowDeselect
+          readOnly={stationsResponse.isFetching}
+          {...form.getInputProps('station')}
+        />
+      )}
       {props.search.marketTag !== undefined && (
         <Select
           label={t('columns.tag')}
@@ -422,6 +452,21 @@ export default function SearchModal(props: Props) {
           allowDeselect
           readOnly={cellsResponse.isFetching}
           {...form.getInputProps('cell')}
+        />
+      )}
+      {props.search.drawer !== undefined && (
+        <Select
+          label={t('columns.drawer')}
+          placeholder={`${t('components.total')}: ${drawers?.length || 0}`}
+          rightSection={
+            <RefetchAction {...drawersResponse} skip={!form.values.station} />
+          }
+          data={selectContainers(drawers)}
+          limit={20}
+          searchable
+          allowDeselect
+          readOnly={drawersResponse.isFetching}
+          {...form.getInputProps('drawer')}
         />
       )}
       {props.search.item !== undefined && (
@@ -554,17 +599,6 @@ export default function SearchModal(props: Props) {
             {...form.getInputProps('maxPrice')}
           />
         </Input.Wrapper>
-      )}
-      {props.search.kind !== undefined && (
-        <Select
-          label={t('columns.kind')}
-          placeholder={t('columns.kind')}
-          itemComponent={ColorsItem}
-          data={selectKinds()}
-          searchable
-          allowDeselect
-          {...form.getInputProps('kind')}
-        />
       )}
       {props.search.status !== undefined && (
         <Select

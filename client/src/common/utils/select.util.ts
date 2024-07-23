@@ -5,6 +5,10 @@ import { SmCity } from '../../features/cities/city.model';
 import { SmShop } from '../../features/shops/shop.model';
 import { SmMarket } from '../../features/markets/market.model';
 import { SmStorage } from '../../features/storages/storage.model';
+import {
+  SmStation,
+  SmStationWithPrice,
+} from '../../features/stations/station.model';
 import { SmTag } from '../../features/tags/tag.model';
 import { MdStorageTag } from '../../features/storages-tags/storage-tag.model';
 import { Container } from '../../features/containers/container.model';
@@ -15,7 +19,6 @@ import {
   categories,
   colors,
   items,
-  kinds,
   kits,
   marks,
   results,
@@ -59,28 +62,43 @@ export const selectCities = (cities?: SmCity[]) =>
   cities?.map((city) => ({
     ...city,
     value: `${city.id}`,
-    label: `${city.name} (${city.x} ${city.y})`,
+    label: parsePlace(city),
   })) || [];
 
 export const selectShops = (shops?: SmShop[]) =>
   shops?.map((shop) => ({
     ...shop,
     value: `${shop.id}`,
-    label: `${shop.name} (${shop.x} ${shop.y})`,
+    label: parsePlace(shop),
   })) || [];
 
 export const selectMarkets = (markets?: SmMarket[]) =>
   markets?.map((market) => ({
     ...market,
     value: `${market.id}`,
-    label: `${market.name} (${market.x} ${market.y})`,
+    label: parsePlace(market),
   })) || [];
 
 export const selectStorages = (storages?: SmStorage[]) =>
   storages?.map((storage) => ({
     ...storage,
     value: `${storage.id}`,
-    label: `${storage.name} (${storage.x} ${storage.y})`,
+    label: parsePlace(storage),
+  })) || [];
+
+export const selectStations = (stations?: SmStation[]) =>
+  stations?.map((station) => ({
+    ...station,
+    value: `${station.id}`,
+    label: parsePlace(station),
+  })) || [];
+
+export const selectStationsWithPrice = (stations?: SmStationWithPrice[]) =>
+  stations?.map((station) => ({
+    ...station,
+    value: `${station.id}`,
+    label: `${parsePlace(station)} ${station.price} ${t('constants.currency')}`,
+    group: `${station.price} ${t('constants.currency')}`,
   })) || [];
 
 export const selectTags = (tags?: SmTag[]) =>
@@ -91,9 +109,10 @@ export const selectTags = (tags?: SmTag[]) =>
 
 export const selectTagsWithStorage = (tags?: MdStorageTag[]) =>
   tags?.map((tag) => ({
+    ...tag.storage,
     value: `${tag.id}`,
-    label: `${tag.name} ${tag.price} ${t('constants.currency')}`,
-    group: parsePlace(tag.storage),
+    label: `${parsePlace(tag.storage)} ${tag.price} ${t('constants.currency')}`,
+    group: `${tag.price} ${t('constants.currency')}`,
   })) || [];
 
 export const selectContainers = (containers?: Container[]) =>
@@ -176,14 +195,6 @@ export const selectKits = () =>
   kits.map((kit, index) => ({
     value: `${index + 1}`,
     label: t(`constants.kits.${kit}`),
-  }));
-
-export const selectKinds = () =>
-  kinds.map((kind, index) => ({
-    text: t(`constants.kinds.${kind}`),
-    color: `${index + 1}`,
-    value: `${index + 1}`,
-    label: t(`constants.kinds.${kind}`),
   }));
 
 export const selectStatuses = () =>

@@ -12,10 +12,12 @@ export interface ISearch {
   shop?: string | null;
   market?: string | null;
   storage?: string | null;
+  station?: string | null;
   marketTag?: string | null;
   storageTag?: string | null;
   store?: string | null;
   cell?: string | null;
+  drawer?: string | null;
   item?: string | null;
   title?: string;
   description?: string;
@@ -29,7 +31,6 @@ export interface ISearch {
   kit?: string | null;
   minPrice?: number | null;
   maxPrice?: number | null;
-  kind?: string | null;
   status?: string | null;
   mark?: string | null;
   result?: string | null;

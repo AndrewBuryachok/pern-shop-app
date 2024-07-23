@@ -34,6 +34,9 @@ export const getQuery = (req: IRequest) => {
   if (req?.storage) {
     query.append('storage', req.storage);
   }
+  if (req?.station) {
+    query.append('station', req.station);
+  }
   if (req?.marketTag) {
     query.append('marketTag', req.marketTag);
   }
@@ -45,6 +48,9 @@ export const getQuery = (req: IRequest) => {
   }
   if (req?.cell) {
     query.append('cell', req.cell);
+  }
+  if (req?.drawer) {
+    query.append('drawer', req.drawer);
   }
   if (req?.item) {
     query.append('item', req.item);
@@ -84,9 +90,6 @@ export const getQuery = (req: IRequest) => {
   }
   if (req?.maxPrice) {
     query.append('maxPrice', `${req.maxPrice}`);
-  }
-  if (req?.kind) {
-    query.append('kind', req.kind);
   }
   if (req?.status) {
     query.append('status', req.status);

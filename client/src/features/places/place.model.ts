@@ -16,6 +16,10 @@ export interface PlaceWithCard extends Place {
   card: MdCard;
 }
 
+export interface PlaceWithPrice extends PlaceWithCard {
+  price: number;
+}
+
 export interface ExtPlace extends Place {
   type: number;
   owner: SmUser;
@@ -23,6 +27,6 @@ export interface ExtPlace extends Place {
   image: string;
   video: string;
   description: string;
-  data: number;
+  price?: number;
   createdAt: Date;
 }

@@ -8,7 +8,7 @@ import CustomAvatar from '../../common/components/CustomAvatar';
 import ThingImage from '../../common/components/ThingImage';
 import {
   parseCard,
-  parseCell,
+  parseDrawer,
   parseItem,
   parseStatus,
   parseThingAmount,
@@ -26,9 +26,9 @@ export default function ViewDeliveryModal({ data: delivery }: Props) {
       <TextInput label={t('columns.id')} value={delivery.id} readOnly />
       <TextInput
         label={t('columns.customer')}
-        icon={<CustomAvatar {...delivery.fromLease.card.user} />}
+        icon={<CustomAvatar {...delivery.fromHire.card.user} />}
         iconWidth={48}
-        value={parseCard(delivery.fromLease.card)}
+        value={parseCard(delivery.fromHire.card)}
         readOnly
       />
       <TextInput
@@ -70,27 +70,27 @@ export default function ViewDeliveryModal({ data: delivery }: Props) {
         readOnly
       />
       <TextInput
-        label={t('columns.storage') + ' ' + t('columns.from')}
-        value={parseCell(delivery.fromLease.cell)}
+        label={t('columns.station') + ' ' + t('columns.from')}
+        value={parseDrawer(delivery.fromHire.drawer)}
         readOnly
       />
       <TextInput
         label={t('columns.owner') + ' ' + t('columns.from')}
-        icon={<CustomAvatar {...delivery.fromLease.cell.storage.card.user} />}
+        icon={<CustomAvatar {...delivery.fromHire.drawer.station.card.user} />}
         iconWidth={48}
-        value={parseCard(delivery.fromLease.cell.storage.card)}
+        value={parseCard(delivery.fromHire.drawer.station.card)}
         readOnly
       />
       <TextInput
-        label={t('columns.storage') + ' ' + t('columns.to')}
-        value={parseCell(delivery.toLease.cell)}
+        label={t('columns.station') + ' ' + t('columns.to')}
+        value={parseDrawer(delivery.toHire.drawer)}
         readOnly
       />
       <TextInput
         label={t('columns.owner') + ' ' + t('columns.to')}
-        icon={<CustomAvatar {...delivery.toLease.cell.storage.card.user} />}
+        icon={<CustomAvatar {...delivery.toHire.drawer.station.card.user} />}
         iconWidth={48}
-        value={parseCard(delivery.toLease.cell.storage.card)}
+        value={parseCard(delivery.toHire.drawer.station.card)}
         readOnly
       />
       <TextInput

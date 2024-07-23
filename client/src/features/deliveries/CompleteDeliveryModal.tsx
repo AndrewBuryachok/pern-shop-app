@@ -38,9 +38,9 @@ export default function CompleteDeliveryModal({ data: delivery }: Props) {
     >
       <TextInput
         label={t('columns.customer')}
-        icon={<CustomAvatar {...delivery.fromLease.card.user} />}
+        icon={<CustomAvatar {...delivery.fromHire.card.user} />}
         iconWidth={48}
-        value={parseCard(delivery.fromLease.card)}
+        value={parseCard(delivery.fromHire.card)}
         readOnly
       />
       <TextInput

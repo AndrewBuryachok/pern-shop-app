@@ -32,7 +32,7 @@ export default function DeliveriesTable({ actions = [], ...props }: Props) {
       {props.data?.result.map((delivery) => (
         <tr key={delivery.id}>
           <td>
-            <AvatarWithDoubleText {...delivery.fromLease.card} />
+            <AvatarWithDoubleText {...delivery.fromHire.card} />
           </td>
           <td>
             <ThingImageWithText {...delivery} />
@@ -48,14 +48,14 @@ export default function DeliveriesTable({ actions = [], ...props }: Props) {
           </td>
           <td>
             <PlaceWithDoubleAvatar
-              {...delivery.fromLease.cell.storage}
-              container={delivery.fromLease.cell.name}
+              {...delivery.fromHire.drawer.station}
+              container={delivery.fromHire.drawer.name}
             />
           </td>
           <td>
             <PlaceWithDoubleAvatar
-              {...delivery.toLease.cell.storage}
-              container={delivery.toLease.cell.name}
+              {...delivery.toHire.drawer.station}
+              container={delivery.toHire.drawer.name}
             />
           </td>
           <td>

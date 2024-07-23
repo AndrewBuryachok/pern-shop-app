@@ -8,6 +8,7 @@ import { useSelectCityUsersQuery } from '../cities/cities.api';
 import { useSelectShopGoodsQuery } from '../shops/shops.api';
 import { useSelectMarketStoresQuery } from '../stores/stores.api';
 import { useSelectStorageCellsQuery } from '../cells/cells.api';
+import { useSelectStationDrawersQuery } from '../drawers/drawers.api';
 import RefetchAction from '../../common/components/RefetchAction';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import CustomImage from '../../common/components/CustomImage';
@@ -48,6 +49,10 @@ export default function PlaceModal({ data: place }: Props) {
     place.id,
     { skip: place.type !== 3 },
   );
+  const { data: drawers, ...drawersResponse } = useSelectStationDrawersQuery(
+    place.id,
+    { skip: place.type !== 4 },
+  );
 
   return (
     <Stack spacing={8}>
@@ -77,6 +82,13 @@ export default function PlaceModal({ data: place }: Props) {
       />
       <TextInput label={t('columns.x')} value={place.x} readOnly />
       <TextInput label={t('columns.y')} value={place.y} readOnly />
+      {place.price && (
+        <TextInput
+          label={t('columns.price')}
+          value={`${place.price} ${t('constants.currency')}`}
+          readOnly
+        />
+      )}
       <TextInput
         label={t('columns.created')}
         value={parseTime(place.createdAt)}
@@ -135,6 +147,10 @@ export const openPlaceModal = (place: ExtPlace) =>
     title:
       t('actions.view') +
       ' ' +
-      t(`modals.${['cities', 'shops', 'markets', 'storages'][place.type]}`),
+      t(
+        `modals.${
+          ['cities', 'shops', 'markets', 'storages', 'stations'][place.type]
+        }`,
+      ),
     children: <PlaceModal data={place} />,
   });

@@ -8,7 +8,7 @@ import CustomAvatar from '../../common/components/CustomAvatar';
 import ThingImage from '../../common/components/ThingImage';
 import {
   parseCard,
-  parseCell,
+  parseDrawer,
   parseItem,
   parseStatus,
   parseThingAmount,
@@ -26,9 +26,9 @@ export default function ViewOrderModal({ data: order }: Props) {
       <TextInput label={t('columns.id')} value={order.id} readOnly />
       <TextInput
         label={t('columns.customer')}
-        icon={<CustomAvatar {...order.lease.card.user} />}
+        icon={<CustomAvatar {...order.hire.card.user} />}
         iconWidth={48}
-        value={parseCard(order.lease.card)}
+        value={parseCard(order.hire.card)}
         readOnly
       />
       <TextInput
@@ -68,15 +68,15 @@ export default function ViewOrderModal({ data: order }: Props) {
         readOnly
       />
       <TextInput
-        label={t('columns.storage')}
-        value={parseCell(order.lease.cell)}
+        label={t('columns.station')}
+        value={parseDrawer(order.hire.drawer)}
         readOnly
       />
       <TextInput
         label={t('columns.owner')}
-        icon={<CustomAvatar {...order.lease.cell.storage.card.user} />}
+        icon={<CustomAvatar {...order.hire.drawer.station.card.user} />}
         iconWidth={48}
-        value={parseCard(order.lease.cell.storage.card)}
+        value={parseCard(order.hire.drawer.station.card)}
         readOnly
       />
       <TextInput

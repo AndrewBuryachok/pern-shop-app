@@ -66,9 +66,9 @@ export default function TakeOrderModal({ data: order, hasRole }: Props) {
     >
       <TextInput
         label={t('columns.customer')}
-        icon={<CustomAvatar {...order.lease.card.user} />}
+        icon={<CustomAvatar {...order.hire.card.user} />}
         iconWidth={48}
-        value={parseCard(order.lease.card)}
+        value={parseCard(order.hire.card)}
         readOnly
       />
       <TextInput

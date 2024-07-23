@@ -19,6 +19,7 @@ import ThingImage from '../../common/components/ThingImage';
 import { UsersItem } from '../../common/components/UsersItem';
 import { ThingsItem } from '../../common/components/ThingsItem';
 import { CardsItem } from '../../common/components/CardsItem';
+import { PlacesItem } from '../../common/components/PlacesItem';
 import {
   selectCardsWithBalance,
   selectCategories,
@@ -108,6 +109,7 @@ export default function CreateProductModal({ hasRole }: Props) {
         label={t('columns.storage')}
         placeholder={t('columns.storage')}
         rightSection={<RefetchAction {...storagesTagsResponse} />}
+        itemComponent={PlacesItem}
         data={selectTagsWithStorage(storagesTags)}
         limit={20}
         searchable

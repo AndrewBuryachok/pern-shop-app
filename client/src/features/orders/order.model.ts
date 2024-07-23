@@ -1,6 +1,6 @@
 import { Transportation } from '../transportations/transportation.model';
-import { SmLease } from '../leases/lease.model';
+import { SmHire } from '../hires/hire.model';
 
 export interface Order extends Transportation {
-  lease: SmLease;
+  hire: SmHire;
 }

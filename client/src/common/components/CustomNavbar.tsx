@@ -5,7 +5,6 @@ import { hideNotification } from '@mantine/notifications';
 import {
   IconArticle,
   IconBasket,
-  IconBoxSeam,
   IconBuildingCommunity,
   IconChartBar,
   IconChecklist,
@@ -16,6 +15,7 @@ import {
   IconMail,
   IconMailbox,
   IconMap,
+  IconMessages,
   IconNews,
   IconReceipt,
   IconScale,
@@ -57,7 +57,7 @@ export default function CustomNavbar(props: Props) {
     },
     {
       route: 'chats',
-      icon: IconMailbox,
+      icon: IconMessages,
       sub: '/my',
     },
     {
@@ -87,7 +87,7 @@ export default function CustomNavbar(props: Props) {
     },
     {
       route: 'transportations',
-      icon: IconBoxSeam,
+      icon: IconMailbox,
       nested: ['orders', 'deliveries'],
     },
     {
@@ -97,7 +97,7 @@ export default function CustomNavbar(props: Props) {
     {
       route: 'places',
       icon: IconBuildingCommunity,
-      nested: ['cities', 'shops', 'markets', 'storages'],
+      nested: ['cities', 'shops', 'markets', 'storages', 'stations'],
     },
     {
       route: 'tags',
@@ -107,12 +107,12 @@ export default function CustomNavbar(props: Props) {
     {
       route: 'containers',
       icon: IconContainer,
-      nested: ['stores', 'cells'],
+      nested: ['stores', 'cells', 'drawers'],
     },
     {
       route: 'receipts',
       icon: IconReceipt,
-      nested: ['rents', 'leases'],
+      nested: ['rents', 'leases', 'hires'],
     },
     {
       route: 'tasks',

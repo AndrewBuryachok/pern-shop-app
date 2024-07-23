@@ -9,7 +9,6 @@ import DateText from '../../common/components/DateText';
 import CustomActions from '../../common/components/CustomActions';
 import { viewLeaseAction } from './ViewLeaseModal';
 import { openViewLeaseThingsAction } from './ViewLeaseThingsModal';
-import { parseKind } from '../../common/utils';
 
 type Props = ITableWithActions<Lease>;
 
@@ -22,7 +21,7 @@ export default function LeasesTable({ actions = [], ...props }: Props) {
         'owner',
         'storage',
         'sum',
-        'kind',
+        'things',
         'completed',
         'action',
       ]}
@@ -48,7 +47,7 @@ export default function LeasesTable({ actions = [], ...props }: Props) {
           </td>
           <td>
             <CustomAnchor
-              text={parseKind(lease.kind)}
+              text='1'
               open={() => openViewLeaseThingsAction(lease)}
             />
           </td>

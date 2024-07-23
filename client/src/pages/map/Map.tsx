@@ -6,6 +6,7 @@ import { useGetMainCitiesQuery } from '../../features/cities/cities.api';
 import { useGetMainShopsQuery } from '../../features/shops/shops.api';
 import { useGetMainMarketsQuery } from '../../features/markets/markets.api';
 import { useGetMainStoragesQuery } from '../../features/storages/storages.api';
+import { useGetMainStationsQuery } from '../../features/stations/stations.api';
 import PlacePath from '../../features/places/PlacePath';
 import { colors } from '../../common/constants';
 
@@ -53,8 +54,16 @@ export default function Map() {
   } = useGetMainStoragesQuery({
     page: 0,
   });
+  const {
+    data: stations,
+    isFetching: isFetching5,
+    refetch: refetch5,
+  } = useGetMainStationsQuery({
+    page: 0,
+  });
 
-  const isFetching = isFetching1 || isFetching2 || isFetching3 || isFetching4;
+  const isFetching =
+    isFetching1 || isFetching2 || isFetching3 || isFetching4 || isFetching5;
 
   const refetch = () => {
     if (!isFetching) {
@@ -62,6 +71,7 @@ export default function Map() {
       refetch2();
       refetch3();
       refetch4();
+      refetch5();
     }
   };
 
@@ -92,27 +102,30 @@ export default function Map() {
                   ...city,
                   type: 0,
                   owner: city.user,
-                  data: city.users,
                 })),
                 shops?.result.map((shop) => ({
                   ...shop,
                   type: 1,
                   owner: shop.user,
-                  data: shop.goods,
                 })),
                 markets?.result.map((market) => ({
                   ...market,
                   type: 2,
                   owner: market.card.user,
                   card: market.card,
-                  data: market.stores,
                 })),
                 storages?.result.map((storage) => ({
                   ...storage,
                   type: 3,
                   owner: storage.card.user,
                   card: storage.card,
-                  data: storage.cells,
+                })),
+                stations?.result.map((station) => ({
+                  ...station,
+                  type: 4,
+                  owner: station.card.user,
+                  card: station.card,
+                  price: station.price,
                 })),
               ].map((allPlaces) =>
                 allPlaces?.map((place) => (

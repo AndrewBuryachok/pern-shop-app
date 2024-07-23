@@ -67,15 +67,18 @@
     "shops": "Shops",
     "markets": "Markets",
     "storages": "Storages",
+    "stations": "Stations",
     "tags": "Tags",
     "markets-tags": "Markets Tags",
     "storages-tags": "Storages Tags",
     "containers": "Containers",
     "stores": "Stores",
     "cells": "Cells",
+    "drawers": "Drawers",
     "receipts": "Receipts",
     "rents": "Rents",
     "leases": "Leases",
+    "hires": "Hires",
     "tasks": "Tasks",
     "plaints": "Plaints",
     "polls": "Polls",
@@ -104,12 +107,15 @@
     "shops": "View shops; create, edit shops; add, remove users",
     "markets": "View markets; create, edit markets",
     "storages": "View storages; create, edit storages",
+    "stations": "View stations; create, edit stations",
     "markets-tags": "View markets tags; create, edit markets tags",
     "storages-tags": "View storages tags; create, edit storages tags",
     "stores": "View stores; create stores; reserve stores",
     "cells": "View cells; create cells; reserve cells",
+    "drawers": "View drawers; create drawers; reserve drawers",
     "rents": "View rents; continue, complete rents",
     "leases": "View leases; continue, complete leases",
+    "hires": "View hires; continue, complete hires",
     "tasks": "View tasks; create, take, execute, complete tasks",
     "plaints": "View plaints; create, edit, complete plaints; answer to plaints",
     "polls": "View polls; create, edit, complete, delete polls; vote, discuss polls",
@@ -221,17 +227,19 @@
     "shop": "Shop",
     "market": "Market",
     "storage": "Storage",
+    "station": "Station",
     "tags": "Tags",
     "tag": "Tag",
     "price": "Price",
     "goods": "Goods",
     "stores": "Stores",
     "cells": "Cells",
+    "drawers": "Drawers",
     "store": "Store",
     "cell": "Cell",
+    "drawer": "Drawer",
     "reserved": "Reserved",
     "renter": "Renter",
-    "kind": "Kind",
     "seller": "Seller",
     "item": "Item",
     "amount": "Amount",
@@ -302,11 +310,14 @@
     "shops": "Shop",
     "markets": "Market",
     "storages": "Storage",
+    "stations": "Station",
     "tags": "Tag",
     "stores": "Store",
     "cells": "Cell",
+    "drawers": "Drawer",
     "rents": "Rent",
     "leases": "Lease",
+    "hires": "Hire",
     "goods": "Good",
     "wares": "Ware",
     "products": "Product",
@@ -392,6 +403,9 @@
     "storages": {
       "created": "created storage"
     },
+    "stations": {
+      "created": "created station"
+    },
     "rents": {
       "created": "reserved your store",
       "continued": "continued your rent",
@@ -401,6 +415,11 @@
       "created": "reserved your cell",
       "continued": "continued your lease",
       "completed": "completed your lease"
+    },
+    "hires": {
+      "created": "reserved your drawer",
+      "continued": "continued your hire",
+      "completed": "completed your hire"
     },
     "goods": {
       "created": "created good"
@@ -507,11 +526,6 @@
       "piece": "Piece(s)",
       "stack": "Stack(s)",
       "shulker": "Shulker(s)"
-    },
-    "kinds": {
-      "product": "Product",
-      "order": "Order",
-      "delivery": "Delivery"
     },
     "statuses": {
       "created": "Created",

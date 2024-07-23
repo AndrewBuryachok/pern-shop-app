@@ -5,7 +5,7 @@ import { NumberInput, Select, Textarea } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { useCreateOrderMutation } from './orders.api';
-import { useSelectFreeTagsQuery } from '../storages-tags/storages-tags.api';
+import { useSelectFreeStationsQuery } from '../stations/stations.api';
 import { useSelectAllUsersQuery } from '../users/users.api';
 import {
   useSelectMyCardsQuery,
@@ -19,13 +19,14 @@ import ThingImage from '../../common/components/ThingImage';
 import { UsersItem } from '../../common/components/UsersItem';
 import { ThingsItem } from '../../common/components/ThingsItem';
 import { CardsItem } from '../../common/components/CardsItem';
+import { PlacesItem } from '../../common/components/PlacesItem';
 import {
   customMin,
   selectCardsWithBalance,
   selectCategories,
   selectItems,
   selectKits,
-  selectTagsWithStorage,
+  selectStationsWithPrice,
   selectUsers,
 } from '../../common/utils';
 import {
@@ -40,12 +41,12 @@ type Props = { hasRole: boolean };
 export default function CreateOrderModal({ hasRole }: Props) {
   const [t] = useTranslation();
 
-  const storageTag = { price: 0 };
+  const station = { price: 0 };
   const myCard = { balance: 0 };
 
   const form = useForm({
     initialValues: {
-      storageTag: '',
+      station: '',
       user: '',
       card: '',
       category: '',
@@ -56,16 +57,16 @@ export default function CreateOrderModal({ hasRole }: Props) {
       kit: '',
       price: 1,
     },
-    transformValues: ({ storageTag, card, item, kit, ...rest }) => ({
+    transformValues: ({ station, card, item, kit, ...rest }) => ({
       ...rest,
-      storageTagId: +storageTag,
+      stationId: +station,
       cardId: +card,
       item: +item,
       kit: +kit,
     }),
     validate: {
       card: (_, values) =>
-        myCard.balance < storageTag.price + values.price
+        myCard.balance < station.price + values.price
           ? t('errors.not_enough_balance')
           : null,
     },
@@ -73,8 +74,7 @@ export default function CreateOrderModal({ hasRole }: Props) {
 
   useEffect(() => form.setFieldValue('item', ''), [form.values.category]);
 
-  const { data: storagesTags, ...storagesTagsResponse } =
-    useSelectFreeTagsQuery();
+  const { data: stations, ...stationsResponse } = useSelectFreeStationsQuery();
   const { data: users, ...usersResponse } = useSelectAllUsersQuery(undefined, {
     skip: !hasRole,
   });
@@ -86,10 +86,9 @@ export default function CreateOrderModal({ hasRole }: Props) {
 
   const user = users?.find((user) => user.id === +form.values.user);
 
-  storageTag.price =
-    storagesTags?.find(
-      (storageTag) => storageTag.id === +form.values.storageTag,
-    )?.price || 0;
+  station.price =
+    stations?.find((station) => station.id === +form.values.station)?.price ||
+    0;
   myCard.balance =
     cards?.find((card) => card.id === +form.values.card)?.balance || 0;
 
@@ -106,15 +105,16 @@ export default function CreateOrderModal({ hasRole }: Props) {
       text={t('actions.create') + ' ' + t('modals.orders')}
     >
       <Select
-        label={t('columns.storage')}
-        placeholder={t('columns.storage')}
-        rightSection={<RefetchAction {...storagesTagsResponse} />}
-        data={selectTagsWithStorage(storagesTags)}
+        label={t('columns.station')}
+        placeholder={t('columns.station')}
+        rightSection={<RefetchAction {...stationsResponse} />}
+        itemComponent={PlacesItem}
+        data={selectStationsWithPrice(stations)}
         limit={20}
         searchable
         required
-        readOnly={storagesTagsResponse.isFetching}
-        {...form.getInputProps('storageTag')}
+        readOnly={stationsResponse.isFetching}
+        {...form.getInputProps('station')}
       />
       {hasRole && (
         <Select
@@ -199,7 +199,7 @@ export default function CreateOrderModal({ hasRole }: Props) {
         placeholder={t('columns.price')}
         required
         min={1}
-        max={customMin(MAX_PRICE_VALUE, myCard.balance - storageTag.price)}
+        max={customMin(MAX_PRICE_VALUE, myCard.balance - station.price)}
         {...form.getInputProps('price')}
       />
     </CustomForm>

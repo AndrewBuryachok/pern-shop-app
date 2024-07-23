@@ -5,7 +5,7 @@ import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { Lease } from './lease.model';
 import CustomAvatar from '../../common/components/CustomAvatar';
-import { parseCard, parseCell, parseKind, parseTime } from '../../common/utils';
+import { parseCard, parseCell, parseTime } from '../../common/utils';
 import { Color } from '../../common/constants';
 
 type Props = IModal<Lease>;
@@ -38,11 +38,6 @@ export default function ViewLeaseModal({ data: lease }: Props) {
       <TextInput
         label={t('columns.sum')}
         value={`${lease.cell.storageTag.price} ${t('constants.currency')}`}
-        readOnly
-      />
-      <TextInput
-        label={t('columns.kind')}
-        value={parseKind(lease.kind)}
         readOnly
       />
       <TextInput

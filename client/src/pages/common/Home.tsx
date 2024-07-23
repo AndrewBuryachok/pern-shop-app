@@ -11,6 +11,7 @@ import {
 } from '@mantine/core';
 import { useDocumentTitle } from '@mantine/hooks';
 import {
+  IconArchive,
   IconArticle,
   IconBasket,
   IconBoxModel,
@@ -35,6 +36,7 @@ import {
   IconPaperBag,
   IconReportMoney,
   IconScale,
+  IconScript,
   IconShoppingBag,
   IconShoppingCart,
   IconStar,
@@ -147,6 +149,10 @@ export default function Home() {
       icon: IconBuildingWarehouse,
     },
     {
+      title: 'stations',
+      icon: IconMailbox,
+    },
+    {
       title: 'stores',
       icon: IconBuildingCircus,
     },
@@ -155,12 +161,20 @@ export default function Home() {
       icon: IconBoxModel,
     },
     {
+      title: 'drawers',
+      icon: IconArchive,
+    },
+    {
       title: 'rents',
       icon: IconFileDollar,
     },
     {
       title: 'leases',
       icon: IconReportMoney,
+    },
+    {
+      title: 'hires',
+      icon: IconScript,
     },
     {
       title: 'tasks',

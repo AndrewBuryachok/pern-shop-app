@@ -20,6 +20,7 @@ const CitiesPage = lazy(() => import('../pages/cities/CitiesPage'));
 const ShopsPage = lazy(() => import('../pages/shops/ShopsPage'));
 const MarketsPage = lazy(() => import('../pages/markets/MarketsPage'));
 const StoragesPage = lazy(() => import('../pages/storages/StoragesPage'));
+const StationsPage = lazy(() => import('../pages/stations/StationsPage'));
 const MarketsTagsPage = lazy(
   () => import('../pages/markets-tags/MarketsTagsPage'),
 );
@@ -28,8 +29,10 @@ const StoragesTagsPage = lazy(
 );
 const StoresPage = lazy(() => import('../pages/stores/StoresPage'));
 const CellsPage = lazy(() => import('../pages/cells/CellsPage'));
+const DrawersPage = lazy(() => import('../pages/drawers/DrawersPage'));
 const RentsPage = lazy(() => import('../pages/rents/RentsPage'));
 const LeasesPage = lazy(() => import('../pages/leases/LeasesPage'));
+const HiresPage = lazy(() => import('../pages/hires/HiresPage'));
 const GoodsPage = lazy(() => import('../pages/goods/GoodsPage'));
 const WaresPage = lazy(() => import('../pages/wares/WaresPage'));
 const ProductsPage = lazy(() => import('../pages/products/ProductsPage'));
@@ -166,6 +169,15 @@ export const pages = [
     ],
   },
   {
+    path: 'stations',
+    element: StationsPage,
+    nested: [
+      { index: true },
+      { path: 'my' },
+      { path: 'all', role: Role.MERCHANT },
+    ],
+  },
+  {
     path: 'markets-tags',
     element: MarketsTagsPage,
     nested: [
@@ -202,6 +214,15 @@ export const pages = [
     ],
   },
   {
+    path: 'drawers',
+    element: DrawersPage,
+    nested: [
+      { index: true },
+      { path: 'my' },
+      { path: 'all', role: Role.MERCHANT },
+    ],
+  },
+  {
     path: 'rents',
     element: RentsPage,
     nested: [
@@ -214,6 +235,16 @@ export const pages = [
   {
     path: 'leases',
     element: LeasesPage,
+    nested: [
+      { index: true },
+      { path: 'my' },
+      { path: 'received' },
+      { path: 'all', role: Role.MERCHANT },
+    ],
+  },
+  {
+    path: 'hires',
+    element: HiresPage,
     nested: [
       { index: true },
       { path: 'my' },
