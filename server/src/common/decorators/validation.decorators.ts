@@ -22,7 +22,6 @@ import {
   MAX_ID_VALUE,
   MAX_INTAKE_VALUE,
   MAX_ITEM_VALUE,
-  MAX_KIND_VALUE,
   MAX_KIT_VALUE,
   MAX_LINK_LENGTH,
   MAX_MARK_VALUE,
@@ -177,13 +176,6 @@ export const IsKit = () => (target: object, key: string) => {
 export const IsType = () => (target: object, key: string) => {
   IsNotEmpty()(target, key);
   IsBoolean()(target, key);
-};
-
-export const IsKind = () => (target: object, key: string) => {
-  IsNotEmpty()(target, key);
-  IsInt()(target, key);
-  IsPositive()(target, key);
-  Max(MAX_KIND_VALUE)(target, key);
 };
 
 export const IsMark = () => (target: object, key: string) => {

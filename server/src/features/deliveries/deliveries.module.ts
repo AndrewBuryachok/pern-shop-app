@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Delivery } from './delivery.entity';
-import { LeasesModule } from '../leases/leases.module';
+import { HiresModule } from '../hires/hires.module';
 import { CardsModule } from '../cards/cards.module';
 import { PaymentsModule } from '../payments/payments.module';
 import { MqttModule } from '../mqtt/mqtt.module';
@@ -12,7 +12,7 @@ import { IsDeliveryExists } from '../../common/constraints';
 @Module({
   imports: [
     TypeOrmModule.forFeature([Delivery]),
-    LeasesModule,
+    HiresModule,
     CardsModule,
     PaymentsModule,
     MqttModule,

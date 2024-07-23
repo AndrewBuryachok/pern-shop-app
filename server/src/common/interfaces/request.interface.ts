@@ -9,7 +9,6 @@ import {
 } from 'class-validator';
 import { Transform, Type } from 'class-transformer';
 import { Role } from '../../features/users/role.enum';
-import { Kind } from '../../features/leases/kind.enum';
 import { Status } from '../../features/transportations/status.enum';
 import { Mark } from '../../features/polls/mark.enum';
 import { Result } from '../../features/polls/result.enum';
@@ -87,6 +86,12 @@ export class Request {
   @IsOptional()
   @IsInt()
   @Type(() => Number)
+  station?: number;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsInt()
+  @Type(() => Number)
   marketTag?: number;
 
   @ApiProperty({ required: false })
@@ -106,6 +111,12 @@ export class Request {
   @IsInt()
   @Type(() => Number)
   cell?: number;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsInt()
+  @Type(() => Number)
+  drawer?: number;
 
   @ApiProperty({ required: false })
   @IsOptional()
@@ -184,12 +195,6 @@ export class Request {
   @IsInt()
   @Type(() => Number)
   maxPrice?: number;
-
-  @ApiProperty({ required: false })
-  @IsOptional()
-  @IsEnum(Kind)
-  @Type(() => Number)
-  kind?: Kind;
 
   @ApiProperty({ required: false })
   @IsOptional()

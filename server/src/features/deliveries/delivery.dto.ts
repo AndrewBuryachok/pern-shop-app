@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Validate } from 'class-validator';
 import { Type } from 'class-transformer';
 import { IsId } from '../../common/decorators';
-import { IsDeliveryExists, IsStorageTagExists } from '../../common/constraints';
+import { IsDeliveryExists, IsStationExists } from '../../common/constraints';
 import {
   CreateTransportationDto,
   RateTransportationDto,
@@ -25,13 +25,13 @@ export class ExtDeliveryIdDto extends DeliveryIdDto {
 export class CreateDeliveryDto extends CreateTransportationDto {
   @ApiProperty()
   @IsId()
-  @Validate(IsStorageTagExists)
-  fromStorageTagId: number;
+  @Validate(IsStationExists)
+  fromStationId: number;
 
   @ApiProperty()
   @IsId()
-  @Validate(IsStorageTagExists)
-  toStorageTagId: number;
+  @Validate(IsStationExists)
+  toStationId: number;
 }
 
 export class ExtCreateDeliveryDto extends CreateDeliveryDto {

@@ -16,7 +16,6 @@ import { Request, Response } from '../../common/interfaces';
 import { getDateMonthBefore } from '../../common/utils';
 import { AppException } from '../../common/exceptions';
 import { ProductError } from './product-error.enum';
-import { Kind } from '../leases/kind.enum';
 import { Mode, Notification } from '../../common/enums';
 
 @Injectable()
@@ -105,10 +104,7 @@ export class ProductsService {
   async createProduct(
     dto: ExtCreateProductDto & { nick: string },
   ): Promise<void> {
-    const leaseId = await this.leasesService.createLease({
-      ...dto,
-      kind: Kind.PRODUCT,
-    });
+    const leaseId = await this.leasesService.createLease(dto);
     const product = await this.create({ ...dto, storageTagId: leaseId });
     this.mqttService.publishNotificationMessage(
       product.id,

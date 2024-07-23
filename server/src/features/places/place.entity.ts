@@ -51,3 +51,8 @@ export abstract class PlaceWithCard extends Place {
   @JoinColumn({ name: 'card_id' })
   card: Card;
 }
+
+export abstract class PlaceWithPrice extends PlaceWithCard {
+  @Column()
+  price: number;
+}

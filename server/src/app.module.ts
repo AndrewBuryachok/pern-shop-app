@@ -19,12 +19,15 @@ import { CitiesModule } from './features/cities/cities.module';
 import { ShopsModule } from './features/shops/shops.module';
 import { MarketsModule } from './features/markets/markets.module';
 import { StoragesModule } from './features/storages/storages.module';
+import { StationsModule } from './features/stations/stations.module';
 import { MarketsTagsModule } from './features/markets-tags/markets-tags.module';
 import { StoragesTagsModule } from './features/storages-tags/storages-tags.module';
 import { StoresModule } from './features/stores/stores.module';
 import { CellsModule } from './features/cells/cells.module';
+import { DrawersModule } from './features/drawers/drawers.module';
 import { RentsModule } from './features/rents/rents.module';
 import { LeasesModule } from './features/leases/leases.module';
+import { HiresModule } from './features/hires/hires.module';
 import { GoodsModule } from './features/goods/goods.module';
 import { WaresModule } from './features/wares/wares.module';
 import { ProductsModule } from './features/products/products.module';
@@ -82,12 +85,15 @@ import { LoggerModule } from './features/logger/logger.module';
     ShopsModule,
     MarketsModule,
     StoragesModule,
+    StationsModule,
     MarketsTagsModule,
     StoragesTagsModule,
     StoresModule,
     CellsModule,
+    DrawersModule,
     RentsModule,
     LeasesModule,
+    HiresModule,
     GoodsModule,
     WaresModule,
     ProductsModule,

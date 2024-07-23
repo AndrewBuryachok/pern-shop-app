@@ -318,6 +318,32 @@ describe('Without Auth', () => {
     });
   });
 
+  describe('Stations', () => {
+    it('GET /stations/my', async () => {
+      return request(app.getHttpServer()).get('/stations/my').expect(401);
+    });
+
+    it('GET /stations/all', async () => {
+      return request(app.getHttpServer())
+        .get('/stations/all')
+        .set('Authorization', `Bearer ${user.access}`)
+        .expect(403);
+    });
+
+    it('GET /stations/my/select', async () => {
+      return request(app.getHttpServer())
+        .get('/stations/my/select')
+        .expect(401);
+    });
+
+    it('GET /stations/all/select', async () => {
+      return request(app.getHttpServer())
+        .get('/stations/all/select')
+        .set('Authorization', `Bearer ${user.access}`)
+        .expect(403);
+    });
+  });
+
   describe('Markets Tags', () => {
     it('GET /markets-tags/my', async () => {
       return request(app.getHttpServer()).get('/markets-tags/my').expect(401);
@@ -370,6 +396,19 @@ describe('Without Auth', () => {
     });
   });
 
+  describe('Drawers', () => {
+    it('GET /drawers/my', async () => {
+      return request(app.getHttpServer()).get('/drawers/my').expect(401);
+    });
+
+    it('GET /drawers/all', async () => {
+      return request(app.getHttpServer())
+        .get('/drawers/all')
+        .set('Authorization', `Bearer ${user.access}`)
+        .expect(403);
+    });
+  });
+
   describe('Rents', () => {
     it('GET /rents/my', async () => {
       return request(app.getHttpServer()).get('/rents/my').expect(401);
@@ -410,6 +449,23 @@ describe('Without Auth', () => {
     it('GET /leases/all', async () => {
       return request(app.getHttpServer())
         .get('/leases/all')
+        .set('Authorization', `Bearer ${user.access}`)
+        .expect(403);
+    });
+  });
+
+  describe('Hires', () => {
+    it('GET /hires/my', async () => {
+      return request(app.getHttpServer()).get('/hires/my').expect(401);
+    });
+
+    it('GET /hires/received', async () => {
+      return request(app.getHttpServer()).get('/hires/received').expect(401);
+    });
+
+    it('GET /hires/all', async () => {
+      return request(app.getHttpServer())
+        .get('/hires/all')
         .set('Authorization', `Bearer ${user.access}`)
         .expect(403);
     });

@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { Order } from './order.entity';
-import { LeasesService } from '../leases/leases.service';
+import { HiresService } from '../hires/hires.service';
 import { CardsService } from '../cards/cards.service';
 import { PaymentsService } from '../payments/payments.service';
 import { MqttService } from '../mqtt/mqtt.service';
@@ -16,7 +16,6 @@ import { Request, Response } from '../../common/interfaces';
 import { AppException } from '../../common/exceptions';
 import { OrderError } from './order-error.enum';
 import { Status } from '../transportations/status.enum';
-import { Kind } from '../leases/kind.enum';
 import { Mode, Notification } from '../../common/enums';
 
 @Injectable()
@@ -24,7 +23,7 @@ export class OrdersService {
   constructor(
     @InjectRepository(Order)
     private ordersRepository: Repository<Order>,
-    private leasesService: LeasesService,
+    private hiresService: HiresService,
     private cardsService: CardsService,
     private paymentsService: PaymentsService,
     private mqttService: MqttService,
@@ -35,7 +34,7 @@ export class OrdersService {
       .andWhere('order.status = :status', {
         status: Status.CREATED,
       })
-      .andWhere('lease.completedAt > NOW()')
+      .andWhere('hire.completedAt > NOW()')
       .getManyAndCount();
     return { result, count };
   }
@@ -72,12 +71,9 @@ export class OrdersService {
   }
 
   async createOrder(dto: ExtCreateOrderDto & { nick: string }): Promise<void> {
-    const leaseId = await this.leasesService.createLease({
-      ...dto,
-      kind: Kind.ORDER,
-    });
+    const hireId = await this.hiresService.createHire(dto);
     await this.cardsService.decreaseCardBalance({ ...dto, sum: dto.price });
-    const order = await this.create({ ...dto, storageTagId: leaseId });
+    const order = await this.create({ ...dto, stationId: hireId });
     this.mqttService.publishNotificationMessage(
       order.id,
       0,
@@ -89,19 +85,19 @@ export class OrdersService {
   async takeOrder(dto: ExtTakeOrderDto & { nick: string }): Promise<void> {
     await this.cardsService.checkCardUser(dto.cardId, dto.myId, dto.hasRole);
     const order = await this.ordersRepository.findOne({
-      relations: ['lease', 'lease.card'],
+      relations: ['hire', 'hire.card'],
       where: { id: dto.orderId },
     });
     if (order.status !== Status.CREATED) {
       throw new AppException(OrderError.NOT_CREATED);
     }
-    if (order.lease.completedAt < new Date()) {
+    if (order.hire.completedAt < new Date()) {
       throw new AppException(OrderError.ALREADY_EXPIRED);
     }
     await this.take(order, dto.cardId);
     this.mqttService.publishNotificationMessage(
       dto.orderId,
-      order.lease.card.userId,
+      order.hire.card.userId,
       dto.nick,
       Notification.TAKEN_ORDER,
     );
@@ -119,7 +115,7 @@ export class OrdersService {
     await this.untake(order);
     this.mqttService.publishNotificationMessage(
       dto.orderId,
-      order.lease.card.userId,
+      order.hire.card.userId,
       dto.nick,
       Notification.UNTAKEN_ORDER,
     );
@@ -137,7 +133,7 @@ export class OrdersService {
     await this.execute(order);
     this.mqttService.publishNotificationMessage(
       dto.orderId,
-      order.lease.card.userId,
+      order.hire.card.userId,
       dto.nick,
       Notification.EXECUTED_ORDER,
     );
@@ -153,14 +149,14 @@ export class OrdersService {
       throw new AppException(OrderError.NOT_EXECUTED);
     }
     await this.cardsService.increaseCardBalance({
-      cardId: order.lease.cardId,
+      cardId: order.hire.cardId,
       sum: order.price,
     });
     await this.paymentsService.createPayment({
       myId: dto.myId,
       nick: dto.nick,
       hasRole: dto.hasRole,
-      senderCardId: order.lease.cardId,
+      senderCardId: order.hire.cardId,
       receiverCardId: order.executorCardId,
       sum: order.price,
       description: '',
@@ -184,7 +180,7 @@ export class OrdersService {
       throw new AppException(OrderError.NOT_CREATED);
     }
     await this.cardsService.increaseCardBalance({
-      cardId: order.lease.cardId,
+      cardId: order.hire.cardId,
       sum: order.price,
     });
     await this.delete(order);
@@ -218,11 +214,11 @@ export class OrdersService {
     hasRole: boolean,
   ): Promise<Order> {
     const order = await this.ordersRepository.findOne({
-      relations: ['lease', 'lease.card', 'lease.card.users', 'executorCard'],
+      relations: ['hire', 'hire.card', 'hire.card.users', 'executorCard'],
       where: { id },
     });
     if (
-      !order.lease.card.users.map((user) => user.id).includes(userId) &&
+      !order.hire.card.users.map((user) => user.id).includes(userId) &&
       !hasRole
     ) {
       throw new AppException(OrderError.NOT_CUSTOMER);
@@ -236,7 +232,7 @@ export class OrdersService {
     hasRole: boolean,
   ): Promise<Order> {
     const order = await this.ordersRepository.findOne({
-      relations: ['executorCard', 'executorCard.users', 'lease', 'lease.card'],
+      relations: ['executorCard', 'executorCard.users', 'hire', 'hire.card'],
       where: { id },
     });
     if (
@@ -251,7 +247,7 @@ export class OrdersService {
   private async create(dto: ExtCreateOrderDto): Promise<Order> {
     try {
       const order = this.ordersRepository.create({
-        leaseId: dto.storageTagId,
+        hireId: dto.stationId,
         item: dto.item,
         description: dto.description,
         amount: dto.amount,
@@ -328,12 +324,12 @@ export class OrdersService {
   private getOrdersQueryBuilder(req: Request): SelectQueryBuilder<Order> {
     return this.ordersRepository
       .createQueryBuilder('order')
-      .innerJoin('order.lease', 'lease')
-      .innerJoin('lease.cell', 'cell')
-      .innerJoin('cell.storage', 'storage')
-      .innerJoin('storage.card', 'ownerCard')
+      .innerJoin('order.hire', 'hire')
+      .innerJoin('hire.drawer', 'drawer')
+      .innerJoin('drawer.station', 'station')
+      .innerJoin('station.card', 'ownerCard')
       .innerJoin('ownerCard.user', 'ownerUser')
-      .innerJoin('lease.card', 'customerCard')
+      .innerJoin('hire.card', 'customerCard')
       .innerJoin('customerCard.user', 'customerUser')
       .leftJoin('order.executorCard', 'executorCard')
       .leftJoin('executorCard.user', 'executorUser')
@@ -401,15 +397,15 @@ export class OrdersService {
       .andWhere(
         new Brackets((qb) =>
           qb
-            .where(`${!req.storage}`)
-            .orWhere('storage.id = :storageId', { storageId: req.storage }),
+            .where(`${!req.station}`)
+            .orWhere('station.id = :stationId', { stationId: req.station }),
         ),
       )
       .andWhere(
         new Brackets((qb) =>
           qb
-            .where(`${!req.cell}`)
-            .orWhere('cell.id = :cellId', { cellId: req.cell }),
+            .where(`${!req.drawer}`)
+            .orWhere('drawer.id = :drawerId', { drawerId: req.drawer }),
         ),
       )
       .andWhere(
@@ -508,19 +504,19 @@ export class OrdersService {
       .take(req.take)
       .select([
         'order.id',
-        'lease.id',
-        'cell.id',
-        'storage.id',
+        'hire.id',
+        'drawer.id',
+        'station.id',
         'ownerCard.id',
         'ownerUser.id',
         'ownerUser.nick',
         'ownerUser.avatar',
         'ownerCard.name',
         'ownerCard.color',
-        'storage.name',
-        'storage.x',
-        'storage.y',
-        'cell.name',
+        'station.name',
+        'station.x',
+        'station.y',
+        'drawer.name',
         'customerCard.id',
         'customerUser.id',
         'customerUser.nick',

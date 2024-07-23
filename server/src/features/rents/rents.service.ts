@@ -268,13 +268,6 @@ export class RentsService {
       )
       .andWhere(
         new Brackets((qb) =>
-          qb.where(`${!req.marketTag}`).orWhere('marketTag.id = :marketTagId', {
-            marketTagId: req.marketTag,
-          }),
-        ),
-      )
-      .andWhere(
-        new Brackets((qb) =>
           qb
             .where(`${!req.store}`)
             .orWhere('store.id = :storeId', { storeId: req.store }),

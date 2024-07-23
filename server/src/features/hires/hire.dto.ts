@@ -2,30 +2,30 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Validate } from 'class-validator';
 import { Type } from 'class-transformer';
 import { IsId } from '../../common/decorators';
-import { IsLeaseExists, IsStorageTagExists } from '../../common/constraints';
+import { IsHireExists, IsStationExists } from '../../common/constraints';
 import { CreateReceiptDto } from '../receipts/receipt.dto';
 
-export class LeaseIdDto {
+export class HireIdDto {
   @ApiProperty()
   @IsId()
-  @Validate(IsLeaseExists)
+  @Validate(IsHireExists)
   @Type(() => Number)
-  leaseId: number;
+  hireId: number;
 }
 
-export class ExtLeaseIdDto extends LeaseIdDto {
+export class ExtHireIdDto extends HireIdDto {
   myId: number;
   hasRole: boolean;
 }
 
-export class CreateLeaseDto extends CreateReceiptDto {
+export class CreateHireDto extends CreateReceiptDto {
   @ApiProperty()
   @IsId()
-  @Validate(IsStorageTagExists)
-  storageTagId: number;
+  @Validate(IsStationExists)
+  stationId: number;
 }
 
-export class ExtCreateLeaseDto extends CreateLeaseDto {
+export class ExtCreateHireDto extends CreateHireDto {
   myId: number;
   hasRole: boolean;
 }

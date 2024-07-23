@@ -58,10 +58,8 @@ export class LeasesService {
     const lease = await this.leasesRepository
       .createQueryBuilder('lease')
       .leftJoin('lease.products', 'product')
-      .leftJoin('lease.orders', 'order')
-      .leftJoin('lease.fromDeliveries', 'fromDelivery')
-      .leftJoin('lease.toDeliveries', 'toDelivery')
       .where('lease.id = :leaseId', { leaseId })
+      .orderBy('product.id', 'DESC')
       .select([
         'lease.id',
         'product.id',
@@ -71,35 +69,9 @@ export class LeasesService {
         'product.intake',
         'product.kit',
         'product.price',
-        'order.id',
-        'order.item',
-        'order.description',
-        'order.amount',
-        'order.intake',
-        'order.kit',
-        'order.price',
-        'fromDelivery.id',
-        'fromDelivery.item',
-        'fromDelivery.description',
-        'fromDelivery.amount',
-        'fromDelivery.intake',
-        'fromDelivery.kit',
-        'fromDelivery.price',
-        'toDelivery.id',
-        'toDelivery.item',
-        'toDelivery.description',
-        'toDelivery.amount',
-        'toDelivery.intake',
-        'toDelivery.kit',
-        'toDelivery.price',
       ])
       .getOne();
-    return [
-      ...lease.products,
-      ...lease.orders,
-      ...lease.fromDeliveries,
-      ...lease.toDeliveries,
-    ];
+    return lease.products;
   }
 
   async createLease(
@@ -179,7 +151,6 @@ export class LeasesService {
       const lease = this.leasesRepository.create({
         cellId: dto.storageTagId,
         cardId: dto.cardId,
-        kind: dto.kind,
         completedAt: getDateWeekAfter(),
       });
       await this.leasesRepository.save(lease);
@@ -227,6 +198,7 @@ export class LeasesService {
         'next',
         'state.createdAt < next.createdAt AND next.createdAt < lease.createdAt',
       )
+      .loadRelationCountAndMap('lease.things', 'lease.products')
       .where('next.id IS NULL')
       .andWhere(
         new Brackets((qb) =>
@@ -285,15 +257,6 @@ export class LeasesService {
       .andWhere(
         new Brackets((qb) =>
           qb
-            .where(`${!req.storageTag}`)
-            .orWhere('storageTag.id = :storageTagId', {
-              storageTagId: req.storageTag,
-            }),
-        ),
-      )
-      .andWhere(
-        new Brackets((qb) =>
-          qb
             .where(`${!req.cell}`)
             .orWhere('cell.id = :cellId', { cellId: req.cell }),
         ),
@@ -310,13 +273,6 @@ export class LeasesService {
           qb
             .where(`${!req.maxPrice}`)
             .orWhere('state.price <= :maxPrice', { maxPrice: req.maxPrice }),
-        ),
-      )
-      .andWhere(
-        new Brackets((qb) =>
-          qb
-            .where(`${!req.kind}`)
-            .orWhere('lease.kind = :kind', { kind: req.kind }),
         ),
       )
       .andWhere(
@@ -359,7 +315,6 @@ export class LeasesService {
         'renterUser.avatar',
         'renterCard.name',
         'renterCard.color',
-        'lease.kind',
         'lease.createdAt',
         'lease.completedAt',
       ]);

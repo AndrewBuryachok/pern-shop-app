@@ -15,12 +15,15 @@ import { CitiesService } from '../../features/cities/cities.service';
 import { ShopsService } from '../../features/shops/shops.service';
 import { MarketsService } from '../../features/markets/markets.service';
 import { StoragesService } from '../../features/storages/storages.service';
+import { StationsService } from '../../features/stations/stations.service';
 import { MarketsTagsService } from '../../features/markets-tags/markets-tags.service';
 import { StoragesTagsService } from '../../features/storages-tags/storages-tags.service';
 import { StoresService } from '../../features/stores/stores.service';
 import { CellsService } from '../../features/cells/cells.service';
+import { DrawersService } from '../../features/drawers/drawers.service';
 import { RentsService } from '../../features/rents/rents.service';
 import { LeasesService } from '../../features/leases/leases.service';
+import { HiresService } from '../../features/hires/hires.service';
 import { GoodsService } from '../../features/goods/goods.service';
 import { WaresService } from '../../features/wares/wares.service';
 import { ProductsService } from '../../features/products/products.service';
@@ -264,6 +267,25 @@ export class IsStorageExists implements ValidatorConstraintInterface {
 }
 
 @Injectable()
+@ValidatorConstraint({ name: 'isStationExists', async: true })
+export class IsStationExists implements ValidatorConstraintInterface {
+  constructor(private stationsService: StationsService) {}
+
+  async validate(value: number): Promise<boolean> {
+    try {
+      await this.stationsService.checkStationExists(value);
+    } catch (error) {
+      return false;
+    }
+    return true;
+  }
+
+  defaultMessage(): string {
+    return 'Unknown station';
+  }
+}
+
+@Injectable()
 @ValidatorConstraint({ name: 'isMarketTagExists', async: true })
 export class IsMarketTagExists implements ValidatorConstraintInterface {
   constructor(private marketsTagsService: MarketsTagsService) {}
@@ -340,6 +362,25 @@ export class IsCellExists implements ValidatorConstraintInterface {
 }
 
 @Injectable()
+@ValidatorConstraint({ name: 'isDrawerExists', async: true })
+export class IsDrawerExists implements ValidatorConstraintInterface {
+  constructor(private drawersService: DrawersService) {}
+
+  async validate(value: number): Promise<boolean> {
+    try {
+      await this.drawersService.checkDrawerExists(value);
+    } catch (error) {
+      return false;
+    }
+    return true;
+  }
+
+  defaultMessage(): string {
+    return 'Unknown drawer';
+  }
+}
+
+@Injectable()
 @ValidatorConstraint({ name: 'isRentExists', async: true })
 export class IsRentExists implements ValidatorConstraintInterface {
   constructor(private rentsService: RentsService) {}
@@ -374,6 +415,25 @@ export class IsLeaseExists implements ValidatorConstraintInterface {
 
   defaultMessage(): string {
     return 'Unknown lease';
+  }
+}
+
+@Injectable()
+@ValidatorConstraint({ name: 'isHireExists', async: true })
+export class IsHireExists implements ValidatorConstraintInterface {
+  constructor(private hiresService: HiresService) {}
+
+  async validate(value: number): Promise<boolean> {
+    try {
+      await this.hiresService.checkHireExists(value);
+    } catch (error) {
+      return false;
+    }
+    return true;
+  }
+
+  defaultMessage(): string {
+    return 'Unknown hire';
   }
 }
 
