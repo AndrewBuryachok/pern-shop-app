@@ -122,10 +122,11 @@ export class OrdersController {
   @Delete(':orderId')
   deleteOrder(
     @MyId() myId: number,
+    @MyNick() nick: string,
     @HasRole(Role.MERCHANT) hasRole: boolean,
     @Param() { orderId }: OrderIdDto,
   ): Promise<void> {
-    return this.ordersService.deleteOrder({ orderId, myId, hasRole });
+    return this.ordersService.deleteOrder({ orderId, myId, nick, hasRole });
   }
 
   @Patch(':orderId/rate')

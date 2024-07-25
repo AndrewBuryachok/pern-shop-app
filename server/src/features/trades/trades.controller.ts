@@ -11,6 +11,7 @@ import { ApiTags } from '@nestjs/swagger';
 import { TradesService } from './trades.service';
 import { Trade } from './trade.entity';
 import { CreateTradeDto, RateTradeDto, TradeIdDto } from './trade.dto';
+import { UserIdDto } from '../users/user.dto';
 import { Request, Response } from '../../common/interfaces';
 import { HasRole, MyId, MyNick, Public, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
@@ -54,6 +55,17 @@ export class TradesController {
   @Get('all')
   getAllTrades(@Query() req: Request): Promise<Response<Trade>> {
     return this.tradesService.getAllTrades(req);
+  }
+
+  @Get('my/select')
+  selectMyTrades(@MyId() myId: number): Promise<Trade[]> {
+    return this.tradesService.selectUserTrades(myId);
+  }
+
+  @Roles(Role.MERCHANT)
+  @Get(':userId/select')
+  selectUserTrades(@Param() { userId }: UserIdDto): Promise<Trade[]> {
+    return this.tradesService.selectUserTrades(userId);
   }
 
   @Post()

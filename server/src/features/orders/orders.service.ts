@@ -161,6 +161,7 @@ export class OrdersService {
       sum: order.price,
       description: '',
     });
+    await this.hiresService.completeHire({ ...dto, hireId: order.hireId });
     await this.complete(order);
     this.mqttService.publishNotificationMessage(
       dto.orderId,
@@ -170,7 +171,7 @@ export class OrdersService {
     );
   }
 
-  async deleteOrder(dto: ExtOrderIdDto): Promise<void> {
+  async deleteOrder(dto: ExtOrderIdDto & { nick: string }): Promise<void> {
     const order = await this.checkOrderCustomer(
       dto.orderId,
       dto.myId,
@@ -183,6 +184,7 @@ export class OrdersService {
       cardId: order.hire.cardId,
       sum: order.price,
     });
+    await this.hiresService.completeHire({ ...dto, hireId: order.hireId });
     await this.delete(order);
   }
 
@@ -314,7 +316,7 @@ export class OrdersService {
 
   private async rate(order: Order, rate: number): Promise<void> {
     try {
-      order.rate = rate || null;
+      order.rate = rate;
       await this.ordersRepository.save(order);
     } catch (error) {
       throw new AppException(OrderError.RATE_FAILED);

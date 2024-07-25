@@ -31,6 +31,8 @@ import { TradesService } from '../../features/trades/trades.service';
 import { SalesService } from '../../features/sales/sales.service';
 import { OrdersService } from '../../features/orders/orders.service';
 import { DeliveriesService } from '../../features/deliveries/deliveries.service';
+import { MarketsDeliveriesService } from '../../features/markets-deliveries/markets-deliveries.service';
+import { StoragesDeliveriesService } from '../../features/storages-deliveries/storages-deliveries.service';
 import { TasksService } from '../../features/tasks/tasks.service';
 import { PlaintsService } from '../../features/plaints/plaints.service';
 import { AnswersService } from '../../features/answers/answers.service';
@@ -567,6 +569,44 @@ export class IsDeliveryExists implements ValidatorConstraintInterface {
 
   defaultMessage(): string {
     return 'Unknown delivery';
+  }
+}
+
+@Injectable()
+@ValidatorConstraint({ name: 'isMarketDeliveryExists', async: true })
+export class IsMarketDeliveryExists implements ValidatorConstraintInterface {
+  constructor(private marketsDeliveriesService: MarketsDeliveriesService) {}
+
+  async validate(value: number): Promise<boolean> {
+    try {
+      await this.marketsDeliveriesService.checkMarketDeliveryExists(value);
+    } catch (error) {
+      return false;
+    }
+    return true;
+  }
+
+  defaultMessage(): string {
+    return 'Unknown market delivery';
+  }
+}
+
+@Injectable()
+@ValidatorConstraint({ name: 'isStorageDeliveryExists', async: true })
+export class IsStorageDeliveryExists implements ValidatorConstraintInterface {
+  constructor(private storagesDeliveriesService: StoragesDeliveriesService) {}
+
+  async validate(value: number): Promise<boolean> {
+    try {
+      await this.storagesDeliveriesService.checkStorageDeliveryExists(value);
+    } catch (error) {
+      return false;
+    }
+    return true;
+  }
+
+  defaultMessage(): string {
+    return 'Unknown storage delivery';
   }
 }
 

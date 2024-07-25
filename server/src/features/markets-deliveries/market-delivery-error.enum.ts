@@ -1,0 +1,17 @@
+export enum MarketDeliveryError {
+  ALREADY_EXISTS = '400: Market delivery already exists',
+  ALREADY_EXPIRED = '400: Market delivery already expired',
+  NOT_CREATED = '400: Market delivery is not created',
+  NOT_TAKEN = '400: Market delivery is not taken',
+  NOT_EXECUTED = '400: Market delivery is not executed',
+  NOT_COMPLETED = '400: Market delivery is not completed',
+  NOT_CUSTOMER = '403: You are not market delivery customer',
+  NOT_EXECUTOR = '403: You are not market delivery executor',
+  CREATE_FAILED = '500: Failed to create market delivery',
+  TAKE_FAILED = '500: Failed to take market delivery',
+  UNTAKE_FAILED = '500: Failed to untake market delivery',
+  EXECUTE_FAILED = '500: Failed to execute market delivery',
+  COMPLETE_FAILED = '500: Failed to complete market delivery',
+  DELETE_FAILED = '500: Failed to delete market delivery',
+  RATE_FAILED = '500: Failed to rate market delivery',
+}

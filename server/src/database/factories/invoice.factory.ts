@@ -6,5 +6,8 @@ define(Invoice, (faker: Faker) => {
   const invoice = new Invoice();
   invoice.sum = Math.floor(Math.random() * 400) + 1;
   invoice.description = faker.finance.transactionType();
+  if (Math.random() > 0.5) {
+    invoice.completedAt = new Date();
+  }
   return invoice;
 });

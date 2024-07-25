@@ -1,31 +1,27 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Validate, ValidateIf } from 'class-validator';
-import { IsAmount, IsId, IsPrice, IsRate } from '../../common/decorators';
+import { Validate } from 'class-validator';
+import { IsId, IsPrice, IsRate } from '../../common/decorators';
 import { IsCardExists, IsStationExists } from '../../common/constraints';
 
-export abstract class CreatePurchaseDto {
+export abstract class TakeHaulageDto {
   @ApiProperty()
   @IsId()
   @Validate(IsCardExists)
   cardId: number;
+}
 
+export abstract class CreateHaulageDto extends TakeHaulageDto {
   @ApiProperty()
-  @IsAmount()
-  amount: number;
-
-  @ApiProperty()
-  @ValidateIf((_, value) => value !== 0)
   @IsId()
   @Validate(IsStationExists)
   stationId: number;
 
   @ApiProperty()
-  @ValidateIf((_, value) => value !== 0)
   @IsPrice()
   price: number;
 }
 
-export abstract class RatePurchaseDto {
+export abstract class RateHaulageDto {
   @ApiProperty()
   @IsRate()
   rate: number;

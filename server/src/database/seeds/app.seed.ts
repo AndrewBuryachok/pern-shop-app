@@ -39,6 +39,8 @@ import { Order } from '../../features/orders/order.entity';
 import { Delivery } from '../../features/deliveries/delivery.entity';
 import { Trade } from '../../features/trades/trade.entity';
 import { Sale } from '../../features/sales/sale.entity';
+import { MarketDelivery } from '../../features/markets-deliveries/market-delivery.entity';
+import { StorageDelivery } from '../../features/storages-deliveries/storage-delivery.entity';
 import { Task } from '../../features/tasks/task.entity';
 import { Plaint } from '../../features/plaints/plaint.entity';
 import { Answer } from '../../features/answers/answer.entity';
@@ -180,15 +182,13 @@ export default class AppSeed implements Seeder {
       .makeMany(40);
     const invoices = await factory(Invoice)()
       .map(async (invoice) => {
-        const completed = !!Math.floor(Math.random() * 2);
         invoice.senderCard = faker.helpers.arrayElement(cards);
         invoice.receiverUser = faker.helpers.arrayElement(users);
-        if (completed) {
+        if (invoice.completedAt) {
           invoice.receiverCard = faker.helpers.arrayElement(
             cards.filter((card) => card.balance >= invoice.sum),
           );
           invoice.receiverUser = invoice.receiverCard.user;
-          invoice.completedAt = new Date();
           const payment = await factory(Payment)().make({
             senderCard: invoice.receiverCard,
             receiverCard: invoice.senderCard,
@@ -303,7 +303,7 @@ export default class AppSeed implements Seeder {
         drawer.name = drawer.station.drawers.length;
         return drawer;
       })
-      .makeMany(40);
+      .makeMany(60);
     const rents = await factory(Rent)()
       .map(async (rent) => {
         rent.store = faker.helpers.arrayElement(
@@ -366,7 +366,7 @@ export default class AppSeed implements Seeder {
         hire.drawer.station.card.balance += hire.drawer.station.price;
         return hire;
       })
-      .makeMany(30);
+      .makeMany(50);
     const goods = await factory(Good)()
       .map(async (good) => {
         good.shop = faker.helpers.arrayElement(shops);
@@ -411,7 +411,6 @@ export default class AppSeed implements Seeder {
           order.executorCard = faker.helpers.arrayElement(cards);
         }
         if (order.status === Status.COMPLETED) {
-          order.completedAt = new Date();
           const payment = await factory(Payment)().make({
             senderCard: order.hire.card,
             receiverCard: order.executorCard,
@@ -433,7 +432,6 @@ export default class AppSeed implements Seeder {
           delivery.executorCard = faker.helpers.arrayElement(cards);
         }
         if (delivery.status === Status.COMPLETED) {
-          delivery.completedAt = new Date();
           const payment = await factory(Payment)().make({
             senderCard: delivery.fromHire.card,
             receiverCard: delivery.executorCard,
@@ -504,14 +502,55 @@ export default class AppSeed implements Seeder {
         return sale;
       })
       .makeMany(20);
+    let tradeId = 0;
+    const marketsDeliveries = await factory(MarketDelivery)()
+      .map(async (marketDelivery) => {
+        marketDelivery.trade = trades[tradeId++];
+        marketDelivery.hire = hires[hireId++];
+        marketDelivery.hire.card.balance -= marketDelivery.price;
+        if (marketDelivery.status !== Status.CREATED) {
+          marketDelivery.executorCard = faker.helpers.arrayElement(cards);
+        }
+        if (marketDelivery.status === Status.COMPLETED) {
+          const payment = await factory(Payment)().make({
+            senderCard: marketDelivery.hire.card,
+            receiverCard: marketDelivery.executorCard,
+            sum: marketDelivery.price,
+            description: '',
+          });
+          payments.push(payment);
+          marketDelivery.executorCard.balance += marketDelivery.price;
+        }
+        return marketDelivery;
+      })
+      .makeMany(10);
+    let saleId = 0;
+    const storagesDeliveries = await factory(StorageDelivery)()
+      .map(async (storageDelivery) => {
+        storageDelivery.sale = sales[saleId++];
+        storageDelivery.hire = hires[hireId++];
+        storageDelivery.hire.card.balance -= storageDelivery.price;
+        if (storageDelivery.status !== Status.CREATED) {
+          storageDelivery.executorCard = faker.helpers.arrayElement(cards);
+        }
+        if (storageDelivery.status === Status.COMPLETED) {
+          const payment = await factory(Payment)().make({
+            senderCard: storageDelivery.hire.card,
+            receiverCard: storageDelivery.executorCard,
+            sum: storageDelivery.price,
+            description: '',
+          });
+          payments.push(payment);
+          storageDelivery.executorCard.balance += storageDelivery.price;
+        }
+        return storageDelivery;
+      })
+      .makeMany(10);
     const tasks = await factory(Task)()
       .map(async (task) => {
         task.customerUser = faker.helpers.arrayElement(users);
         if (task.status !== Status.CREATED) {
           task.executorUser = faker.helpers.arrayElement(users);
-        }
-        if (task.status === Status.COMPLETED) {
-          task.completedAt = new Date();
         }
         return task;
       })
@@ -694,5 +733,13 @@ export default class AppSeed implements Seeder {
     await factory(Sale)()
       .map(async () => sales[id++])
       .createMany(sales.length);
+    id = 0;
+    await factory(MarketDelivery)()
+      .map(async () => marketsDeliveries[id++])
+      .createMany(marketsDeliveries.length);
+    id = 0;
+    await factory(StorageDelivery)()
+      .map(async () => storagesDeliveries[id++])
+      .createMany(storagesDeliveries.length);
   }
 }

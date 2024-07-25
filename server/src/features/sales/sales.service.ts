@@ -1,7 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { Sale } from './sale.entity';
+import { StoragesDeliveriesService } from '../storages-deliveries/storages-deliveries.service';
 import { ProductsService } from '../products/products.service';
 import { MqttService } from '../mqtt/mqtt.service';
 import { ExtCreateSaleDto, ExtRateSaleDto } from './sale.dto';
@@ -16,6 +17,8 @@ export class SalesService {
   constructor(
     @InjectRepository(Sale)
     private salesRepository: Repository<Sale>,
+    @Inject(forwardRef(() => StoragesDeliveriesService))
+    private storagesDeliveriesService: StoragesDeliveriesService,
     private productsService: ProductsService,
     private mqttService: MqttService,
   ) {}
@@ -60,6 +63,21 @@ export class SalesService {
     return { result, count };
   }
 
+  async selectUserSales(userId: number): Promise<Sale[]> {
+    const sales = await this.selectSalesQueryBuilder()
+      .innerJoin('sale.card', 'card')
+      .leftJoin('card.users', 'users')
+      .loadRelationCountAndMap('sale.deliveriesCount', 'sale.deliveries')
+      .where('users.id = :userId', { userId })
+      .getMany();
+    return sales
+      .filter((sale) => !sale['deliveriesCount'])
+      .map((sale) => {
+        delete sale['deliveriesCount'];
+        return sale;
+      });
+  }
+
   async createSale(dto: ExtCreateSaleDto & { nick: string }): Promise<void> {
     const product = await this.productsService.buyProduct(dto);
     const sale = await this.create(dto);
@@ -69,6 +87,12 @@ export class SalesService {
       dto.nick,
       Notification.CREATED_SALE,
     );
+    if (dto.stationId && dto.price) {
+      await this.storagesDeliveriesService.createStorageDelivery({
+        ...dto,
+        saleId: sale.id,
+      });
+    }
   }
 
   async rateSale(dto: ExtRateSaleDto & { nick: string }): Promise<void> {
@@ -86,7 +110,7 @@ export class SalesService {
     await this.salesRepository.findOneByOrFail({ id });
   }
 
-  private async checkSaleOwner(
+  async checkSaleOwner(
     id: number,
     userId: number,
     hasRole: boolean,
@@ -123,11 +147,35 @@ export class SalesService {
 
   private async rate(sale: Sale, rate: number): Promise<void> {
     try {
-      sale.rate = rate || null;
+      sale.rate = rate;
       await this.salesRepository.save(sale);
     } catch (error) {
       throw new AppException(SaleError.RATE_FAILED);
     }
+  }
+
+  private selectSalesQueryBuilder(): SelectQueryBuilder<Sale> {
+    return this.salesRepository
+      .createQueryBuilder('sale')
+      .innerJoin('sale.product', 'product')
+      .leftJoin('product.states', 'state', 'state.createdAt < sale.createdAt')
+      .leftJoin(
+        'product.states',
+        'next',
+        'state.createdAt < next.createdAt AND next.createdAt < sale.createdAt',
+      )
+      .where('next.id IS NULL')
+      .orderBy('sale.id', 'DESC')
+      .select([
+        'sale.id',
+        'product.id',
+        'product.item',
+        'product.description',
+        'product.intake',
+        'product.kit',
+        'state.price',
+        'sale.amount',
+      ]);
   }
 
   private getSalesQueryBuilder(req: Request): SelectQueryBuilder<Sale> {

@@ -1,7 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { Trade } from './trade.entity';
+import { MarketsDeliveriesService } from '../markets-deliveries/markets-deliveries.service';
 import { WaresService } from '../wares/wares.service';
 import { MqttService } from '../mqtt/mqtt.service';
 import { ExtCreateTradeDto, ExtRateTradeDto } from './trade.dto';
@@ -16,6 +17,8 @@ export class TradesService {
   constructor(
     @InjectRepository(Trade)
     private tradesRepository: Repository<Trade>,
+    @Inject(forwardRef(() => MarketsDeliveriesService))
+    private marketsDeliveriesService: MarketsDeliveriesService,
     private waresService: WaresService,
     private mqttService: MqttService,
   ) {}
@@ -60,6 +63,21 @@ export class TradesService {
     return { result, count };
   }
 
+  async selectUserTrades(userId: number): Promise<Trade[]> {
+    const trades = await this.selectTradesQueryBuilder()
+      .innerJoin('trade.card', 'card')
+      .leftJoin('card.users', 'users')
+      .loadRelationCountAndMap('trade.deliveriesCount', 'trade.deliveries')
+      .where('users.id = :userId', { userId })
+      .getMany();
+    return trades
+      .filter((trade) => !trade['deliveriesCount'])
+      .map((trade) => {
+        delete trade['deliveriesCount'];
+        return trade;
+      });
+  }
+
   async createTrade(dto: ExtCreateTradeDto & { nick: string }): Promise<void> {
     const ware = await this.waresService.buyWare(dto);
     const trade = await this.create(dto);
@@ -69,6 +87,12 @@ export class TradesService {
       dto.nick,
       Notification.CREATED_TRADE,
     );
+    if (dto.stationId && dto.price) {
+      await this.marketsDeliveriesService.createMarketDelivery({
+        ...dto,
+        tradeId: trade.id,
+      });
+    }
   }
 
   async rateTrade(dto: ExtRateTradeDto & { nick: string }): Promise<void> {
@@ -90,7 +114,7 @@ export class TradesService {
     await this.tradesRepository.findOneByOrFail({ id });
   }
 
-  private async checkTradeOwner(
+  async checkTradeOwner(
     id: number,
     userId: number,
     hasRole: boolean,
@@ -121,11 +145,35 @@ export class TradesService {
 
   private async rate(trade: Trade, rate: number): Promise<void> {
     try {
-      trade.rate = rate || null;
+      trade.rate = rate;
       await this.tradesRepository.save(trade);
     } catch (error) {
       throw new AppException(TradeError.RATE_FAILED);
     }
+  }
+
+  private selectTradesQueryBuilder(): SelectQueryBuilder<Trade> {
+    return this.tradesRepository
+      .createQueryBuilder('trade')
+      .innerJoin('trade.ware', 'ware')
+      .leftJoin('ware.states', 'state', 'state.createdAt < trade.createdAt')
+      .leftJoin(
+        'ware.states',
+        'next',
+        'state.createdAt < next.createdAt AND next.createdAt < trade.createdAt',
+      )
+      .where('next.id IS NULL')
+      .orderBy('trade.id', 'DESC')
+      .select([
+        'trade.id',
+        'ware.id',
+        'ware.item',
+        'ware.description',
+        'ware.intake',
+        'ware.kit',
+        'state.price',
+        'trade.amount',
+      ]);
   }
 
   private getTradesQueryBuilder(req: Request): SelectQueryBuilder<Trade> {

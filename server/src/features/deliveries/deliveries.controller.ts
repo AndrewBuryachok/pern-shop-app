@@ -142,10 +142,16 @@ export class DeliveriesController {
   @Delete(':deliveryId')
   deleteDelivery(
     @MyId() myId: number,
+    @MyNick() nick: string,
     @HasRole(Role.MERCHANT) hasRole: boolean,
     @Param() { deliveryId }: DeliveryIdDto,
   ): Promise<void> {
-    return this.deliveriesService.deleteDelivery({ deliveryId, myId, hasRole });
+    return this.deliveriesService.deleteDelivery({
+      deliveryId,
+      myId,
+      nick,
+      hasRole,
+    });
   }
 
   @Patch(':deliveryId/rate')

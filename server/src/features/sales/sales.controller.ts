@@ -11,6 +11,7 @@ import { ApiTags } from '@nestjs/swagger';
 import { SalesService } from './sales.service';
 import { Sale } from './sale.entity';
 import { CreateSaleDto, RateSaleDto, SaleIdDto } from './sale.dto';
+import { UserIdDto } from '../users/user.dto';
 import { Request, Response } from '../../common/interfaces';
 import { HasRole, MyId, MyNick, Public, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
@@ -54,6 +55,17 @@ export class SalesController {
   @Get('all')
   getAllSales(@Query() req: Request): Promise<Response<Sale>> {
     return this.salesService.getAllSales(req);
+  }
+
+  @Get('my/select')
+  selectMySales(@MyId() myId: number): Promise<Sale[]> {
+    return this.salesService.selectUserSales(myId);
+  }
+
+  @Roles(Role.MERCHANT)
+  @Get(':userId/select')
+  selectUserSales(@Param() { userId }: UserIdDto): Promise<Sale[]> {
+    return this.salesService.selectUserSales(userId);
   }
 
   @Post()

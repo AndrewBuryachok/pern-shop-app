@@ -203,6 +203,14 @@ export class DeliveriesService {
       sum: delivery.price,
       description: '',
     });
+    await this.hiresService.completeHire({
+      ...dto,
+      hireId: delivery.fromHireId,
+    });
+    await this.hiresService.completeHire({
+      ...dto,
+      hireId: delivery.toHireId,
+    });
     await this.complete(delivery);
     this.mqttService.publishNotificationMessage(
       dto.deliveryId,
@@ -212,7 +220,9 @@ export class DeliveriesService {
     );
   }
 
-  async deleteDelivery(dto: ExtDeliveryIdDto): Promise<void> {
+  async deleteDelivery(
+    dto: ExtDeliveryIdDto & { nick: string },
+  ): Promise<void> {
     const delivery = await this.checkDeliveryCustomer(
       dto.deliveryId,
       dto.myId,
@@ -224,6 +234,14 @@ export class DeliveriesService {
     await this.cardsService.increaseCardBalance({
       cardId: delivery.fromHire.cardId,
       sum: delivery.price,
+    });
+    await this.hiresService.completeHire({
+      ...dto,
+      hireId: delivery.fromHireId,
+    });
+    await this.hiresService.completeHire({
+      ...dto,
+      hireId: delivery.toHireId,
     });
     await this.delete(delivery);
   }
@@ -369,7 +387,7 @@ export class DeliveriesService {
 
   private async rate(delivery: Delivery, rate: number): Promise<void> {
     try {
-      delivery.rate = rate || null;
+      delivery.rate = rate;
       await this.deliveriesRepository.save(delivery);
     } catch (error) {
       throw new AppException(DeliveryError.RATE_FAILED);

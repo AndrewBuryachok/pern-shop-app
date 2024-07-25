@@ -57,6 +57,12 @@ export class HiresService {
       .leftJoin('hire.orders', 'order')
       .leftJoin('hire.fromDeliveries', 'fromDelivery')
       .leftJoin('hire.toDeliveries', 'toDelivery')
+      .leftJoin('hire.marketsDeliveries', 'marketDelivery')
+      .leftJoin('marketDelivery.trade', 'trade')
+      .leftJoin('trade.ware', 'ware')
+      .leftJoin('hire.storagesDeliveries', 'storageDelivery')
+      .leftJoin('storageDelivery.sale', 'sale')
+      .leftJoin('sale.product', 'product')
       .where('hire.id = :hireId', { hireId })
       .select([
         'hire.id',
@@ -81,9 +87,41 @@ export class HiresService {
         'toDelivery.intake',
         'toDelivery.kit',
         'toDelivery.price',
+        'marketDelivery.id',
+        'trade.id',
+        'ware.id',
+        'ware.item',
+        'ware.description',
+        'ware.intake',
+        'ware.kit',
+        'ware.price',
+        'trade.amount',
+        'storageDelivery.id',
+        'sale.id',
+        'product.id',
+        'product.item',
+        'product.description',
+        'product.intake',
+        'product.kit',
+        'product.price',
+        'sale.amount',
       ])
       .getOne();
-    return [...hire.orders, ...hire.fromDeliveries, ...hire.toDeliveries];
+    return [
+      ...hire.orders,
+      ...hire.fromDeliveries,
+      ...hire.toDeliveries,
+      ...hire.marketsDeliveries.map((marketDelivery) => ({
+        ...marketDelivery.trade.ware,
+        id: marketDelivery.id,
+        amount: marketDelivery.trade.amount,
+      })),
+      ...hire.storagesDeliveries.map((storageDelivery) => ({
+        ...storageDelivery.sale.product,
+        id: storageDelivery.id,
+        amount: storageDelivery.sale.amount,
+      })),
+    ];
   }
 
   async createHire(dto: ExtCreateHireDto & { nick: string }): Promise<number> {

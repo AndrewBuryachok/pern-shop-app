@@ -1,6 +1,7 @@
 import { Faker } from '@faker-js/faker';
 import { define } from 'typeorm-seeding';
 import { Order } from '../../features/orders/order.entity';
+import { Status } from '../../features/transportations/status.enum';
 import {
   MAX_AMOUNT_VALUE,
   MAX_INTAKE_VALUE,
@@ -18,8 +19,11 @@ define(Order, (faker: Faker) => {
   order.kit = Math.floor(Math.random() * MAX_KIT_VALUE) + 1;
   order.price = Math.floor(Math.random() * 200) + 1;
   order.status = Math.floor(Math.random() * 4) + 1;
-  if (order.status === 4 && Math.random() > 0.5) {
-    order.rate = Math.floor(Math.random() * MAX_RATE_VALUE) + 1;
+  if (order.status === Status.COMPLETED) {
+    order.completedAt = new Date();
+    if (Math.random() > 0.5) {
+      order.rate = Math.floor(Math.random() * MAX_RATE_VALUE) + 1;
+    }
   }
   return order;
 });
