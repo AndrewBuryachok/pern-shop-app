@@ -1,4 +1,5 @@
 import { t } from 'i18next';
+import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { NumberInput, Select, Textarea, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
@@ -11,6 +12,7 @@ import {
   useSelectMyCardsQuery,
   useSelectUserCardsWithBalanceQuery,
 } from '../cards/cards.api';
+import { useSelectFreeStationsQuery } from '../stations/stations.api';
 import { CreateSaleDto } from '../sales/sale.dto';
 import CustomForm from '../../common/components/CustomForm';
 import RefetchAction from '../../common/components/RefetchAction';
@@ -18,20 +20,25 @@ import CustomAvatar from '../../common/components/CustomAvatar';
 import ThingImage from '../../common/components/ThingImage';
 import { UsersItem } from '../../common/components/UsersItem';
 import { CardsItem } from '../../common/components/CardsItem';
+import { PlacesItem } from '../../common/components/PlacesItem';
 import {
   customMin,
   parseCard,
   parseItem,
   parseThingAmount,
   selectCardsWithBalance,
+  selectHaulages,
+  selectStationsWithPrice,
   selectUsers,
 } from '../../common/utils';
-import { Color } from '../../common/constants';
+import { Color, MAX_PRICE_VALUE } from '../../common/constants';
 
 type Props = IModal<Product> & { hasRole: boolean };
 
 export default function BuyProductModal({ data: product, hasRole }: Props) {
   const [t] = useTranslation();
+
+  const station = { price: 0 };
 
   const form = useForm({
     initialValues: {
@@ -39,8 +46,15 @@ export default function BuyProductModal({ data: product, hasRole }: Props) {
       user: '',
       card: '',
       amount: 1,
+      haulage: '0',
+      station: '',
+      price: 0,
     },
-    transformValues: ({ card, ...rest }) => ({ ...rest, cardId: +card }),
+    transformValues: ({ card, station, ...rest }) => ({
+      ...rest,
+      cardId: +card,
+      stationId: +station,
+    }),
   });
 
   const { data: users, ...usersResponse } = useSelectAllUsersQuery(undefined, {
@@ -51,10 +65,26 @@ export default function BuyProductModal({ data: product, hasRole }: Props) {
         skip: !form.values.user,
       })
     : useSelectMyCardsQuery();
+  const { data: stations, ...stationsResponse } = useSelectFreeStationsQuery(
+    undefined,
+    { skip: !+form.values.haulage },
+  );
+
+  useEffect(() => {
+    form.setFieldValue('station', '');
+    form.setFieldValue('price', +form.values.haulage);
+  }, [form.values.haulage]);
 
   const user = users?.find((user) => user.id === +form.values.user);
   const card = cards?.find((card) => card.id === +form.values.card);
-  const maxAmount = card && Math.floor(card.balance / product.price);
+  const maxAmount =
+    card &&
+    Math.floor(
+      (card.balance - station.price - form.values.price) / product.price,
+    );
+  station.price =
+    stations?.find((station) => station.id === +form.values.station)?.price ||
+    0;
 
   const [createSale, { isLoading }] = useCreateSaleMutation();
 
@@ -133,6 +163,43 @@ export default function BuyProductModal({ data: product, hasRole }: Props) {
         max={customMin(product.amount, maxAmount)}
         {...form.getInputProps('amount')}
       />
+      <Select
+        label={t('columns.haulage')}
+        placeholder={t('columns.haulage')}
+        data={selectHaulages()}
+        searchable
+        required
+        {...form.getInputProps('haulage')}
+      />
+      {!!+form.values.haulage && (
+        <>
+          <Select
+            label={t('columns.station')}
+            placeholder={t('columns.station')}
+            rightSection={<RefetchAction {...stationsResponse} />}
+            itemComponent={PlacesItem}
+            data={selectStationsWithPrice(stations)}
+            limit={20}
+            searchable
+            required
+            readOnly={stationsResponse.isFetching}
+            {...form.getInputProps('station')}
+          />
+          <NumberInput
+            label={t('columns.price')}
+            placeholder={t('columns.price')}
+            required
+            min={1}
+            max={customMin(
+              MAX_PRICE_VALUE,
+              (card?.balance || 0) -
+                form.values.amount * product.price -
+                station.price,
+            )}
+            {...form.getInputProps('price')}
+          />
+        </>
+      )}
     </CustomForm>
   );
 }

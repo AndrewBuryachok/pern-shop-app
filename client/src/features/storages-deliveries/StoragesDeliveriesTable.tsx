@@ -1,5 +1,5 @@
 import { ITableWithActions } from '../../common/interfaces';
-import { Delivery } from './delivery.model';
+import { StorageDelivery } from './storage-delivery.model';
 import CustomTable from '../../common/components/CustomTable';
 import AvatarWithDoubleText from '../../common/components/AvatarWithDoubleText';
 import ThingImageWithText from '../../common/components/ThingImageWithText';
@@ -8,10 +8,10 @@ import PriceText from '../../common/components/PriceText';
 import StatusWithDoubleAvatar from '../../common/components/StatusWithDoubleAvatar';
 import PlaceWithDoubleAvatar from '../../common/components/PlaceWithDoubleAvatar';
 import CustomActions from '../../common/components/CustomActions';
-import { viewDeliveryAction } from './ViewDeliveryModal';
-import { parseThingAmount } from '../../common/utils';
+import { viewStorageDeliveryAction } from './ViewStorageDeliveryModal';
+import { parseSaleAmount } from '../../common/utils';
 
-type Props = ITableWithActions<Delivery>;
+type Props = ITableWithActions<StorageDelivery>;
 
 export default function DeliveriesTable({ actions = [], ...props }: Props) {
   return (
@@ -23,45 +23,45 @@ export default function DeliveriesTable({ actions = [], ...props }: Props) {
         'amount',
         'price',
         'status',
-        'fromStation',
+        'fromStorage',
         'toStation',
         'action',
       ]}
       {...props}
     >
-      {props.data?.result.map((delivery) => (
-        <tr key={delivery.id}>
+      {props.data?.result.map((storageDelivery) => (
+        <tr key={storageDelivery.id}>
           <td>
-            <AvatarWithDoubleText {...delivery.fromHire.card} />
+            <AvatarWithDoubleText {...storageDelivery.hire.card} />
           </td>
           <td>
-            <ThingImageWithText {...delivery} />
+            <ThingImageWithText {...storageDelivery.sale.product} />
           </td>
           <td>
-            <SingleText text={parseThingAmount(delivery)} />
+            <SingleText text={parseSaleAmount(storageDelivery.sale)} />
           </td>
           <td>
-            <PriceText {...delivery} />
+            <PriceText {...storageDelivery} />
           </td>
           <td>
-            <StatusWithDoubleAvatar {...delivery} />
+            <StatusWithDoubleAvatar {...storageDelivery} />
           </td>
           <td>
             <PlaceWithDoubleAvatar
-              {...delivery.fromHire.drawer.station}
-              container={delivery.fromHire.drawer.name}
+              {...storageDelivery.sale.product.lease.cell.storage}
+              container={storageDelivery.sale.product.lease.cell.name}
             />
           </td>
           <td>
             <PlaceWithDoubleAvatar
-              {...delivery.toHire.drawer.station}
-              container={delivery.toHire.drawer.name}
+              {...storageDelivery.hire.drawer.station}
+              container={storageDelivery.hire.drawer.name}
             />
           </td>
           <td>
             <CustomActions
-              data={delivery}
-              actions={[viewDeliveryAction, ...actions]}
+              data={storageDelivery}
+              actions={[viewStorageDeliveryAction, ...actions]}
             />
           </td>
         </tr>

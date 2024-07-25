@@ -41,6 +41,8 @@ export const emptyApi = createApi({
     'Delivery',
     'Trade',
     'Sale',
+    'MarketDelivery',
+    'StorageDelivery',
     'Task',
     'Plaint',
     'Answer',

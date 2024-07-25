@@ -61,6 +61,8 @@
     "transportations": "Transportations",
     "orders": "Orders",
     "deliveries": "Deliveries",
+    "markets-deliveries": "Markets Deliveries",
+    "storages-deliveries": "Storages Deliveries",
     "map": "Map",
     "places": "Places",
     "cities": "Cities",
@@ -103,6 +105,8 @@
     "sales": "View sales; rate sales",
     "orders": "View orders; create, take, execute, complete, rate orders",
     "deliveries": "View deliveries; create, take, execute, complete, rate deliveries",
+    "markets-deliveries": "View deliveries; create, take, execute, complete, rate deliveries",
+    "storages-deliveries": "View deliveries; create, take, execute, complete, rate deliveries",
     "cities": "View cities; create, edit cities; add, remove users",
     "shops": "View shops; create, edit shops; add, remove users",
     "markets": "View markets; create, edit markets",
@@ -246,9 +250,14 @@
     "intake": "Intake",
     "kit": "Kit",
     "buyer": "Buyer",
-    "from": "From",
-    "to": "To",
+    "fromMarket": "From Market",
+    "fromStorage": "From Storage",
+    "fromStation": "From Station",
+    "toStation": "To Station",
     "status": "Status",
+    "haulage": "Haulage",
+    "trade": "Trade",
+    "sale": "Sale",
     "answers": "Answers",
     "vote": "Vote",
     "votes": "Votes",
@@ -454,6 +463,22 @@
       "completed": "completed your delivery",
       "rated": "rated your delivery"
     },
+    "markets-deliveries": {
+      "created": "created delivery",
+      "taken": "taken your delivery",
+      "untaken": "untaken your delivery",
+      "executed": "executed your delivery",
+      "completed": "completed your delivery",
+      "rated": "rated your delivery"
+    },
+    "storages-deliveries": {
+      "created": "created delivery",
+      "taken": "taken your delivery",
+      "untaken": "untaken your delivery",
+      "executed": "executed your delivery",
+      "completed": "completed your delivery",
+      "rated": "rated your delivery"
+    },
     "tasks": {
       "created": "created task",
       "taken": "taken your task",
@@ -532,6 +557,10 @@
       "taken": "Taken",
       "executed": "Executed",
       "completed": "Completed"
+    },
+    "haulages": {
+      "without": "Without Delivery",
+      "with": "With Delivery"
     },
     "marks": {
       "site": "Site",

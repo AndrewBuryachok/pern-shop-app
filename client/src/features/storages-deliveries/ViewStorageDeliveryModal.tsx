@@ -3,118 +3,131 @@ import { useTranslation } from 'react-i18next';
 import { Input, Rating, Stack, Textarea, TextInput } from '@mantine/core';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
-import { Delivery } from './delivery.model';
+import { StorageDelivery } from './storage-delivery.model';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import ThingImage from '../../common/components/ThingImage';
 import {
   parseCard,
+  parseCell,
   parseDrawer,
   parseItem,
+  parseSaleAmount,
   parseStatus,
-  parseThingAmount,
   parseTime,
 } from '../../common/utils';
 import { Color } from '../../common/constants';
 
-type Props = IModal<Delivery>;
+type Props = IModal<StorageDelivery>;
 
-export default function ViewDeliveryModal({ data: delivery }: Props) {
+export default function ViewStorageDeliveryModal({
+  data: storageDelivery,
+}: Props) {
   const [t] = useTranslation();
 
   return (
     <Stack spacing={8}>
-      <TextInput label={t('columns.id')} value={delivery.id} readOnly />
+      <TextInput label={t('columns.id')} value={storageDelivery.id} readOnly />
       <TextInput
         label={t('columns.customer')}
-        icon={<CustomAvatar {...delivery.fromHire.card.user} />}
+        icon={<CustomAvatar {...storageDelivery.hire.card.user} />}
         iconWidth={48}
-        value={parseCard(delivery.fromHire.card)}
+        value={parseCard(storageDelivery.hire.card)}
         readOnly
       />
       <TextInput
         label={t('columns.item')}
-        icon={<ThingImage {...delivery} />}
+        icon={<ThingImage {...storageDelivery.sale.product} />}
         iconWidth={48}
-        value={parseItem(delivery.item)}
+        value={parseItem(storageDelivery.sale.product.item)}
         readOnly
       />
       <Textarea
         label={t('columns.description')}
-        value={delivery.description || '-'}
+        value={storageDelivery.sale.product.description || '-'}
         readOnly
       />
       <TextInput
         label={t('columns.amount')}
-        value={parseThingAmount(delivery)}
+        value={parseSaleAmount(storageDelivery.sale)}
         readOnly
       />
       <TextInput
         label={t('columns.price')}
-        value={`${delivery.price} ${t('constants.currency')}`}
+        value={`${storageDelivery.price} ${t('constants.currency')}`}
         readOnly
       />
       <TextInput
         label={t('columns.executor')}
         icon={
-          delivery.executorCard && (
-            <CustomAvatar {...delivery.executorCard.user} />
+          storageDelivery.executorCard && (
+            <CustomAvatar {...storageDelivery.executorCard.user} />
           )
         }
         iconWidth={48}
-        value={delivery.executorCard ? parseCard(delivery.executorCard) : '-'}
+        value={
+          storageDelivery.executorCard
+            ? parseCard(storageDelivery.executorCard)
+            : '-'
+        }
         readOnly
       />
       <TextInput
         label={t('columns.status')}
-        value={parseStatus(delivery.status)}
+        value={parseStatus(storageDelivery.status)}
         readOnly
       />
       <TextInput
-        label={t('columns.fromStation')}
-        value={parseDrawer(delivery.fromHire.drawer)}
+        label={t('columns.fromStorage')}
+        value={parseCell(storageDelivery.sale.product.lease.cell)}
         readOnly
       />
       <TextInput
         label={t('columns.owner')}
-        icon={<CustomAvatar {...delivery.fromHire.drawer.station.card.user} />}
+        icon={
+          <CustomAvatar
+            {...storageDelivery.sale.product.lease.cell.storage.card.user}
+          />
+        }
         iconWidth={48}
-        value={parseCard(delivery.fromHire.drawer.station.card)}
+        value={parseCard(storageDelivery.sale.product.lease.cell.storage.card)}
         readOnly
       />
       <TextInput
         label={t('columns.toStation')}
-        value={parseDrawer(delivery.toHire.drawer)}
+        value={parseDrawer(storageDelivery.hire.drawer)}
         readOnly
       />
       <TextInput
         label={t('columns.owner')}
-        icon={<CustomAvatar {...delivery.toHire.drawer.station.card.user} />}
+        icon={
+          <CustomAvatar {...storageDelivery.hire.drawer.station.card.user} />
+        }
         iconWidth={48}
-        value={parseCard(delivery.toHire.drawer.station.card)}
+        value={parseCard(storageDelivery.hire.drawer.station.card)}
         readOnly
       />
       <TextInput
         label={t('columns.created')}
-        value={parseTime(delivery.createdAt)}
+        value={parseTime(storageDelivery.createdAt)}
         readOnly
       />
       <TextInput
         label={t('columns.completed')}
-        value={parseTime(delivery.completedAt)}
+        value={parseTime(storageDelivery.completedAt)}
         readOnly
       />
       <Input.Wrapper label={t('columns.rate')}>
-        <Rating value={delivery.rate} readOnly />
+        <Rating value={storageDelivery.rate} readOnly />
       </Input.Wrapper>
     </Stack>
   );
 }
 
-export const viewDeliveryAction = {
-  open: (delivery: Delivery) =>
+export const viewStorageDeliveryAction = {
+  open: (storageDelivery: StorageDelivery) =>
     openModal({
       title: t('actions.view') + ' ' + t('modals.deliveries'),
-      children: <ViewDeliveryModal data={delivery} />,
+      children: <ViewStorageDeliveryModal data={storageDelivery} />,
     }),
   disable: () => false,
   color: Color.BLUE,

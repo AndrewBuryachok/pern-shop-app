@@ -1,4 +1,4 @@
-import { Place, PlaceWithPrice } from '../places/place.model';
+import { Place, PlaceWithCard, PlaceWithPrice } from '../places/place.model';
 
 export interface SmStation extends Place {}
 
@@ -6,9 +6,11 @@ export interface SmStationWithPrice extends SmStation {
   price: number;
 }
 
-export interface MdStation extends PlaceWithPrice {}
+export interface MdStation extends PlaceWithCard {}
 
-export interface Station extends MdStation {
+export interface MdStationWithPrice extends PlaceWithPrice {}
+
+export interface Station extends MdStationWithPrice {
   image: string;
   video: string;
   description: string;

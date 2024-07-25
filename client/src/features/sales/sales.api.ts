@@ -1,6 +1,6 @@
 import { emptyApi } from '../../app/empty.api';
 import { IRequest, IResponse } from '../../common/interfaces';
-import { Sale } from './sale.model';
+import { Sale, SmSale } from './sale.model';
 import { CreateSaleDto, RateSaleDto } from './sale.dto';
 import { productsApi } from '../products/products.api';
 import { getQuery } from '../../common/utils';
@@ -36,6 +36,18 @@ export const salesApi = emptyApi.injectEndpoints({
         url: `/sales/all?${getQuery(req)}`,
       }),
       providesTags: ['Auth', 'Sale'],
+    }),
+    selectMySales: build.query<SmSale[], void>({
+      query: () => ({
+        url: '/sales/my/select',
+      }),
+      providesTags: ['Auth', 'Sale'],
+    }),
+    selectUserSales: build.query<SmSale[], number>({
+      query: (userId) => ({
+        url: `/sales/${userId}/select`,
+      }),
+      providesTags: ['Sale'],
     }),
     createSale: build.mutation<void, CreateSaleDto>({
       query: (dto) => ({
@@ -86,6 +98,8 @@ export const {
   useGetSoldSalesQuery,
   useGetPlacedSalesQuery,
   useGetAllSalesQuery,
+  useSelectMySalesQuery,
+  useSelectUserSalesQuery,
   useCreateSaleMutation,
   useRateSaleMutation,
 } = salesApi;

@@ -4,8 +4,8 @@ import { Place } from '../../features/places/place.model';
 import { MdStore } from '../../features/stores/store.model';
 import { MdCell } from '../../features/cells/cell.model';
 import { MdDrawer } from '../../features/drawers/drawer.model';
-import { Trade } from '../../features/trades/trade.model';
-import { Sale } from '../../features/sales/sale.model';
+import { SmTradeWithoutPrice } from '../../features/trades/trade.model';
+import { SmSaleWithoutPrice } from '../../features/sales/sale.model';
 import { Color, items, kits, statuses } from '../constants';
 
 type Coordinates = {
@@ -59,12 +59,12 @@ export const parseThingAmount = (data: {
     `constants.kits.${kits[data.kit - 1]}`,
   )}`;
 
-export const parseTradeAmount = (trade: Trade) =>
+export const parseTradeAmount = (trade: SmTradeWithoutPrice) =>
   `${trade.amount} * ${trade.ware.intake} ${t(
     `constants.kits.${kits[trade.ware.kit - 1]}`,
   )}`;
 
-export const parseSaleAmount = (sale: Sale) =>
+export const parseSaleAmount = (sale: SmSaleWithoutPrice) =>
   `${sale.amount} * ${sale.product.intake} ${t(
     `constants.kits.${kits[sale.product.kit - 1]}`,
   )}`;

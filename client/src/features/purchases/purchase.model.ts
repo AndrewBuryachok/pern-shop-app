@@ -1,9 +1,12 @@
 import { MdCard } from '../cards/card.model';
 
-export interface Purchase {
+export interface SmPurchase {
   id: number;
-  card: MdCard;
   amount: number;
+}
+
+export interface Purchase extends SmPurchase {
+  card: MdCard;
   createdAt: Date;
   rate?: number;
 }

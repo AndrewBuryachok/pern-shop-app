@@ -1,6 +1,6 @@
 import { emptyApi } from '../../app/empty.api';
 import { IRequest, IResponse } from '../../common/interfaces';
-import { Trade } from './trade.model';
+import { SmTrade, Trade } from './trade.model';
 import { CreateTradeDto, RateTradeDto } from './trade.dto';
 import { waresApi } from '../wares/wares.api';
 import { getQuery } from '../../common/utils';
@@ -36,6 +36,18 @@ export const tradesApi = emptyApi.injectEndpoints({
         url: `/trades/all?${getQuery(req)}`,
       }),
       providesTags: ['Auth', 'Trade'],
+    }),
+    selectMyTrades: build.query<SmTrade[], void>({
+      query: () => ({
+        url: '/trades/my/select',
+      }),
+      providesTags: ['Auth', 'Trade'],
+    }),
+    selectUserTrades: build.query<SmTrade[], number>({
+      query: (userId) => ({
+        url: `/trades/${userId}/select`,
+      }),
+      providesTags: ['Trade'],
     }),
     createTrade: build.mutation<void, CreateTradeDto>({
       query: (dto) => ({
@@ -86,6 +98,8 @@ export const {
   useGetSoldTradesQuery,
   useGetPlacedTradesQuery,
   useGetAllTradesQuery,
+  useSelectMyTradesQuery,
+  useSelectUserTradesQuery,
   useCreateTradeMutation,
   useRateTradeMutation,
 } = tradesApi;

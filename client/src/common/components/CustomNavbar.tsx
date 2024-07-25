@@ -88,7 +88,12 @@ export default function CustomNavbar(props: Props) {
     {
       route: 'transportations',
       icon: IconMailbox,
-      nested: ['orders', 'deliveries'],
+      nested: [
+        'orders',
+        'deliveries',
+        'markets-deliveries',
+        'storages-deliveries',
+      ],
     },
     {
       route: 'map',

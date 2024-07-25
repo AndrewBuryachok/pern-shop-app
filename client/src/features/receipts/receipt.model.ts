@@ -1,11 +1,14 @@
 import { MdCard } from '../cards/card.model';
 
-export interface Receipt {
+export interface SmReceipt {
   id: number;
+}
+
+export interface MdReceipt extends SmReceipt {
   card: MdCard;
 }
 
-export interface ReceiptWithDate extends Receipt {
+export interface Receipt extends MdReceipt {
   createdAt: Date;
   completedAt: Date;
 }

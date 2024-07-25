@@ -10,9 +10,12 @@ export interface MdCell extends SmCell {
 
 export interface LgCell extends SmCell {
   storage: MdStorage;
+}
+
+export interface LgCellWithTag extends LgCell {
   storageTag: SmStorageTag;
 }
 
-export interface Cell extends LgCell {
+export interface Cell extends LgCellWithTag {
   reservedUntil?: Date;
 }

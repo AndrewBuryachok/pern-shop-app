@@ -13,7 +13,9 @@ import { SmTag } from '../../features/tags/tag.model';
 import { MdStorageTag } from '../../features/storages-tags/storage-tag.model';
 import { Container } from '../../features/containers/container.model';
 import { SelectRent } from '../../features/rents/rent.model';
-import { parsePlace } from './parse.util';
+import { SmTrade } from '../../features/trades/trade.model';
+import { SmSale } from '../../features/sales/sale.model';
+import { parseItem, parsePlace } from './parse.util';
 import {
   backgrounds,
   categories,
@@ -129,6 +131,22 @@ export const selectRents = (rents?: SelectRent[]) =>
     label: `${rent.store.market.name} (${rent.store.market.x} ${rent.store.market.y}) #${rent.store.name}`,
   })) || [];
 
+export const selectTrades = (trades?: SmTrade[]) =>
+  trades?.map(({ ware, ...trade }) => ({
+    ...ware,
+    ...trade,
+    value: `${trade.id}`,
+    label: parseItem(ware.item),
+  })) || [];
+
+export const selectSales = (sales?: SmSale[]) =>
+  sales?.map(({ product, ...sale }) => ({
+    ...product,
+    ...sale,
+    value: `${sale.id}`,
+    label: parseItem(product.item),
+  })) || [];
+
 export const selectBackgrounds = () =>
   backgrounds.map((background, index) => ({
     value: `${index + 1}`,
@@ -203,6 +221,12 @@ export const selectStatuses = () =>
     color: `${index + 1}`,
     value: `${index + 1}`,
     label: t(`constants.statuses.${status}`),
+  }));
+
+export const selectHaulages = () =>
+  ['without', 'with'].map((haulage, index) => ({
+    value: `${index}`,
+    label: t(`constants.haulages.${haulage}`),
   }));
 
 export const selectMarks = () =>

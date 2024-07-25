@@ -118,8 +118,8 @@ export default function CreateDeliveryModal({ hasRole }: Props) {
       text={t('actions.create') + ' ' + t('modals.deliveries')}
     >
       <Select
-        label={t('columns.station') + ' ' + t('columns.from')}
-        placeholder={t('columns.station') + ' ' + t('columns.from')}
+        label={t('columns.fromStation')}
+        placeholder={t('columns.fromStation')}
         rightSection={<RefetchAction {...stationsResponse} />}
         itemComponent={PlacesItem}
         data={selectStationsWithPrice(stations)}
@@ -130,8 +130,8 @@ export default function CreateDeliveryModal({ hasRole }: Props) {
         {...form.getInputProps('fromStation')}
       />
       <Select
-        label={t('columns.station') + ' ' + t('columns.to')}
-        placeholder={t('columns.station') + ' ' + t('columns.to')}
+        label={t('columns.toStation')}
+        placeholder={t('columns.toStation')}
         rightSection={<RefetchAction {...stationsResponse} />}
         itemComponent={PlacesItem}
         data={selectStationsWithPrice(stations)}
