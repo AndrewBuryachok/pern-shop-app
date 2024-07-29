@@ -6,11 +6,11 @@ import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import {
   useCreateEndReportMutation,
+  useCreateEventsReportMutation,
   useCreateHubReportMutation,
   useCreateServerReportMutation,
   useCreateSiteReportMutation,
   useCreateSpawnReportMutation,
-  useCreateStatusReportMutation,
 } from './reports.api';
 import { CreateReportDto } from './report.dto';
 import CustomForm from '../../common/components/CustomForm';
@@ -41,7 +41,7 @@ export default function CreateReportModal({ mark }: Props) {
   const [createReport, { isLoading }] = [
     useCreateServerReportMutation,
     useCreateSiteReportMutation,
-    useCreateStatusReportMutation,
+    useCreateEventsReportMutation,
     useCreateSpawnReportMutation,
     useCreateHubReportMutation,
     useCreateEndReportMutation,
@@ -115,7 +115,7 @@ export const createReportFactory = (mark: number) => ({
   role: [
     Role.INSPECTOR,
     Role.INSPECTOR,
-    Role.INSPECTOR,
+    undefined,
     Role.SPAWN,
     Role.HUB,
     Role.END,
@@ -126,7 +126,7 @@ export const createServerReportButton = createReportFactory(0);
 
 export const createSiteReportButton = createReportFactory(1);
 
-export const createStatusReportButton = createReportFactory(2);
+export const createEventsReportButton = createReportFactory(2);
 
 export const createSpawnReportButton = createReportFactory(3);
 

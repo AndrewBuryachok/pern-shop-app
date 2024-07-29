@@ -1,21 +1,21 @@
 import { useLocation, useSearchParams } from 'react-router-dom';
 import {
   useGetEndReportsQuery,
+  useGetEventsReportsQuery,
   useGetHubReportsQuery,
   useGetMainReportsQuery,
   useGetServerReportsQuery,
   useGetSiteReportsQuery,
   useGetSpawnReportsQuery,
-  useGetStatusReportsQuery,
 } from '../../features/reports/reports.api';
 import ReportsList from '../../features/reports/ReportsList';
 import {
   createEndReportButton,
+  createEventsReportButton,
   createHubReportButton,
   createServerReportButton,
   createSiteReportButton,
   createSpawnReportButton,
-  createStatusReportButton,
 } from '../../features/reports/CreateReportModal';
 import { editReportAction } from '../../features/reports/EditReportModal';
 import { deleteReportAction } from '../../features/reports/DeleteReportModal';
@@ -37,7 +37,7 @@ export default function ReportsPage() {
     main: useGetMainReportsQuery,
     server: useGetServerReportsQuery,
     site: useGetSiteReportsQuery,
-    status: useGetStatusReportsQuery,
+    events: useGetEventsReportsQuery,
     spawn: useGetSpawnReportsQuery,
     hub: useGetHubReportsQuery,
     end: useGetEndReportsQuery,
@@ -46,7 +46,7 @@ export default function ReportsPage() {
   const button = {
     server: createServerReportButton,
     site: createSiteReportButton,
-    status: createStatusReportButton,
+    events: createEventsReportButton,
     spawn: createSpawnReportButton,
     hub: createHubReportButton,
     end: createEndReportButton,

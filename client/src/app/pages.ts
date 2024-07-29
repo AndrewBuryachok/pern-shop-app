@@ -52,7 +52,7 @@ const PollsPage = lazy(() => import('../pages/polls/PollsPage'));
 const RatingsPage = lazy(() => import('../pages/ratings/RatingsPage'));
 import { Role } from '../common/constants';
 
-export const tabs = ['top', 'server', 'site', 'status', 'spawn', 'hub', 'end'];
+export const tabs = ['top', 'server', 'site', 'events', 'spawn', 'hub', 'end'];
 
 export const pages = [
   { index: true, element: Home },
@@ -96,7 +96,7 @@ export const pages = [
       { index: true },
       { path: 'server' },
       { path: 'site' },
-      { path: 'status' },
+      { path: 'events' },
       { path: 'spawn' },
       { path: 'hub' },
       { path: 'end' },

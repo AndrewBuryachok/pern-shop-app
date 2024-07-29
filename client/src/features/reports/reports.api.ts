@@ -33,9 +33,9 @@ export const reportsApi = emptyApi.injectEndpoints({
       }),
       providesTags: ['Report'],
     }),
-    getStatusReports: build.query<IResponse<Report>, IRequest>({
+    getEventsReports: build.query<IResponse<Report>, IRequest>({
       query: (req) => ({
-        url: `/reports/status?${getQuery(req)}`,
+        url: `/reports/events?${getQuery(req)}`,
       }),
       providesTags: ['Report'],
     }),
@@ -138,9 +138,9 @@ export const reportsApi = emptyApi.injectEndpoints({
       }),
       invalidatesTags: ['Report'],
     }),
-    createStatusReport: build.mutation<void, CreateReportDto>({
+    createEventsReport: build.mutation<void, CreateReportDto>({
       query: (dto) => ({
-        url: '/reports/status',
+        url: '/reports/events',
         method: 'POST',
         body: dto,
       }),
@@ -310,7 +310,7 @@ export const {
   useGetMainReportsQuery,
   useGetServerReportsQuery,
   useGetSiteReportsQuery,
-  useGetStatusReportsQuery,
+  useGetEventsReportsQuery,
   useGetSpawnReportsQuery,
   useGetHubReportsQuery,
   useGetEndReportsQuery,
@@ -322,7 +322,7 @@ export const {
   useSelectReportAnnotationsQuery,
   useCreateServerReportMutation,
   useCreateSiteReportMutation,
-  useCreateStatusReportMutation,
+  useCreateEventsReportMutation,
   useCreateSpawnReportMutation,
   useCreateHubReportMutation,
   useCreateEndReportMutation,
