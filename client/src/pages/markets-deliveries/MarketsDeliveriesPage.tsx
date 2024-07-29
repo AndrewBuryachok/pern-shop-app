@@ -12,6 +12,7 @@ import {
   createMyMarketDeliveryButton,
   createUserMarketDeliveryButton,
 } from '../../features/markets-deliveries/CreateMarketDeliveryModal';
+import { editMarketDeliveryAction } from '../../features/markets-deliveries/EditMarketDeliveryModal';
 import {
   takeMyMarketDeliveryAction,
   takeUserMarketDeliveryAction,
@@ -68,12 +69,14 @@ export default function MarketsDeliveriesPage() {
   const actions = {
     main: [takeMyMarketDeliveryAction],
     my: [
+      editMarketDeliveryAction,
       completeMarketDeliveryAction,
       deleteMarketDeliveryAction,
       rateMarketDeliveryAction,
     ],
-    taken: [untakeMarketDeliveryAction, executeMarketDeliveryAction],
+    taken: [executeMarketDeliveryAction, untakeMarketDeliveryAction],
     all: [
+      editMarketDeliveryAction,
       takeUserMarketDeliveryAction,
       executeMarketDeliveryAction,
       completeMarketDeliveryAction,

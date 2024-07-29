@@ -12,6 +12,7 @@ import {
   createMyDeliveryButton,
   createUserDeliveryButton,
 } from '../../features/deliveries/CreateDeliveryModal';
+import { editDeliveryAction } from '../../features/deliveries/EditDeliveryModal';
 import {
   takeMyDeliveryAction,
   takeUserDeliveryAction,
@@ -67,9 +68,15 @@ export default function DeliveriesPage() {
 
   const actions = {
     main: [takeMyDeliveryAction],
-    my: [completeDeliveryAction, deleteDeliveryAction, rateDeliveryAction],
-    taken: [untakeDeliveryAction, executeDeliveryAction],
+    my: [
+      editDeliveryAction,
+      completeDeliveryAction,
+      deleteDeliveryAction,
+      rateDeliveryAction,
+    ],
+    taken: [executeDeliveryAction, untakeDeliveryAction],
     all: [
+      editDeliveryAction,
       takeUserDeliveryAction,
       executeDeliveryAction,
       completeDeliveryAction,

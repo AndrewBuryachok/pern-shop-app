@@ -3,6 +3,7 @@ import { IRequest, IResponse } from '../../common/interfaces';
 import { Order } from './order.model';
 import {
   CreateOrderDto,
+  EditOrderDto,
   OrderIdDto,
   RateOrderDto,
   TakeOrderDto,
@@ -48,6 +49,14 @@ export const ordersApi = emptyApi.injectEndpoints({
         body: dto,
       }),
       invalidatesTags: ['Order', 'Hire', 'Drawer', 'Payment', 'Card'],
+    }),
+    editOrder: build.mutation<void, EditOrderDto>({
+      query: ({ orderId, ...dto }) => ({
+        url: `/orders/${orderId}`,
+        method: 'PATCH',
+        body: dto,
+      }),
+      invalidatesTags: ['Order', 'Card'],
     }),
     takeOrder: build.mutation<void, TakeOrderDto>({
       query: ({ orderId, ...dto }) => ({
@@ -103,6 +112,7 @@ export const {
   useGetPlacedOrdersQuery,
   useGetAllOrdersQuery,
   useCreateOrderMutation,
+  useEditOrderMutation,
   useTakeOrderMutation,
   useUntakeOrderMutation,
   useExecuteOrderMutation,

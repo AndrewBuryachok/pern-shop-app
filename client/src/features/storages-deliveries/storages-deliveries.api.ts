@@ -6,6 +6,7 @@ import {
   StorageDeliveryIdDto,
   RateStorageDeliveryDto,
   TakeStorageDeliveryDto,
+  EditStorageDeliveryDto,
 } from './storage-delivery.dto';
 import { getQuery } from '../../common/utils';
 
@@ -48,6 +49,14 @@ export const storagesDeliveriesApi = emptyApi.injectEndpoints({
         body: dto,
       }),
       invalidatesTags: ['StorageDelivery', 'Hire', 'Drawer', 'Payment', 'Card'],
+    }),
+    editStorageDelivery: build.mutation<void, EditStorageDeliveryDto>({
+      query: ({ storageDeliveryId, ...dto }) => ({
+        url: `/storages-deliveries/${storageDeliveryId}`,
+        method: 'PATCH',
+        body: dto,
+      }),
+      invalidatesTags: ['StorageDelivery', 'Card'],
     }),
     takeStorageDelivery: build.mutation<void, TakeStorageDeliveryDto>({
       query: ({ storageDeliveryId, ...dto }) => ({
@@ -103,6 +112,7 @@ export const {
   useGetPlacedSDeliveriesQuery,
   useGetAllSDeliveriesQuery,
   useCreateStorageDeliveryMutation,
+  useEditStorageDeliveryMutation,
   useTakeStorageDeliveryMutation,
   useUntakeStorageDeliveryMutation,
   useExecuteStorageDeliveryMutation,

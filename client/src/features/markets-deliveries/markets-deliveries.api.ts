@@ -3,6 +3,7 @@ import { IRequest, IResponse } from '../../common/interfaces';
 import { MarketDelivery } from './market-delivery.model';
 import {
   CreateMarketDeliveryDto,
+  EditMarketDeliveryDto,
   MarketDeliveryIdDto,
   RateMarketDeliveryDto,
   TakeMarketDeliveryDto,
@@ -48,6 +49,14 @@ export const marketsDeliveriesApi = emptyApi.injectEndpoints({
         body: dto,
       }),
       invalidatesTags: ['MarketDelivery', 'Hire', 'Drawer', 'Payment', 'Card'],
+    }),
+    editMarketDelivery: build.mutation<void, EditMarketDeliveryDto>({
+      query: ({ marketDeliveryId, ...dto }) => ({
+        url: `/markets-deliveries/${marketDeliveryId}`,
+        method: 'PATCH',
+        body: dto,
+      }),
+      invalidatesTags: ['MarketDelivery', 'Card'],
     }),
     takeMarketDelivery: build.mutation<void, TakeMarketDeliveryDto>({
       query: ({ marketDeliveryId, ...dto }) => ({
@@ -103,6 +112,7 @@ export const {
   useGetPlacedMDeliveriesQuery,
   useGetAllMDeliveriesQuery,
   useCreateMarketDeliveryMutation,
+  useEditMarketDeliveryMutation,
   useTakeMarketDeliveryMutation,
   useUntakeMarketDeliveryMutation,
   useExecuteMarketDeliveryMutation,

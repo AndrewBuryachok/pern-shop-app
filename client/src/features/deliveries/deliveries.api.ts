@@ -4,6 +4,7 @@ import { Delivery } from './delivery.model';
 import {
   CreateDeliveryDto,
   DeliveryIdDto,
+  EditDeliveryDto,
   RateDeliveryDto,
   TakeDeliveryDto,
 } from './delivery.dto';
@@ -48,6 +49,14 @@ export const deliveriesApi = emptyApi.injectEndpoints({
         body: dto,
       }),
       invalidatesTags: ['Delivery', 'Hire', 'Drawer', 'Payment', 'Card'],
+    }),
+    editDelivery: build.mutation<void, EditDeliveryDto>({
+      query: ({ deliveryId, ...dto }) => ({
+        url: `/deliveries/${deliveryId}`,
+        method: 'PATCH',
+        body: dto,
+      }),
+      invalidatesTags: ['Delivery', 'Card'],
     }),
     takeDelivery: build.mutation<void, TakeDeliveryDto>({
       query: ({ deliveryId, ...dto }) => ({
@@ -103,6 +112,7 @@ export const {
   useGetPlacedDeliveriesQuery,
   useGetAllDeliveriesQuery,
   useCreateDeliveryMutation,
+  useEditDeliveryMutation,
   useTakeDeliveryMutation,
   useUntakeDeliveryMutation,
   useExecuteDeliveryMutation,

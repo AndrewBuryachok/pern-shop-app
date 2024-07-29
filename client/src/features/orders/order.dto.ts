@@ -3,9 +3,14 @@ import {
   RateTransportationDto,
   TakeTransportationDto,
 } from '../transportations/transportation.dto';
+import { CreateThingDto } from '../things/thing.dto';
 
 export interface CreateOrderDto extends CreateTransportationDto {
   stationId: number;
+}
+
+export interface EditOrderDto extends CreateThingDto {
+  orderId: number;
 }
 
 export interface TakeOrderDto extends TakeTransportationDto {
