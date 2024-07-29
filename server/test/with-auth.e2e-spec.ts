@@ -2339,6 +2339,21 @@ describe('With Auth', () => {
         .then((res) => (ordersId = res.body.result.map((o) => o.id)));
     });
 
+    it('PATCH /orders/:orderId', async () => {
+      return request(app.getHttpServer())
+        .patch(`/orders/${ordersId[0]}`)
+        .set('Authorization', `Bearer ${user.access}`)
+        .send({
+          item: 1,
+          description: '',
+          amount: 1,
+          intake: 1,
+          kit: 1,
+          price: 10,
+        })
+        .expect('');
+    });
+
     it('POST /orders/:orderId/take', async () => {
       return request(app.getHttpServer())
         .post(`/orders/${ordersId[0]}/take`)
@@ -2464,6 +2479,21 @@ describe('With Auth', () => {
         .then((res) => (deliveriesId = res.body.result.map((d) => d.id)));
     });
 
+    it('PATCH /deliveries/:deliveryId', async () => {
+      return request(app.getHttpServer())
+        .patch(`/deliveries/${deliveriesId[0]}`)
+        .set('Authorization', `Bearer ${user.access}`)
+        .send({
+          item: 1,
+          description: '',
+          amount: 1,
+          intake: 1,
+          kit: 1,
+          price: 10,
+        })
+        .expect('');
+    });
+
     it('POST /deliveries/:deliveryId/take', async () => {
       return request(app.getHttpServer())
         .post(`/deliveries/${deliveriesId[0]}/take`)
@@ -2563,6 +2593,14 @@ describe('With Auth', () => {
         );
     });
 
+    it('PATCH /markets-deliveries/:marketDeliveryId', async () => {
+      return request(app.getHttpServer())
+        .patch(`/markets-deliveries/${marketsDeliveriesId[0]}`)
+        .set('Authorization', `Bearer ${user.access}`)
+        .send({ price: 10 })
+        .expect('');
+    });
+
     it('POST /markets-deliveries/:marketDeliveryId/take', async () => {
       return request(app.getHttpServer())
         .post(`/markets-deliveries/${marketsDeliveriesId[0]}/take`)
@@ -2660,6 +2698,14 @@ describe('With Auth', () => {
         .then(
           (res) => (storagesDeliveriesId = res.body.result.map((d) => d.id)),
         );
+    });
+
+    it('PATCH /storages-deliveries/:storageDeliveryId', async () => {
+      return request(app.getHttpServer())
+        .patch(`/storages-deliveries/${storagesDeliveriesId[0]}`)
+        .set('Authorization', `Bearer ${user.access}`)
+        .send({ price: 10 })
+        .expect('');
     });
 
     it('POST /storages-deliveries/:storageDeliveryId/take', async () => {

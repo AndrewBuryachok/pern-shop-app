@@ -7,6 +7,7 @@ export enum OrderError {
   NOT_CUSTOMER = '403: You are not order customer',
   NOT_EXECUTOR = '403: You are not order executor',
   CREATE_FAILED = '500: Failed to create order',
+  EDIT_FAILED = '500: Failed to edit order',
   TAKE_FAILED = '500: Failed to take order',
   UNTAKE_FAILED = '500: Failed to untake order',
   EXECUTE_FAILED = '500: Failed to execute order',

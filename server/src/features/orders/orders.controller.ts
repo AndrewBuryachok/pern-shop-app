@@ -13,6 +13,7 @@ import { OrdersService } from './orders.service';
 import { Order } from './order.entity';
 import {
   CreateOrderDto,
+  EditOrderDto,
   OrderIdDto,
   RateOrderDto,
   TakeOrderDto,
@@ -70,6 +71,21 @@ export class OrdersController {
     @Body() dto: CreateOrderDto,
   ): Promise<void> {
     return this.ordersService.createOrder({ ...dto, myId, nick, hasRole });
+  }
+
+  @Patch(':orderId')
+  editOrder(
+    @MyId() myId: number,
+    @HasRole(Role.MERCHANT) hasRole: boolean,
+    @Param() { orderId }: OrderIdDto,
+    @Body() dto: EditOrderDto,
+  ): Promise<void> {
+    return this.ordersService.editOrder({
+      ...dto,
+      orderId,
+      myId,
+      hasRole,
+    });
   }
 
   @Post(':orderId/take')

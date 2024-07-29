@@ -8,6 +8,7 @@ export enum MarketDeliveryError {
   NOT_CUSTOMER = '403: You are not market delivery customer',
   NOT_EXECUTOR = '403: You are not market delivery executor',
   CREATE_FAILED = '500: Failed to create market delivery',
+  EDIT_FAILED = '500: Failed to edit market delivery',
   TAKE_FAILED = '500: Failed to take market delivery',
   UNTAKE_FAILED = '500: Failed to untake market delivery',
   EXECUTE_FAILED = '500: Failed to execute market delivery',

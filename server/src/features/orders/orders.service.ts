@@ -8,6 +8,7 @@ import { PaymentsService } from '../payments/payments.service';
 import { MqttService } from '../mqtt/mqtt.service';
 import {
   ExtCreateOrderDto,
+  ExtEditOrderDto,
   ExtOrderIdDto,
   ExtRateOrderDto,
   ExtTakeOrderDto,
@@ -80,6 +81,31 @@ export class OrdersService {
       dto.nick,
       Notification.CREATED_ORDER,
     );
+  }
+
+  async editOrder(dto: ExtEditOrderDto): Promise<void> {
+    const order = await this.checkOrderCustomer(
+      dto.orderId,
+      dto.myId,
+      dto.hasRole,
+    );
+    if (order.status !== Status.CREATED) {
+      throw new AppException(OrderError.NOT_CREATED);
+    }
+    if (dto.price !== order.price) {
+      if (dto.price < order.price) {
+        await this.cardsService.increaseCardBalance({
+          cardId: order.hire.cardId,
+          sum: order.price - dto.price,
+        });
+      } else {
+        await this.cardsService.decreaseCardBalance({
+          cardId: order.hire.cardId,
+          sum: dto.price - order.price,
+        });
+      }
+    }
+    await this.edit(order, dto);
   }
 
   async takeOrder(dto: ExtTakeOrderDto & { nick: string }): Promise<void> {
@@ -261,6 +287,20 @@ export class OrdersService {
       return order;
     } catch (error) {
       throw new AppException(OrderError.CREATE_FAILED);
+    }
+  }
+
+  private async edit(order: Order, dto: ExtEditOrderDto): Promise<void> {
+    try {
+      order.item = dto.item;
+      order.description = dto.description;
+      order.amount = dto.amount;
+      order.intake = dto.intake;
+      order.kit = dto.kit;
+      order.price = dto.price;
+      await this.ordersRepository.save(order);
+    } catch (error) {
+      throw new AppException(OrderError.EDIT_FAILED);
     }
   }
 

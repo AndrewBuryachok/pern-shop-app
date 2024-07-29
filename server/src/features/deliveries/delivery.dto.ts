@@ -8,6 +8,7 @@ import {
   RateTransportationDto,
   TakeTransportationDto,
 } from '../transportations/transportation.dto';
+import { CreateThingDto } from '../things/thing.dto';
 
 export class DeliveryIdDto {
   @ApiProperty()
@@ -32,6 +33,14 @@ export class CreateDeliveryDto extends CreateTransportationDto {
   @IsId()
   @Validate(IsStationExists)
   toStationId: number;
+}
+
+export class EditDeliveryDto extends CreateThingDto {}
+
+export class ExtEditDeliveryDto extends EditDeliveryDto {
+  deliveryId: number;
+  myId: number;
+  hasRole: boolean;
 }
 
 export class ExtCreateDeliveryDto extends CreateDeliveryDto {

@@ -8,6 +8,7 @@ import {
 } from '../../common/constraints';
 import {
   CreateHaulageDto,
+  EditHaulageDto,
   RateHaulageDto,
   TakeHaulageDto,
 } from '../haulages/haulage.dto';
@@ -33,6 +34,14 @@ export class CreateMarketDeliveryDto extends CreateHaulageDto {
 }
 
 export class ExtCreateMarketDeliveryDto extends CreateMarketDeliveryDto {
+  myId: number;
+  hasRole: boolean;
+}
+
+export class EditMarketDeliveryDto extends EditHaulageDto {}
+
+export class ExtEditMarketDeliveryDto extends EditMarketDeliveryDto {
+  marketDeliveryId: number;
   myId: number;
   hasRole: boolean;
 }

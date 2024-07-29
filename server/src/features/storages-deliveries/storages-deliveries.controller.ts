@@ -13,6 +13,7 @@ import { StoragesDeliveriesService } from './storages-deliveries.service';
 import { StorageDelivery } from './storage-delivery.entity';
 import {
   CreateStorageDeliveryDto,
+  EditStorageDeliveryDto,
   RateStorageDeliveryDto,
   StorageDeliveryIdDto,
   TakeStorageDeliveryDto,
@@ -80,6 +81,21 @@ export class StoragesDeliveriesController {
       ...dto,
       myId,
       nick,
+      hasRole,
+    });
+  }
+
+  @Patch(':storageDeliveryId')
+  editStorageDelivery(
+    @MyId() myId: number,
+    @HasRole(Role.MERCHANT) hasRole: boolean,
+    @Param() { storageDeliveryId }: StorageDeliveryIdDto,
+    @Body() dto: EditStorageDeliveryDto,
+  ): Promise<void> {
+    return this.storagesDeliveriesService.editStorageDelivery({
+      ...dto,
+      storageDeliveryId,
+      myId,
       hasRole,
     });
   }

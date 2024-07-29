@@ -9,6 +9,7 @@ import { MqttService } from '../mqtt/mqtt.service';
 import {
   ExtCreateDeliveryDto,
   ExtDeliveryIdDto,
+  ExtEditDeliveryDto,
   ExtRateDeliveryDto,
   ExtTakeDeliveryDto,
 } from './delivery.dto';
@@ -111,6 +112,31 @@ export class DeliveriesService {
       dto.nick,
       Notification.CREATED_DELIVERY,
     );
+  }
+
+  async editDelivery(dto: ExtEditDeliveryDto): Promise<void> {
+    const delivery = await this.checkDeliveryCustomer(
+      dto.deliveryId,
+      dto.myId,
+      dto.hasRole,
+    );
+    if (delivery.status !== Status.CREATED) {
+      throw new AppException(DeliveryError.NOT_CREATED);
+    }
+    if (dto.price !== delivery.price) {
+      if (dto.price < delivery.price) {
+        await this.cardsService.increaseCardBalance({
+          cardId: delivery.fromHire.cardId,
+          sum: delivery.price - dto.price,
+        });
+      } else {
+        await this.cardsService.decreaseCardBalance({
+          cardId: delivery.fromHire.cardId,
+          sum: dto.price - delivery.price,
+        });
+      }
+    }
+    await this.edit(delivery, dto);
   }
 
   async takeDelivery(
@@ -332,6 +358,23 @@ export class DeliveriesService {
       return delivery;
     } catch (error) {
       throw new AppException(DeliveryError.CREATE_FAILED);
+    }
+  }
+
+  private async edit(
+    delivery: Delivery,
+    dto: ExtEditDeliveryDto,
+  ): Promise<void> {
+    try {
+      delivery.item = dto.item;
+      delivery.description = dto.description;
+      delivery.amount = dto.amount;
+      delivery.intake = dto.intake;
+      delivery.kit = dto.kit;
+      delivery.price = dto.price;
+      await this.deliveriesRepository.save(delivery);
+    } catch (error) {
+      throw new AppException(DeliveryError.EDIT_FAILED);
     }
   }
 

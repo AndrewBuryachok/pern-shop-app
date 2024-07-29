@@ -13,6 +13,7 @@ import { MarketsDeliveriesService } from './markets-deliveries.service';
 import { MarketDelivery } from './market-delivery.entity';
 import {
   CreateMarketDeliveryDto,
+  EditMarketDeliveryDto,
   MarketDeliveryIdDto,
   RateMarketDeliveryDto,
   TakeMarketDeliveryDto,
@@ -77,6 +78,21 @@ export class MarketsDeliveriesController {
       ...dto,
       myId,
       nick,
+      hasRole,
+    });
+  }
+
+  @Patch(':marketDeliveryId')
+  editMarketDelivery(
+    @MyId() myId: number,
+    @HasRole(Role.MERCHANT) hasRole: boolean,
+    @Param() { marketDeliveryId }: MarketDeliveryIdDto,
+    @Body() dto: EditMarketDeliveryDto,
+  ): Promise<void> {
+    return this.marketsDeliveriesService.editMarketDelivery({
+      ...dto,
+      marketDeliveryId,
+      myId,
       hasRole,
     });
   }

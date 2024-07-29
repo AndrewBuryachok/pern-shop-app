@@ -8,6 +8,7 @@ export enum StorageDeliveryError {
   NOT_CUSTOMER = '403: You are not storage delivery customer',
   NOT_EXECUTOR = '403: You are not storage delivery executor',
   CREATE_FAILED = '500: Failed to create storage delivery',
+  EDIT_FAILED = '500: Failed to edit storage delivery',
   TAKE_FAILED = '500: Failed to take storage delivery',
   UNTAKE_FAILED = '500: Failed to untake storage delivery',
   EXECUTE_FAILED = '500: Failed to execute storage delivery',

@@ -14,6 +14,7 @@ import { Delivery } from './delivery.entity';
 import {
   CreateDeliveryDto,
   DeliveryIdDto,
+  EditDeliveryDto,
   RateDeliveryDto,
   TakeDeliveryDto,
 } from './delivery.dto';
@@ -73,6 +74,21 @@ export class DeliveriesController {
       ...dto,
       myId,
       nick,
+      hasRole,
+    });
+  }
+
+  @Patch(':deliveryId')
+  editDelivery(
+    @MyId() myId: number,
+    @HasRole(Role.MERCHANT) hasRole: boolean,
+    @Param() { deliveryId }: DeliveryIdDto,
+    @Body() dto: EditDeliveryDto,
+  ): Promise<void> {
+    return this.deliveriesService.editDelivery({
+      ...dto,
+      deliveryId,
+      myId,
       hasRole,
     });
   }

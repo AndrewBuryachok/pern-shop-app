@@ -9,6 +9,7 @@ import { PaymentsService } from '../payments/payments.service';
 import { MqttService } from '../mqtt/mqtt.service';
 import {
   ExtCreateMarketDeliveryDto,
+  ExtEditMarketDeliveryDto,
   ExtMarketDeliveryIdDto,
   ExtRateMarketDeliveryDto,
   ExtTakeMarketDeliveryDto,
@@ -117,6 +118,31 @@ export class MarketsDeliveriesService {
       dto.nick,
       Notification.CREATED_MARKET_DELIVERY,
     );
+  }
+
+  async editMarketDelivery(dto: ExtEditMarketDeliveryDto): Promise<void> {
+    const marketDelivery = await this.checkMarketDeliveryCustomer(
+      dto.marketDeliveryId,
+      dto.myId,
+      dto.hasRole,
+    );
+    if (marketDelivery.status !== Status.CREATED) {
+      throw new AppException(MarketDeliveryError.NOT_CREATED);
+    }
+    if (dto.price !== marketDelivery.price) {
+      if (dto.price < marketDelivery.price) {
+        await this.cardsService.increaseCardBalance({
+          cardId: marketDelivery.hire.cardId,
+          sum: marketDelivery.price - dto.price,
+        });
+      } else {
+        await this.cardsService.decreaseCardBalance({
+          cardId: marketDelivery.hire.cardId,
+          sum: dto.price - marketDelivery.price,
+        });
+      }
+    }
+    await this.edit(marketDelivery, dto);
   }
 
   async takeMarketDelivery(
@@ -316,6 +342,18 @@ export class MarketsDeliveriesService {
       return marketDelivery;
     } catch (error) {
       throw new AppException(MarketDeliveryError.CREATE_FAILED);
+    }
+  }
+
+  private async edit(
+    marketDelivery: MarketDelivery,
+    dto: ExtEditMarketDeliveryDto,
+  ): Promise<void> {
+    try {
+      marketDelivery.price = dto.price;
+      await this.marketsDeliveriesRepository.save(marketDelivery);
+    } catch (error) {
+      throw new AppException(MarketDeliveryError.EDIT_FAILED);
     }
   }
 

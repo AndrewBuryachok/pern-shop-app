@@ -7,6 +7,7 @@ export enum DeliveryError {
   NOT_CUSTOMER = '403: You are not delivery customer',
   NOT_EXECUTOR = '403: You are not delivery executor',
   CREATE_FAILED = '500: Failed to create delivery',
+  EDIT_FAILED = '500: Failed to edit delivery',
   TAKE_FAILED = '500: Failed to take delivery',
   UNTAKE_FAILED = '500: Failed to untake delivery',
   EXECUTE_FAILED = '500: Failed to execute delivery',

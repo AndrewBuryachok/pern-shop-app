@@ -9,6 +9,7 @@ import { PaymentsService } from '../payments/payments.service';
 import { MqttService } from '../mqtt/mqtt.service';
 import {
   ExtCreateStorageDeliveryDto,
+  ExtEditStorageDeliveryDto,
   ExtRateStorageDeliveryDto,
   ExtStorageDeliveryIdDto,
   ExtTakeStorageDeliveryDto,
@@ -113,6 +114,31 @@ export class StoragesDeliveriesService {
       dto.nick,
       Notification.CREATED_STORAGE_DELIVERY,
     );
+  }
+
+  async editStorageDelivery(dto: ExtEditStorageDeliveryDto): Promise<void> {
+    const storageDelivery = await this.checkStorageDeliveryCustomer(
+      dto.storageDeliveryId,
+      dto.myId,
+      dto.hasRole,
+    );
+    if (storageDelivery.status !== Status.CREATED) {
+      throw new AppException(StorageDeliveryError.NOT_CREATED);
+    }
+    if (dto.price !== storageDelivery.price) {
+      if (dto.price < storageDelivery.price) {
+        await this.cardsService.increaseCardBalance({
+          cardId: storageDelivery.hire.cardId,
+          sum: storageDelivery.price - dto.price,
+        });
+      } else {
+        await this.cardsService.decreaseCardBalance({
+          cardId: storageDelivery.hire.cardId,
+          sum: dto.price - storageDelivery.price,
+        });
+      }
+    }
+    await this.edit(storageDelivery, dto);
   }
 
   async takeStorageDelivery(
@@ -314,6 +340,18 @@ export class StoragesDeliveriesService {
       return storageDelivery;
     } catch (error) {
       throw new AppException(StorageDeliveryError.CREATE_FAILED);
+    }
+  }
+
+  private async edit(
+    storageDelivery: StorageDelivery,
+    dto: ExtEditStorageDeliveryDto,
+  ): Promise<void> {
+    try {
+      storageDelivery.price = dto.price;
+      await this.storagesDeliveriesRepository.save(storageDelivery);
+    } catch (error) {
+      throw new AppException(StorageDeliveryError.EDIT_FAILED);
     }
   }
 
