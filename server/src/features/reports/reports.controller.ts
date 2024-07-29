@@ -49,9 +49,9 @@ export class ReportsController {
   }
 
   @Public()
-  @Get('status')
-  getStatusReports(@Query() req: Request): Promise<Response<Report>> {
-    return this.reportsService.getMarkReports(Mark.STATUS, req);
+  @Get('events')
+  getEventsReports(@Query() req: Request): Promise<Response<Report>> {
+    return this.reportsService.getMarkReports(Mark.EVENTS, req);
   }
 
   @Public()
@@ -142,9 +142,8 @@ export class ReportsController {
     });
   }
 
-  @Roles(Role.INSPECTOR)
-  @Post('status')
-  createStatusReport(
+  @Post('events')
+  createEventsReport(
     @MyId() myId: number,
     @MyNick() nick: string,
     @Body() dto: CreateReportDto,
@@ -153,7 +152,7 @@ export class ReportsController {
       ...dto,
       myId,
       nick,
-      mark: Mark.STATUS,
+      mark: Mark.EVENTS,
     });
   }
 

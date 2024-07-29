@@ -518,9 +518,9 @@ describe('With Auth', () => {
         .expect('');
     });
 
-    it('POST /reports/status', async () => {
+    it('POST /reports/events', async () => {
       return request(app.getHttpServer())
-        .post('/reports/status')
+        .post('/reports/events')
         .set('Authorization', `Bearer ${inspector.access}`)
         .send({
           text: 'report text',
@@ -593,9 +593,9 @@ describe('With Auth', () => {
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
 
-    it('GET /reports/status', async () => {
+    it('GET /reports/events', async () => {
       return request(app.getHttpServer())
-        .get('/reports/status')
+        .get('/reports/events')
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
 

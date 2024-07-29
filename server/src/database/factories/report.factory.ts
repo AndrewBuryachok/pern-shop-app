@@ -9,6 +9,6 @@ define(Report, (faker: Faker) => {
   report.image2 = '';
   report.image3 = '';
   report.video = '';
-  report.mark = Math.floor(Math.random() * 5) + 1;
+  report.mark = Math.floor(Math.random() * 6) + 1;
   return report;
 });
