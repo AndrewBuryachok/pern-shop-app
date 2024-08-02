@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Patch,
@@ -87,5 +88,11 @@ export class SalesController {
     @Body() dto: RateSaleDto,
   ): Promise<void> {
     return this.salesService.rateSale({ ...dto, saleId, myId, nick, hasRole });
+  }
+
+  @Roles(Role.MERCHANT)
+  @Delete(':saleId')
+  deleteSale(@Param() { saleId }: SaleIdDto): Promise<void> {
+    return this.salesService.deleteSale({ saleId });
   }
 }

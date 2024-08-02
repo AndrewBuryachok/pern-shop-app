@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Patch,
@@ -93,5 +94,11 @@ export class TradesController {
       nick,
       hasRole,
     });
+  }
+
+  @Roles(Role.MERCHANT)
+  @Delete(':tradeId')
+  deleteTrade(@Param() { tradeId }: TradeIdDto): Promise<void> {
+    return this.tradesService.deleteTrade({ tradeId });
   }
 }

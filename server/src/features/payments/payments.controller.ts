@@ -1,8 +1,16 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Query,
+} from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { PaymentsService } from './payments.service';
 import { Payment } from './payment.entity';
-import { CreatePaymentDto } from './payment.dto';
+import { CreatePaymentDto, PaymentIdDto } from './payment.dto';
 import { Request, Response } from '../../common/interfaces';
 import { HasRole, MyId, MyNick, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
@@ -34,5 +42,14 @@ export class PaymentsController {
     @Body() dto: CreatePaymentDto,
   ): Promise<void> {
     return this.paymentsService.createPayment({ ...dto, myId, nick, hasRole });
+  }
+
+  @Roles(Role.BANKER)
+  @Delete(':paymentId')
+  deletePayment(
+    @MyId() myId: number,
+    @Param() { paymentId }: PaymentIdDto,
+  ): Promise<void> {
+    return this.paymentsService.deletePayment({ paymentId, myId });
   }
 }

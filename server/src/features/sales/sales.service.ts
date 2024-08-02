@@ -5,7 +5,7 @@ import { Sale } from './sale.entity';
 import { StoragesDeliveriesService } from '../storages-deliveries/storages-deliveries.service';
 import { ProductsService } from '../products/products.service';
 import { MqttService } from '../mqtt/mqtt.service';
-import { ExtCreateSaleDto, ExtRateSaleDto } from './sale.dto';
+import { ExtCreateSaleDto, ExtRateSaleDto, SaleIdDto } from './sale.dto';
 import { Request, Response } from '../../common/interfaces';
 import { getDateMonthBefore } from '../../common/utils';
 import { AppException } from '../../common/exceptions';
@@ -106,6 +106,11 @@ export class SalesService {
     );
   }
 
+  async deleteSale(dto: SaleIdDto): Promise<void> {
+    const sale = await this.salesRepository.findOneBy({ id: dto.saleId });
+    await this.delete(sale);
+  }
+
   async checkSaleExists(id: number): Promise<void> {
     await this.salesRepository.findOneByOrFail({ id });
   }
@@ -151,6 +156,14 @@ export class SalesService {
       await this.salesRepository.save(sale);
     } catch (error) {
       throw new AppException(SaleError.RATE_FAILED);
+    }
+  }
+
+  private async delete(sale: Sale): Promise<void> {
+    try {
+      await this.salesRepository.remove(sale);
+    } catch (error) {
+      throw new AppException(SaleError.DELETE_FAILED);
     }
   }
 

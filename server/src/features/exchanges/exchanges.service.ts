@@ -4,7 +4,7 @@ import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { Exchange } from './exchange.entity';
 import { CardsService } from '../cards/cards.service';
 import { MqttService } from '../mqtt/mqtt.service';
-import { ExtCreateExchangeDto } from './exchange.dto';
+import { ExtCreateExchangeDto, ExtExchangeIdDto } from './exchange.dto';
 import { Request, Response } from '../../common/interfaces';
 import { AppException } from '../../common/exceptions';
 import { ExchangeError } from './exchange-error.enum';
@@ -57,6 +57,31 @@ export class ExchangesService {
       dto.nick,
       Notification.CREATED_EXCHANGE,
     );
+  }
+
+  async deleteExchange(dto: ExtExchangeIdDto): Promise<void> {
+    const exchange = await this.exchangesRepository.findOneBy({
+      id: dto.exchangeId,
+    });
+    exchange.type
+      ? await this.cardsService.decreaseCardBalance({
+          ...exchange,
+          cardId: exchange.customerCardId,
+        })
+      : await this.cardsService.increaseCardBalance({
+          ...exchange,
+          cardId: exchange.customerCardId,
+        });
+    await this.create({
+      ...dto,
+      ...exchange,
+      cardId: exchange.customerCardId,
+      type: !exchange.type,
+    });
+  }
+
+  async checkExchangeExists(id: number): Promise<void> {
+    await this.exchangesRepository.findOneByOrFail({ id });
   }
 
   private async create(dto: ExtCreateExchangeDto): Promise<Exchange> {

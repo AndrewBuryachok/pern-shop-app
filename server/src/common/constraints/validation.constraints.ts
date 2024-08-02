@@ -10,6 +10,8 @@ import { AnnotationsService } from '../../features/annotations/annotations.servi
 import { ArticlesService } from '../../features/articles/articles.service';
 import { CommentsService } from '../../features/comments/comments.service';
 import { CardsService } from '../../features/cards/cards.service';
+import { ExchangesService } from '../../features/exchanges/exchanges.service';
+import { PaymentsService } from '../../features/payments/payments.service';
 import { InvoicesService } from '../../features/invoices/invoices.service';
 import { CitiesService } from '../../features/cities/cities.service';
 import { ShopsService } from '../../features/shops/shops.service';
@@ -170,6 +172,44 @@ export class IsCardExists implements ValidatorConstraintInterface {
 
   defaultMessage(): string {
     return 'Unknown card';
+  }
+}
+
+@Injectable()
+@ValidatorConstraint({ name: 'isExchangeExists', async: true })
+export class IsExchangeExists implements ValidatorConstraintInterface {
+  constructor(private exchangesService: ExchangesService) {}
+
+  async validate(value: number): Promise<boolean> {
+    try {
+      await this.exchangesService.checkExchangeExists(value);
+    } catch (error) {
+      return false;
+    }
+    return true;
+  }
+
+  defaultMessage(): string {
+    return 'Unknown exchange';
+  }
+}
+
+@Injectable()
+@ValidatorConstraint({ name: 'isPaymentExists', async: true })
+export class IsPaymentExists implements ValidatorConstraintInterface {
+  constructor(private paymentsService: PaymentsService) {}
+
+  async validate(value: number): Promise<boolean> {
+    try {
+      await this.paymentsService.checkPaymentExists(value);
+    } catch (error) {
+      return false;
+    }
+    return true;
+  }
+
+  defaultMessage(): string {
+    return 'Unknown payment';
   }
 }
 

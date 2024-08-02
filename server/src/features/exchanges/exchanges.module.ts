@@ -5,10 +5,11 @@ import { CardsModule } from '../cards/cards.module';
 import { MqttModule } from '../mqtt/mqtt.module';
 import { ExchangesController } from './exchanges.controller';
 import { ExchangesService } from './exchanges.service';
+import { IsExchangeExists } from '../../common/constraints';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Exchange]), CardsModule, MqttModule],
   controllers: [ExchangesController],
-  providers: [ExchangesService],
+  providers: [ExchangesService, IsExchangeExists],
 })
 export class ExchangesModule {}

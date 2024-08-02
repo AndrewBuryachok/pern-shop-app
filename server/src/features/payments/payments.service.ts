@@ -4,7 +4,7 @@ import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { Payment } from './payment.entity';
 import { CardsService } from '../cards/cards.service';
 import { MqttService } from '../mqtt/mqtt.service';
-import { ExtCreatePaymentDto } from './payment.dto';
+import { ExtCreatePaymentDto, ExtPaymentIdDto } from './payment.dto';
 import { Request, Response } from '../../common/interfaces';
 import { AppException } from '../../common/exceptions';
 import { PaymentError } from './payment-error.enum';
@@ -65,6 +65,31 @@ export class PaymentsService {
       dto.nick,
       Notification.CREATED_PAYMENT,
     );
+  }
+
+  async deletePayment(dto: ExtPaymentIdDto): Promise<void> {
+    const payment = await this.paymentsRepository.findOneBy({
+      id: dto.paymentId,
+    });
+    await this.cardsService.decreaseCardBalance({
+      ...payment,
+      cardId: payment.receiverCardId,
+    });
+    await this.cardsService.increaseCardBalance({
+      ...payment,
+      cardId: payment.senderCardId,
+    });
+    await this.create({
+      ...dto,
+      ...payment,
+      hasRole: true,
+      senderCardId: payment.receiverCardId,
+      receiverCardId: payment.senderCardId,
+    });
+  }
+
+  async checkPaymentExists(id: number): Promise<void> {
+    await this.paymentsRepository.findOneByOrFail({ id });
   }
 
   private async create(dto: ExtCreatePaymentDto): Promise<Payment> {

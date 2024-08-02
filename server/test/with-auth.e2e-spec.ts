@@ -30,6 +30,8 @@ describe('With Auth', () => {
   let articlesId: number;
   let commentId: number;
   let cardId: number;
+  let exchangesId: number;
+  let paymentsId: number;
   let invoicesId: number;
   let cityId: number;
   let shopId: number;
@@ -959,6 +961,14 @@ describe('With Auth', () => {
         .expect('');
     });
 
+    it('POST /exchanges', async () => {
+      return request(app.getHttpServer())
+        .post('/exchanges')
+        .set('Authorization', `Bearer ${banker.access}`)
+        .send({ cardId, type: true, sum: 100 })
+        .expect('');
+    });
+
     it('GET /exchanges/my', async () => {
       return request(app.getHttpServer())
         .get('/exchanges/my')
@@ -970,11 +980,32 @@ describe('With Auth', () => {
       return request(app.getHttpServer())
         .get('/exchanges/all')
         .set('Authorization', `Bearer ${banker.access}`)
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
+        .expect((res) => expect(res.body.count).toBeGreaterThan(0))
+        .then((res) => (exchangesId = res.body.result.map((e) => e.id)));
+    });
+
+    it('DELETE /exchanges/:exchangeId', async () => {
+      return request(app.getHttpServer())
+        .delete(`/exchanges/${exchangesId[0]}`)
+        .set('Authorization', `Bearer ${banker.access}`)
+        .expect('');
     });
   });
 
   describe('Payments', () => {
+    it('POST /payments', async () => {
+      return request(app.getHttpServer())
+        .post('/payments')
+        .set('Authorization', `Bearer ${user.access}`)
+        .send({
+          senderCardId: cardId,
+          receiverCardId: cardId,
+          sum: 10,
+          description: '',
+        })
+        .expect('');
+    });
+
     it('POST /payments', async () => {
       return request(app.getHttpServer())
         .post('/payments')
@@ -999,7 +1030,15 @@ describe('With Auth', () => {
       return request(app.getHttpServer())
         .get('/payments/all')
         .set('Authorization', `Bearer ${banker.access}`)
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
+        .expect((res) => expect(res.body.count).toBeGreaterThan(0))
+        .then((res) => (paymentsId = res.body.result.map((p) => p.id)));
+    });
+
+    it('DELETE /payments/:paymentId', async () => {
+      return request(app.getHttpServer())
+        .delete(`/payments/${paymentsId[0]}`)
+        .set('Authorization', `Bearer ${banker.access}`)
+        .expect('');
     });
   });
 
@@ -2673,6 +2712,13 @@ describe('With Auth', () => {
         .set('Authorization', `Bearer ${user.access}`)
         .expect('');
     });
+
+    it('DELETE /trades/:tradeId', async () => {
+      return request(app.getHttpServer())
+        .delete(`/trades/${tradeId}`)
+        .set('Authorization', `Bearer ${merchant.access}`)
+        .expect('');
+    });
   });
 
   describe('Storages Deliveries', () => {
@@ -2778,6 +2824,13 @@ describe('With Auth', () => {
       return request(app.getHttpServer())
         .delete(`/storages-deliveries/${storagesDeliveriesId[1]}`)
         .set('Authorization', `Bearer ${user.access}`)
+        .expect('');
+    });
+
+    it('DELETE /sales/:saleId', async () => {
+      return request(app.getHttpServer())
+        .delete(`/sales/${saleId}`)
+        .set('Authorization', `Bearer ${merchant.access}`)
         .expect('');
     });
   });

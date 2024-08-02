@@ -5,7 +5,7 @@ import { Trade } from './trade.entity';
 import { MarketsDeliveriesService } from '../markets-deliveries/markets-deliveries.service';
 import { WaresService } from '../wares/wares.service';
 import { MqttService } from '../mqtt/mqtt.service';
-import { ExtCreateTradeDto, ExtRateTradeDto } from './trade.dto';
+import { ExtCreateTradeDto, ExtRateTradeDto, TradeIdDto } from './trade.dto';
 import { Request, Response } from '../../common/interfaces';
 import { getDateMonthBefore } from '../../common/utils';
 import { AppException } from '../../common/exceptions';
@@ -110,6 +110,11 @@ export class TradesService {
     );
   }
 
+  async deleteTrade(dto: TradeIdDto): Promise<void> {
+    const trade = await this.tradesRepository.findOneBy({ id: dto.tradeId });
+    await this.delete(trade);
+  }
+
   async checkTradeExists(id: number): Promise<void> {
     await this.tradesRepository.findOneByOrFail({ id });
   }
@@ -149,6 +154,14 @@ export class TradesService {
       await this.tradesRepository.save(trade);
     } catch (error) {
       throw new AppException(TradeError.RATE_FAILED);
+    }
+  }
+
+  private async delete(trade: Trade): Promise<void> {
+    try {
+      await this.tradesRepository.remove(trade);
+    } catch (error) {
+      throw new AppException(TradeError.DELETE_FAILED);
     }
   }
 
