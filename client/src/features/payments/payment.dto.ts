@@ -4,3 +4,7 @@ export interface CreatePaymentDto {
   sum: number;
   description: string;
 }
+
+export interface DeletePaymentDto {
+  paymentId: number;
+}

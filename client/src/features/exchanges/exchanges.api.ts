@@ -1,7 +1,7 @@
 import { emptyApi } from '../../app/empty.api';
 import { IRequest, IResponse } from '../../common/interfaces';
 import { Exchange } from './exchange.model';
-import { CreateExchangeDto } from './exchange.dto';
+import { CreateExchangeDto, DeleteExchangeDto } from './exchange.dto';
 import { getQuery } from '../../common/utils';
 
 export const exchangesApi = emptyApi.injectEndpoints({
@@ -26,6 +26,13 @@ export const exchangesApi = emptyApi.injectEndpoints({
       }),
       invalidatesTags: ['Exchange', 'Card'],
     }),
+    deleteExchange: build.mutation<void, DeleteExchangeDto>({
+      query: ({ exchangeId }) => ({
+        url: `/exchanges/${exchangeId}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: ['Exchange'],
+    }),
   }),
 });
 
@@ -33,4 +40,5 @@ export const {
   useGetMyExchangesQuery,
   useGetAllExchangesQuery,
   useCreateExchangeMutation,
+  useDeleteExchangeMutation,
 } = exchangesApi;

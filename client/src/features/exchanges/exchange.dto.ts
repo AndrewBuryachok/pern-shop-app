@@ -3,3 +3,7 @@ export interface CreateExchangeDto {
   type: boolean;
   sum: number;
 }
+
+export interface DeleteExchangeDto {
+  exchangeId: number;
+}

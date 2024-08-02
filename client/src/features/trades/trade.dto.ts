@@ -7,3 +7,7 @@ export interface CreateTradeDto extends CreatePurchaseDto {
 export interface RateTradeDto extends RatePurchaseDto {
   tradeId: number;
 }
+
+export interface DeleteTradeDto {
+  tradeId: number;
+}

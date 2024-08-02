@@ -9,6 +9,7 @@ import {
   createMyPaymentButton,
   createUserPaymentButton,
 } from '../../features/payments/CreatePaymentModal';
+import { deletePaymentAction } from '../../features/payments/DeletePaymentModal';
 
 export default function PaymentsPage() {
   const tab = useLocation().pathname.split('/')[2] || 'main';
@@ -39,5 +40,14 @@ export default function PaymentsPage() {
     all: createUserPaymentButton,
   }[tab];
 
-  return <PaymentsTable {...response} search={search} button={button} />;
+  const actions = { all: [deletePaymentAction] }[tab];
+
+  return (
+    <PaymentsTable
+      {...response}
+      search={search}
+      button={button}
+      actions={actions}
+    />
+  );
 }

@@ -1,7 +1,7 @@
 import { emptyApi } from '../../app/empty.api';
 import { IRequest, IResponse } from '../../common/interfaces';
 import { Payment } from './payment.model';
-import { CreatePaymentDto } from './payment.dto';
+import { CreatePaymentDto, DeletePaymentDto } from './payment.dto';
 import { getQuery } from '../../common/utils';
 
 export const paymentsApi = emptyApi.injectEndpoints({
@@ -26,6 +26,13 @@ export const paymentsApi = emptyApi.injectEndpoints({
       }),
       invalidatesTags: ['Payment', 'Card'],
     }),
+    deletePayment: build.mutation<void, DeletePaymentDto>({
+      query: ({ paymentId }) => ({
+        url: `/payments/${paymentId}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: ['Payment', 'Card'],
+    }),
   }),
 });
 
@@ -33,4 +40,5 @@ export const {
   useGetMyPaymentsQuery,
   useGetAllPaymentsQuery,
   useCreatePaymentMutation,
+  useDeletePaymentMutation,
 } = paymentsApi;

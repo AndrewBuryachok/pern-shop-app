@@ -6,6 +6,7 @@ import {
 } from '../../features/exchanges/exchanges.api';
 import ExchangesTable from '../../features/exchanges/ExchangesTable';
 import { createExchangeButton } from '../../features/exchanges/CreateExchangeModal';
+import { deleteExchangeAction } from '../../features/exchanges/DeleteExchangeModal';
 
 export default function ExchangesPage() {
   const tab = useLocation().pathname.split('/')[2] || 'main';
@@ -33,5 +34,14 @@ export default function ExchangesPage() {
 
   const button = { all: createExchangeButton }[tab];
 
-  return <ExchangesTable {...response} search={search} button={button} />;
+  const actions = { all: [deleteExchangeAction] }[tab];
+
+  return (
+    <ExchangesTable
+      {...response}
+      search={search}
+      button={button}
+      actions={actions}
+    />
+  );
 }

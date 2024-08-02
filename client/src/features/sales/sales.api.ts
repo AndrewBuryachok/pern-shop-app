@@ -1,7 +1,7 @@
 import { emptyApi } from '../../app/empty.api';
 import { IRequest, IResponse } from '../../common/interfaces';
 import { Sale, SmSale } from './sale.model';
-import { CreateSaleDto, RateSaleDto } from './sale.dto';
+import { CreateSaleDto, DeleteSaleDto, RateSaleDto } from './sale.dto';
 import { productsApi } from '../products/products.api';
 import { getQuery } from '../../common/utils';
 
@@ -89,6 +89,13 @@ export const salesApi = emptyApi.injectEndpoints({
       }),
       invalidatesTags: ['Sale'],
     }),
+    deleteSale: build.mutation<void, DeleteSaleDto>({
+      query: ({ saleId }) => ({
+        url: `/sales/${saleId}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: ['Sale'],
+    }),
   }),
 });
 
@@ -102,4 +109,5 @@ export const {
   useSelectUserSalesQuery,
   useCreateSaleMutation,
   useRateSaleMutation,
+  useDeleteSaleMutation,
 } = salesApi;

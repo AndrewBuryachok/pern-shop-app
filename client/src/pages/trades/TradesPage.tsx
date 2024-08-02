@@ -8,6 +8,7 @@ import {
 } from '../../features/trades/trades.api';
 import TradesTable from '../../features/trades/TradesTable';
 import { rateTradeAction } from '../../features/trades/RateTradeModal';
+import { deleteTradeAction } from '../../features/trades/DeleteTradeModal';
 
 export default function TradesPage() {
   const tab = useLocation().pathname.split('/')[2] || 'main';
@@ -44,7 +45,10 @@ export default function TradesPage() {
     all: useGetAllTradesQuery,
   }[tab]!(search);
 
-  const actions = { my: [rateTradeAction], all: [rateTradeAction] }[tab];
+  const actions = {
+    my: [rateTradeAction],
+    all: [rateTradeAction, deleteTradeAction],
+  }[tab];
 
   return <TradesTable {...response} search={search} actions={actions} />;
 }

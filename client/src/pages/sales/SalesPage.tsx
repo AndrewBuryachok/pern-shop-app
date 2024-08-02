@@ -8,6 +8,7 @@ import {
 } from '../../features/sales/sales.api';
 import SalesTable from '../../features/sales/SalesTable';
 import { rateSaleAction } from '../../features/sales/RateSaleModal';
+import { deleteSaleAction } from '../../features/sales/DeleteSaleModal';
 
 export default function SalesPage() {
   const tab = useLocation().pathname.split('/')[2] || 'main';
@@ -44,7 +45,10 @@ export default function SalesPage() {
     all: useGetAllSalesQuery,
   }[tab]!(search);
 
-  const actions = { my: [rateSaleAction], all: [rateSaleAction] }[tab];
+  const actions = {
+    my: [rateSaleAction],
+    all: [rateSaleAction, deleteSaleAction],
+  }[tab];
 
   return <SalesTable {...response} search={search} actions={actions} />;
 }

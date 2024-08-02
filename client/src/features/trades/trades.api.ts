@@ -1,7 +1,7 @@
 import { emptyApi } from '../../app/empty.api';
 import { IRequest, IResponse } from '../../common/interfaces';
 import { SmTrade, Trade } from './trade.model';
-import { CreateTradeDto, RateTradeDto } from './trade.dto';
+import { CreateTradeDto, DeleteTradeDto, RateTradeDto } from './trade.dto';
 import { waresApi } from '../wares/wares.api';
 import { getQuery } from '../../common/utils';
 
@@ -89,6 +89,13 @@ export const tradesApi = emptyApi.injectEndpoints({
       }),
       invalidatesTags: ['Trade'],
     }),
+    deleteTrade: build.mutation<void, DeleteTradeDto>({
+      query: ({ tradeId }) => ({
+        url: `/trades/${tradeId}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: ['Trade'],
+    }),
   }),
 });
 
@@ -102,4 +109,5 @@ export const {
   useSelectUserTradesQuery,
   useCreateTradeMutation,
   useRateTradeMutation,
+  useDeleteTradeMutation,
 } = tradesApi;
