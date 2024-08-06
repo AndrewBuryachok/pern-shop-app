@@ -678,39 +678,6 @@ export class UsersService {
       .where('user.id = :userId', { userId })
       .select('COUNT(like.id)', 'likes')
       .getRawOne();
-    const comments = await this.usersRepository
-      .createQueryBuilder('user')
-      .leftJoinAndMapMany(
-        'user.comments',
-        'comments',
-        'comment',
-        'comment.userId = user.id',
-      )
-      .where('user.id = :userId', { userId })
-      .select('COUNT(comment.id)', 'comments')
-      .getRawOne();
-    const tasks = await this.usersRepository
-      .createQueryBuilder('user')
-      .leftJoinAndMapMany(
-        'user.tasks',
-        'tasks',
-        'task',
-        'task.customerUserId = user.id',
-      )
-      .where('user.id = :userId', { userId })
-      .select('COUNT(task.id)', 'tasks')
-      .getRawOne();
-    const plaints = await this.usersRepository
-      .createQueryBuilder('user')
-      .leftJoinAndMapMany(
-        'user.plaints',
-        'plaints',
-        'plaint',
-        'plaint.senderUserId = user.id',
-      )
-      .where('user.id = :userId', { userId })
-      .select('COUNT(plaint.id)', 'plaints')
-      .getRawOne();
     const polls = await this.usersRepository
       .createQueryBuilder('user')
       .leftJoinAndMapMany(
@@ -732,17 +699,6 @@ export class UsersService {
       )
       .where('user.id = :userId', { userId })
       .select('COUNT(vote.id)', 'votes')
-      .getRawOne();
-    const discussions = await this.usersRepository
-      .createQueryBuilder('user')
-      .leftJoinAndMapMany(
-        'user.discussions',
-        'discussions',
-        'discussion',
-        'discussion.userId = user.id',
-      )
-      .where('user.id = :userId', { userId })
-      .select('COUNT(discussion.id)', 'discussions')
       .getRawOne();
     const waresCount = await this.usersRepository
       .createQueryBuilder('user')
@@ -850,12 +806,8 @@ export class UsersService {
       ...rating,
       ...articles,
       ...likes,
-      ...comments,
-      ...tasks,
-      ...plaints,
       ...polls,
       ...votes,
-      ...discussions,
       ...waresCount,
       ...productsCount,
       ...ordersCount,

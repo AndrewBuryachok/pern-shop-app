@@ -33,7 +33,6 @@ import {
   MAX_ROLE_VALUE,
   MAX_SUM_VALUE,
   MAX_TEXT_LENGTH,
-  MAX_TITLE_LENGTH,
   MIN_COORDINATE_VALUE,
   MIN_NAME_LENGTH,
   MIN_NICK_LENGTH,
@@ -67,12 +66,6 @@ export const IsContact = () => (target: object, key: string) => {
   IsNotEmpty()(target, key);
   IsString()(target, key);
   MaxLength(MAX_CONTACT_LENGTH)(target, key);
-};
-
-export const IsTitle = () => (target: object, key: string) => {
-  IsNotEmpty()(target, key);
-  IsString()(target, key);
-  MaxLength(MAX_TITLE_LENGTH)(target, key);
 };
 
 export const IsDescription = () => (target: object, key: string) => {

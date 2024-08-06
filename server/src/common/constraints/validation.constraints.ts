@@ -35,9 +35,6 @@ import { OrdersService } from '../../features/orders/orders.service';
 import { DeliveriesService } from '../../features/deliveries/deliveries.service';
 import { MarketsDeliveriesService } from '../../features/markets-deliveries/markets-deliveries.service';
 import { StoragesDeliveriesService } from '../../features/storages-deliveries/storages-deliveries.service';
-import { TasksService } from '../../features/tasks/tasks.service';
-import { PlaintsService } from '../../features/plaints/plaints.service';
-import { AnswersService } from '../../features/answers/answers.service';
 import { PollsService } from '../../features/polls/polls.service';
 import { DiscussionsService } from '../../features/discussions/discussions.service';
 import { RatingsService } from '../../features/ratings/ratings.service';
@@ -647,63 +644,6 @@ export class IsStorageDeliveryExists implements ValidatorConstraintInterface {
 
   defaultMessage(): string {
     return 'Unknown storage delivery';
-  }
-}
-
-@Injectable()
-@ValidatorConstraint({ name: 'isTaskExists', async: true })
-export class IsTaskExists implements ValidatorConstraintInterface {
-  constructor(private tasksService: TasksService) {}
-
-  async validate(value: number): Promise<boolean> {
-    try {
-      await this.tasksService.checkTaskExists(value);
-    } catch (error) {
-      return false;
-    }
-    return true;
-  }
-
-  defaultMessage(): string {
-    return 'Unknown task';
-  }
-}
-
-@Injectable()
-@ValidatorConstraint({ name: 'isPlaintExists', async: true })
-export class IsPlaintExists implements ValidatorConstraintInterface {
-  constructor(private plaintsService: PlaintsService) {}
-
-  async validate(value: number): Promise<boolean> {
-    try {
-      await this.plaintsService.checkPlaintExists(value);
-    } catch (error) {
-      return false;
-    }
-    return true;
-  }
-
-  defaultMessage(): string {
-    return 'Unknown plaint';
-  }
-}
-
-@Injectable()
-@ValidatorConstraint({ name: 'isAnswerExists', async: true })
-export class IsAnswerExists implements ValidatorConstraintInterface {
-  constructor(private answersService: AnswersService) {}
-
-  async validate(value: number): Promise<boolean> {
-    try {
-      await this.answersService.checkAnswerExists(value);
-    } catch (error) {
-      return false;
-    }
-    return true;
-  }
-
-  defaultMessage(): string {
-    return 'Unknown answer';
   }
 }
 

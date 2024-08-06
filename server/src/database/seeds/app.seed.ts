@@ -41,9 +41,6 @@ import { Trade } from '../../features/trades/trade.entity';
 import { Sale } from '../../features/sales/sale.entity';
 import { MarketDelivery } from '../../features/markets-deliveries/market-delivery.entity';
 import { StorageDelivery } from '../../features/storages-deliveries/storage-delivery.entity';
-import { Task } from '../../features/tasks/task.entity';
-import { Plaint } from '../../features/plaints/plaint.entity';
-import { Answer } from '../../features/answers/answer.entity';
 import { Poll } from '../../features/polls/poll.entity';
 import { PollView } from '../../features/polls/poll-view.entity';
 import { Vote } from '../../features/polls/vote.entity';
@@ -546,32 +543,6 @@ export default class AppSeed implements Seeder {
         return storageDelivery;
       })
       .makeMany(10);
-    const tasks = await factory(Task)()
-      .map(async (task) => {
-        task.customerUser = faker.helpers.arrayElement(users);
-        if (task.status !== Status.CREATED) {
-          task.executorUser = faker.helpers.arrayElement(users);
-        }
-        return task;
-      })
-      .createMany(40);
-    const plaints = await factory(Plaint)()
-      .map(async (plaint) => {
-        plaint.senderUser = faker.helpers.arrayElement(users);
-        plaint.receiverUser = faker.helpers.arrayElement(users);
-        if (plaint.completedAt) {
-          plaint.executorUser = faker.helpers.arrayElement(users);
-        }
-        return plaint;
-      })
-      .createMany(20);
-    const answers = await factory(Answer)()
-      .map(async (answer) => {
-        answer.plaint = faker.helpers.arrayElement(plaints);
-        answer.user = faker.helpers.arrayElement(users);
-        return answer;
-      })
-      .createMany(40);
     const polls = await factory(Poll)()
       .map(async (poll) => {
         poll.user = faker.helpers.arrayElement(users);

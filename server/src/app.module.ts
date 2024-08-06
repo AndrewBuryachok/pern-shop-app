@@ -37,9 +37,6 @@ import { MarketsDeliveriesModule } from './features/markets-deliveries/markets-d
 import { StoragesDeliveriesModule } from './features/storages-deliveries/storages-deliveries.module';
 import { TradesModule } from './features/trades/trades.module';
 import { SalesModule } from './features/sales/sales.module';
-import { TasksModule } from './features/tasks/tasks.module';
-import { PlaintsModule } from './features/plaints/plaints.module';
-import { AnswersModule } from './features/answers/answers.module';
 import { PollsModule } from './features/polls/polls.module';
 import { DiscussionsModule } from './features/discussions/discussions.module';
 import { RatingsModule } from './features/ratings/ratings.module';
@@ -105,9 +102,6 @@ import { LoggerModule } from './features/logger/logger.module';
     StoragesDeliveriesModule,
     TradesModule,
     SalesModule,
-    TasksModule,
-    PlaintsModule,
-    AnswersModule,
     PollsModule,
     DiscussionsModule,
     RatingsModule,

@@ -678,44 +678,6 @@ describe('Without Auth', () => {
     });
   });
 
-  describe('Tasks', () => {
-    it('GET /tasks/my', async () => {
-      return request(app.getHttpServer()).get('/tasks/my').expect(401);
-    });
-
-    it('GET /tasks/taken', async () => {
-      return request(app.getHttpServer()).get('/tasks/taken').expect(401);
-    });
-
-    it('GET /tasks/all', async () => {
-      return request(app.getHttpServer())
-        .get('/tasks/all')
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect(403);
-    });
-  });
-
-  describe('Plaints', () => {
-    it('GET /plaints/my', async () => {
-      return request(app.getHttpServer()).get('/plaints/my').expect(401);
-    });
-
-    it('GET /plaints/received', async () => {
-      return request(app.getHttpServer()).get('/plaints/received').expect(401);
-    });
-
-    it('GET /plaints/answered', async () => {
-      return request(app.getHttpServer()).get('/plaints/answered').expect(401);
-    });
-
-    it('GET /plaints/all', async () => {
-      return request(app.getHttpServer())
-        .get('/plaints/all')
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect(403);
-    });
-  });
-
   describe('Polls', () => {
     it('GET /polls/my', async () => {
       return request(app.getHttpServer()).get('/polls/my').expect(401);
