@@ -23,7 +23,6 @@ import {
   IconBusinessplan,
   IconCashBanknote,
   IconChartBar,
-  IconChecklist,
   IconCreditCard,
   IconExchange,
   IconFileDollar,
@@ -35,7 +34,6 @@ import {
   IconNews,
   IconPaperBag,
   IconReportMoney,
-  IconScale,
   IconScript,
   IconShoppingBag,
   IconShoppingCart,
@@ -175,14 +173,6 @@ export default function Home() {
     {
       title: 'hires',
       icon: IconScript,
-    },
-    {
-      title: 'tasks',
-      icon: IconChecklist,
-    },
-    {
-      title: 'plaints',
-      icon: IconScale,
     },
     {
       title: 'polls',

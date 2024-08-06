@@ -7,7 +7,6 @@ import {
   IconBasket,
   IconBuildingCommunity,
   IconChartBar,
-  IconChecklist,
   IconContainer,
   IconDiscount,
   IconFriends,
@@ -18,7 +17,6 @@ import {
   IconMessages,
   IconNews,
   IconReceipt,
-  IconScale,
   IconStar,
   IconTags,
   IconUsers,
@@ -118,14 +116,6 @@ export default function CustomNavbar(props: Props) {
       route: 'receipts',
       icon: IconReceipt,
       nested: ['rents', 'leases', 'hires'],
-    },
-    {
-      route: 'tasks',
-      icon: IconChecklist,
-    },
-    {
-      route: 'plaints',
-      icon: IconScale,
     },
     {
       route: 'polls',

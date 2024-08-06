@@ -9,7 +9,7 @@ type Props = {
   status: number;
 };
 
-export default function StatusWithDoubleAvatar(props: Props) {
+export default function StatusBadge(props: Props) {
   return (
     <HoverCard position='left' withArrow>
       <HoverCard.Target>

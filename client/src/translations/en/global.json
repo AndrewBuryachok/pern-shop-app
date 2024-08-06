@@ -45,7 +45,6 @@
     "reports": "Reports",
     "articles": "Articles",
     "likes": "Likes",
-    "comments": "Comments",
     "wallet": "Wallet",
     "cards": "Cards",
     "payments": "Payments",
@@ -81,11 +80,8 @@
     "rents": "Rents",
     "leases": "Leases",
     "hires": "Hires",
-    "tasks": "Tasks",
-    "plaints": "Plaints",
     "polls": "Polls",
     "votes": "Votes",
-    "discussions": "Discussions",
     "ratings": "Ratings"
   },
   "information": {
@@ -120,8 +116,6 @@
     "rents": "View rents; continue, complete rents",
     "leases": "View leases; continue, complete leases",
     "hires": "View hires; continue, complete hires",
-    "tasks": "View tasks; create, take, execute, complete tasks",
-    "plaints": "View plaints; create, edit, complete plaints; answer to plaints",
     "polls": "View polls; create, edit, complete, delete polls; vote, discuss polls",
     "ratings": "View ratings; create, edit, delete ratings"
   },
@@ -154,7 +148,6 @@
     "placed": "Placed",
     "sold": "Sold",
     "taken": "Taken",
-    "answered": "Answered",
     "voted": "Voted",
     "discussed": "Discussed"
   },
@@ -258,7 +251,6 @@
     "haulage": "Haulage",
     "trade": "Trade",
     "sale": "Sale",
-    "answers": "Answers",
     "vote": "Vote",
     "votes": "Votes",
     "discussions": "Discussions",
@@ -334,9 +326,6 @@
     "sales": "Sale",
     "orders": "Order",
     "deliveries": "Delivery",
-    "tasks": "Task",
-    "plaints": "Plaint",
-    "answers": "Answer",
     "polls": "Poll",
     "discussions": "Discussion",
     "ratings": "Rating"
@@ -478,22 +467,6 @@
       "executed": "executed your delivery",
       "completed": "completed your delivery",
       "rated": "rated your delivery"
-    },
-    "tasks": {
-      "created": "created task",
-      "taken": "taken your task",
-      "untaken": "untaken your task",
-      "executed": "executed your task",
-      "completed": "completed your task"
-    },
-    "plaints": {
-      "created": "created plaint",
-      "answered": "answered to your plaint",
-      "completed": "completed your plaint",
-      "deleted": "deleted your plaint",
-      "replied": "replied to your answer",
-      "mentioned": "mentioned you in plaint",
-      "submentioned": "mentioned you in answer"
     },
     "polls": {
       "created": "created poll",

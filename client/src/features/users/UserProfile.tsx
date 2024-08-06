@@ -106,12 +106,8 @@ export default function UserProfile({ data: user }: Props) {
   const stats = [
     { label: 'articles', count: user.articles },
     { label: 'likes', count: user.likes },
-    { label: 'comments', count: user.comments },
-    { label: 'tasks', count: user.tasks },
-    { label: 'plaints', count: user.plaints },
     { label: 'polls', count: user.polls },
     { label: 'votes', count: user.votes },
-    { label: 'discussions', count: user.discussions },
     { label: 'wares', count: user.waresCount, rate: user.waresRate },
     { label: 'products', count: user.productsCount, rate: user.productsRate },
     { label: 'orders', count: user.ordersCount, rate: user.ordersRate },

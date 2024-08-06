@@ -5,7 +5,7 @@ import AvatarWithDoubleText from '../../common/components/AvatarWithDoubleText';
 import ThingImageWithText from '../../common/components/ThingImageWithText';
 import SingleText from '../../common/components/SingleText';
 import PriceText from '../../common/components/PriceText';
-import StatusWithDoubleAvatar from '../../common/components/StatusWithDoubleAvatar';
+import StatusBadge from '../../common/components/StatusBadge';
 import PlaceWithDoubleAvatar from '../../common/components/PlaceWithDoubleAvatar';
 import CustomActions from '../../common/components/CustomActions';
 import { viewOrderAction } from './ViewOrderModal';
@@ -43,7 +43,7 @@ export default function OrdersTable({ actions = [], ...props }: Props) {
             <PriceText {...order} />
           </td>
           <td>
-            <StatusWithDoubleAvatar {...order} />
+            <StatusBadge {...order} />
           </td>
           <td>
             <PlaceWithDoubleAvatar

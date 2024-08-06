@@ -5,7 +5,7 @@ import AvatarWithDoubleText from '../../common/components/AvatarWithDoubleText';
 import ThingImageWithText from '../../common/components/ThingImageWithText';
 import SingleText from '../../common/components/SingleText';
 import PriceText from '../../common/components/PriceText';
-import StatusWithDoubleAvatar from '../../common/components/StatusWithDoubleAvatar';
+import StatusBadge from '../../common/components/StatusBadge';
 import PlaceWithDoubleAvatar from '../../common/components/PlaceWithDoubleAvatar';
 import CustomActions from '../../common/components/CustomActions';
 import { viewDeliveryAction } from './ViewDeliveryModal';
@@ -44,7 +44,7 @@ export default function DeliveriesTable({ actions = [], ...props }: Props) {
             <PriceText {...delivery} />
           </td>
           <td>
-            <StatusWithDoubleAvatar {...delivery} />
+            <StatusBadge {...delivery} />
           </td>
           <td>
             <PlaceWithDoubleAvatar

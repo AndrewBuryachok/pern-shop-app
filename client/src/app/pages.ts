@@ -46,8 +46,6 @@ const MarketsDeliveriesPage = lazy(
 const StoragesDeliveriesPage = lazy(
   () => import('../pages/storages-deliveries/StoragesDeliveriesPage'),
 );
-const TasksPage = lazy(() => import('../pages/tasks/TasksPage'));
-const PlaintsPage = lazy(() => import('../pages/plaints/PlaintsPage'));
 const PollsPage = lazy(() => import('../pages/polls/PollsPage'));
 const RatingsPage = lazy(() => import('../pages/ratings/RatingsPage'));
 import { Role } from '../common/constants';
@@ -349,27 +347,6 @@ export const pages = [
       { path: 'taken' },
       { path: 'placed' },
       { path: 'all', role: Role.MERCHANT },
-    ],
-  },
-  {
-    path: 'tasks',
-    element: TasksPage,
-    nested: [
-      { index: true },
-      { path: 'my' },
-      { path: 'taken' },
-      { path: 'all', role: Role.MERCHANT },
-    ],
-  },
-  {
-    path: 'plaints',
-    element: PlaintsPage,
-    nested: [
-      { index: true },
-      { path: 'my' },
-      { path: 'received' },
-      { path: 'answered' },
-      { path: 'all', role: Role.INSPECTOR },
     ],
   },
   {
