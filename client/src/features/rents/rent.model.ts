@@ -1,5 +1,5 @@
 import { MdReceipt, Receipt, SmReceipt } from '../receipts/receipt.model';
-import { LgStore, LgStoreWithTag, MdStore } from '../stores/store.model';
+import { LgStore, MdStore } from '../stores/store.model';
 
 export interface SmRent extends SmReceipt {
   store: LgStore;
@@ -10,7 +10,7 @@ export interface MdRent extends MdReceipt {
 }
 
 export interface Rent extends Receipt {
-  store: LgStoreWithTag;
+  store: LgStore;
   things: number;
 }
 

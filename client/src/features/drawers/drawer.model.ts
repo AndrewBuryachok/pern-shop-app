@@ -15,10 +15,7 @@ export interface LgDrawer extends SmDrawer {
   station: MdStation;
 }
 
-export interface LgDrawerWithPrice extends SmDrawer {
+export interface Drawer extends SmDrawer {
   station: MdStationWithPrice;
-}
-
-export interface Drawer extends LgDrawerWithPrice {
   reservedUntil?: Date;
 }

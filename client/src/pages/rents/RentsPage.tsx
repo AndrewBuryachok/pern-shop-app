@@ -26,9 +26,10 @@ export default function RentsPage() {
     modes: [Mode.RENTER, Mode.OWNER],
     mode: searchParams.get('mode') as Mode,
     market: searchParams.get('market'),
+    marketTag: searchParams.get('marketTag'),
     store: searchParams.get('store'),
-    minPrice: +(searchParams.get('minPrice') || 0) || null,
-    maxPrice: +(searchParams.get('maxPrice') || 0) || null,
+    minSum: +(searchParams.get('minSum') || 0) || null,
+    maxSum: +(searchParams.get('maxSum') || 0) || null,
     minDate: searchParams.get('minDate'),
     maxDate: searchParams.get('maxDate'),
   };

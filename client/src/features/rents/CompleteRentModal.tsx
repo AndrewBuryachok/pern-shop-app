@@ -56,7 +56,7 @@ export default function CompleteRentModal({ data: rent }: Props) {
       />
       <TextInput
         label={t('columns.sum')}
-        value={`${rent.store.marketTag.price} ${t('constants.currency')}`}
+        value={`${rent.sum} ${t('constants.currency')}`}
         readOnly
       />
     </CustomForm>
@@ -69,6 +69,6 @@ export const completeRentAction = {
       title: t('actions.complete') + ' ' + t('modals.rents'),
       children: <CompleteRentModal data={rent} />,
     }),
-  disable: (rent: Rent) => rent.completedAt > new Date(),
+  disable: (rent: Rent) => new Date(rent.completedAt) < new Date(),
   color: Color.RED,
 };

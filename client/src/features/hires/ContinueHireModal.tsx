@@ -86,7 +86,7 @@ export default function ContinueHireModal({ data: hire, hasRole }: Props) {
         readOnly
       />
       <TextInput
-        label={t('columns.sum')}
+        label={t('columns.price')}
         value={`${station?.price || '-'} ${t('constants.currency')}`}
         rightSection={<RefetchAction {...stationResponse} />}
         readOnly
@@ -115,7 +115,7 @@ export const continueHireFactory = (hasRole: boolean) => ({
       title: t('actions.continue') + ' ' + t('modals.hires'),
       children: <ContinueHireModal data={hire} hasRole={hasRole} />,
     }),
-  disable: (hire: Hire) => hire.completedAt > new Date(),
+  disable: (hire: Hire) => new Date(hire.completedAt) < new Date(),
   color: Color.GREEN,
 });
 

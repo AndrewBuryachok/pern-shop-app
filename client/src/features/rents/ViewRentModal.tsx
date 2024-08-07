@@ -37,7 +37,7 @@ export default function ViewRentModal({ data: rent }: Props) {
       />
       <TextInput
         label={t('columns.sum')}
-        value={`${rent.store.marketTag.price} ${t('constants.currency')}`}
+        value={`${rent.sum} ${t('constants.currency')}`}
         readOnly
       />
       <TextInput

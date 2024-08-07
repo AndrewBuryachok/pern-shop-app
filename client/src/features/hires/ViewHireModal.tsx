@@ -37,7 +37,7 @@ export default function ViewHireModal({ data: hire }: Props) {
       />
       <TextInput
         label={t('columns.sum')}
-        value={`${hire.drawer.station.price} ${t('constants.currency')}`}
+        value={`${hire.sum} ${t('constants.currency')}`}
         readOnly
       />
       <TextInput

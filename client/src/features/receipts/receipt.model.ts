@@ -9,6 +9,7 @@ export interface MdReceipt extends SmReceipt {
 }
 
 export interface Receipt extends MdReceipt {
+  sum: number;
   createdAt: Date;
   completedAt: Date;
 }

@@ -12,10 +12,7 @@ export interface LgStore extends SmStore {
   market: MdMarket;
 }
 
-export interface LgStoreWithTag extends LgStore {
+export interface Store extends LgStore {
   marketTag: SmMarketTag;
-}
-
-export interface Store extends LgStoreWithTag {
   reservedUntil?: Date;
 }

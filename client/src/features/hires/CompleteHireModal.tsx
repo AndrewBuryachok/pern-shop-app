@@ -56,7 +56,7 @@ export default function CompleteHireModal({ data: hire }: Props) {
       />
       <TextInput
         label={t('columns.sum')}
-        value={`${hire.drawer.station.price} ${t('constants.currency')}`}
+        value={`${hire.sum} ${t('constants.currency')}`}
         readOnly
       />
     </CustomForm>
@@ -69,6 +69,6 @@ export const completeHireAction = {
       title: t('actions.complete') + ' ' + t('modals.hires'),
       children: <CompleteHireModal data={hire} />,
     }),
-  disable: (hire: Hire) => hire.completedAt > new Date(),
+  disable: (hire: Hire) => new Date(hire.completedAt) < new Date(),
   color: Color.RED,
 };

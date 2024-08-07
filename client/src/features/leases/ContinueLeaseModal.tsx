@@ -84,7 +84,7 @@ export default function ContinueLeaseModal({ data: lease, hasRole }: Props) {
         readOnly
       />
       <TextInput
-        label={t('columns.sum')}
+        label={t('columns.price')}
         value={`${tag?.price || '-'} ${t('constants.currency')}`}
         rightSection={<RefetchAction {...tagResponse} />}
         readOnly
@@ -113,7 +113,7 @@ export const continueLeaseFactory = (hasRole: boolean) => ({
       title: t('actions.continue') + ' ' + t('modals.leases'),
       children: <ContinueLeaseModal data={lease} hasRole={hasRole} />,
     }),
-  disable: (lease: Lease) => lease.completedAt > new Date(),
+  disable: (lease: Lease) => new Date(lease.completedAt) < new Date(),
   color: Color.GREEN,
 });
 

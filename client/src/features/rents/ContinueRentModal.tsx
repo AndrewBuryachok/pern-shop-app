@@ -84,7 +84,7 @@ export default function ContinueRentModal({ data: rent, hasRole }: Props) {
         readOnly
       />
       <TextInput
-        label={t('columns.sum')}
+        label={t('columns.price')}
         value={`${tag?.price || '-'} ${t('constants.currency')}`}
         rightSection={<RefetchAction {...tagResponse} />}
         readOnly
@@ -113,7 +113,7 @@ export const continueRentFactory = (hasRole: boolean) => ({
       title: t('actions.continue') + ' ' + t('modals.rents'),
       children: <ContinueRentModal data={rent} hasRole={hasRole} />,
     }),
-  disable: (rent: Rent) => rent.completedAt > new Date(),
+  disable: (rent: Rent) => new Date(rent.completedAt) < new Date(),
   color: Color.GREEN,
 });
 

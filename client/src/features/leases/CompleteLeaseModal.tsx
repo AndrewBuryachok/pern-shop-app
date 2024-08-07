@@ -56,7 +56,7 @@ export default function CompleteLeaseModal({ data: lease }: Props) {
       />
       <TextInput
         label={t('columns.sum')}
-        value={`${lease.cell.storageTag.price} ${t('constants.currency')}`}
+        value={`${lease.sum} ${t('constants.currency')}`}
         readOnly
       />
     </CustomForm>
@@ -69,6 +69,6 @@ export const completeLeaseAction = {
       title: t('actions.complete') + ' ' + t('modals.leases'),
       children: <CompleteLeaseModal data={lease} />,
     }),
-  disable: (lease: Lease) => lease.completedAt > new Date(),
+  disable: (lease: Lease) => new Date(lease.completedAt) < new Date(),
   color: Color.RED,
 };

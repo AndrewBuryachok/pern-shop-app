@@ -42,7 +42,7 @@ export default function HiresTable({ actions = [], ...props }: Props) {
             <SumText
               fromId={hire.card.user.id}
               toId={hire.drawer.station.card.user.id}
-              sum={hire.drawer.station.price}
+              sum={hire.sum}
             />
           </td>
           <td>

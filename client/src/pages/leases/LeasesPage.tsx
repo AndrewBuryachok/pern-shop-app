@@ -26,9 +26,10 @@ export default function LeasesPage() {
     modes: [Mode.RENTER, Mode.OWNER],
     mode: searchParams.get('mode') as Mode,
     storage: searchParams.get('storage'),
+    storageTag: searchParams.get('storageTag'),
     cell: searchParams.get('cell'),
-    minPrice: +(searchParams.get('minPrice') || 0) || null,
-    maxPrice: +(searchParams.get('maxPrice') || 0) || null,
+    minSum: +(searchParams.get('minSum') || 0) || null,
+    maxSum: +(searchParams.get('maxSum') || 0) || null,
     minDate: searchParams.get('minDate'),
     maxDate: searchParams.get('maxDate'),
   };

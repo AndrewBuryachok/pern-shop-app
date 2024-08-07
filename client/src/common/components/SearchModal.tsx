@@ -217,14 +217,14 @@ export default function SearchModal(props: Props) {
     });
   const { data: stores, ...storesResponse } = form.values.marketTag
     ? useSelectTagStoresQuery(+(form.values.marketTag || ''), {
-        skip: props.search.store !== undefined || !form.values.marketTag,
+        skip: props.search.store === undefined || !form.values.marketTag,
       })
     : useSelectMarketStoresQuery(+(form.values.market || ''), {
         skip: props.search.store === undefined || !form.values.market,
       });
   const { data: cells, ...cellsResponse } = form.values.storageTag
     ? useSelectTagCellsQuery(+(form.values.storageTag || ''), {
-        skip: props.search.cell !== undefined || !form.values.storageTag,
+        skip: props.search.cell === undefined || !form.values.storageTag,
       })
     : useSelectStorageCellsQuery(+(form.values.storage || ''), {
         skip: props.search.cell === undefined || !form.values.storage,

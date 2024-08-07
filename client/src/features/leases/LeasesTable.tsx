@@ -42,7 +42,7 @@ export default function LeasesTable({ actions = [], ...props }: Props) {
             <SumText
               fromId={lease.card.user.id}
               toId={lease.cell.storage.card.user.id}
-              sum={lease.cell.storageTag.price}
+              sum={lease.sum}
             />
           </td>
           <td>
