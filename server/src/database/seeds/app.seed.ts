@@ -310,6 +310,7 @@ export default class AppSeed implements Seeder {
         rent.card = faker.helpers.arrayElement(
           cards.filter((card) => card.balance >= rent.store.marketTag.price),
         );
+        rent.sum = rent.store.marketTag.price;
         const payment = await factory(Payment)().make({
           senderCard: rent.card,
           receiverCard: rent.store.market.card,
@@ -331,6 +332,7 @@ export default class AppSeed implements Seeder {
         lease.card = faker.helpers.arrayElement(
           cards.filter((card) => card.balance >= lease.cell.storageTag.price),
         );
+        lease.sum = lease.cell.storageTag.price;
         const payment = await factory(Payment)().make({
           senderCard: lease.card,
           receiverCard: lease.cell.storage.card,
@@ -352,6 +354,7 @@ export default class AppSeed implements Seeder {
         hire.card = faker.helpers.arrayElement(
           cards.filter((card) => card.balance >= hire.drawer.station.price),
         );
+        hire.sum = hire.drawer.station.price;
         const payment = await factory(Payment)().make({
           senderCard: hire.card,
           receiverCard: hire.drawer.station.card,

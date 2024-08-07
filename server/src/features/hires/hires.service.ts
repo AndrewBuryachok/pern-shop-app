@@ -126,7 +126,10 @@ export class HiresService {
 
   async createHire(dto: ExtCreateHireDto & { nick: string }): Promise<number> {
     const drawer = await this.drawersService.reserveDrawer(dto);
-    const hire = await this.create({ ...dto, stationId: drawer.id });
+    const hire = await this.create(
+      { ...dto, stationId: drawer.id },
+      drawer.station.price,
+    );
     this.mqttService.publishNotificationMessage(
       hire.id,
       drawer.station.card.userId,
@@ -143,7 +146,7 @@ export class HiresService {
       stationId: hire.drawerId,
       cardId: hire.cardId,
     });
-    await this.continue(hire);
+    await this.continue(hire, drawer.station.price);
     this.mqttService.publishNotificationMessage(
       dto.hireId,
       drawer.station.card.userId,
@@ -186,11 +189,12 @@ export class HiresService {
     return hire;
   }
 
-  private async create(dto: ExtCreateHireDto): Promise<Hire> {
+  private async create(dto: ExtCreateHireDto, sum: number): Promise<Hire> {
     try {
       const hire = this.hiresRepository.create({
         drawerId: dto.stationId,
         cardId: dto.cardId,
+        sum,
         completedAt: getDateWeekAfter(),
       });
       await this.hiresRepository.save(hire);
@@ -200,8 +204,9 @@ export class HiresService {
     }
   }
 
-  private async continue(hire: Hire): Promise<void> {
+  private async continue(hire: Hire, price: number): Promise<void> {
     try {
+      hire.sum += price;
       hire.completedAt.setDate(hire.completedAt.getDate() + 7);
       await this.hiresRepository.save(hire);
     } catch (error) {
@@ -227,14 +232,7 @@ export class HiresService {
       .innerJoin('ownerCard.user', 'ownerUser')
       .innerJoin('hire.card', 'renterCard')
       .innerJoin('renterCard.user', 'renterUser')
-      .leftJoin('station.states', 'state', 'state.createdAt < hire.createdAt')
-      .leftJoin(
-        'station.states',
-        'next',
-        'state.createdAt < next.createdAt AND next.createdAt < hire.createdAt',
-      )
-      .where('next.id IS NULL')
-      .andWhere(
+      .where(
         new Brackets((qb) =>
           qb.where(`${!req.id}`).orWhere('hire.id = :id', { id: req.id }),
         ),
@@ -298,15 +296,15 @@ export class HiresService {
       .andWhere(
         new Brackets((qb) =>
           qb
-            .where(`${!req.minPrice}`)
-            .orWhere('state.price >= :minPrice', { minPrice: req.minPrice }),
+            .where(`${!req.minSum}`)
+            .orWhere('hire.sum >= :minSum', { minSum: req.minSum }),
         ),
       )
       .andWhere(
         new Brackets((qb) =>
           qb
-            .where(`${!req.maxPrice}`)
-            .orWhere('state.price <= :maxPrice', { maxPrice: req.maxPrice }),
+            .where(`${!req.maxSum}`)
+            .orWhere('hire.sum <= :maxSum', { maxSum: req.maxSum }),
         ),
       )
       .andWhere(
@@ -339,7 +337,6 @@ export class HiresService {
         'station.name',
         'station.x',
         'station.y',
-        'state.price',
         'drawer.name',
         'renterCard.id',
         'renterUser.id',
@@ -347,6 +344,7 @@ export class HiresService {
         'renterUser.avatar',
         'renterCard.name',
         'renterCard.color',
+        'hire.sum',
         'hire.createdAt',
         'hire.completedAt',
       ]);

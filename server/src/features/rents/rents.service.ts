@@ -68,6 +68,7 @@ export class RentsService {
       .createQueryBuilder('rent')
       .leftJoin('rent.wares', 'ware')
       .where('rent.id = :rentId', { rentId })
+      .andWhere('ware.amount > 0')
       .orderBy('ware.id', 'DESC')
       .select([
         'rent.id',
@@ -85,7 +86,7 @@ export class RentsService {
 
   async createRent(dto: ExtCreateRentDto & { nick: string }): Promise<void> {
     const store = await this.storesService.reserveStore(dto);
-    const rent = await this.create(dto);
+    const rent = await this.create(dto, store.marketTag.price);
     this.mqttService.publishNotificationMessage(
       rent.id,
       store.market.card.userId,
@@ -101,7 +102,7 @@ export class RentsService {
       storeId: rent.storeId,
       cardId: rent.cardId,
     });
-    await this.continue(rent);
+    await this.continue(rent, store.marketTag.price);
     this.mqttService.publishNotificationMessage(
       dto.rentId,
       store.market.card.userId,
@@ -144,11 +145,12 @@ export class RentsService {
     return rent;
   }
 
-  private async create(dto: ExtCreateRentDto): Promise<Rent> {
+  private async create(dto: ExtCreateRentDto, sum: number): Promise<Rent> {
     try {
       const rent = this.rentsRepository.create({
         storeId: dto.storeId,
         cardId: dto.cardId,
+        sum,
         completedAt: getDateWeekAfter(),
       });
       await this.rentsRepository.save(rent);
@@ -158,8 +160,9 @@ export class RentsService {
     }
   }
 
-  private async continue(rent: Rent): Promise<void> {
+  private async continue(rent: Rent, price: number): Promise<void> {
     try {
+      rent.sum += price;
       rent.completedAt.setDate(rent.completedAt.getDate() + 7);
       await this.rentsRepository.save(rent);
     } catch (error) {
@@ -198,21 +201,16 @@ export class RentsService {
     return this.rentsRepository
       .createQueryBuilder('rent')
       .innerJoin('rent.store', 'store')
+      .innerJoin('store.marketTag', 'marketTag')
       .innerJoin('store.market', 'market')
       .innerJoin('market.card', 'ownerCard')
       .innerJoin('ownerCard.user', 'ownerUser')
-      .innerJoin('store.marketTag', 'marketTag')
       .innerJoin('rent.card', 'renterCard')
       .innerJoin('renterCard.user', 'renterUser')
-      .leftJoin('marketTag.states', 'state', 'state.createdAt < rent.createdAt')
-      .leftJoin(
-        'marketTag.states',
-        'next',
-        'state.createdAt < next.createdAt AND next.createdAt < rent.createdAt',
+      .loadRelationCountAndMap('rent.things', 'rent.wares', 'w', (qb) =>
+        qb.where('w.amount > 0'),
       )
-      .loadRelationCountAndMap('rent.things', 'rent.wares')
-      .where('next.id IS NULL')
-      .andWhere(
+      .where(
         new Brackets((qb) =>
           qb.where(`${!req.id}`).orWhere('rent.id = :id', { id: req.id }),
         ),
@@ -268,6 +266,13 @@ export class RentsService {
       )
       .andWhere(
         new Brackets((qb) =>
+          qb.where(`${!req.marketTag}`).orWhere('marketTag.id = :marketTagId', {
+            marketTagId: req.marketTag,
+          }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
           qb
             .where(`${!req.store}`)
             .orWhere('store.id = :storeId', { storeId: req.store }),
@@ -276,15 +281,15 @@ export class RentsService {
       .andWhere(
         new Brackets((qb) =>
           qb
-            .where(`${!req.minPrice}`)
-            .orWhere('state.price >= :minPrice', { minPrice: req.minPrice }),
+            .where(`${!req.minSum}`)
+            .orWhere('rent.sum >= :minSum', { minSum: req.minSum }),
         ),
       )
       .andWhere(
         new Brackets((qb) =>
           qb
-            .where(`${!req.maxPrice}`)
-            .orWhere('state.price <= :maxPrice', { maxPrice: req.maxPrice }),
+            .where(`${!req.maxSum}`)
+            .orWhere('rent.sum <= :maxSum', { maxSum: req.maxSum }),
         ),
       )
       .andWhere(
@@ -317,9 +322,6 @@ export class RentsService {
         'market.name',
         'market.x',
         'market.y',
-        'marketTag.id',
-        'marketTag.name',
-        'state.price',
         'store.name',
         'renterCard.id',
         'renterUser.id',
@@ -327,6 +329,7 @@ export class RentsService {
         'renterUser.avatar',
         'renterCard.name',
         'renterCard.color',
+        'rent.sum',
         'rent.createdAt',
         'rent.completedAt',
       ]);

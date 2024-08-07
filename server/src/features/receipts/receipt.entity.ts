@@ -18,6 +18,9 @@ export abstract class Receipt {
   @JoinColumn({ name: 'card_id' })
   card: Card;
 
+  @Column()
+  sum: number;
+
   @CreateDateColumn({ type: 'timestamptz', name: 'created_at' })
   createdAt: Date;
 

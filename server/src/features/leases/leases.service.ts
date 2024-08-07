@@ -59,6 +59,7 @@ export class LeasesService {
       .createQueryBuilder('lease')
       .leftJoin('lease.products', 'product')
       .where('lease.id = :leaseId', { leaseId })
+      .andWhere('product.amount > 0')
       .orderBy('product.id', 'DESC')
       .select([
         'lease.id',
@@ -78,7 +79,10 @@ export class LeasesService {
     dto: ExtCreateLeaseDto & { nick: string },
   ): Promise<number> {
     const cell = await this.cellsService.reserveCell(dto);
-    const lease = await this.create({ ...dto, storageTagId: cell.id });
+    const lease = await this.create(
+      { ...dto, storageTagId: cell.id },
+      cell.storageTag.price,
+    );
     this.mqttService.publishNotificationMessage(
       lease.id,
       cell.storage.card.userId,
@@ -99,7 +103,7 @@ export class LeasesService {
       storageTagId: lease.cellId,
       cardId: lease.cardId,
     });
-    await this.continue(lease);
+    await this.continue(lease, cell.storageTag.price);
     this.mqttService.publishNotificationMessage(
       dto.leaseId,
       cell.storage.card.userId,
@@ -146,11 +150,12 @@ export class LeasesService {
     return lease;
   }
 
-  private async create(dto: ExtCreateLeaseDto): Promise<Lease> {
+  private async create(dto: ExtCreateLeaseDto, sum: number): Promise<Lease> {
     try {
       const lease = this.leasesRepository.create({
         cellId: dto.storageTagId,
         cardId: dto.cardId,
+        sum,
         completedAt: getDateWeekAfter(),
       });
       await this.leasesRepository.save(lease);
@@ -160,8 +165,9 @@ export class LeasesService {
     }
   }
 
-  private async continue(lease: Lease): Promise<void> {
+  private async continue(lease: Lease, price: number): Promise<void> {
     try {
+      lease.sum += price;
       lease.completedAt.setDate(lease.completedAt.getDate() + 7);
       await this.leasesRepository.save(lease);
     } catch (error) {
@@ -182,25 +188,16 @@ export class LeasesService {
     return this.leasesRepository
       .createQueryBuilder('lease')
       .innerJoin('lease.cell', 'cell')
+      .innerJoin('cell.storageTag', 'storageTag')
       .innerJoin('cell.storage', 'storage')
       .innerJoin('storage.card', 'ownerCard')
       .innerJoin('ownerCard.user', 'ownerUser')
-      .innerJoin('cell.storageTag', 'storageTag')
       .innerJoin('lease.card', 'renterCard')
       .innerJoin('renterCard.user', 'renterUser')
-      .leftJoin(
-        'storageTag.states',
-        'state',
-        'state.createdAt < lease.createdAt',
+      .loadRelationCountAndMap('lease.things', 'lease.products', 'p', (qb) =>
+        qb.where('p.amount > 0'),
       )
-      .leftJoin(
-        'storageTag.states',
-        'next',
-        'state.createdAt < next.createdAt AND next.createdAt < lease.createdAt',
-      )
-      .loadRelationCountAndMap('lease.things', 'lease.products')
-      .where('next.id IS NULL')
-      .andWhere(
+      .where(
         new Brackets((qb) =>
           qb.where(`${!req.id}`).orWhere('lease.id = :id', { id: req.id }),
         ),
@@ -257,6 +254,15 @@ export class LeasesService {
       .andWhere(
         new Brackets((qb) =>
           qb
+            .where(`${!req.storageTag}`)
+            .orWhere('storageTag.id = :storageTagId', {
+              storageTagId: req.storageTag,
+            }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
             .where(`${!req.cell}`)
             .orWhere('cell.id = :cellId', { cellId: req.cell }),
         ),
@@ -264,15 +270,15 @@ export class LeasesService {
       .andWhere(
         new Brackets((qb) =>
           qb
-            .where(`${!req.minPrice}`)
-            .orWhere('state.price >= :minPrice', { minPrice: req.minPrice }),
+            .where(`${!req.minSum}`)
+            .orWhere('lease.sum >= :minSum', { minSum: req.minSum }),
         ),
       )
       .andWhere(
         new Brackets((qb) =>
           qb
-            .where(`${!req.maxPrice}`)
-            .orWhere('state.price <= :maxPrice', { maxPrice: req.maxPrice }),
+            .where(`${!req.maxSum}`)
+            .orWhere('lease.sum <= :maxSum', { maxSum: req.maxSum }),
         ),
       )
       .andWhere(
@@ -305,9 +311,6 @@ export class LeasesService {
         'storage.name',
         'storage.x',
         'storage.y',
-        'storageTag.id',
-        'storageTag.name',
-        'state.price',
         'cell.name',
         'renterCard.id',
         'renterUser.id',
@@ -315,6 +318,7 @@ export class LeasesService {
         'renterUser.avatar',
         'renterCard.name',
         'renterCard.color',
+        'lease.sum',
         'lease.createdAt',
         'lease.completedAt',
       ]);
