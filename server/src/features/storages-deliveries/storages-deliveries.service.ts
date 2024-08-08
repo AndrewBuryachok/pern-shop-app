@@ -123,7 +123,7 @@ export class StoragesDeliveriesService {
       dto.hasRole,
     );
     if (storageDelivery.status !== Status.CREATED) {
-      throw new AppException(StorageDeliveryError.NOT_CREATED);
+      throw new AppException(StorageDeliveryError.ALREADY_TAKEN);
     }
     if (dto.price !== storageDelivery.price) {
       if (dto.price < storageDelivery.price) {
@@ -150,7 +150,7 @@ export class StoragesDeliveriesService {
       where: { id: dto.storageDeliveryId },
     });
     if (storageDelivery.status !== Status.CREATED) {
-      throw new AppException(StorageDeliveryError.NOT_CREATED);
+      throw new AppException(StorageDeliveryError.ALREADY_TAKEN);
     }
     if (storageDelivery.hire.completedAt < new Date()) {
       throw new AppException(StorageDeliveryError.ALREADY_EXPIRED);
@@ -250,7 +250,7 @@ export class StoragesDeliveriesService {
       dto.hasRole,
     );
     if (storageDelivery.status !== Status.CREATED) {
-      throw new AppException(StorageDeliveryError.NOT_CREATED);
+      throw new AppException(StorageDeliveryError.ALREADY_TAKEN);
     }
     await this.cardsService.increaseCardBalance({
       cardId: storageDelivery.hire.cardId,
@@ -400,9 +400,7 @@ export class StoragesDeliveriesService {
 
   private async delete(storageDelivery: StorageDelivery): Promise<void> {
     try {
-      storageDelivery.completedAt = new Date();
-      storageDelivery.status = Status.COMPLETED;
-      await this.storagesDeliveriesRepository.save(storageDelivery);
+      await this.storagesDeliveriesRepository.remove(storageDelivery);
     } catch (error) {
       throw new AppException(StorageDeliveryError.DELETE_FAILED);
     }
@@ -689,13 +687,13 @@ export class StoragesDeliveriesService {
         'customerCard.color',
         'storageDelivery.price',
         'storageDelivery.status',
-        'storageDelivery.createdAt',
         'executorCard.id',
         'executorUser.id',
         'executorUser.nick',
         'executorUser.avatar',
         'executorCard.name',
         'executorCard.color',
+        'storageDelivery.createdAt',
         'storageDelivery.completedAt',
         'storageDelivery.rate',
       ]);

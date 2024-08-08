@@ -1,6 +1,6 @@
 export enum OrderError {
   ALREADY_EXPIRED = '400: Order already expired',
-  NOT_CREATED = '400: Order is not created',
+  ALREADY_TAKEN = '400: Order already taken',
   NOT_TAKEN = '400: Order is not taken',
   NOT_EXECUTED = '400: Order is not executed',
   NOT_COMPLETED = '400: Order is not completed',

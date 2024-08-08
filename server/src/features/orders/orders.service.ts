@@ -90,7 +90,7 @@ export class OrdersService {
       dto.hasRole,
     );
     if (order.status !== Status.CREATED) {
-      throw new AppException(OrderError.NOT_CREATED);
+      throw new AppException(OrderError.ALREADY_TAKEN);
     }
     if (dto.price !== order.price) {
       if (dto.price < order.price) {
@@ -115,7 +115,7 @@ export class OrdersService {
       where: { id: dto.orderId },
     });
     if (order.status !== Status.CREATED) {
-      throw new AppException(OrderError.NOT_CREATED);
+      throw new AppException(OrderError.ALREADY_TAKEN);
     }
     if (order.hire.completedAt < new Date()) {
       throw new AppException(OrderError.ALREADY_EXPIRED);
@@ -204,7 +204,7 @@ export class OrdersService {
       dto.hasRole,
     );
     if (order.status !== Status.CREATED) {
-      throw new AppException(OrderError.NOT_CREATED);
+      throw new AppException(OrderError.ALREADY_TAKEN);
     }
     await this.cardsService.increaseCardBalance({
       cardId: order.hire.cardId,
@@ -346,9 +346,7 @@ export class OrdersService {
 
   private async delete(order: Order): Promise<void> {
     try {
-      order.completedAt = new Date();
-      order.status = Status.COMPLETED;
-      await this.ordersRepository.save(order);
+      await this.ordersRepository.remove(order);
     } catch (error) {
       throw new AppException(OrderError.DELETE_FAILED);
     }
@@ -572,13 +570,13 @@ export class OrdersService {
         'order.kit',
         'order.price',
         'order.status',
-        'order.createdAt',
         'executorCard.id',
         'executorUser.id',
         'executorUser.nick',
         'executorUser.avatar',
         'executorCard.name',
         'executorCard.color',
+        'order.createdAt',
         'order.completedAt',
         'order.rate',
       ]);

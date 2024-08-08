@@ -127,7 +127,7 @@ export class MarketsDeliveriesService {
       dto.hasRole,
     );
     if (marketDelivery.status !== Status.CREATED) {
-      throw new AppException(MarketDeliveryError.NOT_CREATED);
+      throw new AppException(MarketDeliveryError.ALREADY_TAKEN);
     }
     if (dto.price !== marketDelivery.price) {
       if (dto.price < marketDelivery.price) {
@@ -154,7 +154,7 @@ export class MarketsDeliveriesService {
       where: { id: dto.marketDeliveryId },
     });
     if (marketDelivery.status !== Status.CREATED) {
-      throw new AppException(MarketDeliveryError.NOT_CREATED);
+      throw new AppException(MarketDeliveryError.ALREADY_TAKEN);
     }
     if (marketDelivery.hire.completedAt < new Date()) {
       throw new AppException(MarketDeliveryError.ALREADY_EXPIRED);
@@ -254,7 +254,7 @@ export class MarketsDeliveriesService {
       dto.hasRole,
     );
     if (marketDelivery.status !== Status.CREATED) {
-      throw new AppException(MarketDeliveryError.NOT_CREATED);
+      throw new AppException(MarketDeliveryError.ALREADY_TAKEN);
     }
     await this.cardsService.increaseCardBalance({
       cardId: marketDelivery.hire.cardId,
@@ -402,9 +402,7 @@ export class MarketsDeliveriesService {
 
   private async delete(marketDelivery: MarketDelivery): Promise<void> {
     try {
-      marketDelivery.completedAt = new Date();
-      marketDelivery.status = Status.COMPLETED;
-      await this.marketsDeliveriesRepository.save(marketDelivery);
+      await this.marketsDeliveriesRepository.remove(marketDelivery);
     } catch (error) {
       throw new AppException(MarketDeliveryError.DELETE_FAILED);
     }
@@ -683,13 +681,13 @@ export class MarketsDeliveriesService {
         'customerCard.color',
         'marketDelivery.price',
         'marketDelivery.status',
-        'marketDelivery.createdAt',
         'executorCard.id',
         'executorUser.id',
         'executorUser.nick',
         'executorUser.avatar',
         'executorCard.name',
         'executorCard.color',
+        'marketDelivery.createdAt',
         'marketDelivery.completedAt',
         'marketDelivery.rate',
       ]);

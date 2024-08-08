@@ -232,6 +232,17 @@ export class HiresService {
       .innerJoin('ownerCard.user', 'ownerUser')
       .innerJoin('hire.card', 'renterCard')
       .innerJoin('renterCard.user', 'renterUser')
+      .loadRelationCountAndMap('hire.orders', 'hire.orders')
+      .loadRelationCountAndMap('hire.fromDeliveries', 'hire.fromDeliveries')
+      .loadRelationCountAndMap('hire.toDeliveries', 'hire.toDeliveries')
+      .loadRelationCountAndMap(
+        'hire.marketsDeliveries',
+        'hire.marketsDeliveries',
+      )
+      .loadRelationCountAndMap(
+        'hire.storagesDeliveries',
+        'hire.storagesDeliveries',
+      )
       .where(
         new Brackets((qb) =>
           qb.where(`${!req.id}`).orWhere('hire.id = :id', { id: req.id }),

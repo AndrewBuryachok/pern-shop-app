@@ -1,7 +1,7 @@
 export enum MarketDeliveryError {
   ALREADY_EXISTS = '400: Market delivery already exists',
   ALREADY_EXPIRED = '400: Market delivery already expired',
-  NOT_CREATED = '400: Market delivery is not created',
+  ALREADY_TAKEN = '400: Market delivery already taken',
   NOT_TAKEN = '400: Market delivery is not taken',
   NOT_EXECUTED = '400: Market delivery is not executed',
   NOT_COMPLETED = '400: Market delivery is not completed',

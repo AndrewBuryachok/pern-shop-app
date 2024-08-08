@@ -121,7 +121,7 @@ export class DeliveriesService {
       dto.hasRole,
     );
     if (delivery.status !== Status.CREATED) {
-      throw new AppException(DeliveryError.NOT_CREATED);
+      throw new AppException(DeliveryError.ALREADY_TAKEN);
     }
     if (dto.price !== delivery.price) {
       if (dto.price < delivery.price) {
@@ -148,7 +148,7 @@ export class DeliveriesService {
       where: { id: dto.deliveryId },
     });
     if (delivery.status !== Status.CREATED) {
-      throw new AppException(DeliveryError.NOT_CREATED);
+      throw new AppException(DeliveryError.ALREADY_TAKEN);
     }
     if (
       delivery.fromHire.completedAt < new Date() ||
@@ -255,7 +255,7 @@ export class DeliveriesService {
       dto.hasRole,
     );
     if (delivery.status !== Status.CREATED) {
-      throw new AppException(DeliveryError.NOT_CREATED);
+      throw new AppException(DeliveryError.ALREADY_TAKEN);
     }
     await this.cardsService.increaseCardBalance({
       cardId: delivery.fromHire.cardId,
@@ -420,9 +420,7 @@ export class DeliveriesService {
 
   private async delete(delivery: Delivery): Promise<void> {
     try {
-      delivery.completedAt = new Date();
-      delivery.status = Status.COMPLETED;
-      await this.deliveriesRepository.save(delivery);
+      await this.deliveriesRepository.remove(delivery);
     } catch (error) {
       throw new AppException(DeliveryError.DELETE_FAILED);
     }
@@ -686,13 +684,13 @@ export class DeliveriesService {
         'delivery.kit',
         'delivery.price',
         'delivery.status',
-        'delivery.createdAt',
         'executorCard.id',
         'executorUser.id',
         'executorUser.nick',
         'executorUser.avatar',
         'executorCard.name',
         'executorCard.color',
+        'delivery.createdAt',
         'delivery.completedAt',
         'delivery.rate',
       ]);

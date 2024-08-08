@@ -1,6 +1,6 @@
 export enum DeliveryError {
   ALREADY_EXPIRED = '400: Delivery already expired',
-  NOT_CREATED = '400: Delivery is not created',
+  ALREADY_TAKEN = '400: Delivery already taken',
   NOT_TAKEN = '400: Delivery is not taken',
   NOT_EXECUTED = '400: Delivery is not executed',
   NOT_COMPLETED = '400: Delivery is not completed',

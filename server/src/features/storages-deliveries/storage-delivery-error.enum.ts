@@ -1,7 +1,7 @@
 export enum StorageDeliveryError {
   ALREADY_EXISTS = '400: Storage delivery already exists',
   ALREADY_EXPIRED = '400: Storage delivery already expired',
-  NOT_CREATED = '400: Storage delivery is not created',
+  ALREADY_TAKEN = '400: Storage delivery already taken',
   NOT_TAKEN = '400: Storage delivery is not taken',
   NOT_EXECUTED = '400: Storage delivery is not executed',
   NOT_COMPLETED = '400: Storage delivery is not completed',
