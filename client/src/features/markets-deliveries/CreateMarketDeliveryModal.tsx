@@ -49,7 +49,7 @@ export default function CreateMarketDeliveryModal({ hasRole }: Props) {
       card: '',
       price: 1,
     },
-    transformValues: ({ trade, station, card, ...rest }) => ({
+    transformValues: ({ user, trade, station, card, ...rest }) => ({
       ...rest,
       tradeId: +trade,
       stationId: +station,
@@ -126,7 +126,12 @@ export default function CreateMarketDeliveryModal({ hasRole }: Props) {
         placeholder={t('columns.trade')}
         icon={trade && <ThingImage item={trade.ware.item} />}
         iconWidth={48}
-        rightSection={<RefetchAction {...tradesResponse} />}
+        rightSection={
+          <RefetchAction
+            {...tradesResponse}
+            skip={!form.values.user && hasRole}
+          />
+        }
         itemComponent={ThingsItemWithAmount}
         data={selectTrades(trades)}
         limit={20}
@@ -150,7 +155,12 @@ export default function CreateMarketDeliveryModal({ hasRole }: Props) {
       <Select
         label={t('columns.card')}
         placeholder={t('columns.card')}
-        rightSection={<RefetchAction {...cardsResponse} />}
+        rightSection={
+          <RefetchAction
+            {...cardsResponse}
+            skip={!form.values.user && hasRole}
+          />
+        }
         itemComponent={CardsItem}
         data={selectCardsWithBalance(cards)}
         limit={20}

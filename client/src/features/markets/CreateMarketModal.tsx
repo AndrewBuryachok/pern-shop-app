@@ -45,7 +45,7 @@ export default function CreateMarketModal({ hasRole }: Props) {
       x: 0,
       y: 0,
     },
-    transformValues: ({ card, ...rest }) => ({ ...rest, cardId: +card }),
+    transformValues: ({ user, card, ...rest }) => ({ ...rest, cardId: +card }),
   });
 
   const [image] = useDebouncedValue(form.values.image, 500);

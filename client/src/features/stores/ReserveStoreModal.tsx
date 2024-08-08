@@ -39,7 +39,7 @@ export default function ReserveStoreModal({ data: store, hasRole }: Props) {
       user: '',
       card: '',
     },
-    transformValues: ({ card, ...rest }) => ({ ...rest, cardId: +card }),
+    transformValues: ({ user, card, ...rest }) => ({ ...rest, cardId: +card }),
     validate: {
       card: () =>
         myCard.balance < store.marketTag.price

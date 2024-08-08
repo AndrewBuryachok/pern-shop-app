@@ -35,7 +35,6 @@ export default function DeleteExchangeModal({ data: exchange }: Props) {
       isLoading={isLoading}
       text={t('actions.delete') + ' ' + t('modals.exchanges')}
     >
-      <TextInput label={t('columns.id')} value={exchange.id} readOnly />
       <TextInput
         label={t('columns.executor')}
         icon={<CustomAvatar {...exchange.executorUser} />}

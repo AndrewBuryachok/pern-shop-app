@@ -47,7 +47,7 @@ export default function CreateStationModal({ hasRole }: Props) {
       y: 0,
       price: 1,
     },
-    transformValues: ({ card, ...rest }) => ({ ...rest, cardId: +card }),
+    transformValues: ({ user, card, ...rest }) => ({ ...rest, cardId: +card }),
   });
 
   const [image] = useDebouncedValue(form.values.image, 500);

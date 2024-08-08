@@ -35,7 +35,6 @@ export default function DeletePaymentModal({ data: payment }: Props) {
       isLoading={isLoading}
       text={t('actions.delete') + ' ' + t('modals.payments')}
     >
-      <TextInput label={t('columns.id')} value={payment.id} readOnly />
       <TextInput
         label={t('columns.sender')}
         icon={<CustomAvatar {...payment.senderCard.user} />}

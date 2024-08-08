@@ -41,10 +41,10 @@ import { useSelectStationDrawersQuery } from '../../features/drawers/drawers.api
 import CustomForm from './CustomForm';
 import RefetchAction from './RefetchAction';
 import CustomAvatar from './CustomAvatar';
-import { UsersItem } from './UsersItem';
 import ThingImage from './ThingImage';
-import { ThingsItem } from './ThingsItem';
+import { UsersItem } from './UsersItem';
 import { CardsItem } from './CardsItem';
+import { ThingsItem } from './ThingsItem';
 import { PlacesItem } from './PlacesItem';
 import { RolesItem } from './RolesItem';
 import { ColorsItem } from './ColorsItem';

@@ -39,7 +39,13 @@ export default function CreatePaymentModal({ hasRole }: Props) {
       sum: 1,
       description: '',
     },
-    transformValues: ({ senderCard, receiverCard, ...rest }) => ({
+    transformValues: ({
+      senderUser,
+      senderCard,
+      receiverUser,
+      receiverCard,
+      ...rest
+    }) => ({
       ...rest,
       senderCardId: +senderCard,
       receiverCardId: +receiverCard,
@@ -62,13 +68,10 @@ export default function CreatePaymentModal({ hasRole }: Props) {
         skip: !form.values.senderUser,
       })
     : useSelectMyCardsQuery();
-  const { data: receiverCards, ...receiverCardsResponse } = hasRole
-    ? useSelectUserCardsWithBalanceQuery(+form.values.receiverUser, {
-        skip: !form.values.receiverUser,
-      })
-    : useSelectUserCardsQuery(+form.values.receiverUser, {
-        skip: !form.values.receiverUser,
-      });
+  const { data: receiverCards, ...receiverCardsResponse } =
+    useSelectUserCardsQuery(+form.values.receiverUser, {
+      skip: !form.values.receiverUser,
+    });
 
   const senderUser = users?.find((user) => user.id === +form.values.senderUser);
   const receiverUser = users?.find(

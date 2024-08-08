@@ -27,10 +27,7 @@ export default function CreateCellModal({ hasRole }: Props) {
       storageTag: '',
       name: '',
     },
-    transformValues: ({ storageTag, ...rest }) => ({
-      ...rest,
-      storageTagId: +storageTag,
-    }),
+    transformValues: ({ storageTag }) => ({ storageTagId: +storageTag }),
   });
 
   const { data: storages, ...storagesResponse } = hasRole

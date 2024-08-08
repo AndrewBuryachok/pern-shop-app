@@ -1,4 +1,5 @@
 import { t } from 'i18next';
+import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Select, Textarea, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
@@ -38,8 +39,10 @@ export default function TakeOrderModal({ data: order, hasRole }: Props) {
       user: '',
       card: '',
     },
-    transformValues: ({ card, ...rest }) => ({ ...rest, cardId: +card }),
+    transformValues: ({ user, card, ...rest }) => ({ ...rest, cardId: +card }),
   });
+
+  useEffect(() => form.setFieldValue('card', ''), [form.values.user]);
 
   const { data: users, ...usersResponse } = useSelectAllUsersQuery(undefined, {
     skip: !hasRole,

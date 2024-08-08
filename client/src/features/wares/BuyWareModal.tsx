@@ -50,12 +50,19 @@ export default function BuyWareModal({ data: ware, hasRole }: Props) {
       station: '',
       price: 0,
     },
-    transformValues: ({ card, station, ...rest }) => ({
+    transformValues: ({ user, card, haulage, station, ...rest }) => ({
       ...rest,
       cardId: +card,
       stationId: +station,
     }),
   });
+
+  useEffect(() => form.setFieldValue('card', ''), [form.values.user]);
+
+  useEffect(() => {
+    form.setFieldValue('station', '');
+    form.setFieldValue('price', +form.values.haulage);
+  }, [form.values.haulage]);
 
   const { data: users, ...usersResponse } = useSelectAllUsersQuery(undefined, {
     skip: !hasRole,
@@ -69,11 +76,6 @@ export default function BuyWareModal({ data: ware, hasRole }: Props) {
     undefined,
     { skip: !+form.values.haulage },
   );
-
-  useEffect(() => {
-    form.setFieldValue('station', '');
-    form.setFieldValue('price', +form.values.haulage);
-  }, [form.values.haulage]);
 
   const user = users?.find((user) => user.id === +form.values.user);
   const card = cards?.find((card) => card.id === +form.values.card);
@@ -144,7 +146,12 @@ export default function BuyWareModal({ data: ware, hasRole }: Props) {
       <Select
         label={t('columns.card')}
         placeholder={t('columns.card')}
-        rightSection={<RefetchAction {...cardsResponse} />}
+        rightSection={
+          <RefetchAction
+            {...cardsResponse}
+            skip={!form.values.user && hasRole}
+          />
+        }
         itemComponent={CardsItem}
         data={selectCardsWithBalance(cards)}
         limit={20}

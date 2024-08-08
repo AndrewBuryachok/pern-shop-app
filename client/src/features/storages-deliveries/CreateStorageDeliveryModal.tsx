@@ -49,7 +49,7 @@ export default function CreateStorageDeliveryModal({ hasRole }: Props) {
       card: '',
       price: 1,
     },
-    transformValues: ({ sale, station, card, ...rest }) => ({
+    transformValues: ({ user, sale, station, card, ...rest }) => ({
       ...rest,
       saleId: +sale,
       stationId: +station,
@@ -126,7 +126,12 @@ export default function CreateStorageDeliveryModal({ hasRole }: Props) {
         placeholder={t('columns.sale')}
         icon={sale && <ThingImage item={sale.product.item} />}
         iconWidth={48}
-        rightSection={<RefetchAction {...salesResponse} />}
+        rightSection={
+          <RefetchAction
+            {...salesResponse}
+            skip={!form.values.user && hasRole}
+          />
+        }
         itemComponent={ThingsItemWithAmount}
         data={selectSales(sales)}
         limit={20}
@@ -150,7 +155,12 @@ export default function CreateStorageDeliveryModal({ hasRole }: Props) {
       <Select
         label={t('columns.card')}
         placeholder={t('columns.card')}
-        rightSection={<RefetchAction {...cardsResponse} />}
+        rightSection={
+          <RefetchAction
+            {...cardsResponse}
+            skip={!form.values.user && hasRole}
+          />
+        }
         itemComponent={CardsItem}
         data={selectCardsWithBalance(cards)}
         limit={20}

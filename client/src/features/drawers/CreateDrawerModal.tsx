@@ -25,10 +25,7 @@ export default function CreateDrawerModal({ hasRole }: Props) {
       station: '',
       name: '',
     },
-    transformValues: ({ station, ...rest }) => ({
-      ...rest,
-      stationId: +station,
-    }),
+    transformValues: ({ station }) => ({ stationId: +station }),
   });
 
   const { data: stations, ...stationsResponse } = hasRole

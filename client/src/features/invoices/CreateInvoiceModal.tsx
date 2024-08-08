@@ -32,7 +32,7 @@ export default function CreateInvoiceModal({ hasRole }: Props) {
       sum: 1,
       description: '',
     },
-    transformValues: ({ senderCard, receiverUser, ...rest }) => ({
+    transformValues: ({ senderUser, senderCard, receiverUser, ...rest }) => ({
       ...rest,
       senderCardId: +senderCard,
       receiverUserId: +receiverUser,

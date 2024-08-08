@@ -17,8 +17,8 @@ import RefetchAction from '../../common/components/RefetchAction';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import ThingImage from '../../common/components/ThingImage';
 import { UsersItem } from '../../common/components/UsersItem';
-import { ThingsItem } from '../../common/components/ThingsItem';
 import { CardsItem } from '../../common/components/CardsItem';
+import { ThingsItem } from '../../common/components/ThingsItem';
 import { PlacesItem } from '../../common/components/PlacesItem';
 import {
   selectCardsWithBalance,
@@ -56,7 +56,7 @@ export default function CreateProductModal({ hasRole }: Props) {
       kit: '',
       price: 1,
     },
-    transformValues: ({ storageTag, card, item, kit, ...rest }) => ({
+    transformValues: ({ storageTag, user, card, item, kit, ...rest }) => ({
       ...rest,
       storageTagId: +storageTag,
       cardId: +card,
@@ -70,6 +70,8 @@ export default function CreateProductModal({ hasRole }: Props) {
           : null,
     },
   });
+
+  useEffect(() => form.setFieldValue('card', ''), [form.values.user]);
 
   useEffect(() => form.setFieldValue('item', ''), [form.values.category]);
 

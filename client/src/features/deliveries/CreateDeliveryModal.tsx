@@ -17,8 +17,8 @@ import RefetchAction from '../../common/components/RefetchAction';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import ThingImage from '../../common/components/ThingImage';
 import { UsersItem } from '../../common/components/UsersItem';
-import { ThingsItem } from '../../common/components/ThingsItem';
 import { CardsItem } from '../../common/components/CardsItem';
+import { ThingsItem } from '../../common/components/ThingsItem';
 import { PlacesItem } from '../../common/components/PlacesItem';
 import {
   customMin,
@@ -62,6 +62,7 @@ export default function CreateDeliveryModal({ hasRole }: Props) {
     transformValues: ({
       fromStation,
       toStation,
+      user,
       card,
       item,
       kit,
@@ -81,6 +82,8 @@ export default function CreateDeliveryModal({ hasRole }: Props) {
           : null,
     },
   });
+
+  useEffect(() => form.setFieldValue('card', ''), [form.values.user]);
 
   useEffect(() => form.setFieldValue('item', ''), [form.values.category]);
 
@@ -160,7 +163,12 @@ export default function CreateDeliveryModal({ hasRole }: Props) {
       <Select
         label={t('columns.card')}
         placeholder={t('columns.card')}
-        rightSection={<RefetchAction {...cardsResponse} />}
+        rightSection={
+          <RefetchAction
+            {...cardsResponse}
+            skip={!form.values.user && hasRole}
+          />
+        }
         itemComponent={CardsItem}
         data={selectCardsWithBalance(cards)}
         limit={20}

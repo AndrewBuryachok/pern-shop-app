@@ -34,9 +34,8 @@ export default function CreateExchangeModal() {
     },
     transformValues: ({ user, card, type, ...rest }) => ({
       ...rest,
-      type: !!+type,
-      userId: +user,
       cardId: +card,
+      type: !!+type,
     }),
   });
 

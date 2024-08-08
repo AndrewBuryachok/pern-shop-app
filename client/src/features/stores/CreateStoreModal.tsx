@@ -27,10 +27,7 @@ export default function CreateStoreModal({ hasRole }: Props) {
       marketTag: '',
       name: '',
     },
-    transformValues: ({ marketTag, ...rest }) => ({
-      ...rest,
-      marketTagId: +marketTag,
-    }),
+    transformValues: ({ marketTag }) => ({ marketTagId: +marketTag }),
   });
 
   const { data: markets, ...marketsResponse } = hasRole
