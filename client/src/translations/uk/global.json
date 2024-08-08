@@ -264,7 +264,6 @@
     "image": "Зображення",
     "video": "Відео",
     "mode": "Режим",
-    "category": "Категорія",
     "nick": "Нік",
     "password": "Пароль",
     "profile": "Профіль",
@@ -543,17 +542,6 @@
       "progress": "На розгляді",
       "approved": "Прийнято",
       "rejected": "Відхилено"
-    },
-    "categories": {
-      "building": "Будівельні",
-      "colored": "Кольорові",
-      "natural": "Природні",
-      "functional": "Функціональні",
-      "redstone": "Механізми",
-      "tools": "Інструменти",
-      "combat": "Зброя",
-      "foodstuffs": "Їжа",
-      "ingredients": "Інгридієнти"
     },
     "items": {
       "stone": "Камінь",

@@ -1,5 +1,4 @@
 import { t } from 'i18next';
-import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { NumberInput, Select, Textarea } from '@mantine/core';
 import { useForm } from '@mantine/form';
@@ -11,10 +10,9 @@ import { EditOrderDto } from './order.dto';
 import CustomForm from '../../common/components/CustomForm';
 import ThingImage from '../../common/components/ThingImage';
 import { ThingsItem } from '../../common/components/ThingsItem';
-import { selectCategories, selectItems, selectKits } from '../../common/utils';
+import { selectItems, selectKits } from '../../common/utils';
 import {
   Color,
-  items,
   MAX_AMOUNT_VALUE,
   MAX_DESCRIPTION_LENGTH,
   MAX_INTAKE_VALUE,
@@ -30,7 +28,6 @@ export default function EditOrderModal({ data: order }: Props) {
   const form = useForm({
     initialValues: {
       orderId: order.id,
-      category: items[order.item - 1][0],
       item: `${order.item}`,
       description: order.description,
       amount: order.amount,
@@ -44,10 +41,6 @@ export default function EditOrderModal({ data: order }: Props) {
       kit: +kit,
     }),
   });
-
-  useEffect(() => form.setFieldValue('item', ''), [form.values.category]);
-
-  useEffect(() => form.setFieldValue('item', `${order.item}`), []);
 
   const [editOrder, { isLoading }] = useEditOrderMutation();
 
@@ -63,20 +56,12 @@ export default function EditOrderModal({ data: order }: Props) {
       isChanged={!form.isDirty()}
     >
       <Select
-        label={t('columns.category')}
-        placeholder={t('columns.category')}
-        data={selectCategories()}
-        searchable
-        allowDeselect
-        {...form.getInputProps('category')}
-      />
-      <Select
         label={t('columns.item')}
         placeholder={t('columns.item')}
         icon={form.values.item && <ThingImage item={+form.values.item} />}
         iconWidth={48}
         itemComponent={ThingsItem}
-        data={selectItems(form.values.category)}
+        data={selectItems()}
         limit={20}
         searchable
         required

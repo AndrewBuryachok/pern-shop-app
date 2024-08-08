@@ -60,7 +60,6 @@ import {
   scaleSum,
   searchTypes,
   selectCards,
-  selectCategories,
   selectCities,
   selectContainers,
   selectItems,
@@ -83,7 +82,7 @@ import {
   unscaleMinSearch,
   unscaleMinSum,
 } from '../../common/utils';
-import { MAX_AMOUNT_VALUE, MAX_INTAKE_VALUE, items } from '../constants';
+import { MAX_AMOUNT_VALUE, MAX_INTAKE_VALUE } from '../constants';
 
 type Props = {
   search: ISearch;
@@ -98,7 +97,6 @@ export default function SearchModal(props: Props) {
   const form = useForm({
     initialValues: {
       ...props.search,
-      category: props.search.item && items[+props.search.item - 1][0],
       minSum: unscaleMinSum(props.search.minSum),
       maxSum: unscaleMaxSum(props.search.maxSum),
       minAmount: unscaleMinSearch(props.search.minAmount),
@@ -110,7 +108,7 @@ export default function SearchModal(props: Props) {
       minDate: unscaleDate(props.search.minDate),
       maxDate: unscaleDate(props.search.maxDate),
     },
-    transformValues: ({ category, modes, ...rest }) => ({
+    transformValues: ({ modes, ...rest }) => ({
       ...rest,
       page: 0,
       minSum: scaleMinSum(rest.minSum),
@@ -174,12 +172,6 @@ export default function SearchModal(props: Props) {
       form.setFieldValue('drawer', null);
     }
   }, [form.values.station]);
-
-  useEffect(() => {
-    if (form.values.item !== undefined) {
-      form.setFieldValue('item', null);
-    }
-  }, [form.values.category]);
 
   useEffect(form.reset, []);
 
@@ -470,28 +462,18 @@ export default function SearchModal(props: Props) {
         />
       )}
       {props.search.item !== undefined && (
-        <>
-          <Select
-            label={t('columns.category')}
-            placeholder={t('columns.category')}
-            data={selectCategories()}
-            searchable
-            allowDeselect
-            {...form.getInputProps('category')}
-          />
-          <Select
-            label={t('columns.item')}
-            placeholder={t('columns.item')}
-            icon={form.values.item && <ThingImage item={+form.values.item} />}
-            iconWidth={48}
-            itemComponent={ThingsItem}
-            data={selectItems(form.values.category || '')}
-            limit={20}
-            searchable
-            allowDeselect
-            {...form.getInputProps('item')}
-          />
-        </>
+        <Select
+          label={t('columns.item')}
+          placeholder={t('columns.item')}
+          icon={form.values.item && <ThingImage item={+form.values.item} />}
+          iconWidth={48}
+          itemComponent={ThingsItem}
+          data={selectItems()}
+          limit={20}
+          searchable
+          allowDeselect
+          {...form.getInputProps('item')}
+        />
       )}
       {props.search.title !== undefined && (
         <TextInput

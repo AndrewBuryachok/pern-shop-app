@@ -1,5 +1,4 @@
 import { t } from 'i18next';
-import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { NumberInput, Select, Textarea } from '@mantine/core';
 import { useForm } from '@mantine/form';
@@ -15,12 +14,7 @@ import RefetchAction from '../../common/components/RefetchAction';
 import ThingImage from '../../common/components/ThingImage';
 import { ThingsItem } from '../../common/components/ThingsItem';
 import { PlacesItem } from '../../common/components/PlacesItem';
-import {
-  selectCategories,
-  selectItems,
-  selectKits,
-  selectRents,
-} from '../../common/utils';
+import { selectItems, selectKits, selectRents } from '../../common/utils';
 import {
   MAX_AMOUNT_VALUE,
   MAX_DESCRIPTION_LENGTH,
@@ -36,7 +30,6 @@ export default function CreateWareModal({ hasRole }: Props) {
   const form = useForm({
     initialValues: {
       rent: '',
-      category: '',
       item: '',
       description: '',
       amount: 1,
@@ -51,8 +44,6 @@ export default function CreateWareModal({ hasRole }: Props) {
       kit: +kit,
     }),
   });
-
-  useEffect(() => form.setFieldValue('item', ''), [form.values.category]);
 
   const { data: rents, ...rentsResponse } = hasRole
     ? useSelectAllRentsQuery()
@@ -83,20 +74,12 @@ export default function CreateWareModal({ hasRole }: Props) {
         {...form.getInputProps('rent')}
       />
       <Select
-        label={t('columns.category')}
-        placeholder={t('columns.category')}
-        data={selectCategories()}
-        searchable
-        allowDeselect
-        {...form.getInputProps('category')}
-      />
-      <Select
         label={t('columns.item')}
         placeholder={t('columns.item')}
         icon={form.values.item && <ThingImage item={+form.values.item} />}
         iconWidth={48}
         itemComponent={ThingsItem}
-        data={selectItems(form.values.category)}
+        data={selectItems()}
         limit={20}
         searchable
         required

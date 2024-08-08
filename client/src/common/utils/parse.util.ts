@@ -48,7 +48,7 @@ export const parseDrawer = (drawer: MdDrawer) =>
   `${parsePlace(drawer.station)} #${drawer.name}`;
 
 export const parseItem = (item: number) =>
-  t(`constants.items.${items[item - 1].split(': ')[1]}`);
+  t(`constants.items.${items[item - 1]}`);
 
 export const parseThingAmount = (data: {
   amount: number;

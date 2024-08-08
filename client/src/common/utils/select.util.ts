@@ -18,7 +18,6 @@ import { SmSale } from '../../features/sales/sale.model';
 import { parseItem, parsePlace } from './parse.util';
 import {
   backgrounds,
-  categories,
   colors,
   items,
   kits,
@@ -192,22 +191,12 @@ export const selectPollTypes = () =>
     label: t(`constants.results.${type}`),
   }));
 
-export const selectCategories = () =>
-  categories.map((category, index) => ({
-    value: `${index}`,
-    label: t(`constants.categories.${category}`),
+export const selectItems = () =>
+  items.map((item, index) => ({
+    item: index + 1,
+    value: `${index + 1}`,
+    label: t(`constants.items.${item}`),
   }));
-
-export const selectItems = (category: string) =>
-  items
-    .map((item, index) => ({
-      item: index + 1,
-      category: item.split(': ')[0],
-      group: t(`constants.categories.${categories[+item.split(': ')[0][0]]}`),
-      value: `${index + 1}`,
-      label: t(`constants.items.${item.split(': ')[1]}`),
-    }))
-    .filter((item) => item.category.includes(category || ''));
 
 export const selectKits = () =>
   kits.map((kit, index) => ({

@@ -264,7 +264,6 @@
     "image": "Image",
     "video": "Video",
     "mode": "Mode",
-    "category": "Category",
     "nick": "Nick",
     "password": "Password",
     "profile": "Profile",
@@ -543,17 +542,6 @@
       "progress": "In progress",
       "approved": "Approved",
       "rejected": "Rejected"
-    },
-    "categories": {
-      "building": "Building",
-      "colored": "Colored",
-      "natural": "Natural",
-      "functional": "Functional",
-      "redstone": "Redstone",
-      "tools": "Tools",
-      "combat": "Combat",
-      "foodstuffs": "Foodstuffs",
-      "ingredients": "Ingredients"
     },
     "items": {
       "stone": "Stone",

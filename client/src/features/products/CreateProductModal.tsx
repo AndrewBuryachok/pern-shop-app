@@ -22,7 +22,6 @@ import { ThingsItem } from '../../common/components/ThingsItem';
 import { PlacesItem } from '../../common/components/PlacesItem';
 import {
   selectCardsWithBalance,
-  selectCategories,
   selectItems,
   selectKits,
   selectTagsWithStorage,
@@ -48,7 +47,6 @@ export default function CreateProductModal({ hasRole }: Props) {
       storageTag: '',
       user: '',
       card: '',
-      category: '',
       item: '',
       description: '',
       amount: 1,
@@ -72,8 +70,6 @@ export default function CreateProductModal({ hasRole }: Props) {
   });
 
   useEffect(() => form.setFieldValue('card', ''), [form.values.user]);
-
-  useEffect(() => form.setFieldValue('item', ''), [form.values.category]);
 
   const { data: storagesTags, ...storagesTagsResponse } =
     useSelectFreeTagsQuery();
@@ -153,20 +149,12 @@ export default function CreateProductModal({ hasRole }: Props) {
         {...form.getInputProps('card')}
       />
       <Select
-        label={t('columns.category')}
-        placeholder={t('columns.category')}
-        data={selectCategories()}
-        searchable
-        allowDeselect
-        {...form.getInputProps('category')}
-      />
-      <Select
         label={t('columns.item')}
         placeholder={t('columns.item')}
         icon={form.values.item && <ThingImage item={+form.values.item} />}
         iconWidth={48}
         itemComponent={ThingsItem}
-        data={selectItems(form.values.category)}
+        data={selectItems()}
         limit={20}
         searchable
         required
