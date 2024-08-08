@@ -2,7 +2,6 @@ import { emptyApi } from '../../app/empty.api';
 import { IRequest, IResponse } from '../../common/interfaces';
 import { SmTrade, Trade } from './trade.model';
 import { CreateTradeDto, DeleteTradeDto, RateTradeDto } from './trade.dto';
-import { waresApi } from '../wares/wares.api';
 import { getQuery } from '../../common/utils';
 
 export const tradesApi = emptyApi.injectEndpoints({
@@ -55,31 +54,7 @@ export const tradesApi = emptyApi.injectEndpoints({
         method: 'POST',
         body: dto,
       }),
-      invalidatesTags: ['Trade', 'Payment', 'Card'],
-      onQueryStarted(dto, { dispatch, queryFulfilled, getState }) {
-        const endpoints = waresApi.util.selectInvalidatedBy(getState(), [
-          'Ware',
-        ]);
-        endpoints
-          .filter((endpoint) => endpoint.endpointName === 'getMainWares')
-          .forEach((endpoint) => {
-            const patchResult = dispatch(
-              waresApi.util.updateQueryData(
-                'getMainWares',
-                endpoint.originalArgs,
-                (draft) => {
-                  const ware = draft.result.find(
-                    (ware) => ware.id === dto.wareId,
-                  );
-                  if (ware) {
-                    ware.amount -= dto.amount;
-                  }
-                },
-              ),
-            );
-            queryFulfilled.catch(patchResult.undo);
-          });
-      },
+      invalidatesTags: ['Trade', 'Ware', 'Payment', 'Card'],
     }),
     rateTrade: build.mutation<void, RateTradeDto>({
       query: ({ tradeId, ...dto }) => ({

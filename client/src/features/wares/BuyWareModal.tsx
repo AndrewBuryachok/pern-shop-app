@@ -208,7 +208,7 @@ export const buyWareFactory = (hasRole: boolean) => ({
       title: t('actions.buy') + ' ' + t('modals.wares'),
       children: <BuyWareModal data={ware} hasRole={hasRole} />,
     }),
-  disable: (ware: Ware) => !ware.amount || !!ware.completedAt,
+  disable: (ware: Ware) => !ware.amount,
   color: Color.GREEN,
 });
 

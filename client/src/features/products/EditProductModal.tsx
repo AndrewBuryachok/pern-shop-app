@@ -71,7 +71,7 @@ export default function EditProductModal({ data: product }: Props) {
         label={t('columns.amount')}
         placeholder={t('columns.amount')}
         required
-        min={1}
+        min={0}
         max={MAX_AMOUNT_VALUE}
         {...form.getInputProps('amount')}
       />
