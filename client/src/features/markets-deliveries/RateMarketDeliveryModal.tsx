@@ -41,17 +41,9 @@ export default function RateMarketDeliveryModal({
     >
       <TextInput
         label={t('columns.executor')}
-        icon={
-          marketDelivery.executorCard && (
-            <CustomAvatar {...marketDelivery.executorCard.user} />
-          )
-        }
+        icon={<CustomAvatar {...marketDelivery.executorCard!.user} />}
         iconWidth={48}
-        value={
-          marketDelivery.executorCard
-            ? parseCard(marketDelivery.executorCard)
-            : '-'
-        }
+        value={parseCard(marketDelivery.executorCard!)}
         readOnly
       />
       <TextInput

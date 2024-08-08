@@ -57,6 +57,11 @@ export default function ViewMarketDeliveryModal({
         readOnly
       />
       <TextInput
+        label={t('columns.status')}
+        value={parseStatus(marketDelivery.status)}
+        readOnly
+      />
+      <TextInput
         label={t('columns.executor')}
         icon={
           marketDelivery.executorCard && (
@@ -69,11 +74,6 @@ export default function ViewMarketDeliveryModal({
             ? parseCard(marketDelivery.executorCard)
             : '-'
         }
-        readOnly
-      />
-      <TextInput
-        label={t('columns.status')}
-        value={parseStatus(marketDelivery.status)}
         readOnly
       />
       <TextInput

@@ -54,6 +54,11 @@ export default function ViewDeliveryModal({ data: delivery }: Props) {
         readOnly
       />
       <TextInput
+        label={t('columns.status')}
+        value={parseStatus(delivery.status)}
+        readOnly
+      />
+      <TextInput
         label={t('columns.executor')}
         icon={
           delivery.executorCard && (
@@ -62,11 +67,6 @@ export default function ViewDeliveryModal({ data: delivery }: Props) {
         }
         iconWidth={48}
         value={delivery.executorCard ? parseCard(delivery.executorCard) : '-'}
-        readOnly
-      />
-      <TextInput
-        label={t('columns.status')}
-        value={parseStatus(delivery.status)}
         readOnly
       />
       <TextInput

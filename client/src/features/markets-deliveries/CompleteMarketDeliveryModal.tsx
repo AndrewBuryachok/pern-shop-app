@@ -40,10 +40,10 @@ export default function CompleteMarketDeliveryModal({
       text={t('actions.complete') + ' ' + t('modals.deliveries')}
     >
       <TextInput
-        label={t('columns.customer')}
-        icon={<CustomAvatar {...marketDelivery.hire.card.user} />}
+        label={t('columns.executor')}
+        icon={<CustomAvatar {...marketDelivery.executorCard!.user} />}
         iconWidth={48}
-        value={parseCard(marketDelivery.hire.card)}
+        value={parseCard(marketDelivery.executorCard!)}
         readOnly
       />
       <TextInput

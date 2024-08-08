@@ -40,10 +40,10 @@ export default function CompleteStorageDeliveryModal({
       text={t('actions.complete') + ' ' + t('modals.deliveries')}
     >
       <TextInput
-        label={t('columns.customer')}
-        icon={<CustomAvatar {...storageDelivery.hire.card.user} />}
+        label={t('columns.executor')}
+        icon={<CustomAvatar {...storageDelivery.executorCard!.user} />}
         iconWidth={48}
-        value={parseCard(storageDelivery.hire.card)}
+        value={parseCard(storageDelivery.executorCard!)}
         readOnly
       />
       <TextInput

@@ -37,10 +37,10 @@ export default function CompleteOrderModal({ data: order }: Props) {
       text={t('actions.complete') + ' ' + t('modals.orders')}
     >
       <TextInput
-        label={t('columns.customer')}
-        icon={<CustomAvatar {...order.hire.card.user} />}
+        label={t('columns.executor')}
+        icon={<CustomAvatar {...order.executorCard!.user} />}
         iconWidth={48}
-        value={parseCard(order.hire.card)}
+        value={parseCard(order.executorCard!)}
         readOnly
       />
       <TextInput

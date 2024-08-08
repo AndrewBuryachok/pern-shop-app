@@ -54,17 +54,17 @@ export default function ViewOrderModal({ data: order }: Props) {
         readOnly
       />
       <TextInput
+        label={t('columns.status')}
+        value={parseStatus(order.status)}
+        readOnly
+      />
+      <TextInput
         label={t('columns.executor')}
         icon={
           order.executorCard && <CustomAvatar {...order.executorCard.user} />
         }
         iconWidth={48}
         value={order.executorCard ? parseCard(order.executorCard) : '-'}
-        readOnly
-      />
-      <TextInput
-        label={t('columns.status')}
-        value={parseStatus(order.status)}
         readOnly
       />
       <TextInput

@@ -41,17 +41,9 @@ export default function RateStorageDeliveryModal({
     >
       <TextInput
         label={t('columns.executor')}
-        icon={
-          storageDelivery.executorCard && (
-            <CustomAvatar {...storageDelivery.executorCard.user} />
-          )
-        }
+        icon={<CustomAvatar {...storageDelivery.executorCard!.user} />}
         iconWidth={48}
-        value={
-          storageDelivery.executorCard
-            ? parseCard(storageDelivery.executorCard)
-            : '-'
-        }
+        value={parseCard(storageDelivery.executorCard!)}
         readOnly
       />
       <TextInput

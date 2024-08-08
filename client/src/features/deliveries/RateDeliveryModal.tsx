@@ -39,13 +39,9 @@ export default function RateDeliveryModal({ data: delivery }: Props) {
     >
       <TextInput
         label={t('columns.executor')}
-        icon={
-          delivery.executorCard && (
-            <CustomAvatar {...delivery.executorCard.user} />
-          )
-        }
+        icon={<CustomAvatar {...delivery.executorCard!.user} />}
         iconWidth={48}
-        value={delivery.executorCard ? parseCard(delivery.executorCard) : '-'}
+        value={parseCard(delivery.executorCard!)}
         readOnly
       />
       <TextInput

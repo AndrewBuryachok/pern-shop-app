@@ -6,8 +6,8 @@ export interface Haulage {
   hire: SmHire;
   price: number;
   status: number;
-  createdAt: Date;
   executorCard?: MdCard;
+  createdAt: Date;
   completedAt?: Date;
   rate?: number;
 }

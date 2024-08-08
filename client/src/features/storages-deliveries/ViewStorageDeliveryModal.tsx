@@ -57,6 +57,11 @@ export default function ViewStorageDeliveryModal({
         readOnly
       />
       <TextInput
+        label={t('columns.status')}
+        value={parseStatus(storageDelivery.status)}
+        readOnly
+      />
+      <TextInput
         label={t('columns.executor')}
         icon={
           storageDelivery.executorCard && (
@@ -69,11 +74,6 @@ export default function ViewStorageDeliveryModal({
             ? parseCard(storageDelivery.executorCard)
             : '-'
         }
-        readOnly
-      />
-      <TextInput
-        label={t('columns.status')}
-        value={parseStatus(storageDelivery.status)}
         readOnly
       />
       <TextInput
