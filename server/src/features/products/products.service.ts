@@ -42,7 +42,6 @@ export class ProductsService {
   async getMainProducts(req: Request): Promise<Response<Product>> {
     const [result, count] = await this.getProductsQueryBuilder(req)
       .andWhere('product.amount > 0')
-      .andWhere('product.completedAt IS NULL')
       .andWhere('lease.completedAt > NOW()')
       .getManyAndCount();
     return { result, count };
@@ -140,9 +139,6 @@ export class ProductsService {
     if (product.amount < dto.amount) {
       throw new AppException(ProductError.NOT_ENOUGH_AMOUNT);
     }
-    if (product.completedAt) {
-      throw new AppException(ProductError.ALREADY_COMPLETED);
-    }
     if (product.lease.completedAt < new Date()) {
       throw new AppException(ProductError.ALREADY_EXPIRED);
     }
@@ -227,6 +223,7 @@ export class ProductsService {
 
   private async complete(product: Product): Promise<void> {
     try {
+      product.amount = 0;
       product.completedAt = new Date();
       await this.productsRepository.save(product);
     } catch (error) {

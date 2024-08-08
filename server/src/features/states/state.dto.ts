@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { ValidateIf } from 'class-validator';
 import { IsAmount, IsPrice } from '../../common/decorators';
 
 export class EditStateDto {
@@ -9,6 +10,7 @@ export class EditStateDto {
 
 export class ExtEditStateDto extends EditStateDto {
   @ApiProperty()
+  @ValidateIf((_, value) => value !== 0)
   @IsAmount()
   amount: number;
 }

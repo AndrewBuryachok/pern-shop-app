@@ -42,7 +42,6 @@ export class WaresService {
   async getMainWares(req: Request): Promise<Response<Ware>> {
     const [result, count] = await this.getWaresQueryBuilder(req)
       .andWhere('ware.amount > 0')
-      .andWhere('ware.completedAt IS NULL')
       .andWhere('rent.completedAt > NOW()')
       .getManyAndCount();
     return { result, count };
@@ -126,9 +125,6 @@ export class WaresService {
     });
     if (ware.amount < dto.amount) {
       throw new AppException(WareError.NOT_ENOUGH_AMOUNT);
-    }
-    if (ware.completedAt) {
-      throw new AppException(WareError.ALREADY_COMPLETED);
     }
     if (ware.rent.completedAt < new Date()) {
       throw new AppException(WareError.ALREADY_EXPIRED);
@@ -214,6 +210,7 @@ export class WaresService {
 
   private async complete(ware: Ware): Promise<void> {
     try {
+      ware.amount = 0;
       ware.completedAt = new Date();
       await this.waresRepository.save(ware);
     } catch (error) {
