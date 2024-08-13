@@ -41,6 +41,8 @@ import { Trade } from '../../features/trades/trade.entity';
 import { Sale } from '../../features/sales/sale.entity';
 import { MarketDelivery } from '../../features/markets-deliveries/market-delivery.entity';
 import { StorageDelivery } from '../../features/storages-deliveries/storage-delivery.entity';
+import { Task } from '../../features/tasks/task.entity';
+import { Advert } from '../../features/adverts/advert.entity';
 import { Poll } from '../../features/polls/poll.entity';
 import { PollView } from '../../features/polls/poll-view.entity';
 import { Vote } from '../../features/polls/vote.entity';
@@ -546,6 +548,34 @@ export default class AppSeed implements Seeder {
         return storageDelivery;
       })
       .makeMany(10);
+    const tasks = await factory(Task)()
+      .map(async (task) => {
+        task.customerCard = faker.helpers.arrayElement(
+          cards.filter((card) => card.balance >= task.price),
+        );
+        task.customerCard.balance -= task.price;
+        if (task.status !== Status.CREATED) {
+          task.executorCard = faker.helpers.arrayElement(cards);
+        }
+        if (task.status === Status.COMPLETED) {
+          const payment = await factory(Payment)().make({
+            senderCard: task.customerCard,
+            receiverCard: task.executorCard,
+            sum: task.price,
+            description: '',
+          });
+          payments.push(payment);
+          task.executorCard.balance += task.price;
+        }
+        return task;
+      })
+      .makeMany(10);
+    const adverts = await factory(Advert)()
+      .map(async (advert) => {
+        advert.card = faker.helpers.arrayElement(cards);
+        return advert;
+      })
+      .makeMany(10);
     const polls = await factory(Poll)()
       .map(async (poll) => {
         poll.user = faker.helpers.arrayElement(users);
@@ -715,5 +745,13 @@ export default class AppSeed implements Seeder {
     await factory(StorageDelivery)()
       .map(async () => storagesDeliveries[id++])
       .createMany(storagesDeliveries.length);
+    id = 0;
+    await factory(Task)()
+      .map(async () => tasks[id++])
+      .createMany(tasks.length);
+    id = 0;
+    await factory(Advert)()
+      .map(async () => adverts[id++])
+      .createMany(adverts.length);
   }
 }

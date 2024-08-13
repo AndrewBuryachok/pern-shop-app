@@ -35,6 +35,8 @@ import { OrdersService } from '../../features/orders/orders.service';
 import { DeliveriesService } from '../../features/deliveries/deliveries.service';
 import { MarketsDeliveriesService } from '../../features/markets-deliveries/markets-deliveries.service';
 import { StoragesDeliveriesService } from '../../features/storages-deliveries/storages-deliveries.service';
+import { TasksService } from '../../features/tasks/tasks.service';
+import { AdvertsService } from '../../features/adverts/adverts.service';
 import { PollsService } from '../../features/polls/polls.service';
 import { DiscussionsService } from '../../features/discussions/discussions.service';
 import { RatingsService } from '../../features/ratings/ratings.service';
@@ -644,6 +646,44 @@ export class IsStorageDeliveryExists implements ValidatorConstraintInterface {
 
   defaultMessage(): string {
     return 'Unknown storage delivery';
+  }
+}
+
+@Injectable()
+@ValidatorConstraint({ name: 'isTaskExists', async: true })
+export class IsTaskExists implements ValidatorConstraintInterface {
+  constructor(private tasksService: TasksService) {}
+
+  async validate(value: number): Promise<boolean> {
+    try {
+      await this.tasksService.checkTaskExists(value);
+    } catch (error) {
+      return false;
+    }
+    return true;
+  }
+
+  defaultMessage(): string {
+    return 'Unknown task';
+  }
+}
+
+@Injectable()
+@ValidatorConstraint({ name: 'isAdvertExists', async: true })
+export class IsAdvertExists implements ValidatorConstraintInterface {
+  constructor(private advertsService: AdvertsService) {}
+
+  async validate(value: number): Promise<boolean> {
+    try {
+      await this.advertsService.checkAdvertExists(value);
+    } catch (error) {
+      return false;
+    }
+    return true;
+  }
+
+  defaultMessage(): string {
+    return 'Unknown advert';
   }
 }
 

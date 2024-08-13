@@ -1,0 +1,16 @@
+export enum TaskError {
+  ALREADY_TAKEN = '400: Task already taken',
+  NOT_TAKEN = '400: Task is not taken',
+  NOT_EXECUTED = '400: Task is not executed',
+  NOT_COMPLETED = '400: Task is not completed',
+  NOT_CUSTOMER = '403: You are not task customer',
+  NOT_EXECUTOR = '403: You are not task executor',
+  CREATE_FAILED = '500: Failed to create task',
+  EDIT_FAILED = '500: Failed to edit task',
+  TAKE_FAILED = '500: Failed to take task',
+  UNTAKE_FAILED = '500: Failed to untake task',
+  EXECUTE_FAILED = '500: Failed to execute task',
+  COMPLETE_FAILED = '500: Failed to complete task',
+  DELETE_FAILED = '500: Failed to delete task',
+  RATE_FAILED = '500: Failed to rate task',
+}
