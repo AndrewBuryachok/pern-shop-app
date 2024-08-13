@@ -7,6 +7,7 @@ import {
   IconBasket,
   IconBuildingCommunity,
   IconChartBar,
+  IconChecklist,
   IconContainer,
   IconDiscount,
   IconFriends,
@@ -92,6 +93,11 @@ export default function CustomNavbar(props: Props) {
         'markets-deliveries',
         'storages-deliveries',
       ],
+    },
+    {
+      route: 'services',
+      icon: IconChecklist,
+      nested: ['tasks', 'adverts'],
     },
     {
       route: 'map',

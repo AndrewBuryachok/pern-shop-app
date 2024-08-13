@@ -1,12 +1,12 @@
 import { HoverCard } from '@mantine/core';
 import { MdCard } from '../../features/cards/card.model';
-import AvatarWithDoubleText from './AvatarWithDoubleText';
 import CustomBadge from './CustomBadge';
+import AvatarWithDoubleText from './AvatarWithDoubleText';
 import { parseStatus } from '../utils';
 
 type Props = {
-  executorCard?: MdCard;
   status: number;
+  executorCard?: MdCard;
 };
 
 export default function StatusBadge(props: Props) {

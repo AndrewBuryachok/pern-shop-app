@@ -62,6 +62,9 @@
     "deliveries": "Deliveries",
     "markets-deliveries": "Markets Deliveries",
     "storages-deliveries": "Storages Deliveries",
+    "services": "Services",
+    "tasks": "Tasks",
+    "adverts": "Adverts",
     "map": "Map",
     "places": "Places",
     "cities": "Cities",
@@ -103,6 +106,8 @@
     "deliveries": "View deliveries; create, take, execute, complete, rate deliveries",
     "markets-deliveries": "View deliveries; create, take, execute, complete, rate deliveries",
     "storages-deliveries": "View deliveries; create, take, execute, complete, rate deliveries",
+    "tasks": "View tasks; create, take, execute, complete, rate tasks",
+    "adverts": "View adverts; create, edit, delete, respond to adverts",
     "cities": "View cities; create, edit cities; add, remove users",
     "shops": "View shops; create, edit shops; add, remove users",
     "markets": "View markets; create, edit markets",
@@ -160,6 +165,7 @@
     "buy": "Buy",
     "take": "Take",
     "execute": "Execute",
+    "respond": "Respond to",
     "edit": "Edit",
     "rate": "Rate",
     "update": "Update", 
@@ -325,6 +331,8 @@
     "sales": "Sale",
     "orders": "Order",
     "deliveries": "Delivery",
+    "tasks": "Task",
+    "adverts": "Advert",
     "polls": "Poll",
     "discussions": "Discussion",
     "ratings": "Rating"
@@ -466,6 +474,18 @@
       "executed": "executed your delivery",
       "completed": "completed your delivery",
       "rated": "rated your delivery"
+    },
+    "tasks": {
+      "created": "created task",
+      "taken": "taken your task",
+      "untaken": "untaken your task",
+      "executed": "executed your task",
+      "completed": "completed your task",
+      "rated": "rated your task",
+      "responded": "responded to your advert"
+    },
+    "adverts": {
+      "created": "created advert"
     },
     "polls": {
       "created": "created poll",
