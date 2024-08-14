@@ -21,6 +21,24 @@ export class HiresService {
     private mqttService: MqttService,
   ) {}
 
+  async sendHiresNotifications(): Promise<number[]> {
+    const hires = await this.hiresRepository
+      .createQueryBuilder('hire')
+      .innerJoinAndSelect('hire.card', 'card')
+      .where("hire.completedAt > NOW() + INTERVAL '12 hours'")
+      .andWhere("hire.completedAt < NOW() + INTERVAL '24 hours'")
+      .getMany();
+    hires.forEach((hire) =>
+      this.mqttService.publishNotificationMessage(
+        hire.id,
+        hire.card.userId,
+        '🔔',
+        Notification.ENDED_HIRE,
+      ),
+    );
+    return hires.map((hire) => hire.id);
+  }
+
   async getMainHires(req: Request): Promise<Response<Hire>> {
     const [result, count] = await this.getHiresQueryBuilder(req)
       .andWhere('hire.completedAt > NOW()')

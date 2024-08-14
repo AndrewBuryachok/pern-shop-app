@@ -21,6 +21,24 @@ export class LeasesService {
     private mqttService: MqttService,
   ) {}
 
+  async sendLeasesNotifications(): Promise<number[]> {
+    const leases = await this.leasesRepository
+      .createQueryBuilder('lease')
+      .innerJoinAndSelect('lease.card', 'card')
+      .where("lease.completedAt > NOW() + INTERVAL '12 hours'")
+      .andWhere("lease.completedAt < NOW() + INTERVAL '24 hours'")
+      .getMany();
+    leases.forEach((lease) =>
+      this.mqttService.publishNotificationMessage(
+        lease.id,
+        lease.card.userId,
+        '🔔',
+        Notification.ENDED_LEASE,
+      ),
+    );
+    return leases.map((lease) => lease.id);
+  }
+
   async getMainLeases(req: Request): Promise<Response<Lease>> {
     const [result, count] = await this.getLeasesQueryBuilder(req)
       .andWhere('lease.completedAt > NOW()')

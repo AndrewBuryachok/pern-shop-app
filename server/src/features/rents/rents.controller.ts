@@ -14,6 +14,12 @@ export class RentsController {
   constructor(private rentsService: RentsService) {}
 
   @Public()
+  @Post('notifications')
+  sendRentsNotifications(): Promise<number[]> {
+    return this.rentsService.sendRentsNotifications();
+  }
+
+  @Public()
   @Get()
   getMainRents(@Query() req: Request): Promise<Response<Rent>> {
     return this.rentsService.getMainRents(req);
