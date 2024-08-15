@@ -1,5 +1,6 @@
 export const MAX_CARDS_NUMBER = 3;
 export const MAX_CITIES_NUMBER = 1;
+export const MAX_FARMS_NUMBER = 3;
 export const MAX_SHOPS_NUMBER = 3;
 export const MAX_MARKETS_NUMBER = 3;
 export const MAX_STORAGES_NUMBER = 3;

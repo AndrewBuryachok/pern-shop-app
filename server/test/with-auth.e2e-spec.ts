@@ -34,6 +34,7 @@ describe('With Auth', () => {
   let paymentsId: number;
   let invoicesId: number;
   let cityId: number;
+  let farmId: number;
   let shopId: number;
   let marketId: number;
   let storageId: number;
@@ -1173,6 +1174,87 @@ describe('With Auth', () => {
     it('DELETE /cities/:cityId/users', async () => {
       return request(app.getHttpServer())
         .delete(`/cities/${cityId}/users`)
+        .set('Authorization', `Bearer ${user.access}`)
+        .send({ userId: admin.id })
+        .expect('');
+    });
+  });
+
+  describe('Farms', () => {
+    it('POST /farms', async () => {
+      return request(app.getHttpServer())
+        .post('/farms')
+        .set('Authorization', `Bearer ${user.access}`)
+        .send({
+          name: 'My Farm',
+          image: '',
+          video: '',
+          description: '',
+          x: 500,
+          y: -500,
+        })
+        .expect('');
+    });
+
+    it('GET /farms', async () => {
+      return request(app.getHttpServer())
+        .get('/farms')
+        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
+    });
+
+    it('GET /farms/my', async () => {
+      return request(app.getHttpServer())
+        .get('/farms/my')
+        .set('Authorization', `Bearer ${user.access}`)
+        .expect((res) => expect(res.body.count).toBeGreaterThan(0))
+        .then((res) => (farmId = res.body.result[0].id));
+    });
+
+    it('GET /farms/all', async () => {
+      return request(app.getHttpServer())
+        .get('/farms/all')
+        .set('Authorization', `Bearer ${inspector.access}`)
+        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
+    });
+
+    it('GET /farms/all/select', async () => {
+      return request(app.getHttpServer())
+        .get('/farms/all/select')
+        .expect((res) => expect(res.body.length).toBeGreaterThan(0));
+    });
+
+    it('GET /farms/:farmId/users', async () => {
+      return request(app.getHttpServer())
+        .get(`/farms/${farmId}/users`)
+        .expect((res) => expect(res.body.length).toBeGreaterThan(0));
+    });
+
+    it('PATCH /farms/:farmId', async () => {
+      return request(app.getHttpServer())
+        .patch(`/farms/${farmId}`)
+        .set('Authorization', `Bearer ${user.access}`)
+        .send({
+          name: 'My Farm',
+          image: '',
+          video: '',
+          description: '',
+          x: 500,
+          y: -500,
+        })
+        .expect('');
+    });
+
+    it('POST /farms/:farmId/users', async () => {
+      return request(app.getHttpServer())
+        .post(`/farms/${farmId}/users`)
+        .set('Authorization', `Bearer ${user.access}`)
+        .send({ userId: admin.id })
+        .expect('');
+    });
+
+    it('DELETE /farms/:farmId/users', async () => {
+      return request(app.getHttpServer())
+        .delete(`/farms/${farmId}/users`)
         .set('Authorization', `Bearer ${user.access}`)
         .send({ userId: admin.id })
         .expect('');

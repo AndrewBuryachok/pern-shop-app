@@ -16,6 +16,7 @@ import { ExchangesModule } from './features/exchanges/exchanges.module';
 import { PaymentsModule } from './features/payments/payments.module';
 import { InvoicesModule } from './features/invoices/invoices.module';
 import { CitiesModule } from './features/cities/cities.module';
+import { FarmsModule } from './features/farms/farms.module';
 import { ShopsModule } from './features/shops/shops.module';
 import { MarketsModule } from './features/markets/markets.module';
 import { StoragesModule } from './features/storages/storages.module';
@@ -83,6 +84,7 @@ import { LoggerModule } from './features/logger/logger.module';
     PaymentsModule,
     InvoicesModule,
     CitiesModule,
+    FarmsModule,
     ShopsModule,
     MarketsModule,
     StoragesModule,
