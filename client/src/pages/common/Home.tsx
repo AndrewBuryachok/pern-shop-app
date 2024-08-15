@@ -16,6 +16,7 @@ import {
   IconBasket,
   IconBoxModel,
   IconBuildingCircus,
+  IconBuildingCottage,
   IconBuildingSkyscraper,
   IconBuildingStadium,
   IconBuildingStore,
@@ -133,6 +134,10 @@ export default function Home() {
     {
       title: 'cities',
       icon: IconBuildingSkyscraper,
+    },
+    {
+      title: 'farms',
+      icon: IconBuildingCottage,
     },
     {
       title: 'shops',

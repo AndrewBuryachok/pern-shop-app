@@ -5,6 +5,7 @@ import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { ExtPlace } from './place.model';
 import { useSelectCityUsersQuery } from '../cities/cities.api';
+import { useSelectFarmUsersQuery } from '../farms/farms.api';
 import { useSelectShopGoodsQuery } from '../shops/shops.api';
 import { useSelectMarketStoresQuery } from '../stores/stores.api';
 import { useSelectStorageCellsQuery } from '../cells/cells.api';
@@ -29,29 +30,34 @@ export default function PlaceModal({ data: place }: Props) {
   const [t] = useTranslation();
 
   const component =
-    place.type === 0
+    place.type === 0 || place.type === 1
       ? UsersItem
-      : place.type === 1
+      : place.type === 2
       ? ThingsItemWithAmount
       : undefined;
 
-  const { data: users, ...usersResponse } = useSelectCityUsersQuery(place.id, {
-    skip: place.type !== 0,
-  });
+  const { data: citiesUsers, ...citiesUsersResponse } = useSelectCityUsersQuery(
+    place.id,
+    { skip: place.type !== 0 },
+  );
+  const { data: farmsUsers, ...farmsUsersResponse } = useSelectFarmUsersQuery(
+    place.id,
+    { skip: place.type !== 1 },
+  );
   const { data: goods, ...goodsResponse } = useSelectShopGoodsQuery(place.id, {
-    skip: place.type !== 1,
+    skip: place.type !== 2,
   });
   const { data: stores, ...storesResponse } = useSelectMarketStoresQuery(
     place.id,
-    { skip: place.type !== 2 },
+    { skip: place.type !== 3 },
   );
   const { data: cells, ...cellsResponse } = useSelectStorageCellsQuery(
     place.id,
-    { skip: place.type !== 3 },
+    { skip: place.type !== 4 },
   );
   const { data: drawers, ...drawersResponse } = useSelectStationDrawersQuery(
     place.id,
-    { skip: place.type !== 4 },
+    { skip: place.type !== 5 },
   );
 
   return (
@@ -97,15 +103,26 @@ export default function PlaceModal({ data: place }: Props) {
       {place.type === 0 && (
         <Select
           label={t('columns.users')}
-          placeholder={`${t('components.total')}: ${users?.length || 0}`}
-          rightSection={<RefetchAction {...usersResponse} />}
+          placeholder={`${t('components.total')}: ${citiesUsers?.length || 0}`}
+          rightSection={<RefetchAction {...citiesUsersResponse} />}
           itemComponent={component}
-          data={viewUsers(users || [])}
+          data={viewUsers(citiesUsers || [])}
           limit={20}
           searchable
         />
       )}
       {place.type === 1 && (
+        <Select
+          label={t('columns.users')}
+          placeholder={`${t('components.total')}: ${farmsUsers?.length || 0}`}
+          rightSection={<RefetchAction {...farmsUsersResponse} />}
+          itemComponent={component}
+          data={viewUsers(farmsUsers || [])}
+          limit={20}
+          searchable
+        />
+      )}
+      {place.type === 2 && (
         <Select
           label={t('columns.goods')}
           placeholder={`${t('components.total')}: ${goods?.length || 0}`}
@@ -116,7 +133,7 @@ export default function PlaceModal({ data: place }: Props) {
           searchable
         />
       )}
-      {place.type === 2 && (
+      {place.type === 3 && (
         <Select
           label={t('columns.stores')}
           placeholder={`${t('components.total')}: ${stores?.length || 0}`}
@@ -127,13 +144,24 @@ export default function PlaceModal({ data: place }: Props) {
           searchable
         />
       )}
-      {place.type === 3 && (
+      {place.type === 4 && (
         <Select
           label={t('columns.cells')}
           placeholder={`${t('components.total')}: ${cells?.length || 0}`}
           rightSection={<RefetchAction {...cellsResponse} />}
           itemComponent={component}
           data={viewContainers(cells || [])}
+          limit={20}
+          searchable
+        />
+      )}
+      {place.type === 5 && (
+        <Select
+          label={t('columns.drawers')}
+          placeholder={`${t('components.total')}: ${drawers?.length || 0}`}
+          rightSection={<RefetchAction {...drawersResponse} />}
+          itemComponent={component}
+          data={viewContainers(drawers || [])}
           limit={20}
           searchable
         />
@@ -149,7 +177,9 @@ export const openPlaceModal = (place: ExtPlace) =>
       ' ' +
       t(
         `modals.${
-          ['cities', 'shops', 'markets', 'storages', 'stations'][place.type]
+          ['cities', 'farms', 'shops', 'markets', 'storages', 'stations'][
+            place.type
+          ]
         }`,
       ),
     children: <PlaceModal data={place} />,

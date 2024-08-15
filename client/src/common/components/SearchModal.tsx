@@ -23,6 +23,7 @@ import { ISearch } from '../interfaces';
 import { useSelectAllUsersQuery } from '../../features/users/users.api';
 import { useSelectUserCardsQuery } from '../../features/cards/cards.api';
 import { useSelectAllCitiesQuery } from '../../features/cities/cities.api';
+import { useSelectAllFarmsQuery } from '../../features/farms/farms.api';
 import { useSelectAllShopsQuery } from '../../features/shops/shops.api';
 import { useSelectMainMarketsQuery } from '../../features/markets/markets.api';
 import { useSelectMainStoragesQuery } from '../../features/storages/storages.api';
@@ -62,6 +63,7 @@ import {
   selectCards,
   selectCities,
   selectContainers,
+  selectFarms,
   selectItems,
   selectKits,
   selectMarkets,
@@ -184,6 +186,9 @@ export default function SearchModal(props: Props) {
     undefined,
     { skip: props.search.city === undefined },
   );
+  const { data: farms, ...farmsResponse } = useSelectAllFarmsQuery(undefined, {
+    skip: props.search.farm === undefined,
+  });
   const { data: shops, ...shopsResponse } = useSelectAllShopsQuery(undefined, {
     skip: props.search.shop === undefined,
   });
@@ -322,6 +327,20 @@ export default function SearchModal(props: Props) {
           allowDeselect
           readOnly={citiesResponse.isFetching}
           {...form.getInputProps('city')}
+        />
+      )}
+      {props.search.farm !== undefined && (
+        <Select
+          label={t('columns.farm')}
+          placeholder={`${t('components.total')}: ${farms?.length || 0}`}
+          rightSection={<RefetchAction {...farmsResponse} />}
+          itemComponent={PlacesItem}
+          data={selectFarms(farms)}
+          limit={20}
+          searchable
+          allowDeselect
+          readOnly={farmsResponse.isFetching}
+          {...form.getInputProps('farm')}
         />
       )}
       {props.search.shop !== undefined && (

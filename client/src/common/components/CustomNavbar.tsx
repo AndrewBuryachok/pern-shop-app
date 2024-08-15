@@ -106,7 +106,7 @@ export default function CustomNavbar(props: Props) {
     {
       route: 'places',
       icon: IconBuildingCommunity,
-      nested: ['cities', 'shops', 'markets', 'storages', 'stations'],
+      nested: ['cities', 'farms', 'shops', 'markets', 'storages', 'stations'],
     },
     {
       route: 'tags',

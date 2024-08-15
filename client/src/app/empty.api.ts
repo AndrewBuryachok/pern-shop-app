@@ -22,6 +22,7 @@ export const emptyApi = createApi({
     'Payment',
     'Invoice',
     'City',
+    'Farm',
     'Shop',
     'Market',
     'Storage',

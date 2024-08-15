@@ -9,6 +9,7 @@ export interface ISearch {
   mode?: Mode | null;
   roles?: string[];
   city?: string | null;
+  farm?: string | null;
   shop?: string | null;
   market?: string | null;
   storage?: string | null;

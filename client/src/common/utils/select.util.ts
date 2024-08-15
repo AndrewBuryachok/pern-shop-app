@@ -27,6 +27,7 @@ import {
   roles,
   statuses,
 } from '../constants';
+import { SmFarm } from '../../features/farms/farm.model';
 
 export const selectUsers = (users?: SmUser[]) =>
   users?.map((user) => ({
@@ -64,6 +65,13 @@ export const selectCities = (cities?: SmCity[]) =>
     ...city,
     value: `${city.id}`,
     label: parsePlace(city),
+  })) || [];
+
+export const selectFarms = (farms?: SmFarm[]) =>
+  farms?.map((farm) => ({
+    ...farm,
+    value: `${farm.id}`,
+    label: parsePlace(farm),
   })) || [];
 
 export const selectShops = (shops?: SmShop[]) =>

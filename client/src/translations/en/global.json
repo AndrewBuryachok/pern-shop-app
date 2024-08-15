@@ -68,6 +68,7 @@
     "map": "Map",
     "places": "Places",
     "cities": "Cities",
+    "farms": "Farms",
     "shops": "Shops",
     "markets": "Markets",
     "storages": "Storages",
@@ -109,6 +110,7 @@
     "tasks": "View tasks; create, take, execute, complete, rate tasks",
     "adverts": "View adverts; create, edit, delete, respond to adverts",
     "cities": "View cities; create, edit cities; add, remove users",
+    "farms": "View farms; create, edit farms; add, remove users",
     "shops": "View shops; create, edit shops; add, remove users",
     "markets": "View markets; create, edit markets",
     "storages": "View storages; create, edit storages",
@@ -227,6 +229,7 @@
     "completed": "Completed",
     "x": "X",
     "y": "Y",
+    "farm": "Farm",
     "shop": "Shop",
     "market": "Market",
     "storage": "Storage",
@@ -313,6 +316,7 @@
     "payments": "Payment",
     "invoices": "Invoice",
     "cities": "City",
+    "farms": "Farm",
     "shops": "Shop",
     "markets": "Market",
     "storages": "Storage",
@@ -396,6 +400,11 @@
       "added": "added you in city",
       "removed": "removed you from city",
       "left": "left your city"
+    },
+    "farms": {
+      "created": "created farm",
+      "added": "added you in farm",
+      "removed": "removed you from farm"
     },
     "shops": {
       "created": "created shop",
