@@ -34,7 +34,7 @@ export default function TasksPage() {
     card: searchParams.get('card'),
     modes: [Mode.CUSTOMER, Mode.EXECUTOR],
     mode: searchParams.get('mode') as Mode,
-    description: searchParams.get('description') || '',
+    activity: searchParams.get('activity') || '',
     minPrice: +(searchParams.get('minPrice') || 0) || null,
     maxPrice: +(searchParams.get('maxPrice') || 0) || null,
     status: searchParams.get('status'),

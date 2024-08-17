@@ -42,11 +42,8 @@ export default function CompleteTaskModal({ data: task }: Props) {
         value={parseCard(task.executorCard!)}
         readOnly
       />
-      <Textarea
-        label={t('columns.description')}
-        value={task.description || '-'}
-        readOnly
-      />
+      <Textarea label={t('columns.activity')} value={task.activity} readOnly />
+      <Textarea label={t('columns.text')} value={task.text} readOnly />
       <TextInput
         label={t('columns.price')}
         value={`${task.price} ${t('constants.currency')}`}

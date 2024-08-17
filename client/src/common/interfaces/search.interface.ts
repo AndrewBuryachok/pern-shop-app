@@ -20,8 +20,8 @@ export interface ISearch {
   cell?: string | null;
   drawer?: string | null;
   item?: string | null;
-  title?: string;
   description?: string;
+  activity?: string;
   type?: string | null;
   minSum?: number | null;
   maxSum?: number | null;

@@ -14,7 +14,7 @@ export default function TasksTable({ actions = [], ...props }: Props) {
   return (
     <CustomTable
       minWidth={800}
-      columns={['customer', 'description', 'price', 'status', 'action']}
+      columns={['customer', 'activity', 'price', 'status', 'action']}
       {...props}
     >
       {props.data?.result.map((task) => (
@@ -23,7 +23,7 @@ export default function TasksTable({ actions = [], ...props }: Props) {
             <AvatarWithDoubleText {...task.customerCard} />
           </td>
           <td>
-            <SingleText text={task.description || '-'} />
+            <SingleText text={task.activity} />
           </td>
           <td>
             <PriceText {...task} />

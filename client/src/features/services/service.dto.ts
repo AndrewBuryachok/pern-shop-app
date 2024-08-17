@@ -1,5 +1,6 @@
 export interface EditServiceDto {
-  description: string;
+  activity: string;
+  text: string;
   price: number;
 }
 

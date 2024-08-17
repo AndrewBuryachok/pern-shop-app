@@ -71,11 +71,8 @@ export default function TakeTaskModal({ data: task, hasRole }: Props) {
         value={parseCard(task.customerCard)}
         readOnly
       />
-      <Textarea
-        label={t('columns.description')}
-        value={task.description || '-'}
-        readOnly
-      />
+      <Textarea label={t('columns.activity')} value={task.activity} readOnly />
+      <Textarea label={t('columns.text')} value={task.text} readOnly />
       <TextInput
         label={t('columns.price')}
         value={`${task.price} ${t('constants.currency')}`}

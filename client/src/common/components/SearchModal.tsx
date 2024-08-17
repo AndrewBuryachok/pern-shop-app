@@ -84,7 +84,12 @@ import {
   unscaleMinSearch,
   unscaleMinSum,
 } from '../../common/utils';
-import { MAX_AMOUNT_VALUE, MAX_INTAKE_VALUE } from '../constants';
+import {
+  MAX_ACTIVITY_LENGTH,
+  MAX_AMOUNT_VALUE,
+  MAX_DESCRIPTION_LENGTH,
+  MAX_INTAKE_VALUE,
+} from '../constants';
 
 type Props = {
   search: ISearch;
@@ -494,18 +499,20 @@ export default function SearchModal(props: Props) {
           {...form.getInputProps('item')}
         />
       )}
-      {props.search.title !== undefined && (
-        <TextInput
-          label={t('columns.title')}
-          placeholder={t('columns.title')}
-          {...form.getInputProps('title')}
-        />
-      )}
       {props.search.description !== undefined && (
         <Textarea
           label={t('columns.description')}
           placeholder={t('columns.description')}
+          maxLength={MAX_DESCRIPTION_LENGTH}
           {...form.getInputProps('description')}
+        />
+      )}
+      {props.search.activity !== undefined && (
+        <TextInput
+          label={t('columns.activity')}
+          placeholder={t('columns.activity')}
+          maxLength={MAX_ACTIVITY_LENGTH}
+          {...form.getInputProps('activity')}
         />
       )}
       {props.search.type !== undefined && (

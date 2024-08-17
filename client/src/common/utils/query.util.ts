@@ -58,11 +58,11 @@ export const getQuery = (req: IRequest) => {
   if (req?.item) {
     query.append('item', req.item);
   }
-  if (req?.title) {
-    query.append('title', req.title);
-  }
   if (req?.description) {
     query.append('description', req.description);
+  }
+  if (req?.activity) {
+    query.append('activity', req.activity);
   }
   if (req?.type) {
     query.append('type', req.type);

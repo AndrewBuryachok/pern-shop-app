@@ -14,7 +14,7 @@ export default function AdvertsTable({ actions = [], ...props }: Props) {
   return (
     <CustomTable
       minWidth={800}
-      columns={['executor', 'description', 'price', 'created', 'action']}
+      columns={['executor', 'activity', 'price', 'created', 'action']}
       {...props}
     >
       {props.data?.result.map((advert) => (
@@ -23,7 +23,7 @@ export default function AdvertsTable({ actions = [], ...props }: Props) {
             <AvatarWithDoubleText {...advert.card} />
           </td>
           <td>
-            <SingleText text={advert.description || '-'} />
+            <SingleText text={advert.activity} />
           </td>
           <td>
             <PriceText {...advert} />

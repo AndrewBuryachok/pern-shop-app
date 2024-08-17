@@ -26,8 +26,9 @@ import {
 } from '../../common/utils';
 import {
   Color,
-  MAX_DESCRIPTION_LENGTH,
+  MAX_ACTIVITY_LENGTH,
   MAX_PRICE_VALUE,
+  MAX_TEXT_LENGTH,
 } from '../../common/constants';
 
 type Props = IModal<Advert> & { hasRole: boolean };
@@ -42,7 +43,8 @@ export default function RespondAdvertModal({ data: advert, hasRole }: Props) {
       advertId: advert.id,
       user: '',
       card: '',
-      description: advert.description,
+      activity: advert.activity,
+      text: advert.text,
       price: advert.price,
     },
     transformValues: ({ user, card, ...rest }) => ({ ...rest, cardId: +card }),
@@ -117,10 +119,18 @@ export default function RespondAdvertModal({ data: advert, hasRole }: Props) {
         {...form.getInputProps('card')}
       />
       <Textarea
-        label={t('columns.description')}
-        placeholder={t('columns.description')}
-        maxLength={MAX_DESCRIPTION_LENGTH}
-        {...form.getInputProps('description')}
+        label={t('columns.activity')}
+        placeholder={t('columns.activity')}
+        required
+        maxLength={MAX_ACTIVITY_LENGTH}
+        {...form.getInputProps('activity')}
+      />
+      <Textarea
+        label={t('columns.text')}
+        placeholder={t('columns.text')}
+        required
+        maxLength={MAX_TEXT_LENGTH}
+        {...form.getInputProps('text')}
       />
       <NumberInput
         label={t('columns.price')}

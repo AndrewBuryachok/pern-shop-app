@@ -10,8 +10,9 @@ import { EditTaskDto } from './task.dto';
 import CustomForm from '../../common/components/CustomForm';
 import {
   Color,
-  MAX_DESCRIPTION_LENGTH,
+  MAX_ACTIVITY_LENGTH,
   MAX_PRICE_VALUE,
+  MAX_TEXT_LENGTH,
   Status,
 } from '../../common/constants';
 
@@ -23,7 +24,8 @@ export default function EditTaskModal({ data: task }: Props) {
   const form = useForm({
     initialValues: {
       taskId: task.id,
-      description: task.description,
+      activity: task.activity,
+      text: task.text,
       price: task.price,
     },
   });
@@ -42,10 +44,18 @@ export default function EditTaskModal({ data: task }: Props) {
       isChanged={!form.isDirty()}
     >
       <Textarea
-        label={t('columns.description')}
-        placeholder={t('columns.description')}
-        maxLength={MAX_DESCRIPTION_LENGTH}
-        {...form.getInputProps('description')}
+        label={t('columns.activity')}
+        placeholder={t('columns.activity')}
+        required
+        maxLength={MAX_ACTIVITY_LENGTH}
+        {...form.getInputProps('activity')}
+      />
+      <Textarea
+        label={t('columns.text')}
+        placeholder={t('columns.text')}
+        required
+        maxLength={MAX_TEXT_LENGTH}
+        {...form.getInputProps('text')}
       />
       <NumberInput
         label={t('columns.price')}

@@ -26,7 +26,7 @@ export default function AdvertsPage() {
     id: +(searchParams.get('id') || 0) || null,
     user: searchParams.get('user'),
     card: searchParams.get('card'),
-    description: searchParams.get('description') || '',
+    activity: searchParams.get('activity') || '',
     minPrice: +(searchParams.get('minPrice') || 0) || null,
     maxPrice: +(searchParams.get('maxPrice') || 0) || null,
     minDate: searchParams.get('minDate'),

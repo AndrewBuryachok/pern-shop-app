@@ -43,10 +43,11 @@ export default function DeleteAdvertModal({ data: advert }: Props) {
         readOnly
       />
       <Textarea
-        label={t('columns.description')}
-        value={advert.description || '-'}
+        label={t('columns.activity')}
+        value={advert.activity}
         readOnly
       />
+      <Textarea label={t('columns.text')} value={advert.text} readOnly />
       <TextInput
         label={t('columns.price')}
         value={`${advert.price} ${t('constants.currency')}`}

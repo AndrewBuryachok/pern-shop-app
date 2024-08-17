@@ -1,6 +1,7 @@
 export interface Service {
   id: number;
-  description: string;
+  activity: string;
+  text: string;
   price: number;
   createdAt: Date;
 }

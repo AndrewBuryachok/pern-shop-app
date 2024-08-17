@@ -22,8 +22,9 @@ import {
   selectUsers,
 } from '../../common/utils';
 import {
-  MAX_DESCRIPTION_LENGTH,
+  MAX_ACTIVITY_LENGTH,
   MAX_PRICE_VALUE,
+  MAX_TEXT_LENGTH,
 } from '../../common/constants';
 
 type Props = { hasRole: boolean };
@@ -37,7 +38,8 @@ export default function CreateTaskModal({ hasRole }: Props) {
     initialValues: {
       user: '',
       card: '',
-      description: '',
+      activity: '',
+      text: '',
       price: 1,
     },
     transformValues: ({ user, card, ...rest }) => ({ ...rest, cardId: +card }),
@@ -109,10 +111,18 @@ export default function CreateTaskModal({ hasRole }: Props) {
         {...form.getInputProps('card')}
       />
       <Textarea
-        label={t('columns.description')}
-        placeholder={t('columns.description')}
-        maxLength={MAX_DESCRIPTION_LENGTH}
-        {...form.getInputProps('description')}
+        label={t('columns.activity')}
+        placeholder={t('columns.activity')}
+        required
+        maxLength={MAX_ACTIVITY_LENGTH}
+        {...form.getInputProps('activity')}
+      />
+      <Textarea
+        label={t('columns.text')}
+        placeholder={t('columns.text')}
+        required
+        maxLength={MAX_TEXT_LENGTH}
+        {...form.getInputProps('text')}
       />
       <NumberInput
         label={t('columns.price')}

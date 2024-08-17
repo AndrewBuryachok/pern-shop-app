@@ -10,8 +10,9 @@ import { EditAdvertDto } from './advert.dto';
 import CustomForm from '../../common/components/CustomForm';
 import {
   Color,
-  MAX_DESCRIPTION_LENGTH,
+  MAX_ACTIVITY_LENGTH,
   MAX_PRICE_VALUE,
+  MAX_TEXT_LENGTH,
 } from '../../common/constants';
 
 type Props = IModal<Advert>;
@@ -22,7 +23,8 @@ export default function EditAdvertModal({ data: advert }: Props) {
   const form = useForm({
     initialValues: {
       advertId: advert.id,
-      description: advert.description,
+      activity: advert.activity,
+      text: advert.text,
       price: advert.price,
     },
   });
@@ -41,10 +43,18 @@ export default function EditAdvertModal({ data: advert }: Props) {
       isChanged={!form.isDirty()}
     >
       <Textarea
-        label={t('columns.description')}
-        placeholder={t('columns.description')}
-        maxLength={MAX_DESCRIPTION_LENGTH}
-        {...form.getInputProps('description')}
+        label={t('columns.activity')}
+        placeholder={t('columns.activity')}
+        required
+        maxLength={MAX_ACTIVITY_LENGTH}
+        {...form.getInputProps('activity')}
+      />
+      <Textarea
+        label={t('columns.text')}
+        placeholder={t('columns.text')}
+        required
+        maxLength={MAX_TEXT_LENGTH}
+        {...form.getInputProps('text')}
       />
       <NumberInput
         label={t('columns.price')}
