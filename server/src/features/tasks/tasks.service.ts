@@ -260,7 +260,8 @@ export class TasksService {
     try {
       const task = this.tasksRepository.create({
         customerCardId: dto.cardId,
-        description: dto.description,
+        activity: dto.activity,
+        text: dto.text,
         price: dto.price,
       });
       await this.tasksRepository.save(task);
@@ -272,7 +273,8 @@ export class TasksService {
 
   private async edit(task: Task, dto: ExtEditTaskDto): Promise<void> {
     try {
-      task.description = dto.description;
+      task.activity = dto.activity;
+      task.text = dto.text;
       task.price = dto.price;
       await this.tasksRepository.save(task);
     } catch (error) {
@@ -394,9 +396,9 @@ export class TasksService {
       .andWhere(
         new Brackets((qb) =>
           qb
-            .where(`${!req.description}`)
-            .orWhere('task.description ILIKE :description', {
-              description: req.description,
+            .where(`${!req.activity}`)
+            .orWhere('task.activity ILIKE :activity', {
+              activity: req.activity,
             }),
         ),
       )
@@ -453,7 +455,8 @@ export class TasksService {
         'customerUser.avatar',
         'customerCard.name',
         'customerCard.color',
-        'task.description',
+        'task.activity',
+        'task.text',
         'task.price',
         'task.status',
         'executorCard.id',

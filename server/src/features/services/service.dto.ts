@@ -1,12 +1,16 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Validate } from 'class-validator';
-import { IsPrice, IsDescription, IsId } from '../../common/decorators';
+import { IsPrice, IsId, IsActivity, IsText } from '../../common/decorators';
 import { IsCardExists } from '../../common/constraints';
 
 export abstract class EditServiceDto {
   @ApiProperty()
-  @IsDescription()
-  description: string;
+  @IsActivity()
+  activity: string;
+
+  @ApiProperty()
+  @IsText()
+  text: string;
 
   @ApiProperty()
   @IsPrice()

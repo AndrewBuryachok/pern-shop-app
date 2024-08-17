@@ -2998,7 +2998,8 @@ describe('With Auth', () => {
         .set('Authorization', `Bearer ${user.access}`)
         .send({
           cardId,
-          description: '',
+          activity: 'activity',
+          text: 'text',
           price: 10,
         })
         .expect('');
@@ -3010,7 +3011,8 @@ describe('With Auth', () => {
         .set('Authorization', `Bearer ${user.access}`)
         .send({
           cardId,
-          description: '',
+          activity: 'activity',
+          text: 'text',
           price: 10,
         })
         .expect('');
@@ -3035,7 +3037,8 @@ describe('With Auth', () => {
         .patch(`/tasks/${tasksId[0]}`)
         .set('Authorization', `Bearer ${user.access}`)
         .send({
-          description: '',
+          activity: 'activity',
+          text: 'text',
           price: 10,
         })
         .expect('');
@@ -3115,7 +3118,8 @@ describe('With Auth', () => {
         .set('Authorization', `Bearer ${user.access}`)
         .send({
           cardId,
-          description: '',
+          activity: 'activity',
+          text: 'text',
           price: 5,
         })
         .expect('');
@@ -3148,7 +3152,8 @@ describe('With Auth', () => {
         .set('Authorization', `Bearer ${user.access}`)
         .send({
           cardId,
-          description: '',
+          activity: 'activity',
+          text: 'text',
           price: 10,
         })
         .expect('');
@@ -3159,7 +3164,8 @@ describe('With Auth', () => {
         .patch(`/adverts/${advertId}`)
         .set('Authorization', `Bearer ${user.access}`)
         .send({
-          description: '',
+          activity: 'activity',
+          text: 'text',
           price: 10,
         })
         .expect('');

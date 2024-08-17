@@ -134,13 +134,13 @@ export class Request {
   @IsOptional()
   @IsString()
   @Transform(({ value }) => value && `%${value}%`)
-  title?: string;
+  description?: string;
 
   @ApiProperty({ required: false })
   @IsOptional()
   @IsString()
   @Transform(({ value }) => value && `%${value}%`)
-  description?: string;
+  activity?: string;
 
   @ApiProperty({ required: false })
   @IsOptional()

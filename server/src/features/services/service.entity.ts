@@ -5,7 +5,10 @@ export abstract class Service {
   id: number;
 
   @Column()
-  description: string;
+  activity: string;
+
+  @Column()
+  text: string;
 
   @Column()
   price: number;

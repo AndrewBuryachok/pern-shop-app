@@ -6,7 +6,8 @@ import { MAX_RATE_VALUE } from '../../common/constants';
 
 define(Task, (faker: Faker) => {
   const task = new Task();
-  task.description = '';
+  task.activity = faker.lorem.sentence(1);
+  task.text = faker.lorem.sentence(7);
   task.price = Math.floor(Math.random() * 200) + 1;
   task.status = Math.floor(Math.random() * 4) + 1;
   if (task.status === Status.COMPLETED) {

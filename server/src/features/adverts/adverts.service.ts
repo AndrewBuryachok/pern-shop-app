@@ -125,7 +125,8 @@ export class AdvertsService {
     try {
       const advert = this.advertsRepository.create({
         cardId: dto.cardId,
-        description: dto.description,
+        activity: dto.activity,
+        text: dto.text,
         price: dto.price,
       });
       await this.advertsRepository.save(advert);
@@ -137,7 +138,8 @@ export class AdvertsService {
 
   private async edit(advert: Advert, dto: ExtEditAdvertDto): Promise<void> {
     try {
-      advert.description = dto.description;
+      advert.activity = dto.activity;
+      advert.text = dto.text;
       advert.price = dto.price;
       await this.advertsRepository.save(advert);
     } catch (error) {
@@ -160,7 +162,8 @@ export class AdvertsService {
     try {
       const task = this.tasksRepository.create({
         customerCardId: dto.cardId,
-        description: dto.description,
+        activity: dto.activity,
+        text: dto.text,
         price: dto.price,
         status: Status.TAKEN,
         executorCardId: cardId,
@@ -199,9 +202,9 @@ export class AdvertsService {
       .andWhere(
         new Brackets((qb) =>
           qb
-            .where(`${!req.description}`)
-            .orWhere('advert.description ILIKE :description', {
-              description: req.description,
+            .where(`${!req.activity}`)
+            .orWhere('advert.activity ILIKE :activity', {
+              activity: req.activity,
             }),
         ),
       )
@@ -244,7 +247,8 @@ export class AdvertsService {
         'ownerUser.avatar',
         'ownerCard.name',
         'ownerCard.color',
-        'advert.description',
+        'advert.activity',
+        'advert.text',
         'advert.price',
         'advert.createdAt',
       ]);
