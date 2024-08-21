@@ -1,14 +1,10 @@
-import { Place, PlaceWithCard } from '../places/place.model';
+import { PlaceWithCard, SmPlace, SmPlaceWithCard } from '../places/place.model';
 
-export interface SmStorage extends Place {}
+export interface SmStorage extends SmPlace {}
 
-export interface MdStorage extends PlaceWithCard {}
+export interface MdStorage extends SmPlaceWithCard {}
 
-export interface Storage extends MdStorage {
-  image: string;
-  video: string;
-  description: string;
-  createdAt: Date;
+export interface Storage extends PlaceWithCard {
   tags: number;
   cells: number;
 }

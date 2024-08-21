@@ -1,9 +1,9 @@
 import { HoverCard } from '@mantine/core';
-import { PlaceWithUser } from '../../features/places/place.model';
+import { SmPlaceWithUser } from '../../features/places/place.model';
 import PlaceText from './PlaceText';
 import AvatarWithSingleText from './AvatarWithSingleText';
 
-type Props = PlaceWithUser;
+type Props = SmPlaceWithUser;
 
 export default function PlaceWithSingleAvatar(props: Props) {
   return (

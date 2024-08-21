@@ -1,13 +1,9 @@
-import { Place, PlaceWithUser } from '../places/place.model';
+import { PlaceWithUser, SmPlace, SmPlaceWithUser } from '../places/place.model';
 
-export interface SmCity extends Place {}
+export interface SmCity extends SmPlace {}
 
-export interface MdCity extends PlaceWithUser {}
+export interface MdCity extends SmPlaceWithUser {}
 
-export interface City extends MdCity {
-  image: string;
-  video: string;
-  description: string;
-  createdAt: Date;
+export interface City extends PlaceWithUser {
   users: number;
 }

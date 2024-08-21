@@ -2,7 +2,6 @@ import { emptyApi } from '../../app/empty.api';
 import { IRequest, IResponse } from '../../common/interfaces';
 import { Farm, SmFarm } from './farm.model';
 import { SmUser } from '../users/user.model';
-import { MdThing } from '../things/thing.model';
 import {
   CreateFarmDto,
   EditFarmDto,
@@ -48,12 +47,6 @@ export const farmsApi = emptyApi.injectEndpoints({
         url: `/farms/${farmId}/users`,
       }),
       providesTags: ['Farm'],
-    }),
-    selectFarmGoods: build.query<MdThing[], number>({
-      query: (farmId) => ({
-        url: `/farms/${farmId}/goods`,
-      }),
-      providesTags: ['Good'],
     }),
     createMyFarm: build.mutation<void, CreateFarmDto>({
       query: (dto) => ({
@@ -105,7 +98,6 @@ export const {
   useSelectAllFarmsQuery,
   useSelectMyFarmsQuery,
   useSelectFarmUsersQuery,
-  useSelectFarmGoodsQuery,
   useCreateMyFarmMutation,
   useCreateUserFarmMutation,
   useEditFarmMutation,

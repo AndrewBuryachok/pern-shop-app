@@ -10,7 +10,7 @@ import { DeleteGoodDto } from './good.dto';
 import CustomForm from '../../common/components/CustomForm';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import ThingImage from '../../common/components/ThingImage';
-import { parseItem, parseThingAmount } from '../../common/utils';
+import { parseCard, parseItem, parseThingAmount } from '../../common/utils';
 import { Color } from '../../common/constants';
 
 type Props = IModal<Good>;
@@ -38,9 +38,9 @@ export default function DeleteGoodModal({ data: good }: Props) {
     >
       <TextInput
         label={t('columns.seller')}
-        icon={<CustomAvatar {...good.shop.user} />}
+        icon={<CustomAvatar {...good.shop.card.user} />}
         iconWidth={48}
-        value={good.shop.user.nick}
+        value={parseCard(good.shop.card)}
         readOnly
       />
       <TextInput

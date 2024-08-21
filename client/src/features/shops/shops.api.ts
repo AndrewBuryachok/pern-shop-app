@@ -1,14 +1,8 @@
 import { emptyApi } from '../../app/empty.api';
 import { IRequest, IResponse } from '../../common/interfaces';
 import { Shop, SmShop } from './shop.model';
-import { SmUser } from '../users/user.model';
 import { MdThing } from '../things/thing.model';
-import {
-  CreateShopDto,
-  EditShopDto,
-  ExtCreateShopDto,
-  UpdateShopUserDto,
-} from './shop.dto';
+import { CreateShopDto, EditShopDto } from './shop.dto';
 import { getQuery } from '../../common/utils';
 
 export const shopsApi = emptyApi.injectEndpoints({
@@ -43,29 +37,15 @@ export const shopsApi = emptyApi.injectEndpoints({
       }),
       providesTags: ['Auth', 'Shop'],
     }),
-    selectShopUsers: build.query<SmUser[], number>({
-      query: (shopId) => ({
-        url: `/shops/${shopId}/users`,
-      }),
-      providesTags: ['Shop'],
-    }),
     selectShopGoods: build.query<MdThing[], number>({
       query: (shopId) => ({
         url: `/shops/${shopId}/goods`,
       }),
       providesTags: ['Good'],
     }),
-    createMyShop: build.mutation<void, CreateShopDto>({
+    createShop: build.mutation<void, CreateShopDto>({
       query: (dto) => ({
         url: '/shops',
-        method: 'POST',
-        body: dto,
-      }),
-      invalidatesTags: ['Shop'],
-    }),
-    createUserShop: build.mutation<void, ExtCreateShopDto>({
-      query: (dto) => ({
-        url: '/shops/all',
         method: 'POST',
         body: dto,
       }),
@@ -79,22 +59,6 @@ export const shopsApi = emptyApi.injectEndpoints({
       }),
       invalidatesTags: ['Shop'],
     }),
-    addShopUser: build.mutation<void, UpdateShopUserDto>({
-      query: ({ shopId, ...dto }) => ({
-        url: `/shops/${shopId}/users`,
-        method: 'POST',
-        body: dto,
-      }),
-      invalidatesTags: ['Shop'],
-    }),
-    removeShopUser: build.mutation<void, UpdateShopUserDto>({
-      query: ({ shopId, ...dto }) => ({
-        url: `/shops/${shopId}/users`,
-        method: 'DELETE',
-        body: dto,
-      }),
-      invalidatesTags: ['Shop'],
-    }),
   }),
 });
 
@@ -104,11 +68,7 @@ export const {
   useGetAllShopsQuery,
   useSelectAllShopsQuery,
   useSelectMyShopsQuery,
-  useSelectShopUsersQuery,
   useSelectShopGoodsQuery,
-  useCreateMyShopMutation,
-  useCreateUserShopMutation,
+  useCreateShopMutation,
   useEditShopMutation,
-  useAddShopUserMutation,
-  useRemoveShopUserMutation,
 } = shopsApi;

@@ -1,9 +1,9 @@
 import { HoverCard } from '@mantine/core';
-import { PlaceWithCard } from '../../features/places/place.model';
+import { SmPlaceWithCard } from '../../features/places/place.model';
 import PlaceText from './PlaceText';
 import AvatarWithDoubleText from './AvatarWithDoubleText';
 
-type Props = PlaceWithCard & {
+type Props = SmPlaceWithCard & {
   container: number;
 };
 

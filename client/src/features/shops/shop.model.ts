@@ -1,14 +1,9 @@
-import { Place, PlaceWithUser } from '../places/place.model';
+import { PlaceWithCard, SmPlace, SmPlaceWithCard } from '../places/place.model';
 
-export interface SmShop extends Place {}
+export interface SmShop extends SmPlace {}
 
-export interface MdShop extends PlaceWithUser {}
+export interface MdShop extends SmPlaceWithCard {}
 
-export interface Shop extends MdShop {
-  image: string;
-  video: string;
-  description: string;
-  createdAt: Date;
-  users: number;
+export interface Shop extends PlaceWithCard {
   goods: number;
 }

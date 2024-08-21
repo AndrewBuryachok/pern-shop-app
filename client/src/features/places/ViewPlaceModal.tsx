@@ -65,9 +65,9 @@ export default function PlaceModal({ data: place }: Props) {
       <TextInput label={t('columns.id')} value={place.id} readOnly />
       <TextInput
         label={t('columns.owner')}
-        icon={<CustomAvatar {...place.owner} />}
+        icon={<CustomAvatar {...place.user} />}
         iconWidth={48}
-        value={place.card ? parseCard(place.card) : place.owner.nick}
+        value={place.card ? parseCard(place.card) : place.user.nick}
         readOnly
       />
       <TextInput label={t('columns.place')} value={place.name} readOnly />

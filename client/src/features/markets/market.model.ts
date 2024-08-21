@@ -1,14 +1,10 @@
-import { Place, PlaceWithCard } from '../places/place.model';
+import { PlaceWithCard, SmPlace, SmPlaceWithCard } from '../places/place.model';
 
-export interface SmMarket extends Place {}
+export interface SmMarket extends SmPlace {}
 
-export interface MdMarket extends PlaceWithCard {}
+export interface MdMarket extends SmPlaceWithCard {}
 
-export interface Market extends MdMarket {
-  image: string;
-  video: string;
-  description: string;
-  createdAt: Date;
+export interface Market extends PlaceWithCard {
   tags: number;
   stores: number;
 }

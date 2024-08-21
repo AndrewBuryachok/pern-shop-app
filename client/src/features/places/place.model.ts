@@ -1,11 +1,30 @@
 import { SmUser } from '../users/user.model';
 import { MdCard } from '../cards/card.model';
 
-export interface Place {
+export interface SmPlace {
   id: number;
   name: string;
   x: number;
   y: number;
+}
+
+export interface SmPlaceWithUser extends SmPlace {
+  user: SmUser;
+}
+
+export interface SmPlaceWithCard extends SmPlace {
+  card: MdCard;
+}
+
+export interface SmPlaceWithPrice extends SmPlaceWithCard {
+  price: number;
+}
+
+export interface Place extends SmPlace {
+  image: string;
+  video: string;
+  description: string;
+  createdAt: Date;
 }
 
 export interface PlaceWithUser extends Place {
@@ -20,13 +39,8 @@ export interface PlaceWithPrice extends PlaceWithCard {
   price: number;
 }
 
-export interface ExtPlace extends Place {
+export interface ExtPlace extends PlaceWithUser {
   type: number;
-  owner: SmUser;
   card?: MdCard;
-  image: string;
-  video: string;
-  description: string;
   price?: number;
-  createdAt: Date;
 }

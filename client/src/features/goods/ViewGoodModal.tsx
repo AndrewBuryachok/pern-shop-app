@@ -7,6 +7,7 @@ import { Good } from './good.model';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import ThingImage from '../../common/components/ThingImage';
 import {
+  parseCard,
   parseItem,
   parsePlace,
   parseThingAmount,
@@ -24,9 +25,9 @@ export default function ViewGoodModal({ data: good }: Props) {
       <TextInput label={t('columns.id')} value={good.id} readOnly />
       <TextInput
         label={t('columns.seller')}
-        icon={<CustomAvatar {...good.shop.user} />}
+        icon={<CustomAvatar {...good.shop.card.user} />}
         iconWidth={48}
-        value={good.shop.user.nick}
+        value={parseCard(good.shop.card)}
         readOnly
       />
       <TextInput

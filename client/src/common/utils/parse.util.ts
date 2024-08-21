@@ -1,6 +1,6 @@
 import { t } from 'i18next';
 import { MdCard } from '../../features/cards/card.model';
-import { Place } from '../../features/places/place.model';
+import { SmPlace } from '../../features/places/place.model';
 import { MdStore } from '../../features/stores/store.model';
 import { MdCell } from '../../features/cells/cell.model';
 import { MdDrawer } from '../../features/drawers/drawer.model';
@@ -35,7 +35,7 @@ export const parseTime = (date?: Date) => {
 
 export const parseCard = (card: MdCard) => `${card.user.nick} - ${card.name}`;
 
-export const parsePlace = (place: Place) =>
+export const parsePlace = (place: SmPlace) =>
   `${place.name} (${place.x} ${place.y})`;
 
 export const parseStore = (store: MdStore) =>

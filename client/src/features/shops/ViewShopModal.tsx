@@ -7,7 +7,7 @@ import { Shop } from './shop.model';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import CustomImage from '../../common/components/CustomImage';
 import CustomVideo from '../../common/components/CustomVideo';
-import { parseTime } from '../../common/utils';
+import { parseCard, parseTime } from '../../common/utils';
 import { Color } from '../../common/constants';
 
 type Props = IModal<Shop>;
@@ -20,9 +20,9 @@ export default function ViewShopModal({ data: shop }: Props) {
       <TextInput label={t('columns.id')} value={shop.id} readOnly />
       <TextInput
         label={t('columns.owner')}
-        icon={<CustomAvatar {...shop.user} />}
+        icon={<CustomAvatar {...shop.card.user} />}
         iconWidth={48}
-        value={shop.user.nick}
+        value={parseCard(shop.card)}
         readOnly
       />
       <TextInput label={t('columns.shop')} value={shop.name} readOnly />

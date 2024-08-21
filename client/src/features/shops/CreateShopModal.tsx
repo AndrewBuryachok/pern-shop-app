@@ -1,22 +1,25 @@
 import { t } from 'i18next';
+import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { NumberInput, Select, TextInput, Textarea } from '@mantine/core';
 import { useDebouncedValue } from '@mantine/hooks';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
-import {
-  useCreateMyShopMutation,
-  useCreateUserShopMutation,
-} from './shops.api';
+import { useCreateShopMutation } from './shops.api';
 import { useSelectAllUsersQuery } from '../users/users.api';
-import { ExtCreateShopDto } from './shop.dto';
+import {
+  useSelectMyCardsQuery,
+  useSelectUserCardsWithBalanceQuery,
+} from '../cards/cards.api';
+import { CreateShopDto } from './shop.dto';
 import CustomForm from '../../common/components/CustomForm';
 import RefetchAction from '../../common/components/RefetchAction';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import CustomImage from '../../common/components/CustomImage';
 import CustomVideo from '../../common/components/CustomVideo';
 import { UsersItem } from '../../common/components/UsersItem';
-import { selectUsers } from '../../common/utils';
+import { CardsItem } from '../../common/components/CardsItem';
+import { selectCardsWithBalance, selectUsers } from '../../common/utils';
 import {
   MAX_COORDINATE_VALUE,
   MAX_DESCRIPTION_LENGTH,
@@ -34,6 +37,7 @@ export default function CreateShopModal({ hasRole }: Props) {
   const form = useForm({
     initialValues: {
       user: '',
+      card: '',
       name: '',
       image: '',
       video: '',
@@ -41,23 +45,28 @@ export default function CreateShopModal({ hasRole }: Props) {
       x: 0,
       y: 0,
     },
-    transformValues: ({ user, ...rest }) => ({ ...rest, userId: +user }),
+    transformValues: ({ user, card, ...rest }) => ({ ...rest, cardId: +card }),
   });
 
   const [image] = useDebouncedValue(form.values.image, 500);
   const [video] = useDebouncedValue(form.values.video, 500);
 
+  useEffect(() => form.setFieldValue('card', ''), [form.values.user]);
+
   const { data: users, ...usersResponse } = useSelectAllUsersQuery(undefined, {
     skip: !hasRole,
   });
+  const { data: cards, ...cardsResponse } = hasRole
+    ? useSelectUserCardsWithBalanceQuery(+form.values.user, {
+        skip: !form.values.user,
+      })
+    : useSelectMyCardsQuery();
 
   const user = users?.find((user) => user.id === +form.values.user);
 
-  const [createShop, { isLoading }] = hasRole
-    ? useCreateUserShopMutation()
-    : useCreateMyShopMutation();
+  const [createShop, { isLoading }] = useCreateShopMutation();
 
-  const handleSubmit = async (dto: ExtCreateShopDto) => {
+  const handleSubmit = async (dto: CreateShopDto) => {
     await createShop(dto);
   };
 
@@ -83,6 +92,23 @@ export default function CreateShopModal({ hasRole }: Props) {
           {...form.getInputProps('user')}
         />
       )}
+      <Select
+        label={t('columns.card')}
+        placeholder={t('columns.card')}
+        rightSection={
+          <RefetchAction
+            {...cardsResponse}
+            skip={!form.values.user && hasRole}
+          />
+        }
+        itemComponent={CardsItem}
+        data={selectCardsWithBalance(cards)}
+        limit={20}
+        searchable
+        required
+        readOnly={cardsResponse.isFetching}
+        {...form.getInputProps('card')}
+      />
       <TextInput
         label={t('columns.name')}
         placeholder={t('columns.name')}

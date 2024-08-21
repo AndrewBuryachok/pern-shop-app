@@ -1,14 +1,9 @@
-import { Place, PlaceWithUser } from '../places/place.model';
+import { PlaceWithUser, SmPlace, SmPlaceWithUser } from '../places/place.model';
 
-export interface SmFarm extends Place {}
+export interface SmFarm extends SmPlace {}
 
-export interface MdFarm extends PlaceWithUser {}
+export interface MdFarm extends SmPlaceWithUser {}
 
-export interface Farm extends MdFarm {
-  image: string;
-  video: string;
-  description: string;
-  createdAt: Date;
+export interface Farm extends PlaceWithUser {
   users: number;
-  goods: number;
 }

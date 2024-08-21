@@ -1,7 +1,7 @@
 import { ITableWithActions } from '../../common/interfaces';
 import { Good } from './good.model';
 import CustomTable from '../../common/components/CustomTable';
-import AvatarWithSingleText from '../../common/components/AvatarWithSingleText';
+import AvatarWithDoubleText from '../../common/components/AvatarWithDoubleText';
 import ThingImageWithText from '../../common/components/ThingImageWithText';
 import SingleText from '../../common/components/SingleText';
 import PriceText from '../../common/components/PriceText';
@@ -31,7 +31,7 @@ export default function GoodsTable({ actions = [], ...props }: Props) {
       {props.data?.result.map((good) => (
         <tr key={good.id}>
           <td>
-            <AvatarWithSingleText {...good.shop.user} />
+            <AvatarWithDoubleText {...good.shop.card} />
           </td>
           <td>
             <ThingImageWithText {...good} />
