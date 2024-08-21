@@ -2,9 +2,8 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Validate } from 'class-validator';
 import { Type } from 'class-transformer';
 import { IsId } from '../../common/decorators';
-import { IsShopExists, IsUserExists } from '../../common/constraints';
-import { CreatePlaceDto } from '../places/place.dto';
-import { UserIdDto } from '../users/user.dto';
+import { IsShopExists } from '../../common/constraints';
+import { CreatePlaceDto, CreatePlaceWithCardDto } from '../places/place.dto';
 
 export class ShopIdDto {
   @ApiProperty()
@@ -14,26 +13,16 @@ export class ShopIdDto {
   shopId: number;
 }
 
-export class CreateShopDto extends CreatePlaceDto {}
+export class CreateShopDto extends CreatePlaceWithCardDto {}
 
 export class ExtCreateShopDto extends CreateShopDto {
-  @ApiProperty()
-  @IsId()
-  @Validate(IsUserExists)
-  userId: number;
+  myId: number;
+  hasRole: boolean;
 }
 
 export class EditShopDto extends CreatePlaceDto {}
 
 export class ExtEditShopDto extends EditShopDto {
-  shopId: number;
-  myId: number;
-  hasRole: boolean;
-}
-
-export class UpdateShopUserDto extends UserIdDto {}
-
-export class ExtUpdateShopUserDto extends UpdateShopUserDto {
   shopId: number;
   myId: number;
   hasRole: boolean;

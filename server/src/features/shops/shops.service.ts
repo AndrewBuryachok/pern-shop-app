@@ -2,14 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { Shop } from './shop.entity';
-import { User } from '../users/user.entity';
 import { Good } from '../goods/good.entity';
+import { CardsService } from '../cards/cards.service';
 import { MqttService } from '../mqtt/mqtt.service';
-import {
-  ExtCreateShopDto,
-  ExtEditShopDto,
-  ExtUpdateShopUserDto,
-} from './shop.dto';
+import { ExtCreateShopDto, ExtEditShopDto } from './shop.dto';
 import { Request, Response } from '../../common/interfaces';
 import { MAX_SHOPS_NUMBER } from '../../common/constants';
 import { AppException } from '../../common/exceptions';
@@ -21,6 +17,7 @@ export class ShopsService {
   constructor(
     @InjectRepository(Shop)
     private shopsRepository: Repository<Shop>,
+    private cardsService: CardsService,
     private mqttService: MqttService,
   ) {}
 
@@ -33,7 +30,7 @@ export class ShopsService {
 
   async getMyShops(myId: number, req: Request): Promise<Response<Shop>> {
     const [result, count] = await this.getShopsQueryBuilder(req)
-      .innerJoin('shop.users', 'ownerUsers')
+      .innerJoin('ownerCard.users', 'ownerUsers')
       .andWhere('ownerUsers.id = :myId', { myId })
       .getManyAndCount();
     return { result, count };
@@ -52,22 +49,10 @@ export class ShopsService {
 
   selectMyShops(myId: number): Promise<Shop[]> {
     return this.selectShopsQueryBuilder()
-      .innerJoin('shop.users', 'ownerUsers')
+      .innerJoin('shop.card', 'ownerCard')
+      .innerJoin('ownerCard.users', 'ownerUsers')
       .where('ownerUsers.id = :myId', { myId })
       .getMany();
-  }
-
-  async selectShopUsers(shopId: number): Promise<User[]> {
-    const shop = await this.shopsRepository
-      .createQueryBuilder('shop')
-      .leftJoin('shop.users', 'user')
-      .where('shop.id = :shopId', { shopId })
-      .orderBy('user.type', 'DESC')
-      .addOrderBy('user.onlineAt', 'DESC')
-      .addOrderBy('user.nick', 'ASC')
-      .select(['shop.id', 'user.id', 'user.nick', 'user.avatar'])
-      .getOne();
-    return shop.users;
   }
 
   async selectShopGoods(shopId: number): Promise<Good[]> {
@@ -91,7 +76,8 @@ export class ShopsService {
   }
 
   async createShop(dto: ExtCreateShopDto & { nick: string }): Promise<void> {
-    await this.checkHasNotEnough(dto.userId);
+    await this.cardsService.checkCardUser(dto.cardId, dto.myId, dto.hasRole);
+    await this.checkHasNotEnough(dto.myId);
     await this.checkNameNotUsed(dto.name);
     await this.checkCoordinatesNotUsed(dto.x, dto.y);
     const shop = await this.create(dto);
@@ -110,41 +96,6 @@ export class ShopsService {
     await this.edit(shop, dto);
   }
 
-  async addShopUser(
-    dto: ExtUpdateShopUserDto & { nick: string },
-  ): Promise<void> {
-    const shop = await this.checkShopOwner(dto.shopId, dto.myId, dto.hasRole);
-    if (shop.users.map((user) => user.id).includes(dto.userId)) {
-      throw new AppException(ShopError.ALREADY_IN_SHOP);
-    }
-    await this.addUser(shop, dto.userId);
-    this.mqttService.publishNotificationMessage(
-      dto.shopId,
-      dto.userId,
-      dto.nick,
-      Notification.ADDED_SHOP,
-    );
-  }
-
-  async removeShopUser(
-    dto: ExtUpdateShopUserDto & { nick: string },
-  ): Promise<void> {
-    const shop = await this.checkShopOwner(dto.shopId, dto.myId, dto.hasRole);
-    if (dto.userId === dto.myId) {
-      throw new AppException(ShopError.OWNER);
-    }
-    if (!shop.users.map((user) => user.id).includes(dto.userId)) {
-      throw new AppException(ShopError.NOT_IN_SHOP);
-    }
-    await this.removeUser(shop, dto.userId);
-    this.mqttService.publishNotificationMessage(
-      dto.shopId,
-      dto.userId,
-      dto.nick,
-      Notification.REMOVED_SHOP,
-    );
-  }
-
   async checkShopExists(id: number): Promise<void> {
     await this.shopsRepository.findOneByOrFail({ id });
   }
@@ -155,32 +106,17 @@ export class ShopsService {
     hasRole: boolean,
   ): Promise<Shop> {
     const shop = await this.shopsRepository.findOne({
-      relations: ['users'],
+      relations: ['card', 'card.users'],
       where: { id },
     });
-    if (shop.userId !== userId && !hasRole) {
+    if (!shop.card.users.map((user) => user.id).includes(userId) && !hasRole) {
       throw new AppException(ShopError.NOT_OWNER);
     }
     return shop;
   }
 
-  async checkShopUser(
-    id: number,
-    userId: number,
-    hasRole: boolean,
-  ): Promise<Shop> {
-    const shop = await this.shopsRepository.findOne({
-      relations: ['users'],
-      where: { id },
-    });
-    if (!shop.users.map((user) => user.id).includes(userId) && !hasRole) {
-      throw new AppException(ShopError.NOT_USER);
-    }
-    return shop;
-  }
-
   private async checkHasNotEnough(userId: number): Promise<void> {
-    const count = await this.shopsRepository.countBy({ userId });
+    const count = await this.shopsRepository.countBy({ card: { userId } });
     if (count === MAX_SHOPS_NUMBER) {
       throw new AppException(ShopError.ALREADY_HAS_ENOUGH);
     }
@@ -207,14 +143,13 @@ export class ShopsService {
   private async create(dto: ExtCreateShopDto): Promise<Shop> {
     try {
       const shop = this.shopsRepository.create({
-        userId: dto.userId,
+        cardId: dto.cardId,
         name: dto.name,
         image: dto.image,
         video: dto.video,
         description: dto.description,
         x: dto.x,
         y: dto.y,
-        users: [{ id: dto.userId }],
       });
       await this.shopsRepository.save(shop);
       return shop;
@@ -237,26 +172,6 @@ export class ShopsService {
     }
   }
 
-  private async addUser(shop: Shop, userId: number): Promise<void> {
-    try {
-      const user = new User();
-      user.id = userId;
-      shop.users.push(user);
-      await this.shopsRepository.save(shop);
-    } catch (error) {
-      throw new AppException(ShopError.ADD_USER_FAILED);
-    }
-  }
-
-  private async removeUser(shop: Shop, userId: number): Promise<void> {
-    try {
-      shop.users = shop.users.filter((user) => user.id !== userId);
-      await this.shopsRepository.save(shop);
-    } catch (error) {
-      throw new AppException(ShopError.REMOVE_USER_FAILED);
-    }
-  }
-
   private selectShopsQueryBuilder(): SelectQueryBuilder<Shop> {
     return this.shopsRepository
       .createQueryBuilder('shop')
@@ -267,8 +182,8 @@ export class ShopsService {
   private getShopsQueryBuilder(req: Request): SelectQueryBuilder<Shop> {
     return this.shopsRepository
       .createQueryBuilder('shop')
-      .innerJoin('shop.user', 'ownerUser')
-      .loadRelationCountAndMap('shop.users', 'shop.users')
+      .innerJoin('shop.card', 'ownerCard')
+      .innerJoin('ownerCard.user', 'ownerUser')
       .loadRelationCountAndMap('shop.goods', 'shop.goods')
       .where(
         new Brackets((qb) =>
@@ -285,6 +200,13 @@ export class ShopsService {
       .andWhere(
         new Brackets((qb) =>
           qb
+            .where(`${!req.card}`)
+            .orWhere('ownerCard.id = :cardId', { cardId: req.card }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
             .where(`${!req.shop}`)
             .orWhere('shop.id = :shopId', { shopId: req.shop }),
         ),
@@ -294,9 +216,12 @@ export class ShopsService {
       .take(req.take)
       .select([
         'shop.id',
+        'ownerCard.id',
         'ownerUser.id',
         'ownerUser.nick',
         'ownerUser.avatar',
+        'ownerCard.name',
+        'ownerCard.color',
         'shop.name',
         'shop.image',
         'shop.video',

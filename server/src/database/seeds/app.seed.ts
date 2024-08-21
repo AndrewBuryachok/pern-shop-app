@@ -223,13 +223,10 @@ export default class AppSeed implements Seeder {
       .createMany(10);
     const shops = await factory(Shop)()
       .map(async (shop) => {
-        const count = Math.floor(Math.random() * 2) + 1;
-        const shuffled = users.sort(() => 0.5 - Math.random());
-        shop.users = shuffled.slice(0, count);
-        shop.user = shop.users[0];
+        shop.card = faker.helpers.arrayElement(cards);
         return shop;
       })
-      .createMany(10);
+      .makeMany(10);
     const markets = await factory(Market)()
       .map(async (market) => {
         market.card = faker.helpers.arrayElement(cards);
@@ -384,7 +381,7 @@ export default class AppSeed implements Seeder {
         good.shop = faker.helpers.arrayElement(shops);
         return good;
       })
-      .createMany(20);
+      .makeMany(20);
     const wares = await factory(Ware)()
       .map(async (ware) => {
         ware.rent = faker.helpers.arrayElement(rents);
@@ -660,6 +657,10 @@ export default class AppSeed implements Seeder {
       .map(async () => invoices[id++])
       .createMany(invoices.length);
     id = 0;
+    await factory(Shop)()
+      .map(async () => shops[id++])
+      .createMany(shops.length);
+    id = 0;
     await factory(Market)()
       .map(async () => markets[id++])
       .createMany(markets.length);
@@ -715,6 +716,10 @@ export default class AppSeed implements Seeder {
     await factory(Hire)()
       .map(async () => hires[id++])
       .createMany(hires.length);
+    id = 0;
+    await factory(Good)()
+      .map(async () => goods[id++])
+      .createMany(goods.length);
     id = 0;
     await factory(Ware)()
       .map(async () => wares[id++])

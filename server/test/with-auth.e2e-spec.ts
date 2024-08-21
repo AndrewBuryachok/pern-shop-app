@@ -1267,6 +1267,7 @@ describe('With Auth', () => {
         .post('/shops')
         .set('Authorization', `Bearer ${user.access}`)
         .send({
+          cardId,
           name: 'My Shop',
           image: '',
           video: '',
@@ -1311,12 +1312,6 @@ describe('With Auth', () => {
         .expect((res) => expect(res.body.length).toBeGreaterThan(0));
     });
 
-    it('GET /shops/:shopId/users', async () => {
-      return request(app.getHttpServer())
-        .get(`/shops/${shopId}/users`)
-        .expect((res) => expect(res.body.length).toBeGreaterThan(0));
-    });
-
     it('PATCH /shops/:shopId', async () => {
       return request(app.getHttpServer())
         .patch(`/shops/${shopId}`)
@@ -1329,22 +1324,6 @@ describe('With Auth', () => {
           x: 500,
           y: -500,
         })
-        .expect('');
-    });
-
-    it('POST /shops/:shopId/users', async () => {
-      return request(app.getHttpServer())
-        .post(`/shops/${shopId}/users`)
-        .set('Authorization', `Bearer ${user.access}`)
-        .send({ userId: admin.id })
-        .expect('');
-    });
-
-    it('DELETE /shops/:shopId/users', async () => {
-      return request(app.getHttpServer())
-        .delete(`/shops/${shopId}/users`)
-        .set('Authorization', `Bearer ${user.access}`)
-        .send({ userId: admin.id })
         .expect('');
     });
   });

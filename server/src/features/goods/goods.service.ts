@@ -28,7 +28,7 @@ export class GoodsService {
 
   async getMyGoods(myId: number, req: Request): Promise<Response<Good>> {
     const [result, count] = await this.getGoodsQueryBuilder(req)
-      .innerJoin('shop.users', 'sellerUsers')
+      .innerJoin('sellerCard.users', 'sellerUsers')
       .andWhere('sellerUsers.id = :myId', { myId })
       .getManyAndCount();
     return { result, count };
@@ -42,7 +42,7 @@ export class GoodsService {
   }
 
   async createGood(dto: ExtCreateGoodDto & { nick: string }): Promise<void> {
-    await this.shopsService.checkShopUser(dto.shopId, dto.myId, dto.hasRole);
+    await this.shopsService.checkShopOwner(dto.shopId, dto.myId, dto.hasRole);
     const good = await this.create(dto);
     this.mqttService.publishNotificationMessage(
       good.id,
@@ -72,10 +72,13 @@ export class GoodsService {
     hasRole: boolean,
   ): Promise<Good> {
     const good = await this.goodsRepository.findOne({
-      relations: ['shop', 'shop.users'],
+      relations: ['shop', 'shop.card', 'shop.card.users'],
       where: { id },
     });
-    if (!good.shop.users.map((user) => user.id).includes(userId) && !hasRole) {
+    if (
+      !good.shop.card.users.map((user) => user.id).includes(userId) &&
+      !hasRole
+    ) {
       throw new AppException(GoodError.NOT_OWNER);
     }
     return good;
@@ -125,7 +128,8 @@ export class GoodsService {
     return this.goodsRepository
       .createQueryBuilder('good')
       .innerJoin('good.shop', 'shop')
-      .innerJoin('shop.user', 'sellerUser')
+      .innerJoin('shop.card', 'sellerCard')
+      .innerJoin('sellerCard.user', 'sellerUser')
       .where(
         new Brackets((qb) =>
           qb.where(`${!req.id}`).orWhere('good.id = :id', { id: req.id }),
@@ -136,6 +140,13 @@ export class GoodsService {
           qb
             .where(`${!req.user}`)
             .orWhere('sellerUser.id = :userId', { userId: req.user }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.card}`)
+            .orWhere('sellerCard.id = :cardId', { cardId: req.card }),
         ),
       )
       .andWhere(
@@ -228,9 +239,12 @@ export class GoodsService {
       .select([
         'good.id',
         'shop.id',
+        'sellerCard.id',
         'sellerUser.id',
         'sellerUser.nick',
         'sellerUser.avatar',
+        'sellerCard.name',
+        'sellerCard.color',
         'shop.name',
         'shop.x',
         'shop.y',
