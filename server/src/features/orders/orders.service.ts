@@ -187,7 +187,9 @@ export class OrdersService {
       sum: order.price,
       description: '',
     });
-    await this.hiresService.completeHire({ ...dto, hireId: order.hireId });
+    try {
+      await this.hiresService.completeHire({ ...dto, hireId: order.hireId });
+    } catch (error) {}
     await this.complete(order);
     this.mqttService.publishNotificationMessage(
       dto.orderId,
@@ -210,7 +212,9 @@ export class OrdersService {
       cardId: order.hire.cardId,
       sum: order.price,
     });
-    await this.hiresService.completeHire({ ...dto, hireId: order.hireId });
+    try {
+      await this.hiresService.completeHire({ ...dto, hireId: order.hireId });
+    } catch (error) {}
     await this.delete(order);
   }
 

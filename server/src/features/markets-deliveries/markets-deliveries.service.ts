@@ -232,10 +232,12 @@ export class MarketsDeliveriesService {
       sum: marketDelivery.price,
       description: '',
     });
-    await this.hiresService.completeHire({
-      ...dto,
-      hireId: marketDelivery.hireId,
-    });
+    try {
+      await this.hiresService.completeHire({
+        ...dto,
+        hireId: marketDelivery.hireId,
+      });
+    } catch (error) {}
     await this.complete(marketDelivery);
     this.mqttService.publishNotificationMessage(
       dto.marketDeliveryId,
@@ -260,10 +262,12 @@ export class MarketsDeliveriesService {
       cardId: marketDelivery.hire.cardId,
       sum: marketDelivery.price,
     });
-    await this.hiresService.completeHire({
-      ...dto,
-      hireId: marketDelivery.hireId,
-    });
+    try {
+      await this.hiresService.completeHire({
+        ...dto,
+        hireId: marketDelivery.hireId,
+      });
+    } catch (error) {}
     await this.delete(marketDelivery);
   }
 

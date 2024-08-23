@@ -228,10 +228,12 @@ export class StoragesDeliveriesService {
       sum: storageDelivery.price,
       description: '',
     });
-    await this.hiresService.completeHire({
-      ...dto,
-      hireId: storageDelivery.hireId,
-    });
+    try {
+      await this.hiresService.completeHire({
+        ...dto,
+        hireId: storageDelivery.hireId,
+      });
+    } catch (error) {}
     await this.complete(storageDelivery);
     this.mqttService.publishNotificationMessage(
       dto.storageDeliveryId,
@@ -256,10 +258,12 @@ export class StoragesDeliveriesService {
       cardId: storageDelivery.hire.cardId,
       sum: storageDelivery.price,
     });
-    await this.hiresService.completeHire({
-      ...dto,
-      hireId: storageDelivery.hireId,
-    });
+    try {
+      await this.hiresService.completeHire({
+        ...dto,
+        hireId: storageDelivery.hireId,
+      });
+    } catch (error) {}
     await this.delete(storageDelivery);
   }
 

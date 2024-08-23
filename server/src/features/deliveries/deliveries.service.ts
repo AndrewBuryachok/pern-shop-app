@@ -229,14 +229,18 @@ export class DeliveriesService {
       sum: delivery.price,
       description: '',
     });
-    await this.hiresService.completeHire({
-      ...dto,
-      hireId: delivery.fromHireId,
-    });
-    await this.hiresService.completeHire({
-      ...dto,
-      hireId: delivery.toHireId,
-    });
+    try {
+      await this.hiresService.completeHire({
+        ...dto,
+        hireId: delivery.fromHireId,
+      });
+    } catch (error) {}
+    try {
+      await this.hiresService.completeHire({
+        ...dto,
+        hireId: delivery.toHireId,
+      });
+    } catch (error) {}
     await this.complete(delivery);
     this.mqttService.publishNotificationMessage(
       dto.deliveryId,
@@ -261,14 +265,18 @@ export class DeliveriesService {
       cardId: delivery.fromHire.cardId,
       sum: delivery.price,
     });
-    await this.hiresService.completeHire({
-      ...dto,
-      hireId: delivery.fromHireId,
-    });
-    await this.hiresService.completeHire({
-      ...dto,
-      hireId: delivery.toHireId,
-    });
+    try {
+      await this.hiresService.completeHire({
+        ...dto,
+        hireId: delivery.fromHireId,
+      });
+    } catch (error) {}
+    try {
+      await this.hiresService.completeHire({
+        ...dto,
+        hireId: delivery.toHireId,
+      });
+    } catch (error) {}
     await this.delete(delivery);
   }
 
