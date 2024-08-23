@@ -32,14 +32,17 @@ import { Rent } from '../../features/rents/rent.entity';
 import { Lease } from '../../features/leases/lease.entity';
 import { Hire } from '../../features/hires/hire.entity';
 import { Good } from '../../features/goods/good.entity';
+import { GoodState } from '../../features/goods/good-state.entity';
 import { Ware } from '../../features/wares/ware.entity';
 import { WareState } from '../../features/wares/ware-state.entity';
 import { Product } from '../../features/products/product.entity';
 import { ProductState } from '../../features/products/product-state.entity';
 import { Order } from '../../features/orders/order.entity';
 import { Delivery } from '../../features/deliveries/delivery.entity';
+import { Bargain } from '../../features/bargains/bargain.entity';
 import { Trade } from '../../features/trades/trade.entity';
 import { Sale } from '../../features/sales/sale.entity';
+import { ShopDelivery } from '../../features/shops-deliveries/shop-delivery.entity';
 import { MarketDelivery } from '../../features/markets-deliveries/market-delivery.entity';
 import { StorageDelivery } from '../../features/storages-deliveries/storage-delivery.entity';
 import { Task } from '../../features/tasks/task.entity';
@@ -375,13 +378,21 @@ export default class AppSeed implements Seeder {
         hire.drawer.station.card.balance += hire.drawer.station.price;
         return hire;
       })
-      .makeMany(50);
+      .makeMany(60);
     const goods = await factory(Good)()
       .map(async (good) => {
         good.shop = faker.helpers.arrayElement(shops);
         return good;
       })
       .makeMany(20);
+    let goodId = 0;
+    const goodsStates = await factory(GoodState)()
+      .map(async (goodState) => {
+        goodState.good = goods[goodId++];
+        goodState.price = goodState.good.price;
+        return goodState;
+      })
+      .makeMany(goods.length);
     const wares = await factory(Ware)()
       .map(async (ware) => {
         ware.rent = faker.helpers.arrayElement(rents);
@@ -453,6 +464,35 @@ export default class AppSeed implements Seeder {
         return delivery;
       })
       .makeMany(10);
+    const bargains = await factory(Bargain)()
+      .map(async (bargain) => {
+        bargain.good = faker.helpers.arrayElement(
+          goods.filter((good) => good.amount),
+        );
+        bargain.card = faker.helpers.arrayElement(
+          cards.filter((card) => card.balance >= bargain.good.price),
+        );
+        bargain.amount =
+          Math.floor(
+            Math.random() *
+              Math.min(
+                bargain.good.amount,
+                Math.floor(bargain.card.balance / bargain.good.price),
+              ),
+          ) + 1;
+        bargain.good.amount -= bargain.amount;
+        const payment = await factory(Payment)().make({
+          senderCard: bargain.card,
+          receiverCard: bargain.good.shop.card,
+          sum: bargain.amount * bargain.good.price,
+          description: '',
+        });
+        payments.push(payment);
+        bargain.card.balance -= bargain.amount * bargain.good.price;
+        bargain.good.shop.card.balance += bargain.amount * bargain.good.price;
+        return bargain;
+      })
+      .makeMany(20);
     const trades = await factory(Trade)()
       .map(async (trade) => {
         trade.ware = faker.helpers.arrayElement(
@@ -511,6 +551,28 @@ export default class AppSeed implements Seeder {
         return sale;
       })
       .makeMany(20);
+    let bargainId = 0;
+    const shopsDeliveries = await factory(ShopDelivery)()
+      .map(async (shopDelivery) => {
+        shopDelivery.bargain = bargains[bargainId++];
+        shopDelivery.hire = hires[hireId++];
+        shopDelivery.hire.card.balance -= shopDelivery.price;
+        if (shopDelivery.status !== Status.CREATED) {
+          shopDelivery.executorCard = faker.helpers.arrayElement(cards);
+        }
+        if (shopDelivery.status === Status.COMPLETED) {
+          const payment = await factory(Payment)().make({
+            senderCard: shopDelivery.hire.card,
+            receiverCard: shopDelivery.executorCard,
+            sum: shopDelivery.price,
+            description: '',
+          });
+          payments.push(payment);
+          shopDelivery.executorCard.balance += shopDelivery.price;
+        }
+        return shopDelivery;
+      })
+      .makeMany(10);
     let tradeId = 0;
     const marketsDeliveries = await factory(MarketDelivery)()
       .map(async (marketDelivery) => {
@@ -721,6 +783,10 @@ export default class AppSeed implements Seeder {
       .map(async () => goods[id++])
       .createMany(goods.length);
     id = 0;
+    await factory(GoodState)()
+      .map(async () => goodsStates[id++])
+      .createMany(goodsStates.length);
+    id = 0;
     await factory(Ware)()
       .map(async () => wares[id++])
       .createMany(wares.length);
@@ -745,6 +811,10 @@ export default class AppSeed implements Seeder {
       .map(async () => deliveries[id++])
       .createMany(deliveries.length);
     id = 0;
+    await factory(Bargain)()
+      .map(async () => bargains[id++])
+      .createMany(bargains.length);
+    id = 0;
     await factory(Trade)()
       .map(async () => trades[id++])
       .createMany(trades.length);
@@ -752,6 +822,10 @@ export default class AppSeed implements Seeder {
     await factory(Sale)()
       .map(async () => sales[id++])
       .createMany(sales.length);
+    id = 0;
+    await factory(ShopDelivery)()
+      .map(async () => shopsDeliveries[id++])
+      .createMany(shopsDeliveries.length);
     id = 0;
     await factory(MarketDelivery)()
       .map(async () => marketsDeliveries[id++])

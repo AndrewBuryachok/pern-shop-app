@@ -1,7 +1,6 @@
 import {
   Body,
   Controller,
-  Delete,
   Get,
   Param,
   Patch,
@@ -11,6 +10,7 @@ import {
 import { ApiTags } from '@nestjs/swagger';
 import { GoodsService } from './goods.service';
 import { Good } from './good.entity';
+import { GoodState } from './good-state.entity';
 import { CreateGoodDto, EditGoodDto, GoodIdDto } from './good.dto';
 import { Request, Response } from '../../common/interfaces';
 import { HasRole, MyId, MyNick, Public, Roles } from '../../common/decorators';
@@ -41,6 +41,18 @@ export class GoodsController {
     return this.goodsService.getAllGoods(req);
   }
 
+  @Public()
+  @Get(':goodId/states')
+  selectGoodStates(@Param() { goodId }: GoodIdDto): Promise<GoodState[]> {
+    return this.goodsService.selectGoodStates(goodId);
+  }
+
+  @Public()
+  @Get(':goodId/rating')
+  selectGoodRating(@Param() { goodId }: GoodIdDto): Promise<{ rate: number }> {
+    return this.goodsService.selectGoodRating(goodId);
+  }
+
   @Post()
   createGood(
     @MyId() myId: number,
@@ -61,12 +73,12 @@ export class GoodsController {
     return this.goodsService.editGood({ ...dto, goodId, myId, hasRole });
   }
 
-  @Delete(':goodId')
-  deleteGood(
+  @Post(':goodId')
+  completeGood(
     @MyId() myId: number,
     @HasRole(Role.MERCHANT) hasRole: boolean,
     @Param() { goodId }: GoodIdDto,
   ): Promise<void> {
-    return this.goodsService.deleteGood({ goodId, myId, hasRole });
+    return this.goodsService.completeGood({ goodId, myId, hasRole });
   }
 }

@@ -1,0 +1,18 @@
+export enum ShopDeliveryError {
+  ALREADY_EXISTS = '400: Shop delivery already exists',
+  ALREADY_EXPIRED = '400: Shop delivery already expired',
+  ALREADY_TAKEN = '400: Shop delivery already taken',
+  NOT_TAKEN = '400: Shop delivery is not taken',
+  NOT_EXECUTED = '400: Shop delivery is not executed',
+  NOT_COMPLETED = '400: Shop delivery is not completed',
+  NOT_CUSTOMER = '403: You are not shop delivery customer',
+  NOT_EXECUTOR = '403: You are not shop delivery executor',
+  CREATE_FAILED = '500: Failed to create shop delivery',
+  EDIT_FAILED = '500: Failed to edit shop delivery',
+  TAKE_FAILED = '500: Failed to take shop delivery',
+  UNTAKE_FAILED = '500: Failed to untake shop delivery',
+  EXECUTE_FAILED = '500: Failed to execute shop delivery',
+  COMPLETE_FAILED = '500: Failed to complete shop delivery',
+  DELETE_FAILED = '500: Failed to delete shop delivery',
+  RATE_FAILED = '500: Failed to rate shop delivery',
+}

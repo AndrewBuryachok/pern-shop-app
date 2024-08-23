@@ -4,6 +4,8 @@ import { Type } from 'class-transformer';
 import { IsId } from '../../common/decorators';
 import { IsGoodExists, IsShopExists } from '../../common/constraints';
 import { CreateThingDto } from '../things/thing.dto';
+import { ExtEditStateDto } from '../states/state.dto';
+import { ExtCreateBargainDto } from '../bargains/bargain.dto';
 
 export class GoodIdDto {
   @ApiProperty()
@@ -25,7 +27,7 @@ export class ExtCreateGoodDto extends CreateGoodDto {
   hasRole: boolean;
 }
 
-export class EditGoodDto extends CreateThingDto {}
+export class EditGoodDto extends ExtEditStateDto {}
 
 export class ExtEditGoodDto extends EditGoodDto {
   goodId: number;
@@ -33,7 +35,9 @@ export class ExtEditGoodDto extends EditGoodDto {
   hasRole: boolean;
 }
 
-export class DeleteGoodDto extends GoodIdDto {
+export class CompleteGoodDto extends GoodIdDto {
   myId: number;
   hasRole: boolean;
 }
+
+export class BuyGoodDto extends ExtCreateBargainDto {}

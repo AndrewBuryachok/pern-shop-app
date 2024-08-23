@@ -531,6 +531,36 @@ describe('Without Auth', () => {
     });
   });
 
+  describe('Bargains', () => {
+    it('GET /bargains/my', async () => {
+      return request(app.getHttpServer()).get('/bargains/my').expect(401);
+    });
+
+    it('GET /bargains/sold', async () => {
+      return request(app.getHttpServer()).get('/bargains/sold').expect(401);
+    });
+
+    it('GET /bargains/all', async () => {
+      return request(app.getHttpServer())
+        .get('/bargains/all')
+        .set('Authorization', `Bearer ${user.access}`)
+        .expect(403);
+    });
+
+    it('GET /bargains/my/select', async () => {
+      return request(app.getHttpServer())
+        .get('/bargains/my/select')
+        .expect(401);
+    });
+
+    it('GET /bargains/:userId/select', async () => {
+      return request(app.getHttpServer())
+        .get(`/bargains/${user.id}/select`)
+        .set('Authorization', `Bearer ${user.access}`)
+        .expect(403);
+    });
+  });
+
   describe('Trades', () => {
     it('GET /trades/my', async () => {
       return request(app.getHttpServer()).get('/trades/my').expect(401);
@@ -632,6 +662,33 @@ describe('Without Auth', () => {
     it('GET /deliveries/all', async () => {
       return request(app.getHttpServer())
         .get('/deliveries/all')
+        .set('Authorization', `Bearer ${user.access}`)
+        .expect(403);
+    });
+  });
+
+  describe('Shops Deliveries', () => {
+    it('GET /shops-deliveries/my', async () => {
+      return request(app.getHttpServer())
+        .get('/shops-deliveries/my')
+        .expect(401);
+    });
+
+    it('GET /shops-deliveries/taken', async () => {
+      return request(app.getHttpServer())
+        .get('/shops-deliveries/taken')
+        .expect(401);
+    });
+
+    it('GET /shops-deliveries/placed', async () => {
+      return request(app.getHttpServer())
+        .get('/shops-deliveries/placed')
+        .expect(401);
+    });
+
+    it('GET /shops-deliveries/all', async () => {
+      return request(app.getHttpServer())
+        .get('/shops-deliveries/all')
         .set('Authorization', `Bearer ${user.access}`)
         .expect(403);
     });

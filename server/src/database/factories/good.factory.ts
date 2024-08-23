@@ -16,5 +16,8 @@ define(Good, (faker: Faker) => {
   good.intake = Math.floor(Math.random() * MAX_INTAKE_VALUE) + 1;
   good.kit = Math.floor(Math.random() * MAX_KIT_VALUE) + 1;
   good.price = Math.floor(Math.random() * 200) + 1;
+  if (Math.random() > 0.8) {
+    good.completedAt = new Date();
+  }
   return good;
 });

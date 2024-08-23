@@ -2,9 +2,16 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { Good } from './good.entity';
+import { GoodState } from './good-state.entity';
 import { ShopsService } from '../shops/shops.service';
+import { PaymentsService } from '../payments/payments.service';
 import { MqttService } from '../mqtt/mqtt.service';
-import { DeleteGoodDto, ExtCreateGoodDto, ExtEditGoodDto } from './good.dto';
+import {
+  BuyGoodDto,
+  CompleteGoodDto,
+  ExtCreateGoodDto,
+  ExtEditGoodDto,
+} from './good.dto';
 import { Request, Response } from '../../common/interfaces';
 import { AppException } from '../../common/exceptions';
 import { GoodError } from './good-error.enum';
@@ -15,14 +22,17 @@ export class GoodsService {
   constructor(
     @InjectRepository(Good)
     private goodsRepository: Repository<Good>,
+    @InjectRepository(GoodState)
+    private goodsStatesRepository: Repository<GoodState>,
     private shopsService: ShopsService,
+    private paymentsService: PaymentsService,
     private mqttService: MqttService,
   ) {}
 
   async getMainGoods(req: Request): Promise<Response<Good>> {
-    const [result, count] = await this.getGoodsQueryBuilder(
-      req,
-    ).getManyAndCount();
+    const [result, count] = await this.getGoodsQueryBuilder(req)
+      .andWhere('good.amount > 0')
+      .getManyAndCount();
     return { result, count };
   }
 
@@ -41,6 +51,33 @@ export class GoodsService {
     return { result, count };
   }
 
+  async selectGoodStates(goodId: number): Promise<GoodState[]> {
+    const good = await this.goodsRepository
+      .createQueryBuilder('good')
+      .leftJoin('good.states', 'state')
+      .where('good.id = :goodId', { goodId })
+      .orderBy('state.id', 'DESC')
+      .select([
+        'good.id',
+        'good.price',
+        'state.id',
+        'state.price',
+        'state.createdAt',
+      ])
+      .getOne();
+    return good.states;
+  }
+
+  async selectGoodRating(goodId: number): Promise<{ rate: number }> {
+    const good = await this.goodsRepository
+      .createQueryBuilder('good')
+      .leftJoin('good.bargains', 'bargain')
+      .where('good.id = :goodId', { goodId })
+      .select('AVG(bargain.rate)', 'rate')
+      .getRawOne();
+    return { rate: +good.rate };
+  }
+
   async createGood(dto: ExtCreateGoodDto & { nick: string }): Promise<void> {
     await this.shopsService.checkShopOwner(dto.shopId, dto.myId, dto.hasRole);
     const good = await this.create(dto);
@@ -57,9 +94,30 @@ export class GoodsService {
     await this.edit(good, dto);
   }
 
-  async deleteGood(dto: DeleteGoodDto): Promise<void> {
+  async completeGood(dto: CompleteGoodDto): Promise<void> {
     const good = await this.checkGoodOwner(dto.goodId, dto.myId, dto.hasRole);
-    await this.delete(good);
+    await this.complete(good);
+  }
+
+  async buyGood(dto: BuyGoodDto & { nick: string }): Promise<Good> {
+    const good = await this.goodsRepository.findOne({
+      relations: ['shop', 'shop.card'],
+      where: { id: dto.goodId },
+    });
+    if (good.amount < dto.amount) {
+      throw new AppException(GoodError.NOT_ENOUGH_AMOUNT);
+    }
+    await this.paymentsService.createPayment({
+      myId: dto.myId,
+      nick: dto.nick,
+      hasRole: dto.hasRole,
+      senderCardId: dto.cardId,
+      receiverCardId: good.shop.cardId,
+      sum: dto.amount * good.price,
+      description: '',
+    });
+    await this.buy(good, dto.amount);
+    return good;
   }
 
   async checkGoodExists(id: number): Promise<void> {
@@ -81,6 +139,9 @@ export class GoodsService {
     ) {
       throw new AppException(GoodError.NOT_OWNER);
     }
+    if (good.completedAt) {
+      throw new AppException(GoodError.ALREADY_COMPLETED);
+    }
     return good;
   }
 
@@ -96,6 +157,11 @@ export class GoodsService {
         price: dto.price,
       });
       await this.goodsRepository.save(good);
+      const goodState = this.goodsStatesRepository.create({
+        goodId: good.id,
+        price: dto.price,
+      });
+      await this.goodsStatesRepository.save(goodState);
       return good;
     } catch (error) {
       throw new AppException(GoodError.CREATE_FAILED);
@@ -104,23 +170,38 @@ export class GoodsService {
 
   private async edit(good: Good, dto: ExtEditGoodDto): Promise<void> {
     try {
-      good.item = dto.item;
-      good.description = dto.description;
+      const equal = good.price === dto.price;
       good.amount = dto.amount;
-      good.intake = dto.intake;
-      good.kit = dto.kit;
       good.price = dto.price;
       await this.goodsRepository.save(good);
+      if (!equal) {
+        const goodState = this.goodsStatesRepository.create({
+          goodId: good.id,
+          price: good.price,
+        });
+        await this.goodsStatesRepository.save(goodState);
+      }
     } catch (error) {
       throw new AppException(GoodError.EDIT_FAILED);
     }
   }
 
-  private async delete(good: Good): Promise<void> {
+  private async complete(good: Good): Promise<void> {
     try {
-      await this.goodsRepository.remove(good);
+      good.amount = 0;
+      good.completedAt = new Date();
+      await this.goodsRepository.save(good);
     } catch (error) {
-      throw new AppException(GoodError.DELETE_FAILED);
+      throw new AppException(GoodError.COMPLETE_FAILED);
+    }
+  }
+
+  private async buy(good: Good, amount: number): Promise<void> {
+    try {
+      good.amount -= amount;
+      await this.goodsRepository.save(good);
+    } catch (error) {
+      throw new AppException(GoodError.BUY_FAILED);
     }
   }
 
@@ -130,6 +211,7 @@ export class GoodsService {
       .innerJoin('good.shop', 'shop')
       .innerJoin('shop.card', 'sellerCard')
       .innerJoin('sellerCard.user', 'sellerUser')
+      .loadRelationCountAndMap('good.states', 'good.states')
       .where(
         new Brackets((qb) =>
           qb.where(`${!req.id}`).orWhere('good.id = :id', { id: req.id }),
@@ -255,6 +337,7 @@ export class GoodsService {
         'good.kit',
         'good.price',
         'good.createdAt',
+        'good.completedAt',
       ]);
   }
 }

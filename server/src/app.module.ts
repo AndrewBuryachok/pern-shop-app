@@ -34,10 +34,12 @@ import { WaresModule } from './features/wares/wares.module';
 import { ProductsModule } from './features/products/products.module';
 import { OrdersModule } from './features/orders/orders.module';
 import { DeliveriesModule } from './features/deliveries/deliveries.module';
+import { ShopsDeliveriesModule } from './features/shops-deliveries/shops-deliveries.module';
 import { MarketsDeliveriesModule } from './features/markets-deliveries/markets-deliveries.module';
 import { StoragesDeliveriesModule } from './features/storages-deliveries/storages-deliveries.module';
 import { TasksModule } from './features/tasks/tasks.module';
 import { AdvertsModule } from './features/adverts/adverts.module';
+import { BargainsModule } from './features/bargains/bargains.module';
 import { TradesModule } from './features/trades/trades.module';
 import { SalesModule } from './features/sales/sales.module';
 import { PollsModule } from './features/polls/polls.module';
@@ -102,10 +104,12 @@ import { LoggerModule } from './features/logger/logger.module';
     ProductsModule,
     OrdersModule,
     DeliveriesModule,
+    ShopsDeliveriesModule,
     MarketsDeliveriesModule,
     StoragesDeliveriesModule,
     TasksModule,
     AdvertsModule,
+    BargainsModule,
     TradesModule,
     SalesModule,
     PollsModule,
