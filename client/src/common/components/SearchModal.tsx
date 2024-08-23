@@ -13,8 +13,8 @@ import {
   Rating,
   Select,
   Slider,
-  TextInput,
   Textarea,
+  TextInput,
 } from '@mantine/core';
 import { DatePicker } from '@mantine/dates';
 import { useForm } from '@mantine/form';
