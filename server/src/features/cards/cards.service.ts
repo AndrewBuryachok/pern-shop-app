@@ -11,11 +11,7 @@ import {
   UpdateCardBalanceDto,
 } from './card.dto';
 import { Request, Response } from '../../common/interfaces';
-import {
-  MAX_CARDS_NUMBER,
-  MAX_CARD_BALANCE,
-  MIN_CARD_BALANCE,
-} from '../../common/constants';
+import { MAX_CARD_BALANCE, MIN_CARD_BALANCE } from '../../common/constants';
 import { AppException } from '../../common/exceptions';
 import { CardError } from './card-error.enum';
 import { Notification } from '../../common/enums';
@@ -67,7 +63,6 @@ export class CardsService {
   }
 
   async createCard(dto: ExtCreateCardDto): Promise<void> {
-    await this.checkHasNotEnough(dto.userId);
     await this.checkNameNotUsed(dto.userId, dto.name);
     await this.create(dto);
   }
@@ -163,13 +158,6 @@ export class CardsService {
       throw new AppException(CardError.NOT_USER);
     }
     return card;
-  }
-
-  private async checkHasNotEnough(userId: number): Promise<void> {
-    const count = await this.cardsRepository.countBy({ userId });
-    if (count === MAX_CARDS_NUMBER) {
-      throw new AppException(CardError.ALREADY_HAS_ENOUGH);
-    }
   }
 
   private async checkNameNotUsed(

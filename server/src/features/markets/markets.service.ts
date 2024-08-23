@@ -6,7 +6,6 @@ import { CardsService } from '../cards/cards.service';
 import { MqttService } from '../mqtt/mqtt.service';
 import { ExtCreateMarketDto, ExtEditMarketDto } from './market.dto';
 import { Request, Response } from '../../common/interfaces';
-import { MAX_MARKETS_NUMBER } from '../../common/constants';
 import { AppException } from '../../common/exceptions';
 import { MarketError } from './market-error.enum';
 import { Notification } from '../../common/enums';
@@ -65,7 +64,6 @@ export class MarketsService {
     dto: ExtCreateMarketDto & { nick: string },
   ): Promise<void> {
     await this.cardsService.checkCardUser(dto.cardId, dto.myId, dto.hasRole);
-    await this.checkHasNotEnough(dto.myId);
     await this.checkNameNotUsed(dto.name);
     await this.checkCoordinatesNotUsed(dto.x, dto.y);
     const market = await this.create(dto);
@@ -108,13 +106,6 @@ export class MarketsService {
       throw new AppException(MarketError.NOT_OWNER);
     }
     return market;
-  }
-
-  private async checkHasNotEnough(userId: number): Promise<void> {
-    const count = await this.marketsRepository.countBy({ card: { userId } });
-    if (count === MAX_MARKETS_NUMBER) {
-      throw new AppException(MarketError.ALREADY_HAS_ENOUGH);
-    }
   }
 
   private async checkNameNotUsed(name: string, id?: number): Promise<void> {

@@ -1,5 +1,4 @@
 export enum FarmError {
-  ALREADY_HAS_ENOUGH = '400: User already has enough farms',
   NAME_ALREADY_USED = '400: Farm name already used',
   COORDINATES_ALREADY_USED = '400: Farm coordinates already used',
   ALREADY_IN_FARM = '400: User already in farm',

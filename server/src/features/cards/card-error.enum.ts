@@ -1,5 +1,4 @@
 export enum CardError {
-  ALREADY_HAS_ENOUGH = '400: User already has enough cards',
   NAME_ALREADY_USED = '400: Card name already used',
   ALREADY_ENOUGH_BALANCE = '400: Card already has enough balance',
   NOT_ENOUGH_BALANCE = '400: Card has not enough balance',

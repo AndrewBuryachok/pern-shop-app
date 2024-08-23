@@ -6,7 +6,6 @@ import { CardsService } from '../cards/cards.service';
 import { MqttService } from '../mqtt/mqtt.service';
 import { ExtCreateStorageDto, ExtEditStorageDto } from './storage.dto';
 import { Request, Response } from '../../common/interfaces';
-import { MAX_STORAGES_NUMBER } from '../../common/constants';
 import { AppException } from '../../common/exceptions';
 import { StorageError } from './storage-error.enum';
 import { Notification } from '../../common/enums';
@@ -65,7 +64,6 @@ export class StoragesService {
     dto: ExtCreateStorageDto & { nick: string },
   ): Promise<void> {
     await this.cardsService.checkCardUser(dto.cardId, dto.myId, dto.hasRole);
-    await this.checkHasNotEnough(dto.myId);
     await this.checkNameNotUsed(dto.name);
     await this.checkCoordinatesNotUsed(dto.x, dto.y);
     const storage = await this.create(dto);
@@ -108,13 +106,6 @@ export class StoragesService {
       throw new AppException(StorageError.NOT_OWNER);
     }
     return storage;
-  }
-
-  private async checkHasNotEnough(userId: number): Promise<void> {
-    const count = await this.storagesRepository.countBy({ card: { userId } });
-    if (count === MAX_STORAGES_NUMBER) {
-      throw new AppException(StorageError.ALREADY_HAS_ENOUGH);
-    }
   }
 
   private async checkNameNotUsed(name: string, id?: number): Promise<void> {

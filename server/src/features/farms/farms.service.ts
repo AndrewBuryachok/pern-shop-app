@@ -10,7 +10,6 @@ import {
   ExtUpdateFarmUserDto,
 } from './farm.dto';
 import { Request, Response } from '../../common/interfaces';
-import { MAX_FARMS_NUMBER } from '../../common/constants';
 import { AppException } from '../../common/exceptions';
 import { FarmError } from './farm-error.enum';
 import { Notification } from '../../common/enums';
@@ -63,7 +62,6 @@ export class FarmsService {
   }
 
   async createFarm(dto: ExtCreateFarmDto & { nick: string }): Promise<void> {
-    await this.checkHasNotEnough(dto.userId);
     await this.checkNameNotUsed(dto.name);
     await this.checkCoordinatesNotUsed(dto.x, dto.y);
     const farm = await this.create(dto);
@@ -134,13 +132,6 @@ export class FarmsService {
       throw new AppException(FarmError.NOT_OWNER);
     }
     return farm;
-  }
-
-  private async checkHasNotEnough(userId: number): Promise<void> {
-    const count = await this.farmsRepository.countBy({ userId });
-    if (count === MAX_FARMS_NUMBER) {
-      throw new AppException(FarmError.ALREADY_HAS_ENOUGH);
-    }
   }
 
   private async checkNameNotUsed(name: string, id?: number): Promise<void> {

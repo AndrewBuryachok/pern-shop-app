@@ -8,7 +8,6 @@ import { PaymentsService } from '../payments/payments.service';
 import { ExtCreateDrawerDto, ReserveDrawerDto } from './drawer.dto';
 import { Request, Response } from '../../common/interfaces';
 import { getDateWeekAfter } from '../../common/utils';
-import { MAX_DRAWERS_NUMBER } from '../../common/constants';
 import { AppException } from '../../common/exceptions';
 import { DrawerError } from './drawer-error.enum';
 
@@ -71,7 +70,7 @@ export class DrawersService {
       dto.myId,
       dto.hasRole,
     );
-    const name = await this.checkHasNotEnough(dto.stationId);
+    const name = (await this.coundStationDrawers(dto.stationId)) + 1;
     await this.create({ ...dto, name });
   }
 
@@ -125,12 +124,8 @@ export class DrawersService {
     await this.drawersRepository.findOneByOrFail({ id });
   }
 
-  private async checkHasNotEnough(stationId: number): Promise<number> {
-    const count = await this.drawersRepository.countBy({ stationId });
-    if (count === MAX_DRAWERS_NUMBER) {
-      throw new AppException(DrawerError.ALREADY_HAS_ENOUGH);
-    }
-    return count + 1;
+  private coundStationDrawers(stationId: number): Promise<number> {
+    return this.drawersRepository.countBy({ stationId });
   }
 
   private async findFreeDrawer(stationId: number): Promise<Drawer> {

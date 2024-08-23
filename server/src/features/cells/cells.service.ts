@@ -8,7 +8,6 @@ import { PaymentsService } from '../payments/payments.service';
 import { ExtCreateCellDto, ReserveCellDto } from './cell.dto';
 import { Request, Response } from '../../common/interfaces';
 import { getDateWeekAfter } from '../../common/utils';
-import { MAX_CELLS_NUMBER } from '../../common/constants';
 import { AppException } from '../../common/exceptions';
 import { CellError } from './cell-error.enum';
 
@@ -77,7 +76,7 @@ export class CellsService {
       dto.myId,
       dto.hasRole,
     );
-    const name = await this.checkHasNotEnough(storageId);
+    const name = (await this.countStorageCells(storageId)) + 1;
     await this.create({ ...dto, storageId, name });
   }
 
@@ -127,12 +126,8 @@ export class CellsService {
     await this.cellsRepository.findOneByOrFail({ id });
   }
 
-  private async checkHasNotEnough(storageId: number): Promise<number> {
-    const count = await this.cellsRepository.countBy({ storageId });
-    if (count === MAX_CELLS_NUMBER) {
-      throw new AppException(CellError.ALREADY_HAS_ENOUGH);
-    }
-    return count + 1;
+  private countStorageCells(storageId: number): Promise<number> {
+    return this.cellsRepository.countBy({ storageId });
   }
 
   private async findFreeCell(storageTagId: number): Promise<Cell> {

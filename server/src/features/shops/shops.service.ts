@@ -7,7 +7,6 @@ import { CardsService } from '../cards/cards.service';
 import { MqttService } from '../mqtt/mqtt.service';
 import { ExtCreateShopDto, ExtEditShopDto } from './shop.dto';
 import { Request, Response } from '../../common/interfaces';
-import { MAX_SHOPS_NUMBER } from '../../common/constants';
 import { AppException } from '../../common/exceptions';
 import { ShopError } from './shop-error.enum';
 import { Notification } from '../../common/enums';
@@ -77,7 +76,6 @@ export class ShopsService {
 
   async createShop(dto: ExtCreateShopDto & { nick: string }): Promise<void> {
     await this.cardsService.checkCardUser(dto.cardId, dto.myId, dto.hasRole);
-    await this.checkHasNotEnough(dto.myId);
     await this.checkNameNotUsed(dto.name);
     await this.checkCoordinatesNotUsed(dto.x, dto.y);
     const shop = await this.create(dto);
@@ -113,13 +111,6 @@ export class ShopsService {
       throw new AppException(ShopError.NOT_OWNER);
     }
     return shop;
-  }
-
-  private async checkHasNotEnough(userId: number): Promise<void> {
-    const count = await this.shopsRepository.countBy({ card: { userId } });
-    if (count === MAX_SHOPS_NUMBER) {
-      throw new AppException(ShopError.ALREADY_HAS_ENOUGH);
-    }
   }
 
   private async checkNameNotUsed(name: string, id?: number): Promise<void> {

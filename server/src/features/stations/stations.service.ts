@@ -7,7 +7,6 @@ import { CardsService } from '../cards/cards.service';
 import { MqttService } from '../mqtt/mqtt.service';
 import { ExtCreateStationDto, ExtEditStationDto } from './station.dto';
 import { Request, Response } from '../../common/interfaces';
-import { MAX_STATIONS_NUMBER } from '../../common/constants';
 import { AppException } from '../../common/exceptions';
 import { StationError } from './station-error.enum';
 import { Notification } from '../../common/enums';
@@ -106,7 +105,6 @@ export class StationsService {
     dto: ExtCreateStationDto & { nick: string },
   ): Promise<void> {
     await this.cardsService.checkCardUser(dto.cardId, dto.myId, dto.hasRole);
-    await this.checkHasNotEnough(dto.myId);
     await this.checkNameNotUsed(dto.name);
     await this.checkCoordinatesNotUsed(dto.x, dto.y);
     const station = await this.create(dto);
@@ -149,13 +147,6 @@ export class StationsService {
       throw new AppException(StationError.NOT_OWNER);
     }
     return station;
-  }
-
-  private async checkHasNotEnough(userId: number): Promise<void> {
-    const count = await this.stationsRepository.countBy({ card: { userId } });
-    if (count === MAX_STATIONS_NUMBER) {
-      throw new AppException(StationError.ALREADY_HAS_ENOUGH);
-    }
   }
 
   private async checkNameNotUsed(name: string, id?: number): Promise<void> {

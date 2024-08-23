@@ -10,7 +10,6 @@ import {
   ExtUpdateCityUserDto,
 } from './city.dto';
 import { Request, Response } from '../../common/interfaces';
-import { MAX_CITIES_NUMBER } from '../../common/constants';
 import { AppException } from '../../common/exceptions';
 import { CityError } from './city-error.enum';
 import { Notification } from '../../common/enums';
@@ -70,7 +69,6 @@ export class CitiesService {
 
   async createCity(dto: ExtCreateCityDto & { nick: string }): Promise<void> {
     await this.checkNotCityUser(dto.userId);
-    await this.checkHasNotEnough(dto.userId);
     await this.checkNameNotUsed(dto.name);
     await this.checkCoordinatesNotUsed(dto.x, dto.y);
     const city = await this.create(dto);
@@ -158,13 +156,6 @@ export class CitiesService {
       throw new AppException(CityError.NOT_OWNER);
     }
     return city;
-  }
-
-  private async checkHasNotEnough(userId: number): Promise<void> {
-    const count = await this.citiesRepository.countBy({ userId });
-    if (count === MAX_CITIES_NUMBER) {
-      throw new AppException(CityError.ALREADY_HAS_ENOUGH);
-    }
   }
 
   private async checkNameNotUsed(name: string, id?: number): Promise<void> {

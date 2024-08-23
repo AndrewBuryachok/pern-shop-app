@@ -8,7 +8,6 @@ import { PaymentsService } from '../payments/payments.service';
 import { ExtCreateStoreDto, ReserveStoreDto } from './store.dto';
 import { Request, Response } from '../../common/interfaces';
 import { getDateWeekAfter } from '../../common/utils';
-import { MAX_STORES_NUMBER } from '../../common/constants';
 import { AppException } from '../../common/exceptions';
 import { StoreError } from './store-error.enum';
 
@@ -77,7 +76,7 @@ export class StoresService {
       dto.myId,
       dto.hasRole,
     );
-    const name = await this.checkHasNotEnough(marketId);
+    const name = (await this.countMarketStores(marketId)) + 1;
     await this.create({ ...dto, marketId, name });
   }
 
@@ -127,12 +126,8 @@ export class StoresService {
     await this.storesRepository.findOneByOrFail({ id });
   }
 
-  private async checkHasNotEnough(marketId: number): Promise<number> {
-    const count = await this.storesRepository.countBy({ marketId });
-    if (count === MAX_STORES_NUMBER) {
-      throw new AppException(StoreError.ALREADY_HAS_ENOUGH);
-    }
-    return count + 1;
+  private countMarketStores(marketId: number): Promise<number> {
+    return this.storesRepository.countBy({ marketId });
   }
 
   private async findFreeStore(storeId: number): Promise<Store> {
