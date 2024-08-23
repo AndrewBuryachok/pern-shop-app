@@ -4,7 +4,7 @@ import PlaceText from './PlaceText';
 import AvatarWithDoubleText from './AvatarWithDoubleText';
 
 type Props = SmPlaceWithCard & {
-  container: number;
+  container?: number;
 };
 
 export default function PlaceWithDoubleAvatar(props: Props) {

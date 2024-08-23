@@ -5,8 +5,8 @@ import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { Good } from './good.model';
-import { useDeleteGoodMutation } from './goods.api';
-import { DeleteGoodDto } from './good.dto';
+import { useCompleteGoodMutation } from './goods.api';
+import { CompleteGoodDto } from './good.dto';
 import CustomForm from '../../common/components/CustomForm';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import ThingImage from '../../common/components/ThingImage';
@@ -15,7 +15,7 @@ import { Color } from '../../common/constants';
 
 type Props = IModal<Good>;
 
-export default function DeleteGoodModal({ data: good }: Props) {
+export default function CompleteGoodModal({ data: good }: Props) {
   const [t] = useTranslation();
 
   const form = useForm({
@@ -24,17 +24,17 @@ export default function DeleteGoodModal({ data: good }: Props) {
     },
   });
 
-  const [deleteGood, { isLoading }] = useDeleteGoodMutation();
+  const [completeGood, { isLoading }] = useCompleteGoodMutation();
 
-  const handleSubmit = async (dto: DeleteGoodDto) => {
-    await deleteGood(dto);
+  const handleSubmit = async (dto: CompleteGoodDto) => {
+    await completeGood(dto);
   };
 
   return (
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={t('actions.delete') + ' ' + t('modals.goods')}
+      text={t('actions.complete') + ' ' + t('modals.goods')}
     >
       <TextInput
         label={t('columns.seller')}
@@ -69,12 +69,12 @@ export default function DeleteGoodModal({ data: good }: Props) {
   );
 }
 
-export const deleteGoodAction = {
+export const completeGoodAction = {
   open: (good: Good) =>
     openModal({
-      title: t('actions.delete') + ' ' + t('modals.goods'),
-      children: <DeleteGoodModal data={good} />,
+      title: t('actions.complete') + ' ' + t('modals.goods'),
+      children: <CompleteGoodModal data={good} />,
     }),
-  disable: () => false,
+  disable: (good: Good) => !!good.completedAt,
   color: Color.RED,
 };

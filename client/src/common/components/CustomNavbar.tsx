@@ -81,7 +81,7 @@ export default function CustomNavbar(props: Props) {
     {
       route: 'purchases',
       icon: IconDiscount,
-      nested: ['trades', 'sales'],
+      nested: ['bargains', 'trades', 'sales'],
       sub: '/my',
     },
     {
@@ -90,6 +90,7 @@ export default function CustomNavbar(props: Props) {
       nested: [
         'orders',
         'deliveries',
+        'shops-deliveries',
         'markets-deliveries',
         'storages-deliveries',
       ],

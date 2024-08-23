@@ -1,17 +1,31 @@
 import { t } from 'i18next';
 import { useTranslation } from 'react-i18next';
-import { Stack, Textarea, TextInput } from '@mantine/core';
+import {
+  Input,
+  Rating,
+  Select,
+  Stack,
+  Textarea,
+  TextInput,
+} from '@mantine/core';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { Good } from './good.model';
+import {
+  useSelectGoodRatingQuery,
+  useSelectGoodStatesQuery,
+} from './goods.api';
+import RefetchAction from '../../common/components/RefetchAction';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import ThingImage from '../../common/components/ThingImage';
+import { StatesItem } from '../../common/components/StatesItem';
 import {
   parseCard,
   parseItem,
   parsePlace,
   parseThingAmount,
   parseTime,
+  viewStates,
 } from '../../common/utils';
 import { Color } from '../../common/constants';
 
@@ -19,6 +33,9 @@ type Props = IModal<Good>;
 
 export default function ViewGoodModal({ data: good }: Props) {
   const [t] = useTranslation();
+
+  const { data: states, ...statesResponse } = useSelectGoodStatesQuery(good.id);
+  const { data: rating } = useSelectGoodRatingQuery(good.id);
 
   return (
     <Stack spacing={8}>
@@ -43,11 +60,6 @@ export default function ViewGoodModal({ data: good }: Props) {
         readOnly
       />
       <TextInput
-        label={t('columns.shop')}
-        value={parsePlace(good.shop)}
-        readOnly
-      />
-      <TextInput
         label={t('columns.amount')}
         value={parseThingAmount(good)}
         readOnly
@@ -57,11 +69,33 @@ export default function ViewGoodModal({ data: good }: Props) {
         value={`${good.price} ${t('constants.currency')}`}
         readOnly
       />
+      <Select
+        label={t('columns.prices')}
+        placeholder={`${t('components.total')}: ${states?.length || 0}`}
+        rightSection={<RefetchAction {...statesResponse} />}
+        itemComponent={StatesItem}
+        data={viewStates(states || [])}
+        limit={20}
+        searchable
+      />
+      <TextInput
+        label={t('columns.shop')}
+        value={parsePlace(good.shop)}
+        readOnly
+      />
       <TextInput
         label={t('columns.created')}
         value={parseTime(good.createdAt)}
         readOnly
       />
+      <TextInput
+        label={t('columns.completed')}
+        value={parseTime(good.completedAt)}
+        readOnly
+      />
+      <Input.Wrapper label={t('columns.rate')}>
+        <Rating value={rating?.rate} readOnly />
+      </Input.Wrapper>
     </Stack>
   );
 }

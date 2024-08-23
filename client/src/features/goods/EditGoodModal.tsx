@@ -1,6 +1,6 @@
 import { t } from 'i18next';
 import { useTranslation } from 'react-i18next';
-import { NumberInput, Select, Textarea } from '@mantine/core';
+import { NumberInput, TextInput, Textarea } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
@@ -8,14 +8,12 @@ import { Good } from './good.model';
 import { useEditGoodMutation } from './goods.api';
 import { EditGoodDto } from './good.dto';
 import CustomForm from '../../common/components/CustomForm';
+import CustomAvatar from '../../common/components/CustomAvatar';
 import ThingImage from '../../common/components/ThingImage';
-import { ThingsItem } from '../../common/components/ThingsItem';
-import { selectItems, selectKits } from '../../common/utils';
+import { parseCard, parseItem, parseThingAmount } from '../../common/utils';
 import {
   Color,
   MAX_AMOUNT_VALUE,
-  MAX_DESCRIPTION_LENGTH,
-  MAX_INTAKE_VALUE,
   MAX_PRICE_VALUE,
 } from '../../common/constants';
 
@@ -27,18 +25,9 @@ export default function EditGoodModal({ data: good }: Props) {
   const form = useForm({
     initialValues: {
       goodId: good.id,
-      item: `${good.item}`,
-      description: good.description,
       amount: good.amount,
-      intake: good.intake,
-      kit: `${good.kit}`,
       price: good.price,
     },
-    transformValues: ({ item, kit, ...rest }) => ({
-      ...rest,
-      item: +item,
-      kit: +kit,
-    }),
   });
 
   const [editGood, { isLoading }] = useEditGoodMutation();
@@ -54,47 +43,37 @@ export default function EditGoodModal({ data: good }: Props) {
       text={t('actions.edit') + ' ' + t('modals.goods')}
       isChanged={!form.isDirty()}
     >
-      <Select
-        label={t('columns.item')}
-        placeholder={t('columns.item')}
-        icon={form.values.item && <ThingImage item={+form.values.item} />}
+      <TextInput
+        label={t('columns.seller')}
+        icon={<CustomAvatar {...good.shop.card.user} />}
         iconWidth={48}
-        itemComponent={ThingsItem}
-        data={selectItems()}
-        limit={20}
-        searchable
-        required
-        {...form.getInputProps('item')}
+        value={parseCard(good.shop.card)}
+        readOnly
+      />
+      <TextInput
+        label={t('columns.item')}
+        icon={<ThingImage {...good} />}
+        iconWidth={48}
+        value={parseItem(good.item)}
+        readOnly
       />
       <Textarea
         label={t('columns.description')}
-        placeholder={t('columns.description')}
-        maxLength={MAX_DESCRIPTION_LENGTH}
-        {...form.getInputProps('description')}
+        value={good.description || '-'}
+        readOnly
+      />
+      <TextInput
+        label={t('columns.amount')}
+        value={parseThingAmount(good)}
+        readOnly
       />
       <NumberInput
         label={t('columns.amount')}
         placeholder={t('columns.amount')}
         required
-        min={1}
+        min={0}
         max={MAX_AMOUNT_VALUE}
         {...form.getInputProps('amount')}
-      />
-      <NumberInput
-        label={t('columns.intake')}
-        placeholder={t('columns.intake')}
-        required
-        min={1}
-        max={MAX_INTAKE_VALUE}
-        {...form.getInputProps('intake')}
-      />
-      <Select
-        label={t('columns.kit')}
-        placeholder={t('columns.kit')}
-        data={selectKits()}
-        searchable
-        required
-        {...form.getInputProps('kit')}
       />
       <NumberInput
         label={t('columns.price')}
@@ -114,6 +93,6 @@ export const editGoodAction = {
       title: t('actions.edit') + ' ' + t('modals.goods'),
       children: <EditGoodModal data={good} />,
     }),
-  disable: () => false,
+  disable: (good: Good) => !!good.completedAt,
   color: Color.YELLOW,
 };

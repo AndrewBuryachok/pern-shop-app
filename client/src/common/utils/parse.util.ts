@@ -4,6 +4,7 @@ import { SmPlace } from '../../features/places/place.model';
 import { MdStore } from '../../features/stores/store.model';
 import { MdCell } from '../../features/cells/cell.model';
 import { MdDrawer } from '../../features/drawers/drawer.model';
+import { SmBargainWithoutPrice } from '../../features/bargains/bargain.model';
 import { SmTradeWithoutPrice } from '../../features/trades/trade.model';
 import { SmSaleWithoutPrice } from '../../features/sales/sale.model';
 import { Color, items, kits, statuses } from '../constants';
@@ -57,6 +58,11 @@ export const parseThingAmount = (data: {
 }) =>
   `${data.amount} * ${data.intake} ${t(
     `constants.kits.${kits[data.kit - 1]}`,
+  )}`;
+
+export const parseBargainAmount = (bargain: SmBargainWithoutPrice) =>
+  `${bargain.amount} * ${bargain.good.intake} ${t(
+    `constants.kits.${kits[bargain.good.kit - 1]}`,
   )}`;
 
 export const parseTradeAmount = (trade: SmTradeWithoutPrice) =>

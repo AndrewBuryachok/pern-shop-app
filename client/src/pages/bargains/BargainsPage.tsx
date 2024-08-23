@@ -1,22 +1,15 @@
 import { useLocation, useSearchParams } from 'react-router-dom';
+import { Mode } from '../../common/enums';
 import {
-  useGetAllGoodsQuery,
-  useGetMainGoodsQuery,
-  useGetMyGoodsQuery,
-} from '../../features/goods/goods.api';
-import GoodsTable from '../../features/goods/GoodsTable';
-import {
-  createMyGoodButton,
-  createUserGoodButton,
-} from '../../features/goods/CreateGoodModal';
-import { editGoodAction } from '../../features/goods/EditGoodModal';
-import {
-  buyMyGoodAction,
-  buyUserGoodAction,
-} from '../../features/goods/BuyGoodModal';
-import { completeGoodAction } from '../../features/goods/CompleteGoodModal';
+  useGetAllBargainsQuery,
+  useGetMyBargainsQuery,
+  useGetSoldBargainsQuery,
+} from '../../features/bargains/bargains.api';
+import BargainsTable from '../../features/bargains/BargainsTable';
+import { rateBargainAction } from '../../features/bargains/RateBargainModal';
+import { deleteBargainAction } from '../../features/bargains/DeleteBargainModal';
 
-export default function GoodsPage() {
+export default function BargainsPage() {
   const tab = useLocation().pathname.split('/')[2] || 'main';
 
   const [searchParams] = useSearchParams();
@@ -26,6 +19,8 @@ export default function GoodsPage() {
     id: +(searchParams.get('id') || 0) || null,
     user: searchParams.get('user'),
     card: searchParams.get('card'),
+    modes: [Mode.BUYER, Mode.SELLER],
+    mode: searchParams.get('mode') as Mode,
     shop: searchParams.get('shop'),
     item: searchParams.get('item'),
     description: searchParams.get('description') || '',
@@ -36,34 +31,21 @@ export default function GoodsPage() {
     kit: searchParams.get('kit'),
     minPrice: +(searchParams.get('minPrice') || 0) || null,
     maxPrice: +(searchParams.get('maxPrice') || 0) || null,
+    rate: +(searchParams.get('rate') || 0) || null,
     minDate: searchParams.get('minDate'),
     maxDate: searchParams.get('maxDate'),
   };
 
   const response = {
-    main: useGetMainGoodsQuery,
-    my: useGetMyGoodsQuery,
-    all: useGetAllGoodsQuery,
+    my: useGetMyBargainsQuery,
+    sold: useGetSoldBargainsQuery,
+    all: useGetAllBargainsQuery,
   }[tab]!(search);
 
-  const button = {
-    main: createMyGoodButton,
-    my: createMyGoodButton,
-    all: createUserGoodButton,
-  }[tab];
-
   const actions = {
-    main: [buyMyGoodAction],
-    my: [editGoodAction, completeGoodAction],
-    all: [editGoodAction, buyUserGoodAction, completeGoodAction],
+    my: [rateBargainAction],
+    all: [rateBargainAction, deleteBargainAction],
   }[tab];
 
-  return (
-    <GoodsTable
-      {...response}
-      search={search}
-      button={button}
-      actions={actions}
-    />
-  );
+  return <BargainsTable {...response} search={search} actions={actions} />;
 }

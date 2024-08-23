@@ -1,7 +1,8 @@
 import { emptyApi } from '../../app/empty.api';
 import { IRequest, IResponse } from '../../common/interfaces';
 import { Good } from './good.model';
-import { CreateGoodDto, DeleteGoodDto, EditGoodDto } from './good.dto';
+import { State } from '../states/state.model';
+import { CompleteGoodDto, CreateGoodDto, EditGoodDto } from './good.dto';
 import { getQuery } from '../../common/utils';
 
 export const goodsApi = emptyApi.injectEndpoints({
@@ -24,6 +25,18 @@ export const goodsApi = emptyApi.injectEndpoints({
       }),
       providesTags: ['Auth', 'Good'],
     }),
+    selectGoodStates: build.query<State[], number>({
+      query: (goodId) => ({
+        url: `/goods/${goodId}/states`,
+      }),
+      providesTags: ['Good'],
+    }),
+    selectGoodRating: build.query<{ rate: number }, number>({
+      query: (goodId) => ({
+        url: `/goods/${goodId}/rating`,
+      }),
+      providesTags: ['Bargain'],
+    }),
     createGood: build.mutation<void, CreateGoodDto>({
       query: (dto) => ({
         url: '/goods',
@@ -40,10 +53,10 @@ export const goodsApi = emptyApi.injectEndpoints({
       }),
       invalidatesTags: ['Good'],
     }),
-    deleteGood: build.mutation<void, DeleteGoodDto>({
+    completeGood: build.mutation<void, CompleteGoodDto>({
       query: ({ goodId }) => ({
         url: `/goods/${goodId}`,
-        method: 'DELETE',
+        method: 'POST',
       }),
       invalidatesTags: ['Good'],
     }),
@@ -54,7 +67,9 @@ export const {
   useGetMainGoodsQuery,
   useGetMyGoodsQuery,
   useGetAllGoodsQuery,
+  useSelectGoodStatesQuery,
+  useSelectGoodRatingQuery,
   useCreateGoodMutation,
   useEditGoodMutation,
-  useDeleteGoodMutation,
+  useCompleteGoodMutation,
 } = goodsApi;

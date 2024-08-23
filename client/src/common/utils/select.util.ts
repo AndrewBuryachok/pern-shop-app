@@ -14,6 +14,7 @@ import { SmTag } from '../../features/tags/tag.model';
 import { MdStorageTag } from '../../features/storages-tags/storage-tag.model';
 import { Container } from '../../features/containers/container.model';
 import { SelectRent } from '../../features/rents/rent.model';
+import { SmBargain } from '../../features/bargains/bargain.model';
 import { SmTrade } from '../../features/trades/trade.model';
 import { SmSale } from '../../features/sales/sale.model';
 import { parseItem, parsePlace } from './parse.util';
@@ -136,6 +137,14 @@ export const selectRents = (rents?: SelectRent[]) =>
     container: rent.store.name,
     value: `${rent.id}`,
     label: `${rent.store.market.name} (${rent.store.market.x} ${rent.store.market.y}) #${rent.store.name}`,
+  })) || [];
+
+export const selectBargains = (bargains?: SmBargain[]) =>
+  bargains?.map(({ good, ...bargain }) => ({
+    ...good,
+    ...bargain,
+    value: `${bargain.id}`,
+    label: parseItem(good.item),
   })) || [];
 
 export const selectTrades = (trades?: SmTrade[]) =>
