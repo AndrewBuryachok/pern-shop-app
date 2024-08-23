@@ -47,6 +47,7 @@ export class ExchangesService {
   async createExchange(
     dto: ExtCreateExchangeDto & { nick: string },
   ): Promise<void> {
+    await this.cardsService.checkCardUser(dto.cardId, dto.myId, dto.hasRole);
     const card = dto.type
       ? await this.cardsService.increaseCardBalance(dto)
       : await this.cardsService.decreaseCardBalance(dto);
@@ -75,6 +76,7 @@ export class ExchangesService {
     await this.create({
       ...dto,
       ...exchange,
+      hasRole: true,
       cardId: exchange.customerCardId,
       type: !exchange.type,
     });
