@@ -3,7 +3,7 @@ import { IconExternalLink } from '@tabler/icons';
 import { IModal } from '../../common/interfaces';
 import { Poll } from './poll.model';
 import { useSelectPollViewsQuery } from './polls.api';
-import CustomAvatar from '../../common/components/CustomAvatar';
+import LinkedAvatar from '../../common/components/LinkedAvatar';
 import { openViewPollViewsModal } from './ViewPollViewsModal';
 
 type Props = IModal<Poll>;
@@ -22,7 +22,7 @@ export default function ViewPollViewsMenu({ data: poll }: Props) {
           {views?.slice(0, 4).map((view) => (
             <Tooltip key={view.id} label={view.user.nick} withArrow>
               <div>
-                <CustomAvatar {...view.user} />
+                <LinkedAvatar {...view.user} />
               </div>
             </Tooltip>
           ))}

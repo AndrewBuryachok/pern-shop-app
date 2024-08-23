@@ -6,7 +6,7 @@ import {
   useSelectArticleDownLikesQuery,
   useSelectArticleUpLikesQuery,
 } from './articles.api';
-import CustomAvatar from '../../common/components/CustomAvatar';
+import LinkedAvatar from '../../common/components/LinkedAvatar';
 import { openViewArticleLikesModal } from './ViewArticleLikesModal';
 
 type Props = IModal<Article> & { type: boolean };
@@ -27,7 +27,7 @@ export default function ViewArticleLikesMenu({ data: article, type }: Props) {
           {likes?.slice(0, 4).map((like) => (
             <Tooltip key={like.id} label={like.user.nick} withArrow>
               <div>
-                <CustomAvatar {...like.user} />
+                <LinkedAvatar {...like.user} />
               </div>
             </Tooltip>
           ))}

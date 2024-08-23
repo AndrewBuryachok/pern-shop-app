@@ -6,7 +6,7 @@ import {
   useSelectReportDownAttitudesQuery,
   useSelectReportUpAttitudesQuery,
 } from './reports.api';
-import CustomAvatar from '../../common/components/CustomAvatar';
+import LinkedAvatar from '../../common/components/LinkedAvatar';
 import { openViewReportAttitudesModal } from './ViewReportAttitudesModal';
 
 type Props = IModal<Report> & { type: boolean };
@@ -27,7 +27,7 @@ export default function ViewReportAttitudesMenu({ data: report, type }: Props) {
           {attitudes?.slice(0, 4).map((attitude) => (
             <Tooltip key={attitude.id} label={attitude.user.nick} withArrow>
               <div>
-                <CustomAvatar {...attitude.user} />
+                <LinkedAvatar {...attitude.user} />
               </div>
             </Tooltip>
           ))}

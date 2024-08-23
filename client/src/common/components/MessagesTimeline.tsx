@@ -4,8 +4,8 @@ import { IAction } from '../interfaces';
 import { Reply } from '../../features/replies/reply.model';
 import { getCurrentUser } from '../../features/auth/auth.slice';
 import SingleText from './SingleText';
-import CustomAvatarWithoutIndicator from './CustomAvatarWithoutIndicator';
-import CustomAvatar from './CustomAvatar';
+import LinkedAvatarWithoutIndicator from './LinkedAvatarWithoutIndicator';
+import LinkedAvatar from './LinkedAvatar';
 import ReplyAvatarWithText from './ReplyAvatarWithText';
 import CustomHighlight from './CustomHighlight';
 import CustomAnchor from './CustomAnchor';
@@ -62,9 +62,9 @@ export default function MessagesTimeline(props: Props) {
                 }
                 bullet={
                   reply.user.id === user?.id ? (
-                    <CustomAvatarWithoutIndicator {...reply.user} />
+                    <LinkedAvatarWithoutIndicator {...reply.user} />
                   ) : (
-                    <CustomAvatar {...reply.user} />
+                    <LinkedAvatar {...reply.user} />
                   )
                 }
               >

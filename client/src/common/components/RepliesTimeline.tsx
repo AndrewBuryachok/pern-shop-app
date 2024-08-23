@@ -3,7 +3,7 @@ import { Group, Skeleton, Timeline } from '@mantine/core';
 import { IAction } from '../interfaces';
 import { Reply } from '../../features/replies/reply.model';
 import SingleText from './SingleText';
-import CustomAvatar from './CustomAvatar';
+import LinkedAvatar from './LinkedAvatar';
 import ReplyAvatarWithText from './ReplyAvatarWithText';
 import CustomHighlight from './CustomHighlight';
 import CustomAnchor from './CustomAnchor';
@@ -37,7 +37,7 @@ export default function RepliesTimeline(props: Props) {
                   <SingleText text={parseTime(reply.createdAt)} dimmed />
                 </Group>
               }
-              bullet={<CustomAvatar {...reply.user} />}
+              bullet={<LinkedAvatar {...reply.user} />}
             >
               {reply.reply && <ReplyAvatarWithText {...reply.reply} divider />}
               <CustomHighlight text={reply.text} />

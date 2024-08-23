@@ -3,7 +3,7 @@ import { IconExternalLink } from '@tabler/icons';
 import { IModal } from '../../common/interfaces';
 import { Report } from './report.model';
 import { useSelectReportViewsQuery } from './reports.api';
-import CustomAvatar from '../../common/components/CustomAvatar';
+import LinkedAvatar from '../../common/components/LinkedAvatar';
 import { openViewReportViewsModal } from './ViewReportViewsModal';
 
 type Props = IModal<Report>;
@@ -22,7 +22,7 @@ export default function ViewReportViewsMenu({ data: report }: Props) {
           {views?.slice(0, 4).map((view) => (
             <Tooltip key={view.id} label={view.user.nick} withArrow>
               <div>
-                <CustomAvatar {...view.user} />
+                <LinkedAvatar {...view.user} />
               </div>
             </Tooltip>
           ))}

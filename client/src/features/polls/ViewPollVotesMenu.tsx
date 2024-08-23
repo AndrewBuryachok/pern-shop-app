@@ -6,7 +6,7 @@ import {
   useSelectPollDownVotesQuery,
   useSelectPollUpVotesQuery,
 } from './polls.api';
-import CustomAvatar from '../../common/components/CustomAvatar';
+import LinkedAvatar from '../../common/components/LinkedAvatar';
 import { openViewPollVotesModal } from './ViewPollVotesModal';
 
 type Props = IModal<Poll> & { type: boolean };
@@ -27,7 +27,7 @@ export default function ViewPollVotesMenu({ data: poll, type }: Props) {
           {votes?.slice(0, 4).map((vote) => (
             <Tooltip key={vote.id} label={vote.user.nick} withArrow>
               <div>
-                <CustomAvatar {...vote.user} />
+                <LinkedAvatar {...vote.user} />
               </div>
             </Tooltip>
           ))}
