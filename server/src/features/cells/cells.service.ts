@@ -81,7 +81,7 @@ export class CellsService {
   }
 
   async reserveCell(dto: ReserveCellDto & { nick: string }): Promise<Cell> {
-    const cell = await this.findFreeCell(dto.storageTagId);
+    const cell = await this.findFreeCell(dto.cellId);
     await this.paymentsService.createPayment({
       myId: dto.myId,
       nick: dto.nick,
@@ -98,7 +98,7 @@ export class CellsService {
   async continueCell(dto: ReserveCellDto & { nick: string }): Promise<Cell> {
     const cell = await this.cellsRepository.findOne({
       relations: ['storage', 'storage.card', 'storageTag'],
-      where: { id: dto.storageTagId },
+      where: { id: dto.cellId },
     });
     await this.paymentsService.createPayment({
       myId: dto.myId,
@@ -130,13 +130,13 @@ export class CellsService {
     return this.cellsRepository.countBy({ storageId });
   }
 
-  private async findFreeCell(storageTagId: number): Promise<Cell> {
+  private async findFreeCell(cellId: number): Promise<Cell> {
     const cell = await this.cellsRepository
       .createQueryBuilder('cell')
       .innerJoinAndSelect('cell.storage', 'storage')
       .innerJoinAndSelect('storage.card', 'card')
       .innerJoinAndSelect('cell.storageTag', 'storageTag')
-      .where('storageTag.id = :storageTagId', { storageTagId })
+      .where('cell.id = :cellId', { cellId })
       .andWhere(
         new Brackets((qb) =>
           qb
@@ -144,10 +144,9 @@ export class CellsService {
             .orWhere('cell.reservedUntil < NOW()'),
         ),
       )
-      .orderBy('RANDOM()')
       .getOne();
     if (!cell) {
-      throw new AppException(CellError.NO_FREE);
+      throw new AppException(CellError.NOT_FREE);
     }
     return cell;
   }

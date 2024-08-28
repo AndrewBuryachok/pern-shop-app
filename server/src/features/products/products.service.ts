@@ -103,8 +103,12 @@ export class ProductsService {
   async createProduct(
     dto: ExtCreateProductDto & { nick: string },
   ): Promise<void> {
-    const leaseId = await this.leasesService.createLease(dto);
-    const product = await this.create({ ...dto, storageTagId: leaseId });
+    await this.leasesService.checkLeaseOwner(
+      dto.leaseId,
+      dto.myId,
+      dto.hasRole,
+    );
+    const product = await this.create(dto);
     this.mqttService.publishNotificationMessage(
       product.id,
       0,
@@ -183,7 +187,7 @@ export class ProductsService {
   private async create(dto: ExtCreateProductDto): Promise<Product> {
     try {
       const product = this.productsRepository.create({
-        leaseId: dto.storageTagId,
+        leaseId: dto.leaseId,
         item: dto.item,
         description: dto.description,
         amount: dto.amount,

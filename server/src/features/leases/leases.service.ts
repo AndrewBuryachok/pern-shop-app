@@ -72,6 +72,18 @@ export class LeasesService {
     return { result, count };
   }
 
+  selectAllLeases(): Promise<Lease[]> {
+    return this.selectLeasesQueryBuilder().getMany();
+  }
+
+  selectMyLeases(myId: number): Promise<Lease[]> {
+    return this.selectLeasesQueryBuilder()
+      .innerJoin('lease.card', 'renterCard')
+      .innerJoin('renterCard.users', 'renterUsers')
+      .andWhere('renterUsers.id = :myId', { myId })
+      .getMany();
+  }
+
   async selectLeaseThings(leaseId: number): Promise<Thing[]> {
     const lease = await this.leasesRepository
       .createQueryBuilder('lease')
@@ -93,21 +105,15 @@ export class LeasesService {
     return lease.products;
   }
 
-  async createLease(
-    dto: ExtCreateLeaseDto & { nick: string },
-  ): Promise<number> {
+  async createLease(dto: ExtCreateLeaseDto & { nick: string }): Promise<void> {
     const cell = await this.cellsService.reserveCell(dto);
-    const lease = await this.create(
-      { ...dto, storageTagId: cell.id },
-      cell.storageTag.price,
-    );
+    const lease = await this.create(dto, cell.storageTag.price);
     this.mqttService.publishNotificationMessage(
       lease.id,
       cell.storage.card.userId,
       dto.nick,
       Notification.CREATED_LEASE,
     );
-    return lease.id;
   }
 
   async continueLease(dto: ExtLeaseIdDto & { nick: string }): Promise<void> {
@@ -118,7 +124,7 @@ export class LeasesService {
     );
     const cell = await this.cellsService.continueCell({
       ...dto,
-      storageTagId: lease.cellId,
+      cellId: lease.cellId,
       cardId: lease.cardId,
     });
     await this.continue(lease, cell.storageTag.price);
@@ -171,7 +177,7 @@ export class LeasesService {
   private async create(dto: ExtCreateLeaseDto, sum: number): Promise<Lease> {
     try {
       const lease = this.leasesRepository.create({
-        cellId: dto.storageTagId,
+        cellId: dto.cellId,
         cardId: dto.cardId,
         sum,
         completedAt: getDateWeekAfter(),
@@ -200,6 +206,24 @@ export class LeasesService {
     } catch (error) {
       throw new AppException(LeaseError.COMPLETE_FAILED);
     }
+  }
+
+  private selectLeasesQueryBuilder(): SelectQueryBuilder<Lease> {
+    return this.leasesRepository
+      .createQueryBuilder('lease')
+      .innerJoin('lease.cell', 'cell')
+      .innerJoin('cell.storage', 'storage')
+      .where('lease.completedAt > NOW()')
+      .orderBy('lease.id', 'DESC')
+      .select([
+        'lease.id',
+        'cell.id',
+        'storage.id',
+        'storage.name',
+        'storage.x',
+        'storage.y',
+        'cell.name',
+      ]);
   }
 
   private getLeasesQueryBuilder(req: Request): SelectQueryBuilder<Lease> {

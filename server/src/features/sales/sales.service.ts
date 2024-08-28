@@ -63,19 +63,14 @@ export class SalesService {
     return { result, count };
   }
 
-  async selectUserSales(userId: number): Promise<Sale[]> {
-    const sales = await this.selectSalesQueryBuilder()
+  selectUserSales(userId: number): Promise<Sale[]> {
+    return this.selectSalesQueryBuilder()
       .innerJoin('sale.card', 'card')
       .leftJoin('card.users', 'users')
-      .loadRelationCountAndMap('sale.deliveriesCount', 'sale.deliveries')
+      .leftJoinAndMapOne('delivery', 'sale.deliveries', 'delivery')
       .where('users.id = :userId', { userId })
+      .andWhere('delivery.id IS NULL')
       .getMany();
-    return sales
-      .filter((sale) => !sale['deliveriesCount'])
-      .map((sale) => {
-        delete sale['deliveriesCount'];
-        return sale;
-      });
   }
 
   async createSale(dto: ExtCreateSaleDto & { nick: string }): Promise<void> {

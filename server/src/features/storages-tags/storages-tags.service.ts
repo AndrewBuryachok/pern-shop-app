@@ -47,28 +47,6 @@ export class StoragesTagsService {
     return { result, count };
   }
 
-  async selectFreeTags(): Promise<StorageTag[]> {
-    const tags = await this.selectStoragesTagsQueryBuilder()
-      .loadRelationCountAndMap(
-        'storageTag.cellsCount',
-        'storageTag.cells',
-        'cell',
-        (qb) =>
-          qb
-            .where('cell.reservedUntil IS NULL')
-            .orWhere('cell.reservedUntil < NOW()'),
-      )
-      .innerJoin('storageTag.storage', 'storage')
-      .addSelect(['storage.id', 'storage.name', 'storage.x', 'storage.y'])
-      .getMany();
-    return tags
-      .filter((tag) => tag['cellsCount'] > 0)
-      .map((tag) => {
-        delete tag['cellsCount'];
-        return tag;
-      });
-  }
-
   selectStorageTags(storageId: number): Promise<StorageTag[]> {
     return this.selectStoragesTagsQueryBuilder()
       .where('storageTag.storageId = :storageId', { storageId })

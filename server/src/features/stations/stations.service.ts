@@ -63,25 +63,16 @@ export class StationsService {
       .getMany();
   }
 
-  async selectFreeStations(): Promise<Station[]> {
-    const stations = await this.selectStationsQueryBuilder()
-      .loadRelationCountAndMap(
-        'station.drawersCount',
+  selectFreeStations(): Promise<Station[]> {
+    return this.selectStationsQueryBuilder()
+      .innerJoinAndMapOne(
+        'drawer',
         'station.drawers',
         'drawer',
-        (qb) =>
-          qb
-            .where('drawer.reservedUntil IS NULL')
-            .orWhere('drawer.reservedUntil < NOW()'),
+        'drawer.reservedUntil IS NULL OR drawer.reservedUntil < NOW()',
       )
       .addSelect('station.price')
       .getMany();
-    return stations
-      .filter((station) => station['drawersCount'] > 0)
-      .map((station) => {
-        delete station['drawersCount'];
-        return station;
-      });
   }
 
   async selectStationStates(stationId: number): Promise<StationState[]> {

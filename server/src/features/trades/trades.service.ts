@@ -63,19 +63,14 @@ export class TradesService {
     return { result, count };
   }
 
-  async selectUserTrades(userId: number): Promise<Trade[]> {
-    const trades = await this.selectTradesQueryBuilder()
+  selectUserTrades(userId: number): Promise<Trade[]> {
+    return this.selectTradesQueryBuilder()
       .innerJoin('trade.card', 'card')
       .leftJoin('card.users', 'users')
-      .loadRelationCountAndMap('trade.deliveriesCount', 'trade.deliveries')
+      .leftJoinAndMapOne('delivery', 'trade.deliveries', 'delivery')
       .where('users.id = :userId', { userId })
+      .andWhere('delivery.id IS NULL')
       .getMany();
-    return trades
-      .filter((trade) => !trade['deliveriesCount'])
-      .map((trade) => {
-        delete trade['deliveriesCount'];
-        return trade;
-      });
   }
 
   async createTrade(dto: ExtCreateTradeDto & { nick: string }): Promise<void> {

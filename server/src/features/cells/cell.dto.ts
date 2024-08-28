@@ -3,6 +3,7 @@ import { Validate } from 'class-validator';
 import { Type } from 'class-transformer';
 import { IsId } from '../../common/decorators';
 import { IsCellExists, IsStorageTagExists } from '../../common/constraints';
+import { ExtCreateLeaseDto } from '../leases/lease.dto';
 
 export class CellIdDto {
   @ApiProperty()
@@ -26,9 +27,4 @@ export class ExtCreateCellDto extends CreateCellDto {
   name?: number;
 }
 
-export class ReserveCellDto {
-  storageTagId: number;
-  cardId: number;
-  myId: number;
-  hasRole: boolean;
-}
+export class ReserveCellDto extends ExtCreateLeaseDto {}

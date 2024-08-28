@@ -52,19 +52,14 @@ export class BargainsService {
     return { result, count };
   }
 
-  async selectUserBargains(userId: number): Promise<Bargain[]> {
-    const bargains = await this.selectBargainsQueryBuilder()
+  selectUserBargains(userId: number): Promise<Bargain[]> {
+    return this.selectBargainsQueryBuilder()
       .innerJoin('bargain.card', 'card')
       .leftJoin('card.users', 'users')
-      .loadRelationCountAndMap('bargain.deliveriesCount', 'bargain.deliveries')
+      .leftJoinAndMapOne('delivery', 'bargain.deliveries', 'delivery')
       .where('users.id = :userId', { userId })
+      .andWhere('delivery.id IS NULL')
       .getMany();
-    return bargains
-      .filter((bargain) => !bargain['deliveriesCount'])
-      .map((bargain) => {
-        delete bargain['deliveriesCount'];
-        return bargain;
-      });
   }
 
   async createBargain(

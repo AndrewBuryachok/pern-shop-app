@@ -1,9 +1,9 @@
-import { Controller, Get, Param, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { LeasesService } from './leases.service';
 import { Lease } from './lease.entity';
 import { Thing } from '../things/thing.entity';
-import { LeaseIdDto } from './lease.dto';
+import { CreateLeaseDto, LeaseIdDto } from './lease.dto';
 import { Request, Response } from '../../common/interfaces';
 import { HasRole, MyId, MyNick, Public, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
@@ -47,10 +47,31 @@ export class LeasesController {
     return this.leasesService.getAllLeases(req);
   }
 
+  @Roles(Role.MERCHANT)
+  @Get('all/select')
+  selectAllLeases(): Promise<Lease[]> {
+    return this.leasesService.selectAllLeases();
+  }
+
+  @Get('my/select')
+  selectMyLeases(@MyId() myId: number): Promise<Lease[]> {
+    return this.leasesService.selectMyLeases(myId);
+  }
+
   @Public()
   @Get(':leaseId/things')
   selectLeaseThings(@Param() { leaseId }: LeaseIdDto): Promise<Thing[]> {
     return this.leasesService.selectLeaseThings(leaseId);
+  }
+
+  @Post()
+  createLease(
+    @MyId() myId: number,
+    @MyNick() nick: string,
+    @HasRole(Role.MERCHANT) hasRole: boolean,
+    @Body() dto: CreateLeaseDto,
+  ): Promise<void> {
+    return this.leasesService.createLease({ ...dto, myId, nick, hasRole });
   }
 
   @Post(':leaseId/continue')

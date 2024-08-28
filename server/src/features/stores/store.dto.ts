@@ -3,6 +3,7 @@ import { Validate } from 'class-validator';
 import { Type } from 'class-transformer';
 import { IsId } from '../../common/decorators';
 import { IsMarketTagExists, IsStoreExists } from '../../common/constraints';
+import { ExtCreateRentDto } from '../rents/rent.dto';
 
 export class StoreIdDto {
   @ApiProperty()
@@ -26,9 +27,4 @@ export class ExtCreateStoreDto extends CreateStoreDto {
   name?: number;
 }
 
-export class ReserveStoreDto {
-  storeId: number;
-  cardId: number;
-  myId: number;
-  hasRole: boolean;
-}
+export class ReserveStoreDto extends ExtCreateRentDto {}

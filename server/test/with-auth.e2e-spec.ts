@@ -1772,12 +1772,6 @@ describe('With Auth', () => {
         .get(`/cells/${cellId}/tag`)
         .expect((res) => expect(res.body.id).toBeGreaterThan(0));
     });
-
-    it('GET /storages-tags/free/select', async () => {
-      return request(app.getHttpServer())
-        .get('/storages-tags/free/select')
-        .expect((res) => expect(res.body.length).toBeGreaterThan(0));
-    });
   });
 
   describe('Drawers', () => {
@@ -2007,6 +2001,80 @@ describe('With Auth', () => {
     });
   });
 
+  describe('Leases', () => {
+    it('POST /leases', async () => {
+      return request(app.getHttpServer())
+        .post('/leases')
+        .set('Authorization', `Bearer ${user.access}`)
+        .send({ cellId, cardId })
+        .expect('');
+    });
+
+    it('GET /leases', async () => {
+      return request(app.getHttpServer())
+        .get('/leases')
+        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
+    });
+
+    it('GET /leases/my', async () => {
+      return request(app.getHttpServer())
+        .get('/leases/my')
+        .set('Authorization', `Bearer ${user.access}`)
+        .expect((res) => expect(res.body.count).toBeGreaterThan(0))
+        .then((res) => (leaseId = res.body.result[0].id));
+    });
+
+    it('GET /leases/received', async () => {
+      return request(app.getHttpServer())
+        .get('/leases/received')
+        .set('Authorization', `Bearer ${user.access}`)
+        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
+    });
+
+    it('GET /leases/all', async () => {
+      return request(app.getHttpServer())
+        .get('/leases/all')
+        .set('Authorization', `Bearer ${merchant.access}`)
+        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
+    });
+
+    it('GET /leases/my/select', async () => {
+      return request(app.getHttpServer())
+        .get('/leases/my/select')
+        .set('Authorization', `Bearer ${user.access}`)
+        .expect((res) => expect(res.body.length).toBeGreaterThan(0));
+    });
+
+    it('GET /leases/all/select', async () => {
+      return request(app.getHttpServer())
+        .get('/leases/all/select')
+        .set('Authorization', `Bearer ${merchant.access}`)
+        .expect((res) => expect(res.body.length).toBeGreaterThan(0));
+    });
+
+    it('POST /products', async () => {
+      return request(app.getHttpServer())
+        .post('/products')
+        .set('Authorization', `Bearer ${user.access}`)
+        .send({
+          leaseId,
+          item: 1,
+          description: '',
+          amount: 2,
+          intake: 1,
+          kit: 1,
+          price: 5,
+        })
+        .expect('');
+    });
+
+    it('GET /leases/:leaseId/things', async () => {
+      return request(app.getHttpServer())
+        .get(`/leases/${leaseId}/things`)
+        .expect((res) => expect(res.body.length).toBeGreaterThan(0));
+    });
+  });
+
   describe('Goods', () => {
     it('POST /goods', async () => {
       return request(app.getHttpServer())
@@ -2171,23 +2239,6 @@ describe('With Auth', () => {
   });
 
   describe('Products', () => {
-    it('POST /products', async () => {
-      return request(app.getHttpServer())
-        .post('/products')
-        .set('Authorization', `Bearer ${user.access}`)
-        .send({
-          storageTagId,
-          cardId,
-          item: 1,
-          description: '',
-          amount: 2,
-          intake: 1,
-          kit: 1,
-          price: 5,
-        })
-        .expect('');
-    });
-
     it('GET /products', async () => {
       return request(app.getHttpServer())
         .get('/products')
@@ -2236,7 +2287,7 @@ describe('With Auth', () => {
       return request(app.getHttpServer())
         .patch(`/products/${productId}`)
         .set('Authorization', `Bearer ${user.access}`)
-        .send({ amount: 1, price: 20 })
+        .send({ amount: 1, price: 10 })
         .expect('');
     });
 
@@ -2252,36 +2303,6 @@ describe('With Auth', () => {
         .get(`/products/${productId}/states`)
         .expect((res) => expect(res.body.length).toBeGreaterThan(0));
     });
-  });
-
-  describe('Leases', () => {
-    it('GET /leases', async () => {
-      return request(app.getHttpServer())
-        .get('/leases')
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
-    });
-
-    it('GET /leases/my', async () => {
-      return request(app.getHttpServer())
-        .get('/leases/my')
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0))
-        .then((res) => (leaseId = res.body.result[0].id));
-    });
-
-    it('GET /leases/received', async () => {
-      return request(app.getHttpServer())
-        .get('/leases/received')
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
-    });
-
-    it('GET /leases/all', async () => {
-      return request(app.getHttpServer())
-        .get('/leases/all')
-        .set('Authorization', `Bearer ${merchant.access}`)
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
-    });
 
     it('POST /leases/:leaseId/continue', async () => {
       return request(app.getHttpServer())
@@ -2295,12 +2316,6 @@ describe('With Auth', () => {
         .post(`/leases/${leaseId}`)
         .set('Authorization', `Bearer ${user.access}`)
         .expect('');
-    });
-
-    it('GET /leases/:leaseId/things', async () => {
-      return request(app.getHttpServer())
-        .get(`/leases/${leaseId}/things`)
-        .expect((res) => expect(res.body.length).toBeGreaterThan(0));
     });
   });
 

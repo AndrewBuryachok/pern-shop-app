@@ -3,6 +3,7 @@ import { Validate } from 'class-validator';
 import { Type } from 'class-transformer';
 import { IsId } from '../../common/decorators';
 import { IsDrawerExists, IsStationExists } from '../../common/constraints';
+import { ExtCreateHireDto } from '../hires/hire.dto';
 
 export class DrawerIdDto {
   @ApiProperty()
@@ -25,9 +26,4 @@ export class ExtCreateDrawerDto extends CreateDrawerDto {
   name?: number;
 }
 
-export class ReserveDrawerDto {
-  stationId: number;
-  cardId: number;
-  myId: number;
-  hasRole: boolean;
-}
+export class ReserveDrawerDto extends ExtCreateHireDto {}

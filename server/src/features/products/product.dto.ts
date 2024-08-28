@@ -2,11 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Validate } from 'class-validator';
 import { Type } from 'class-transformer';
 import { IsId } from '../../common/decorators';
-import {
-  IsCardExists,
-  IsProductExists,
-  IsStorageTagExists,
-} from '../../common/constraints';
+import { IsLeaseExists, IsProductExists } from '../../common/constraints';
 import { CreateThingDto } from '../things/thing.dto';
 import { ExtEditStateDto } from '../states/state.dto';
 import { ExtCreateSaleDto } from '../sales/sale.dto';
@@ -22,13 +18,8 @@ export class ProductIdDto {
 export class CreateProductDto extends CreateThingDto {
   @ApiProperty()
   @IsId()
-  @Validate(IsStorageTagExists)
-  storageTagId: number;
-
-  @ApiProperty()
-  @IsId()
-  @Validate(IsCardExists)
-  cardId: number;
+  @Validate(IsLeaseExists)
+  leaseId: number;
 }
 
 export class ExtCreateProductDto extends CreateProductDto {

@@ -465,6 +465,17 @@ describe('Without Auth', () => {
         .set('Authorization', `Bearer ${user.access}`)
         .expect(403);
     });
+
+    it('GET /leases/my/select', async () => {
+      return request(app.getHttpServer()).get('/leases/my/select').expect(401);
+    });
+
+    it('GET /leases/all/select', async () => {
+      return request(app.getHttpServer())
+        .get('/leases/all/select')
+        .set('Authorization', `Bearer ${user.access}`)
+        .expect(403);
+    });
   });
 
   describe('Hires', () => {

@@ -47,12 +47,6 @@ export class StoragesTagsController {
   }
 
   @Public()
-  @Get('free/select')
-  selectFreeTags(): Promise<StorageTag[]> {
-    return this.storagesTagsService.selectFreeTags();
-  }
-
-  @Public()
   @Get(':storageId/select')
   selectStorageTags(
     @Param() { storageId }: StorageIdDto,

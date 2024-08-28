@@ -407,13 +407,12 @@ export default class AppSeed implements Seeder {
         return wareState;
       })
       .makeMany(wares.length);
-    let leaseId = 0;
     const products = await factory(Product)()
       .map(async (product) => {
-        product.lease = leases[leaseId++];
+        product.lease = faker.helpers.arrayElement(leases);
         return product;
       })
-      .makeMany(10);
+      .makeMany(20);
     let productId = 0;
     const productsStates = await factory(ProductState)()
       .map(async (productState) => {

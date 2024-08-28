@@ -70,7 +70,7 @@ export class DrawersService {
       dto.myId,
       dto.hasRole,
     );
-    const name = (await this.coundStationDrawers(dto.stationId)) + 1;
+    const name = (await this.countStationDrawers(dto.stationId)) + 1;
     await this.create({ ...dto, name });
   }
 
@@ -124,7 +124,7 @@ export class DrawersService {
     await this.drawersRepository.findOneByOrFail({ id });
   }
 
-  private coundStationDrawers(stationId: number): Promise<number> {
+  private countStationDrawers(stationId: number): Promise<number> {
     return this.drawersRepository.countBy({ stationId });
   }
 
