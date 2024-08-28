@@ -47,7 +47,7 @@ export default function LeasesTable({ actions = [], ...props }: Props) {
           </td>
           <td>
             <CustomAnchor
-              text='1'
+              text={`${lease.things}`}
               open={() => openViewLeaseThingsAction(lease)}
             />
           </td>

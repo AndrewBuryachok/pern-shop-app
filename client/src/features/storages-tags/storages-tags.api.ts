@@ -1,6 +1,6 @@
 import { emptyApi } from '../../app/empty.api';
 import { IRequest, IResponse } from '../../common/interfaces';
-import { MdStorageTag, SmStorageTag, StorageTag } from './storage-tag.model';
+import { SmStorageTag, StorageTag } from './storage-tag.model';
 import { State } from '../states/state.model';
 import { CreateStorageTagDto, EditStorageTagDto } from './storage-tag.dto';
 import { getQuery } from '../../common/utils';
@@ -24,12 +24,6 @@ export const storagesTagsApi = emptyApi.injectEndpoints({
         url: `/storages-tags/all?${getQuery(req)}`,
       }),
       providesTags: ['Auth', 'StorageTag'],
-    }),
-    selectFreeTags: build.query<MdStorageTag[], void>({
-      query: () => ({
-        url: '/storages-tags/free/select',
-      }),
-      providesTags: ['StorageTag', 'Cell'],
     }),
     selectStorageTags: build.query<SmStorageTag[], number>({
       query: (storageId) => ({
@@ -66,7 +60,6 @@ export const {
   useGetMainStoragesTagsQuery,
   useGetMyStoragesTagsQuery,
   useGetAllStoragesTagsQuery,
-  useSelectFreeTagsQuery,
   useSelectStorageTagsQuery,
   useSelectStorageTagStatesQuery,
   useCreateStorageTagMutation,

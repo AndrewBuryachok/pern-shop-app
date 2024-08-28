@@ -38,6 +38,7 @@ type Props = IModal<Ware> & { hasRole: boolean };
 export default function BuyWareModal({ data: ware, hasRole }: Props) {
   const [t] = useTranslation();
 
+  const myCard = { balance: 0 };
   const station = { price: 0 };
 
   const form = useForm({
@@ -55,6 +56,13 @@ export default function BuyWareModal({ data: ware, hasRole }: Props) {
       cardId: +card,
       stationId: +station,
     }),
+    validate: {
+      card: (_, values) =>
+        myCard.balance <
+        values.amount * ware.price + station.price + values.price
+          ? t('errors.not_enough_balance')
+          : null,
+    },
   });
 
   useEffect(() => form.setFieldValue('card', ''), [form.values.user]);
@@ -79,6 +87,7 @@ export default function BuyWareModal({ data: ware, hasRole }: Props) {
 
   const user = users?.find((user) => user.id === +form.values.user);
   const card = cards?.find((card) => card.id === +form.values.card);
+  myCard.balance = card?.balance || 0;
   const maxAmount =
     card &&
     Math.floor((card.balance - station.price - form.values.price) / ware.price);

@@ -11,9 +11,9 @@ import {
   SmStationWithPrice,
 } from '../../features/stations/station.model';
 import { SmTag } from '../../features/tags/tag.model';
-import { MdStorageTag } from '../../features/storages-tags/storage-tag.model';
 import { Container } from '../../features/containers/container.model';
 import { SelectRent } from '../../features/rents/rent.model';
+import { SelectLease } from '../../features/leases/lease.model';
 import { SmBargain } from '../../features/bargains/bargain.model';
 import { SmTrade } from '../../features/trades/trade.model';
 import { SmSale } from '../../features/sales/sale.model';
@@ -117,14 +117,6 @@ export const selectTags = (tags?: SmTag[]) =>
     label: `${tag.name} ${tag.price} ${t('constants.currency')}`,
   })) || [];
 
-export const selectTagsWithStorage = (tags?: MdStorageTag[]) =>
-  tags?.map((tag) => ({
-    ...tag.storage,
-    value: `${tag.id}`,
-    label: `${parsePlace(tag.storage)} ${tag.price} ${t('constants.currency')}`,
-    group: `${tag.price} ${t('constants.currency')}`,
-  })) || [];
-
 export const selectContainers = (containers?: Container[]) =>
   containers?.map((container) => ({
     value: `${container.id}`,
@@ -136,7 +128,15 @@ export const selectRents = (rents?: SelectRent[]) =>
     ...rent.store.market,
     container: rent.store.name,
     value: `${rent.id}`,
-    label: `${rent.store.market.name} (${rent.store.market.x} ${rent.store.market.y}) #${rent.store.name}`,
+    label: `${parsePlace(rent.store.market)} #${rent.store.name}`,
+  })) || [];
+
+export const selectLeases = (leases?: SelectLease[]) =>
+  leases?.map((lease) => ({
+    ...lease.cell.storage,
+    container: lease.cell.name,
+    value: `${lease.id}`,
+    label: `${parsePlace(lease.cell.storage)} #${lease.cell.name}`,
   })) || [];
 
 export const selectBargains = (bargains?: SmBargain[]) =>

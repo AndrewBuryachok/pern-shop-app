@@ -9,6 +9,10 @@ import {
   createMyCellButton,
   createUserCellButton,
 } from '../../features/cells/CreateCellModal';
+import {
+  reserveMyCellAction,
+  reserveUserCellAction,
+} from '../../features/cells/ReserveCellModal';
 
 export default function CellsPage() {
   const tab = useLocation().pathname.split('/')[2] || 'main';
@@ -39,5 +43,17 @@ export default function CellsPage() {
     all: createUserCellButton,
   }[tab];
 
-  return <CellsTable {...response} search={search} button={button} />;
+  const actions = {
+    main: [reserveMyCellAction],
+    all: [reserveUserCellAction],
+  }[tab];
+
+  return (
+    <CellsTable
+      {...response}
+      search={search}
+      button={button}
+      actions={actions}
+    />
+  );
 }

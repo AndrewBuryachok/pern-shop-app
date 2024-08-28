@@ -21,7 +21,7 @@ export default function ViewLeaseThingsModal({ data: lease }: Props) {
   return (
     <Select
       label={t('columns.things')}
-      placeholder={`${t('components.total')}: 1`}
+      placeholder={`${t('components.total')}: ${things?.length || 0}`}
       rightSection={<RefetchAction {...thingsResponse} />}
       itemComponent={ThingsItemWithAmount}
       data={viewThings(things || [])}

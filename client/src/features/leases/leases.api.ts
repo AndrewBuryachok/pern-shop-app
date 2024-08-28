@@ -1,8 +1,8 @@
 import { emptyApi } from '../../app/empty.api';
 import { IRequest, IResponse } from '../../common/interfaces';
-import { Lease } from './lease.model';
+import { Lease, SelectLease } from './lease.model';
 import { MdThing } from '../things/thing.model';
-import { LeaseIdDto } from './lease.dto';
+import { CreateLeaseDto, LeaseIdDto } from './lease.dto';
 import { getQuery } from '../../common/utils';
 
 export const leasesApi = emptyApi.injectEndpoints({
@@ -31,11 +31,31 @@ export const leasesApi = emptyApi.injectEndpoints({
       }),
       providesTags: ['Auth', 'Lease'],
     }),
+    selectAllLeases: build.query<SelectLease[], void>({
+      query: () => ({
+        url: '/leases/all/select',
+      }),
+      providesTags: ['Auth', 'Lease'],
+    }),
+    selectMyLeases: build.query<SelectLease[], void>({
+      query: () => ({
+        url: '/leases/my/select',
+      }),
+      providesTags: ['Auth', 'Lease'],
+    }),
     selectLeaseThings: build.query<MdThing[], number>({
       query: (leaseId) => ({
         url: `/leases/${leaseId}/things`,
       }),
       providesTags: ['Lease'],
+    }),
+    createLease: build.mutation<void, CreateLeaseDto>({
+      query: (dto) => ({
+        url: '/leases',
+        method: 'POST',
+        body: dto,
+      }),
+      invalidatesTags: ['Lease', 'Cell', 'Payment', 'Card'],
     }),
     continueLease: build.mutation<void, LeaseIdDto>({
       query: ({ leaseId }) => ({
@@ -59,7 +79,10 @@ export const {
   useGetMyLeasesQuery,
   useGetReceivedLeasesQuery,
   useGetAllLeasesQuery,
+  useSelectAllLeasesQuery,
+  useSelectMyLeasesQuery,
   useSelectLeaseThingsQuery,
+  useCreateLeaseMutation,
   useContinueLeaseMutation,
   useCompleteLeaseMutation,
 } = leasesApi;
