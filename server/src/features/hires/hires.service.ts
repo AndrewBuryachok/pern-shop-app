@@ -48,8 +48,8 @@ export class HiresService {
 
   async getMyHires(myId: number, req: Request): Promise<Response<Hire>> {
     const [result, count] = await this.getHiresQueryBuilder(req)
-      .innerJoin('renterCard.users', 'renterUsers')
-      .andWhere('renterUsers.id = :myId', { myId })
+      .innerJoin('tenantCard.users', 'tenantUsers')
+      .andWhere('tenantUsers.id = :myId', { myId })
       .getManyAndCount();
     return { result, count };
   }
@@ -248,8 +248,8 @@ export class HiresService {
       .innerJoin('drawer.station', 'station')
       .innerJoin('station.card', 'ownerCard')
       .innerJoin('ownerCard.user', 'ownerUser')
-      .innerJoin('hire.card', 'renterCard')
-      .innerJoin('renterCard.user', 'renterUser')
+      .innerJoin('hire.card', 'tenantCard')
+      .innerJoin('tenantCard.user', 'tenantUser')
       .loadRelationCountAndMap('hire.orders', 'hire.orders')
       .loadRelationCountAndMap('hire.fromDeliveries', 'hire.fromDeliveries')
       .loadRelationCountAndMap('hire.toDeliveries', 'hire.toDeliveries')
@@ -273,8 +273,8 @@ export class HiresService {
             .orWhere(
               new Brackets((qb) =>
                 qb
-                  .where(`${!req.mode || req.mode === Mode.RENTER}`)
-                  .andWhere('renterUser.id = :userId'),
+                  .where(`${!req.mode || req.mode === Mode.TENANT}`)
+                  .andWhere('tenantUser.id = :userId'),
               ),
             )
             .orWhere(
@@ -294,8 +294,8 @@ export class HiresService {
             .orWhere(
               new Brackets((qb) =>
                 qb
-                  .where(`${!req.mode || req.mode === Mode.RENTER}`)
-                  .andWhere('renterCard.id = :cardId'),
+                  .where(`${!req.mode || req.mode === Mode.TENANT}`)
+                  .andWhere('tenantCard.id = :cardId'),
               ),
             )
             .orWhere(
@@ -367,12 +367,12 @@ export class HiresService {
         'station.x',
         'station.y',
         'drawer.name',
-        'renterCard.id',
-        'renterUser.id',
-        'renterUser.nick',
-        'renterUser.avatar',
-        'renterCard.name',
-        'renterCard.color',
+        'tenantCard.id',
+        'tenantUser.id',
+        'tenantUser.nick',
+        'tenantUser.avatar',
+        'tenantCard.name',
+        'tenantCard.color',
         'hire.sum',
         'hire.createdAt',
         'hire.completedAt',

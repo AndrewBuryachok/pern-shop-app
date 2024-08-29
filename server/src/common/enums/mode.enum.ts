@@ -4,7 +4,7 @@ export enum Mode {
   CUSTOMER = 'customer',
   SENDER = 'sender',
   RECEIVER = 'receiver',
-  RENTER = 'renter',
+  TENANT = 'tenant',
   SELLER = 'seller',
   BUYER = 'buyer',
 }

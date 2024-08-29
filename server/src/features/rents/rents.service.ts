@@ -48,8 +48,8 @@ export class RentsService {
 
   async getMyRents(myId: number, req: Request): Promise<Response<Rent>> {
     const [result, count] = await this.getRentsQueryBuilder(req)
-      .innerJoin('renterCard.users', 'renterUsers')
-      .andWhere('renterUsers.id = :myId', { myId })
+      .innerJoin('tenantCard.users', 'tenantUsers')
+      .andWhere('tenantUsers.id = :myId', { myId })
       .getManyAndCount();
     return { result, count };
   }
@@ -75,9 +75,9 @@ export class RentsService {
 
   selectMyRents(myId: number): Promise<Rent[]> {
     return this.selectRentsQueryBuilder()
-      .innerJoin('rent.card', 'renterCard')
-      .innerJoin('renterCard.users', 'renterUsers')
-      .andWhere('renterUsers.id = :myId', { myId })
+      .innerJoin('rent.card', 'tenantCard')
+      .innerJoin('tenantCard.users', 'tenantUsers')
+      .andWhere('tenantUsers.id = :myId', { myId })
       .getMany();
   }
 
@@ -223,8 +223,8 @@ export class RentsService {
       .innerJoin('store.market', 'market')
       .innerJoin('market.card', 'ownerCard')
       .innerJoin('ownerCard.user', 'ownerUser')
-      .innerJoin('rent.card', 'renterCard')
-      .innerJoin('renterCard.user', 'renterUser')
+      .innerJoin('rent.card', 'tenantCard')
+      .innerJoin('tenantCard.user', 'tenantUser')
       .loadRelationCountAndMap('rent.things', 'rent.wares', 'w', (qb) =>
         qb.where('w.amount > 0'),
       )
@@ -240,8 +240,8 @@ export class RentsService {
             .orWhere(
               new Brackets((qb) =>
                 qb
-                  .where(`${!req.mode || req.mode === Mode.RENTER}`)
-                  .andWhere('renterUser.id = :userId'),
+                  .where(`${!req.mode || req.mode === Mode.TENANT}`)
+                  .andWhere('tenantUser.id = :userId'),
               ),
             )
             .orWhere(
@@ -261,8 +261,8 @@ export class RentsService {
             .orWhere(
               new Brackets((qb) =>
                 qb
-                  .where(`${!req.mode || req.mode === Mode.RENTER}`)
-                  .andWhere('renterCard.id = :cardId'),
+                  .where(`${!req.mode || req.mode === Mode.TENANT}`)
+                  .andWhere('tenantCard.id = :cardId'),
               ),
             )
             .orWhere(
@@ -341,12 +341,12 @@ export class RentsService {
         'market.x',
         'market.y',
         'store.name',
-        'renterCard.id',
-        'renterUser.id',
-        'renterUser.nick',
-        'renterUser.avatar',
-        'renterCard.name',
-        'renterCard.color',
+        'tenantCard.id',
+        'tenantUser.id',
+        'tenantUser.nick',
+        'tenantUser.avatar',
+        'tenantCard.name',
+        'tenantCard.color',
         'rent.sum',
         'rent.createdAt',
         'rent.completedAt',
