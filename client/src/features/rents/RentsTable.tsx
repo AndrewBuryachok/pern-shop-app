@@ -17,7 +17,7 @@ export default function RentsTable({ actions = [], ...props }: Props) {
     <CustomTable
       minWidth={900}
       columns={[
-        'renter',
+        'tenant',
         'owner',
         'market',
         'sum',

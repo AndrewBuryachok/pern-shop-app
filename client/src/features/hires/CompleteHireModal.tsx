@@ -36,7 +36,7 @@ export default function CompleteHireModal({ data: hire }: Props) {
       text={t('actions.complete') + ' ' + t('modals.hires')}
     >
       <TextInput
-        label={t('columns.renter')}
+        label={t('columns.tenant')}
         icon={<CustomAvatar {...hire.card.user} />}
         iconWidth={48}
         value={parseCard(hire.card)}

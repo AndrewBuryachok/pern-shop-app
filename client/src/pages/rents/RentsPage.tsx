@@ -23,7 +23,7 @@ export default function RentsPage() {
     id: +(searchParams.get('id') || 0) || null,
     user: searchParams.get('user'),
     card: searchParams.get('card'),
-    modes: [Mode.RENTER, Mode.OWNER],
+    modes: [Mode.TENANT, Mode.OWNER],
     mode: searchParams.get('mode') as Mode,
     market: searchParams.get('market'),
     marketTag: searchParams.get('marketTag'),

@@ -17,7 +17,7 @@ export default function ViewRentModal({ data: rent }: Props) {
     <Stack spacing={8}>
       <TextInput label={t('columns.id')} value={rent.id} readOnly />
       <TextInput
-        label={t('columns.renter')}
+        label={t('columns.tenant')}
         icon={<CustomAvatar {...rent.card.user} />}
         iconWidth={48}
         value={parseCard(rent.card)}

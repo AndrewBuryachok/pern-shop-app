@@ -17,7 +17,7 @@ export default function ViewHireModal({ data: hire }: Props) {
     <Stack spacing={8}>
       <TextInput label={t('columns.id')} value={hire.id} readOnly />
       <TextInput
-        label={t('columns.renter')}
+        label={t('columns.tenant')}
         icon={<CustomAvatar {...hire.card.user} />}
         iconWidth={48}
         value={parseCard(hire.card)}

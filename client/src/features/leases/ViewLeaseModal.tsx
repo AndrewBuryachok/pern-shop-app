@@ -17,7 +17,7 @@ export default function ViewLeaseModal({ data: lease }: Props) {
     <Stack spacing={8}>
       <TextInput label={t('columns.id')} value={lease.id} readOnly />
       <TextInput
-        label={t('columns.renter')}
+        label={t('columns.tenant')}
         icon={<CustomAvatar {...lease.card.user} />}
         iconWidth={48}
         value={parseCard(lease.card)}

@@ -65,7 +65,7 @@ export default function ContinueLeaseModal({ data: lease, hasRole }: Props) {
       text={t('actions.continue') + ' ' + t('modals.leases')}
     >
       <TextInput
-        label={t('columns.renter')}
+        label={t('columns.tenant')}
         icon={<CustomAvatar {...lease.card.user} />}
         iconWidth={48}
         value={parseCard(lease.card)}

@@ -17,7 +17,7 @@ export default function HiresTable({ actions = [], ...props }: Props) {
     <CustomTable
       minWidth={900}
       columns={[
-        'renter',
+        'tenant',
         'owner',
         'station',
         'sum',

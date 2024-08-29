@@ -23,7 +23,7 @@ export default function HiresPage() {
     id: +(searchParams.get('id') || 0) || null,
     user: searchParams.get('user'),
     card: searchParams.get('card'),
-    modes: [Mode.RENTER, Mode.OWNER],
+    modes: [Mode.TENANT, Mode.OWNER],
     mode: searchParams.get('mode') as Mode,
     station: searchParams.get('station'),
     drawer: searchParams.get('drawer'),

@@ -36,7 +36,7 @@ export default function CompleteLeaseModal({ data: lease }: Props) {
       text={t('actions.complete') + ' ' + t('modals.leases')}
     >
       <TextInput
-        label={t('columns.renter')}
+        label={t('columns.tenant')}
         icon={<CustomAvatar {...lease.card.user} />}
         iconWidth={48}
         value={parseCard(lease.card)}

@@ -67,7 +67,7 @@ export default function ContinueHireModal({ data: hire, hasRole }: Props) {
       text={t('actions.continue') + ' ' + t('modals.hires')}
     >
       <TextInput
-        label={t('columns.renter')}
+        label={t('columns.tenant')}
         icon={<CustomAvatar {...hire.card.user} />}
         iconWidth={48}
         value={parseCard(hire.card)}

@@ -249,7 +249,7 @@
     "cell": "Cell",
     "drawer": "Drawer",
     "reserved": "Reserved",
-    "renter": "Renter",
+    "tenant": "Tenant",
     "seller": "Seller",
     "item": "Item",
     "amount": "Amount",
