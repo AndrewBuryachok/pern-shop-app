@@ -156,6 +156,14 @@ export class ProductsService {
       description: '',
     });
     await this.buy(product, dto.amount);
+    if (!product.amount) {
+      this.mqttService.publishNotificationMessage(
+        product.id,
+        product.lease.card.userId,
+        '🔔',
+        Notification.ENDED_PRODUCT,
+      );
+    }
     return product;
   }
 

@@ -117,6 +117,14 @@ export class GoodsService {
       description: '',
     });
     await this.buy(good, dto.amount);
+    if (!good.amount) {
+      this.mqttService.publishNotificationMessage(
+        good.id,
+        good.shop.card.userId,
+        '🔔',
+        Notification.ENDED_GOOD,
+      );
+    }
     return good;
   }
 

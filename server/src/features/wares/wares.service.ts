@@ -139,6 +139,14 @@ export class WaresService {
       description: '',
     });
     await this.buy(ware, dto.amount);
+    if (!ware.amount) {
+      this.mqttService.publishNotificationMessage(
+        ware.id,
+        ware.rent.card.userId,
+        '🔔',
+        Notification.ENDED_WARE,
+      );
+    }
     return ware;
   }
 
