@@ -433,19 +433,22 @@
       "created": "reserved your store",
       "continued": "continued your rent",
       "completed": "completed your rent",
-      "ended": "Your rent is about to end"
+      "reminded": "Your rent is about to end",
+      "ended": "Your rent ended"
     },
     "leases": {
       "created": "reserved your cell",
       "continued": "continued your lease",
       "completed": "completed your lease",
-      "ended": "Your lease is about to end"
+      "reminded": "Your lease is about to end",
+      "ended": "Your leaseended"
     },
     "hires": {
       "created": "reserved your drawer",
       "continued": "continued your hire",
       "completed": "completed your hire",
-      "ended": "Your hire is about to end"
+      "reminded": "Your hire is about to end",
+      "ended": "Your hire ended"
     },
     "goods": {
       "created": "created good"
