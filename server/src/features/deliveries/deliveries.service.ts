@@ -648,6 +648,29 @@ export class DeliveriesService {
             }),
         ),
       )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${req.completed !== 1}`)
+            .orWhere('delivery.completedAt IS NOT NULL')
+            .orWhere('fromHire.completedAt < NOW()')
+            .orWhere('toHire.completedAt < NOW()'),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${req.completed !== -1}`)
+            .orWhere(
+              new Brackets((qb) =>
+                qb
+                  .where('delivery.completedAt IS NULL')
+                  .andWhere('fromHire.completedAt > NOW()')
+                  .andWhere('toHire.completedAt > NOW()'),
+              ),
+            ),
+        ),
+      )
       .orderBy('delivery.id', 'DESC')
       .skip(req.skip)
       .take(req.take)

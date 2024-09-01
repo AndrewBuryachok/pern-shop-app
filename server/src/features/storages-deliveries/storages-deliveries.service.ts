@@ -645,6 +645,27 @@ export class StoragesDeliveriesService {
             }),
         ),
       )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${req.completed !== 1}`)
+            .orWhere('storageDelivery.completedAt IS NOT NULL')
+            .orWhere('hire.completedAt < NOW()'),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${req.completed !== -1}`)
+            .orWhere(
+              new Brackets((qb) =>
+                qb
+                  .where('storageDelivery.completedAt IS NULL')
+                  .andWhere('hire.completedAt > NOW()'),
+              ),
+            ),
+        ),
+      )
       .orderBy('storageDelivery.id', 'DESC')
       .skip(req.skip)
       .take(req.take)

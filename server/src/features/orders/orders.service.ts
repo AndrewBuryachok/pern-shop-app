@@ -543,6 +543,27 @@ export class OrdersService {
             .orWhere('order.createdAt <= :maxDate', { maxDate: req.maxDate }),
         ),
       )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${req.completed !== 1}`)
+            .orWhere('order.completedAt IS NOT NULL')
+            .orWhere('hire.completedAt < NOW()'),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${req.completed !== -1}`)
+            .orWhere(
+              new Brackets((qb) =>
+                qb
+                  .where('order.completedAt IS NULL')
+                  .andWhere('hire.completedAt > NOW()'),
+              ),
+            ),
+        ),
+      )
       .orderBy('order.id', 'DESC')
       .skip(req.skip)
       .take(req.take)

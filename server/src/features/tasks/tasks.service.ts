@@ -444,6 +444,20 @@ export class TasksService {
             .orWhere('task.createdAt <= :maxDate', { maxDate: req.maxDate }),
         ),
       )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${req.completed !== 1}`)
+            .orWhere('task.completedAt IS NOT NULL'),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${req.completed !== -1}`)
+            .orWhere('task.completedAt IS NULL'),
+        ),
+      )
       .orderBy('task.id', 'DESC')
       .skip(req.skip)
       .take(req.take)

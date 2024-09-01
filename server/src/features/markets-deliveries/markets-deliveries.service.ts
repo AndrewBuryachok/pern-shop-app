@@ -639,6 +639,27 @@ export class MarketsDeliveriesService {
             }),
         ),
       )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${req.completed !== 1}`)
+            .orWhere('marketDelivery.completedAt IS NOT NULL')
+            .orWhere('hire.completedAt < NOW()'),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${req.completed !== -1}`)
+            .orWhere(
+              new Brackets((qb) =>
+                qb
+                  .where('marketDelivery.completedAt IS NULL')
+                  .andWhere('hire.completedAt > NOW()'),
+              ),
+            ),
+        ),
+      )
       .orderBy('marketDelivery.id', 'DESC')
       .skip(req.skip)
       .take(req.take)

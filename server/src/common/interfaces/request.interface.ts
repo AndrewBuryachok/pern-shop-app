@@ -237,4 +237,10 @@ export class Request {
   @IsDate()
   @Type(() => Date)
   maxDate?: Date;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsInt()
+  @Type(() => Number)
+  completed?: number;
 }

@@ -249,6 +249,21 @@ export class DrawersService {
           }),
         ),
       )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${req.completed !== 1}`)
+            .orWhere('drawer.reservedUntil IS NULL')
+            .orWhere('drawer.reservedUntil < NOW()'),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${req.completed !== -1}`)
+            .orWhere('drawer.reservedUntil > NOW()'),
+        ),
+      )
       .orderBy('drawer.id', 'DESC')
       .skip(req.skip)
       .take(req.take)

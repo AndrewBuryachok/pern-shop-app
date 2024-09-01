@@ -376,6 +376,27 @@ export class WaresService {
             .orWhere('ware.createdAt <= :maxDate', { maxDate: req.maxDate }),
         ),
       )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${req.completed !== 1}`)
+            .orWhere('ware.completedAt IS NOT NULL')
+            .orWhere('rent.completedAt < NOW()'),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${req.completed !== -1}`)
+            .orWhere(
+              new Brackets((qb) =>
+                qb
+                  .where('ware.completedAt IS NULL')
+                  .andWhere('rent.completedAt > NOW()'),
+              ),
+            ),
+        ),
+      )
       .orderBy('ware.id', 'DESC')
       .skip(req.skip)
       .take(req.take)

@@ -260,6 +260,21 @@ export class StoresService {
           }),
         ),
       )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${req.completed !== 1}`)
+            .orWhere('store.reservedUntil IS NULL')
+            .orWhere('store.reservedUntil < NOW()'),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${req.completed !== -1}`)
+            .orWhere('store.reservedUntil > NOW()'),
+        ),
+      )
       .orderBy('store.id', 'DESC')
       .skip(req.skip)
       .take(req.take)

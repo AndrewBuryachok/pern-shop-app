@@ -625,6 +625,27 @@ export class ShopsDeliveriesService {
             }),
         ),
       )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${req.completed !== 1}`)
+            .orWhere('shopDelivery.completedAt IS NOT NULL')
+            .orWhere('hire.completedAt < NOW()'),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${req.completed !== -1}`)
+            .orWhere(
+              new Brackets((qb) =>
+                qb
+                  .where('shopDelivery.completedAt IS NULL')
+                  .andWhere('hire.completedAt > NOW()'),
+              ),
+            ),
+        ),
+      )
       .orderBy('shopDelivery.id', 'DESC')
       .skip(req.skip)
       .take(req.take)

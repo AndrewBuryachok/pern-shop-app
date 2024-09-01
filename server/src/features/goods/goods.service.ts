@@ -315,6 +315,20 @@ export class GoodsService {
             .orWhere('good.createdAt <= :maxDate', { maxDate: req.maxDate }),
         ),
       )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${req.completed !== 1}`)
+            .orWhere('good.completedAt IS NOT NULL'),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${req.completed !== -1}`)
+            .orWhere('good.completedAt IS NULL'),
+        ),
+      )
       .orderBy('good.id', 'DESC')
       .skip(req.skip)
       .take(req.take)

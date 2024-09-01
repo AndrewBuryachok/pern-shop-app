@@ -89,7 +89,6 @@ export class LeasesService {
       .createQueryBuilder('lease')
       .leftJoin('lease.products', 'product')
       .where('lease.id = :leaseId', { leaseId })
-      .andWhere('product.amount > 0')
       .orderBy('product.id', 'DESC')
       .select([
         'lease.id',
@@ -335,6 +334,20 @@ export class LeasesService {
           qb
             .where(`${!req.maxDate}`)
             .orWhere('lease.createdAt <= :maxDate', { maxDate: req.maxDate }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${req.completed !== 1}`)
+            .orWhere('lease.completedAt < NOW()'),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${req.completed !== -1}`)
+            .orWhere('lease.completedAt > NOW()'),
         ),
       )
       .orderBy('lease.id', 'DESC')

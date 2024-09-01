@@ -350,6 +350,20 @@ export class HiresService {
             .orWhere('hire.createdAt <= :maxDate', { maxDate: req.maxDate }),
         ),
       )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${req.completed !== 1}`)
+            .orWhere('hire.completedAt < NOW()'),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${req.completed !== -1}`)
+            .orWhere('hire.completedAt > NOW()'),
+        ),
+      )
       .orderBy('hire.id', 'DESC')
       .skip(req.skip)
       .take(req.take)

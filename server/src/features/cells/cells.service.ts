@@ -266,6 +266,21 @@ export class CellsService {
             }),
         ),
       )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${req.completed !== 1}`)
+            .orWhere('cell.reservedUntil IS NULL')
+            .orWhere('cell.reservedUntil < NOW()'),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${req.completed !== -1}`)
+            .orWhere('cell.reservedUntil > NOW()'),
+        ),
+      )
       .orderBy('cell.id', 'DESC')
       .skip(req.skip)
       .take(req.take)

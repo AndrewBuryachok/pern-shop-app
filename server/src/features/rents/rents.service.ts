@@ -86,7 +86,6 @@ export class RentsService {
       .createQueryBuilder('rent')
       .leftJoin('rent.wares', 'ware')
       .where('rent.id = :rentId', { rentId })
-      .andWhere('ware.amount > 0')
       .orderBy('ware.id', 'DESC')
       .select([
         'rent.id',
@@ -322,6 +321,20 @@ export class RentsService {
           qb
             .where(`${!req.maxDate}`)
             .orWhere('rent.createdAt <= :maxDate', { maxDate: req.maxDate }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${req.completed !== 1}`)
+            .orWhere('rent.completedAt < NOW()'),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${req.completed !== -1}`)
+            .orWhere('rent.completedAt > NOW()'),
         ),
       )
       .orderBy('rent.id', 'DESC')

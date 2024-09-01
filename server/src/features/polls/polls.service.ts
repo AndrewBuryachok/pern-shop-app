@@ -436,6 +436,20 @@ export class PollsService {
             .orWhere('poll.createdAt <= :maxDate', { maxDate: req.maxDate }),
         ),
       )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${req.completed !== 1}`)
+            .orWhere('poll.completedAt IS NOT NULL'),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${req.completed !== -1}`)
+            .orWhere('poll.completedAt IS NULL'),
+        ),
+      )
       .orderBy('poll.id', 'DESC')
       .skip(req.skip)
       .take(req.take)

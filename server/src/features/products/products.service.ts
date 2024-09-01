@@ -403,6 +403,27 @@ export class ProductsService {
             .orWhere('product.createdAt <= :maxDate', { maxDate: req.maxDate }),
         ),
       )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${req.completed !== 1}`)
+            .orWhere('product.completedAt IS NOT NULL')
+            .orWhere('lease.completedAt < NOW()'),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${req.completed !== -1}`)
+            .orWhere(
+              new Brackets((qb) =>
+                qb
+                  .where('product.completedAt IS NULL')
+                  .andWhere('lease.completedAt > NOW()'),
+              ),
+            ),
+        ),
+      )
       .orderBy('product.id', 'DESC')
       .skip(req.skip)
       .take(req.take)
