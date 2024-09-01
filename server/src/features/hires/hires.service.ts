@@ -1,6 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, OnModuleInit } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
+import { InjectSchedule, Schedule } from 'nest-schedule';
 import { Hire } from './hire.entity';
 import { Thing } from '../things/thing.entity';
 import { DrawersService } from '../drawers/drawers.service';
@@ -13,30 +14,25 @@ import { HireError } from './hire-error.enum';
 import { Mode, Notification } from '../../common/enums';
 
 @Injectable()
-export class HiresService {
+export class HiresService implements OnModuleInit {
   constructor(
     @InjectRepository(Hire)
     private hiresRepository: Repository<Hire>,
     private drawersService: DrawersService,
     private mqttService: MqttService,
+    @InjectSchedule()
+    private schedule: Schedule,
   ) {}
 
-  async sendHiresNotifications(): Promise<number[]> {
+  async onModuleInit() {
     const hires = await this.hiresRepository
       .createQueryBuilder('hire')
       .innerJoinAndSelect('hire.card', 'card')
-      .where("hire.completedAt > NOW() + INTERVAL '12 hours'")
-      .andWhere("hire.completedAt < NOW() + INTERVAL '24 hours'")
+      .where('hire.completedAt > NOW()')
       .getMany();
     hires.forEach((hire) =>
-      this.mqttService.publishNotificationMessage(
-        hire.id,
-        hire.card.userId,
-        '🔔',
-        Notification.ENDED_HIRE,
-      ),
+      this.addTimeout(hire.id, hire.card.userId, hire.completedAt),
     );
-    return hires.map((hire) => hire.id);
   }
 
   async getMainHires(req: Request): Promise<Response<Hire>> {
@@ -154,6 +150,7 @@ export class HiresService {
       dto.nick,
       Notification.CREATED_HIRE,
     );
+    this.addTimeout(hire.id, dto.myId, hire.completedAt);
     return hire.id;
   }
 
@@ -171,6 +168,8 @@ export class HiresService {
       dto.nick,
       Notification.CONTINUED_HIRE,
     );
+    this.removeTimeout(hire.id);
+    this.addTimeout(hire.id, dto.myId, hire.completedAt);
   }
 
   async completeHire(dto: ExtHireIdDto & { nick: string }): Promise<void> {
@@ -183,6 +182,7 @@ export class HiresService {
       dto.nick,
       Notification.COMPLETED_HIRE,
     );
+    this.removeTimeout(hire.id);
   }
 
   async checkHireExists(id: number): Promise<void> {
@@ -205,6 +205,28 @@ export class HiresService {
       throw new AppException(HireError.ALREADY_COMPLETED);
     }
     return hire;
+  }
+
+  private addTimeout(id: number, userId: number, date: Date): void {
+    const before = new Date(date);
+    before.setDate(before.getDate() - 1);
+    const diffA = date.getTime() - new Date().getTime();
+    const diffB = before.getTime() - new Date().getTime();
+    const callbackFactory = (message: string) => () => {
+      this.mqttService.publishNotificationMessage(id, userId, '🔔', message);
+      return true;
+    };
+    const callbackA = callbackFactory(Notification.ENDED_HIRE);
+    const callbackB = callbackFactory(Notification.REMINDED_HIRE);
+    this.schedule.scheduleTimeoutJob(`hires/${id}/a`, diffA, callbackA);
+    if (diffB > 0) {
+      this.schedule.scheduleTimeoutJob(`hires/${id}/b`, diffB, callbackB);
+    }
+  }
+
+  private removeTimeout(id: number): void {
+    this.schedule.cancelJob(`hires/${id}/a`);
+    this.schedule.cancelJob(`hires/${id}/b`);
   }
 
   private async create(dto: ExtCreateHireDto, sum: number): Promise<Hire> {

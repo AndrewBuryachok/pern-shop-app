@@ -14,12 +14,6 @@ export class HiresController {
   constructor(private hiresService: HiresService) {}
 
   @Public()
-  @Post('notifications')
-  sendHiresNotifications(): Promise<number[]> {
-    return this.hiresService.sendHiresNotifications();
-  }
-
-  @Public()
   @Get()
   getMainHires(@Query() req: Request): Promise<Response<Hire>> {
     return this.hiresService.getMainHires(req);

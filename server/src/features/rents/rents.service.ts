@@ -1,6 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, OnModuleInit } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
+import { InjectSchedule, Schedule } from 'nest-schedule';
 import { Rent } from './rent.entity';
 import { Thing } from '../things/thing.entity';
 import { StoresService } from '../stores/stores.service';
@@ -13,30 +14,25 @@ import { RentError } from './rent-error.enum';
 import { Mode, Notification } from '../../common/enums';
 
 @Injectable()
-export class RentsService {
+export class RentsService implements OnModuleInit {
   constructor(
     @InjectRepository(Rent)
     private rentsRepository: Repository<Rent>,
     private storesService: StoresService,
     private mqttService: MqttService,
+    @InjectSchedule()
+    private schedule: Schedule,
   ) {}
 
-  async sendRentsNotifications(): Promise<number[]> {
+  async onModuleInit() {
     const rents = await this.rentsRepository
       .createQueryBuilder('rent')
       .innerJoinAndSelect('rent.card', 'card')
-      .where("rent.completedAt > NOW() + INTERVAL '12 hours'")
-      .andWhere("rent.completedAt < NOW() + INTERVAL '24 hours'")
+      .where('rent.completedAt > NOW()')
       .getMany();
     rents.forEach((rent) =>
-      this.mqttService.publishNotificationMessage(
-        rent.id,
-        rent.card.userId,
-        '🔔',
-        Notification.ENDED_RENT,
-      ),
+      this.addTimeout(rent.id, rent.card.userId, rent.completedAt),
     );
-    return rents.map((rent) => rent.id);
   }
 
   async getMainRents(req: Request): Promise<Response<Rent>> {
@@ -110,6 +106,7 @@ export class RentsService {
       dto.nick,
       Notification.CREATED_RENT,
     );
+    this.addTimeout(rent.id, dto.myId, rent.completedAt);
   }
 
   async continueRent(dto: ExtRentIdDto & { nick: string }): Promise<void> {
@@ -126,6 +123,8 @@ export class RentsService {
       dto.nick,
       Notification.CONTINUED_RENT,
     );
+    this.removeTimeout(rent.id);
+    this.addTimeout(rent.id, dto.myId, rent.completedAt);
   }
 
   async completeRent(dto: ExtRentIdDto & { nick: string }): Promise<void> {
@@ -138,6 +137,7 @@ export class RentsService {
       dto.nick,
       Notification.COMPLETED_RENT,
     );
+    this.removeTimeout(rent.id);
   }
 
   async checkRentExists(id: number): Promise<void> {
@@ -160,6 +160,28 @@ export class RentsService {
       throw new AppException(RentError.ALREADY_COMPLETED);
     }
     return rent;
+  }
+
+  private addTimeout(id: number, userId: number, date: Date): void {
+    const before = new Date(date);
+    before.setDate(before.getDate() - 1);
+    const diffA = date.getTime() - new Date().getTime();
+    const diffB = before.getTime() - new Date().getTime();
+    const callbackFactory = (message: string) => () => {
+      this.mqttService.publishNotificationMessage(id, userId, '🔔', message);
+      return true;
+    };
+    const callbackA = callbackFactory(Notification.ENDED_RENT);
+    const callbackB = callbackFactory(Notification.REMINDED_RENT);
+    this.schedule.scheduleTimeoutJob(`rents/${id}/a`, diffA, callbackA);
+    if (diffB > 0) {
+      this.schedule.scheduleTimeoutJob(`rents/${id}/b`, diffB, callbackB);
+    }
+  }
+
+  private removeTimeout(id: number): void {
+    this.schedule.cancelJob(`rents/${id}/a`);
+    this.schedule.cancelJob(`rents/${id}/b`);
   }
 
   private async create(dto: ExtCreateRentDto, sum: number): Promise<Rent> {

@@ -14,12 +14,6 @@ export class LeasesController {
   constructor(private leasesService: LeasesService) {}
 
   @Public()
-  @Post('notifications')
-  sendLeasesNotifications(): Promise<number[]> {
-    return this.leasesService.sendLeasesNotifications();
-  }
-
-  @Public()
   @Get()
   getMainLeases(@Query() req: Request): Promise<Response<Lease>> {
     return this.leasesService.getMainLeases(req);

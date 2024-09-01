@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { RedisModule } from '@liaoliaots/nestjs-redis';
+import { ScheduleModule } from 'nest-schedule';
 import { AuthModule } from './features/auth/auth.module';
 import { UsersModule } from './features/users/users.module';
 import { MessagesModule } from './features/messages/messages.module';
@@ -72,6 +73,7 @@ import { LoggerModule } from './features/logger/logger.module';
         config: { url: configService.get('REDIS_URL') },
       }),
     }),
+    ScheduleModule.register(),
     AuthModule,
     UsersModule,
     MessagesModule,

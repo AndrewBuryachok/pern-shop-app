@@ -1,6 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, OnModuleInit } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
+import { InjectSchedule, Schedule } from 'nest-schedule';
 import { Lease } from './lease.entity';
 import { Thing } from '../things/thing.entity';
 import { CellsService } from '../cells/cells.service';
@@ -13,30 +14,25 @@ import { LeaseError } from './lease-error.enum';
 import { Mode, Notification } from '../../common/enums';
 
 @Injectable()
-export class LeasesService {
+export class LeasesService implements OnModuleInit {
   constructor(
     @InjectRepository(Lease)
     private leasesRepository: Repository<Lease>,
     private cellsService: CellsService,
     private mqttService: MqttService,
+    @InjectSchedule()
+    private schedule: Schedule,
   ) {}
 
-  async sendLeasesNotifications(): Promise<number[]> {
+  async onModuleInit() {
     const leases = await this.leasesRepository
       .createQueryBuilder('lease')
       .innerJoinAndSelect('lease.card', 'card')
-      .where("lease.completedAt > NOW() + INTERVAL '12 hours'")
-      .andWhere("lease.completedAt < NOW() + INTERVAL '24 hours'")
+      .where('lease.completedAt > NOW()')
       .getMany();
     leases.forEach((lease) =>
-      this.mqttService.publishNotificationMessage(
-        lease.id,
-        lease.card.userId,
-        '🔔',
-        Notification.ENDED_LEASE,
-      ),
+      this.addTimeout(lease.id, lease.card.userId, lease.completedAt),
     );
-    return leases.map((lease) => lease.id);
   }
 
   async getMainLeases(req: Request): Promise<Response<Lease>> {
@@ -113,6 +109,7 @@ export class LeasesService {
       dto.nick,
       Notification.CREATED_LEASE,
     );
+    this.addTimeout(lease.id, dto.myId, lease.completedAt);
   }
 
   async continueLease(dto: ExtLeaseIdDto & { nick: string }): Promise<void> {
@@ -133,6 +130,8 @@ export class LeasesService {
       dto.nick,
       Notification.CONTINUED_LEASE,
     );
+    this.removeTimeout(lease.id);
+    this.addTimeout(lease.id, dto.myId, lease.completedAt);
   }
 
   async completeLease(dto: ExtLeaseIdDto & { nick: string }): Promise<void> {
@@ -149,6 +148,7 @@ export class LeasesService {
       dto.nick,
       Notification.COMPLETED_LEASE,
     );
+    this.removeTimeout(lease.id);
   }
 
   async checkLeaseExists(id: number): Promise<void> {
@@ -171,6 +171,28 @@ export class LeasesService {
       throw new AppException(LeaseError.ALREADY_COMPLETED);
     }
     return lease;
+  }
+
+  private addTimeout(id: number, userId: number, date: Date): void {
+    const before = new Date(date);
+    before.setDate(before.getDate() - 1);
+    const diffA = date.getTime() - new Date().getTime();
+    const diffB = before.getTime() - new Date().getTime();
+    const callbackFactory = (message: string) => () => {
+      this.mqttService.publishNotificationMessage(id, userId, '🔔', message);
+      return true;
+    };
+    const callbackA = callbackFactory(Notification.ENDED_LEASE);
+    const callbackB = callbackFactory(Notification.REMINDED_LEASE);
+    this.schedule.scheduleTimeoutJob(`leases/${id}/a`, diffA, callbackA);
+    if (diffB > 0) {
+      this.schedule.scheduleTimeoutJob(`leases/${id}/b`, diffB, callbackB);
+    }
+  }
+
+  private removeTimeout(id: number): void {
+    this.schedule.cancelJob(`leases/${id}/a`);
+    this.schedule.cancelJob(`leases/${id}/b`);
   }
 
   private async create(dto: ExtCreateLeaseDto, sum: number): Promise<Lease> {
