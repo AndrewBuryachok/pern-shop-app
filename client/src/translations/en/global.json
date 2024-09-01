@@ -451,13 +451,16 @@
       "ended": "Your hire ended"
     },
     "goods": {
-      "created": "created good"
+      "created": "created good",
+      "ended": "Your good ended"
     },
     "wares": {
-      "created": "created ware"
+      "created": "created ware",
+      "ended": "Your ware ended"
     },
     "products": {
-      "created": "created product"
+      "created": "created product",
+      "ended": "Your product ended"
     },
     "bargains": {
       "created": "bought your good",
