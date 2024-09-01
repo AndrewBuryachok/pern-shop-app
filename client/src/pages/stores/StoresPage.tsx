@@ -29,6 +29,7 @@ export default function StoresPage() {
     store: searchParams.get('store'),
     minPrice: +(searchParams.get('minPrice') || 0) || null,
     maxPrice: +(searchParams.get('maxPrice') || 0) || null,
+    completed: searchParams.get('completed'),
   };
 
   const response = {

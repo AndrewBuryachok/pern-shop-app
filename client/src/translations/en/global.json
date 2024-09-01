@@ -231,6 +231,7 @@
     "customer": "Customer",
     "type": "Type",
     "completed": "Completed",
+    "incompleted": "Incompleted",
     "x": "X",
     "y": "Y",
     "farm": "Farm",

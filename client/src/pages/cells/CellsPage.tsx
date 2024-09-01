@@ -29,6 +29,7 @@ export default function CellsPage() {
     cell: searchParams.get('cell'),
     minPrice: +(searchParams.get('minPrice') || 0) || null,
     maxPrice: +(searchParams.get('maxPrice') || 0) || null,
+    completed: searchParams.get('completed'),
   };
 
   const response = {

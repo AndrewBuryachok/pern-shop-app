@@ -32,6 +32,7 @@ export default function RentsPage() {
     maxSum: +(searchParams.get('maxSum') || 0) || null,
     minDate: searchParams.get('minDate'),
     maxDate: searchParams.get('maxDate'),
+    completed: searchParams.get('completed'),
   };
 
   const response = {

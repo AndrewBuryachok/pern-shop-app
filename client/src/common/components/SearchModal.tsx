@@ -668,6 +668,26 @@ export default function SearchModal(props: Props) {
           {...form.getInputProps('maxDate')}
         />
       )}
+      {props.search.completed !== undefined && (
+        <Radio.Group
+          label={t('columns.completed')}
+          spacing='md'
+          {...form.getInputProps('completed')}
+        >
+          {['completed', 'incompleted'].map((label, index) => (
+            <Radio
+              key={label}
+              label={t(`columns.${label}`)}
+              value={`${1 - index * 2}`}
+            />
+          ))}
+          <CloseButton
+            size={24}
+            iconSize={16}
+            onClick={() => form.setFieldValue('completed', null)}
+          />
+        </Radio.Group>
+      )}
     </CustomForm>
   );
 }

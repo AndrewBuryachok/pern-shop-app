@@ -112,5 +112,8 @@ export const getQuery = (req: IRequest) => {
   if (req?.maxDate) {
     query.append('maxDate', req.maxDate);
   }
+  if (req?.completed) {
+    query.append('completed', req.completed);
+  }
   return query.toString();
 };

@@ -24,6 +24,7 @@ export default function DrawersPage() {
     drawer: searchParams.get('drawer'),
     minPrice: +(searchParams.get('minPrice') || 0) || null,
     maxPrice: +(searchParams.get('maxPrice') || 0) || null,
+    completed: searchParams.get('completed'),
   };
 
   const response = {

@@ -28,6 +28,7 @@ export default function PollsPage() {
     result: searchParams.get('result'),
     minDate: searchParams.get('minDate'),
     maxDate: searchParams.get('maxDate'),
+    completed: searchParams.get('completed'),
   };
 
   const response = {

@@ -38,4 +38,5 @@ export interface ISearch {
   rate?: number | null;
   minDate?: string | null;
   maxDate?: string | null;
+  completed?: string | null;
 }
