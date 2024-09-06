@@ -15,7 +15,6 @@ import { RentIdDto } from './rent.dto';
 import CustomForm from '../../common/components/CustomForm';
 import RefetchAction from '../../common/components/RefetchAction';
 import CustomAvatar from '../../common/components/CustomAvatar';
-import { CardsItem } from '../../common/components/CardsItem';
 import {
   parseCard,
   parseStore,
@@ -37,6 +36,7 @@ export default function ContinueRentModal({ data: rent, hasRole }: Props) {
       rentId: rent.id,
       card: `${rent.card.id}`,
     },
+    transformValues: ({ card, ...rest }) => ({ ...rest }),
     validate: {
       card: () =>
         !tag || myCard.balance < tag.price
@@ -91,15 +91,8 @@ export default function ContinueRentModal({ data: rent, hasRole }: Props) {
       />
       <Select
         label={t('columns.card')}
-        placeholder={t('columns.card')}
         rightSection={<RefetchAction {...cardsResponse} />}
-        itemComponent={CardsItem}
-        data={selectCardsWithBalance(
-          cards?.filter((card) => card.id === rent.card.id),
-        )}
-        limit={20}
-        searchable
-        required
+        data={selectCardsWithBalance(cards)}
         readOnly
         {...form.getInputProps('card')}
       />

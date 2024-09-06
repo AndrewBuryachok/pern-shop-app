@@ -11,7 +11,10 @@ import {
   createMyTaskButton,
   createUserTaskButton,
 } from '../../features/tasks/CreateTaskModal';
-import { editTaskAction } from '../../features/tasks/EditTaskModal';
+import {
+  editMyTaskAction,
+  editUserTaskAction,
+} from '../../features/tasks/EditTaskModal';
 import {
   takeMyTaskAction,
   takeUserTaskAction,
@@ -59,10 +62,15 @@ export default function TasksPage() {
 
   const actions = {
     main: [takeMyTaskAction],
-    my: [editTaskAction, completeTaskAction, deleteTaskAction, rateTaskAction],
+    my: [
+      editMyTaskAction,
+      completeTaskAction,
+      deleteTaskAction,
+      rateTaskAction,
+    ],
     taken: [executeTaskAction, untakeTaskAction],
     all: [
-      editTaskAction,
+      editUserTaskAction,
       takeUserTaskAction,
       executeTaskAction,
       completeTaskAction,

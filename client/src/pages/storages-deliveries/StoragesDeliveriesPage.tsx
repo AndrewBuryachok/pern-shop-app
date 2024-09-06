@@ -12,7 +12,10 @@ import {
   createMyStorageDeliveryButton,
   createUserStorageDeliveryButton,
 } from '../../features/storages-deliveries/CreateStorageDeliveryModal';
-import { editStorageDeliveryAction } from '../../features/storages-deliveries/EditStorageDeliveryModal';
+import {
+  editMyStorageDeliveryAction,
+  editUserStorageDeliveryAction,
+} from '../../features/storages-deliveries/EditStorageDeliveryModal';
 import {
   takeMyStorageDeliveryAction,
   takeUserStorageDeliveryAction,
@@ -70,14 +73,14 @@ export default function StoragesDeliveriesPage() {
   const actions = {
     main: [takeMyStorageDeliveryAction],
     my: [
-      editStorageDeliveryAction,
+      editMyStorageDeliveryAction,
       completeStorageDeliveryAction,
       deleteStorageDeliveryAction,
       rateStorageDeliveryAction,
     ],
     taken: [executeStorageDeliveryAction, untakeStorageDeliveryAction],
     all: [
-      editStorageDeliveryAction,
+      editUserStorageDeliveryAction,
       takeUserStorageDeliveryAction,
       executeStorageDeliveryAction,
       completeStorageDeliveryAction,

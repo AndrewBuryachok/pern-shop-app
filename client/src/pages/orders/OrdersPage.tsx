@@ -12,7 +12,10 @@ import {
   createMyOrderButton,
   createUserOrderButton,
 } from '../../features/orders/CreateOrderModal';
-import { editOrderAction } from '../../features/orders/EditOrderModal';
+import {
+  editMyOrderAction,
+  editUserOrderAction,
+} from '../../features/orders/EditOrderModal';
 import {
   takeMyOrderAction,
   takeUserOrderAction,
@@ -70,14 +73,14 @@ export default function OrdersPage() {
   const actions = {
     main: [takeMyOrderAction],
     my: [
-      editOrderAction,
+      editMyOrderAction,
       completeOrderAction,
       deleteOrderAction,
       rateOrderAction,
     ],
     taken: [executeOrderAction, untakeOrderAction],
     all: [
-      editOrderAction,
+      editUserOrderAction,
       takeUserOrderAction,
       executeOrderAction,
       completeOrderAction,

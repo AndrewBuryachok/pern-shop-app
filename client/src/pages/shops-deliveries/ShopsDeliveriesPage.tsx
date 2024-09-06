@@ -12,7 +12,10 @@ import {
   createMyShopDeliveryButton,
   createUserShopDeliveryButton,
 } from '../../features/shops-deliveries/CreateShopDeliveryModal';
-import { editShopDeliveryAction } from '../../features/shops-deliveries/EditShopDeliveryModal';
+import {
+  editMyShopDeliveryAction,
+  editUserShopDeliveryAction,
+} from '../../features/shops-deliveries/EditShopDeliveryModal';
 import {
   takeMyShopDeliveryAction,
   takeUserShopDeliveryAction,
@@ -70,14 +73,14 @@ export default function ShopsDeliveriesPage() {
   const actions = {
     main: [takeMyShopDeliveryAction],
     my: [
-      editShopDeliveryAction,
+      editMyShopDeliveryAction,
       completeShopDeliveryAction,
       deleteShopDeliveryAction,
       rateShopDeliveryAction,
     ],
     taken: [executeShopDeliveryAction, untakeShopDeliveryAction],
     all: [
-      editShopDeliveryAction,
+      editUserShopDeliveryAction,
       takeUserShopDeliveryAction,
       executeShopDeliveryAction,
       completeShopDeliveryAction,

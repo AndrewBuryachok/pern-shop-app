@@ -48,6 +48,10 @@ export default function RespondAdvertModal({ data: advert, hasRole }: Props) {
       price: advert.price,
     },
     transformValues: ({ user, card, ...rest }) => ({ ...rest, cardId: +card }),
+    validate: {
+      card: (_, values) =>
+        myCard.balance < values.price ? t('errors.not_enough_balance') : null,
+    },
   });
 
   useEffect(() => form.setFieldValue('card', ''), [form.values.user]);

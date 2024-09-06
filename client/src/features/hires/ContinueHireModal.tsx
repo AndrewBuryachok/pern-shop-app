@@ -15,7 +15,6 @@ import { HireIdDto } from './hire.dto';
 import CustomForm from '../../common/components/CustomForm';
 import RefetchAction from '../../common/components/RefetchAction';
 import CustomAvatar from '../../common/components/CustomAvatar';
-import { CardsItem } from '../../common/components/CardsItem';
 import {
   parseCard,
   parseDrawer,
@@ -39,6 +38,7 @@ export default function ContinueHireModal({ data: hire, hasRole }: Props) {
       hireId: hire.id,
       card: `${hire.card.id}`,
     },
+    transformValues: ({ card, ...rest }) => ({ ...rest }),
     validate: {
       card: () =>
         !station || myCard.balance < station.price
@@ -93,15 +93,8 @@ export default function ContinueHireModal({ data: hire, hasRole }: Props) {
       />
       <Select
         label={t('columns.card')}
-        placeholder={t('columns.card')}
         rightSection={<RefetchAction {...cardsResponse} />}
-        itemComponent={CardsItem}
-        data={selectCardsWithBalance(
-          cards?.filter((card) => card.id === hire.card.id),
-        )}
-        limit={20}
-        searchable
-        required
+        data={selectCardsWithBalance(cards)}
         readOnly
         {...form.getInputProps('card')}
       />

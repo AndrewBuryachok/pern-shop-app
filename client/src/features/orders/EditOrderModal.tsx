@@ -6,11 +6,20 @@ import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { Order } from './order.model';
 import { useEditOrderMutation } from './orders.api';
+import {
+  useSelectMyCardsQuery,
+  useSelectUserCardsWithBalanceQuery,
+} from '../cards/cards.api';
 import { EditOrderDto } from './order.dto';
 import CustomForm from '../../common/components/CustomForm';
+import RefetchAction from '../../common/components/RefetchAction';
 import ThingImage from '../../common/components/ThingImage';
 import { ThingsItem } from '../../common/components/ThingsItem';
-import { selectItems, selectKits } from '../../common/utils';
+import {
+  selectCardsWithBalance,
+  selectItems,
+  selectKits,
+} from '../../common/utils';
 import {
   Color,
   MAX_AMOUNT_VALUE,
@@ -20,10 +29,12 @@ import {
   Status,
 } from '../../common/constants';
 
-type Props = IModal<Order>;
+type Props = IModal<Order> & { hasRole: boolean };
 
-export default function EditOrderModal({ data: order }: Props) {
+export default function EditOrderModal({ data: order, hasRole }: Props) {
   const [t] = useTranslation();
+
+  const myCard = { balance: 0 };
 
   const form = useForm({
     initialValues: {
@@ -34,13 +45,28 @@ export default function EditOrderModal({ data: order }: Props) {
       intake: order.intake,
       kit: `${order.kit}`,
       price: order.price,
+      card: `${order.hire.card.id}`,
     },
-    transformValues: ({ item, kit, ...rest }) => ({
+    transformValues: ({ item, kit, card, ...rest }) => ({
       ...rest,
       item: +item,
       kit: +kit,
     }),
+    validate: {
+      card: (_, values) =>
+        order.price < values.price &&
+        myCard.balance < values.price - order.price
+          ? t('errors.not_enough_balance')
+          : null,
+    },
   });
+
+  const { data: cards, ...cardsResponse } = hasRole
+    ? useSelectUserCardsWithBalanceQuery(order.hire.card.user.id)
+    : useSelectMyCardsQuery();
+
+  myCard.balance =
+    cards?.find((card) => card.id === +form.values.card)?.balance || 0;
 
   const [editOrder, { isLoading }] = useEditOrderMutation();
 
@@ -105,16 +131,27 @@ export default function EditOrderModal({ data: order }: Props) {
         max={MAX_PRICE_VALUE}
         {...form.getInputProps('price')}
       />
+      <Select
+        label={t('columns.card')}
+        rightSection={<RefetchAction {...cardsResponse} />}
+        data={selectCardsWithBalance(cards)}
+        readOnly
+        {...form.getInputProps('card')}
+      />
     </CustomForm>
   );
 }
 
-export const editOrderAction = {
+export const editOrderFactory = (hasRole: boolean) => ({
   open: (order: Order) =>
     openModal({
       title: t('actions.edit') + ' ' + t('modals.orders'),
-      children: <EditOrderModal data={order} />,
+      children: <EditOrderModal data={order} hasRole={hasRole} />,
     }),
   disable: (order: Order) => order.status !== Status.CREATED,
   color: Color.YELLOW,
-};
+});
+
+export const editMyOrderAction = editOrderFactory(false);
+
+export const editUserOrderAction = editOrderFactory(true);

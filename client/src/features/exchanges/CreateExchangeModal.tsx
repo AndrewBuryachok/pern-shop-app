@@ -30,6 +30,8 @@ type Props = { hasRole: boolean };
 export default function CreateExchangeModal({ hasRole }: Props) {
   const [t] = useTranslation();
 
+  const myCard = { balance: 0 };
+
   const form = useForm({
     initialValues: {
       user: '',
@@ -42,6 +44,12 @@ export default function CreateExchangeModal({ hasRole }: Props) {
       cardId: +card,
       type: !!+type,
     }),
+    validate: {
+      card: (_, values) =>
+        !+values.type && myCard.balance < values.sum
+          ? t('errors.not_enough_balance')
+          : null,
+    },
   });
 
   useEffect(() => form.setFieldValue('card', ''), [form.values.user]);
@@ -57,6 +65,7 @@ export default function CreateExchangeModal({ hasRole }: Props) {
 
   const user = users?.find((user) => user.id === +form.values.user);
   const card = cards?.find((card) => card.id === +form.values.card);
+  myCard.balance = card?.balance || 0;
   const maxSum = !+form.values.type ? card?.balance : undefined;
 
   const [createExchange, { isLoading }] = useCreateExchangeMutation();

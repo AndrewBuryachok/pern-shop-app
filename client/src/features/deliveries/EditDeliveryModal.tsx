@@ -6,11 +6,20 @@ import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { Delivery } from './delivery.model';
 import { useEditDeliveryMutation } from './deliveries.api';
+import {
+  useSelectMyCardsQuery,
+  useSelectUserCardsWithBalanceQuery,
+} from '../cards/cards.api';
 import { EditDeliveryDto } from './delivery.dto';
 import CustomForm from '../../common/components/CustomForm';
+import RefetchAction from '../../common/components/RefetchAction';
 import ThingImage from '../../common/components/ThingImage';
 import { ThingsItem } from '../../common/components/ThingsItem';
-import { selectItems, selectKits } from '../../common/utils';
+import {
+  selectCardsWithBalance,
+  selectItems,
+  selectKits,
+} from '../../common/utils';
 import {
   Color,
   MAX_AMOUNT_VALUE,
@@ -20,10 +29,12 @@ import {
   Status,
 } from '../../common/constants';
 
-type Props = IModal<Delivery>;
+type Props = IModal<Delivery> & { hasRole: boolean };
 
-export default function EditDeliveryModal({ data: delivery }: Props) {
+export default function EditDeliveryModal({ data: delivery, hasRole }: Props) {
   const [t] = useTranslation();
+
+  const myCard = { balance: 0 };
 
   const form = useForm({
     initialValues: {
@@ -34,13 +45,28 @@ export default function EditDeliveryModal({ data: delivery }: Props) {
       intake: delivery.intake,
       kit: `${delivery.kit}`,
       price: delivery.price,
+      card: `${delivery.fromHire.card.id}`,
     },
-    transformValues: ({ item, kit, ...rest }) => ({
+    transformValues: ({ item, kit, card, ...rest }) => ({
       ...rest,
       item: +item,
       kit: +kit,
     }),
+    validate: {
+      card: (_, values) =>
+        delivery.price < values.price &&
+        myCard.balance < values.price - delivery.price
+          ? t('errors.not_enough_balance')
+          : null,
+    },
   });
+
+  const { data: cards, ...cardsResponse } = hasRole
+    ? useSelectUserCardsWithBalanceQuery(delivery.fromHire.card.user.id)
+    : useSelectMyCardsQuery();
+
+  myCard.balance =
+    cards?.find((card) => card.id === +form.values.card)?.balance || 0;
 
   const [editDelivery, { isLoading }] = useEditDeliveryMutation();
 
@@ -105,16 +131,27 @@ export default function EditDeliveryModal({ data: delivery }: Props) {
         max={MAX_PRICE_VALUE}
         {...form.getInputProps('price')}
       />
+      <Select
+        label={t('columns.card')}
+        rightSection={<RefetchAction {...cardsResponse} />}
+        data={selectCardsWithBalance(cards)}
+        readOnly
+        {...form.getInputProps('card')}
+      />
     </CustomForm>
   );
 }
 
-export const editDeliveryAction = {
+export const editDeliveryFactory = (hasRole: boolean) => ({
   open: (delivery: Delivery) =>
     openModal({
       title: t('actions.edit') + ' ' + t('modals.deliveries'),
-      children: <EditDeliveryModal data={delivery} />,
+      children: <EditDeliveryModal data={delivery} hasRole={hasRole} />,
     }),
   disable: (delivery: Delivery) => delivery.status !== Status.CREATED,
   color: Color.YELLOW,
-};
+});
+
+export const editMyDeliveryAction = editDeliveryFactory(false);
+
+export const editUserDeliveryAction = editDeliveryFactory(true);
