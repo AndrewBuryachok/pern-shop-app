@@ -128,7 +128,9 @@
     "leases": "View leases; continue, complete leases",
     "hires": "View hires; continue, complete hires",
     "polls": "View polls; create, edit, complete, delete polls; vote, discuss polls",
-    "ratings": "View ratings; create, edit, delete ratings"
+    "ratings": "View ratings; create, edit, delete ratings",
+    "increase": "Will be added to card",
+    "decrease": "Will be removed from card"
   },
   "home": {
     "title": "Online shop",

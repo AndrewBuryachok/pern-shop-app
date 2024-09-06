@@ -93,6 +93,9 @@ export default function ContinueHireModal({ data: hire, hasRole }: Props) {
       />
       <Select
         label={t('columns.card')}
+        description={`${t('information.decrease')} ${station?.price || 0} ${t(
+          'constants.currency',
+        )}`}
         rightSection={<RefetchAction {...cardsResponse} />}
         data={selectCardsWithBalance(cards)}
         readOnly

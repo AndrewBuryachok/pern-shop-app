@@ -90,6 +90,13 @@ export default function EditTaskModal({ data: task, hasRole }: Props) {
       />
       <Select
         label={t('columns.card')}
+        description={`${
+          task.price > form.values.price
+            ? t('information.increase')
+            : t('information.decrease')
+        } ${Math.abs(task.price - form.values.price)} ${t(
+          'constants.currency',
+        )}`}
         rightSection={<RefetchAction {...cardsResponse} />}
         data={selectCardsWithBalance(cards)}
         readOnly

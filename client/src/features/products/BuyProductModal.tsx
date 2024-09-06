@@ -157,6 +157,9 @@ export default function BuyProductModal({ data: product, hasRole }: Props) {
       <Select
         label={t('columns.card')}
         placeholder={t('columns.card')}
+        description={`${t('information.decrease')} ${
+          form.values.amount * product.price + station.price + form.values.price
+        } ${t('constants.currency')}`}
         rightSection={
           <RefetchAction
             {...cardsResponse}

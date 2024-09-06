@@ -91,6 +91,9 @@ export default function ContinueLeaseModal({ data: lease, hasRole }: Props) {
       />
       <Select
         label={t('columns.card')}
+        description={`${t('information.decrease')} ${tag?.price || 0} ${t(
+          'constants.currency',
+        )}`}
         rightSection={<RefetchAction {...cardsResponse} />}
         data={selectCardsWithBalance(cards)}
         readOnly

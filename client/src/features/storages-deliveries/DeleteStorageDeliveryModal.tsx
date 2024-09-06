@@ -41,6 +41,9 @@ export default function DeleteStorageDeliveryModal({
     >
       <TextInput
         label={t('columns.customer')}
+        description={`${t('information.increase')} ${storageDelivery.price} ${t(
+          'constants.currency',
+        )}`}
         icon={<CustomAvatar {...storageDelivery.hire.card.user} />}
         iconWidth={48}
         value={parseCard(storageDelivery.hire.card)}

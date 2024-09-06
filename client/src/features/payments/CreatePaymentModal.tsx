@@ -111,6 +111,9 @@ export default function CreatePaymentModal({ hasRole }: Props) {
       <Select
         label={t('columns.card')}
         placeholder={t('columns.card')}
+        description={`${t('information.decrease')} ${form.values.sum} ${t(
+          'constants.currency',
+        )}`}
         rightSection={
           <RefetchAction
             {...senderCardsResponse}
@@ -142,6 +145,9 @@ export default function CreatePaymentModal({ hasRole }: Props) {
       <Select
         label={t('columns.card')}
         placeholder={t('columns.card')}
+        description={`${t('information.increase')} ${form.values.sum} ${t(
+          'constants.currency',
+        )}`}
         rightSection={
           <RefetchAction
             {...receiverCardsResponse}

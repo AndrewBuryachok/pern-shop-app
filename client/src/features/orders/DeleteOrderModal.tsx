@@ -38,6 +38,9 @@ export default function DeleteOrderModal({ data: order }: Props) {
     >
       <TextInput
         label={t('columns.customer')}
+        description={`${t('information.increase')} ${order.price} ${t(
+          'constants.currency',
+        )}`}
         icon={<CustomAvatar {...order.hire.card.user} />}
         iconWidth={48}
         value={parseCard(order.hire.card)}

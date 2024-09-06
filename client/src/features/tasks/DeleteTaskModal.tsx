@@ -37,6 +37,9 @@ export default function DeleteTaskModal({ data: task }: Props) {
     >
       <TextInput
         label={t('columns.customer')}
+        description={`${t('information.increase')} ${task.price} ${t(
+          'constants.currency',
+        )}`}
         icon={<CustomAvatar {...task.customerCard.user} />}
         iconWidth={48}
         value={parseCard(task.customerCard)}

@@ -103,6 +103,13 @@ export default function EditMarketDeliveryModal({
       />
       <Select
         label={t('columns.card')}
+        description={`${
+          marketDelivery.price > form.values.price
+            ? t('information.increase')
+            : t('information.decrease')
+        } ${Math.abs(marketDelivery.price - form.values.price)} ${t(
+          'constants.currency',
+        )}`}
         rightSection={<RefetchAction {...cardsResponse} />}
         data={selectCardsWithBalance(cards)}
         readOnly

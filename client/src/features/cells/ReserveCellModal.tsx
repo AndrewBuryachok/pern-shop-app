@@ -108,6 +108,9 @@ export default function ReserveCellModal({ data: cell, hasRole }: Props) {
       <Select
         label={t('columns.card')}
         placeholder={t('columns.card')}
+        description={`${t('information.decrease')} ${cell.storageTag.price} ${t(
+          'constants.currency',
+        )}`}
         rightSection={
           <RefetchAction
             {...cardsResponse}

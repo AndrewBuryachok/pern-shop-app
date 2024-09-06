@@ -41,6 +41,9 @@ export default function DeleteMarketDeliveryModal({
     >
       <TextInput
         label={t('columns.customer')}
+        description={`${t('information.increase')} ${marketDelivery.price} ${t(
+          'constants.currency',
+        )}`}
         icon={<CustomAvatar {...marketDelivery.hire.card.user} />}
         iconWidth={48}
         value={parseCard(marketDelivery.hire.card)}

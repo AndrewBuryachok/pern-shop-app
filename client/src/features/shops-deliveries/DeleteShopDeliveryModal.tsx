@@ -38,6 +38,9 @@ export default function DeleteShopDeliveryModal({ data: shopDelivery }: Props) {
     >
       <TextInput
         label={t('columns.customer')}
+        description={`${t('information.increase')} ${shopDelivery.price} ${t(
+          'constants.currency',
+        )}`}
         icon={<CustomAvatar {...shopDelivery.hire.card.user} />}
         iconWidth={48}
         value={parseCard(shopDelivery.hire.card)}

@@ -103,6 +103,13 @@ export default function EditShopDeliveryModal({
       />
       <Select
         label={t('columns.card')}
+        description={`${
+          shopDelivery.price > form.values.price
+            ? t('information.increase')
+            : t('information.decrease')
+        } ${Math.abs(shopDelivery.price - form.values.price)} ${t(
+          'constants.currency',
+        )}`}
         rightSection={<RefetchAction {...cardsResponse} />}
         data={selectCardsWithBalance(cards)}
         readOnly

@@ -133,6 +133,13 @@ export default function EditOrderModal({ data: order, hasRole }: Props) {
       />
       <Select
         label={t('columns.card')}
+        description={`${
+          order.price > form.values.price
+            ? t('information.increase')
+            : t('information.decrease')
+        } ${Math.abs(order.price - form.values.price)} ${t(
+          'constants.currency',
+        )}`}
         rightSection={<RefetchAction {...cardsResponse} />}
         data={selectCardsWithBalance(cards)}
         readOnly

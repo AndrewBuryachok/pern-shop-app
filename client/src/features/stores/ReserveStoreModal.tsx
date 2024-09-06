@@ -112,6 +112,9 @@ export default function ReserveStoreModal({ data: store, hasRole }: Props) {
       <Select
         label={t('columns.card')}
         placeholder={t('columns.card')}
+        description={`${t('information.decrease')} ${store.marketTag.price} ${t(
+          'constants.currency',
+        )}`}
         rightSection={
           <RefetchAction
             {...cardsResponse}

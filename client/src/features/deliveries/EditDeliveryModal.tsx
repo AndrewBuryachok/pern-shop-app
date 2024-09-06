@@ -133,6 +133,13 @@ export default function EditDeliveryModal({ data: delivery, hasRole }: Props) {
       />
       <Select
         label={t('columns.card')}
+        description={`${
+          delivery.price > form.values.price
+            ? t('information.increase')
+            : t('information.decrease')
+        } ${Math.abs(delivery.price - form.values.price)} ${t(
+          'constants.currency',
+        )}`}
         rightSection={<RefetchAction {...cardsResponse} />}
         data={selectCardsWithBalance(cards)}
         readOnly

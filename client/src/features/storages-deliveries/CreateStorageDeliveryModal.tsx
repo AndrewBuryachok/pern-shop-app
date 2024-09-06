@@ -155,6 +155,9 @@ export default function CreateStorageDeliveryModal({ hasRole }: Props) {
       <Select
         label={t('columns.card')}
         placeholder={t('columns.card')}
+        description={`${t('information.decrease')} ${
+          station.price + form.values.price
+        } ${t('constants.currency')}`}
         rightSection={
           <RefetchAction
             {...cardsResponse}

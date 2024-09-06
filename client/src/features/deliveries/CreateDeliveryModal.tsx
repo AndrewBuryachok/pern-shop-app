@@ -159,6 +159,9 @@ export default function CreateDeliveryModal({ hasRole }: Props) {
       <Select
         label={t('columns.card')}
         placeholder={t('columns.card')}
+        description={`${t('information.decrease')} ${
+          fromStation.price + toStation.price + form.values.price
+        } ${t('constants.currency')}`}
         rightSection={
           <RefetchAction
             {...cardsResponse}

@@ -108,6 +108,9 @@ export default function RespondAdvertModal({ data: advert, hasRole }: Props) {
       <Select
         label={t('columns.card')}
         placeholder={t('columns.card')}
+        description={`${t('information.decrease')} ${form.values.price} ${t(
+          'constants.currency',
+        )}`}
         rightSection={
           <RefetchAction
             {...cardsResponse}

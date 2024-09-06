@@ -33,10 +33,7 @@ export default function CompleteInvoiceModal({
       invoiceId: invoice.id,
       card: '',
     },
-    transformValues: ({ card, ...rest }) => ({
-      ...rest,
-      cardId: +card,
-    }),
+    transformValues: ({ card, ...rest }) => ({ ...rest, cardId: +card }),
     validate: {
       card: () =>
         myCard.balance < invoice.sum ? t('errors.not_enough_balance') : null,
@@ -89,6 +86,9 @@ export default function CompleteInvoiceModal({
       <Select
         label={t('columns.card')}
         placeholder={t('columns.card')}
+        description={`${t('information.decrease')} ${invoice.sum} ${t(
+          'constants.currency',
+        )}`}
         rightSection={<RefetchAction {...cardsResponse} />}
         itemComponent={CardsItem}
         data={selectCardsWithBalance(cards)}
