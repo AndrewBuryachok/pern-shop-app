@@ -7,8 +7,10 @@ import { IModal } from '../../common/interfaces';
 import { Article } from './article.model';
 import { Reply } from '../replies/reply.model';
 import { getCurrentUser } from '../auth/auth.slice';
-import { useCreateCommentMutation } from '../comments/comments.api';
-import { useSelectArticleCommentsQuery } from './articles.api';
+import {
+  useCreateCommentMutation,
+  useSelectArticleCommentsQuery,
+} from '../comments/comments.api';
 import { CreateCommentDto } from '../comments/comment.dto';
 import RepliesTimeline from '../../common/components/RepliesTimeline';
 import ReplyAvatarWithText from '../../common/components/ReplyAvatarWithText';

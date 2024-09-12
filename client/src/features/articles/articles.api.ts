@@ -3,7 +3,6 @@ import { IRequest, IResponse } from '../../common/interfaces';
 import { Article, SmArticle } from './article.model';
 import { ArticleView } from './article-view.model';
 import { Like } from './like.model';
-import { Comment } from '../comments/comment.model';
 import {
   CreateArticleDto,
   DeleteArticleDto,
@@ -81,41 +80,6 @@ export const articlesApi = emptyApi.injectEndpoints({
         url: `/articles/${articleId}/downLikes`,
       }),
       providesTags: ['Like'],
-    }),
-    selectArticleComments: build.query<Comment[], number>({
-      query: (articleId) => ({
-        url: `/articles/${articleId}/comments`,
-      }),
-      providesTags: ['Comment'],
-      async onQueryStarted(articleId, { dispatch, queryFulfilled, getState }) {
-        const { data: comments } = await queryFulfilled;
-        const endpoints = articlesApi.util.selectInvalidatedBy(getState(), [
-          'Article',
-        ]);
-        endpoints
-          .filter((endpoint) => endpoint.endpointName === 'getMainArticles')
-          .forEach((endpoint) => {
-            const patchResult = dispatch(
-              articlesApi.util.updateQueryData(
-                'getMainArticles',
-                endpoint.originalArgs,
-                (draft) => {
-                  const article = draft.result.find(
-                    (article) => article.id === articleId,
-                  );
-                  if (article) {
-                    if (comments.length) {
-                      article.comment = comments[comments.length - 1];
-                    } else {
-                      article.comment = undefined;
-                    }
-                  }
-                },
-              ),
-            );
-            queryFulfilled.catch(patchResult.undo);
-          });
-      },
     }),
     createMyArticle: build.mutation<void, CreateArticleDto>({
       query: (dto) => ({
@@ -283,7 +247,6 @@ export const {
   useSelectArticleViewsQuery,
   useSelectArticleUpLikesQuery,
   useSelectArticleDownLikesQuery,
-  useSelectArticleCommentsQuery,
   useCreateMyArticleMutation,
   useCreateUserArticleMutation,
   useEditArticleMutation,

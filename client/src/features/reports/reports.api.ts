@@ -3,7 +3,6 @@ import { IRequest, IResponse } from '../../common/interfaces';
 import { Report, SmReport } from './report.model';
 import { ReportView } from './report-view.model';
 import { Attitude } from './attitude.model';
-import { Annotation } from '../annotations/annotation.model';
 import {
   CreateReportDto,
   DeleteReportDto,
@@ -86,41 +85,6 @@ export const reportsApi = emptyApi.injectEndpoints({
         url: `/reports/${reportId}/downAttitudes`,
       }),
       providesTags: ['Attitude'],
-    }),
-    selectReportAnnotations: build.query<Annotation[], number>({
-      query: (reportId) => ({
-        url: `/reports/${reportId}/annotations`,
-      }),
-      providesTags: ['Annotation'],
-      async onQueryStarted(reportId, { dispatch, queryFulfilled, getState }) {
-        const { data: annotations } = await queryFulfilled;
-        const endpoints = reportsApi.util.selectInvalidatedBy(getState(), [
-          'Report',
-        ]);
-        endpoints
-          .filter((endpoint) => endpoint.endpointName === 'getMainReports')
-          .forEach((endpoint) => {
-            const patchResult = dispatch(
-              reportsApi.util.updateQueryData(
-                'getMainReports',
-                endpoint.originalArgs,
-                (draft) => {
-                  const report = draft.result.find(
-                    (report) => report.id === reportId,
-                  );
-                  if (report) {
-                    if (annotations.length) {
-                      report.annotation = annotations[annotations.length - 1];
-                    } else {
-                      report.annotation = undefined;
-                    }
-                  }
-                },
-              ),
-            );
-            queryFulfilled.catch(patchResult.undo);
-          });
-      },
     }),
     createServerReport: build.mutation<void, CreateReportDto>({
       query: (dto) => ({
@@ -319,7 +283,6 @@ export const {
   useSelectReportViewsQuery,
   useSelectReportUpAttitudesQuery,
   useSelectReportDownAttitudesQuery,
-  useSelectReportAnnotationsQuery,
   useCreateServerReportMutation,
   useCreateSiteReportMutation,
   useCreateEventsReportMutation,

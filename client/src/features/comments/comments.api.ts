@@ -1,4 +1,5 @@
 import { emptyApi } from '../../app/empty.api';
+import { Comment } from './comment.model';
 import {
   CreateCommentDto,
   DeleteCommentDto,
@@ -7,6 +8,12 @@ import {
 
 export const commentsApi = emptyApi.injectEndpoints({
   endpoints: (build) => ({
+    selectArticleComments: build.query<Comment[], number>({
+      query: (articleId) => ({
+        url: `/comments/${articleId}`,
+      }),
+      providesTags: ['Comment'],
+    }),
     createComment: build.mutation<void, CreateCommentDto>({
       query: (dto) => ({
         url: '/comments',
@@ -34,6 +41,7 @@ export const commentsApi = emptyApi.injectEndpoints({
 });
 
 export const {
+  useSelectArticleCommentsQuery,
   useCreateCommentMutation,
   useEditCommentMutation,
   useDeleteCommentMutation,

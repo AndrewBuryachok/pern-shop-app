@@ -1,4 +1,5 @@
 import { emptyApi } from '../../app/empty.api';
+import { Annotation } from './annotation.model';
 import {
   CreateAnnotationDto,
   DeleteAnnotationDto,
@@ -7,6 +8,12 @@ import {
 
 export const annotationsApi = emptyApi.injectEndpoints({
   endpoints: (build) => ({
+    selectReportAnnotations: build.query<Annotation[], number>({
+      query: (reportId) => ({
+        url: `/annotations/${reportId}`,
+      }),
+      providesTags: ['Annotation'],
+    }),
     createAnnotation: build.mutation<void, CreateAnnotationDto>({
       query: (dto) => ({
         url: '/annotations',
@@ -34,6 +41,7 @@ export const annotationsApi = emptyApi.injectEndpoints({
 });
 
 export const {
+  useSelectReportAnnotationsQuery,
   useCreateAnnotationMutation,
   useEditAnnotationMutation,
   useDeleteAnnotationMutation,

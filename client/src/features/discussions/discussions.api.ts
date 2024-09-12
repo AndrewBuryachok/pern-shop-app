@@ -1,4 +1,5 @@
 import { emptyApi } from '../../app/empty.api';
+import { Discussion } from './discussion.model';
 import {
   CreateDiscussionDto,
   DeleteDiscussionDto,
@@ -7,6 +8,12 @@ import {
 
 export const discussionsApi = emptyApi.injectEndpoints({
   endpoints: (build) => ({
+    selectPollDiscussions: build.query<Discussion[], number>({
+      query: (pollId) => ({
+        url: `/discussions/${pollId}`,
+      }),
+      providesTags: ['Discussion'],
+    }),
     createDiscussion: build.mutation<void, CreateDiscussionDto>({
       query: (dto) => ({
         url: '/discussions',
@@ -34,6 +41,7 @@ export const discussionsApi = emptyApi.injectEndpoints({
 });
 
 export const {
+  useSelectPollDiscussionsQuery,
   useCreateDiscussionMutation,
   useEditDiscussionMutation,
   useDeleteDiscussionMutation,

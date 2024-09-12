@@ -7,8 +7,10 @@ import { IModal } from '../../common/interfaces';
 import { Report } from './report.model';
 import { Reply } from '../replies/reply.model';
 import { getCurrentUser } from '../auth/auth.slice';
-import { useCreateAnnotationMutation } from '../annotations/annotations.api';
-import { useSelectReportAnnotationsQuery } from './reports.api';
+import {
+  useCreateAnnotationMutation,
+  useSelectReportAnnotationsQuery,
+} from '../annotations/annotations.api';
 import { CreateAnnotationDto } from '../annotations/annotation.dto';
 import RepliesTimeline from '../../common/components/RepliesTimeline';
 import ReplyAvatarWithText from '../../common/components/ReplyAvatarWithText';

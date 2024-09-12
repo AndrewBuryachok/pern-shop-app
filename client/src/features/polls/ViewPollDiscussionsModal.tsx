@@ -7,8 +7,10 @@ import { IModal } from '../../common/interfaces';
 import { Poll } from './poll.model';
 import { Reply } from '../replies/reply.model';
 import { getCurrentUser } from '../auth/auth.slice';
-import { useCreateDiscussionMutation } from '../discussions/discussions.api';
-import { useSelectPollDiscussionsQuery } from './polls.api';
+import {
+  useCreateDiscussionMutation,
+  useSelectPollDiscussionsQuery,
+} from '../discussions/discussions.api';
 import { CreateDiscussionDto } from '../discussions/discussion.dto';
 import RepliesTimeline from '../../common/components/RepliesTimeline';
 import ReplyAvatarWithText from '../../common/components/ReplyAvatarWithText';

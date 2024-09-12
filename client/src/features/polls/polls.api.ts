@@ -3,7 +3,6 @@ import { IRequest, IResponse } from '../../common/interfaces';
 import { Poll, SmPoll } from './poll.model';
 import { PollView } from './poll-view.model';
 import { Vote } from './vote.model';
-import { Discussion } from '../discussions/discussion.model';
 import {
   CompletePollDto,
   CreatePollDto,
@@ -76,39 +75,6 @@ export const pollsApi = emptyApi.injectEndpoints({
         url: `/polls/${pollId}/downVotes`,
       }),
       providesTags: ['Vote'],
-    }),
-    selectPollDiscussions: build.query<Discussion[], number>({
-      query: (pollId) => ({
-        url: `/polls/${pollId}/discussions`,
-      }),
-      providesTags: ['Discussion'],
-      async onQueryStarted(pollId, { dispatch, queryFulfilled, getState }) {
-        const { data: discussions } = await queryFulfilled;
-        const endpoints = pollsApi.util.selectInvalidatedBy(getState(), [
-          'Poll',
-        ]);
-        endpoints
-          .filter((endpoint) => endpoint.endpointName === 'getMainPolls')
-          .forEach((endpoint) => {
-            const patchResult = dispatch(
-              pollsApi.util.updateQueryData(
-                'getMainPolls',
-                endpoint.originalArgs,
-                (draft) => {
-                  const poll = draft.result.find((poll) => poll.id === pollId);
-                  if (poll) {
-                    if (discussions.length) {
-                      poll.discussion = discussions[discussions.length - 1];
-                    } else {
-                      poll.discussion = undefined;
-                    }
-                  }
-                },
-              ),
-            );
-            queryFulfilled.catch(patchResult.undo);
-          });
-      },
     }),
     createMyPoll: build.mutation<void, CreatePollDto>({
       query: (dto) => ({
@@ -280,7 +246,6 @@ export const {
   useSelectPollViewsQuery,
   useSelectPollUpVotesQuery,
   useSelectPollDownVotesQuery,
-  useSelectPollDiscussionsQuery,
   useCreateMyPollMutation,
   useCreateUserPollMutation,
   useEditPollMutation,
