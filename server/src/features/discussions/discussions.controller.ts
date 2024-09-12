@@ -1,18 +1,34 @@
-import { Body, Controller, Delete, Param, Patch, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+} from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { DiscussionsService } from './discussions.service';
+import { Discussion } from './discussion.entity';
 import {
   CreateDiscussionDto,
   EditDiscussionDto,
   DiscussionIdDto,
 } from './discussion.dto';
-import { HasRole, MyId, MyNick } from '../../common/decorators';
+import { PollIdDto } from '../polls/poll.dto';
+import { HasRole, MyId, MyNick, Public } from '../../common/decorators';
 import { Role } from '../users/role.enum';
 
 @ApiTags('discussions')
 @Controller('discussions')
 export class DiscussionsController {
   constructor(private discussionsService: DiscussionsService) {}
+
+  @Public()
+  @Get(':pollId')
+  selectPollDiscussions(@Param() { pollId }: PollIdDto): Promise<Discussion[]> {
+    return this.discussionsService.selectPollDiscussions(pollId);
+  }
 
   @Post()
   createDiscussion(

@@ -1,14 +1,32 @@
-import { Body, Controller, Delete, Param, Patch, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+} from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { CommentsService } from './comments.service';
+import { Comment } from './comment.entity';
 import { CommentIdDto, CreateCommentDto, EditCommentDto } from './comment.dto';
-import { HasRole, MyId, MyNick } from '../../common/decorators';
+import { ArticleIdDto } from '../articles/article.dto';
+import { HasRole, MyId, MyNick, Public } from '../../common/decorators';
 import { Role } from '../users/role.enum';
 
 @ApiTags('comments')
 @Controller('comments')
 export class CommentsController {
   constructor(private commentsService: CommentsService) {}
+
+  @Public()
+  @Get(':articleId')
+  selectArticleComments(
+    @Param() { articleId }: ArticleIdDto,
+  ): Promise<Comment[]> {
+    return this.commentsService.selectArticleComments(articleId);
+  }
 
   @Post()
   createComment(

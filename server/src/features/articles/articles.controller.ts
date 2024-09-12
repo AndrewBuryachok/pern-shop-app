@@ -13,7 +13,6 @@ import { ArticlesService } from './articles.service';
 import { Article } from './article.entity';
 import { ArticleView } from './article-view.entity';
 import { Like } from './like.entity';
-import { Comment } from '../comments/comment.entity';
 import {
   ArticleIdDto,
   CreateArticleDto,
@@ -104,14 +103,6 @@ export class ArticlesController {
     @Param() { articleId }: ArticleIdDto,
   ): Promise<Like[]> {
     return this.articlesService.selectArticleLikes(articleId, false);
-  }
-
-  @Public()
-  @Get(':articleId/comments')
-  selectArticleComments(
-    @Param() { articleId }: ArticleIdDto,
-  ): Promise<Comment[]> {
-    return this.articlesService.selectArticleComments(articleId);
   }
 
   @Post()

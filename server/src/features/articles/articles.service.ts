@@ -4,7 +4,6 @@ import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { Article } from './article.entity';
 import { ArticleView } from './article-view.entity';
 import { Like } from './like.entity';
-import { Comment } from '../comments/comment.entity';
 import { MqttService } from '../mqtt/mqtt.service';
 import {
   DeleteArticleDto,
@@ -128,71 +127,17 @@ export class ArticlesService {
       .getMany();
   }
 
-  async selectArticleViews(articleId: number): Promise<ArticleView[]> {
-    const article = await this.articlesRepository
-      .createQueryBuilder('article')
-      .leftJoin('article.views', 'view')
-      .leftJoin('view.user', 'viewer')
-      .where('article.id = :articleId', { articleId })
-      .orderBy('view.id', 'DESC')
-      .select([
-        'article.id',
-        'view.id',
-        'viewer.id',
-        'viewer.nick',
-        'viewer.avatar',
-        'view.createdAt',
-      ])
-      .getOne();
-    return article.views;
+  selectArticleViews(articleId: number): Promise<ArticleView[]> {
+    return this.selectArticlesViewsQueryBuilder()
+      .where('view.articleId = :articleId', { articleId })
+      .getMany();
   }
 
-  async selectArticleLikes(articleId: number, type: boolean): Promise<Like[]> {
-    const article = await this.articlesRepository
-      .createQueryBuilder('article')
-      .leftJoin('article.likes', 'like', 'like.type = :type', { type })
-      .leftJoin('like.user', 'liker')
-      .where('article.id = :articleId', { articleId })
-      .orderBy('like.id', 'DESC')
-      .select([
-        'article.id',
-        'like.id',
-        'liker.id',
-        'liker.nick',
-        'liker.avatar',
-        'like.type',
-        'like.createdAt',
-      ])
-      .getOne();
-    return article.likes;
-  }
-
-  async selectArticleComments(articleId: number): Promise<Comment[]> {
-    const article = await this.articlesRepository
-      .createQueryBuilder('article')
-      .leftJoin('article.comments', 'comment')
-      .leftJoin('comment.reply', 'reply')
-      .leftJoin('reply.user', 'replier')
-      .leftJoin('comment.user', 'commenter')
-      .where('article.id = :articleId', { articleId })
-      .orderBy('comment.id', 'ASC')
-      .select([
-        'article.id',
-        'comment.id',
-        'reply.id',
-        'replier.id',
-        'replier.nick',
-        'replier.avatar',
-        'reply.text',
-        'reply.createdAt',
-        'commenter.id',
-        'commenter.nick',
-        'commenter.avatar',
-        'comment.text',
-        'comment.createdAt',
-      ])
-      .getOne();
-    return article.comments;
+  selectArticleLikes(articleId: number, type: boolean): Promise<Like[]> {
+    return this.selectLikesQueryBuilder()
+      .where('like.articleId = :articleId', { articleId })
+      .andWhere('like.type = :type', { type })
+      .getMany();
   }
 
   async createArticle(
@@ -370,6 +315,35 @@ export class ArticlesService {
     } catch (error) {
       throw new AppException(ArticleError.REMOVE_LIKE_FAILED);
     }
+  }
+
+  private selectArticlesViewsQueryBuilder(): SelectQueryBuilder<ArticleView> {
+    return this.viewsRepository
+      .createQueryBuilder('view')
+      .innerJoin('view.user', 'viewer')
+      .orderBy('view.id', 'DESC')
+      .select([
+        'view.id',
+        'viewer.id',
+        'viewer.nick',
+        'viewer.avatar',
+        'view.createdAt',
+      ]);
+  }
+
+  private selectLikesQueryBuilder(): SelectQueryBuilder<Like> {
+    return this.likesRepository
+      .createQueryBuilder('like')
+      .innerJoin('like.user', 'liker')
+      .orderBy('like.id', 'DESC')
+      .select([
+        'like.id',
+        'liker.id',
+        'liker.nick',
+        'liker.avatar',
+        'like.type',
+        'like.createdAt',
+      ]);
   }
 
   private getArticlesQueryBuilder(req: Request): SelectQueryBuilder<Article> {

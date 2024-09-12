@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, SelectQueryBuilder } from 'typeorm';
 import { Comment } from './comment.entity';
 import { ArticlesService } from '../articles/articles.service';
 import { MqttService } from '../mqtt/mqtt.service';
@@ -21,6 +21,12 @@ export class CommentsService {
     private articlesService: ArticlesService,
     private mqttService: MqttService,
   ) {}
+
+  selectArticleComments(articleId: number): Promise<Comment[]> {
+    return this.selectCommentsQueryBuilder()
+      .where('comment.articleId = :articleId', { articleId })
+      .getMany();
+  }
 
   async createComment(
     dto: ExtCreateCommentDto & { nick: string },
@@ -122,5 +128,28 @@ export class CommentsService {
     } catch (error) {
       throw new AppException(CommentError.DELETE_FAILED);
     }
+  }
+
+  private selectCommentsQueryBuilder(): SelectQueryBuilder<Comment> {
+    return this.commentsRepository
+      .createQueryBuilder('comment')
+      .leftJoin('comment.reply', 'reply')
+      .leftJoin('reply.user', 'replier')
+      .innerJoin('comment.user', 'commenter')
+      .orderBy('comment.id', 'ASC')
+      .select([
+        'comment.id',
+        'reply.id',
+        'replier.id',
+        'replier.nick',
+        'replier.avatar',
+        'reply.text',
+        'reply.createdAt',
+        'commenter.id',
+        'commenter.nick',
+        'commenter.avatar',
+        'comment.text',
+        'comment.createdAt',
+      ]);
   }
 }

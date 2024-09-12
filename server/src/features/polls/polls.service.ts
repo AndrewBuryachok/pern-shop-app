@@ -4,7 +4,6 @@ import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { Poll } from './poll.entity';
 import { PollView } from './poll-view.entity';
 import { Vote } from './vote.entity';
-import { Discussion } from '../discussions/discussion.entity';
 import { MqttService } from '../mqtt/mqtt.service';
 import {
   DeletePollDto,
@@ -108,71 +107,17 @@ export class PollsService {
       .getMany();
   }
 
-  async selectPollViews(pollId: number): Promise<PollView[]> {
-    const poll = await this.pollsRepository
-      .createQueryBuilder('poll')
-      .leftJoin('poll.views', 'view')
-      .leftJoin('view.user', 'viewer')
-      .where('poll.id = :pollId', { pollId })
-      .orderBy('view.id', 'DESC')
-      .select([
-        'poll.id',
-        'view.id',
-        'viewer.id',
-        'viewer.nick',
-        'viewer.avatar',
-        'view.createdAt',
-      ])
-      .getOne();
-    return poll.views;
+  selectPollViews(pollId: number): Promise<PollView[]> {
+    return this.selectPollsViewsQueryBuilder()
+      .where('view.pollId = :pollId', { pollId })
+      .getMany();
   }
 
-  async selectPollVotes(pollId: number, type: boolean): Promise<Vote[]> {
-    const poll = await this.pollsRepository
-      .createQueryBuilder('poll')
-      .leftJoin('poll.votes', 'vote', 'vote.type = :type', { type })
-      .leftJoin('vote.user', 'voter')
-      .where('poll.id = :pollId', { pollId })
-      .orderBy('vote.id', 'DESC')
-      .select([
-        'poll.id',
-        'vote.id',
-        'voter.id',
-        'voter.nick',
-        'voter.avatar',
-        'vote.type',
-        'vote.createdAt',
-      ])
-      .getOne();
-    return poll.votes;
-  }
-
-  async selectPollDiscussions(pollId: number): Promise<Discussion[]> {
-    const poll = await this.pollsRepository
-      .createQueryBuilder('poll')
-      .leftJoin('poll.discussions', 'discussion')
-      .leftJoin('discussion.reply', 'reply')
-      .leftJoin('reply.user', 'replier')
-      .leftJoin('discussion.user', 'discussioner')
-      .where('poll.id = :pollId', { pollId })
-      .orderBy('discussion.id', 'ASC')
-      .select([
-        'poll.id',
-        'discussion.id',
-        'reply.id',
-        'replier.id',
-        'replier.nick',
-        'replier.avatar',
-        'reply.text',
-        'reply.createdAt',
-        'discussioner.id',
-        'discussioner.nick',
-        'discussioner.avatar',
-        'discussion.text',
-        'discussion.createdAt',
-      ])
-      .getOne();
-    return poll.discussions;
+  selectPollVotes(pollId: number, type: boolean): Promise<Vote[]> {
+    return this.selectVotesQueryBuilder()
+      .where('vote.pollId = :pollId', { pollId })
+      .andWhere('vote.type = :type', { type })
+      .getMany();
   }
 
   async createPoll(dto: ExtCreatePollDto & { nick: string }): Promise<void> {
@@ -372,6 +317,35 @@ export class PollsService {
     } catch (error) {
       throw new AppException(PollError.REMOVE_VOTE_FAILED);
     }
+  }
+
+  private selectPollsViewsQueryBuilder(): SelectQueryBuilder<PollView> {
+    return this.viewsRepository
+      .createQueryBuilder('view')
+      .innerJoin('view.user', 'viewer')
+      .orderBy('view.id', 'DESC')
+      .select([
+        'view.id',
+        'viewer.id',
+        'viewer.nick',
+        'viewer.avatar',
+        'view.createdAt',
+      ]);
+  }
+
+  private selectVotesQueryBuilder(): SelectQueryBuilder<Vote> {
+    return this.votesRepository
+      .createQueryBuilder('vote')
+      .innerJoin('vote.user', 'voter')
+      .orderBy('vote.id', 'DESC')
+      .select([
+        'vote.id',
+        'voter.id',
+        'voter.nick',
+        'voter.avatar',
+        'vote.type',
+        'vote.createdAt',
+      ]);
   }
 
   private getPollsQueryBuilder(req: Request): SelectQueryBuilder<Poll> {

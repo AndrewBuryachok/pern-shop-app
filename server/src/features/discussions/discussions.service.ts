@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, SelectQueryBuilder } from 'typeorm';
 import { Discussion } from './discussion.entity';
 import { PollsService } from '../polls/polls.service';
 import { MqttService } from '../mqtt/mqtt.service';
@@ -21,6 +21,12 @@ export class DiscussionsService {
     private pollsService: PollsService,
     private mqttService: MqttService,
   ) {}
+
+  selectPollDiscussions(pollId: number): Promise<Discussion[]> {
+    return this.selectDiscussionsQueryBuilder()
+      .where('discussion.pollId = :pollId', { pollId })
+      .getMany();
+  }
 
   async createDiscussion(
     dto: ExtCreateDiscussionDto & { nick: string },
@@ -129,5 +135,28 @@ export class DiscussionsService {
     } catch (error) {
       throw new AppException(DiscussionError.DELETE_FAILED);
     }
+  }
+
+  private selectDiscussionsQueryBuilder(): SelectQueryBuilder<Discussion> {
+    return this.discussionsRepository
+      .createQueryBuilder('discussion')
+      .leftJoin('discussion.reply', 'reply')
+      .leftJoin('reply.user', 'replier')
+      .innerJoin('discussion.user', 'discussioner')
+      .orderBy('discussion.id', 'ASC')
+      .select([
+        'discussion.id',
+        'reply.id',
+        'replier.id',
+        'replier.nick',
+        'replier.avatar',
+        'reply.text',
+        'reply.createdAt',
+        'discussioner.id',
+        'discussioner.nick',
+        'discussioner.avatar',
+        'discussion.text',
+        'discussion.createdAt',
+      ]);
   }
 }

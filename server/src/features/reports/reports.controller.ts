@@ -13,7 +13,6 @@ import { ReportsService } from './reports.service';
 import { Report } from './report.entity';
 import { ReportView } from './report-view.entity';
 import { Attitude } from './attitude.entity';
-import { Annotation } from '../annotations/annotation.entity';
 import {
   AttitudeReportDto,
   CreateReportDto,
@@ -102,14 +101,6 @@ export class ReportsController {
     @Param() { reportId }: ReportIdDto,
   ): Promise<Attitude[]> {
     return this.reportsService.selectReportAttitudes(reportId, false);
-  }
-
-  @Public()
-  @Get(':reportId/annotations')
-  selectReportAnnotations(
-    @Param() { reportId }: ReportIdDto,
-  ): Promise<Annotation[]> {
-    return this.reportsService.selectReportAnnotations(reportId);
   }
 
   @Roles(Role.INSPECTOR)

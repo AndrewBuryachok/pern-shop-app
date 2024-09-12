@@ -1,18 +1,36 @@
-import { Body, Controller, Delete, Param, Patch, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+} from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { AnnotationsService } from './annotations.service';
+import { Annotation } from './annotation.entity';
 import {
   AnnotationIdDto,
   CreateAnnotationDto,
   EditAnnotationDto,
 } from './annotation.dto';
-import { HasRole, MyId, MyNick } from '../../common/decorators';
+import { ReportIdDto } from '../reports/report.dto';
+import { HasRole, MyId, MyNick, Public } from '../../common/decorators';
 import { Role } from '../users/role.enum';
 
 @ApiTags('annotations')
 @Controller('annotations')
 export class AnnotationsController {
   constructor(private annotationsService: AnnotationsService) {}
+
+  @Public()
+  @Get(':reportId')
+  selectReportAnnotations(
+    @Param() { reportId }: ReportIdDto,
+  ): Promise<Annotation[]> {
+    return this.annotationsService.selectReportAnnotations(reportId);
+  }
 
   @Post()
   createAnnotation(

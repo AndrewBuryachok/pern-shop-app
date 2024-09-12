@@ -688,9 +688,9 @@ describe('With Auth', () => {
         .expect((res) => expect(res.body.length).toBeGreaterThan(0));
     });
 
-    it('GET /reports/:reportId/annotations', async () => {
+    it('GET /annotations/:reportId', async () => {
       return request(app.getHttpServer())
-        .get(`/reports/${reportsId[0]}/annotations`)
+        .get(`/annotations/${reportsId[0]}`)
         .expect((res) => expect(res.body.length).toBeGreaterThan(0))
         .then((res) => (annotationId = res.body[0].id));
     });
@@ -826,9 +826,9 @@ describe('With Auth', () => {
         .expect((res) => expect(res.body.length).toBeGreaterThan(0));
     });
 
-    it('GET /articles/:articleId/comments', async () => {
+    it('GET /comments/:articleId', async () => {
       return request(app.getHttpServer())
-        .get(`/articles/${articlesId[0]}/comments`)
+        .get(`/comments/${articlesId[0]}`)
         .expect((res) => expect(res.body.length).toBeGreaterThan(0))
         .then((res) => (commentId = res.body[0].id));
     });
@@ -3486,9 +3486,9 @@ describe('With Auth', () => {
         .expect((res) => expect(res.body.length).toBeGreaterThan(0));
     });
 
-    it('GET /polls/:pollId/discussions', async () => {
+    it('GET /discussions/:pollId', async () => {
       return request(app.getHttpServer())
-        .get(`/polls/${pollsId[0]}/discussions`)
+        .get(`/discussions/${pollsId[0]}`)
         .expect((res) => expect(res.body.length).toBeGreaterThan(0))
         .then((res) => (discussionId = res.body[0].id));
     });

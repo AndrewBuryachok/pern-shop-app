@@ -4,7 +4,6 @@ import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { Report } from './report.entity';
 import { ReportView } from './report-view.entity';
 import { Attitude } from './attitude.entity';
-import { Annotation } from '../annotations/annotation.entity';
 import { MqttService } from '../mqtt/mqtt.service';
 import {
   DeleteReportDto,
@@ -73,76 +72,17 @@ export class ReportsService {
       .getMany();
   }
 
-  async selectReportViews(reportId: number): Promise<ReportView[]> {
-    const report = await this.reportsRepository
-      .createQueryBuilder('report')
-      .leftJoin('report.views', 'view')
-      .leftJoin('view.user', 'viewer')
-      .where('report.id = :reportId', { reportId })
-      .orderBy('view.id', 'DESC')
-      .select([
-        'report.id',
-        'view.id',
-        'viewer.id',
-        'viewer.nick',
-        'viewer.avatar',
-        'view.createdAt',
-      ])
-      .getOne();
-    return report.views;
+  selectReportViews(reportId: number): Promise<ReportView[]> {
+    return this.selectReportsViewsQueryBuilder()
+      .where('view.reportId = :reportId', { reportId })
+      .getMany();
   }
 
-  async selectReportAttitudes(
-    reportId: number,
-    type: boolean,
-  ): Promise<Attitude[]> {
-    const report = await this.reportsRepository
-      .createQueryBuilder('report')
-      .leftJoin('report.attitudes', 'attitude', 'attitude.type = :type', {
-        type,
-      })
-      .leftJoin('attitude.user', 'attituder')
-      .where('report.id = :reportId', { reportId })
-      .orderBy('attitude.id', 'DESC')
-      .select([
-        'report.id',
-        'attitude.id',
-        'attituder.id',
-        'attituder.nick',
-        'attituder.avatar',
-        'attitude.type',
-        'attitude.createdAt',
-      ])
-      .getOne();
-    return report.attitudes;
-  }
-
-  async selectReportAnnotations(reportId: number): Promise<Annotation[]> {
-    const report = await this.reportsRepository
-      .createQueryBuilder('report')
-      .leftJoin('report.annotations', 'annotation')
-      .leftJoin('annotation.reply', 'reply')
-      .leftJoin('reply.user', 'replier')
-      .leftJoin('annotation.user', 'annotationer')
-      .where('report.id = :reportId', { reportId })
-      .orderBy('annotation.id', 'ASC')
-      .select([
-        'report.id',
-        'annotation.id',
-        'reply.id',
-        'replier.id',
-        'replier.nick',
-        'replier.avatar',
-        'reply.text',
-        'reply.createdAt',
-        'annotationer.id',
-        'annotationer.nick',
-        'annotationer.avatar',
-        'annotation.text',
-        'annotation.createdAt',
-      ])
-      .getOne();
-    return report.annotations;
+  selectReportAttitudes(reportId: number, type: boolean): Promise<Attitude[]> {
+    return this.selectAttitudesQueryBuilder()
+      .where('attitude.reportId = :reportId', { reportId })
+      .andWhere('attitude.type = :type', { type })
+      .getMany();
   }
 
   async createReport(
@@ -326,6 +266,35 @@ export class ReportsService {
     } catch (error) {
       throw new AppException(ReportError.REMOVE_ATTITUDE_FAILED);
     }
+  }
+
+  private selectReportsViewsQueryBuilder(): SelectQueryBuilder<ReportView> {
+    return this.viewsRepository
+      .createQueryBuilder('view')
+      .innerJoin('view.user', 'viewer')
+      .orderBy('view.id', 'DESC')
+      .select([
+        'view.id',
+        'viewer.id',
+        'viewer.nick',
+        'viewer.avatar',
+        'view.createdAt',
+      ]);
+  }
+
+  private selectAttitudesQueryBuilder(): SelectQueryBuilder<Attitude> {
+    return this.attitudesRepository
+      .createQueryBuilder('attitude')
+      .innerJoin('attitude.user', 'attituder')
+      .orderBy('attitude.id', 'DESC')
+      .select([
+        'attitude.id',
+        'attituder.id',
+        'attituder.nick',
+        'attituder.avatar',
+        'attitude.type',
+        'attitude.createdAt',
+      ]);
   }
 
   private getReportsQueryBuilder(req: Request): SelectQueryBuilder<Report> {

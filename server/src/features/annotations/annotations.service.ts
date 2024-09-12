@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, SelectQueryBuilder } from 'typeorm';
 import { Annotation } from './annotation.entity';
 import { ReportsService } from '../reports/reports.service';
 import { MqttService } from '../mqtt/mqtt.service';
@@ -21,6 +21,12 @@ export class AnnotationsService {
     private reportsService: ReportsService,
     private mqttService: MqttService,
   ) {}
+
+  selectReportAnnotations(reportId: number): Promise<Annotation[]> {
+    return this.selectAnnotationsQueryBuilder()
+      .where('annotation.reportId = :reportId', { reportId })
+      .getMany();
+  }
 
   async createAnnotation(
     dto: ExtCreateAnnotationDto & { nick: string },
@@ -127,5 +133,28 @@ export class AnnotationsService {
     } catch (error) {
       throw new AppException(AnnotationError.DELETE_FAILED);
     }
+  }
+
+  private selectAnnotationsQueryBuilder(): SelectQueryBuilder<Annotation> {
+    return this.annotationsRepository
+      .createQueryBuilder('annotation')
+      .leftJoin('annotation.reply', 'reply')
+      .leftJoin('reply.user', 'replier')
+      .innerJoin('annotation.user', 'annotationer')
+      .orderBy('annotation.id', 'ASC')
+      .select([
+        'annotation.id',
+        'reply.id',
+        'replier.id',
+        'replier.nick',
+        'replier.avatar',
+        'reply.text',
+        'reply.createdAt',
+        'annotationer.id',
+        'annotationer.nick',
+        'annotationer.avatar',
+        'annotation.text',
+        'annotation.createdAt',
+      ]);
   }
 }

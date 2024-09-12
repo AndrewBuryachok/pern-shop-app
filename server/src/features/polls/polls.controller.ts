@@ -13,7 +13,6 @@ import { PollsService } from './polls.service';
 import { Poll } from './poll.entity';
 import { PollView } from './poll-view.entity';
 import { Vote } from './vote.entity';
-import { Discussion } from '../discussions/discussion.entity';
 import {
   CompletePollDto,
   CreatePollDto,
@@ -93,12 +92,6 @@ export class PollsController {
   @Get(':pollId/downVotes')
   selectPollDownVotes(@Param() { pollId }: PollIdDto): Promise<Vote[]> {
     return this.pollsService.selectPollVotes(pollId, false);
-  }
-
-  @Public()
-  @Get(':pollId/discussions')
-  selectPollDiscussions(@Param() { pollId }: PollIdDto): Promise<Discussion[]> {
-    return this.pollsService.selectPollDiscussions(pollId);
   }
 
   @Post()
