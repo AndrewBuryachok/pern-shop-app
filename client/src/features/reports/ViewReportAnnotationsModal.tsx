@@ -10,14 +10,14 @@ import { getCurrentUser } from '../auth/auth.slice';
 import {
   useCreateAnnotationMutation,
   useSelectReportAnnotationsQuery,
-} from '../annotations/annotations.api';
-import { CreateAnnotationDto } from '../annotations/annotation.dto';
+} from './annotations.api';
+import { CreateAnnotationDto } from './annotation.dto';
 import RepliesTimeline from '../../common/components/RepliesTimeline';
 import ReplyAvatarWithText from '../../common/components/ReplyAvatarWithText';
 import ReplyAvatarWithClose from '../../common/components/ReplyAvatarWithClose';
 import CustomAnchor from '../../common/components/CustomAnchor';
-import { editAnnotationAction } from '../annotations/EditAnnotationModal';
-import { deleteAnnotationAction } from '../annotations/DeleteAnnotationModal';
+import { editAnnotationAction } from './EditAnnotationModal';
+import { deleteAnnotationAction } from './DeleteAnnotationModal';
 import { MAX_TEXT_LENGTH } from '../../common/constants';
 
 type Props = IModal<Report>;

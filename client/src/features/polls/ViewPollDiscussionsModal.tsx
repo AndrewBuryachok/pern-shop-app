@@ -10,14 +10,14 @@ import { getCurrentUser } from '../auth/auth.slice';
 import {
   useCreateDiscussionMutation,
   useSelectPollDiscussionsQuery,
-} from '../discussions/discussions.api';
-import { CreateDiscussionDto } from '../discussions/discussion.dto';
+} from './discussions.api';
+import { CreateDiscussionDto } from './discussion.dto';
 import RepliesTimeline from '../../common/components/RepliesTimeline';
 import ReplyAvatarWithText from '../../common/components/ReplyAvatarWithText';
 import ReplyAvatarWithClose from '../../common/components/ReplyAvatarWithClose';
 import CustomAnchor from '../../common/components/CustomAnchor';
-import { editDiscussionAction } from '../discussions/EditDiscussionModal';
-import { deleteDiscussionAction } from '../discussions/DeleteDiscussionModal';
+import { editDiscussionAction } from './EditDiscussionModal';
+import { deleteDiscussionAction } from './DeleteDiscussionModal';
 import { MAX_TEXT_LENGTH } from '../../common/constants';
 
 type Props = IModal<Poll>;

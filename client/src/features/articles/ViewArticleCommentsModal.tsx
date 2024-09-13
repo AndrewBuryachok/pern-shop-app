@@ -10,14 +10,14 @@ import { getCurrentUser } from '../auth/auth.slice';
 import {
   useCreateCommentMutation,
   useSelectArticleCommentsQuery,
-} from '../comments/comments.api';
-import { CreateCommentDto } from '../comments/comment.dto';
+} from './comments.api';
+import { CreateCommentDto } from './comment.dto';
 import RepliesTimeline from '../../common/components/RepliesTimeline';
 import ReplyAvatarWithText from '../../common/components/ReplyAvatarWithText';
 import ReplyAvatarWithClose from '../../common/components/ReplyAvatarWithClose';
 import CustomAnchor from '../../common/components/CustomAnchor';
-import { editCommentAction } from '../comments/EditCommentModal';
-import { deleteCommentAction } from '../comments/DeleteCommentModal';
+import { editCommentAction } from './EditCommentModal';
+import { deleteCommentAction } from './DeleteCommentModal';
 import { MAX_TEXT_LENGTH } from '../../common/constants';
 
 type Props = IModal<Article>;

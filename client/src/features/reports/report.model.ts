@@ -1,6 +1,6 @@
 import { SmAttitude } from './attitude.model';
 import { SmUser } from '../users/user.model';
-import { SmAnnotation } from '../annotations/annotation.model';
+import { SmAnnotation } from './annotation.model';
 
 export interface SmReport {
   id: number;
