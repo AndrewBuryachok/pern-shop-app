@@ -1,6 +1,6 @@
 import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 import { Reply } from '../replies/reply.entity';
-import { Report } from '../reports/report.entity';
+import { Report } from './report.entity';
 
 @Entity('annotations')
 export class Annotation extends Reply {

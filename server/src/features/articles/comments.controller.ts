@@ -11,7 +11,7 @@ import { ApiTags } from '@nestjs/swagger';
 import { CommentsService } from './comments.service';
 import { Comment } from './comment.entity';
 import { CommentIdDto, CreateCommentDto, EditCommentDto } from './comment.dto';
-import { ArticleIdDto } from '../articles/article.dto';
+import { ArticleIdDto } from './article.dto';
 import { HasRole, MyId, MyNick, Public } from '../../common/decorators';
 import { Role } from '../users/role.enum';
 

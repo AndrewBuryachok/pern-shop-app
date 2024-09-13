@@ -6,9 +6,9 @@ import {
 import { UsersService } from '../../features/users/users.service';
 import { MessagesService } from '../../features/messages/messages.service';
 import { ReportsService } from '../../features/reports/reports.service';
-import { AnnotationsService } from '../../features/annotations/annotations.service';
+import { AnnotationsService } from '../../features/reports/annotations.service';
 import { ArticlesService } from '../../features/articles/articles.service';
-import { CommentsService } from '../../features/comments/comments.service';
+import { CommentsService } from '../../features/articles/comments.service';
 import { CardsService } from '../../features/cards/cards.service';
 import { ExchangesService } from '../../features/exchanges/exchanges.service';
 import { PaymentsService } from '../../features/payments/payments.service';
@@ -41,7 +41,7 @@ import { StoragesDeliveriesService } from '../../features/storages-deliveries/st
 import { TasksService } from '../../features/tasks/tasks.service';
 import { AdvertsService } from '../../features/adverts/adverts.service';
 import { PollsService } from '../../features/polls/polls.service';
-import { DiscussionsService } from '../../features/discussions/discussions.service';
+import { DiscussionsService } from '../../features/polls/discussions.service';
 import { RatingsService } from '../../features/ratings/ratings.service';
 
 @Injectable()

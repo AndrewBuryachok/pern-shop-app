@@ -15,7 +15,7 @@ import {
   CreateAnnotationDto,
   EditAnnotationDto,
 } from './annotation.dto';
-import { ReportIdDto } from '../reports/report.dto';
+import { ReportIdDto } from './report.dto';
 import { HasRole, MyId, MyNick, Public } from '../../common/decorators';
 import { Role } from '../users/role.enum';
 

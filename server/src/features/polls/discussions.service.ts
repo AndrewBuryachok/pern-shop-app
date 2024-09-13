@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, SelectQueryBuilder } from 'typeorm';
 import { Discussion } from './discussion.entity';
-import { PollsService } from '../polls/polls.service';
+import { PollsService } from './polls.service';
 import { MqttService } from '../mqtt/mqtt.service';
 import {
   DeleteDiscussionDto,

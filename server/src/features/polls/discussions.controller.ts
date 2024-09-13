@@ -15,7 +15,7 @@ import {
   EditDiscussionDto,
   DiscussionIdDto,
 } from './discussion.dto';
-import { PollIdDto } from '../polls/poll.dto';
+import { PollIdDto } from './poll.dto';
 import { HasRole, MyId, MyNick, Public } from '../../common/decorators';
 import { Role } from '../users/role.enum';
 

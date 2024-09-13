@@ -11,7 +11,7 @@ import { User } from '../users/user.entity';
 import { Mark } from './mark.enum';
 import { ReportView } from './report-view.entity';
 import { Attitude } from './attitude.entity';
-import { Annotation } from '../annotations/annotation.entity';
+import { Annotation } from './annotation.entity';
 
 @Entity('reports')
 export class Report {

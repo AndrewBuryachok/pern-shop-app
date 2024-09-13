@@ -1,6 +1,6 @@
 import { Faker } from '@faker-js/faker';
 import { define } from 'typeorm-seeding';
-import { Comment } from '../../features/comments/comment.entity';
+import { Comment } from '../../features/articles/comment.entity';
 
 define(Comment, (faker: Faker) => {
   const comment = new Comment();

@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, SelectQueryBuilder } from 'typeorm';
 import { Annotation } from './annotation.entity';
-import { ReportsService } from '../reports/reports.service';
+import { ReportsService } from './reports.service';
 import { MqttService } from '../mqtt/mqtt.service';
 import {
   DeleteAnnotationDto,

@@ -1,6 +1,6 @@
 import { Faker } from '@faker-js/faker';
 import { define } from 'typeorm-seeding';
-import { Annotation } from '../../features/annotations/annotation.entity';
+import { Annotation } from '../../features/reports/annotation.entity';
 
 define(Annotation, (faker: Faker) => {
   const annotation = new Annotation();

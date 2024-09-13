@@ -1,6 +1,6 @@
 import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 import { Reply } from '../replies/reply.entity';
-import { Poll } from '../polls/poll.entity';
+import { Poll } from './poll.entity';
 
 @Entity('discussions')
 export class Discussion extends Reply {

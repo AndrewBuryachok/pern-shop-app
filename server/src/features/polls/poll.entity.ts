@@ -12,7 +12,7 @@ import { Mark } from './mark.enum';
 import { Result } from './result.enum';
 import { PollView } from './poll-view.entity';
 import { Vote } from './vote.entity';
-import { Discussion } from '../discussions/discussion.entity';
+import { Discussion } from './discussion.entity';
 
 @Entity('polls')
 export class Poll {

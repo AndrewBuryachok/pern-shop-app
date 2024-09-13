@@ -9,9 +9,7 @@ import { MessagesModule } from './features/messages/messages.module';
 import { FriendsModule } from './features/friends/friends.module';
 import { SubscribersModule } from './features/subscribers/subscribers.module';
 import { ReportsModule } from './features/reports/reports.module';
-import { AnnotationsModule } from './features/annotations/annotations.module';
 import { ArticlesModule } from './features/articles/articles.module';
-import { CommentsModule } from './features/comments/comments.module';
 import { CardsModule } from './features/cards/cards.module';
 import { ExchangesModule } from './features/exchanges/exchanges.module';
 import { PaymentsModule } from './features/payments/payments.module';
@@ -44,7 +42,6 @@ import { BargainsModule } from './features/bargains/bargains.module';
 import { TradesModule } from './features/trades/trades.module';
 import { SalesModule } from './features/sales/sales.module';
 import { PollsModule } from './features/polls/polls.module';
-import { DiscussionsModule } from './features/discussions/discussions.module';
 import { RatingsModule } from './features/ratings/ratings.module';
 import { LoggerModule } from './features/logger/logger.module';
 
@@ -80,9 +77,7 @@ import { LoggerModule } from './features/logger/logger.module';
     FriendsModule,
     SubscribersModule,
     ReportsModule,
-    AnnotationsModule,
     ArticlesModule,
-    CommentsModule,
     CardsModule,
     ExchangesModule,
     PaymentsModule,
@@ -115,7 +110,6 @@ import { LoggerModule } from './features/logger/logger.module';
     TradesModule,
     SalesModule,
     PollsModule,
-    DiscussionsModule,
     RatingsModule,
     LoggerModule,
   ],
