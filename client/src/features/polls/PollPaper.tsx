@@ -5,8 +5,8 @@ import { IconEye, IconThumbDown, IconThumbUp } from '@tabler/icons';
 import { IAction } from '../../common/interfaces';
 import { Poll } from './poll.model';
 import { getCurrentUser } from '../auth/auth.slice';
-import { useViewPollMutation, useVotePollMutation } from './polls.api';
-import { ViewPollDto, VotePollDto } from './poll.dto';
+import { useLikePollMutation, useViewPollMutation } from './polls.api';
+import { LikePollDto, ViewPollDto } from './poll.dto';
 import AvatarWithDateText from '../../common/components/AvatarWithDateText';
 import CustomHighlight from '../../common/components/CustomHighlight';
 import MarkBadge from '../../common/components/MarkBadge';
@@ -15,7 +15,7 @@ import CustomImage from '../../common/components/CustomImage';
 import CustomVideo from '../../common/components/CustomVideo';
 import CustomActions from '../../common/components/CustomActions';
 import ViewPollViewsMenu from './ViewPollViewsMenu';
-import ViewPollVotesMenu from './ViewPollVotesMenu';
+import ViewPollLikesMenu from './ViewPollLikesMenu';
 import ViewPollCommentsModal from './ViewPollCommentsModal';
 import { openAuthModal } from '../auth/AuthModal';
 import { viewPollAction } from './ViewPollModal';
@@ -23,11 +23,11 @@ import { viewPollAction } from './ViewPollModal';
 type Props = {
   poll: Poll & {
     viewed: boolean;
-    upVoted: boolean;
-    downVoted: boolean;
+    upLiked: boolean;
+    downLiked: boolean;
   };
   isViewedLoading: boolean;
-  isVotedLoading: boolean;
+  isLikedLoading: boolean;
   actions: IAction<Poll>[];
 };
 
@@ -40,13 +40,13 @@ export default function PollPaper({ poll, ...props }: Props) {
     await viewPoll(dto);
   };
 
-  const [votePoll] = useVotePollMutation();
+  const [likePoll] = useLikePollMutation();
 
-  const handleVoteSubmit = async (dto: VotePollDto) => {
-    await votePoll({
+  const handleLikeSubmit = async (dto: LikePollDto) => {
+    await likePoll({
       ...dto,
-      upVoted: !!poll.upVoted,
-      downVoted: !!poll.downVoted,
+      upLiked: !!poll.upLiked,
+      downLiked: !!poll.downLiked,
     });
   };
 
@@ -87,21 +87,21 @@ export default function PollPaper({ poll, ...props }: Props) {
               <Menu.Target>
                 <Button
                   leftIcon={<IconThumbUp size={16} />}
-                  variant={poll.upVoted ? 'filled' : 'light'}
-                  color={poll.upVoted ? 'violet' : 'gray'}
-                  loading={props.isVotedLoading}
+                  variant={poll.upLiked ? 'filled' : 'light'}
+                  color={poll.upLiked ? 'violet' : 'gray'}
+                  loading={props.isLikedLoading}
                   onClick={() =>
                     user
-                      ? handleVoteSubmit({ pollId: poll.id, type: true })
+                      ? handleLikeSubmit({ pollId: poll.id, type: true })
                       : openAuthModal()
                   }
                   compact
                 >
-                  {poll.upVotes}
+                  {poll.upLikes}
                 </Button>
               </Menu.Target>
               <Menu.Dropdown>
-                <ViewPollVotesMenu data={poll} type={true} />
+                <ViewPollLikesMenu data={poll} type={true} />
               </Menu.Dropdown>
             </Menu>
             <Menu
@@ -114,21 +114,21 @@ export default function PollPaper({ poll, ...props }: Props) {
               <Menu.Target>
                 <Button
                   leftIcon={<IconThumbDown size={16} />}
-                  variant={poll.downVoted ? 'filled' : 'light'}
-                  color={poll.downVoted ? 'violet' : 'gray'}
-                  loading={props.isVotedLoading}
+                  variant={poll.downLiked ? 'filled' : 'light'}
+                  color={poll.downLiked ? 'violet' : 'gray'}
+                  loading={props.isLikedLoading}
                   onClick={() =>
                     user
-                      ? handleVoteSubmit({ pollId: poll.id, type: false })
+                      ? handleLikeSubmit({ pollId: poll.id, type: false })
                       : openAuthModal()
                   }
                   compact
                 >
-                  {poll.downVotes}
+                  {poll.downLikes}
                 </Button>
               </Menu.Target>
               <Menu.Dropdown>
-                <ViewPollVotesMenu data={poll} type={false} />
+                <ViewPollLikesMenu data={poll} type={false} />
               </Menu.Dropdown>
             </Menu>
           </Group>

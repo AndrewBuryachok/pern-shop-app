@@ -20,11 +20,11 @@ export interface ViewReportDto {
   reportId: number;
 }
 
-export interface AttitudeReportDto extends CreateReactionDto {
+export interface LikeReportDto extends CreateReactionDto {
   reportId: number;
 }
 
-export interface ExtAttitudeReportDto extends AttitudeReportDto {
-  upAttituded: boolean;
-  downAttituded: boolean;
+export interface ExtLikeReportDto extends LikeReportDto {
+  upLiked: boolean;
+  downLiked: boolean;
 }

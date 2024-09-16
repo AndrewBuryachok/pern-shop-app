@@ -31,9 +31,9 @@ export interface ExtUser extends User {
   raters: SmUser[];
   rating: number;
   articles: number;
-  likes: number;
+  articlesLikes: number;
   polls: number;
-  votes: number;
+  pollsLikes: number;
   waresCount: number;
   productsCount: number;
   ordersCount: number;

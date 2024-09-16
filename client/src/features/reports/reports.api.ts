@@ -2,12 +2,12 @@ import { emptyApi } from '../../app/empty.api';
 import { IRequest, IResponse } from '../../common/interfaces';
 import { Report, SmReport } from './report.model';
 import { ReportView } from './report-view.model';
-import { Attitude } from './attitude.model';
+import { ReportLike } from './report-like.model';
 import {
   CreateReportDto,
   DeleteReportDto,
   EditReportDto,
-  ExtAttitudeReportDto,
+  ExtLikeReportDto,
   ViewReportDto,
 } from './report.dto';
 import { getQuery } from '../../common/utils';
@@ -62,11 +62,11 @@ export const reportsApi = emptyApi.injectEndpoints({
       }),
       providesTags: ['Auth', 'ReportView'],
     }),
-    selectAttitudedReports: build.query<SmReport[], void>({
+    selectLikedReports: build.query<SmReport[], void>({
       query: () => ({
-        url: '/reports/attituded/select',
+        url: '/reports/liked/select',
       }),
-      providesTags: ['Auth', 'Attitude'],
+      providesTags: ['Auth', 'ReportLike'],
     }),
     selectReportViews: build.query<ReportView[], number>({
       query: (reportId) => ({
@@ -74,17 +74,17 @@ export const reportsApi = emptyApi.injectEndpoints({
       }),
       providesTags: ['ReportView'],
     }),
-    selectReportUpAttitudes: build.query<Attitude[], number>({
+    selectReportUpLikes: build.query<ReportLike[], number>({
       query: (reportId) => ({
-        url: `/reports/${reportId}/upAttitudes`,
+        url: `/reports/${reportId}/likes/up`,
       }),
-      providesTags: ['Attitude'],
+      providesTags: ['ReportLike'],
     }),
-    selectReportDownAttitudes: build.query<Attitude[], number>({
+    selectReportDownLikes: build.query<ReportLike[], number>({
       query: (reportId) => ({
-        url: `/reports/${reportId}/downAttitudes`,
+        url: `/reports/${reportId}/likes/down`,
       }),
-      providesTags: ['Attitude'],
+      providesTags: ['ReportLike'],
     }),
     createServerReport: build.mutation<void, CreateReportDto>({
       query: (dto) => ({
@@ -190,13 +190,13 @@ export const reportsApi = emptyApi.injectEndpoints({
         queryFulfilled.catch(patchResult.undo);
       },
     }),
-    attitudeReport: build.mutation<void, ExtAttitudeReportDto>({
-      query: ({ reportId, upAttituded, downAttituded, ...dto }) => ({
-        url: `/reports/${reportId}/attitudes`,
+    likeReport: build.mutation<void, ExtLikeReportDto>({
+      query: ({ reportId, upLiked, downLiked, ...dto }) => ({
+        url: `/reports/${reportId}/likes`,
         method: 'POST',
         body: dto,
       }),
-      invalidatesTags: ['Attitude'],
+      invalidatesTags: ['ReportLike'],
       onQueryStarted(dto, { dispatch, queryFulfilled, getState }) {
         const endpoints = reportsApi.util.selectInvalidatedBy(getState(), [
           'Report',
@@ -213,27 +213,27 @@ export const reportsApi = emptyApi.injectEndpoints({
                     (report) => report.id === dto.reportId,
                   );
                   if (report) {
-                    if (dto.upAttituded || dto.downAttituded) {
-                      if (dto.upAttituded === dto.type) {
+                    if (dto.upLiked || dto.downLiked) {
+                      if (dto.upLiked === dto.type) {
                         if (dto.type) {
-                          report.upAttitudes--;
+                          report.upLikes--;
                         } else {
-                          report.downAttitudes--;
+                          report.downLikes--;
                         }
                       } else {
                         if (dto.type) {
-                          report.upAttitudes++;
-                          report.downAttitudes--;
+                          report.upLikes++;
+                          report.downLikes--;
                         } else {
-                          report.downAttitudes++;
-                          report.upAttitudes--;
+                          report.downLikes++;
+                          report.upLikes--;
                         }
                       }
                     } else {
                       if (dto.type) {
-                        report.upAttitudes++;
+                        report.upLikes++;
                       } else {
-                        report.downAttitudes++;
+                        report.downLikes++;
                       }
                     }
                   }
@@ -244,21 +244,21 @@ export const reportsApi = emptyApi.injectEndpoints({
           });
         const patchResult = dispatch(
           reportsApi.util.updateQueryData(
-            'selectAttitudedReports',
+            'selectLikedReports',
             undefined,
             (draft) => {
-              if (dto.upAttituded || dto.downAttituded) {
-                if (dto.upAttituded === dto.type) {
+              if (dto.upLiked || dto.downLiked) {
+                if (dto.upLiked === dto.type) {
                   draft = draft.filter((report) => report.id === dto.reportId);
                 } else {
                   draft.find(
                     (report) => report.id === dto.reportId,
-                  )!.attitude.type = dto.type;
+                  )!.like.type = dto.type;
                 }
               } else {
                 draft.push({
                   id: dto.reportId,
-                  attitude: { id: 0, type: dto.type },
+                  like: { id: 0, type: dto.type },
                 });
               }
             },
@@ -279,10 +279,10 @@ export const {
   useGetHubReportsQuery,
   useGetEndReportsQuery,
   useSelectViewedReportsQuery,
-  useSelectAttitudedReportsQuery,
+  useSelectLikedReportsQuery,
   useSelectReportViewsQuery,
-  useSelectReportUpAttitudesQuery,
-  useSelectReportDownAttitudesQuery,
+  useSelectReportUpLikesQuery,
+  useSelectReportDownLikesQuery,
   useCreateServerReportMutation,
   useCreateSiteReportMutation,
   useCreateEventsReportMutation,
@@ -292,5 +292,5 @@ export const {
   useEditReportMutation,
   useDeleteReportMutation,
   useViewReportMutation,
-  useAttitudeReportMutation,
+  useLikeReportMutation,
 } = reportsApi;

@@ -5,18 +5,15 @@ import { IconEye, IconThumbDown, IconThumbUp } from '@tabler/icons';
 import { IAction } from '../../common/interfaces';
 import { Report } from './report.model';
 import { getCurrentUser } from '../auth/auth.slice';
-import {
-  useAttitudeReportMutation,
-  useViewReportMutation,
-} from './reports.api';
-import { AttitudeReportDto, ViewReportDto } from './report.dto';
+import { useLikeReportMutation, useViewReportMutation } from './reports.api';
+import { LikeReportDto, ViewReportDto } from './report.dto';
 import AvatarWithDateText from '../../common/components/AvatarWithDateText';
 import CustomHighlight from '../../common/components/CustomHighlight';
 import CustomImage from '../../common/components/CustomImage';
 import CustomVideo from '../../common/components/CustomVideo';
 import CustomActions from '../../common/components/CustomActions';
 import ViewReportViewsMenu from './ViewReportViewsMenu';
-import ViewReportAttitudesMenu from './ViewReportAttitudesMenu';
+import ViewReportLikesMenu from './ViewReportLikesMenu';
 import ViewReportCommentsModal from './ViewReportCommentsModal';
 import { openAuthModal } from '../auth/AuthModal';
 import { viewReportAction } from './ViewReportModal';
@@ -24,11 +21,11 @@ import { viewReportAction } from './ViewReportModal';
 type Props = {
   report: Report & {
     viewed: boolean;
-    upAttituded: boolean;
-    downAttituded: boolean;
+    upLiked: boolean;
+    downLiked: boolean;
   };
   isViewedLoading: boolean;
-  isAttitudedLoading: boolean;
+  isLikedLoading: boolean;
   actions: IAction<Report>[];
 };
 
@@ -41,13 +38,13 @@ export default function ReportPaper({ report, ...props }: Props) {
     await viewReport(dto);
   };
 
-  const [attitudeReport] = useAttitudeReportMutation();
+  const [likeReport] = useLikeReportMutation();
 
-  const handleAttitudeSubmit = async (dto: AttitudeReportDto) => {
-    await attitudeReport({
+  const handleLikeSubmit = async (dto: LikeReportDto) => {
+    await likeReport({
       ...dto,
-      upAttituded: !!report.upAttituded,
-      downAttituded: !!report.downAttituded,
+      upLiked: !!report.upLiked,
+      downLiked: !!report.downLiked,
     });
   };
 
@@ -86,12 +83,12 @@ export default function ReportPaper({ report, ...props }: Props) {
               <Menu.Target>
                 <Button
                   leftIcon={<IconThumbUp size={16} />}
-                  variant={report.upAttituded ? 'filled' : 'light'}
-                  color={report.upAttituded ? 'violet' : 'gray'}
-                  loading={props.isAttitudedLoading}
+                  variant={report.upLiked ? 'filled' : 'light'}
+                  color={report.upLiked ? 'violet' : 'gray'}
+                  loading={props.isLikedLoading}
                   onClick={() =>
                     user
-                      ? handleAttitudeSubmit({
+                      ? handleLikeSubmit({
                           reportId: report.id,
                           type: true,
                         })
@@ -99,11 +96,11 @@ export default function ReportPaper({ report, ...props }: Props) {
                   }
                   compact
                 >
-                  {report.upAttitudes}
+                  {report.upLikes}
                 </Button>
               </Menu.Target>
               <Menu.Dropdown>
-                <ViewReportAttitudesMenu data={report} type={true} />
+                <ViewReportLikesMenu data={report} type={true} />
               </Menu.Dropdown>
             </Menu>
             <Menu
@@ -116,12 +113,12 @@ export default function ReportPaper({ report, ...props }: Props) {
               <Menu.Target>
                 <Button
                   leftIcon={<IconThumbDown size={16} />}
-                  variant={report.downAttituded ? 'filled' : 'light'}
-                  color={report.downAttituded ? 'violet' : 'gray'}
-                  loading={props.isAttitudedLoading}
+                  variant={report.downLiked ? 'filled' : 'light'}
+                  color={report.downLiked ? 'violet' : 'gray'}
+                  loading={props.isLikedLoading}
                   onClick={() =>
                     user
-                      ? handleAttitudeSubmit({
+                      ? handleLikeSubmit({
                           reportId: report.id,
                           type: false,
                         })
@@ -129,11 +126,11 @@ export default function ReportPaper({ report, ...props }: Props) {
                   }
                   compact
                 >
-                  {report.downAttitudes}
+                  {report.downLikes}
                 </Button>
               </Menu.Target>
               <Menu.Dropdown>
-                <ViewReportAttitudesMenu data={report} type={false} />
+                <ViewReportLikesMenu data={report} type={false} />
               </Menu.Dropdown>
             </Menu>
           </Group>

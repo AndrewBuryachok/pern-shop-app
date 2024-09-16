@@ -2,8 +2,8 @@ import { ITableWithActions } from '../../common/interfaces';
 import { Poll } from './poll.model';
 import { getCurrentUser } from '../auth/auth.slice';
 import {
+  useSelectLikedPollsQuery,
   useSelectViewedPollsQuery,
-  useSelectVotedPollsQuery,
 } from './polls.api';
 import CustomList from '../../common/components/CustomList';
 import PollPaper from './PollPaper';
@@ -16,7 +16,7 @@ export default function PollsList({ actions = [], ...props }: Props) {
   const { data: viewedPolls, ...viewedPollsResponse } =
     useSelectViewedPollsQuery(undefined, { skip: !user });
 
-  const { data: votedPolls, ...votedPollsResponse } = useSelectVotedPollsQuery(
+  const { data: likedPolls, ...likedPollsResponse } = useSelectLikedPollsQuery(
     undefined,
     { skip: !user },
   );
@@ -27,11 +27,11 @@ export default function PollsList({ actions = [], ...props }: Props) {
         .map((poll) => ({
           ...poll,
           viewed: !!viewedPolls?.includes(poll.id),
-          upVoted: !!votedPolls?.find(
-            (votedPoll) => votedPoll.id === poll.id && votedPoll.vote.type,
+          upLiked: !!likedPolls?.find(
+            (likedPoll) => likedPoll.id === poll.id && likedPoll.like.type,
           ),
-          downVoted: !!votedPolls?.find(
-            (votedPoll) => votedPoll.id === poll.id && !votedPoll.vote.type,
+          downLiked: !!likedPolls?.find(
+            (likedPoll) => likedPoll.id === poll.id && !likedPoll.like.type,
           ),
         }))
         .map((poll) => (
@@ -39,7 +39,7 @@ export default function PollsList({ actions = [], ...props }: Props) {
             key={poll.id}
             poll={poll}
             isViewedLoading={viewedPollsResponse.isFetching}
-            isVotedLoading={votedPollsResponse.isFetching}
+            isLikedLoading={likedPollsResponse.isFetching}
             actions={actions}
           />
         ))}

@@ -2,7 +2,7 @@ import { emptyApi } from '../../app/empty.api';
 import { IRequest, IResponse } from '../../common/interfaces';
 import { Article, SmArticle } from './article.model';
 import { ArticleView } from './article-view.model';
-import { Like } from './like.model';
+import { ArticleLike } from './article-like.model';
 import {
   CreateArticleDto,
   DeleteArticleDto,
@@ -37,7 +37,7 @@ export const articlesApi = emptyApi.injectEndpoints({
       query: (req) => ({
         url: `/articles/liked?${getQuery(req)}`,
       }),
-      providesTags: ['Auth', 'Article', 'Like'],
+      providesTags: ['Auth', 'Article', 'ArticleLike'],
     }),
     getCommentedArticles: build.query<IResponse<Article>, IRequest>({
       query: (req) => ({
@@ -61,7 +61,7 @@ export const articlesApi = emptyApi.injectEndpoints({
       query: () => ({
         url: '/articles/liked/select',
       }),
-      providesTags: ['Auth', 'Like'],
+      providesTags: ['Auth', 'ArticleLike'],
     }),
     selectArticleViews: build.query<ArticleView[], number>({
       query: (articleId) => ({
@@ -69,17 +69,17 @@ export const articlesApi = emptyApi.injectEndpoints({
       }),
       providesTags: ['ArticleView'],
     }),
-    selectArticleUpLikes: build.query<Like[], number>({
+    selectArticleUpLikes: build.query<ArticleLike[], number>({
       query: (articleId) => ({
-        url: `/articles/${articleId}/upLikes`,
+        url: `/articles/${articleId}/likes/up`,
       }),
-      providesTags: ['Like'],
+      providesTags: ['ArticleLike'],
     }),
-    selectArticleDownLikes: build.query<Like[], number>({
+    selectArticleDownLikes: build.query<ArticleLike[], number>({
       query: (articleId) => ({
-        url: `/articles/${articleId}/downLikes`,
+        url: `/articles/${articleId}/likes/down`,
       }),
-      providesTags: ['Like'],
+      providesTags: ['ArticleLike'],
     }),
     createMyArticle: build.mutation<void, CreateArticleDto>({
       query: (dto) => ({
@@ -159,7 +159,7 @@ export const articlesApi = emptyApi.injectEndpoints({
         method: 'POST',
         body: dto,
       }),
-      invalidatesTags: ['Like'],
+      invalidatesTags: ['ArticleLike'],
       onQueryStarted(dto, { dispatch, queryFulfilled, getState }) {
         const endpoints = articlesApi.util.selectInvalidatedBy(getState(), [
           'Article',

@@ -27,11 +27,11 @@ export interface ViewPollDto {
   pollId: number;
 }
 
-export interface VotePollDto extends CreateReactionDto {
+export interface LikePollDto extends CreateReactionDto {
   pollId: number;
 }
 
-export interface ExtVotePollDto extends VotePollDto {
-  upVoted: boolean;
-  downVoted: boolean;
+export interface ExtLikePollDto extends LikePollDto {
+  upLiked: boolean;
+  downLiked: boolean;
 }

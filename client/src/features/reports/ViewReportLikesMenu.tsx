@@ -3,17 +3,17 @@ import { IconExternalLink } from '@tabler/icons';
 import { IModal } from '../../common/interfaces';
 import { Report } from './report.model';
 import {
-  useSelectReportDownAttitudesQuery,
-  useSelectReportUpAttitudesQuery,
+  useSelectReportDownLikesQuery,
+  useSelectReportUpLikesQuery,
 } from './reports.api';
 import LinkedAvatar from '../../common/components/LinkedAvatar';
-import { openViewReportAttitudesModal } from './ViewReportAttitudesModal';
+import { openViewReportLikesModal } from './ViewReportLikesModal';
 
 type Props = IModal<Report> & { type: boolean };
 
-export default function ViewReportAttitudesMenu({ data: report, type }: Props) {
-  const { data: attitudes, isFetching } = (
-    type ? useSelectReportUpAttitudesQuery : useSelectReportDownAttitudesQuery
+export default function ViewReportLikesMenu({ data: report, type }: Props) {
+  const { data: likes, isFetching } = (
+    type ? useSelectReportUpLikesQuery : useSelectReportDownLikesQuery
   )(report.id);
 
   return (
@@ -24,16 +24,16 @@ export default function ViewReportAttitudesMenu({ data: report, type }: Props) {
         ))
       ) : (
         <>
-          {attitudes?.slice(0, 4).map((attitude) => (
-            <Tooltip key={attitude.id} label={attitude.user.nick} withArrow>
+          {likes?.slice(0, 4).map((like) => (
+            <Tooltip key={like.id} label={like.user.nick} withArrow>
               <div>
-                <LinkedAvatar {...attitude.user} />
+                <LinkedAvatar {...like.user} />
               </div>
             </Tooltip>
           ))}
           <ActionIcon
             size={32}
-            onClick={() => openViewReportAttitudesModal(report, type)}
+            onClick={() => openViewReportLikesModal(report, type)}
           >
             <IconExternalLink size={24} />
           </ActionIcon>

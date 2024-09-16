@@ -2,14 +2,14 @@ import { emptyApi } from '../../app/empty.api';
 import { IRequest, IResponse } from '../../common/interfaces';
 import { Poll, SmPoll } from './poll.model';
 import { PollView } from './poll-view.model';
-import { Vote } from './vote.model';
+import { PollLike } from './poll-like.model';
 import {
   CompletePollDto,
   CreatePollDto,
   DeletePollDto,
   EditPollDto,
   ExtCreatePollDto,
-  ExtVotePollDto,
+  ExtLikePollDto,
   ViewPollDto,
 } from './poll.dto';
 import { getQuery } from '../../common/utils';
@@ -28,11 +28,11 @@ export const pollsApi = emptyApi.injectEndpoints({
       }),
       providesTags: ['Auth', 'Poll'],
     }),
-    getVotedPolls: build.query<IResponse<Poll>, IRequest>({
+    getLikedPolls: build.query<IResponse<Poll>, IRequest>({
       query: (req) => ({
-        url: `/polls/voted?${getQuery(req)}`,
+        url: `/polls/liked?${getQuery(req)}`,
       }),
-      providesTags: ['Auth', 'Poll', 'Vote'],
+      providesTags: ['Auth', 'Poll', 'PollLike'],
     }),
     getCommentedPolls: build.query<IResponse<Poll>, IRequest>({
       query: (req) => ({
@@ -52,11 +52,11 @@ export const pollsApi = emptyApi.injectEndpoints({
       }),
       providesTags: ['Auth', 'PollView'],
     }),
-    selectVotedPolls: build.query<SmPoll[], void>({
+    selectLikedPolls: build.query<SmPoll[], void>({
       query: () => ({
-        url: '/polls/voted/select',
+        url: '/polls/liked/select',
       }),
-      providesTags: ['Auth', 'Vote'],
+      providesTags: ['Auth', 'PollLike'],
     }),
     selectPollViews: build.query<PollView[], number>({
       query: (pollId) => ({
@@ -64,17 +64,17 @@ export const pollsApi = emptyApi.injectEndpoints({
       }),
       providesTags: ['PollView'],
     }),
-    selectPollUpVotes: build.query<Vote[], number>({
+    selectPollUpLikes: build.query<PollLike[], number>({
       query: (pollId) => ({
-        url: `/polls/${pollId}/upVotes`,
+        url: `/polls/${pollId}/likes/up`,
       }),
-      providesTags: ['Vote'],
+      providesTags: ['PollLike'],
     }),
-    selectPollDownVotes: build.query<Vote[], number>({
+    selectPollDownLikes: build.query<PollLike[], number>({
       query: (pollId) => ({
-        url: `/polls/${pollId}/downVotes`,
+        url: `/polls/${pollId}/likes/down`,
       }),
-      providesTags: ['Vote'],
+      providesTags: ['PollLike'],
     }),
     createMyPoll: build.mutation<void, CreatePollDto>({
       query: (dto) => ({
@@ -156,13 +156,13 @@ export const pollsApi = emptyApi.injectEndpoints({
         queryFulfilled.catch(patchResult.undo);
       },
     }),
-    votePoll: build.mutation<void, ExtVotePollDto>({
-      query: ({ pollId, ...dto }) => ({
-        url: `/polls/${pollId}/votes`,
+    likePoll: build.mutation<void, ExtLikePollDto>({
+      query: ({ pollId, upLiked, downLiked, ...dto }) => ({
+        url: `/polls/${pollId}/likes`,
         method: 'POST',
         body: dto,
       }),
-      invalidatesTags: ['Vote'],
+      invalidatesTags: ['PollLike'],
       onQueryStarted(dto, { dispatch, queryFulfilled, getState }) {
         const endpoints = pollsApi.util.selectInvalidatedBy(getState(), [
           'Poll',
@@ -179,27 +179,27 @@ export const pollsApi = emptyApi.injectEndpoints({
                     (poll) => poll.id === dto.pollId,
                   );
                   if (poll) {
-                    if (dto.upVoted || dto.downVoted) {
-                      if (dto.upVoted === dto.type) {
+                    if (dto.upLiked || dto.downLiked) {
+                      if (dto.upLiked === dto.type) {
                         if (dto.type) {
-                          poll.upVotes--;
+                          poll.upLikes--;
                         } else {
-                          poll.downVotes--;
+                          poll.downLikes--;
                         }
                       } else {
                         if (dto.type) {
-                          poll.upVotes++;
-                          poll.downVotes--;
+                          poll.upLikes++;
+                          poll.downLikes--;
                         } else {
-                          poll.downVotes++;
-                          poll.upVotes--;
+                          poll.downLikes++;
+                          poll.upLikes--;
                         }
                       }
                     } else {
                       if (dto.type) {
-                        poll.upVotes++;
+                        poll.upLikes++;
                       } else {
-                        poll.downVotes++;
+                        poll.downLikes++;
                       }
                     }
                   }
@@ -210,20 +210,20 @@ export const pollsApi = emptyApi.injectEndpoints({
           });
         const patchResult = dispatch(
           pollsApi.util.updateQueryData(
-            'selectVotedPolls',
+            'selectLikedPolls',
             undefined,
             (draft) => {
-              if (dto.upVoted || dto.downVoted) {
-                if (dto.upVoted === dto.type) {
+              if (dto.upLiked || dto.downLiked) {
+                if (dto.upLiked === dto.type) {
                   draft = draft.filter((poll) => poll.id === dto.pollId);
                 } else {
-                  draft.find((poll) => poll.id === dto.pollId)!.vote.type =
+                  draft.find((poll) => poll.id === dto.pollId)!.like.type =
                     dto.type;
                 }
               } else {
                 draft.push({
                   id: dto.pollId,
-                  vote: { id: 0, type: dto.type },
+                  like: { id: 0, type: dto.type },
                 });
               }
             },
@@ -238,19 +238,19 @@ export const pollsApi = emptyApi.injectEndpoints({
 export const {
   useGetMainPollsQuery,
   useGetMyPollsQuery,
-  useGetVotedPollsQuery,
+  useGetLikedPollsQuery,
   useGetCommentedPollsQuery,
   useGetAllPollsQuery,
   useSelectViewedPollsQuery,
-  useSelectVotedPollsQuery,
+  useSelectLikedPollsQuery,
   useSelectPollViewsQuery,
-  useSelectPollUpVotesQuery,
-  useSelectPollDownVotesQuery,
+  useSelectPollUpLikesQuery,
+  useSelectPollDownLikesQuery,
   useCreateMyPollMutation,
   useCreateUserPollMutation,
   useEditPollMutation,
   useCompletePollMutation,
   useDeletePollMutation,
   useViewPollMutation,
-  useVotePollMutation,
+  useLikePollMutation,
 } = pollsApi;

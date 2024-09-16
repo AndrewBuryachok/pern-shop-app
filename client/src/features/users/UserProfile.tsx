@@ -105,9 +105,9 @@ export default function UserProfile({ data: user }: Props) {
 
   const stats = [
     { label: 'articles', count: user.articles },
-    { label: 'likes', count: user.likes },
+    { label: 'likes', count: user.articlesLikes },
     { label: 'polls', count: user.polls },
-    { label: 'votes', count: user.votes },
+    { label: 'likes', count: user.pollsLikes },
     { label: 'wares', count: user.waresCount, rate: user.waresRate },
     { label: 'products', count: user.productsCount, rate: user.productsRate },
     { label: 'orders', count: user.ordersCount, rate: user.ordersRate },
@@ -301,7 +301,7 @@ export default function UserProfile({ data: user }: Props) {
             breakpoints={[{ maxWidth: 'md', cols: 2 }]}
           >
             {stats.map((stat, index) => (
-              <Paper key={stat.label} p={8}>
+              <Paper key={index} p={8}>
                 <Stack spacing={0} align='center'>
                   <Text size='sm' color={colors[index % 4]}>
                     {t(`navbar.${stat.label}`)}

@@ -3,17 +3,17 @@ import { IconExternalLink } from '@tabler/icons';
 import { IModal } from '../../common/interfaces';
 import { Poll } from './poll.model';
 import {
-  useSelectPollDownVotesQuery,
-  useSelectPollUpVotesQuery,
+  useSelectPollDownLikesQuery,
+  useSelectPollUpLikesQuery,
 } from './polls.api';
 import LinkedAvatar from '../../common/components/LinkedAvatar';
-import { openViewPollVotesModal } from './ViewPollVotesModal';
+import { openViewPollLikesModal } from './ViewPollLikesModal';
 
 type Props = IModal<Poll> & { type: boolean };
 
-export default function ViewPollVotesMenu({ data: poll, type }: Props) {
-  const { data: votes, isFetching } = (
-    type ? useSelectPollUpVotesQuery : useSelectPollDownVotesQuery
+export default function ViewPollLikesMenu({ data: poll, type }: Props) {
+  const { data: likes, isFetching } = (
+    type ? useSelectPollUpLikesQuery : useSelectPollDownLikesQuery
   )(poll.id);
 
   return (
@@ -24,16 +24,16 @@ export default function ViewPollVotesMenu({ data: poll, type }: Props) {
         ))
       ) : (
         <>
-          {votes?.slice(0, 4).map((vote) => (
-            <Tooltip key={vote.id} label={vote.user.nick} withArrow>
+          {likes?.slice(0, 4).map((like) => (
+            <Tooltip key={like.id} label={like.user.nick} withArrow>
               <div>
-                <LinkedAvatar {...vote.user} />
+                <LinkedAvatar {...like.user} />
               </div>
             </Tooltip>
           ))}
           <ActionIcon
             size={32}
-            onClick={() => openViewPollVotesModal(poll, type)}
+            onClick={() => openViewPollLikesModal(poll, type)}
           >
             <IconExternalLink size={24} />
           </ActionIcon>

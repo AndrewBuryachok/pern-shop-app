@@ -1,10 +1,10 @@
-import { SmAttitude } from './attitude.model';
+import { SmReportLike } from './report-like.model';
 import { SmUser } from '../users/user.model';
 import { SmReportComment } from './comment.model';
 
 export interface SmReport {
   id: number;
-  attitude: SmAttitude;
+  like: SmReportLike;
 }
 
 export interface Report {
@@ -17,8 +17,8 @@ export interface Report {
   video: string;
   createdAt: Date;
   views: number;
-  upAttitudes: number;
-  downAttitudes: number;
+  upLikes: number;
+  downLikes: number;
   comments: number;
   comment?: SmReportComment;
 }

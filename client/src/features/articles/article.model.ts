@@ -1,10 +1,10 @@
-import { SmLike } from './like.model';
+import { SmArticleLike } from './article-like.model';
 import { SmUser } from '../users/user.model';
 import { SmArticleComment } from './comment.model';
 
 export interface SmArticle {
   id: number;
-  like: SmLike;
+  like: SmArticleLike;
 }
 
 export interface Article {

@@ -2,7 +2,7 @@ import { ITableWithActions } from '../../common/interfaces';
 import { Report } from './report.model';
 import { getCurrentUser } from '../auth/auth.slice';
 import {
-  useSelectAttitudedReportsQuery,
+  useSelectLikedReportsQuery,
   useSelectViewedReportsQuery,
 } from './reports.api';
 import CustomList from '../../common/components/CustomList';
@@ -16,8 +16,8 @@ export default function ReportsList({ actions = [], ...props }: Props) {
   const { data: viewedReports, ...viewedReportsResponse } =
     useSelectViewedReportsQuery(undefined, { skip: !user });
 
-  const { data: attitudedReports, ...attitudedReportsResponse } =
-    useSelectAttitudedReportsQuery(undefined, { skip: !user });
+  const { data: likedReports, ...likedReportsResponse } =
+    useSelectLikedReportsQuery(undefined, { skip: !user });
 
   return (
     <CustomList {...props}>
@@ -25,14 +25,13 @@ export default function ReportsList({ actions = [], ...props }: Props) {
         .map((report) => ({
           ...report,
           viewed: !!viewedReports?.includes(report.id),
-          upAttituded: !!attitudedReports?.find(
-            (attitudedReport) =>
-              attitudedReport.id === report.id && attitudedReport.attitude.type,
+          upLiked: !!likedReports?.find(
+            (likedReport) =>
+              likedReport.id === report.id && likedReport.like.type,
           ),
-          downAttituded: !!attitudedReports?.find(
-            (attitudedReport) =>
-              attitudedReport.id === report.id &&
-              !attitudedReport.attitude.type,
+          downLiked: !!likedReports?.find(
+            (likedReport) =>
+              likedReport.id === report.id && !likedReport.like.type,
           ),
         }))
         .map((report) => (
@@ -40,7 +39,7 @@ export default function ReportsList({ actions = [], ...props }: Props) {
             key={report.id}
             report={report}
             isViewedLoading={viewedReportsResponse.isFetching}
-            isAttitudedLoading={attitudedReportsResponse.isFetching}
+            isLikedLoading={likedReportsResponse.isFetching}
             actions={actions}
           />
         ))}

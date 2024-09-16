@@ -1,10 +1,10 @@
-import { SmVote } from './vote.model';
+import { SmPollLike } from './poll-like.model';
 import { SmUser } from '../users/user.model';
 import { SmPollComment } from './comment.model';
 
 export interface SmPoll {
   id: number;
-  vote: SmVote;
+  like: SmPollLike;
 }
 
 export interface Poll {
@@ -18,8 +18,8 @@ export interface Poll {
   createdAt: Date;
   completedAt?: Date;
   views: number;
-  upVotes: number;
-  downVotes: number;
+  upLikes: number;
+  downLikes: number;
   comments: number;
   comment?: SmPollComment;
 }

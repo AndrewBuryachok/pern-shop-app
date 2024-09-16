@@ -2,9 +2,9 @@ import { useLocation, useSearchParams } from 'react-router-dom';
 import {
   useGetAllPollsQuery,
   useGetCommentedPollsQuery,
+  useGetLikedPollsQuery,
   useGetMainPollsQuery,
   useGetMyPollsQuery,
-  useGetVotedPollsQuery,
 } from '../../features/polls/polls.api';
 import PollsList from '../../features/polls/PollsList';
 import {
@@ -34,7 +34,7 @@ export default function PollsPage() {
   const response = {
     main: useGetMainPollsQuery,
     my: useGetMyPollsQuery,
-    voted: useGetVotedPollsQuery,
+    liked: useGetLikedPollsQuery,
     commented: useGetCommentedPollsQuery,
     all: useGetAllPollsQuery,
   }[tab]!(search);
