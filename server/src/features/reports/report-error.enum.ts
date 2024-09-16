@@ -5,7 +5,7 @@ export enum ReportError {
   EDIT_FAILED = '500: Failed to edit report',
   DELETE_FAILED = '500: Failed to delete report',
   ADD_VIEW_FAILED = '500: Failed to add view',
-  ADD_ATTITUDE_FAILED = '500: Failed to add attitude',
-  UPDATE_ATTITUDE_FAILED = '500: Failed to update attitude',
-  REMOVE_ATTITUDE_FAILED = '500: Failed to remove attitude',
+  ADD_LIKE_FAILED = '500: Failed to add like',
+  UPDATE_LIKE_FAILED = '500: Failed to update like',
+  REMOVE_LIKE_FAILED = '500: Failed to remove like',
 }

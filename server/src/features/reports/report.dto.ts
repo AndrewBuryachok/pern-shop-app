@@ -58,9 +58,9 @@ export class ViewReportDto {
   myId: number;
 }
 
-export class AttitudeReportDto extends CreateReactionDto {}
+export class LikeReportDto extends CreateReactionDto {}
 
-export class ExtAttitudeReportDto extends AttitudeReportDto {
+export class ExtLikeReportDto extends LikeReportDto {
   reportId: number;
   myId: number;
 }

@@ -11,7 +11,7 @@ import { User } from '../users/user.entity';
 import { Mark } from './mark.enum';
 import { Result } from './result.enum';
 import { PollView } from './poll-view.entity';
-import { Vote } from './vote.entity';
+import { PollLike } from './poll-like.entity';
 import { PollComment } from './comment.entity';
 
 @Entity('polls')
@@ -58,8 +58,8 @@ export class Poll {
   @OneToMany(() => PollView, (view) => view.poll)
   views: PollView[];
 
-  @OneToMany(() => Vote, (vote) => vote.poll)
-  votes: Vote[];
+  @OneToMany(() => PollLike, (like) => like.poll)
+  likes: PollLike[];
 
   @OneToMany(() => PollComment, (comment) => comment.poll)
   comments: PollComment[];

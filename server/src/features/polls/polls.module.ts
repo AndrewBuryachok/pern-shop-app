@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Poll } from './poll.entity';
 import { PollView } from './poll-view.entity';
-import { Vote } from './vote.entity';
+import { PollLike } from './poll-like.entity';
 import { PollComment } from './comment.entity';
 import { MqttModule } from '../mqtt/mqtt.module';
 import { PollsController } from './polls.controller';
@@ -13,7 +13,7 @@ import { IsPollCommentExists, IsPollExists } from '../../common/constraints';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Poll, PollView, Vote, PollComment]),
+    TypeOrmModule.forFeature([Poll, PollView, PollLike, PollComment]),
     MqttModule,
   ],
   controllers: [PollsController, CommentsController],

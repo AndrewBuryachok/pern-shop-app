@@ -628,17 +628,17 @@ describe('With Auth', () => {
         .expect('');
     });
 
-    it('POST /reports/:reportId/attitudes', async () => {
+    it('POST /reports/:reportId/likes', async () => {
       return request(app.getHttpServer())
-        .post(`/reports/${reportsId[0]}/attitudes`)
+        .post(`/reports/${reportsId[0]}/likes`)
         .set('Authorization', `Bearer ${user.access}`)
         .send({ type: true })
         .expect('');
     });
 
-    it('POST /reports/:reportId/attitudes', async () => {
+    it('POST /reports/:reportId/likes', async () => {
       return request(app.getHttpServer())
-        .post(`/reports/${reportsId[1]}/attitudes`)
+        .post(`/reports/${reportsId[1]}/likes`)
         .set('Authorization', `Bearer ${user.access}`)
         .send({ type: false })
         .expect('');
@@ -663,9 +663,9 @@ describe('With Auth', () => {
         .expect((res) => expect(res.body.length).toBeGreaterThan(0));
     });
 
-    it('GET /reports/attituded/select', async () => {
+    it('GET /reports/liked/select', async () => {
       return request(app.getHttpServer())
-        .get('/reports/attituded/select')
+        .get('/reports/liked/select')
         .set('Authorization', `Bearer ${user.access}`)
         .expect((res) => expect(res.body.length).toBeGreaterThan(0));
     });
@@ -676,15 +676,15 @@ describe('With Auth', () => {
         .expect((res) => expect(res.body.length).toBeGreaterThan(0));
     });
 
-    it('GET /reports/:reportId/upAttitudes', async () => {
+    it('GET /reports/:reportId/likes/up', async () => {
       return request(app.getHttpServer())
-        .get(`/reports/${reportsId[0]}/upAttitudes`)
+        .get(`/reports/${reportsId[0]}/likes/up`)
         .expect((res) => expect(res.body.length).toBeGreaterThan(0));
     });
 
-    it('GET /reports/:reportId/downAttitudes', async () => {
+    it('GET /reports/:reportId/likes/down', async () => {
       return request(app.getHttpServer())
-        .get(`/reports/${reportsId[1]}/downAttitudes`)
+        .get(`/reports/${reportsId[1]}/likes/down`)
         .expect((res) => expect(res.body.length).toBeGreaterThan(0));
     });
 
@@ -814,15 +814,15 @@ describe('With Auth', () => {
         .expect((res) => expect(res.body.length).toBeGreaterThan(0));
     });
 
-    it('GET /articles/:articleId/upLikes', async () => {
+    it('GET /articles/:articleId/likes/up', async () => {
       return request(app.getHttpServer())
-        .get(`/articles/${articlesId[0]}/upLikes`)
+        .get(`/articles/${articlesId[0]}/likes/up`)
         .expect((res) => expect(res.body.length).toBeGreaterThan(0));
     });
 
-    it('GET /articles/:articleId/downLikes', async () => {
+    it('GET /articles/:articleId/likes/down', async () => {
       return request(app.getHttpServer())
-        .get(`/articles/${articlesId[1]}/downLikes`)
+        .get(`/articles/${articlesId[1]}/likes/down`)
         .expect((res) => expect(res.body.length).toBeGreaterThan(0));
     });
 
@@ -3416,17 +3416,17 @@ describe('With Auth', () => {
         .expect('');
     });
 
-    it('POST /polls/:pollId/votes', async () => {
+    it('POST /polls/:pollId/likes', async () => {
       return request(app.getHttpServer())
-        .post(`/polls/${pollsId[0]}/votes`)
+        .post(`/polls/${pollsId[0]}/likes`)
         .set('Authorization', `Bearer ${user.access}`)
         .send({ type: true })
         .expect('');
     });
 
-    it('POST /polls/:pollId/votes', async () => {
+    it('POST /polls/:pollId/likes', async () => {
       return request(app.getHttpServer())
-        .post(`/polls/${pollsId[1]}/votes`)
+        .post(`/polls/${pollsId[1]}/likes`)
         .set('Authorization', `Bearer ${user.access}`)
         .send({ type: false })
         .expect('');
@@ -3440,9 +3440,9 @@ describe('With Auth', () => {
         .expect('');
     });
 
-    it('GET /polls/voted', async () => {
+    it('GET /polls/liked', async () => {
       return request(app.getHttpServer())
-        .get('/polls/voted')
+        .get('/polls/liked')
         .set('Authorization', `Bearer ${user.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
@@ -3461,9 +3461,9 @@ describe('With Auth', () => {
         .expect((res) => expect(res.body.length).toBeGreaterThan(0));
     });
 
-    it('GET /polls/voted/select', async () => {
+    it('GET /polls/liked/select', async () => {
       return request(app.getHttpServer())
-        .get('/polls/voted/select')
+        .get('/polls/liked/select')
         .set('Authorization', `Bearer ${user.access}`)
         .expect((res) => expect(res.body.length).toBeGreaterThan(0));
     });
@@ -3474,15 +3474,15 @@ describe('With Auth', () => {
         .expect((res) => expect(res.body.length).toBeGreaterThan(0));
     });
 
-    it('GET /polls/:pollId/upVotes', async () => {
+    it('GET /polls/:pollId/likes/up', async () => {
       return request(app.getHttpServer())
-        .get(`/polls/${pollsId[0]}/upVotes`)
+        .get(`/polls/${pollsId[0]}/likes/up`)
         .expect((res) => expect(res.body.length).toBeGreaterThan(0));
     });
 
-    it('GET /polls/:pollId/downVotes', async () => {
+    it('GET /polls/:pollId/likes/down', async () => {
       return request(app.getHttpServer())
-        .get(`/polls/${pollsId[1]}/downVotes`)
+        .get(`/polls/${pollsId[1]}/likes/down`)
         .expect((res) => expect(res.body.length).toBeGreaterThan(0));
     });
 

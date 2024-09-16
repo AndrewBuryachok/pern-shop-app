@@ -12,14 +12,14 @@ import { ApiTags } from '@nestjs/swagger';
 import { PollsService } from './polls.service';
 import { Poll } from './poll.entity';
 import { PollView } from './poll-view.entity';
-import { Vote } from './vote.entity';
+import { PollLike } from './poll-like.entity';
 import {
   CompletePollDto,
   CreatePollDto,
   EditPollDto,
   ExtCreatePollDto,
+  LikePollDto,
   PollIdDto,
-  VotePollDto,
 } from './poll.dto';
 import { Request, Response } from '../../common/interfaces';
 import { HasRole, MyId, MyNick, Public, Roles } from '../../common/decorators';
@@ -44,12 +44,12 @@ export class PollsController {
     return this.pollsService.getMyPolls(myId, req);
   }
 
-  @Get('voted')
-  getVotedPolls(
+  @Get('liked')
+  getLikedPolls(
     @MyId() myId: number,
     @Query() req: Request,
   ): Promise<Response<Poll>> {
-    return this.pollsService.getVotedPolls(myId, req);
+    return this.pollsService.getLikedPolls(myId, req);
   }
 
   @Get('commented')
@@ -71,9 +71,9 @@ export class PollsController {
     return this.pollsService.selectViewedPolls(myId);
   }
 
-  @Get('voted/select')
-  selectVotedPolls(@MyId() myId: number): Promise<Poll[]> {
-    return this.pollsService.selectVotedPolls(myId);
+  @Get('liked/select')
+  selectLikedPolls(@MyId() myId: number): Promise<Poll[]> {
+    return this.pollsService.selectLikedPolls(myId);
   }
 
   @Public()
@@ -83,15 +83,15 @@ export class PollsController {
   }
 
   @Public()
-  @Get(':pollId/upVotes')
-  selectPollUpVotes(@Param() { pollId }: PollIdDto): Promise<Vote[]> {
-    return this.pollsService.selectPollVotes(pollId, true);
+  @Get(':pollId/likes/up')
+  selectPollUpLikes(@Param() { pollId }: PollIdDto): Promise<PollLike[]> {
+    return this.pollsService.selectPollLikes(pollId, true);
   }
 
   @Public()
-  @Get(':pollId/downVotes')
-  selectPollDownVotes(@Param() { pollId }: PollIdDto): Promise<Vote[]> {
-    return this.pollsService.selectPollVotes(pollId, false);
+  @Get(':pollId/likes/down')
+  selectPollDownLikes(@Param() { pollId }: PollIdDto): Promise<PollLike[]> {
+    return this.pollsService.selectPollLikes(pollId, false);
   }
 
   @Post()
@@ -150,13 +150,13 @@ export class PollsController {
     return this.pollsService.viewPoll({ pollId, myId });
   }
 
-  @Post(':pollId/votes')
-  votePoll(
+  @Post(':pollId/likes')
+  likePoll(
     @MyId() myId: number,
     @MyNick() nick: string,
     @Param() { pollId }: PollIdDto,
-    @Body() dto: VotePollDto,
+    @Body() dto: LikePollDto,
   ): Promise<void> {
-    return this.pollsService.votePoll({ ...dto, pollId, myId, nick });
+    return this.pollsService.likePoll({ ...dto, pollId, myId, nick });
   }
 }

@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Report } from './report.entity';
 import { ReportView } from './report-view.entity';
-import { Attitude } from './attitude.entity';
+import { ReportLike } from './report-like.entity';
 import { ReportComment } from './comment.entity';
 import { MqttModule } from '../mqtt/mqtt.module';
 import { ReportsController } from './reports.controller';
@@ -16,7 +16,7 @@ import {
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Report, ReportView, Attitude, ReportComment]),
+    TypeOrmModule.forFeature([Report, ReportView, ReportLike, ReportComment]),
     MqttModule,
   ],
   controllers: [ReportsController, CommentsController],

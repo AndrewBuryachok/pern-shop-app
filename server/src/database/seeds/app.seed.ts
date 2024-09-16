@@ -4,11 +4,11 @@ import { User } from '../../features/users/user.entity';
 import { Message } from '../../features/messages/message.entity';
 import { Report } from '../../features/reports/report.entity';
 import { ReportView } from '../../features/reports/report-view.entity';
-import { Attitude } from '../../features/reports/attitude.entity';
+import { ReportLike } from '../../features/reports/report-like.entity';
 import { ReportComment } from '../../features/reports/comment.entity';
 import { Article } from '../../features/articles/article.entity';
 import { ArticleView } from '../../features/articles/article-view.entity';
-import { Like } from '../../features/articles/like.entity';
+import { ArticleLike } from '../../features/articles/article-like.entity';
 import { ArticleComment } from '../../features/articles/comment.entity';
 import { Card } from '../../features/cards/card.entity';
 import { Exchange } from '../../features/exchanges/exchange.entity';
@@ -49,7 +49,7 @@ import { Task } from '../../features/tasks/task.entity';
 import { Advert } from '../../features/adverts/advert.entity';
 import { Poll } from '../../features/polls/poll.entity';
 import { PollView } from '../../features/polls/poll-view.entity';
-import { Vote } from '../../features/polls/vote.entity';
+import { PollLike } from '../../features/polls/poll-like.entity';
 import { PollComment } from '../../features/polls/comment.entity';
 import { Rating } from '../../features/ratings/rating.entity';
 import { Status } from '../../features/transportations/status.enum';
@@ -91,15 +91,15 @@ export default class AppSeed implements Seeder {
         return view;
       })
       .createMany(80);
-    const randomAttitudes = [...Array(reportsUsers.length).keys()];
-    randomAttitudes.sort(() => Math.random() - 0.5);
-    let attitudeId = 0;
-    const attitudes = await factory(Attitude)()
-      .map(async (attitude) => {
-        attitude.report = reportsUsers[randomAttitudes[attitudeId]].report;
-        attitude.user = reportsUsers[randomAttitudes[attitudeId]].user;
-        attitudeId++;
-        return attitude;
+    const randomReportsLikes = [...Array(reportsUsers.length).keys()];
+    randomReportsLikes.sort(() => Math.random() - 0.5);
+    let reportLikeId = 0;
+    const reportsLikes = await factory(ReportLike)()
+      .map(async (like) => {
+        like.report = reportsUsers[randomReportsLikes[reportLikeId]].report;
+        like.user = reportsUsers[randomReportsLikes[reportLikeId]].user;
+        reportLikeId++;
+        return like;
       })
       .createMany(80);
     const reportsComments = await factory(ReportComment)()
@@ -131,14 +131,15 @@ export default class AppSeed implements Seeder {
         return view;
       })
       .createMany(80);
-    const randomLikes = [...Array(articlesUsers.length).keys()];
-    randomLikes.sort(() => Math.random() - 0.5);
-    let likeId = 0;
-    const likes = await factory(Like)()
+    const randomArticlesLikes = [...Array(articlesUsers.length).keys()];
+    randomArticlesLikes.sort(() => Math.random() - 0.5);
+    let articleLikeId = 0;
+    const articlesLikes = await factory(ArticleLike)()
       .map(async (like) => {
-        like.article = articlesUsers[randomLikes[likeId]].article;
-        like.user = articlesUsers[randomLikes[likeId]].user;
-        likeId++;
+        like.article =
+          articlesUsers[randomArticlesLikes[articleLikeId]].article;
+        like.user = articlesUsers[randomArticlesLikes[articleLikeId]].user;
+        articleLikeId++;
         return like;
       })
       .createMany(80);
@@ -665,15 +666,15 @@ export default class AppSeed implements Seeder {
         return view;
       })
       .createMany(80);
-    const randomVotes = [...Array(pollsUsers.length).keys()];
-    randomVotes.sort(() => Math.random() - 0.5);
-    let voteId = 0;
-    const votes = await factory(Vote)()
-      .map(async (vote) => {
-        vote.poll = pollsUsers[randomVotes[voteId]].poll;
-        vote.user = pollsUsers[randomVotes[voteId]].user;
-        voteId++;
-        return vote;
+    const randomPollsLikes = [...Array(pollsUsers.length).keys()];
+    randomPollsLikes.sort(() => Math.random() - 0.5);
+    let pollLikeId = 0;
+    const pollsLikes = await factory(PollLike)()
+      .map(async (like) => {
+        like.poll = pollsUsers[randomPollsLikes[pollLikeId]].poll;
+        like.user = pollsUsers[randomPollsLikes[pollLikeId]].user;
+        pollLikeId++;
+        return like;
       })
       .createMany(80);
     const pollsComments = await factory(PollComment)()

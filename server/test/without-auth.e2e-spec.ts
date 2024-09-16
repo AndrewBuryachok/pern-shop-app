@@ -125,9 +125,9 @@ describe('Without Auth', () => {
   });
 
   describe('Reports', () => {
-    it('GET /reports/attituded/select', async () => {
+    it('GET /reports/liked/select', async () => {
       return request(app.getHttpServer())
-        .get('/reports/attituded/select')
+        .get('/reports/liked/select')
         .expect(401);
     });
   });
@@ -764,17 +764,17 @@ describe('Without Auth', () => {
       return request(app.getHttpServer()).get('/polls/my').expect(401);
     });
 
-    it('GET /polls/voted', async () => {
-      return request(app.getHttpServer()).get('/polls/voted').expect(401);
+    it('GET /polls/liked', async () => {
+      return request(app.getHttpServer()).get('/polls/liked').expect(401);
     });
 
     it('GET /polls/commented', async () => {
       return request(app.getHttpServer()).get('/polls/commented').expect(401);
     });
 
-    it('GET /polls/voted/select', async () => {
+    it('GET /polls/liked/select', async () => {
       return request(app.getHttpServer())
-        .get('/polls/voted/select')
+        .get('/polls/liked/select')
         .expect(401);
     });
 

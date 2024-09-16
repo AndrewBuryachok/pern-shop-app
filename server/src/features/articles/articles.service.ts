@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { Article } from './article.entity';
 import { ArticleView } from './article-view.entity';
-import { Like } from './like.entity';
+import { ArticleLike } from './article-like.entity';
 import { MqttService } from '../mqtt/mqtt.service';
 import {
   DeleteArticleDto,
@@ -24,8 +24,8 @@ export class ArticlesService {
     private articlesRepository: Repository<Article>,
     @InjectRepository(ArticleView)
     private viewsRepository: Repository<ArticleView>,
-    @InjectRepository(Like)
-    private likesRepository: Repository<Like>,
+    @InjectRepository(ArticleLike)
+    private likesRepository: Repository<ArticleLike>,
     private mqttService: MqttService,
   ) {}
 
@@ -133,7 +133,7 @@ export class ArticlesService {
       .getMany();
   }
 
-  selectArticleLikes(articleId: number, type: boolean): Promise<Like[]> {
+  selectArticleLikes(articleId: number, type: boolean): Promise<ArticleLike[]> {
     return this.selectLikesQueryBuilder()
       .where('like.articleId = :articleId', { articleId })
       .andWhere('like.type = :type', { type })
@@ -300,7 +300,10 @@ export class ArticlesService {
     }
   }
 
-  private async updateLike(like: Like, dto: ExtLikeArticleDto): Promise<void> {
+  private async updateLike(
+    like: ArticleLike,
+    dto: ExtLikeArticleDto,
+  ): Promise<void> {
     try {
       like.type = dto.type;
       await this.likesRepository.save(like);
@@ -309,7 +312,7 @@ export class ArticlesService {
     }
   }
 
-  private async removeLike(like: Like): Promise<void> {
+  private async removeLike(like: ArticleLike): Promise<void> {
     try {
       await this.likesRepository.remove(like);
     } catch (error) {
@@ -331,7 +334,7 @@ export class ArticlesService {
       ]);
   }
 
-  private selectLikesQueryBuilder(): SelectQueryBuilder<Like> {
+  private selectLikesQueryBuilder(): SelectQueryBuilder<ArticleLike> {
     return this.likesRepository
       .createQueryBuilder('like')
       .innerJoin('like.user', 'liker')

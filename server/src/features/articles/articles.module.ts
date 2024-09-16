@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Article } from './article.entity';
 import { ArticleView } from './article-view.entity';
-import { Like } from './like.entity';
+import { ArticleLike } from './article-like.entity';
 import { ArticleComment } from './comment.entity';
 import { MqttModule } from '../mqtt/mqtt.module';
 import { ArticlesController } from './articles.controller';
@@ -16,7 +16,12 @@ import {
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Article, ArticleView, Like, ArticleComment]),
+    TypeOrmModule.forFeature([
+      Article,
+      ArticleView,
+      ArticleLike,
+      ArticleComment,
+    ]),
     MqttModule,
   ],
   controllers: [ArticlesController, CommentsController],

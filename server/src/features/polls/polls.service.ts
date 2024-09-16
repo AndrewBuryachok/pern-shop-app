@@ -3,14 +3,14 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { Poll } from './poll.entity';
 import { PollView } from './poll-view.entity';
-import { Vote } from './vote.entity';
+import { PollLike } from './poll-like.entity';
 import { MqttService } from '../mqtt/mqtt.service';
 import {
   DeletePollDto,
   ExtCompletePollDto,
   ExtCreatePollDto,
   ExtEditPollDto,
-  ExtVotePollDto,
+  ExtLikePollDto,
   ViewPollDto,
 } from './poll.dto';
 import { Request, Response } from '../../common/interfaces';
@@ -26,8 +26,8 @@ export class PollsService {
     private pollsRepository: Repository<Poll>,
     @InjectRepository(PollView)
     private viewsRepository: Repository<PollView>,
-    @InjectRepository(Vote)
-    private votesRepository: Repository<Vote>,
+    @InjectRepository(PollLike)
+    private likesRepository: Repository<PollLike>,
     private mqttService: MqttService,
   ) {}
 
@@ -45,13 +45,13 @@ export class PollsService {
     return { result, count };
   }
 
-  async getVotedPolls(myId: number, req: Request): Promise<Response<Poll>> {
+  async getLikedPolls(myId: number, req: Request): Promise<Response<Poll>> {
     const [result, count] = await this.getPollsQueryBuilder(req)
       .innerJoinAndMapOne(
-        'myVote',
-        'poll.votes',
-        'myVote',
-        'myVote.userId = :myId',
+        'myLike',
+        'poll.likes',
+        'myLike',
+        'myLike.userId = :myId',
         { myId },
       )
       .getManyAndCount();
@@ -93,17 +93,17 @@ export class PollsService {
     return polls.map((poll) => poll.id);
   }
 
-  selectVotedPolls(myId: number): Promise<Poll[]> {
+  selectLikedPolls(myId: number): Promise<Poll[]> {
     return this.pollsRepository
       .createQueryBuilder('poll')
       .innerJoinAndMapOne(
-        'poll.vote',
-        'poll.votes',
-        'myVote',
-        'myVote.userId = :myId',
+        'poll.like',
+        'poll.likes',
+        'myLike',
+        'myLike.userId = :myId',
         { myId },
       )
-      .select(['poll.id', 'myVote.id', 'myVote.type'])
+      .select(['poll.id', 'myLike.id', 'myLike.type'])
       .getMany();
   }
 
@@ -113,10 +113,10 @@ export class PollsService {
       .getMany();
   }
 
-  selectPollVotes(pollId: number, type: boolean): Promise<Vote[]> {
-    return this.selectVotesQueryBuilder()
-      .where('vote.pollId = :pollId', { pollId })
-      .andWhere('vote.type = :type', { type })
+  selectPollLikes(pollId: number, type: boolean): Promise<PollLike[]> {
+    return this.selectLikesQueryBuilder()
+      .where('like.pollId = :pollId', { pollId })
+      .andWhere('like.type = :type', { type })
       .getMany();
   }
 
@@ -176,18 +176,18 @@ export class PollsService {
     await this.addView(dto);
   }
 
-  async votePoll(dto: ExtVotePollDto & { nick: string }): Promise<void> {
-    const vote = await this.votesRepository.findOneBy({
+  async likePoll(dto: ExtLikePollDto & { nick: string }): Promise<void> {
+    const like = await this.likesRepository.findOneBy({
       pollId: dto.pollId,
       userId: dto.myId,
     });
-    const notify = !vote || vote.type !== dto.type;
-    if (!vote) {
-      await this.addVote(dto);
-    } else if (vote.type !== dto.type) {
-      await this.updateVote(vote, dto);
+    const notify = !like || like.type !== dto.type;
+    if (!like) {
+      await this.addLike(dto);
+    } else if (like.type !== dto.type) {
+      await this.updateLike(like, dto);
     } else {
-      await this.removeVote(vote);
+      await this.removeLike(like);
     }
     if (notify) {
       const poll = await this.findPollById(dto.pollId);
@@ -289,33 +289,33 @@ export class PollsService {
     }
   }
 
-  private async addVote(dto: ExtVotePollDto): Promise<void> {
+  private async addLike(dto: ExtLikePollDto): Promise<void> {
     try {
-      const vote = this.votesRepository.create({
+      const like = this.likesRepository.create({
         pollId: dto.pollId,
         userId: dto.myId,
         type: dto.type,
       });
-      await this.votesRepository.save(vote);
+      await this.likesRepository.save(like);
     } catch (error) {
-      throw new AppException(PollError.ADD_VOTE_FAILED);
+      throw new AppException(PollError.ADD_LIKE_FAILED);
     }
   }
 
-  private async updateVote(vote: Vote, dto: ExtVotePollDto): Promise<void> {
+  private async updateLike(like: PollLike, dto: ExtLikePollDto): Promise<void> {
     try {
-      vote.type = dto.type;
-      await this.votesRepository.save(vote);
+      like.type = dto.type;
+      await this.likesRepository.save(like);
     } catch (error) {
-      throw new AppException(PollError.UPDATE_VOTE_FAILED);
+      throw new AppException(PollError.UPDATE_LIKE_FAILED);
     }
   }
 
-  private async removeVote(vote: Vote): Promise<void> {
+  private async removeLike(like: PollLike): Promise<void> {
     try {
-      await this.votesRepository.remove(vote);
+      await this.likesRepository.remove(like);
     } catch (error) {
-      throw new AppException(PollError.REMOVE_VOTE_FAILED);
+      throw new AppException(PollError.REMOVE_LIKE_FAILED);
     }
   }
 
@@ -333,18 +333,18 @@ export class PollsService {
       ]);
   }
 
-  private selectVotesQueryBuilder(): SelectQueryBuilder<Vote> {
-    return this.votesRepository
-      .createQueryBuilder('vote')
-      .innerJoin('vote.user', 'voter')
-      .orderBy('vote.id', 'DESC')
+  private selectLikesQueryBuilder(): SelectQueryBuilder<PollLike> {
+    return this.likesRepository
+      .createQueryBuilder('like')
+      .innerJoin('like.user', 'liker')
+      .orderBy('like.id', 'DESC')
       .select([
-        'vote.id',
-        'voter.id',
-        'voter.nick',
-        'voter.avatar',
-        'vote.type',
-        'vote.createdAt',
+        'like.id',
+        'liker.id',
+        'liker.nick',
+        'liker.avatar',
+        'like.type',
+        'like.createdAt',
       ]);
   }
 
@@ -353,14 +353,14 @@ export class PollsService {
       .createQueryBuilder('poll')
       .innerJoin('poll.user', 'ownerUser')
       .loadRelationCountAndMap('poll.views', 'poll.views')
-      .loadRelationCountAndMap('poll.upVotes', 'poll.votes', 'upVote', (qb) =>
-        qb.where('upVote.type'),
+      .loadRelationCountAndMap('poll.upLikes', 'poll.likes', 'upLike', (qb) =>
+        qb.where('upLike.type'),
       )
       .loadRelationCountAndMap(
-        'poll.downVotes',
-        'poll.votes',
-        'downVote',
-        (qb) => qb.where('NOT downVote.type'),
+        'poll.downLikes',
+        'poll.likes',
+        'downLike',
+        (qb) => qb.where('NOT downLike.type'),
       )
       .loadRelationCountAndMap('poll.comments', 'poll.comments')
       .leftJoinAndMapOne(

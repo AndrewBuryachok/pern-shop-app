@@ -9,7 +9,7 @@ import {
 } from 'typeorm';
 import { User } from '../users/user.entity';
 import { ArticleView } from './article-view.entity';
-import { Like } from './like.entity';
+import { ArticleLike } from './article-like.entity';
 import { ArticleComment } from './comment.entity';
 
 @Entity('articles')
@@ -45,8 +45,8 @@ export class Article {
   @OneToMany(() => ArticleView, (view) => view.article)
   views: ArticleView[];
 
-  @OneToMany(() => Like, (like) => like.article)
-  likes: Like[];
+  @OneToMany(() => ArticleLike, (like) => like.article)
+  likes: ArticleLike[];
 
   @OneToMany(() => ArticleComment, (comment) => comment.article)
   comments: ArticleComment[];

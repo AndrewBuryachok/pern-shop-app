@@ -12,7 +12,7 @@ import { ApiTags } from '@nestjs/swagger';
 import { ArticlesService } from './articles.service';
 import { Article } from './article.entity';
 import { ArticleView } from './article-view.entity';
-import { Like } from './like.entity';
+import { ArticleLike } from './article-like.entity';
 import {
   ArticleIdDto,
   CreateArticleDto,
@@ -92,16 +92,18 @@ export class ArticlesController {
   }
 
   @Public()
-  @Get(':articleId/upLikes')
-  selectArticleUpLikes(@Param() { articleId }: ArticleIdDto): Promise<Like[]> {
+  @Get(':articleId/likes/up')
+  selectArticleUpLikes(
+    @Param() { articleId }: ArticleIdDto,
+  ): Promise<ArticleLike[]> {
     return this.articlesService.selectArticleLikes(articleId, true);
   }
 
   @Public()
-  @Get(':articleId/downLikes')
+  @Get(':articleId/likes/down')
   selectArticleDownLikes(
     @Param() { articleId }: ArticleIdDto,
-  ): Promise<Like[]> {
+  ): Promise<ArticleLike[]> {
     return this.articlesService.selectArticleLikes(articleId, false);
   }
 

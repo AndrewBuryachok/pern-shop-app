@@ -62,9 +62,9 @@ export class ViewPollDto {
   myId: number;
 }
 
-export class VotePollDto extends CreateReactionDto {}
+export class LikePollDto extends CreateReactionDto {}
 
-export class ExtVotePollDto extends VotePollDto {
+export class ExtLikePollDto extends LikePollDto {
   pollId: number;
   myId: number;
 }

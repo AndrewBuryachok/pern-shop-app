@@ -7,7 +7,7 @@ export enum PollError {
   COMPLETE_FAILED = '500: Failed to complete poll',
   DELETE_FAILED = '500: Failed to delete poll',
   ADD_VIEW_FAILED = '500: Failed to add view',
-  ADD_VOTE_FAILED = '500: Failed to add vote',
-  UPDATE_VOTE_FAILED = '500: Failed to update vote',
-  REMOVE_VOTE_FAILED = '500: Failed to remove vote',
+  ADD_LIKE_FAILED = '500: Failed to add like',
+  UPDATE_LIKE_FAILED = '500: Failed to update like',
+  REMOVE_LIKE_FAILED = '500: Failed to remove like',
 }

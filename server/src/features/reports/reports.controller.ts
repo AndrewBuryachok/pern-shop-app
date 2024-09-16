@@ -12,11 +12,11 @@ import { ApiTags } from '@nestjs/swagger';
 import { ReportsService } from './reports.service';
 import { Report } from './report.entity';
 import { ReportView } from './report-view.entity';
-import { Attitude } from './attitude.entity';
+import { ReportLike } from './report-like.entity';
 import {
-  AttitudeReportDto,
   CreateReportDto,
   EditReportDto,
+  LikeReportDto,
   ReportIdDto,
 } from './report.dto';
 import { Request, Response } from '../../common/interfaces';
@@ -76,9 +76,9 @@ export class ReportsController {
     return this.reportsService.selectViewedReports(myId);
   }
 
-  @Get('attituded/select')
-  selectAttitudedReports(@MyId() myId: number): Promise<Report[]> {
-    return this.reportsService.selectAttitudedReports(myId);
+  @Get('liked/select')
+  selectLikedReports(@MyId() myId: number): Promise<Report[]> {
+    return this.reportsService.selectLikedReports(myId);
   }
 
   @Public()
@@ -88,19 +88,19 @@ export class ReportsController {
   }
 
   @Public()
-  @Get(':reportId/upAttitudes')
-  selectReportUpAttitudes(
+  @Get(':reportId/likes/up')
+  selectReportUpLikes(
     @Param() { reportId }: ReportIdDto,
-  ): Promise<Attitude[]> {
-    return this.reportsService.selectReportAttitudes(reportId, true);
+  ): Promise<ReportLike[]> {
+    return this.reportsService.selectReportLikes(reportId, true);
   }
 
   @Public()
-  @Get(':reportId/downAttitudes')
-  selectReportDownAttitudes(
+  @Get(':reportId/likes/down')
+  selectReportDownLikes(
     @Param() { reportId }: ReportIdDto,
-  ): Promise<Attitude[]> {
-    return this.reportsService.selectReportAttitudes(reportId, false);
+  ): Promise<ReportLike[]> {
+    return this.reportsService.selectReportLikes(reportId, false);
   }
 
   @Roles(Role.INSPECTOR)
@@ -226,13 +226,13 @@ export class ReportsController {
     return this.reportsService.viewReport({ reportId, myId });
   }
 
-  @Post(':reportId/attitudes')
-  attitudeReport(
+  @Post(':reportId/likes')
+  likeReport(
     @MyId() myId: number,
     @MyNick() nick: string,
     @Param() { reportId }: ReportIdDto,
-    @Body() dto: AttitudeReportDto,
+    @Body() dto: LikeReportDto,
   ): Promise<void> {
-    return this.reportsService.attitudeReport({ ...dto, reportId, myId, nick });
+    return this.reportsService.likeReport({ ...dto, reportId, myId, nick });
   }
 }

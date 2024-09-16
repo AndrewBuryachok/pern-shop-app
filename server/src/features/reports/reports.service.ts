@@ -3,13 +3,13 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { Report } from './report.entity';
 import { ReportView } from './report-view.entity';
-import { Attitude } from './attitude.entity';
+import { ReportLike } from './report-like.entity';
 import { MqttService } from '../mqtt/mqtt.service';
 import {
   DeleteReportDto,
-  ExtAttitudeReportDto,
   ExtCreateReportDto,
   ExtEditReportDto,
+  ExtLikeReportDto,
   ViewReportDto,
 } from './report.dto';
 import { Request, Response } from '../../common/interfaces';
@@ -24,8 +24,8 @@ export class ReportsService {
     private reportsRepository: Repository<Report>,
     @InjectRepository(ReportView)
     private viewsRepository: Repository<ReportView>,
-    @InjectRepository(Attitude)
-    private attitudesRepository: Repository<Attitude>,
+    @InjectRepository(ReportLike)
+    private likesRepository: Repository<ReportLike>,
     private mqttService: MqttService,
   ) {}
 
@@ -58,17 +58,17 @@ export class ReportsService {
     return reports.map((report) => report.id);
   }
 
-  selectAttitudedReports(myId: number): Promise<Report[]> {
+  selectLikedReports(myId: number): Promise<Report[]> {
     return this.reportsRepository
       .createQueryBuilder('report')
       .innerJoinAndMapOne(
-        'report.attitude',
-        'report.attitudes',
-        'myAttitude',
-        'myAttitude.userId = :myId',
+        'report.like',
+        'report.likes',
+        'myLike',
+        'myLike.userId = :myId',
         { myId },
       )
-      .select(['report.id', 'myAttitude.id', 'myAttitude.type'])
+      .select(['report.id', 'myLike.id', 'myLike.type'])
       .getMany();
   }
 
@@ -78,10 +78,10 @@ export class ReportsService {
       .getMany();
   }
 
-  selectReportAttitudes(reportId: number, type: boolean): Promise<Attitude[]> {
-    return this.selectAttitudesQueryBuilder()
-      .where('attitude.reportId = :reportId', { reportId })
-      .andWhere('attitude.type = :type', { type })
+  selectReportLikes(reportId: number, type: boolean): Promise<ReportLike[]> {
+    return this.selectLikesQueryBuilder()
+      .where('like.reportId = :reportId', { reportId })
+      .andWhere('like.type = :type', { type })
       .getMany();
   }
 
@@ -138,20 +138,18 @@ export class ReportsService {
     await this.addView(dto);
   }
 
-  async attitudeReport(
-    dto: ExtAttitudeReportDto & { nick: string },
-  ): Promise<void> {
-    const attitude = await this.attitudesRepository.findOneBy({
+  async likeReport(dto: ExtLikeReportDto & { nick: string }): Promise<void> {
+    const like = await this.likesRepository.findOneBy({
       reportId: dto.reportId,
       userId: dto.myId,
     });
-    const notify = !attitude || attitude.type !== dto.type;
-    if (!attitude) {
-      await this.addAttitude(dto);
-    } else if (attitude.type !== dto.type) {
-      await this.updateAttitude(attitude, dto);
+    const notify = !like || like.type !== dto.type;
+    if (!like) {
+      await this.addLike(dto);
+    } else if (like.type !== dto.type) {
+      await this.updateLike(like, dto);
     } else {
-      await this.removeAttitude(attitude);
+      await this.removeLike(like);
     }
     if (notify) {
       const report = await this.findReportById(dto.reportId);
@@ -235,36 +233,36 @@ export class ReportsService {
     }
   }
 
-  private async addAttitude(dto: ExtAttitudeReportDto): Promise<void> {
+  private async addLike(dto: ExtLikeReportDto): Promise<void> {
     try {
-      const attitude = this.attitudesRepository.create({
+      const like = this.likesRepository.create({
         reportId: dto.reportId,
         userId: dto.myId,
         type: dto.type,
       });
-      await this.attitudesRepository.save(attitude);
+      await this.likesRepository.save(like);
     } catch (error) {
-      throw new AppException(ReportError.ADD_ATTITUDE_FAILED);
+      throw new AppException(ReportError.ADD_LIKE_FAILED);
     }
   }
 
-  private async updateAttitude(
-    attitude: Attitude,
-    dto: ExtAttitudeReportDto,
+  private async updateLike(
+    like: ReportLike,
+    dto: ExtLikeReportDto,
   ): Promise<void> {
     try {
-      attitude.type = dto.type;
-      await this.attitudesRepository.save(attitude);
+      like.type = dto.type;
+      await this.likesRepository.save(like);
     } catch (error) {
-      throw new AppException(ReportError.UPDATE_ATTITUDE_FAILED);
+      throw new AppException(ReportError.UPDATE_LIKE_FAILED);
     }
   }
 
-  private async removeAttitude(attitude: Attitude): Promise<void> {
+  private async removeLike(like: ReportLike): Promise<void> {
     try {
-      await this.attitudesRepository.remove(attitude);
+      await this.likesRepository.remove(like);
     } catch (error) {
-      throw new AppException(ReportError.REMOVE_ATTITUDE_FAILED);
+      throw new AppException(ReportError.REMOVE_LIKE_FAILED);
     }
   }
 
@@ -282,18 +280,18 @@ export class ReportsService {
       ]);
   }
 
-  private selectAttitudesQueryBuilder(): SelectQueryBuilder<Attitude> {
-    return this.attitudesRepository
-      .createQueryBuilder('attitude')
-      .innerJoin('attitude.user', 'attituder')
-      .orderBy('attitude.id', 'DESC')
+  private selectLikesQueryBuilder(): SelectQueryBuilder<ReportLike> {
+    return this.likesRepository
+      .createQueryBuilder('like')
+      .innerJoin('like.user', 'liker')
+      .orderBy('like.id', 'DESC')
       .select([
-        'attitude.id',
-        'attituder.id',
-        'attituder.nick',
-        'attituder.avatar',
-        'attitude.type',
-        'attitude.createdAt',
+        'like.id',
+        'liker.id',
+        'liker.nick',
+        'liker.avatar',
+        'like.type',
+        'like.createdAt',
       ]);
   }
 
@@ -303,16 +301,16 @@ export class ReportsService {
       .innerJoin('report.user', 'ownerUser')
       .loadRelationCountAndMap('report.views', 'report.views')
       .loadRelationCountAndMap(
-        'report.upAttitudes',
-        'report.attitudes',
-        'upAttitude',
-        (qb) => qb.where('upAttitude.type'),
+        'report.upLikes',
+        'report.likes',
+        'upLike',
+        (qb) => qb.where('upLike.type'),
       )
       .loadRelationCountAndMap(
-        'report.downAttitudes',
-        'report.attitudes',
-        'downAttitude',
-        (qb) => qb.where('NOT downAttitude.type'),
+        'report.downLikes',
+        'report.likes',
+        'downLike',
+        (qb) => qb.where('NOT downLike.type'),
       )
       .loadRelationCountAndMap('report.comments', 'report.comments')
       .leftJoinAndMapOne(

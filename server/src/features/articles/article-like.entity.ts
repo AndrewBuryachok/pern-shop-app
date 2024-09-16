@@ -2,8 +2,8 @@ import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 import { Reaction } from '../reactions/reaction.entity';
 import { Article } from './article.entity';
 
-@Entity('likes')
-export class Like extends Reaction {
+@Entity('articles_likes')
+export class ArticleLike extends Reaction {
   @Column({ name: 'article_id' })
   articleId: number;
 

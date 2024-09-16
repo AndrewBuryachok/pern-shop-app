@@ -10,7 +10,7 @@ import {
 import { User } from '../users/user.entity';
 import { Mark } from './mark.enum';
 import { ReportView } from './report-view.entity';
-import { Attitude } from './attitude.entity';
+import { ReportLike } from './report-like.entity';
 import { ReportComment } from './comment.entity';
 
 @Entity('reports')
@@ -53,8 +53,8 @@ export class Report {
   @OneToMany(() => ReportView, (view) => view.report)
   views: ReportView[];
 
-  @OneToMany(() => Attitude, (attitude) => attitude.report)
-  attitudes: Attitude[];
+  @OneToMany(() => ReportLike, (like) => like.report)
+  likes: ReportLike[];
 
   @OneToMany(() => ReportComment, (comment) => comment.report)
   comments: ReportComment[];
