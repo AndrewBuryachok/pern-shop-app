@@ -4,48 +4,48 @@ import { Textarea, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
-import { Annotation } from './annotation.model';
+import { ReportComment } from './comment.model';
 import { getCurrentUser } from '../auth/auth.slice';
-import { useDeleteAnnotationMutation } from './annotations.api';
-import { DeleteAnnotationDto } from './annotation.dto';
+import { useDeleteReportCommentMutation } from './comments.api';
+import { DeleteCommentDto } from './comment.dto';
 import CustomForm from '../../common/components/CustomForm';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import { isUserNotHasRole } from '../../common/utils';
 import { Color, Role } from '../../common/constants';
 
-type Props = IModal<Annotation>;
+type Props = IModal<ReportComment>;
 
-export default function DeleteAnnotationModal({ data: annotation }: Props) {
+export default function DeleteCommentModal({ data: comment }: Props) {
   const [t] = useTranslation();
 
   const form = useForm({
     initialValues: {
-      annotationId: annotation.id,
+      commentId: comment.id,
     },
   });
 
-  const [deleteAnnotation, { isLoading }] = useDeleteAnnotationMutation();
+  const [deleteComment, { isLoading }] = useDeleteReportCommentMutation();
 
-  const handleSubmit = async (dto: DeleteAnnotationDto) => {
-    await deleteAnnotation(dto);
+  const handleSubmit = async (dto: DeleteCommentDto) => {
+    await deleteComment(dto);
   };
 
   return (
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={t('actions.delete') + ' ' + t('modals.annotations')}
+      text={t('actions.delete') + ' ' + t('modals.comments')}
     >
       <TextInput
         label={t('columns.owner')}
-        icon={<CustomAvatar {...annotation.user} />}
+        icon={<CustomAvatar {...comment.user} />}
         iconWidth={48}
-        value={annotation.user.nick}
+        value={comment.user.nick}
         readOnly
       />
       <Textarea
         label={t('columns.text')}
-        value={annotation.text}
+        value={comment.text}
         autosize
         readOnly
       />
@@ -53,15 +53,15 @@ export default function DeleteAnnotationModal({ data: annotation }: Props) {
   );
 }
 
-export const deleteAnnotationAction = {
-  open: (annotation: Annotation) =>
+export const deleteCommentAction = {
+  open: (comment: ReportComment) =>
     openModal({
-      title: t('actions.delete') + ' ' + t('modals.annotations'),
-      children: <DeleteAnnotationModal data={annotation} />,
+      title: t('actions.delete') + ' ' + t('modals.comments'),
+      children: <DeleteCommentModal data={comment} />,
     }),
-  disable: (annotation: Annotation) => {
+  disable: (comment: ReportComment) => {
     const user = getCurrentUser();
-    return isUserNotHasRole(Role.INSPECTOR) && annotation.user.id !== user?.id;
+    return isUserNotHasRole(Role.INSPECTOR) && comment.user.id !== user?.id;
   },
   color: Color.RED,
 };

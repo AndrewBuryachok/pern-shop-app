@@ -16,7 +16,7 @@ import CustomVideo from '../../common/components/CustomVideo';
 import CustomActions from '../../common/components/CustomActions';
 import ViewPollViewsMenu from './ViewPollViewsMenu';
 import ViewPollVotesMenu from './ViewPollVotesMenu';
-import ViewPollDiscussionsModal from './ViewPollDiscussionsModal';
+import ViewPollCommentsModal from './ViewPollCommentsModal';
 import { openAuthModal } from '../auth/AuthModal';
 import { viewPollAction } from './ViewPollModal';
 
@@ -156,7 +156,7 @@ export default function PollPaper({ poll, ...props }: Props) {
             </Menu.Dropdown>
           </Menu>
         </Group>
-        <ViewPollDiscussionsModal data={poll} />
+        <ViewPollCommentsModal data={poll} />
       </Stack>
     </Paper>
   );

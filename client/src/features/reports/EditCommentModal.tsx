@@ -4,45 +4,45 @@ import { Textarea, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
-import { Annotation } from './annotation.model';
+import { ReportComment } from './comment.model';
 import { getCurrentUser } from '../auth/auth.slice';
-import { useEditAnnotationMutation } from './annotations.api';
-import { EditAnnotationDto } from './annotation.dto';
+import { useEditReportCommentMutation } from './comments.api';
+import { EditCommentDto } from './comment.dto';
 import CustomForm from '../../common/components/CustomForm';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import { isUserNotHasRole } from '../../common/utils';
 import { Color, MAX_TEXT_LENGTH, Role } from '../../common/constants';
 
-type Props = IModal<Annotation>;
+type Props = IModal<ReportComment>;
 
-export default function EditAnnotationModal({ data: annotation }: Props) {
+export default function EditCommentModal({ data: comment }: Props) {
   const [t] = useTranslation();
 
   const form = useForm({
     initialValues: {
-      annotationId: annotation.id,
-      text: annotation.text,
+      commentId: comment.id,
+      text: comment.text,
     },
   });
 
-  const [editAnnotation, { isLoading }] = useEditAnnotationMutation();
+  const [editComment, { isLoading }] = useEditReportCommentMutation();
 
-  const handleSubmit = async (dto: EditAnnotationDto) => {
-    await editAnnotation(dto);
+  const handleSubmit = async (dto: EditCommentDto) => {
+    await editComment(dto);
   };
 
   return (
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={t('actions.edit') + ' ' + t('modals.annotations')}
+      text={t('actions.edit') + ' ' + t('modals.comments')}
       isChanged={!form.isDirty()}
     >
       <TextInput
         label={t('columns.owner')}
-        icon={<CustomAvatar {...annotation.user} />}
+        icon={<CustomAvatar {...comment.user} />}
         iconWidth={48}
-        value={annotation.user.nick}
+        value={comment.user.nick}
         readOnly
       />
       <Textarea
@@ -57,15 +57,15 @@ export default function EditAnnotationModal({ data: annotation }: Props) {
   );
 }
 
-export const editAnnotationAction = {
-  open: (annotation: Annotation) =>
+export const editCommentAction = {
+  open: (comment: ReportComment) =>
     openModal({
-      title: t('actions.edit') + ' ' + t('modals.annotations'),
-      children: <EditAnnotationModal data={annotation} />,
+      title: t('actions.edit') + ' ' + t('modals.comments'),
+      children: <EditCommentModal data={comment} />,
     }),
-  disable: (annotation: Annotation) => {
+  disable: (comment: ReportComment) => {
     const user = getCurrentUser();
-    return isUserNotHasRole(Role.INSPECTOR) && annotation.user.id !== user?.id;
+    return isUserNotHasRole(Role.INSPECTOR) && comment.user.id !== user?.id;
   },
   color: Color.YELLOW,
 };

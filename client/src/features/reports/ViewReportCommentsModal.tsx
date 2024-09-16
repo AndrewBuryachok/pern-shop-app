@@ -8,21 +8,21 @@ import { Report } from './report.model';
 import { Reply } from '../replies/reply.model';
 import { getCurrentUser } from '../auth/auth.slice';
 import {
-  useCreateAnnotationMutation,
-  useSelectReportAnnotationsQuery,
-} from './annotations.api';
-import { CreateAnnotationDto } from './annotation.dto';
+  useCreateReportCommentMutation,
+  useSelectReportCommentsQuery,
+} from './comments.api';
+import { CreateCommentDto } from './comment.dto';
 import RepliesTimeline from '../../common/components/RepliesTimeline';
 import ReplyAvatarWithText from '../../common/components/ReplyAvatarWithText';
 import ReplyAvatarWithClose from '../../common/components/ReplyAvatarWithClose';
 import CustomAnchor from '../../common/components/CustomAnchor';
-import { editAnnotationAction } from './EditAnnotationModal';
-import { deleteAnnotationAction } from './DeleteAnnotationModal';
+import { editCommentAction } from './EditCommentModal';
+import { deleteCommentAction } from './DeleteCommentModal';
 import { MAX_TEXT_LENGTH } from '../../common/constants';
 
 type Props = IModal<Report>;
 
-export default function ViewReportAnnotationsModal({ data: report }: Props) {
+export default function ViewReportCommentsModal({ data: report }: Props) {
   const [t] = useTranslation();
 
   const [opened, { toggle }] = useDisclosure(false);
@@ -30,26 +30,26 @@ export default function ViewReportAnnotationsModal({ data: report }: Props) {
   const form = useForm({
     initialValues: {
       reportId: report.id,
-      annotationId: 0,
+      commentId: 0,
       text: '',
     },
   });
 
   const user = getCurrentUser();
 
-  const [createAnnotation, { isLoading }] = useCreateAnnotationMutation();
+  const [createComment, { isLoading }] = useCreateReportCommentMutation();
 
-  const handleSubmit = async (dto: CreateAnnotationDto) => {
-    await createAnnotation(dto);
+  const handleSubmit = async (dto: CreateCommentDto) => {
+    await createComment(dto);
     form.reset();
   };
 
-  const response = useSelectReportAnnotationsQuery(report.id, {
+  const response = useSelectReportCommentsQuery(report.id, {
     skip: !opened,
   });
 
-  const annotation = response.data?.find(
-    (annotation) => annotation.id === form.values.annotationId,
+  const comment = response.data?.find(
+    (comment) => comment.id === form.values.commentId,
   );
 
   return (
@@ -57,28 +57,28 @@ export default function ViewReportAnnotationsModal({ data: report }: Props) {
       {opened ? (
         <RepliesTimeline
           {...response}
-          actions={[editAnnotationAction, deleteAnnotationAction]}
-          reply={(reply: Reply) => form.setFieldValue('annotationId', reply.id)}
+          actions={[editCommentAction, deleteCommentAction]}
+          reply={(reply: Reply) => form.setFieldValue('commentId', reply.id)}
         />
       ) : (
-        report.annotation && <ReplyAvatarWithText {...report.annotation} />
+        report.comment && <ReplyAvatarWithText {...report.comment} />
       )}
-      {!!report.annotations && (
+      {!!report.comments && (
         <CustomAnchor
           text={
             (opened ? t('actions.hide') : t('actions.view')) +
             ' ' +
             t('pages.all').toLowerCase() +
             ' ' +
-            t('columns.annotations').toLowerCase()
+            t('columns.comments').toLowerCase()
           }
           open={toggle}
         />
       )}
-      {annotation && (
+      {comment && (
         <ReplyAvatarWithClose
-          {...annotation}
-          close={() => form.setFieldValue('annotationId', 0)}
+          {...comment}
+          close={() => form.setFieldValue('commentId', 0)}
         />
       )}
       <form onSubmit={form.onSubmit(handleSubmit)}>

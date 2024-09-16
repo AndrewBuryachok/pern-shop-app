@@ -1,5 +1,5 @@
 import { emptyApi } from '../../app/empty.api';
-import { Comment } from './comment.model';
+import { ArticleComment } from './comment.model';
 import {
   CreateCommentDto,
   DeleteCommentDto,
@@ -8,41 +8,41 @@ import {
 
 export const commentsApi = emptyApi.injectEndpoints({
   endpoints: (build) => ({
-    selectArticleComments: build.query<Comment[], number>({
+    selectArticleComments: build.query<ArticleComment[], number>({
       query: (articleId) => ({
-        url: `/comments/${articleId}`,
+        url: `/articles-comments/${articleId}`,
       }),
-      providesTags: ['Comment'],
+      providesTags: ['ArticleComment'],
     }),
-    createComment: build.mutation<void, CreateCommentDto>({
+    createArticleComment: build.mutation<void, CreateCommentDto>({
       query: (dto) => ({
-        url: '/comments',
+        url: '/articles-comments',
         method: 'POST',
         body: dto,
       }),
-      invalidatesTags: ['Comment'],
+      invalidatesTags: ['ArticleComment'],
     }),
-    editComment: build.mutation<void, EditCommentDto>({
+    editArticleComment: build.mutation<void, EditCommentDto>({
       query: ({ commentId, ...dto }) => ({
-        url: `/comments/${commentId}`,
+        url: `/articles-comments/${commentId}`,
         method: 'PATCH',
         body: dto,
       }),
-      invalidatesTags: ['Comment'],
+      invalidatesTags: ['ArticleComment'],
     }),
-    deleteComment: build.mutation<void, DeleteCommentDto>({
+    deleteArticleComment: build.mutation<void, DeleteCommentDto>({
       query: ({ commentId }) => ({
-        url: `/comments/${commentId}`,
+        url: `/articles-comments/${commentId}`,
         method: 'DELETE',
       }),
-      invalidatesTags: ['Comment'],
+      invalidatesTags: ['ArticleComment'],
     }),
   }),
 });
 
 export const {
   useSelectArticleCommentsQuery,
-  useCreateCommentMutation,
-  useEditCommentMutation,
-  useDeleteCommentMutation,
+  useCreateArticleCommentMutation,
+  useEditArticleCommentMutation,
+  useDeleteArticleCommentMutation,
 } = commentsApi;

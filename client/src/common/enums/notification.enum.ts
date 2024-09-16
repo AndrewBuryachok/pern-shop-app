@@ -106,7 +106,7 @@ export const notificationToTab = [
   'created adverts main',
   'created polls main',
   'reacted polls main',
-  'discussed polls main',
+  'commented polls main',
   'completed polls main',
   'replied polls main',
   'mentioned polls main',

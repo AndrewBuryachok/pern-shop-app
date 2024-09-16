@@ -411,7 +411,7 @@ export const pages = [
       { index: true },
       { path: 'my' },
       { path: 'voted' },
-      { path: 'discussed' },
+      { path: 'commented' },
       { path: 'all', role: Role.INSPECTOR },
     ],
   },

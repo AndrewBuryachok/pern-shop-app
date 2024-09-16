@@ -4,48 +4,48 @@ import { Textarea, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
-import { Discussion } from './discussion.model';
+import { PollComment } from './comment.model';
 import { getCurrentUser } from '../auth/auth.slice';
-import { useDeleteDiscussionMutation } from './discussions.api';
-import { DeleteDiscussionDto } from './discussion.dto';
+import { useDeletePollCommentMutation } from './comments.api';
+import { DeleteCommentDto } from './comment.dto';
 import CustomForm from '../../common/components/CustomForm';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import { isUserNotHasRole } from '../../common/utils';
 import { Color, Role } from '../../common/constants';
 
-type Props = IModal<Discussion>;
+type Props = IModal<PollComment>;
 
-export default function DeleteDiscussionModal({ data: discussion }: Props) {
+export default function DeleteCommentModal({ data: comment }: Props) {
   const [t] = useTranslation();
 
   const form = useForm({
     initialValues: {
-      discussionId: discussion.id,
+      commentId: comment.id,
     },
   });
 
-  const [deleteDiscussion, { isLoading }] = useDeleteDiscussionMutation();
+  const [deleteComment, { isLoading }] = useDeletePollCommentMutation();
 
-  const handleSubmit = async (dto: DeleteDiscussionDto) => {
-    await deleteDiscussion(dto);
+  const handleSubmit = async (dto: DeleteCommentDto) => {
+    await deleteComment(dto);
   };
 
   return (
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={t('actions.delete') + ' ' + t('modals.discussions')}
+      text={t('actions.delete') + ' ' + t('modals.comments')}
     >
       <TextInput
         label={t('columns.owner')}
-        icon={<CustomAvatar {...discussion.user} />}
+        icon={<CustomAvatar {...comment.user} />}
         iconWidth={48}
-        value={discussion.user.nick}
+        value={comment.user.nick}
         readOnly
       />
       <Textarea
         label={t('columns.text')}
-        value={discussion.text}
+        value={comment.text}
         autosize
         readOnly
       />
@@ -53,15 +53,15 @@ export default function DeleteDiscussionModal({ data: discussion }: Props) {
   );
 }
 
-export const deleteDiscussionAction = {
-  open: (discussion: Discussion) =>
+export const deleteCommentAction = {
+  open: (comment: PollComment) =>
     openModal({
-      title: t('actions.delete') + ' ' + t('modals.discussions'),
-      children: <DeleteDiscussionModal data={discussion} />,
+      title: t('actions.delete') + ' ' + t('modals.comments'),
+      children: <DeleteCommentModal data={comment} />,
     }),
-  disable: (discussion: Discussion) => {
+  disable: (comment: PollComment) => {
     const user = getCurrentUser();
-    return isUserNotHasRole(Role.INSPECTOR) && discussion.user.id !== user?.id;
+    return isUserNotHasRole(Role.INSPECTOR) && comment.user.id !== user?.id;
   },
   color: Color.RED,
 };

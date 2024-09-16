@@ -4,45 +4,45 @@ import { Textarea, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
-import { Discussion } from './discussion.model';
+import { PollComment } from './comment.model';
 import { getCurrentUser } from '../auth/auth.slice';
-import { useEditDiscussionMutation } from './discussions.api';
-import { EditDiscussionDto } from './discussion.dto';
+import { useEditPollCommentMutation } from './comments.api';
+import { EditCommentDto } from './comment.dto';
 import CustomForm from '../../common/components/CustomForm';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import { isUserNotHasRole } from '../../common/utils';
 import { Color, MAX_TEXT_LENGTH, Role } from '../../common/constants';
 
-type Props = IModal<Discussion>;
+type Props = IModal<PollComment>;
 
-export default function EditDiscussionModal({ data: discussion }: Props) {
+export default function EditCommentModal({ data: comment }: Props) {
   const [t] = useTranslation();
 
   const form = useForm({
     initialValues: {
-      discussionId: discussion.id,
-      text: discussion.text,
+      commentId: comment.id,
+      text: comment.text,
     },
   });
 
-  const [editDiscussion, { isLoading }] = useEditDiscussionMutation();
+  const [editComment, { isLoading }] = useEditPollCommentMutation();
 
-  const handleSubmit = async (dto: EditDiscussionDto) => {
-    await editDiscussion(dto);
+  const handleSubmit = async (dto: EditCommentDto) => {
+    await editComment(dto);
   };
 
   return (
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={t('actions.edit') + ' ' + t('modals.discussions')}
+      text={t('actions.edit') + ' ' + t('modals.comments')}
       isChanged={!form.isDirty()}
     >
       <TextInput
         label={t('columns.owner')}
-        icon={<CustomAvatar {...discussion.user} />}
+        icon={<CustomAvatar {...comment.user} />}
         iconWidth={48}
-        value={discussion.user.nick}
+        value={comment.user.nick}
         readOnly
       />
       <Textarea
@@ -57,15 +57,15 @@ export default function EditDiscussionModal({ data: discussion }: Props) {
   );
 }
 
-export const editDiscussionAction = {
-  open: (discussion: Discussion) =>
+export const editCommentAction = {
+  open: (comment: PollComment) =>
     openModal({
-      title: t('actions.edit') + ' ' + t('modals.discussions'),
-      children: <EditDiscussionModal data={discussion} />,
+      title: t('actions.edit') + ' ' + t('modals.comments'),
+      children: <EditCommentModal data={comment} />,
     }),
-  disable: (discussion: Discussion) => {
+  disable: (comment: PollComment) => {
     const user = getCurrentUser();
-    return isUserNotHasRole(Role.INSPECTOR) && discussion.user.id !== user?.id;
+    return isUserNotHasRole(Role.INSPECTOR) && comment.user.id !== user?.id;
   },
   color: Color.YELLOW,
 };

@@ -8,21 +8,21 @@ import { Poll } from './poll.model';
 import { Reply } from '../replies/reply.model';
 import { getCurrentUser } from '../auth/auth.slice';
 import {
-  useCreateDiscussionMutation,
-  useSelectPollDiscussionsQuery,
-} from './discussions.api';
-import { CreateDiscussionDto } from './discussion.dto';
+  useCreatePollCommentMutation,
+  useSelectPollCommentsQuery,
+} from './comments.api';
+import { CreateCommentDto } from './comment.dto';
 import RepliesTimeline from '../../common/components/RepliesTimeline';
 import ReplyAvatarWithText from '../../common/components/ReplyAvatarWithText';
 import ReplyAvatarWithClose from '../../common/components/ReplyAvatarWithClose';
 import CustomAnchor from '../../common/components/CustomAnchor';
-import { editDiscussionAction } from './EditDiscussionModal';
-import { deleteDiscussionAction } from './DeleteDiscussionModal';
+import { editCommentAction } from './EditCommentModal';
+import { deleteCommentAction } from './DeleteCommentModal';
 import { MAX_TEXT_LENGTH } from '../../common/constants';
 
 type Props = IModal<Poll>;
 
-export default function ViewPollDiscussionsModal({ data: poll }: Props) {
+export default function ViewPollCommentsModal({ data: poll }: Props) {
   const [t] = useTranslation();
 
   const [opened, { toggle }] = useDisclosure(false);
@@ -30,24 +30,24 @@ export default function ViewPollDiscussionsModal({ data: poll }: Props) {
   const form = useForm({
     initialValues: {
       pollId: poll.id,
-      discussionId: 0,
+      commentId: 0,
       text: '',
     },
   });
 
   const user = getCurrentUser();
 
-  const [createDiscussion, { isLoading }] = useCreateDiscussionMutation();
+  const [createComment, { isLoading }] = useCreatePollCommentMutation();
 
-  const handleSubmit = async (dto: CreateDiscussionDto) => {
-    await createDiscussion(dto);
+  const handleSubmit = async (dto: CreateCommentDto) => {
+    await createComment(dto);
     form.reset();
   };
 
-  const response = useSelectPollDiscussionsQuery(poll.id, { skip: !opened });
+  const response = useSelectPollCommentsQuery(poll.id, { skip: !opened });
 
-  const discussion = response.data?.find(
-    (discussion) => discussion.id === form.values.discussionId,
+  const comment = response.data?.find(
+    (comment) => comment.id === form.values.commentId,
   );
 
   return (
@@ -55,28 +55,28 @@ export default function ViewPollDiscussionsModal({ data: poll }: Props) {
       {opened ? (
         <RepliesTimeline
           {...response}
-          actions={[editDiscussionAction, deleteDiscussionAction]}
-          reply={(reply: Reply) => form.setFieldValue('discussionId', reply.id)}
+          actions={[editCommentAction, deleteCommentAction]}
+          reply={(reply: Reply) => form.setFieldValue('commentId', reply.id)}
         />
       ) : (
-        poll.discussion && <ReplyAvatarWithText {...poll.discussion} />
+        poll.comment && <ReplyAvatarWithText {...poll.comment} />
       )}
-      {!!poll.discussions && (
+      {!!poll.comments && (
         <CustomAnchor
           text={
             (opened ? t('actions.hide') : t('actions.view')) +
             ' ' +
             t('pages.all').toLowerCase() +
             ' ' +
-            t('columns.discussions').toLowerCase()
+            t('columns.comments').toLowerCase()
           }
           open={toggle}
         />
       )}
-      {discussion && (
+      {comment && (
         <ReplyAvatarWithClose
-          {...discussion}
-          close={() => form.setFieldValue('discussionId', 0)}
+          {...comment}
+          close={() => form.setFieldValue('commentId', 0)}
         />
       )}
       <form onSubmit={form.onSubmit(handleSubmit)}>

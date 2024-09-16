@@ -1,7 +1,7 @@
 import { useLocation, useSearchParams } from 'react-router-dom';
 import {
   useGetAllPollsQuery,
-  useGetDiscussedPollsQuery,
+  useGetCommentedPollsQuery,
   useGetMainPollsQuery,
   useGetMyPollsQuery,
   useGetVotedPollsQuery,
@@ -35,7 +35,7 @@ export default function PollsPage() {
     main: useGetMainPollsQuery,
     my: useGetMyPollsQuery,
     voted: useGetVotedPollsQuery,
-    discussed: useGetDiscussedPollsQuery,
+    commented: useGetCommentedPollsQuery,
     all: useGetAllPollsQuery,
   }[tab]!(search);
 

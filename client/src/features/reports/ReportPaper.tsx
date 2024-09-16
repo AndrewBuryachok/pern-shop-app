@@ -17,7 +17,7 @@ import CustomVideo from '../../common/components/CustomVideo';
 import CustomActions from '../../common/components/CustomActions';
 import ViewReportViewsMenu from './ViewReportViewsMenu';
 import ViewReportAttitudesMenu from './ViewReportAttitudesMenu';
-import ViewReportAnnotationsModal from './ViewReportAnnotationsModal';
+import ViewReportCommentsModal from './ViewReportCommentsModal';
 import { openAuthModal } from '../auth/AuthModal';
 import { viewReportAction } from './ViewReportModal';
 
@@ -161,7 +161,7 @@ export default function ReportPaper({ report, ...props }: Props) {
             </Menu.Dropdown>
           </Menu>
         </Group>
-        <ViewReportAnnotationsModal data={report} />
+        <ViewReportCommentsModal data={report} />
       </Stack>
     </Paper>
   );

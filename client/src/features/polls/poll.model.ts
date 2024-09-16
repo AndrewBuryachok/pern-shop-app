@@ -1,6 +1,6 @@
 import { SmVote } from './vote.model';
 import { SmUser } from '../users/user.model';
-import { SmDiscussion } from './discussion.model';
+import { SmPollComment } from './comment.model';
 
 export interface SmPoll {
   id: number;
@@ -20,6 +20,6 @@ export interface Poll {
   views: number;
   upVotes: number;
   downVotes: number;
-  discussions: number;
-  discussion?: SmDiscussion;
+  comments: number;
+  comment?: SmPollComment;
 }

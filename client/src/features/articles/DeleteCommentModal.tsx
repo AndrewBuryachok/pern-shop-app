@@ -4,16 +4,16 @@ import { Textarea, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
-import { Comment } from './comment.model';
+import { ArticleComment } from './comment.model';
 import { getCurrentUser } from '../auth/auth.slice';
-import { useDeleteCommentMutation } from './comments.api';
+import { useDeleteArticleCommentMutation } from './comments.api';
 import { DeleteCommentDto } from './comment.dto';
 import CustomForm from '../../common/components/CustomForm';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import { isUserNotHasRole } from '../../common/utils';
 import { Color, Role } from '../../common/constants';
 
-type Props = IModal<Comment>;
+type Props = IModal<ArticleComment>;
 
 export default function DeleteCommentModal({ data: comment }: Props) {
   const [t] = useTranslation();
@@ -24,7 +24,7 @@ export default function DeleteCommentModal({ data: comment }: Props) {
     },
   });
 
-  const [deleteComment, { isLoading }] = useDeleteCommentMutation();
+  const [deleteComment, { isLoading }] = useDeleteArticleCommentMutation();
 
   const handleSubmit = async (dto: DeleteCommentDto) => {
     await deleteComment(dto);
@@ -54,12 +54,12 @@ export default function DeleteCommentModal({ data: comment }: Props) {
 }
 
 export const deleteCommentAction = {
-  open: (comment: Comment) =>
+  open: (comment: ArticleComment) =>
     openModal({
       title: t('actions.delete') + ' ' + t('modals.comments'),
       children: <DeleteCommentModal data={comment} />,
     }),
-  disable: (comment: Comment) => {
+  disable: (comment: ArticleComment) => {
     const user = getCurrentUser();
     return isUserNotHasRole(Role.INSPECTOR) && comment.user.id !== user?.id;
   },

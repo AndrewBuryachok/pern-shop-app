@@ -4,16 +4,16 @@ import { Textarea, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
-import { Comment } from './comment.model';
+import { ArticleComment } from './comment.model';
 import { getCurrentUser } from '../auth/auth.slice';
-import { useEditCommentMutation } from './comments.api';
+import { useEditArticleCommentMutation } from './comments.api';
 import { EditCommentDto } from './comment.dto';
 import CustomForm from '../../common/components/CustomForm';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import { isUserNotHasRole } from '../../common/utils';
 import { Color, MAX_TEXT_LENGTH, Role } from '../../common/constants';
 
-type Props = IModal<Comment>;
+type Props = IModal<ArticleComment>;
 
 export default function EditCommentModal({ data: comment }: Props) {
   const [t] = useTranslation();
@@ -25,7 +25,7 @@ export default function EditCommentModal({ data: comment }: Props) {
     },
   });
 
-  const [editComment, { isLoading }] = useEditCommentMutation();
+  const [editComment, { isLoading }] = useEditArticleCommentMutation();
 
   const handleSubmit = async (dto: EditCommentDto) => {
     await editComment(dto);
@@ -58,12 +58,12 @@ export default function EditCommentModal({ data: comment }: Props) {
 }
 
 export const editCommentAction = {
-  open: (comment: Comment) =>
+  open: (comment: ArticleComment) =>
     openModal({
       title: t('actions.edit') + ' ' + t('modals.comments'),
       children: <EditCommentModal data={comment} />,
     }),
-  disable: (comment: Comment) => {
+  disable: (comment: ArticleComment) => {
     const user = getCurrentUser();
     return isUserNotHasRole(Role.INSPECTOR) && comment.user.id !== user?.id;
   },

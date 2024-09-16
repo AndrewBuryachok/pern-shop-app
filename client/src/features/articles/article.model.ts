@@ -1,6 +1,6 @@
 import { SmLike } from './like.model';
 import { SmUser } from '../users/user.model';
-import { SmComment } from './comment.model';
+import { SmArticleComment } from './comment.model';
 
 export interface SmArticle {
   id: number;
@@ -20,5 +20,5 @@ export interface Article {
   upLikes: number;
   downLikes: number;
   comments: number;
-  comment?: SmComment;
+  comment?: SmArticleComment;
 }
