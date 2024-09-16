@@ -52,12 +52,12 @@ export class PollsController {
     return this.pollsService.getVotedPolls(myId, req);
   }
 
-  @Get('discussed')
-  getDiscussedPolls(
+  @Get('commented')
+  getCommentedPolls(
     @MyId() myId: number,
     @Query() req: Request,
   ): Promise<Response<Poll>> {
-    return this.pollsService.getDiscussedPolls(myId, req);
+    return this.pollsService.getCommentedPolls(myId, req);
   }
 
   @Roles(Role.INSPECTOR)

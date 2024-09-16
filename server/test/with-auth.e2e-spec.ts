@@ -26,9 +26,9 @@ describe('With Auth', () => {
   let end: Tokens;
   let messageId: number;
   let reportsId: number;
-  let annotationId: number;
+  let reportCommentId: number;
   let articlesId: number;
-  let commentId: number;
+  let articleCommentId: number;
   let cardId: number;
   let exchangesId: number;
   let paymentsId: number;
@@ -61,7 +61,7 @@ describe('With Auth', () => {
   let tasksId: number;
   let advertId: number;
   let pollsId: number;
-  let discussionId: number;
+  let pollCommentId: number;
   let ratingId: number;
 
   beforeAll(async () => {
@@ -644,14 +644,14 @@ describe('With Auth', () => {
         .expect('');
     });
 
-    it('POST /annotations', async () => {
+    it('POST /reports-comments', async () => {
       return request(app.getHttpServer())
-        .post('/annotations')
+        .post('/reports-comments')
         .set('Authorization', `Bearer ${user.access}`)
         .send({
           reportId: reportsId[0],
-          annotationId: 0,
-          text: 'annotation text',
+          commentId: 0,
+          text: 'comment text',
         })
         .expect('');
     });
@@ -688,11 +688,11 @@ describe('With Auth', () => {
         .expect((res) => expect(res.body.length).toBeGreaterThan(0));
     });
 
-    it('GET /annotations/:reportId', async () => {
+    it('GET /reports-comments/:reportId', async () => {
       return request(app.getHttpServer())
-        .get(`/annotations/${reportsId[0]}`)
+        .get(`/reports-comments/${reportsId[0]}`)
         .expect((res) => expect(res.body.length).toBeGreaterThan(0))
-        .then((res) => (annotationId = res.body[0].id));
+        .then((res) => (reportCommentId = res.body[0].id));
     });
 
     it('PATCH /reports/:reportId', async () => {
@@ -717,18 +717,18 @@ describe('With Auth', () => {
     });
   });
 
-  describe('Annotations', () => {
-    it('PATCH /annotations/:annotationId', async () => {
+  describe('Reports Comments', () => {
+    it('PATCH /reports-comments/:commentId', async () => {
       return request(app.getHttpServer())
-        .patch(`/annotations/${annotationId}`)
+        .patch(`/reports-comments/${reportCommentId}`)
         .set('Authorization', `Bearer ${user.access}`)
-        .send({ text: 'annotation text' })
+        .send({ text: 'comment text' })
         .expect('');
     });
 
-    it('DELETE /annotations/:annotationId', async () => {
+    it('DELETE /reports-comments/:commentId', async () => {
       return request(app.getHttpServer())
-        .delete(`/annotations/${annotationId}`)
+        .delete(`/reports-comments/${reportCommentId}`)
         .set('Authorization', `Bearer ${user.access}`)
         .expect('');
     });
@@ -772,9 +772,9 @@ describe('With Auth', () => {
         .expect('');
     });
 
-    it('POST /comments', async () => {
+    it('POST /articles-comments', async () => {
       return request(app.getHttpServer())
-        .post('/comments')
+        .post('/articles-comments')
         .set('Authorization', `Bearer ${user.access}`)
         .send({ articleId: articlesId[0], commentId: 0, text: 'comment text' })
         .expect('');
@@ -826,11 +826,11 @@ describe('With Auth', () => {
         .expect((res) => expect(res.body.length).toBeGreaterThan(0));
     });
 
-    it('GET /comments/:articleId', async () => {
+    it('GET /articles-comments/:articleId', async () => {
       return request(app.getHttpServer())
-        .get(`/comments/${articlesId[0]}`)
+        .get(`/articles-comments/${articlesId[0]}`)
         .expect((res) => expect(res.body.length).toBeGreaterThan(0))
-        .then((res) => (commentId = res.body[0].id));
+        .then((res) => (articleCommentId = res.body[0].id));
     });
 
     it('GET /articles/all', async () => {
@@ -862,18 +862,18 @@ describe('With Auth', () => {
     });
   });
 
-  describe('Comments', () => {
-    it('PATCH /comments/:commentId', async () => {
+  describe('Articles Comments', () => {
+    it('PATCH /articles-comments/:commentId', async () => {
       return request(app.getHttpServer())
-        .patch(`/comments/${commentId}`)
+        .patch(`/articles-comments/${articleCommentId}`)
         .set('Authorization', `Bearer ${user.access}`)
         .send({ text: 'comment text' })
         .expect('');
     });
 
-    it('DELETE /comments/:commentId', async () => {
+    it('DELETE /articles-comments/:commentId', async () => {
       return request(app.getHttpServer())
-        .delete(`/comments/${commentId}`)
+        .delete(`/articles-comments/${articleCommentId}`)
         .set('Authorization', `Bearer ${user.access}`)
         .expect('');
     });
@@ -3432,11 +3432,11 @@ describe('With Auth', () => {
         .expect('');
     });
 
-    it('POST /discussions', async () => {
+    it('POST /polls-comments', async () => {
       return request(app.getHttpServer())
-        .post('/discussions')
+        .post('/polls-comments')
         .set('Authorization', `Bearer ${user.access}`)
-        .send({ pollId: pollsId[0], discussionId: 0, text: 'discussion text' })
+        .send({ pollId: pollsId[0], commentId: 0, text: 'comment text' })
         .expect('');
     });
 
@@ -3447,9 +3447,9 @@ describe('With Auth', () => {
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
 
-    it('GET /polls/discussed', async () => {
+    it('GET /polls/commented', async () => {
       return request(app.getHttpServer())
-        .get('/polls/discussed')
+        .get('/polls/commented')
         .set('Authorization', `Bearer ${user.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
@@ -3486,11 +3486,11 @@ describe('With Auth', () => {
         .expect((res) => expect(res.body.length).toBeGreaterThan(0));
     });
 
-    it('GET /discussions/:pollId', async () => {
+    it('GET /polls-comments/:pollId', async () => {
       return request(app.getHttpServer())
-        .get(`/discussions/${pollsId[0]}`)
+        .get(`/polls-comments/${pollsId[0]}`)
         .expect((res) => expect(res.body.length).toBeGreaterThan(0))
-        .then((res) => (discussionId = res.body[0].id));
+        .then((res) => (pollCommentId = res.body[0].id));
     });
 
     it('GET /polls/all', async () => {
@@ -3501,18 +3501,18 @@ describe('With Auth', () => {
     });
   });
 
-  describe('Discussions', () => {
-    it('PATCH /discussions/:discussionId', async () => {
+  describe('Polls Comments', () => {
+    it('PATCH /polls-comments/:commentId', async () => {
       return request(app.getHttpServer())
-        .patch(`/discussions/${discussionId}`)
+        .patch(`/polls-comments/${pollCommentId}`)
         .set('Authorization', `Bearer ${user.access}`)
-        .send({ text: 'discussion text' })
+        .send({ text: 'comment text' })
         .expect('');
     });
 
-    it('DELETE /discussions/:discussionId', async () => {
+    it('DELETE /polls-comments/:commentId', async () => {
       return request(app.getHttpServer())
-        .delete(`/discussions/${discussionId}`)
+        .delete(`/polls-comments/${pollCommentId}`)
         .set('Authorization', `Bearer ${user.access}`)
         .expect('');
     });

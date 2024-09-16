@@ -368,7 +368,7 @@ export class ArticlesService {
         'article.comment',
         'article.comments',
         'comment',
-        'comment.id = (SELECT MAX(c.id) FROM comments AS c WHERE c.article_id = article.id)',
+        'comment.id = (SELECT MAX(c.id) FROM articles_comments AS c WHERE c.article_id = article.id)',
       )
       .leftJoin('comment.user', 'commenter')
       .where(

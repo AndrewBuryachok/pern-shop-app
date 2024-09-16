@@ -10,7 +10,7 @@ import {
 import { User } from '../users/user.entity';
 import { ArticleView } from './article-view.entity';
 import { Like } from './like.entity';
-import { Comment } from './comment.entity';
+import { ArticleComment } from './comment.entity';
 
 @Entity('articles')
 export class Article {
@@ -48,6 +48,6 @@ export class Article {
   @OneToMany(() => Like, (like) => like.article)
   likes: Like[];
 
-  @OneToMany(() => Comment, (comment) => comment.article)
-  comments: Comment[];
+  @OneToMany(() => ArticleComment, (comment) => comment.article)
+  comments: ArticleComment[];
 }

@@ -6,9 +6,9 @@ import {
 import { UsersService } from '../../features/users/users.service';
 import { MessagesService } from '../../features/messages/messages.service';
 import { ReportsService } from '../../features/reports/reports.service';
-import { AnnotationsService } from '../../features/reports/annotations.service';
+import { CommentsService as ReportsCommentsService } from '../../features/reports/comments.service';
 import { ArticlesService } from '../../features/articles/articles.service';
-import { CommentsService } from '../../features/articles/comments.service';
+import { CommentsService as ArticlesCommentsService } from '../../features/articles/comments.service';
 import { CardsService } from '../../features/cards/cards.service';
 import { ExchangesService } from '../../features/exchanges/exchanges.service';
 import { PaymentsService } from '../../features/payments/payments.service';
@@ -41,7 +41,7 @@ import { StoragesDeliveriesService } from '../../features/storages-deliveries/st
 import { TasksService } from '../../features/tasks/tasks.service';
 import { AdvertsService } from '../../features/adverts/adverts.service';
 import { PollsService } from '../../features/polls/polls.service';
-import { DiscussionsService } from '../../features/polls/discussions.service';
+import { CommentsService as PollsCommentsService } from '../../features/polls/comments.service';
 import { RatingsService } from '../../features/ratings/ratings.service';
 
 @Injectable()
@@ -102,13 +102,13 @@ export class IsReportExists implements ValidatorConstraintInterface {
 }
 
 @Injectable()
-@ValidatorConstraint({ name: 'isAnnotationExists', async: true })
-export class IsAnnotationExists implements ValidatorConstraintInterface {
-  constructor(private annotationsService: AnnotationsService) {}
+@ValidatorConstraint({ name: 'isReportCommentExists', async: true })
+export class IsReportCommentExists implements ValidatorConstraintInterface {
+  constructor(private commentsService: ReportsCommentsService) {}
 
   async validate(value: number): Promise<boolean> {
     try {
-      await this.annotationsService.checkAnnotationExists(value);
+      await this.commentsService.checkCommentExists(value);
     } catch (error) {
       return false;
     }
@@ -116,7 +116,7 @@ export class IsAnnotationExists implements ValidatorConstraintInterface {
   }
 
   defaultMessage(): string {
-    return 'Unknown annotation';
+    return 'Unknown comment';
   }
 }
 
@@ -140,9 +140,9 @@ export class IsArticleExists implements ValidatorConstraintInterface {
 }
 
 @Injectable()
-@ValidatorConstraint({ name: 'isCommentExists', async: true })
-export class IsCommentExists implements ValidatorConstraintInterface {
-  constructor(private commentsService: CommentsService) {}
+@ValidatorConstraint({ name: 'isArticleCommentExists', async: true })
+export class IsArticleCommentExists implements ValidatorConstraintInterface {
+  constructor(private commentsService: ArticlesCommentsService) {}
 
   async validate(value: number): Promise<boolean> {
     try {
@@ -767,13 +767,13 @@ export class IsPollExists implements ValidatorConstraintInterface {
 }
 
 @Injectable()
-@ValidatorConstraint({ name: 'isDiscussionExists', async: true })
-export class IsDiscussionExists implements ValidatorConstraintInterface {
-  constructor(private discussionsService: DiscussionsService) {}
+@ValidatorConstraint({ name: 'isPollCommentExists', async: true })
+export class IsPollCommentExists implements ValidatorConstraintInterface {
+  constructor(private commentsService: PollsCommentsService) {}
 
   async validate(value: number): Promise<boolean> {
     try {
-      await this.discussionsService.checkDiscussionExists(value);
+      await this.commentsService.checkCommentExists(value);
     } catch (error) {
       return false;
     }
@@ -781,7 +781,7 @@ export class IsDiscussionExists implements ValidatorConstraintInterface {
   }
 
   defaultMessage(): string {
-    return 'Unknown discussion';
+    return 'Unknown comment';
   }
 }
 

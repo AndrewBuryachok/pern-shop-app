@@ -3,15 +3,15 @@ import { Validate, ValidateIf } from 'class-validator';
 import { Type } from 'class-transformer';
 import { IsId } from '../../common/decorators';
 import {
-  IsArticleCommentExists,
-  IsArticleExists,
+  IsReportCommentExists,
+  IsReportExists,
 } from '../../common/constraints';
 import { CreateReplyDto } from '../replies/reply.dto';
 
 export class CommentIdDto {
   @ApiProperty()
   @IsId()
-  @Validate(IsArticleCommentExists)
+  @Validate(IsReportCommentExists)
   @Type(() => Number)
   commentId: number;
 }
@@ -27,13 +27,13 @@ export class ExtEditCommentDto extends EditCommentDto {
 export class CreateCommentDto extends EditCommentDto {
   @ApiProperty()
   @IsId()
-  @Validate(IsArticleExists)
-  articleId: number;
+  @Validate(IsReportExists)
+  reportId: number;
 
   @ApiProperty()
   @ValidateIf((_, value) => value !== 0)
   @IsId()
-  @Validate(IsArticleCommentExists)
+  @Validate(IsReportCommentExists)
   commentId: number;
 }
 

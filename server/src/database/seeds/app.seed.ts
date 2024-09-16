@@ -5,11 +5,11 @@ import { Message } from '../../features/messages/message.entity';
 import { Report } from '../../features/reports/report.entity';
 import { ReportView } from '../../features/reports/report-view.entity';
 import { Attitude } from '../../features/reports/attitude.entity';
-import { Annotation } from '../../features/reports/annotation.entity';
+import { ReportComment } from '../../features/reports/comment.entity';
 import { Article } from '../../features/articles/article.entity';
 import { ArticleView } from '../../features/articles/article-view.entity';
 import { Like } from '../../features/articles/like.entity';
-import { Comment } from '../../features/articles/comment.entity';
+import { ArticleComment } from '../../features/articles/comment.entity';
 import { Card } from '../../features/cards/card.entity';
 import { Exchange } from '../../features/exchanges/exchange.entity';
 import { Payment } from '../../features/payments/payment.entity';
@@ -50,7 +50,7 @@ import { Advert } from '../../features/adverts/advert.entity';
 import { Poll } from '../../features/polls/poll.entity';
 import { PollView } from '../../features/polls/poll-view.entity';
 import { Vote } from '../../features/polls/vote.entity';
-import { Discussion } from '../../features/polls/discussion.entity';
+import { PollComment } from '../../features/polls/comment.entity';
 import { Rating } from '../../features/ratings/rating.entity';
 import { Status } from '../../features/transportations/status.enum';
 import { getDateWeekAfter, hashData } from '../../common/utils';
@@ -102,11 +102,11 @@ export default class AppSeed implements Seeder {
         return attitude;
       })
       .createMany(80);
-    const annotations = await factory(Annotation)()
-      .map(async (annotation) => {
-        annotation.report = faker.helpers.arrayElement(reports);
-        annotation.user = faker.helpers.arrayElement(users);
-        return annotation;
+    const reportsComments = await factory(ReportComment)()
+      .map(async (comment) => {
+        comment.report = faker.helpers.arrayElement(reports);
+        comment.user = faker.helpers.arrayElement(users);
+        return comment;
       })
       .createMany(40);
     const articles = await factory(Article)()
@@ -142,7 +142,7 @@ export default class AppSeed implements Seeder {
         return like;
       })
       .createMany(80);
-    const comments = await factory(Comment)()
+    const articlesComments = await factory(ArticleComment)()
       .map(async (comment) => {
         comment.article = faker.helpers.arrayElement(articles);
         comment.user = faker.helpers.arrayElement(users);
@@ -676,11 +676,11 @@ export default class AppSeed implements Seeder {
         return vote;
       })
       .createMany(80);
-    const discussions = await factory(Discussion)()
-      .map(async (discussion) => {
-        discussion.poll = faker.helpers.arrayElement(polls);
-        discussion.user = faker.helpers.arrayElement(users);
-        return discussion;
+    const pollsComments = await factory(PollComment)()
+      .map(async (comment) => {
+        comment.poll = faker.helpers.arrayElement(polls);
+        comment.user = faker.helpers.arrayElement(users);
+        return comment;
       })
       .createMany(40);
     const allRatings = users.reduce(

@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, SelectQueryBuilder } from 'typeorm';
-import { ArticleComment } from './comment.entity';
-import { ArticlesService } from './articles.service';
+import { PollComment } from './comment.entity';
+import { PollsService } from './polls.service';
 import { MqttService } from '../mqtt/mqtt.service';
 import {
   DeleteCommentDto,
@@ -16,15 +16,15 @@ import { Notification } from '../../common/enums';
 @Injectable()
 export class CommentsService {
   constructor(
-    @InjectRepository(ArticleComment)
-    private commentsRepository: Repository<ArticleComment>,
-    private articlesService: ArticlesService,
+    @InjectRepository(PollComment)
+    private commentsRepository: Repository<PollComment>,
+    private pollsService: PollsService,
     private mqttService: MqttService,
   ) {}
 
-  selectArticleComments(articleId: number): Promise<ArticleComment[]> {
+  selectPollComments(pollId: number): Promise<PollComment[]> {
     return this.selectCommentsQueryBuilder()
-      .where('comment.articleId = :articleId', { articleId })
+      .where('comment.pollId = :pollId', { pollId })
       .getMany();
   }
 
@@ -32,29 +32,29 @@ export class CommentsService {
     dto: ExtCreateCommentDto & { nick: string },
   ): Promise<void> {
     await this.create(dto);
-    const article = await this.articlesService.findArticleById(dto.articleId);
+    const poll = await this.pollsService.findPollById(dto.pollId);
     this.mqttService.publishNotificationMessage(
-      dto.articleId,
-      article.userId,
+      dto.pollId,
+      poll.userId,
       dto.nick,
-      Notification.COMMENTED_ARTICLE,
+      Notification.COMMENTED_POLL,
     );
     if (dto.commentId) {
       const reply = await this.commentsRepository.findOneBy({
         id: dto.commentId,
       });
       this.mqttService.publishNotificationMessage(
-        dto.articleId,
+        dto.pollId,
         reply.userId,
         dto.nick,
-        Notification.REPLIED_ARTICLE_COMMENT,
+        Notification.REPLIED_POLL_COMMENT,
       );
     }
     await this.mqttService.publishNotificationMention(
-      dto.articleId,
+      dto.pollId,
       dto.text,
       dto.nick,
-      Notification.MENTIONED_ARTICLE_COMMENT,
+      Notification.MENTIONED_POLL_COMMENT,
     );
   }
 
@@ -64,12 +64,13 @@ export class CommentsService {
       dto.myId,
       dto.hasRole,
     );
+    await this.pollsService.checkPollNotCompleted(comment.pollId);
     await this.edit(comment, dto);
     await this.mqttService.publishNotificationMention(
-      comment.articleId,
+      comment.pollId,
       dto.text,
       dto.nick,
-      Notification.MENTIONED_ARTICLE_COMMENT,
+      Notification.MENTIONED_POLL_COMMENT,
     );
   }
 
@@ -79,6 +80,7 @@ export class CommentsService {
       dto.myId,
       dto.hasRole,
     );
+    await this.pollsService.checkPollNotCompleted(comment.pollId);
     await this.delete(comment);
   }
 
@@ -90,7 +92,7 @@ export class CommentsService {
     id: number,
     userId: number,
     hasRole: boolean,
-  ): Promise<ArticleComment> {
+  ): Promise<PollComment> {
     const comment = await this.commentsRepository.findOneBy({ id });
     if (comment.userId !== userId && !hasRole) {
       throw new AppException(CommentError.NOT_OWNER);
@@ -98,10 +100,10 @@ export class CommentsService {
     return comment;
   }
 
-  private async create(dto: ExtCreateCommentDto): Promise<ArticleComment> {
+  private async create(dto: ExtCreateCommentDto): Promise<PollComment> {
     try {
       const comment = this.commentsRepository.create({
-        articleId: dto.articleId,
+        pollId: dto.pollId,
         replyId: dto.commentId || null,
         userId: dto.myId,
         text: dto.text,
@@ -114,7 +116,7 @@ export class CommentsService {
   }
 
   private async edit(
-    comment: ArticleComment,
+    comment: PollComment,
     dto: ExtEditCommentDto,
   ): Promise<void> {
     try {
@@ -125,7 +127,7 @@ export class CommentsService {
     }
   }
 
-  private async delete(comment: ArticleComment): Promise<void> {
+  private async delete(comment: PollComment): Promise<void> {
     try {
       await this.commentsRepository.remove(comment);
     } catch (error) {
@@ -133,7 +135,7 @@ export class CommentsService {
     }
   }
 
-  private selectCommentsQueryBuilder(): SelectQueryBuilder<ArticleComment> {
+  private selectCommentsQueryBuilder(): SelectQueryBuilder<PollComment> {
     return this.commentsRepository
       .createQueryBuilder('comment')
       .leftJoin('comment.reply', 'reply')

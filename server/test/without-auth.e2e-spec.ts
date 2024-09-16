@@ -768,8 +768,8 @@ describe('Without Auth', () => {
       return request(app.getHttpServer()).get('/polls/voted').expect(401);
     });
 
-    it('GET /polls/discussed', async () => {
-      return request(app.getHttpServer()).get('/polls/discussed').expect(401);
+    it('GET /polls/commented', async () => {
+      return request(app.getHttpServer()).get('/polls/commented').expect(401);
     });
 
     it('GET /polls/voted/select', async () => {

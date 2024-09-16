@@ -58,13 +58,13 @@ export class PollsService {
     return { result, count };
   }
 
-  async getDiscussedPolls(myId: number, req: Request): Promise<Response<Poll>> {
+  async getCommentedPolls(myId: number, req: Request): Promise<Response<Poll>> {
     const [result, count] = await this.getPollsQueryBuilder(req)
       .innerJoinAndMapOne(
-        'myDiscussion',
-        'poll.discussions',
-        'myDiscussion',
-        'myDiscussion.userId = :myId',
+        'myComment',
+        'poll.comments',
+        'myComment',
+        'myComment.userId = :myId',
         { myId },
       )
       .getManyAndCount();
@@ -362,14 +362,14 @@ export class PollsService {
         'downVote',
         (qb) => qb.where('NOT downVote.type'),
       )
-      .loadRelationCountAndMap('poll.discussions', 'poll.discussions')
+      .loadRelationCountAndMap('poll.comments', 'poll.comments')
       .leftJoinAndMapOne(
-        'poll.discussion',
-        'poll.discussions',
-        'discussion',
-        'discussion.id = (SELECT MAX(d.id) FROM discussions AS d WHERE d.poll_id = poll.id)',
+        'poll.comment',
+        'poll.comments',
+        'comment',
+        'comment.id = (SELECT MAX(d.id) FROM polls_comments AS d WHERE d.poll_id = poll.id)',
       )
-      .leftJoin('discussion.user', 'discusser')
+      .leftJoin('comment.user', 'commenter')
       .where(
         new Brackets((qb) =>
           qb.where(`${!req.id}`).orWhere('poll.id = :id', { id: req.id }),
@@ -437,12 +437,12 @@ export class PollsService {
         'poll.image',
         'poll.video',
         'poll.result',
-        'discussion.id',
-        'discusser.id',
-        'discusser.nick',
-        'discusser.avatar',
-        'discussion.text',
-        'discussion.createdAt',
+        'comment.id',
+        'commenter.id',
+        'commenter.nick',
+        'commenter.avatar',
+        'comment.text',
+        'comment.createdAt',
         'poll.createdAt',
         'poll.completedAt',
       ]);

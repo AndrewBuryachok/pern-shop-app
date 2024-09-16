@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, SelectQueryBuilder } from 'typeorm';
-import { ArticleComment } from './comment.entity';
-import { ArticlesService } from './articles.service';
+import { ReportComment } from './comment.entity';
+import { ReportsService } from './reports.service';
 import { MqttService } from '../mqtt/mqtt.service';
 import {
   DeleteCommentDto,
@@ -16,15 +16,15 @@ import { Notification } from '../../common/enums';
 @Injectable()
 export class CommentsService {
   constructor(
-    @InjectRepository(ArticleComment)
-    private commentsRepository: Repository<ArticleComment>,
-    private articlesService: ArticlesService,
+    @InjectRepository(ReportComment)
+    private commentsRepository: Repository<ReportComment>,
+    private reportsService: ReportsService,
     private mqttService: MqttService,
   ) {}
 
-  selectArticleComments(articleId: number): Promise<ArticleComment[]> {
+  selectReportComments(reportId: number): Promise<ReportComment[]> {
     return this.selectCommentsQueryBuilder()
-      .where('comment.articleId = :articleId', { articleId })
+      .where('comment.reportId = :reportId', { reportId })
       .getMany();
   }
 
@@ -32,29 +32,29 @@ export class CommentsService {
     dto: ExtCreateCommentDto & { nick: string },
   ): Promise<void> {
     await this.create(dto);
-    const article = await this.articlesService.findArticleById(dto.articleId);
+    const report = await this.reportsService.findReportById(dto.reportId);
     this.mqttService.publishNotificationMessage(
-      dto.articleId,
-      article.userId,
+      dto.reportId,
+      report.userId,
       dto.nick,
-      Notification.COMMENTED_ARTICLE,
+      Notification.COMMENTED_REPORT,
     );
     if (dto.commentId) {
       const reply = await this.commentsRepository.findOneBy({
         id: dto.commentId,
       });
       this.mqttService.publishNotificationMessage(
-        dto.articleId,
+        dto.reportId,
         reply.userId,
         dto.nick,
-        Notification.REPLIED_ARTICLE_COMMENT,
+        Notification.REPLIED_REPORT_COMMENT,
       );
     }
     await this.mqttService.publishNotificationMention(
-      dto.articleId,
+      dto.reportId,
       dto.text,
       dto.nick,
-      Notification.MENTIONED_ARTICLE_COMMENT,
+      Notification.MENTIONED_REPORT_COMMENT,
     );
   }
 
@@ -66,10 +66,10 @@ export class CommentsService {
     );
     await this.edit(comment, dto);
     await this.mqttService.publishNotificationMention(
-      comment.articleId,
+      comment.reportId,
       dto.text,
       dto.nick,
-      Notification.MENTIONED_ARTICLE_COMMENT,
+      Notification.MENTIONED_REPORT_COMMENT,
     );
   }
 
@@ -90,7 +90,7 @@ export class CommentsService {
     id: number,
     userId: number,
     hasRole: boolean,
-  ): Promise<ArticleComment> {
+  ): Promise<ReportComment> {
     const comment = await this.commentsRepository.findOneBy({ id });
     if (comment.userId !== userId && !hasRole) {
       throw new AppException(CommentError.NOT_OWNER);
@@ -98,10 +98,10 @@ export class CommentsService {
     return comment;
   }
 
-  private async create(dto: ExtCreateCommentDto): Promise<ArticleComment> {
+  private async create(dto: ExtCreateCommentDto): Promise<ReportComment> {
     try {
       const comment = this.commentsRepository.create({
-        articleId: dto.articleId,
+        reportId: dto.reportId,
         replyId: dto.commentId || null,
         userId: dto.myId,
         text: dto.text,
@@ -114,7 +114,7 @@ export class CommentsService {
   }
 
   private async edit(
-    comment: ArticleComment,
+    comment: ReportComment,
     dto: ExtEditCommentDto,
   ): Promise<void> {
     try {
@@ -125,7 +125,7 @@ export class CommentsService {
     }
   }
 
-  private async delete(comment: ArticleComment): Promise<void> {
+  private async delete(comment: ReportComment): Promise<void> {
     try {
       await this.commentsRepository.remove(comment);
     } catch (error) {
@@ -133,7 +133,7 @@ export class CommentsService {
     }
   }
 
-  private selectCommentsQueryBuilder(): SelectQueryBuilder<ArticleComment> {
+  private selectCommentsQueryBuilder(): SelectQueryBuilder<ReportComment> {
     return this.commentsRepository
       .createQueryBuilder('comment')
       .leftJoin('comment.reply', 'reply')

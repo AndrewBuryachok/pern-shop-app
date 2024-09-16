@@ -9,23 +9,23 @@ import {
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { CommentsService } from './comments.service';
-import { ArticleComment } from './comment.entity';
+import { ReportComment } from './comment.entity';
 import { CommentIdDto, CreateCommentDto, EditCommentDto } from './comment.dto';
-import { ArticleIdDto } from './article.dto';
+import { ReportIdDto } from './report.dto';
 import { HasRole, MyId, MyNick, Public } from '../../common/decorators';
 import { Role } from '../users/role.enum';
 
-@ApiTags('articles-comments')
-@Controller('articles-comments')
+@ApiTags('reports-comments')
+@Controller('reports-comments')
 export class CommentsController {
   constructor(private commentsService: CommentsService) {}
 
   @Public()
-  @Get(':articleId')
-  selectArticleComments(
-    @Param() { articleId }: ArticleIdDto,
-  ): Promise<ArticleComment[]> {
-    return this.commentsService.selectArticleComments(articleId);
+  @Get(':reportId')
+  selectReportComments(
+    @Param() { reportId }: ReportIdDto,
+  ): Promise<ReportComment[]> {
+    return this.commentsService.selectReportComments(reportId);
   }
 
   @Post()
@@ -60,6 +60,10 @@ export class CommentsController {
     @HasRole(Role.INSPECTOR) hasRole: boolean,
     @Param() { commentId }: CommentIdDto,
   ): Promise<void> {
-    return this.commentsService.deleteComment({ commentId, myId, hasRole });
+    return this.commentsService.deleteComment({
+      commentId,
+      myId,
+      hasRole,
+    });
   }
 }

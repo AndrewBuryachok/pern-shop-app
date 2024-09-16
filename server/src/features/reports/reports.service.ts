@@ -314,14 +314,14 @@ export class ReportsService {
         'downAttitude',
         (qb) => qb.where('NOT downAttitude.type'),
       )
-      .loadRelationCountAndMap('report.annotations', 'report.annotations')
+      .loadRelationCountAndMap('report.comments', 'report.comments')
       .leftJoinAndMapOne(
-        'report.annotation',
-        'report.annotations',
-        'annotation',
-        'annotation.id = (SELECT MAX(a.id) FROM annotations AS a WHERE a.report_id = report.id)',
+        'report.comment',
+        'report.comments',
+        'comment',
+        'comment.id = (SELECT MAX(a.id) FROM reports_comments AS a WHERE a.report_id = report.id)',
       )
-      .leftJoin('annotation.user', 'annotater')
+      .leftJoin('comment.user', 'commenter')
       .where(
         new Brackets((qb) =>
           qb.where(`${!req.id}`).orWhere('report.id = :id', { id: req.id }),
@@ -361,12 +361,12 @@ export class ReportsService {
         'report.image2',
         'report.image3',
         'report.video',
-        'annotation.id',
-        'annotater.id',
-        'annotater.nick',
-        'annotater.avatar',
-        'annotation.text',
-        'annotation.createdAt',
+        'comment.id',
+        'commenter.id',
+        'commenter.nick',
+        'commenter.avatar',
+        'comment.text',
+        'comment.createdAt',
         'report.createdAt',
       ]);
   }

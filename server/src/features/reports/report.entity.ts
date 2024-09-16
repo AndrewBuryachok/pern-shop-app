@@ -11,7 +11,7 @@ import { User } from '../users/user.entity';
 import { Mark } from './mark.enum';
 import { ReportView } from './report-view.entity';
 import { Attitude } from './attitude.entity';
-import { Annotation } from './annotation.entity';
+import { ReportComment } from './comment.entity';
 
 @Entity('reports')
 export class Report {
@@ -56,6 +56,6 @@ export class Report {
   @OneToMany(() => Attitude, (attitude) => attitude.report)
   attitudes: Attitude[];
 
-  @OneToMany(() => Annotation, (annotation) => annotation.report)
-  annotations: Annotation[];
+  @OneToMany(() => ReportComment, (comment) => comment.report)
+  comments: ReportComment[];
 }
