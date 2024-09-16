@@ -8,13 +8,13 @@ import {
 
 export const messagesApi = emptyApi.injectEndpoints({
   endpoints: (build) => ({
-    getMyMessages: build.query<SmMessage[], void>({
+    selectMyMessages: build.query<SmMessage[], void>({
       query: () => ({
         url: '/messages/my',
       }),
       providesTags: ['Auth', 'Message'],
     }),
-    getUserMessages: build.query<Message[], number>({
+    selectUserMessages: build.query<Message[], number>({
       query: (userId) => ({
         url: `/messages/${userId}`,
       }),
@@ -47,8 +47,8 @@ export const messagesApi = emptyApi.injectEndpoints({
 });
 
 export const {
-  useGetMyMessagesQuery,
-  useGetUserMessagesQuery,
+  useSelectMyMessagesQuery,
+  useSelectUserMessagesQuery,
   useCreateMessageMutation,
   useEditMessageMutation,
   useDeleteMessageMutation,

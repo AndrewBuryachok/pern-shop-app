@@ -21,7 +21,7 @@ import { Reply } from '../../features/replies/reply.model';
 import { useSelectSingleUserQuery } from '../../features/users/users.api';
 import {
   useCreateMessageMutation,
-  useGetUserMessagesQuery,
+  useSelectUserMessagesQuery,
 } from '../../features/messages/messages.api';
 import { CreateMessageDto } from '../../features/messages/message.dto';
 import AvatarWithSingleText from '../../common/components/AvatarWithSingleText';
@@ -59,7 +59,7 @@ export default function SingleChat() {
     }
   }, [user]);
 
-  const response = useGetUserMessagesQuery(user?.id || 0, { skip: !user });
+  const response = useSelectUserMessagesQuery(user?.id || 0, { skip: !user });
 
   useEffect(() => {
     if (!response.isFetching) {
