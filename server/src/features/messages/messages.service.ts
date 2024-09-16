@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, SelectQueryBuilder } from 'typeorm';
 import { Message } from './message.entity';
 import { MqttService } from '../mqtt/mqtt.service';
 import {
@@ -20,22 +20,22 @@ export class MessagesService {
     private mqttService: MqttService,
   ) {}
 
-  async getMyMessages(myId: number): Promise<Message[]> {
-    const messages = await this.messagesRepository
+  async selectMyMessages(myId: number): Promise<Message[]> {
+    const chats = await this.messagesRepository
       .createQueryBuilder('message')
       .where('message.userId = :myId OR message.chatId = :myId', { myId })
       .groupBy('LEAST(message.userId, message.chatId)')
       .addGroupBy('GREATEST(message.userId, message.chatId)')
       .select('MAX(message.id)', 'id')
       .getRawMany();
-    if (!messages.length) {
+    if (!chats.length) {
       return [];
     }
-    return this.messagesRepository
+    const messages = await this.messagesRepository
       .createQueryBuilder('message')
       .innerJoin('message.user', 'senderUser')
       .innerJoin('message.chat', 'receiverUser')
-      .where('message.id IN(:...ids)', { ids: messages.map((m) => m.id) })
+      .where('message.id IN (:...ids)', { ids: chats.map((chat) => chat.id) })
       .orderBy('message.id', 'DESC')
       .select([
         'message.id',
@@ -49,31 +49,17 @@ export class MessagesService {
         'message.createdAt',
       ])
       .getMany();
+    return messages.map((message) => {
+      message.user = message.user.id === myId ? message.chat : message.user;
+      delete message.chat;
+      return message;
+    });
   }
 
-  getUserMessages(myId: number, userId: number): Promise<Message[]> {
-    return this.messagesRepository
-      .createQueryBuilder('message')
-      .leftJoin('message.reply', 'reply')
-      .leftJoin('reply.user', 'replier')
-      .innerJoin('message.user', 'messager')
+  selectUserMessages(myId: number, userId: number): Promise<Message[]> {
+    return this.selectMessagesQueryBuilder()
       .where('message.userId = :myId AND message.chatId = :userId', { userId })
       .orWhere('message.userId = :userId AND message.chatId = :myId', { myId })
-      .orderBy('message.id', 'ASC')
-      .select([
-        'message.id',
-        'reply.id',
-        'replier.id',
-        'replier.nick',
-        'replier.avatar',
-        'reply.text',
-        'reply.createdAt',
-        'messager.id',
-        'messager.nick',
-        'messager.avatar',
-        'message.text',
-        'message.createdAt',
-      ])
       .getMany();
   }
 
@@ -141,5 +127,28 @@ export class MessagesService {
     } catch (error) {
       throw new AppException(MessageError.DELETE_FAILED);
     }
+  }
+
+  private selectMessagesQueryBuilder(): SelectQueryBuilder<Message> {
+    return this.messagesRepository
+      .createQueryBuilder('message')
+      .leftJoin('message.reply', 'reply')
+      .leftJoin('reply.user', 'replier')
+      .innerJoin('message.user', 'messager')
+      .orderBy('message.id', 'ASC')
+      .select([
+        'message.id',
+        'reply.id',
+        'replier.id',
+        'replier.nick',
+        'replier.avatar',
+        'reply.text',
+        'reply.createdAt',
+        'messager.id',
+        'messager.nick',
+        'messager.avatar',
+        'message.text',
+        'message.createdAt',
+      ]);
   }
 }

@@ -20,16 +20,16 @@ export class MessagesController {
   constructor(private messagesService: MessagesService) {}
 
   @Get('my')
-  getMyMessages(@MyId() myId: number): Promise<Message[]> {
-    return this.messagesService.getMyMessages(myId);
+  selectMyMessages(@MyId() myId: number): Promise<Message[]> {
+    return this.messagesService.selectMyMessages(myId);
   }
 
   @Get(':userId')
-  getUserMessages(
+  selectUserMessages(
     @MyId() myId: number,
     @Param() { userId }: UserIdDto,
   ): Promise<Message[]> {
-    return this.messagesService.getUserMessages(myId, userId);
+    return this.messagesService.selectUserMessages(myId, userId);
   }
 
   @Post()
