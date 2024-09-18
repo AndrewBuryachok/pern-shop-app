@@ -12,6 +12,7 @@ const SubscribersPage = lazy(
 const ChatsPage = lazy(() => import('../pages/chats/ChatsPage'));
 const ReportsPage = lazy(() => import('../pages/reports/ReportsPage'));
 const ArticlesPage = lazy(() => import('../pages/articles/ArticlesPage'));
+const PollsPage = lazy(() => import('../pages/polls/PollsPage'));
 const CardsPage = lazy(() => import('../pages/cards/CardsPage'));
 const ExchangesPage = lazy(() => import('../pages/exchanges/ExchangesPage'));
 const PaymentsPage = lazy(() => import('../pages/payments/PaymentsPage'));
@@ -53,7 +54,6 @@ const StoragesDeliveriesPage = lazy(
 );
 const TasksPage = lazy(() => import('../pages/tasks/TasksPage'));
 const AdvertsPage = lazy(() => import('../pages/adverts/AdvertsPage'));
-const PollsPage = lazy(() => import('../pages/polls/PollsPage'));
 const RatingsPage = lazy(() => import('../pages/ratings/RatingsPage'));
 import { Role } from '../common/constants';
 
@@ -114,6 +114,17 @@ export const pages = [
       { index: true },
       { path: 'my' },
       { path: 'subscribed' },
+      { path: 'liked' },
+      { path: 'commented' },
+      { path: 'all', role: Role.INSPECTOR },
+    ],
+  },
+  {
+    path: 'polls',
+    element: PollsPage,
+    nested: [
+      { index: true },
+      { path: 'my' },
       { path: 'liked' },
       { path: 'commented' },
       { path: 'all', role: Role.INSPECTOR },
@@ -402,17 +413,6 @@ export const pages = [
       { index: true },
       { path: 'my' },
       { path: 'all', role: Role.MERCHANT },
-    ],
-  },
-  {
-    path: 'polls',
-    element: PollsPage,
-    nested: [
-      { index: true },
-      { path: 'my' },
-      { path: 'liked' },
-      { path: 'commented' },
-      { path: 'all', role: Role.INSPECTOR },
     ],
   },
   {

@@ -68,6 +68,10 @@ export default function CustomNavbar(props: Props) {
       icon: IconArticle,
     },
     {
+      route: 'polls',
+      icon: IconChartBar,
+    },
+    {
       route: 'wallet',
       icon: IconWallet,
       nested: ['cards', 'payments', 'exchanges', 'invoices'],
@@ -123,10 +127,6 @@ export default function CustomNavbar(props: Props) {
       route: 'receipts',
       icon: IconReceipt,
       nested: ['rents', 'leases', 'hires'],
-    },
-    {
-      route: 'polls',
-      icon: IconChartBar,
     },
     {
       route: 'ratings',

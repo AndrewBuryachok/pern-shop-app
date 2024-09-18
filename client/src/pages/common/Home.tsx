@@ -78,6 +78,10 @@ export default function Home() {
       icon: IconArticle,
     },
     {
+      title: 'polls',
+      icon: IconChartBar,
+    },
+    {
       title: 'cards',
       icon: IconCreditCard,
       sub: '/my',
@@ -178,10 +182,6 @@ export default function Home() {
     {
       title: 'hires',
       icon: IconScript,
-    },
-    {
-      title: 'polls',
-      icon: IconChartBar,
     },
     {
       title: 'ratings',
