@@ -113,10 +113,9 @@ export class PollsService {
       .getMany();
   }
 
-  selectPollLikes(pollId: number, type: boolean): Promise<PollLike[]> {
+  selectPollLikes(pollId: number): Promise<PollLike[]> {
     return this.selectLikesQueryBuilder()
       .where('like.pollId = :pollId', { pollId })
-      .andWhere('like.type = :type', { type })
       .getMany();
   }
 

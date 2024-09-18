@@ -83,15 +83,9 @@ export class PollsController {
   }
 
   @Public()
-  @Get(':pollId/likes/up')
+  @Get(':pollId/likes')
   selectPollUpLikes(@Param() { pollId }: PollIdDto): Promise<PollLike[]> {
-    return this.pollsService.selectPollLikes(pollId, true);
-  }
-
-  @Public()
-  @Get(':pollId/likes/down')
-  selectPollDownLikes(@Param() { pollId }: PollIdDto): Promise<PollLike[]> {
-    return this.pollsService.selectPollLikes(pollId, false);
+    return this.pollsService.selectPollLikes(pollId);
   }
 
   @Post()

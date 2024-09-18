@@ -78,10 +78,9 @@ export class ReportsService {
       .getMany();
   }
 
-  selectReportLikes(reportId: number, type: boolean): Promise<ReportLike[]> {
+  selectReportLikes(reportId: number): Promise<ReportLike[]> {
     return this.selectLikesQueryBuilder()
       .where('like.reportId = :reportId', { reportId })
-      .andWhere('like.type = :type', { type })
       .getMany();
   }
 

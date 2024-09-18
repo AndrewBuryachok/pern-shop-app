@@ -88,19 +88,9 @@ export class ReportsController {
   }
 
   @Public()
-  @Get(':reportId/likes/up')
-  selectReportUpLikes(
-    @Param() { reportId }: ReportIdDto,
-  ): Promise<ReportLike[]> {
-    return this.reportsService.selectReportLikes(reportId, true);
-  }
-
-  @Public()
-  @Get(':reportId/likes/down')
-  selectReportDownLikes(
-    @Param() { reportId }: ReportIdDto,
-  ): Promise<ReportLike[]> {
-    return this.reportsService.selectReportLikes(reportId, false);
+  @Get(':reportId/likes')
+  selectReportLikes(@Param() { reportId }: ReportIdDto): Promise<ReportLike[]> {
+    return this.reportsService.selectReportLikes(reportId);
   }
 
   @Roles(Role.INSPECTOR)

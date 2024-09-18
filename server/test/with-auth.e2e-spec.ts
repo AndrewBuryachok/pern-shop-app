@@ -676,15 +676,9 @@ describe('With Auth', () => {
         .expect((res) => expect(res.body.length).toBeGreaterThan(0));
     });
 
-    it('GET /reports/:reportId/likes/up', async () => {
+    it('GET /reports/:reportId/likes', async () => {
       return request(app.getHttpServer())
-        .get(`/reports/${reportsId[0]}/likes/up`)
-        .expect((res) => expect(res.body.length).toBeGreaterThan(0));
-    });
-
-    it('GET /reports/:reportId/likes/down', async () => {
-      return request(app.getHttpServer())
-        .get(`/reports/${reportsId[1]}/likes/down`)
+        .get(`/reports/${reportsId[0]}/likes`)
         .expect((res) => expect(res.body.length).toBeGreaterThan(0));
     });
 
@@ -814,15 +808,9 @@ describe('With Auth', () => {
         .expect((res) => expect(res.body.length).toBeGreaterThan(0));
     });
 
-    it('GET /articles/:articleId/likes/up', async () => {
+    it('GET /articles/:articleId/likes', async () => {
       return request(app.getHttpServer())
-        .get(`/articles/${articlesId[0]}/likes/up`)
-        .expect((res) => expect(res.body.length).toBeGreaterThan(0));
-    });
-
-    it('GET /articles/:articleId/likes/down', async () => {
-      return request(app.getHttpServer())
-        .get(`/articles/${articlesId[1]}/likes/down`)
+        .get(`/articles/${articlesId[0]}/likes`)
         .expect((res) => expect(res.body.length).toBeGreaterThan(0));
     });
 
@@ -983,15 +971,9 @@ describe('With Auth', () => {
         .expect((res) => expect(res.body.length).toBeGreaterThan(0));
     });
 
-    it('GET /polls/:pollId/likes/up', async () => {
+    it('GET /polls/:pollId/likes', async () => {
       return request(app.getHttpServer())
-        .get(`/polls/${pollsId[0]}/likes/up`)
-        .expect((res) => expect(res.body.length).toBeGreaterThan(0));
-    });
-
-    it('GET /polls/:pollId/likes/down', async () => {
-      return request(app.getHttpServer())
-        .get(`/polls/${pollsId[1]}/likes/down`)
+        .get(`/polls/${pollsId[0]}/likes`)
         .expect((res) => expect(res.body.length).toBeGreaterThan(0));
     });
 

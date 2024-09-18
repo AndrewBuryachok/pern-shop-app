@@ -133,10 +133,9 @@ export class ArticlesService {
       .getMany();
   }
 
-  selectArticleLikes(articleId: number, type: boolean): Promise<ArticleLike[]> {
+  selectArticleLikes(articleId: number): Promise<ArticleLike[]> {
     return this.selectLikesQueryBuilder()
       .where('like.articleId = :articleId', { articleId })
-      .andWhere('like.type = :type', { type })
       .getMany();
   }
 
