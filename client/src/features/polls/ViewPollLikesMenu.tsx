@@ -2,19 +2,16 @@ import { ActionIcon, Group, Skeleton, Tooltip } from '@mantine/core';
 import { IconExternalLink } from '@tabler/icons';
 import { IModal } from '../../common/interfaces';
 import { Poll } from './poll.model';
-import {
-  useSelectPollDownLikesQuery,
-  useSelectPollUpLikesQuery,
-} from './polls.api';
+import { useSelectPollLikesQuery } from './polls.api';
 import LinkedAvatar from '../../common/components/LinkedAvatar';
 import { openViewPollLikesModal } from './ViewPollLikesModal';
 
 type Props = IModal<Poll> & { type: boolean };
 
 export default function ViewPollLikesMenu({ data: poll, type }: Props) {
-  const { data: likes, isFetching } = (
-    type ? useSelectPollUpLikesQuery : useSelectPollDownLikesQuery
-  )(poll.id);
+  const { data, isFetching } = useSelectPollLikesQuery(poll.id);
+
+  const likes = data?.filter((like) => like.type === type);
 
   return (
     <Group spacing={8}>
@@ -31,10 +28,7 @@ export default function ViewPollLikesMenu({ data: poll, type }: Props) {
               </div>
             </Tooltip>
           ))}
-          <ActionIcon
-            size={32}
-            onClick={() => openViewPollLikesModal(poll, type)}
-          >
+          <ActionIcon size={32} onClick={() => openViewPollLikesModal(poll)}>
             <IconExternalLink size={24} />
           </ActionIcon>
         </>

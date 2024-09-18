@@ -2,24 +2,19 @@ import { t } from 'i18next';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { Poll } from './poll.model';
-import {
-  useSelectPollDownLikesQuery,
-  useSelectPollUpLikesQuery,
-} from './polls.api';
+import { useSelectPollLikesQuery } from './polls.api';
 import ReactionsTimeline from '../../common/components/ReactionsTimeline';
 
-type Props = IModal<Poll> & { type: boolean };
+type Props = IModal<Poll>;
 
-export default function ViewPollLikesModal({ data: poll, type }: Props) {
-  const response = (
-    type ? useSelectPollUpLikesQuery : useSelectPollDownLikesQuery
-  )(poll.id);
+export default function ViewPollLikesModal({ data: poll }: Props) {
+  const response = useSelectPollLikesQuery(poll.id);
 
   return <ReactionsTimeline {...response} />;
 }
 
-export const openViewPollLikesModal = (poll: Poll, type: boolean) =>
+export const openViewPollLikesModal = (poll: Poll) =>
   openModal({
     title: t('columns.likes'),
-    children: <ViewPollLikesModal data={poll} type={type} />,
+    children: <ViewPollLikesModal data={poll} />,
   });

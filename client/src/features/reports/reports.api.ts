@@ -74,15 +74,9 @@ export const reportsApi = emptyApi.injectEndpoints({
       }),
       providesTags: ['ReportView'],
     }),
-    selectReportUpLikes: build.query<ReportLike[], number>({
+    selectReportLikes: build.query<ReportLike[], number>({
       query: (reportId) => ({
-        url: `/reports/${reportId}/likes/up`,
-      }),
-      providesTags: ['ReportLike'],
-    }),
-    selectReportDownLikes: build.query<ReportLike[], number>({
-      query: (reportId) => ({
-        url: `/reports/${reportId}/likes/down`,
+        url: `/reports/${reportId}/likes`,
       }),
       providesTags: ['ReportLike'],
     }),
@@ -281,8 +275,7 @@ export const {
   useSelectViewedReportsQuery,
   useSelectLikedReportsQuery,
   useSelectReportViewsQuery,
-  useSelectReportUpLikesQuery,
-  useSelectReportDownLikesQuery,
+  useSelectReportLikesQuery,
   useCreateServerReportMutation,
   useCreateSiteReportMutation,
   useCreateEventsReportMutation,

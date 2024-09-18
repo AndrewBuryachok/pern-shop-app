@@ -2,19 +2,16 @@ import { ActionIcon, Group, Skeleton, Tooltip } from '@mantine/core';
 import { IconExternalLink } from '@tabler/icons';
 import { IModal } from '../../common/interfaces';
 import { Report } from './report.model';
-import {
-  useSelectReportDownLikesQuery,
-  useSelectReportUpLikesQuery,
-} from './reports.api';
+import { useSelectReportLikesQuery } from './reports.api';
 import LinkedAvatar from '../../common/components/LinkedAvatar';
 import { openViewReportLikesModal } from './ViewReportLikesModal';
 
 type Props = IModal<Report> & { type: boolean };
 
 export default function ViewReportLikesMenu({ data: report, type }: Props) {
-  const { data: likes, isFetching } = (
-    type ? useSelectReportUpLikesQuery : useSelectReportDownLikesQuery
-  )(report.id);
+  const { data, isFetching } = useSelectReportLikesQuery(report.id);
+
+  const likes = data?.filter((like) => like.type === type);
 
   return (
     <Group spacing={8}>
@@ -33,7 +30,7 @@ export default function ViewReportLikesMenu({ data: report, type }: Props) {
           ))}
           <ActionIcon
             size={32}
-            onClick={() => openViewReportLikesModal(report, type)}
+            onClick={() => openViewReportLikesModal(report)}
           >
             <IconExternalLink size={24} />
           </ActionIcon>
