@@ -879,6 +879,169 @@ describe('With Auth', () => {
     });
   });
 
+  describe('Polls', () => {
+    it('POST /polls', async () => {
+      return request(app.getHttpServer())
+        .post('/polls')
+        .set('Authorization', `Bearer ${user.access}`)
+        .send({ text: 'poll text', mark: 1, image: '', video: '' })
+        .expect('');
+    });
+
+    it('POST /polls', async () => {
+      return request(app.getHttpServer())
+        .post('/polls')
+        .set('Authorization', `Bearer ${user.access}`)
+        .send({ text: 'poll text', mark: 2, image: '', video: '' })
+        .expect('');
+    });
+
+    it('GET /polls', async () => {
+      return request(app.getHttpServer())
+        .get('/polls')
+        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
+    });
+
+    it('GET /polls/my', async () => {
+      return request(app.getHttpServer())
+        .get('/polls/my')
+        .set('Authorization', `Bearer ${user.access}`)
+        .expect((res) => expect(res.body.count).toBeGreaterThan(0))
+        .then((res) => (pollsId = res.body.result.map((p) => p.id)));
+    });
+
+    it('PATCH /polls/:pollId', async () => {
+      return request(app.getHttpServer())
+        .patch(`/polls/${pollsId[0]}`)
+        .set('Authorization', `Bearer ${user.access}`)
+        .send({ text: 'poll text', mark: 1, image: '', video: '' })
+        .expect('');
+    });
+
+    it('POST /polls/:pollId/views', async () => {
+      return request(app.getHttpServer())
+        .post(`/polls/${pollsId[0]}/views`)
+        .set('Authorization', `Bearer ${user.access}`)
+        .expect('');
+    });
+
+    it('POST /polls/:pollId/likes', async () => {
+      return request(app.getHttpServer())
+        .post(`/polls/${pollsId[0]}/likes`)
+        .set('Authorization', `Bearer ${user.access}`)
+        .send({ type: true })
+        .expect('');
+    });
+
+    it('POST /polls/:pollId/likes', async () => {
+      return request(app.getHttpServer())
+        .post(`/polls/${pollsId[1]}/likes`)
+        .set('Authorization', `Bearer ${user.access}`)
+        .send({ type: false })
+        .expect('');
+    });
+
+    it('POST /polls-comments', async () => {
+      return request(app.getHttpServer())
+        .post('/polls-comments')
+        .set('Authorization', `Bearer ${user.access}`)
+        .send({ pollId: pollsId[0], commentId: 0, text: 'comment text' })
+        .expect('');
+    });
+
+    it('GET /polls/liked', async () => {
+      return request(app.getHttpServer())
+        .get('/polls/liked')
+        .set('Authorization', `Bearer ${user.access}`)
+        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
+    });
+
+    it('GET /polls/commented', async () => {
+      return request(app.getHttpServer())
+        .get('/polls/commented')
+        .set('Authorization', `Bearer ${user.access}`)
+        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
+    });
+
+    it('GET /polls/viewed/select', async () => {
+      return request(app.getHttpServer())
+        .get('/polls/viewed/select')
+        .set('Authorization', `Bearer ${user.access}`)
+        .expect((res) => expect(res.body.length).toBeGreaterThan(0));
+    });
+
+    it('GET /polls/liked/select', async () => {
+      return request(app.getHttpServer())
+        .get('/polls/liked/select')
+        .set('Authorization', `Bearer ${user.access}`)
+        .expect((res) => expect(res.body.length).toBeGreaterThan(0));
+    });
+
+    it('GET /polls/:pollId/views', async () => {
+      return request(app.getHttpServer())
+        .get(`/polls/${pollsId[0]}/views`)
+        .expect((res) => expect(res.body.length).toBeGreaterThan(0));
+    });
+
+    it('GET /polls/:pollId/likes/up', async () => {
+      return request(app.getHttpServer())
+        .get(`/polls/${pollsId[0]}/likes/up`)
+        .expect((res) => expect(res.body.length).toBeGreaterThan(0));
+    });
+
+    it('GET /polls/:pollId/likes/down', async () => {
+      return request(app.getHttpServer())
+        .get(`/polls/${pollsId[1]}/likes/down`)
+        .expect((res) => expect(res.body.length).toBeGreaterThan(0));
+    });
+
+    it('GET /polls-comments/:pollId', async () => {
+      return request(app.getHttpServer())
+        .get(`/polls-comments/${pollsId[0]}`)
+        .expect((res) => expect(res.body.length).toBeGreaterThan(0))
+        .then((res) => (pollCommentId = res.body[0].id));
+    });
+
+    it('GET /polls/all', async () => {
+      return request(app.getHttpServer())
+        .get('/polls/all')
+        .set('Authorization', `Bearer ${inspector.access}`)
+        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
+    });
+  });
+
+  describe('Polls Comments', () => {
+    it('PATCH /polls-comments/:commentId', async () => {
+      return request(app.getHttpServer())
+        .patch(`/polls-comments/${pollCommentId}`)
+        .set('Authorization', `Bearer ${user.access}`)
+        .send({ text: 'comment text' })
+        .expect('');
+    });
+
+    it('DELETE /polls-comments/:commentId', async () => {
+      return request(app.getHttpServer())
+        .delete(`/polls-comments/${pollCommentId}`)
+        .set('Authorization', `Bearer ${user.access}`)
+        .expect('');
+    });
+
+    it('DELETE /polls/:pollId', async () => {
+      return request(app.getHttpServer())
+        .delete(`/polls/${pollsId[1]}`)
+        .set('Authorization', `Bearer ${user.access}`)
+        .expect('');
+    });
+
+    it('POST /polls/:pollId', async () => {
+      return request(app.getHttpServer())
+        .post(`/polls/${pollsId[0]}`)
+        .set('Authorization', `Bearer ${inspector.access}`)
+        .send({ type: true })
+        .expect('');
+    });
+  });
+
   describe('Cards', () => {
     it('POST /cards', async () => {
       return request(app.getHttpServer())
@@ -3366,169 +3529,6 @@ describe('With Auth', () => {
       return request(app.getHttpServer())
         .delete(`/adverts/${advertId}`)
         .set('Authorization', `Bearer ${user.access}`)
-        .expect('');
-    });
-  });
-
-  describe('Polls', () => {
-    it('POST /polls', async () => {
-      return request(app.getHttpServer())
-        .post('/polls')
-        .set('Authorization', `Bearer ${user.access}`)
-        .send({ text: 'poll text', mark: 1, image: '', video: '' })
-        .expect('');
-    });
-
-    it('POST /polls', async () => {
-      return request(app.getHttpServer())
-        .post('/polls')
-        .set('Authorization', `Bearer ${user.access}`)
-        .send({ text: 'poll text', mark: 2, image: '', video: '' })
-        .expect('');
-    });
-
-    it('GET /polls', async () => {
-      return request(app.getHttpServer())
-        .get('/polls')
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
-    });
-
-    it('GET /polls/my', async () => {
-      return request(app.getHttpServer())
-        .get('/polls/my')
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0))
-        .then((res) => (pollsId = res.body.result.map((p) => p.id)));
-    });
-
-    it('PATCH /polls/:pollId', async () => {
-      return request(app.getHttpServer())
-        .patch(`/polls/${pollsId[0]}`)
-        .set('Authorization', `Bearer ${user.access}`)
-        .send({ text: 'poll text', mark: 1, image: '', video: '' })
-        .expect('');
-    });
-
-    it('POST /polls/:pollId/views', async () => {
-      return request(app.getHttpServer())
-        .post(`/polls/${pollsId[0]}/views`)
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect('');
-    });
-
-    it('POST /polls/:pollId/likes', async () => {
-      return request(app.getHttpServer())
-        .post(`/polls/${pollsId[0]}/likes`)
-        .set('Authorization', `Bearer ${user.access}`)
-        .send({ type: true })
-        .expect('');
-    });
-
-    it('POST /polls/:pollId/likes', async () => {
-      return request(app.getHttpServer())
-        .post(`/polls/${pollsId[1]}/likes`)
-        .set('Authorization', `Bearer ${user.access}`)
-        .send({ type: false })
-        .expect('');
-    });
-
-    it('POST /polls-comments', async () => {
-      return request(app.getHttpServer())
-        .post('/polls-comments')
-        .set('Authorization', `Bearer ${user.access}`)
-        .send({ pollId: pollsId[0], commentId: 0, text: 'comment text' })
-        .expect('');
-    });
-
-    it('GET /polls/liked', async () => {
-      return request(app.getHttpServer())
-        .get('/polls/liked')
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
-    });
-
-    it('GET /polls/commented', async () => {
-      return request(app.getHttpServer())
-        .get('/polls/commented')
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
-    });
-
-    it('GET /polls/viewed/select', async () => {
-      return request(app.getHttpServer())
-        .get('/polls/viewed/select')
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect((res) => expect(res.body.length).toBeGreaterThan(0));
-    });
-
-    it('GET /polls/liked/select', async () => {
-      return request(app.getHttpServer())
-        .get('/polls/liked/select')
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect((res) => expect(res.body.length).toBeGreaterThan(0));
-    });
-
-    it('GET /polls/:pollId/views', async () => {
-      return request(app.getHttpServer())
-        .get(`/polls/${pollsId[0]}/views`)
-        .expect((res) => expect(res.body.length).toBeGreaterThan(0));
-    });
-
-    it('GET /polls/:pollId/likes/up', async () => {
-      return request(app.getHttpServer())
-        .get(`/polls/${pollsId[0]}/likes/up`)
-        .expect((res) => expect(res.body.length).toBeGreaterThan(0));
-    });
-
-    it('GET /polls/:pollId/likes/down', async () => {
-      return request(app.getHttpServer())
-        .get(`/polls/${pollsId[1]}/likes/down`)
-        .expect((res) => expect(res.body.length).toBeGreaterThan(0));
-    });
-
-    it('GET /polls-comments/:pollId', async () => {
-      return request(app.getHttpServer())
-        .get(`/polls-comments/${pollsId[0]}`)
-        .expect((res) => expect(res.body.length).toBeGreaterThan(0))
-        .then((res) => (pollCommentId = res.body[0].id));
-    });
-
-    it('GET /polls/all', async () => {
-      return request(app.getHttpServer())
-        .get('/polls/all')
-        .set('Authorization', `Bearer ${inspector.access}`)
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
-    });
-  });
-
-  describe('Polls Comments', () => {
-    it('PATCH /polls-comments/:commentId', async () => {
-      return request(app.getHttpServer())
-        .patch(`/polls-comments/${pollCommentId}`)
-        .set('Authorization', `Bearer ${user.access}`)
-        .send({ text: 'comment text' })
-        .expect('');
-    });
-
-    it('DELETE /polls-comments/:commentId', async () => {
-      return request(app.getHttpServer())
-        .delete(`/polls-comments/${pollCommentId}`)
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect('');
-    });
-
-    it('DELETE /polls/:pollId', async () => {
-      return request(app.getHttpServer())
-        .delete(`/polls/${pollsId[1]}`)
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect('');
-    });
-
-    it('POST /polls/:pollId', async () => {
-      return request(app.getHttpServer())
-        .post(`/polls/${pollsId[0]}`)
-        .set('Authorization', `Bearer ${inspector.access}`)
-        .send({ type: true })
         .expect('');
     });
   });

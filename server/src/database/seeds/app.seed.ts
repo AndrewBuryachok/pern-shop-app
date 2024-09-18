@@ -10,6 +10,10 @@ import { Article } from '../../features/articles/article.entity';
 import { ArticleView } from '../../features/articles/article-view.entity';
 import { ArticleLike } from '../../features/articles/article-like.entity';
 import { ArticleComment } from '../../features/articles/comment.entity';
+import { Poll } from '../../features/polls/poll.entity';
+import { PollView } from '../../features/polls/poll-view.entity';
+import { PollLike } from '../../features/polls/poll-like.entity';
+import { PollComment } from '../../features/polls/comment.entity';
 import { Card } from '../../features/cards/card.entity';
 import { Exchange } from '../../features/exchanges/exchange.entity';
 import { Payment } from '../../features/payments/payment.entity';
@@ -37,20 +41,16 @@ import { Ware } from '../../features/wares/ware.entity';
 import { WareState } from '../../features/wares/ware-state.entity';
 import { Product } from '../../features/products/product.entity';
 import { ProductState } from '../../features/products/product-state.entity';
-import { Order } from '../../features/orders/order.entity';
-import { Delivery } from '../../features/deliveries/delivery.entity';
 import { Bargain } from '../../features/bargains/bargain.entity';
 import { Trade } from '../../features/trades/trade.entity';
 import { Sale } from '../../features/sales/sale.entity';
+import { Order } from '../../features/orders/order.entity';
+import { Delivery } from '../../features/deliveries/delivery.entity';
 import { ShopDelivery } from '../../features/shops-deliveries/shop-delivery.entity';
 import { MarketDelivery } from '../../features/markets-deliveries/market-delivery.entity';
 import { StorageDelivery } from '../../features/storages-deliveries/storage-delivery.entity';
 import { Task } from '../../features/tasks/task.entity';
 import { Advert } from '../../features/adverts/advert.entity';
-import { Poll } from '../../features/polls/poll.entity';
-import { PollView } from '../../features/polls/poll-view.entity';
-import { PollLike } from '../../features/polls/poll-like.entity';
-import { PollComment } from '../../features/polls/comment.entity';
 import { Rating } from '../../features/ratings/rating.entity';
 import { Status } from '../../features/transportations/status.enum';
 import { getDateWeekAfter, hashData } from '../../common/utils';
@@ -146,6 +146,45 @@ export default class AppSeed implements Seeder {
     const articlesComments = await factory(ArticleComment)()
       .map(async (comment) => {
         comment.article = faker.helpers.arrayElement(articles);
+        comment.user = faker.helpers.arrayElement(users);
+        return comment;
+      })
+      .createMany(40);
+    const polls = await factory(Poll)()
+      .map(async (poll) => {
+        poll.user = faker.helpers.arrayElement(users);
+        return poll;
+      })
+      .createMany(10);
+    const pollsUsers = polls.reduce(
+      (prev, poll) => [...prev, ...users.map((user) => ({ poll, user }))],
+      [],
+    );
+    const randomPollViews = [...Array(pollsUsers.length).keys()];
+    randomPollViews.sort(() => Math.random() - 0.5);
+    let pollViewId = 0;
+    await factory(PollView)()
+      .map(async (view) => {
+        view.poll = pollsUsers[randomPollViews[pollViewId]].poll;
+        view.user = pollsUsers[randomPollViews[pollViewId]].user;
+        pollViewId++;
+        return view;
+      })
+      .createMany(80);
+    const randomPollsLikes = [...Array(pollsUsers.length).keys()];
+    randomPollsLikes.sort(() => Math.random() - 0.5);
+    let pollLikeId = 0;
+    const pollsLikes = await factory(PollLike)()
+      .map(async (like) => {
+        like.poll = pollsUsers[randomPollsLikes[pollLikeId]].poll;
+        like.user = pollsUsers[randomPollsLikes[pollLikeId]].user;
+        pollLikeId++;
+        return like;
+      })
+      .createMany(80);
+    const pollsComments = await factory(PollComment)()
+      .map(async (comment) => {
+        comment.poll = faker.helpers.arrayElement(polls);
         comment.user = faker.helpers.arrayElement(users);
         return comment;
       })
@@ -422,48 +461,6 @@ export default class AppSeed implements Seeder {
         return productState;
       })
       .makeMany(products.length);
-    let hireId = 0;
-    const orders = await factory(Order)()
-      .map(async (order) => {
-        order.hire = hires[hireId++];
-        order.hire.card.balance -= order.price;
-        if (order.status !== Status.CREATED) {
-          order.executorCard = faker.helpers.arrayElement(cards);
-        }
-        if (order.status === Status.COMPLETED) {
-          const payment = await factory(Payment)().make({
-            senderCard: order.hire.card,
-            receiverCard: order.executorCard,
-            sum: order.price,
-            description: '',
-          });
-          payments.push(payment);
-          order.executorCard.balance += order.price;
-        }
-        return order;
-      })
-      .makeMany(10);
-    const deliveries = await factory(Delivery)()
-      .map(async (delivery) => {
-        delivery.fromHire = hires[hireId++];
-        delivery.toHire = hires[hireId++];
-        delivery.fromHire.card.balance -= delivery.price;
-        if (delivery.status !== Status.CREATED) {
-          delivery.executorCard = faker.helpers.arrayElement(cards);
-        }
-        if (delivery.status === Status.COMPLETED) {
-          const payment = await factory(Payment)().make({
-            senderCard: delivery.fromHire.card,
-            receiverCard: delivery.executorCard,
-            sum: delivery.price,
-            description: '',
-          });
-          payments.push(payment);
-          delivery.executorCard.balance += delivery.price;
-        }
-        return delivery;
-      })
-      .makeMany(10);
     const bargains = await factory(Bargain)()
       .map(async (bargain) => {
         bargain.good = faker.helpers.arrayElement(
@@ -551,6 +548,48 @@ export default class AppSeed implements Seeder {
         return sale;
       })
       .makeMany(20);
+    let hireId = 0;
+    const orders = await factory(Order)()
+      .map(async (order) => {
+        order.hire = hires[hireId++];
+        order.hire.card.balance -= order.price;
+        if (order.status !== Status.CREATED) {
+          order.executorCard = faker.helpers.arrayElement(cards);
+        }
+        if (order.status === Status.COMPLETED) {
+          const payment = await factory(Payment)().make({
+            senderCard: order.hire.card,
+            receiverCard: order.executorCard,
+            sum: order.price,
+            description: '',
+          });
+          payments.push(payment);
+          order.executorCard.balance += order.price;
+        }
+        return order;
+      })
+      .makeMany(10);
+    const deliveries = await factory(Delivery)()
+      .map(async (delivery) => {
+        delivery.fromHire = hires[hireId++];
+        delivery.toHire = hires[hireId++];
+        delivery.fromHire.card.balance -= delivery.price;
+        if (delivery.status !== Status.CREATED) {
+          delivery.executorCard = faker.helpers.arrayElement(cards);
+        }
+        if (delivery.status === Status.COMPLETED) {
+          const payment = await factory(Payment)().make({
+            senderCard: delivery.fromHire.card,
+            receiverCard: delivery.executorCard,
+            sum: delivery.price,
+            description: '',
+          });
+          payments.push(payment);
+          delivery.executorCard.balance += delivery.price;
+        }
+        return delivery;
+      })
+      .makeMany(10);
     let bargainId = 0;
     const shopsDeliveries = await factory(ShopDelivery)()
       .map(async (shopDelivery) => {
@@ -645,45 +684,6 @@ export default class AppSeed implements Seeder {
         return advert;
       })
       .makeMany(10);
-    const polls = await factory(Poll)()
-      .map(async (poll) => {
-        poll.user = faker.helpers.arrayElement(users);
-        return poll;
-      })
-      .createMany(10);
-    const pollsUsers = polls.reduce(
-      (prev, poll) => [...prev, ...users.map((user) => ({ poll, user }))],
-      [],
-    );
-    const randomPollViews = [...Array(pollsUsers.length).keys()];
-    randomPollViews.sort(() => Math.random() - 0.5);
-    let pollViewId = 0;
-    await factory(PollView)()
-      .map(async (view) => {
-        view.poll = pollsUsers[randomPollViews[pollViewId]].poll;
-        view.user = pollsUsers[randomPollViews[pollViewId]].user;
-        pollViewId++;
-        return view;
-      })
-      .createMany(80);
-    const randomPollsLikes = [...Array(pollsUsers.length).keys()];
-    randomPollsLikes.sort(() => Math.random() - 0.5);
-    let pollLikeId = 0;
-    const pollsLikes = await factory(PollLike)()
-      .map(async (like) => {
-        like.poll = pollsUsers[randomPollsLikes[pollLikeId]].poll;
-        like.user = pollsUsers[randomPollsLikes[pollLikeId]].user;
-        pollLikeId++;
-        return like;
-      })
-      .createMany(80);
-    const pollsComments = await factory(PollComment)()
-      .map(async (comment) => {
-        comment.poll = faker.helpers.arrayElement(polls);
-        comment.user = faker.helpers.arrayElement(users);
-        return comment;
-      })
-      .createMany(40);
     const allRatings = users.reduce(
       (prev, senderUser) => [
         ...prev,

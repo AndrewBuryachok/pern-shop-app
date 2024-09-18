@@ -9,6 +9,8 @@ import { ReportsService } from '../../features/reports/reports.service';
 import { CommentsService as ReportsCommentsService } from '../../features/reports/comments.service';
 import { ArticlesService } from '../../features/articles/articles.service';
 import { CommentsService as ArticlesCommentsService } from '../../features/articles/comments.service';
+import { PollsService } from '../../features/polls/polls.service';
+import { CommentsService as PollsCommentsService } from '../../features/polls/comments.service';
 import { CardsService } from '../../features/cards/cards.service';
 import { ExchangesService } from '../../features/exchanges/exchanges.service';
 import { PaymentsService } from '../../features/payments/payments.service';
@@ -40,8 +42,6 @@ import { MarketsDeliveriesService } from '../../features/markets-deliveries/mark
 import { StoragesDeliveriesService } from '../../features/storages-deliveries/storages-deliveries.service';
 import { TasksService } from '../../features/tasks/tasks.service';
 import { AdvertsService } from '../../features/adverts/adverts.service';
-import { PollsService } from '../../features/polls/polls.service';
-import { CommentsService as PollsCommentsService } from '../../features/polls/comments.service';
 import { RatingsService } from '../../features/ratings/ratings.service';
 
 @Injectable()
@@ -143,6 +143,44 @@ export class IsArticleExists implements ValidatorConstraintInterface {
 @ValidatorConstraint({ name: 'isArticleCommentExists', async: true })
 export class IsArticleCommentExists implements ValidatorConstraintInterface {
   constructor(private commentsService: ArticlesCommentsService) {}
+
+  async validate(value: number): Promise<boolean> {
+    try {
+      await this.commentsService.checkCommentExists(value);
+    } catch (error) {
+      return false;
+    }
+    return true;
+  }
+
+  defaultMessage(): string {
+    return 'Unknown comment';
+  }
+}
+
+@Injectable()
+@ValidatorConstraint({ name: 'isPollExists', async: true })
+export class IsPollExists implements ValidatorConstraintInterface {
+  constructor(private pollsService: PollsService) {}
+
+  async validate(value: number): Promise<boolean> {
+    try {
+      await this.pollsService.checkPollExists(value);
+    } catch (error) {
+      return false;
+    }
+    return true;
+  }
+
+  defaultMessage(): string {
+    return 'Unknown poll';
+  }
+}
+
+@Injectable()
+@ValidatorConstraint({ name: 'isPollCommentExists', async: true })
+export class IsPollCommentExists implements ValidatorConstraintInterface {
+  constructor(private commentsService: PollsCommentsService) {}
 
   async validate(value: number): Promise<boolean> {
     try {
@@ -744,44 +782,6 @@ export class IsAdvertExists implements ValidatorConstraintInterface {
 
   defaultMessage(): string {
     return 'Unknown advert';
-  }
-}
-
-@Injectable()
-@ValidatorConstraint({ name: 'isPollExists', async: true })
-export class IsPollExists implements ValidatorConstraintInterface {
-  constructor(private pollsService: PollsService) {}
-
-  async validate(value: number): Promise<boolean> {
-    try {
-      await this.pollsService.checkPollExists(value);
-    } catch (error) {
-      return false;
-    }
-    return true;
-  }
-
-  defaultMessage(): string {
-    return 'Unknown poll';
-  }
-}
-
-@Injectable()
-@ValidatorConstraint({ name: 'isPollCommentExists', async: true })
-export class IsPollCommentExists implements ValidatorConstraintInterface {
-  constructor(private commentsService: PollsCommentsService) {}
-
-  async validate(value: number): Promise<boolean> {
-    try {
-      await this.commentsService.checkCommentExists(value);
-    } catch (error) {
-      return false;
-    }
-    return true;
-  }
-
-  defaultMessage(): string {
-    return 'Unknown comment';
   }
 }
 

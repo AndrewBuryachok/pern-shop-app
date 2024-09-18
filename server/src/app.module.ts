@@ -10,6 +10,7 @@ import { FriendsModule } from './features/friends/friends.module';
 import { SubscribersModule } from './features/subscribers/subscribers.module';
 import { ReportsModule } from './features/reports/reports.module';
 import { ArticlesModule } from './features/articles/articles.module';
+import { PollsModule } from './features/polls/polls.module';
 import { CardsModule } from './features/cards/cards.module';
 import { ExchangesModule } from './features/exchanges/exchanges.module';
 import { PaymentsModule } from './features/payments/payments.module';
@@ -31,6 +32,9 @@ import { HiresModule } from './features/hires/hires.module';
 import { GoodsModule } from './features/goods/goods.module';
 import { WaresModule } from './features/wares/wares.module';
 import { ProductsModule } from './features/products/products.module';
+import { BargainsModule } from './features/bargains/bargains.module';
+import { TradesModule } from './features/trades/trades.module';
+import { SalesModule } from './features/sales/sales.module';
 import { OrdersModule } from './features/orders/orders.module';
 import { DeliveriesModule } from './features/deliveries/deliveries.module';
 import { ShopsDeliveriesModule } from './features/shops-deliveries/shops-deliveries.module';
@@ -38,10 +42,6 @@ import { MarketsDeliveriesModule } from './features/markets-deliveries/markets-d
 import { StoragesDeliveriesModule } from './features/storages-deliveries/storages-deliveries.module';
 import { TasksModule } from './features/tasks/tasks.module';
 import { AdvertsModule } from './features/adverts/adverts.module';
-import { BargainsModule } from './features/bargains/bargains.module';
-import { TradesModule } from './features/trades/trades.module';
-import { SalesModule } from './features/sales/sales.module';
-import { PollsModule } from './features/polls/polls.module';
 import { RatingsModule } from './features/ratings/ratings.module';
 import { LoggerModule } from './features/logger/logger.module';
 
@@ -78,6 +78,7 @@ import { LoggerModule } from './features/logger/logger.module';
     SubscribersModule,
     ReportsModule,
     ArticlesModule,
+    PollsModule,
     CardsModule,
     ExchangesModule,
     PaymentsModule,
@@ -99,6 +100,9 @@ import { LoggerModule } from './features/logger/logger.module';
     GoodsModule,
     WaresModule,
     ProductsModule,
+    BargainsModule,
+    TradesModule,
+    SalesModule,
     OrdersModule,
     DeliveriesModule,
     ShopsDeliveriesModule,
@@ -106,10 +110,6 @@ import { LoggerModule } from './features/logger/logger.module';
     StoragesDeliveriesModule,
     TasksModule,
     AdvertsModule,
-    BargainsModule,
-    TradesModule,
-    SalesModule,
-    PollsModule,
     RatingsModule,
     LoggerModule,
   ],

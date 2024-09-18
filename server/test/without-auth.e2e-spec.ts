@@ -167,6 +167,33 @@ describe('Without Auth', () => {
     });
   });
 
+  describe('Polls', () => {
+    it('GET /polls/my', async () => {
+      return request(app.getHttpServer()).get('/polls/my').expect(401);
+    });
+
+    it('GET /polls/liked', async () => {
+      return request(app.getHttpServer()).get('/polls/liked').expect(401);
+    });
+
+    it('GET /polls/commented', async () => {
+      return request(app.getHttpServer()).get('/polls/commented').expect(401);
+    });
+
+    it('GET /polls/liked/select', async () => {
+      return request(app.getHttpServer())
+        .get('/polls/liked/select')
+        .expect(401);
+    });
+
+    it('GET /polls/all', async () => {
+      return request(app.getHttpServer())
+        .get('/polls/all')
+        .set('Authorization', `Bearer ${user.access}`)
+        .expect(403);
+    });
+  });
+
   describe('Cards', () => {
     it('GET /cards/my', async () => {
       return request(app.getHttpServer()).get('/cards/my').expect(401);
@@ -759,28 +786,31 @@ describe('Without Auth', () => {
     });
   });
 
-  describe('Polls', () => {
-    it('GET /polls/my', async () => {
-      return request(app.getHttpServer()).get('/polls/my').expect(401);
+  describe('Tasks', () => {
+    it('GET /tasks/my', async () => {
+      return request(app.getHttpServer()).get('/tasks/my').expect(401);
     });
 
-    it('GET /polls/liked', async () => {
-      return request(app.getHttpServer()).get('/polls/liked').expect(401);
+    it('GET /tasks/taken', async () => {
+      return request(app.getHttpServer()).get('/tasks/taken').expect(401);
     });
 
-    it('GET /polls/commented', async () => {
-      return request(app.getHttpServer()).get('/polls/commented').expect(401);
-    });
-
-    it('GET /polls/liked/select', async () => {
+    it('GET /tasks/all', async () => {
       return request(app.getHttpServer())
-        .get('/polls/liked/select')
-        .expect(401);
+        .get('/tasks/all')
+        .set('Authorization', `Bearer ${user.access}`)
+        .expect(403);
+    });
+  });
+
+  describe('Adverts', () => {
+    it('GET /adverts/my', async () => {
+      return request(app.getHttpServer()).get('/adverts/my').expect(401);
     });
 
-    it('GET /polls/all', async () => {
+    it('GET /adverts/all', async () => {
       return request(app.getHttpServer())
-        .get('/polls/all')
+        .get('/adverts/all')
         .set('Authorization', `Bearer ${user.access}`)
         .expect(403);
     });
