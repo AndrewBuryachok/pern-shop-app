@@ -17,7 +17,7 @@ import { Request, Response } from '../../common/interfaces';
 import { AppException } from '../../common/exceptions';
 import { PollError } from './poll-error.enum';
 import { Result } from './result.enum';
-import { Notification } from '../../common/enums';
+import { Event, Notification } from '../../common/enums';
 
 @Injectable()
 export class PollsService {
@@ -108,7 +108,7 @@ export class PollsService {
   }
 
   selectPollViews(pollId: number): Promise<PollView[]> {
-    return this.selectPollsViewsQueryBuilder()
+    return this.selectViewsQueryBuilder()
       .where('view.pollId = :pollId', { pollId })
       .getMany();
   }
@@ -172,7 +172,16 @@ export class PollsService {
     if (view) {
       throw new AppException(PollError.ALREADY_VIEWED);
     }
-    await this.addView(dto);
+    const { id } = await this.addView(dto);
+    const body = await this.selectViewsQueryBuilder()
+      .where('view.id = :id', { id })
+      .getOne();
+    this.mqttService.publishEvent(
+      0,
+      Event.POLLS_VIEWS,
+      dto.pollId,
+      JSON.stringify(body),
+    );
   }
 
   async likePoll(dto: ExtLikePollDto & { nick: string }): Promise<void> {
@@ -182,11 +191,34 @@ export class PollsService {
     });
     const notify = !like || like.type !== dto.type;
     if (!like) {
-      await this.addLike(dto);
+      const { id } = await this.addLike(dto);
+      const body = await this.selectLikesQueryBuilder()
+        .where('like.id = :id', { id })
+        .getOne();
+      this.mqttService.publishEvent(
+        0,
+        Event.POLLS_LIKES,
+        dto.pollId,
+        JSON.stringify(body),
+      );
     } else if (like.type !== dto.type) {
       await this.updateLike(like, dto);
+      const body = { id: like.id, type: like.type, toggle: true };
+      this.mqttService.publishEvent(
+        0,
+        Event.POLLS_LIKES,
+        dto.pollId,
+        JSON.stringify(body),
+      );
     } else {
+      const body = { id: like.id, type: like.type };
       await this.removeLike(like);
+      this.mqttService.publishEvent(
+        0,
+        Event.POLLS_LIKES,
+        dto.pollId,
+        JSON.stringify(body),
+      );
     }
     if (notify) {
       const poll = await this.findPollById(dto.pollId);
@@ -276,19 +308,20 @@ export class PollsService {
     }
   }
 
-  private async addView(dto: ViewPollDto): Promise<void> {
+  private async addView(dto: ViewPollDto): Promise<PollView> {
     try {
       const view = this.viewsRepository.create({
         pollId: dto.pollId,
         userId: dto.myId,
       });
       await this.viewsRepository.save(view);
+      return view;
     } catch (error) {
       throw new AppException(PollError.ADD_VIEW_FAILED);
     }
   }
 
-  private async addLike(dto: ExtLikePollDto): Promise<void> {
+  private async addLike(dto: ExtLikePollDto): Promise<PollLike> {
     try {
       const like = this.likesRepository.create({
         pollId: dto.pollId,
@@ -296,6 +329,7 @@ export class PollsService {
         type: dto.type,
       });
       await this.likesRepository.save(like);
+      return like;
     } catch (error) {
       throw new AppException(PollError.ADD_LIKE_FAILED);
     }
@@ -318,7 +352,7 @@ export class PollsService {
     }
   }
 
-  private selectPollsViewsQueryBuilder(): SelectQueryBuilder<PollView> {
+  private selectViewsQueryBuilder(): SelectQueryBuilder<PollView> {
     return this.viewsRepository
       .createQueryBuilder('view')
       .innerJoin('view.user', 'viewer')

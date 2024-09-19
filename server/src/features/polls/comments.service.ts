@@ -11,7 +11,7 @@ import {
 } from './comment.dto';
 import { AppException } from '../../common/exceptions';
 import { CommentError } from './comment-error.enum';
-import { Notification } from '../../common/enums';
+import { Event, Notification } from '../../common/enums';
 
 @Injectable()
 export class CommentsService {
@@ -31,7 +31,7 @@ export class CommentsService {
   async createComment(
     dto: ExtCreateCommentDto & { nick: string },
   ): Promise<void> {
-    await this.create(dto);
+    const { id } = await this.create(dto);
     const poll = await this.pollsService.findPollById(dto.pollId);
     this.mqttService.publishNotificationMessage(
       dto.pollId,
@@ -56,6 +56,15 @@ export class CommentsService {
       dto.nick,
       Notification.MENTIONED_POLL_COMMENT,
     );
+    const body = await this.selectCommentsQueryBuilder()
+      .where('comment.id = :id', { id })
+      .getOne();
+    this.mqttService.publishEvent(
+      0,
+      Event.POLLS_COMMENTS,
+      dto.pollId,
+      JSON.stringify(body),
+    );
   }
 
   async editComment(dto: ExtEditCommentDto & { nick: string }): Promise<void> {
@@ -64,13 +73,19 @@ export class CommentsService {
       dto.myId,
       dto.hasRole,
     );
-    await this.pollsService.checkPollNotCompleted(comment.pollId);
     await this.edit(comment, dto);
     await this.mqttService.publishNotificationMention(
       comment.pollId,
       dto.text,
       dto.nick,
       Notification.MENTIONED_POLL_COMMENT,
+    );
+    const body = { id: dto.commentId, text: dto.text };
+    this.mqttService.publishEvent(
+      0,
+      Event.POLLS_COMMENTS,
+      comment.pollId,
+      JSON.stringify(body),
     );
   }
 
@@ -80,8 +95,14 @@ export class CommentsService {
       dto.myId,
       dto.hasRole,
     );
-    await this.pollsService.checkPollNotCompleted(comment.pollId);
     await this.delete(comment);
+    const body = { id: dto.commentId };
+    this.mqttService.publishEvent(
+      0,
+      Event.POLLS_COMMENTS,
+      comment.pollId,
+      JSON.stringify(body),
+    );
   }
 
   async checkCommentExists(id: number): Promise<void> {

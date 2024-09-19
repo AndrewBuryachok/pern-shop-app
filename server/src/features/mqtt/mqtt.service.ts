@@ -1,6 +1,7 @@
 import { MqttClient, connect } from 'mqtt';
 import { Injectable } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
+import { Event } from '../../common/enums';
 
 @Injectable()
 export class MqttService {
@@ -19,36 +20,41 @@ export class MqttService {
     this.client.on('message', async (topic, message) => {
       const userId = +topic.split('/')[2];
       const payload = message.toString();
-      if (topic.split('/')[1] === 'users') {
-        if (payload) {
-          if (!this.users.has(userId)) {
-            await this.usersService.addUserOnline(userId);
-          }
-          this.users.set(userId, new Date());
-        } else {
-          if (this.users.has(userId)) {
-            await this.usersService.removeUserOnline(userId);
-          }
-          this.users.delete(userId);
-        }
-      } else {
-        const notification = topic.split('/').slice(2).join('/');
-        if (payload) {
-          if (userId) {
-            this.notifications.set(notification, new Date(payload));
+      switch (topic.split('/')[1]) {
+        case 'users':
+          if (payload) {
+            if (!this.users.has(userId)) {
+              await this.usersService.addUserOnline(userId);
+            }
+            this.users.set(userId, new Date());
           } else {
-            const users = await this.usersService.selectOfflineUsers();
-            users.forEach((user) =>
-              this.publishMessage(
-                `notifications/${user.id}${notification.slice(1)}`,
-                payload,
-                true,
-              ),
-            );
+            if (this.users.has(userId)) {
+              await this.usersService.removeUserOnline(userId);
+            }
+            this.users.delete(userId);
           }
-        } else {
-          this.notifications.delete(notification);
-        }
+          break;
+        case 'notifications':
+          const notification = topic.split('/').slice(2).join('/');
+          if (payload) {
+            if (userId) {
+              this.notifications.set(notification, new Date(payload));
+            } else {
+              const users = await this.usersService.selectOfflineUsers();
+              users.forEach((user) =>
+                this.publishMessage(
+                  `notifications/${user.id}${notification.slice(1)}`,
+                  payload,
+                  true,
+                ),
+              );
+            }
+          } else {
+            this.notifications.delete(notification);
+          }
+          break;
+        default:
+          break;
       }
     });
   }
@@ -107,6 +113,10 @@ export class MqttService {
       new Date().toISOString(),
       !!userId,
     );
+  }
+
+  publishEvent(userId: number, page: Event, id: number, body: string): void {
+    this.publishMessage(`events/${userId}/${page}/${id}`, body, false);
   }
 
   private publishMessage(

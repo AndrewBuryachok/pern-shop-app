@@ -15,7 +15,7 @@ import {
 import { Request, Response } from '../../common/interfaces';
 import { AppException } from '../../common/exceptions';
 import { ArticleError } from './article-error.enum';
-import { Notification } from '../../common/enums';
+import { Event, Notification } from '../../common/enums';
 
 @Injectable()
 export class ArticlesService {
@@ -128,7 +128,7 @@ export class ArticlesService {
   }
 
   selectArticleViews(articleId: number): Promise<ArticleView[]> {
-    return this.selectArticlesViewsQueryBuilder()
+    return this.selectViewsQueryBuilder()
       .where('view.articleId = :articleId', { articleId })
       .getMany();
   }
@@ -189,7 +189,16 @@ export class ArticlesService {
     if (view) {
       throw new AppException(ArticleError.ALREADY_VIEWED);
     }
-    await this.addView(dto);
+    const { id } = await this.addView(dto);
+    const body = await this.selectViewsQueryBuilder()
+      .where('view.id = :id', { id })
+      .getOne();
+    this.mqttService.publishEvent(
+      0,
+      Event.ARTICLES_VIEWS,
+      dto.articleId,
+      JSON.stringify(body),
+    );
   }
 
   async likeArticle(dto: ExtLikeArticleDto & { nick: string }): Promise<void> {
@@ -199,11 +208,34 @@ export class ArticlesService {
     });
     const notify = !like || like.type !== dto.type;
     if (!like) {
-      await this.addLike(dto);
+      const { id } = await this.addLike(dto);
+      const body = await this.selectLikesQueryBuilder()
+        .where('like.id = :id', { id })
+        .getOne();
+      this.mqttService.publishEvent(
+        0,
+        Event.ARTICLES_LIKES,
+        dto.articleId,
+        JSON.stringify(body),
+      );
     } else if (like.type !== dto.type) {
       await this.updateLike(like, dto);
+      const body = { id: like.id, type: like.type, toggle: true };
+      this.mqttService.publishEvent(
+        0,
+        Event.ARTICLES_LIKES,
+        dto.articleId,
+        JSON.stringify(body),
+      );
     } else {
+      const body = { id: like.id, type: like.type };
       await this.removeLike(like);
+      this.mqttService.publishEvent(
+        0,
+        Event.ARTICLES_LIKES,
+        dto.articleId,
+        JSON.stringify(body),
+      );
     }
     if (notify) {
       const article = await this.findArticleById(dto.articleId);
@@ -274,19 +306,20 @@ export class ArticlesService {
     }
   }
 
-  private async addView(dto: ViewArticleDto): Promise<void> {
+  private async addView(dto: ViewArticleDto): Promise<ArticleView> {
     try {
       const view = this.viewsRepository.create({
         articleId: dto.articleId,
         userId: dto.myId,
       });
       await this.viewsRepository.save(view);
+      return view;
     } catch (error) {
       throw new AppException(ArticleError.ADD_VIEW_FAILED);
     }
   }
 
-  private async addLike(dto: ExtLikeArticleDto): Promise<void> {
+  private async addLike(dto: ExtLikeArticleDto): Promise<ArticleLike> {
     try {
       const like = this.likesRepository.create({
         articleId: dto.articleId,
@@ -294,6 +327,7 @@ export class ArticlesService {
         type: dto.type,
       });
       await this.likesRepository.save(like);
+      return like;
     } catch (error) {
       throw new AppException(ArticleError.ADD_LIKE_FAILED);
     }
@@ -319,7 +353,7 @@ export class ArticlesService {
     }
   }
 
-  private selectArticlesViewsQueryBuilder(): SelectQueryBuilder<ArticleView> {
+  private selectViewsQueryBuilder(): SelectQueryBuilder<ArticleView> {
     return this.viewsRepository
       .createQueryBuilder('view')
       .innerJoin('view.user', 'viewer')

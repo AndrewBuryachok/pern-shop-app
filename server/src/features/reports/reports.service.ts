@@ -15,7 +15,7 @@ import {
 import { Request, Response } from '../../common/interfaces';
 import { AppException } from '../../common/exceptions';
 import { ReportError } from './report-error.enum';
-import { Notification } from '../../common/enums';
+import { Event, Notification } from '../../common/enums';
 
 @Injectable()
 export class ReportsService {
@@ -73,7 +73,7 @@ export class ReportsService {
   }
 
   selectReportViews(reportId: number): Promise<ReportView[]> {
-    return this.selectReportsViewsQueryBuilder()
+    return this.selectViewsQueryBuilder()
       .where('view.reportId = :reportId', { reportId })
       .getMany();
   }
@@ -134,7 +134,16 @@ export class ReportsService {
     if (view) {
       throw new AppException(ReportError.ALREADY_VIEWED);
     }
-    await this.addView(dto);
+    const { id } = await this.addView(dto);
+    const body = await this.selectViewsQueryBuilder()
+      .where('view.id = :id', { id })
+      .getOne();
+    this.mqttService.publishEvent(
+      0,
+      Event.REPORTS_VIEWS,
+      dto.reportId,
+      JSON.stringify(body),
+    );
   }
 
   async likeReport(dto: ExtLikeReportDto & { nick: string }): Promise<void> {
@@ -144,11 +153,34 @@ export class ReportsService {
     });
     const notify = !like || like.type !== dto.type;
     if (!like) {
-      await this.addLike(dto);
+      const { id } = await this.addLike(dto);
+      const body = await this.selectLikesQueryBuilder()
+        .where('like.id = :id', { id })
+        .getOne();
+      this.mqttService.publishEvent(
+        0,
+        Event.REPORTS_LIKES,
+        dto.reportId,
+        JSON.stringify(body),
+      );
     } else if (like.type !== dto.type) {
       await this.updateLike(like, dto);
+      const body = { id: like.id, type: like.type, toggle: true };
+      this.mqttService.publishEvent(
+        0,
+        Event.REPORTS_LIKES,
+        dto.reportId,
+        JSON.stringify(body),
+      );
     } else {
+      const body = { id: like.id, type: like.type };
       await this.removeLike(like);
+      this.mqttService.publishEvent(
+        0,
+        Event.REPORTS_LIKES,
+        dto.reportId,
+        JSON.stringify(body),
+      );
     }
     if (notify) {
       const report = await this.findReportById(dto.reportId);
@@ -220,19 +252,20 @@ export class ReportsService {
     }
   }
 
-  private async addView(dto: ViewReportDto): Promise<void> {
+  private async addView(dto: ViewReportDto): Promise<ReportView> {
     try {
       const view = this.viewsRepository.create({
         reportId: dto.reportId,
         userId: dto.myId,
       });
       await this.viewsRepository.save(view);
+      return view;
     } catch (error) {
       throw new AppException(ReportError.ADD_VIEW_FAILED);
     }
   }
 
-  private async addLike(dto: ExtLikeReportDto): Promise<void> {
+  private async addLike(dto: ExtLikeReportDto): Promise<ReportLike> {
     try {
       const like = this.likesRepository.create({
         reportId: dto.reportId,
@@ -240,6 +273,7 @@ export class ReportsService {
         type: dto.type,
       });
       await this.likesRepository.save(like);
+      return like;
     } catch (error) {
       throw new AppException(ReportError.ADD_LIKE_FAILED);
     }
@@ -265,7 +299,7 @@ export class ReportsService {
     }
   }
 
-  private selectReportsViewsQueryBuilder(): SelectQueryBuilder<ReportView> {
+  private selectViewsQueryBuilder(): SelectQueryBuilder<ReportView> {
     return this.viewsRepository
       .createQueryBuilder('view')
       .innerJoin('view.user', 'viewer')

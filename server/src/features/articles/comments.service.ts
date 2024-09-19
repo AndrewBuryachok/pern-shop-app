@@ -11,7 +11,7 @@ import {
 } from './comment.dto';
 import { AppException } from '../../common/exceptions';
 import { CommentError } from './comment-error.enum';
-import { Notification } from '../../common/enums';
+import { Event, Notification } from '../../common/enums';
 
 @Injectable()
 export class CommentsService {
@@ -31,7 +31,7 @@ export class CommentsService {
   async createComment(
     dto: ExtCreateCommentDto & { nick: string },
   ): Promise<void> {
-    await this.create(dto);
+    const { id } = await this.create(dto);
     const article = await this.articlesService.findArticleById(dto.articleId);
     this.mqttService.publishNotificationMessage(
       dto.articleId,
@@ -56,6 +56,15 @@ export class CommentsService {
       dto.nick,
       Notification.MENTIONED_ARTICLE_COMMENT,
     );
+    const body = await this.selectCommentsQueryBuilder()
+      .where('comment.id = :id', { id })
+      .getOne();
+    this.mqttService.publishEvent(
+      0,
+      Event.ARTICLES_COMMENTS,
+      dto.articleId,
+      JSON.stringify(body),
+    );
   }
 
   async editComment(dto: ExtEditCommentDto & { nick: string }): Promise<void> {
@@ -71,6 +80,13 @@ export class CommentsService {
       dto.nick,
       Notification.MENTIONED_ARTICLE_COMMENT,
     );
+    const body = { id: dto.commentId, text: dto.text };
+    this.mqttService.publishEvent(
+      0,
+      Event.ARTICLES_COMMENTS,
+      comment.articleId,
+      JSON.stringify(body),
+    );
   }
 
   async deleteComment(dto: DeleteCommentDto): Promise<void> {
@@ -80,6 +96,13 @@ export class CommentsService {
       dto.hasRole,
     );
     await this.delete(comment);
+    const body = { id: dto.commentId };
+    this.mqttService.publishEvent(
+      0,
+      Event.ARTICLES_COMMENTS,
+      comment.articleId,
+      JSON.stringify(body),
+    );
   }
 
   async checkCommentExists(id: number): Promise<void> {

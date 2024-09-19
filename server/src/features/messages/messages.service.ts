@@ -10,7 +10,7 @@ import {
 } from './message.dto';
 import { AppException } from '../../common/exceptions';
 import { MessageError } from './message-error.enum';
-import { Notification } from '../../common/enums';
+import { Event, Notification } from '../../common/enums';
 
 @Injectable()
 export class MessagesService {
@@ -66,23 +66,70 @@ export class MessagesService {
   async createMessage(
     dto: ExtCreateMessageDto & { nick: string },
   ): Promise<void> {
-    await this.create(dto);
+    const { id } = await this.create(dto);
     this.mqttService.publishNotificationMessage(
       dto.myId,
       dto.userId,
       dto.nick,
       Notification.MESSAGED_USER,
     );
+    const body = await this.selectMessagesQueryBuilder()
+      .where('message.id = :id', { id })
+      .getOne();
+    this.mqttService.publishEvent(
+      dto.userId,
+      Event.MESSAGES,
+      dto.myId,
+      JSON.stringify(body),
+    );
+    if (dto.userId !== dto.myId) {
+      this.mqttService.publishEvent(
+        dto.myId,
+        Event.MESSAGES,
+        dto.userId,
+        JSON.stringify(body),
+      );
+    }
   }
 
   async editMessage(dto: ExtEditMessageDto & { nick: string }): Promise<void> {
     const message = await this.checkMessageOwner(dto.messageId, dto.myId);
     await this.edit(message, dto);
+    const body = { id: dto.messageId, text: dto.text };
+    this.mqttService.publishEvent(
+      message.chatId,
+      Event.MESSAGES,
+      message.userId,
+      JSON.stringify(body),
+    );
+    if (message.chatId !== message.userId) {
+      this.mqttService.publishEvent(
+        message.userId,
+        Event.MESSAGES,
+        message.chatId,
+        JSON.stringify(body),
+      );
+    }
   }
 
   async deleteMessage(dto: DeleteMessageDto): Promise<void> {
     const message = await this.checkMessageOwner(dto.messageId, dto.myId);
     await this.delete(message);
+    const body = { id: dto.messageId };
+    this.mqttService.publishEvent(
+      message.chatId,
+      Event.MESSAGES,
+      message.userId,
+      JSON.stringify(body),
+    );
+    if (message.chatId !== message.userId) {
+      this.mqttService.publishEvent(
+        message.userId,
+        Event.MESSAGES,
+        message.chatId,
+        JSON.stringify(body),
+      );
+    }
   }
 
   async checkMessageExists(id: number): Promise<void> {
