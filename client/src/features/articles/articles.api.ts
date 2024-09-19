@@ -67,13 +67,11 @@ export const articlesApi = emptyApi.injectEndpoints({
       query: (articleId) => ({
         url: `/articles/${articleId}/views`,
       }),
-      providesTags: ['ArticleView'],
     }),
     selectArticleLikes: build.query<ArticleLike[], number>({
       query: (articleId) => ({
         url: `/articles/${articleId}/likes`,
       }),
-      providesTags: ['ArticleLike'],
     }),
     createMyArticle: build.mutation<void, CreateArticleDto>({
       query: (dto) => ({
@@ -112,29 +110,7 @@ export const articlesApi = emptyApi.injectEndpoints({
         method: 'POST',
       }),
       invalidatesTags: ['ArticleView'],
-      onQueryStarted(dto, { dispatch, queryFulfilled, getState }) {
-        const endpoints = articlesApi.util.selectInvalidatedBy(getState(), [
-          'Article',
-        ]);
-        endpoints
-          .filter((endpoint) => endpoint.endpointName === 'getMainArticles')
-          .forEach((endpoint) => {
-            const patchResult = dispatch(
-              articlesApi.util.updateQueryData(
-                'getMainArticles',
-                endpoint.originalArgs,
-                (draft) => {
-                  const article = draft.result.find(
-                    (article) => article.id === dto.articleId,
-                  );
-                  if (article) {
-                    article.views++;
-                  }
-                },
-              ),
-            );
-            queryFulfilled.catch(patchResult.undo);
-          });
+      onQueryStarted(dto, { dispatch, queryFulfilled }) {
         const patchResult = dispatch(
           articlesApi.util.updateQueryData(
             'selectViewedArticles',
@@ -154,51 +130,7 @@ export const articlesApi = emptyApi.injectEndpoints({
         body: dto,
       }),
       invalidatesTags: ['ArticleLike'],
-      onQueryStarted(dto, { dispatch, queryFulfilled, getState }) {
-        const endpoints = articlesApi.util.selectInvalidatedBy(getState(), [
-          'Article',
-        ]);
-        endpoints
-          .filter((endpoint) => endpoint.endpointName === 'getMainArticles')
-          .forEach((endpoint) => {
-            const patchResult = dispatch(
-              articlesApi.util.updateQueryData(
-                'getMainArticles',
-                endpoint.originalArgs,
-                (draft) => {
-                  const article = draft.result.find(
-                    (article) => article.id === dto.articleId,
-                  );
-                  if (article) {
-                    if (dto.upLiked || dto.downLiked) {
-                      if (dto.upLiked === dto.type) {
-                        if (dto.type) {
-                          article.upLikes--;
-                        } else {
-                          article.downLikes--;
-                        }
-                      } else {
-                        if (dto.type) {
-                          article.upLikes++;
-                          article.downLikes--;
-                        } else {
-                          article.downLikes++;
-                          article.upLikes--;
-                        }
-                      }
-                    } else {
-                      if (dto.type) {
-                        article.upLikes++;
-                      } else {
-                        article.downLikes++;
-                      }
-                    }
-                  }
-                },
-              ),
-            );
-            queryFulfilled.catch(patchResult.undo);
-          });
+      onQueryStarted(dto, { dispatch, queryFulfilled }) {
         const patchResult = dispatch(
           articlesApi.util.updateQueryData(
             'selectLikedArticles',

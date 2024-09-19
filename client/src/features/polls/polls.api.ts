@@ -62,13 +62,11 @@ export const pollsApi = emptyApi.injectEndpoints({
       query: (pollId) => ({
         url: `/polls/${pollId}/views`,
       }),
-      providesTags: ['PollView'],
     }),
     selectPollLikes: build.query<PollLike[], number>({
       query: (pollId) => ({
         url: `/polls/${pollId}/likes`,
       }),
-      providesTags: ['PollLike'],
     }),
     createMyPoll: build.mutation<void, CreatePollDto>({
       query: (dto) => ({
@@ -115,29 +113,7 @@ export const pollsApi = emptyApi.injectEndpoints({
         method: 'POST',
       }),
       invalidatesTags: ['PollView'],
-      onQueryStarted(dto, { dispatch, queryFulfilled, getState }) {
-        const endpoints = pollsApi.util.selectInvalidatedBy(getState(), [
-          'Poll',
-        ]);
-        endpoints
-          .filter((endpoint) => endpoint.endpointName === 'getMainPolls')
-          .forEach((endpoint) => {
-            const patchResult = dispatch(
-              pollsApi.util.updateQueryData(
-                'getMainPolls',
-                endpoint.originalArgs,
-                (draft) => {
-                  const poll = draft.result.find(
-                    (poll) => poll.id === dto.pollId,
-                  );
-                  if (poll) {
-                    poll.views++;
-                  }
-                },
-              ),
-            );
-            queryFulfilled.catch(patchResult.undo);
-          });
+      onQueryStarted(dto, { dispatch, queryFulfilled }) {
         const patchResult = dispatch(
           pollsApi.util.updateQueryData(
             'selectViewedPolls',
@@ -157,51 +133,7 @@ export const pollsApi = emptyApi.injectEndpoints({
         body: dto,
       }),
       invalidatesTags: ['PollLike'],
-      onQueryStarted(dto, { dispatch, queryFulfilled, getState }) {
-        const endpoints = pollsApi.util.selectInvalidatedBy(getState(), [
-          'Poll',
-        ]);
-        endpoints
-          .filter((endpoint) => endpoint.endpointName === 'getMainPolls')
-          .forEach((endpoint) => {
-            const patchResult = dispatch(
-              pollsApi.util.updateQueryData(
-                'getMainPolls',
-                endpoint.originalArgs,
-                (draft) => {
-                  const poll = draft.result.find(
-                    (poll) => poll.id === dto.pollId,
-                  );
-                  if (poll) {
-                    if (dto.upLiked || dto.downLiked) {
-                      if (dto.upLiked === dto.type) {
-                        if (dto.type) {
-                          poll.upLikes--;
-                        } else {
-                          poll.downLikes--;
-                        }
-                      } else {
-                        if (dto.type) {
-                          poll.upLikes++;
-                          poll.downLikes--;
-                        } else {
-                          poll.downLikes++;
-                          poll.upLikes--;
-                        }
-                      }
-                    } else {
-                      if (dto.type) {
-                        poll.upLikes++;
-                      } else {
-                        poll.downLikes++;
-                      }
-                    }
-                  }
-                },
-              ),
-            );
-            queryFulfilled.catch(patchResult.undo);
-          });
+      onQueryStarted(dto, { dispatch, queryFulfilled }) {
         const patchResult = dispatch(
           pollsApi.util.updateQueryData(
             'selectLikedPolls',

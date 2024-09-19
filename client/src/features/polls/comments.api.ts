@@ -12,7 +12,6 @@ export const commentsApi = emptyApi.injectEndpoints({
       query: (pollId) => ({
         url: `/polls-comments/${pollId}`,
       }),
-      providesTags: ['PollComment'],
     }),
     createPollComment: build.mutation<void, CreateCommentDto>({
       query: (dto) => ({

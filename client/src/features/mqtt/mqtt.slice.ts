@@ -4,6 +4,8 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { showNotification } from '@mantine/notifications';
 import { store } from '../../app/store';
 import { useAppSelector } from '../../app/hooks';
+import { handleEvent } from './events.handler';
+import { Event } from '../../common/enums';
 
 const audio = new Audio('/sound.mp3');
 
@@ -13,42 +15,51 @@ client.on('connect', () =>
   client.subscribe([
     import.meta.env.VITE_BROKER_TOPIC + 'users/#',
     import.meta.env.VITE_BROKER_TOPIC + 'notifications/0/#',
+    import.meta.env.VITE_BROKER_TOPIC + 'events/0/#',
   ]),
 );
 
 client.on('message', (topic, message) => {
   const userId = +topic.split('/')[2];
   const payload = message.toString();
-  if (topic.split('/')[1] === 'users') {
-    if (payload) {
-      store.dispatch(addOnlineUser(userId));
-    } else {
-      store.dispatch(removeOnlineUser(userId));
-      if (store.getState().auth.user?.id === userId) {
-        store.dispatch(publishOnline(userId));
+  switch (topic.split('/')[1]) {
+    case 'users':
+      if (payload) {
+        store.dispatch(addOnlineUser(userId));
+      } else {
+        store.dispatch(removeOnlineUser(userId));
+        if (store.getState().auth.user?.id === userId) {
+          store.dispatch(publishOnline(userId));
+        }
       }
-    }
-  } else {
-    const notification = topic.split('/').slice(2).join('/');
-    if (payload) {
-      const [nick, action, page] = topic.split('/').slice(3);
-      store.dispatch(addNotification([notification, payload]));
-      showNotification({
-        id: notification,
-        title: t('notifications.notification'),
-        message: nick + ' ' + t(`notifications.${page}.${action}`),
-        autoClose: false,
-        onClose: () =>
-          userId
-            ? store.dispatch(publishNotification(notification))
-            : store.dispatch(removeNotification(notification)),
-      });
-      if (!store.getState().mqtt.mute) {
-        audio.play();
+      break;
+    case 'notifications':
+      const notification = topic.split('/').slice(2).join('/');
+      if (payload) {
+        const [nick, action, page] = topic.split('/').slice(3);
+        store.dispatch(addNotification([notification, payload]));
+        showNotification({
+          id: notification,
+          title: t('notifications.notification'),
+          message: nick + ' ' + t(`notifications.${page}.${action}`),
+          autoClose: false,
+          onClose: () =>
+            userId
+              ? store.dispatch(publishNotification(notification))
+              : store.dispatch(removeNotification(notification)),
+        });
+        if (!store.getState().mqtt.mute) {
+          audio.play();
+        }
+      } else {
+        store.dispatch(removeNotification(notification));
       }
-    } else {
-      store.dispatch(removeNotification(notification));
-    }
+      break;
+    case 'events':
+      handleEvent(topic.split('/')[3] as Event, +topic.split('/')[4], payload);
+      break;
+    default:
+      break;
   }
 });
 
@@ -104,20 +115,22 @@ export const mqttSlice = createSlice({
       );
     },
     subscribe: (_, action: PayloadAction<number>) => {
-      client.subscribe(
+      client.subscribe([
         import.meta.env.VITE_BROKER_TOPIC +
           'notifications/' +
           action.payload +
           '/#',
-      );
+        import.meta.env.VITE_BROKER_TOPIC + 'events/' + action.payload + '/#',
+      ]);
     },
     unsubscribe: (_, action: PayloadAction<number>) => {
-      client.unsubscribe(
+      client.unsubscribe([
         import.meta.env.VITE_BROKER_TOPIC +
           'notifications/' +
           action.payload +
           '/#',
-      );
+        import.meta.env.VITE_BROKER_TOPIC + 'events/' + action.payload + '/#',
+      ]);
     },
   },
 });

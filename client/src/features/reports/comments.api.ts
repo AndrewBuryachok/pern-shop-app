@@ -12,7 +12,6 @@ export const commentsApi = emptyApi.injectEndpoints({
       query: (reportId) => ({
         url: `/reports-comments/${reportId}`,
       }),
-      providesTags: ['ReportComment'],
     }),
     createReportComment: build.mutation<void, CreateCommentDto>({
       query: (dto) => ({

@@ -12,13 +12,13 @@ export const messagesApi = emptyApi.injectEndpoints({
       query: () => ({
         url: '/messages/my',
       }),
-      providesTags: ['Auth', 'Message'],
+      providesTags: ['Auth'],
     }),
     selectUserMessages: build.query<Message[], number>({
       query: (userId) => ({
         url: `/messages/${userId}`,
       }),
-      providesTags: ['Auth', 'Message'],
+      providesTags: ['Auth'],
     }),
     createMessage: build.mutation<void, CreateMessageDto>({
       query: (dto) => ({

@@ -72,13 +72,11 @@ export const reportsApi = emptyApi.injectEndpoints({
       query: (reportId) => ({
         url: `/reports/${reportId}/views`,
       }),
-      providesTags: ['ReportView'],
     }),
     selectReportLikes: build.query<ReportLike[], number>({
       query: (reportId) => ({
         url: `/reports/${reportId}/likes`,
       }),
-      providesTags: ['ReportLike'],
     }),
     createServerReport: build.mutation<void, CreateReportDto>({
       query: (dto) => ({
@@ -149,29 +147,7 @@ export const reportsApi = emptyApi.injectEndpoints({
         method: 'POST',
       }),
       invalidatesTags: ['ReportView'],
-      onQueryStarted(dto, { dispatch, queryFulfilled, getState }) {
-        const endpoints = reportsApi.util.selectInvalidatedBy(getState(), [
-          'Report',
-        ]);
-        endpoints
-          .filter((endpoint) => endpoint.endpointName === 'getMainReports')
-          .forEach((endpoint) => {
-            const patchResult = dispatch(
-              reportsApi.util.updateQueryData(
-                'getMainReports',
-                endpoint.originalArgs,
-                (draft) => {
-                  const report = draft.result.find(
-                    (report) => report.id === dto.reportId,
-                  );
-                  if (report) {
-                    report.views++;
-                  }
-                },
-              ),
-            );
-            queryFulfilled.catch(patchResult.undo);
-          });
+      onQueryStarted(dto, { dispatch, queryFulfilled }) {
         const patchResult = dispatch(
           reportsApi.util.updateQueryData(
             'selectViewedReports',
@@ -191,51 +167,7 @@ export const reportsApi = emptyApi.injectEndpoints({
         body: dto,
       }),
       invalidatesTags: ['ReportLike'],
-      onQueryStarted(dto, { dispatch, queryFulfilled, getState }) {
-        const endpoints = reportsApi.util.selectInvalidatedBy(getState(), [
-          'Report',
-        ]);
-        endpoints
-          .filter((endpoint) => endpoint.endpointName === 'getMainReports')
-          .forEach((endpoint) => {
-            const patchResult = dispatch(
-              reportsApi.util.updateQueryData(
-                'getMainReports',
-                endpoint.originalArgs,
-                (draft) => {
-                  const report = draft.result.find(
-                    (report) => report.id === dto.reportId,
-                  );
-                  if (report) {
-                    if (dto.upLiked || dto.downLiked) {
-                      if (dto.upLiked === dto.type) {
-                        if (dto.type) {
-                          report.upLikes--;
-                        } else {
-                          report.downLikes--;
-                        }
-                      } else {
-                        if (dto.type) {
-                          report.upLikes++;
-                          report.downLikes--;
-                        } else {
-                          report.downLikes++;
-                          report.upLikes--;
-                        }
-                      }
-                    } else {
-                      if (dto.type) {
-                        report.upLikes++;
-                      } else {
-                        report.downLikes++;
-                      }
-                    }
-                  }
-                },
-              ),
-            );
-            queryFulfilled.catch(patchResult.undo);
-          });
+      onQueryStarted(dto, { dispatch, queryFulfilled }) {
         const patchResult = dispatch(
           reportsApi.util.updateQueryData(
             'selectLikedReports',
