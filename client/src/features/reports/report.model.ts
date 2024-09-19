@@ -1,11 +1,5 @@
-import { SmReportLike } from './report-like.model';
 import { SmUser } from '../users/user.model';
 import { SmReportComment } from './comment.model';
-
-export interface SmReport {
-  id: number;
-  like: SmReportLike;
-}
 
 export interface Report {
   id: number;

@@ -30,8 +30,3 @@ export interface ViewPollDto {
 export interface LikePollDto extends CreateReactionDto {
   pollId: number;
 }
-
-export interface ExtLikePollDto extends LikePollDto {
-  upLiked: boolean;
-  downLiked: boolean;
-}

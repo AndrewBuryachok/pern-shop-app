@@ -1,6 +1,6 @@
 import { emptyApi } from '../../app/empty.api';
 import { IRequest, IResponse } from '../../common/interfaces';
-import { Article, SmArticle } from './article.model';
+import { Article } from './article.model';
 import { ArticleView } from './article-view.model';
 import { ArticleLike } from './article-like.model';
 import {
@@ -8,7 +8,7 @@ import {
   DeleteArticleDto,
   EditArticleDto,
   ExtCreateArticleDto,
-  ExtLikeArticleDto,
+  LikeArticleDto,
   ViewArticleDto,
 } from './article.dto';
 import { getQuery } from '../../common/utils';
@@ -55,13 +55,13 @@ export const articlesApi = emptyApi.injectEndpoints({
       query: () => ({
         url: '/articles/viewed/select',
       }),
-      providesTags: ['Auth', 'ArticleView'],
+      providesTags: ['Auth'],
     }),
-    selectLikedArticles: build.query<SmArticle[], void>({
+    selectLikedArticles: build.query<{ up: number[]; down: number[] }, void>({
       query: () => ({
         url: '/articles/liked/select',
       }),
-      providesTags: ['Auth', 'ArticleLike'],
+      providesTags: ['Auth'],
     }),
     selectArticleViews: build.query<ArticleView[], number>({
       query: (articleId) => ({
@@ -123,8 +123,8 @@ export const articlesApi = emptyApi.injectEndpoints({
         queryFulfilled.catch(patchResult.undo);
       },
     }),
-    likeArticle: build.mutation<void, ExtLikeArticleDto>({
-      query: ({ articleId, upLiked, downLiked, ...dto }) => ({
+    likeArticle: build.mutation<void, LikeArticleDto>({
+      query: ({ articleId, ...dto }) => ({
         url: `/articles/${articleId}/likes`,
         method: 'POST',
         body: dto,
@@ -136,21 +136,20 @@ export const articlesApi = emptyApi.injectEndpoints({
             'selectLikedArticles',
             undefined,
             (draft) => {
-              if (dto.upLiked || dto.downLiked) {
-                if (dto.upLiked === dto.type) {
-                  draft = draft.filter(
-                    (article) => article.id === dto.articleId,
-                  );
+              if (dto.type) {
+                draft.down = draft.down.filter((id) => id !== dto.articleId);
+                if (draft.up.includes(dto.articleId)) {
+                  draft.up = draft.up.filter((id) => id !== dto.articleId);
                 } else {
-                  draft.find(
-                    (article) => article.id === dto.articleId,
-                  )!.like.type = dto.type;
+                  draft.up.push(dto.articleId);
                 }
               } else {
-                draft.push({
-                  id: dto.articleId,
-                  like: { id: 0, type: dto.type },
-                });
+                draft.up = draft.up.filter((id) => id !== dto.articleId);
+                if (draft.down.includes(dto.articleId)) {
+                  draft.down = draft.down.filter((id) => id !== dto.articleId);
+                } else {
+                  draft.down.push(dto.articleId);
+                }
               }
             },
           ),

@@ -1,6 +1,6 @@
 import { emptyApi } from '../../app/empty.api';
 import { IRequest, IResponse } from '../../common/interfaces';
-import { Poll, SmPoll } from './poll.model';
+import { Poll } from './poll.model';
 import { PollView } from './poll-view.model';
 import { PollLike } from './poll-like.model';
 import {
@@ -9,7 +9,7 @@ import {
   DeletePollDto,
   EditPollDto,
   ExtCreatePollDto,
-  ExtLikePollDto,
+  LikePollDto,
   ViewPollDto,
 } from './poll.dto';
 import { getQuery } from '../../common/utils';
@@ -50,13 +50,13 @@ export const pollsApi = emptyApi.injectEndpoints({
       query: () => ({
         url: '/polls/viewed/select',
       }),
-      providesTags: ['Auth', 'PollView'],
+      providesTags: ['Auth'],
     }),
-    selectLikedPolls: build.query<SmPoll[], void>({
+    selectLikedPolls: build.query<{ up: number[]; down: number[] }, void>({
       query: () => ({
         url: '/polls/liked/select',
       }),
-      providesTags: ['Auth', 'PollLike'],
+      providesTags: ['Auth'],
     }),
     selectPollViews: build.query<PollView[], number>({
       query: (pollId) => ({
@@ -126,8 +126,8 @@ export const pollsApi = emptyApi.injectEndpoints({
         queryFulfilled.catch(patchResult.undo);
       },
     }),
-    likePoll: build.mutation<void, ExtLikePollDto>({
-      query: ({ pollId, upLiked, downLiked, ...dto }) => ({
+    likePoll: build.mutation<void, LikePollDto>({
+      query: ({ pollId, ...dto }) => ({
         url: `/polls/${pollId}/likes`,
         method: 'POST',
         body: dto,
@@ -139,18 +139,20 @@ export const pollsApi = emptyApi.injectEndpoints({
             'selectLikedPolls',
             undefined,
             (draft) => {
-              if (dto.upLiked || dto.downLiked) {
-                if (dto.upLiked === dto.type) {
-                  draft = draft.filter((poll) => poll.id === dto.pollId);
+              if (dto.type) {
+                draft.down = draft.down.filter((id) => id !== dto.pollId);
+                if (draft.up.includes(dto.pollId)) {
+                  draft.up = draft.up.filter((id) => id !== dto.pollId);
                 } else {
-                  draft.find((poll) => poll.id === dto.pollId)!.like.type =
-                    dto.type;
+                  draft.up.push(dto.pollId);
                 }
               } else {
-                draft.push({
-                  id: dto.pollId,
-                  like: { id: 0, type: dto.type },
-                });
+                draft.up = draft.up.filter((id) => id !== dto.pollId);
+                if (draft.down.includes(dto.pollId)) {
+                  draft.down = draft.down.filter((id) => id !== dto.pollId);
+                } else {
+                  draft.down.push(dto.pollId);
+                }
               }
             },
           ),

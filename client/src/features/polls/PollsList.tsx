@@ -27,12 +27,8 @@ export default function PollsList({ actions = [], ...props }: Props) {
         .map((poll) => ({
           ...poll,
           viewed: !!viewedPolls?.includes(poll.id),
-          upLiked: !!likedPolls?.find(
-            (likedPoll) => likedPoll.id === poll.id && likedPoll.like.type,
-          ),
-          downLiked: !!likedPolls?.find(
-            (likedPoll) => likedPoll.id === poll.id && !likedPoll.like.type,
-          ),
+          upLiked: !!likedPolls?.up.includes(poll.id),
+          downLiked: !!likedPolls?.down.includes(poll.id),
         }))
         .map((poll) => (
           <PollPaper

@@ -43,11 +43,7 @@ export default function PollPaper({ poll, ...props }: Props) {
   const [likePoll] = useLikePollMutation();
 
   const handleLikeSubmit = async (dto: LikePollDto) => {
-    await likePoll({
-      ...dto,
-      upLiked: !!poll.upLiked,
-      downLiked: !!poll.downLiked,
-    });
+    await likePoll(dto);
   };
 
   const { ref, entry } = useIntersection();

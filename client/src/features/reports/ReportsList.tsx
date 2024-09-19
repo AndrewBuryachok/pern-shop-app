@@ -25,14 +25,8 @@ export default function ReportsList({ actions = [], ...props }: Props) {
         .map((report) => ({
           ...report,
           viewed: !!viewedReports?.includes(report.id),
-          upLiked: !!likedReports?.find(
-            (likedReport) =>
-              likedReport.id === report.id && likedReport.like.type,
-          ),
-          downLiked: !!likedReports?.find(
-            (likedReport) =>
-              likedReport.id === report.id && !likedReport.like.type,
-          ),
+          upLiked: !!likedReports?.up.includes(report.id),
+          downLiked: !!likedReports?.down.includes(report.id),
         }))
         .map((report) => (
           <ReportPaper

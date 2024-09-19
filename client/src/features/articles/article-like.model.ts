@@ -1,5 +1,3 @@
-import { Reaction, SmReaction } from '../reactions/reaction.model';
-
-export interface SmArticleLike extends SmReaction {}
+import { Reaction } from '../reactions/reaction.model';
 
 export interface ArticleLike extends Reaction {}

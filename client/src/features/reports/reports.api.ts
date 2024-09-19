@@ -1,13 +1,13 @@
 import { emptyApi } from '../../app/empty.api';
 import { IRequest, IResponse } from '../../common/interfaces';
-import { Report, SmReport } from './report.model';
+import { Report } from './report.model';
 import { ReportView } from './report-view.model';
 import { ReportLike } from './report-like.model';
 import {
   CreateReportDto,
   DeleteReportDto,
   EditReportDto,
-  ExtLikeReportDto,
+  LikeReportDto,
   ViewReportDto,
 } from './report.dto';
 import { getQuery } from '../../common/utils';
@@ -60,13 +60,13 @@ export const reportsApi = emptyApi.injectEndpoints({
       query: () => ({
         url: '/reports/viewed/select',
       }),
-      providesTags: ['Auth', 'ReportView'],
+      providesTags: ['Auth'],
     }),
-    selectLikedReports: build.query<SmReport[], void>({
+    selectLikedReports: build.query<{ up: number[]; down: number[] }, void>({
       query: () => ({
         url: '/reports/liked/select',
       }),
-      providesTags: ['Auth', 'ReportLike'],
+      providesTags: ['Auth'],
     }),
     selectReportViews: build.query<ReportView[], number>({
       query: (reportId) => ({
@@ -160,8 +160,8 @@ export const reportsApi = emptyApi.injectEndpoints({
         queryFulfilled.catch(patchResult.undo);
       },
     }),
-    likeReport: build.mutation<void, ExtLikeReportDto>({
-      query: ({ reportId, upLiked, downLiked, ...dto }) => ({
+    likeReport: build.mutation<void, LikeReportDto>({
+      query: ({ reportId, ...dto }) => ({
         url: `/reports/${reportId}/likes`,
         method: 'POST',
         body: dto,
@@ -173,19 +173,20 @@ export const reportsApi = emptyApi.injectEndpoints({
             'selectLikedReports',
             undefined,
             (draft) => {
-              if (dto.upLiked || dto.downLiked) {
-                if (dto.upLiked === dto.type) {
-                  draft = draft.filter((report) => report.id === dto.reportId);
+              if (dto.type) {
+                draft.down = draft.down.filter((id) => id !== dto.reportId);
+                if (draft.up.includes(dto.reportId)) {
+                  draft.up = draft.up.filter((id) => id !== dto.reportId);
                 } else {
-                  draft.find(
-                    (report) => report.id === dto.reportId,
-                  )!.like.type = dto.type;
+                  draft.up.push(dto.reportId);
                 }
               } else {
-                draft.push({
-                  id: dto.reportId,
-                  like: { id: 0, type: dto.type },
-                });
+                draft.up = draft.up.filter((id) => id !== dto.reportId);
+                if (draft.down.includes(dto.reportId)) {
+                  draft.down = draft.down.filter((id) => id !== dto.reportId);
+                } else {
+                  draft.down.push(dto.reportId);
+                }
               }
             },
           ),

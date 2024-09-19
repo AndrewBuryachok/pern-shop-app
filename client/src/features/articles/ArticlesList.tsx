@@ -32,14 +32,8 @@ export default function ArticlesList({ actions = [], ...props }: Props) {
             (subscriber) => subscriber.id === article.user.id,
           ),
           viewed: !!viewedArticles?.includes(article.id),
-          upLiked: !!likedArticles?.find(
-            (likedArticle) =>
-              likedArticle.id === article.id && likedArticle.like.type,
-          ),
-          downLiked: !!likedArticles?.find(
-            (likedArticle) =>
-              likedArticle.id === article.id && !likedArticle.like.type,
-          ),
+          upLiked: !!likedArticles?.up.includes(article.id),
+          downLiked: !!likedArticles?.down.includes(article.id),
         }))
         .map((article) => (
           <ArticlePaper

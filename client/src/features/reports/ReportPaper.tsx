@@ -41,11 +41,7 @@ export default function ReportPaper({ report, ...props }: Props) {
   const [likeReport] = useLikeReportMutation();
 
   const handleLikeSubmit = async (dto: LikeReportDto) => {
-    await likeReport({
-      ...dto,
-      upLiked: !!report.upLiked,
-      downLiked: !!report.downLiked,
-    });
+    await likeReport(dto);
   };
 
   const { ref, entry } = useIntersection();
