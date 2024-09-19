@@ -99,32 +99,18 @@ export class ArticlesService {
   }
 
   async selectViewedArticles(myId: number): Promise<number[]> {
-    const articles = await this.articlesRepository
-      .createQueryBuilder('article')
-      .innerJoinAndMapOne(
-        'myView',
-        'article.views',
-        'myView',
-        'myView.userId = :myId',
-        { myId },
-      )
-      .select(['article.id'])
-      .getMany();
-    return articles.map((article) => article.id);
+    const views = await this.viewsRepository.findBy({ userId: myId });
+    return views.map((view) => view.articleId);
   }
 
-  selectLikedArticles(myId: number): Promise<Article[]> {
-    return this.articlesRepository
-      .createQueryBuilder('article')
-      .innerJoinAndMapOne(
-        'article.like',
-        'article.likes',
-        'myLike',
-        'myLike.userId = :myId',
-        { myId },
-      )
-      .select(['article.id', 'myLike.id', 'myLike.type'])
-      .getMany();
+  async selectLikedArticles(
+    myId: number,
+  ): Promise<{ up: number[]; down: number[] }> {
+    const likes = await this.likesRepository.findBy({ userId: myId });
+    return {
+      up: likes.filter((like) => like.type).map((like) => like.articleId),
+      down: likes.filter((like) => !like.type).map((like) => like.articleId),
+    };
   }
 
   selectArticleViews(articleId: number): Promise<ArticleView[]> {

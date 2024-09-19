@@ -79,7 +79,9 @@ export class ArticlesController {
   }
 
   @Get('liked/select')
-  selectLikedArticles(@MyId() myId: number): Promise<Article[]> {
+  selectLikedArticles(
+    @MyId() myId: number,
+  ): Promise<{ up: number[]; down: number[] }> {
     return this.articlesService.selectLikedArticles(myId);
   }
 

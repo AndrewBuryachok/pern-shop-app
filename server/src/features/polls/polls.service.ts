@@ -79,32 +79,18 @@ export class PollsService {
   }
 
   async selectViewedPolls(myId: number): Promise<number[]> {
-    const polls = await this.pollsRepository
-      .createQueryBuilder('poll')
-      .innerJoinAndMapOne(
-        'myView',
-        'poll.views',
-        'myView',
-        'myView.userId = :myId',
-        { myId },
-      )
-      .select(['poll.id'])
-      .getMany();
-    return polls.map((poll) => poll.id);
+    const views = await this.viewsRepository.findBy({ userId: myId });
+    return views.map((view) => view.pollId);
   }
 
-  selectLikedPolls(myId: number): Promise<Poll[]> {
-    return this.pollsRepository
-      .createQueryBuilder('poll')
-      .innerJoinAndMapOne(
-        'poll.like',
-        'poll.likes',
-        'myLike',
-        'myLike.userId = :myId',
-        { myId },
-      )
-      .select(['poll.id', 'myLike.id', 'myLike.type'])
-      .getMany();
+  async selectLikedPolls(
+    myId: number,
+  ): Promise<{ up: number[]; down: number[] }> {
+    const likes = await this.likesRepository.findBy({ userId: myId });
+    return {
+      up: likes.filter((like) => like.type).map((like) => like.pollId),
+      down: likes.filter((like) => !like.type).map((like) => like.pollId),
+    };
   }
 
   selectPollViews(pollId: number): Promise<PollView[]> {

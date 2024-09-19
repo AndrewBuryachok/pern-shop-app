@@ -77,7 +77,9 @@ export class ReportsController {
   }
 
   @Get('liked/select')
-  selectLikedReports(@MyId() myId: number): Promise<Report[]> {
+  selectLikedReports(
+    @MyId() myId: number,
+  ): Promise<{ up: number[]; down: number[] }> {
     return this.reportsService.selectLikedReports(myId);
   }
 

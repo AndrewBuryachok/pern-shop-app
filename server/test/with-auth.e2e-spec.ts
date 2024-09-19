@@ -667,7 +667,9 @@ describe('With Auth', () => {
       return request(app.getHttpServer())
         .get('/reports/liked/select')
         .set('Authorization', `Bearer ${user.access}`)
-        .expect((res) => expect(res.body.length).toBeGreaterThan(0));
+        .expect((res) =>
+          expect(res.body.up.length + res.body.down.length).toBeGreaterThan(0),
+        );
     });
 
     it('GET /reports/:reportId/views', async () => {
@@ -799,7 +801,9 @@ describe('With Auth', () => {
       return request(app.getHttpServer())
         .get('/articles/liked/select')
         .set('Authorization', `Bearer ${user.access}`)
-        .expect((res) => expect(res.body.length).toBeGreaterThan(0));
+        .expect((res) =>
+          expect(res.body.up.length + res.body.down.length).toBeGreaterThan(0),
+        );
     });
 
     it('GET /articles/:articleId/views', async () => {
@@ -962,7 +966,9 @@ describe('With Auth', () => {
       return request(app.getHttpServer())
         .get('/polls/liked/select')
         .set('Authorization', `Bearer ${user.access}`)
-        .expect((res) => expect(res.body.length).toBeGreaterThan(0));
+        .expect((res) =>
+          expect(res.body.up.length + res.body.down.length).toBeGreaterThan(0),
+        );
     });
 
     it('GET /polls/:pollId/views', async () => {

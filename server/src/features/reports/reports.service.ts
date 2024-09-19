@@ -44,32 +44,18 @@ export class ReportsService {
   }
 
   async selectViewedReports(myId: number): Promise<number[]> {
-    const reports = await this.reportsRepository
-      .createQueryBuilder('report')
-      .innerJoinAndMapOne(
-        'myView',
-        'report.views',
-        'myView',
-        'myView.userId = :myId',
-        { myId },
-      )
-      .select(['report.id'])
-      .getMany();
-    return reports.map((report) => report.id);
+    const views = await this.viewsRepository.findBy({ userId: myId });
+    return views.map((view) => view.reportId);
   }
 
-  selectLikedReports(myId: number): Promise<Report[]> {
-    return this.reportsRepository
-      .createQueryBuilder('report')
-      .innerJoinAndMapOne(
-        'report.like',
-        'report.likes',
-        'myLike',
-        'myLike.userId = :myId',
-        { myId },
-      )
-      .select(['report.id', 'myLike.id', 'myLike.type'])
-      .getMany();
+  async selectLikedReports(
+    myId: number,
+  ): Promise<{ up: number[]; down: number[] }> {
+    const likes = await this.likesRepository.findBy({ userId: myId });
+    return {
+      up: likes.filter((like) => like.type).map((like) => like.reportId),
+      down: likes.filter((like) => !like.type).map((like) => like.reportId),
+    };
   }
 
   selectReportViews(reportId: number): Promise<ReportView[]> {

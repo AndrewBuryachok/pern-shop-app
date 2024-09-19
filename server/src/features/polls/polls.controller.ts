@@ -72,7 +72,9 @@ export class PollsController {
   }
 
   @Get('liked/select')
-  selectLikedPolls(@MyId() myId: number): Promise<Poll[]> {
+  selectLikedPolls(
+    @MyId() myId: number,
+  ): Promise<{ up: number[]; down: number[] }> {
     return this.pollsService.selectLikedPolls(myId);
   }
 
