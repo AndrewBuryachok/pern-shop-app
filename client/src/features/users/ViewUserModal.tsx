@@ -32,8 +32,8 @@ export default function ViewUserModal({ data: user }: Props) {
         searchable
       />
       <TextInput
-        label={t('columns.city')}
-        value={user.city ? parsePlace(user.city) : '-'}
+        label={t('columns.town')}
+        value={user.town ? parsePlace(user.town) : '-'}
         readOnly
       />
       <TextInput

@@ -3,18 +3,18 @@ import { useTranslation } from 'react-i18next';
 import { Select } from '@mantine/core';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
-import { City } from './city.model';
-import { useSelectCityUsersQuery } from './cities.api';
+import { Town } from './town.model';
+import { useSelectTownUsersQuery } from './towns.api';
 import RefetchAction from '../../common/components/RefetchAction';
 import { UsersItem } from '../../common/components/UsersItem';
 import { viewUsers } from '../../common/utils';
 
-type Props = IModal<City>;
+type Props = IModal<Town>;
 
-export default function ViewCityUsersModal({ data: city }: Props) {
+export default function ViewTownUsersModal({ data: town }: Props) {
   const [t] = useTranslation();
 
-  const { data: users, ...usersResponse } = useSelectCityUsersQuery(city.id);
+  const { data: users, ...usersResponse } = useSelectTownUsersQuery(town.id);
 
   return (
     <Select
@@ -29,8 +29,8 @@ export default function ViewCityUsersModal({ data: city }: Props) {
   );
 }
 
-export const openViewCityUsersAction = (city: City) =>
+export const openViewTownUsersAction = (town: Town) =>
   openModal({
     title: t('columns.users'),
-    children: <ViewCityUsersModal data={city} />,
+    children: <ViewTownUsersModal data={town} />,
   });

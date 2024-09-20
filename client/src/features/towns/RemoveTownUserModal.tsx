@@ -4,40 +4,40 @@ import { Select, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
-import { City } from './city.model';
+import { Town } from './town.model';
 import { getCurrentUser } from '../auth/auth.slice';
 import {
-  useRemoveCityUserMutation,
-  useSelectCityUsersQuery,
-} from './cities.api';
-import { UpdateCityUserDto } from './city.dto';
+  useRemoveTownUserMutation,
+  useSelectTownUsersQuery,
+} from './towns.api';
+import { UpdateTownUserDto } from './town.dto';
 import CustomForm from '../../common/components/CustomForm';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import { UsersItem } from '../../common/components/UsersItem';
 import { parsePlace, selectUsers } from '../../common/utils';
 import { Color } from '../../common/constants';
 
-type Props = IModal<City>;
+type Props = IModal<Town>;
 
-export default function RemoveCityUserModal({ data: city }: Props) {
+export default function RemoveTownUserModal({ data: town }: Props) {
   const [t] = useTranslation();
 
-  const { data: cityUsers } = useSelectCityUsersQuery(city.id);
+  const { data: townUsers } = useSelectTownUsersQuery(town.id);
 
   const form = useForm({
     initialValues: {
-      cityId: city.id,
+      townId: town.id,
       user: '',
     },
     transformValues: ({ user, ...rest }) => ({ ...rest, userId: +user }),
   });
 
-  const user = cityUsers?.find((user) => user.id === +form.values.user);
+  const user = townUsers?.find((user) => user.id === +form.values.user);
 
-  const [removeCityUser, { isLoading }] = useRemoveCityUserMutation();
+  const [removeTownUser, { isLoading }] = useRemoveTownUserMutation();
 
-  const handleSubmit = async (dto: UpdateCityUserDto) => {
-    await removeCityUser(dto);
+  const handleSubmit = async (dto: UpdateTownUserDto) => {
+    await removeTownUser(dto);
   };
 
   return (
@@ -46,14 +46,14 @@ export default function RemoveCityUserModal({ data: city }: Props) {
       isLoading={isLoading}
       text={t('actions.remove') + ' ' + t('modals.users')}
     >
-      <TextInput label={t('columns.city')} value={parsePlace(city)} readOnly />
+      <TextInput label={t('columns.town')} value={parsePlace(town)} readOnly />
       <Select
         label={t('columns.user')}
         placeholder={t('columns.user')}
         icon={user && <CustomAvatar {...user} />}
         iconWidth={48}
         itemComponent={UsersItem}
-        data={selectUsers(cityUsers).filter((user) => user.id !== city.user.id)}
+        data={selectUsers(townUsers).filter((user) => user.id !== town.user.id)}
         limit={20}
         searchable
         required
@@ -63,19 +63,19 @@ export default function RemoveCityUserModal({ data: city }: Props) {
   );
 }
 
-export const removeCityUserFactory = (hasRole: boolean) => ({
-  open: (city: City) =>
+export const removeTownUserFactory = (hasRole: boolean) => ({
+  open: (town: Town) =>
     openModal({
       title: t('actions.remove') + ' ' + t('modals.users'),
-      children: <RemoveCityUserModal data={city} />,
+      children: <RemoveTownUserModal data={town} />,
     }),
-  disable: (city: City) => {
+  disable: (town: Town) => {
     const user = getCurrentUser()!;
-    return (city.user.id !== user.id && !hasRole) || city.users === 1;
+    return (town.user.id !== user.id && !hasRole) || town.users === 1;
   },
   color: Color.RED,
 });
 
-export const removeMyCityUserAction = removeCityUserFactory(false);
+export const removeMyTownUserAction = removeTownUserFactory(false);
 
-export const removeUserCityUserAction = removeCityUserFactory(true);
+export const removeUserTownUserAction = removeTownUserFactory(true);

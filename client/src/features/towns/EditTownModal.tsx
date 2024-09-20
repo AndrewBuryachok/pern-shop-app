@@ -1,23 +1,19 @@
 import { t } from 'i18next';
 import { useTranslation } from 'react-i18next';
-import { NumberInput, Select, Textarea, TextInput } from '@mantine/core';
+import { NumberInput, Textarea, TextInput } from '@mantine/core';
 import { useDebouncedValue } from '@mantine/hooks';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
-import {
-  useCreateMyCityMutation,
-  useCreateUserCityMutation,
-} from './cities.api';
-import { useSelectAllUsersQuery } from '../users/users.api';
-import { ExtCreateCityDto } from './city.dto';
+import { IModal } from '../../common/interfaces';
+import { Town } from './town.model';
+import { getCurrentUser } from '../auth/auth.slice';
+import { useEditTownMutation } from './towns.api';
+import { EditTownDto } from './town.dto';
 import CustomForm from '../../common/components/CustomForm';
-import RefetchAction from '../../common/components/RefetchAction';
-import CustomAvatar from '../../common/components/CustomAvatar';
 import CustomImage from '../../common/components/CustomImage';
 import CustomVideo from '../../common/components/CustomVideo';
-import { UsersItem } from '../../common/components/UsersItem';
-import { selectUsers } from '../../common/utils';
 import {
+  Color,
   MAX_COORDINATE_VALUE,
   MAX_DESCRIPTION_LENGTH,
   MAX_LINK_LENGTH,
@@ -26,63 +22,39 @@ import {
   MIN_NAME_LENGTH,
 } from '../../common/constants';
 
-type Props = { hasRole: boolean };
+type Props = IModal<Town>;
 
-export default function CreateCityModal({ hasRole }: Props) {
+export default function EditTownModal({ data: town }: Props) {
   const [t] = useTranslation();
 
   const form = useForm({
     initialValues: {
-      user: '',
-      name: '',
-      image: '',
-      video: '',
-      description: '',
-      x: 0,
-      y: 0,
+      townId: town.id,
+      name: town.name,
+      image: town.image,
+      video: town.video,
+      description: town.description,
+      x: town.x,
+      y: town.y,
     },
-    transformValues: ({ user, ...rest }) => ({ ...rest, userId: +user }),
   });
 
   const [image] = useDebouncedValue(form.values.image, 500);
   const [video] = useDebouncedValue(form.values.video, 500);
 
-  const { data: users, ...usersResponse } = useSelectAllUsersQuery(undefined, {
-    skip: !hasRole,
-  });
+  const [editTown, { isLoading }] = useEditTownMutation();
 
-  const user = users?.find((user) => user.id === +form.values.user);
-
-  const [createCity, { isLoading }] = hasRole
-    ? useCreateUserCityMutation()
-    : useCreateMyCityMutation();
-
-  const handleSubmit = async (dto: ExtCreateCityDto) => {
-    await createCity(dto);
+  const handleSubmit = async (dto: EditTownDto) => {
+    await editTown(dto);
   };
 
   return (
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={t('actions.create') + ' ' + t('modals.cities')}
+      text={t('actions.edit') + ' ' + t('modals.towns')}
+      isChanged={!form.isDirty()}
     >
-      {hasRole && (
-        <Select
-          label={t('columns.user')}
-          placeholder={t('columns.user')}
-          icon={user && <CustomAvatar {...user} />}
-          iconWidth={48}
-          rightSection={<RefetchAction {...usersResponse} />}
-          itemComponent={UsersItem}
-          data={selectUsers(users)}
-          limit={20}
-          searchable
-          required
-          readOnly={usersResponse.isFetching}
-          {...form.getInputProps('user')}
-        />
-      )}
       <TextInput
         label={t('columns.name')}
         placeholder={t('columns.name')}
@@ -133,15 +105,19 @@ export default function CreateCityModal({ hasRole }: Props) {
   );
 }
 
-export const createCityFactory = (hasRole: boolean) => ({
-  label: 'create',
-  open: () =>
+export const editTownFactory = (hasRole: boolean) => ({
+  open: (town: Town) =>
     openModal({
-      title: t('actions.create') + ' ' + t('modals.cities'),
-      children: <CreateCityModal hasRole={hasRole} />,
+      title: t('actions.edit') + ' ' + t('modals.towns'),
+      children: <EditTownModal data={town} />,
     }),
+  disable: (town: Town) => {
+    const user = getCurrentUser()!;
+    return town.user.id !== user.id && !hasRole;
+  },
+  color: Color.YELLOW,
 });
 
-export const createMyCityButton = createCityFactory(false);
+export const editMyTownAction = editTownFactory(false);
 
-export const createUserCityButton = createCityFactory(true);
+export const editUserTownAction = editTownFactory(true);

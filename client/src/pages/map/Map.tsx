@@ -2,7 +2,7 @@ import { TransformComponent, TransformWrapper } from 'react-zoom-pan-pinch';
 import { useTranslation } from 'react-i18next';
 import { useMantineTheme } from '@mantine/core';
 import { useDocumentTitle, useElementSize } from '@mantine/hooks';
-import { useGetMainCitiesQuery } from '../../features/cities/cities.api';
+import { useGetMainTownsQuery } from '../../features/towns/towns.api';
 import { useGetMainFarmsQuery } from '../../features/farms/farms.api';
 import { useGetMainShopsQuery } from '../../features/shops/shops.api';
 import { useGetMainMarketsQuery } from '../../features/markets/markets.api';
@@ -28,10 +28,10 @@ export default function Map() {
   ];
 
   const {
-    data: cities,
+    data: towns,
     isFetching: isFetching1,
     refetch: refetch1,
-  } = useGetMainCitiesQuery({
+  } = useGetMainTownsQuery({
     page: 0,
   });
   const {
@@ -112,8 +112,8 @@ export default function Map() {
             ></circle>
             {!isFetching &&
               [
-                cities?.result.map((city) => ({
-                  ...city,
+                towns?.result.map((town) => ({
+                  ...town,
                   type: 0,
                 })),
                 farms?.result.map((farm) => ({

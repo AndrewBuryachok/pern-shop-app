@@ -4,7 +4,7 @@ import { Input, Select, Stack, Textarea, TextInput } from '@mantine/core';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { ExtPlace } from './place.model';
-import { useSelectCityUsersQuery } from '../cities/cities.api';
+import { useSelectTownUsersQuery } from '../towns/towns.api';
 import { useSelectFarmUsersQuery } from '../farms/farms.api';
 import { useSelectShopGoodsQuery } from '../shops/shops.api';
 import { useSelectMarketStoresQuery } from '../stores/stores.api';
@@ -36,7 +36,7 @@ export default function PlaceModal({ data: place }: Props) {
       ? ThingsItemWithAmount
       : undefined;
 
-  const { data: citiesUsers, ...citiesUsersResponse } = useSelectCityUsersQuery(
+  const { data: townsUsers, ...townsUsersResponse } = useSelectTownUsersQuery(
     place.id,
     { skip: place.type !== 0 },
   );
@@ -103,10 +103,10 @@ export default function PlaceModal({ data: place }: Props) {
       {place.type === 0 && (
         <Select
           label={t('columns.users')}
-          placeholder={`${t('components.total')}: ${citiesUsers?.length || 0}`}
-          rightSection={<RefetchAction {...citiesUsersResponse} />}
+          placeholder={`${t('components.total')}: ${townsUsers?.length || 0}`}
+          rightSection={<RefetchAction {...townsUsersResponse} />}
           itemComponent={component}
-          data={viewUsers(citiesUsers || [])}
+          data={viewUsers(townsUsers || [])}
           limit={20}
           searchable
         />
@@ -177,7 +177,7 @@ export const openPlaceModal = (place: ExtPlace) =>
       ' ' +
       t(
         `modals.${
-          ['cities', 'farms', 'shops', 'markets', 'storages', 'stations'][
+          ['towns', 'farms', 'shops', 'markets', 'storages', 'stations'][
             place.type
           ]
         }`,

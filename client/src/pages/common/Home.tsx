@@ -136,7 +136,7 @@ export default function Home() {
       icon: IconMap,
     },
     {
-      title: 'cities',
+      title: 'towns',
       icon: IconBuildingSkyscraper,
     },
     {

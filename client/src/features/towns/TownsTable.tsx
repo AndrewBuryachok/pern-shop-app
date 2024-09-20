@@ -1,42 +1,42 @@
 import { ITableWithActions } from '../../common/interfaces';
-import { City } from './city.model';
+import { Town } from './town.model';
 import CustomTable from '../../common/components/CustomTable';
 import AvatarWithSingleText from '../../common/components/AvatarWithSingleText';
 import PlaceText from '../../common/components/PlaceText';
 import CustomAnchor from '../../common/components/CustomAnchor';
 import DateText from '../../common/components/DateText';
 import CustomActions from '../../common/components/CustomActions';
-import { viewCityAction } from './ViewCityModal';
-import { openViewCityUsersAction } from './ViewCityUsersModal';
+import { viewTownAction } from './ViewTownModal';
+import { openViewTownUsersAction } from './ViewTownUsersModal';
 
-type Props = ITableWithActions<City>;
+type Props = ITableWithActions<Town>;
 
-export default function CitiesTable({ actions = [], ...props }: Props) {
+export default function TownsTable({ actions = [], ...props }: Props) {
   return (
     <CustomTable
       minWidth={700}
-      columns={['owner', 'city', 'users', 'created', 'action']}
+      columns={['owner', 'town', 'users', 'created', 'action']}
       {...props}
     >
-      {props.data?.result.map((city) => (
-        <tr key={city.id}>
+      {props.data?.result.map((town) => (
+        <tr key={town.id}>
           <td>
-            <AvatarWithSingleText {...city.user} />
+            <AvatarWithSingleText {...town.user} />
           </td>
           <td>
-            <PlaceText {...city} />
+            <PlaceText {...town} />
           </td>
           <td>
             <CustomAnchor
-              text={`${city.users}`}
-              open={() => openViewCityUsersAction(city)}
+              text={`${town.users}`}
+              open={() => openViewTownUsersAction(town)}
             />
           </td>
           <td>
-            <DateText date={city.createdAt} />
+            <DateText date={town.createdAt} />
           </td>
           <td>
-            <CustomActions data={city} actions={[viewCityAction, ...actions]} />
+            <CustomActions data={town} actions={[viewTownAction, ...actions]} />
           </td>
         </tr>
       ))}

@@ -22,7 +22,7 @@ import { closeAllModals, openModal } from '@mantine/modals';
 import { ISearch } from '../interfaces';
 import { useSelectAllUsersQuery } from '../../features/users/users.api';
 import { useSelectUserCardsQuery } from '../../features/cards/cards.api';
-import { useSelectAllCitiesQuery } from '../../features/cities/cities.api';
+import { useSelectAllTownsQuery } from '../../features/towns/towns.api';
 import { useSelectAllFarmsQuery } from '../../features/farms/farms.api';
 import { useSelectAllShopsQuery } from '../../features/shops/shops.api';
 import { useSelectMainMarketsQuery } from '../../features/markets/markets.api';
@@ -61,7 +61,6 @@ import {
   scaleSum,
   searchTypes,
   selectCards,
-  selectCities,
   selectContainers,
   selectFarms,
   selectItems,
@@ -75,6 +74,7 @@ import {
   selectStatuses,
   selectStorages,
   selectTags,
+  selectTowns,
   selectUsers,
   unscaleDate,
   unscaleMaxPrice,
@@ -187,10 +187,9 @@ export default function SearchModal(props: Props) {
     +(form.values.user || ''),
     { skip: props.search.card === undefined || !form.values.user },
   );
-  const { data: cities, ...citiesResponse } = useSelectAllCitiesQuery(
-    undefined,
-    { skip: props.search.city === undefined },
-  );
+  const { data: towns, ...townsResponse } = useSelectAllTownsQuery(undefined, {
+    skip: props.search.town === undefined,
+  });
   const { data: farms, ...farmsResponse } = useSelectAllFarmsQuery(undefined, {
     skip: props.search.farm === undefined,
   });
@@ -320,18 +319,18 @@ export default function SearchModal(props: Props) {
           {...form.getInputProps('roles')}
         />
       )}
-      {props.search.city !== undefined && (
+      {props.search.town !== undefined && (
         <Select
-          label={t('columns.city')}
-          placeholder={`${t('components.total')}: ${cities?.length || 0}`}
-          rightSection={<RefetchAction {...citiesResponse} />}
+          label={t('columns.town')}
+          placeholder={`${t('components.total')}: ${towns?.length || 0}`}
+          rightSection={<RefetchAction {...townsResponse} />}
           itemComponent={PlacesItem}
-          data={selectCities(cities)}
+          data={selectTowns(towns)}
           limit={20}
           searchable
           allowDeselect
-          readOnly={citiesResponse.isFetching}
-          {...form.getInputProps('city')}
+          readOnly={townsResponse.isFetching}
+          {...form.getInputProps('town')}
         />
       )}
       {props.search.farm !== undefined && (

@@ -1,7 +1,7 @@
 import { t } from 'i18next';
 import { SmUser } from '../../features/users/user.model';
 import { MdCard, MdCardWithBalance } from '../../features/cards/card.model';
-import { SmCity } from '../../features/cities/city.model';
+import { SmTown } from '../../features/towns/town.model';
 import { SmFarm } from '../../features/farms/farm.model';
 import { SmShop } from '../../features/shops/shop.model';
 import { SmMarket } from '../../features/markets/market.model';
@@ -61,11 +61,11 @@ export const selectCardsWithBalance = (cards?: MdCardWithBalance[]) =>
     label: `${card.name} ${card.balance} ${t('constants.currency')}`,
   })) || [];
 
-export const selectCities = (cities?: SmCity[]) =>
-  cities?.map((city) => ({
-    ...city,
-    value: `${city.id}`,
-    label: parsePlace(city),
+export const selectTowns = (towns?: SmTown[]) =>
+  towns?.map((town) => ({
+    ...town,
+    value: `${town.id}`,
+    label: parsePlace(town),
   })) || [];
 
 export const selectFarms = (farms?: SmFarm[]) =>

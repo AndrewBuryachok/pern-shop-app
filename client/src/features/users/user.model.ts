@@ -1,4 +1,4 @@
-import { MdCity } from '../cities/city.model';
+import { MdTown } from '../towns/town.model';
 
 export interface SmUser {
   id: number;
@@ -13,7 +13,7 @@ export interface MdUser extends SmUser {
 export interface User extends MdUser {
   createdAt: Date;
   onlineAt?: Date;
-  city?: MdCity;
+  town?: MdTown;
   time?: number;
   friendsCount?: number;
   subscribersCount?: number;

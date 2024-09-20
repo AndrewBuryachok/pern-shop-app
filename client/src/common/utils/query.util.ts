@@ -22,8 +22,8 @@ export const getQuery = (req: IRequest) => {
   if (req?.roles?.length) {
     query.append('roles', req.roles.join());
   }
-  if (req?.city) {
-    query.append('city', req.city);
+  if (req?.town) {
+    query.append('town', req.town);
   }
   if (req?.farm) {
     query.append('farm', req.farm);

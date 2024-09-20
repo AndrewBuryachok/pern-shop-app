@@ -6,8 +6,8 @@ import {
   useGetTopUsersQuery,
 } from '../../features/users/users.api';
 import UsersTable from '../../features/users/UsersTable';
-import { addUserCityButton } from '../../features/users/AddUserCityModal';
-import { removeUserCityAction } from '../../features/users/RemoveUserCityModal';
+import { addUserTownButton } from '../../features/users/AddUserTownModal';
+import { removeUserTownAction } from '../../features/users/RemoveUserTownModal';
 import { editUserPasswordAction } from '../../features/users/EditUserPasswordModal';
 import { addUserRoleAction } from '../../features/users/AddUserRoleModal';
 import { removeUserRoleAction } from '../../features/users/RemoveUserRoleModal';
@@ -22,7 +22,7 @@ export default function UsersPage() {
     id: +(searchParams.get('id') || 0) || null,
     user: searchParams.get('user'),
     roles: searchParams.get('roles')?.split(',') || [],
-    city: searchParams.get('city'),
+    town: searchParams.get('town'),
     type: searchParams.get('type'),
     minDate: searchParams.get('minDate'),
     maxDate: searchParams.get('maxDate'),
@@ -35,10 +35,10 @@ export default function UsersPage() {
     all: useGetAllUsersQuery,
   }[tab]!(search);
 
-  const button = { my: addUserCityButton }[tab];
+  const button = { my: addUserTownButton }[tab];
 
   const actions = {
-    my: [removeUserCityAction],
+    my: [removeUserTownAction],
     all: [editUserPasswordAction, addUserRoleAction, removeUserRoleAction],
   }[tab];
 

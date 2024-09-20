@@ -6,8 +6,8 @@ import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { User } from './user.model';
 import { getCurrentUser } from '../auth/auth.slice';
-import { useRemoveCityUserMutation } from '../cities/cities.api';
-import { UpdateCityUserDto } from '../cities/city.dto';
+import { useRemoveTownUserMutation } from '../towns/towns.api';
+import { UpdateTownUserDto } from '../towns/town.dto';
 import CustomForm from '../../common/components/CustomForm';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import { parsePlace } from '../../common/utils';
@@ -15,20 +15,20 @@ import { Color } from '../../common/constants';
 
 type Props = IModal<User>;
 
-export default function RemoveUserCityModal({ data: user }: Props) {
+export default function RemoveUserTownModal({ data: user }: Props) {
   const [t] = useTranslation();
 
   const form = useForm({
     initialValues: {
       userId: user.id,
-      cityId: user.city!.id,
+      townId: user.town!.id,
     },
   });
 
-  const [removeUserCity, { isLoading }] = useRemoveCityUserMutation();
+  const [removeUserTown, { isLoading }] = useRemoveTownUserMutation();
 
-  const handleSubmit = async (dto: UpdateCityUserDto) => {
-    await removeUserCity(dto);
+  const handleSubmit = async (dto: UpdateTownUserDto) => {
+    await removeUserTown(dto);
   };
 
   return (
@@ -45,25 +45,25 @@ export default function RemoveUserCityModal({ data: user }: Props) {
         readOnly
       />
       <TextInput
-        label={t('columns.city')}
-        value={parsePlace(user.city!)}
+        label={t('columns.town')}
+        value={parsePlace(user.town!)}
         readOnly
       />
     </CustomForm>
   );
 }
 
-export const removeUserCityAction = {
+export const removeUserTownAction = {
   open: (user: User) =>
     openModal({
       title: t('actions.remove') + ' ' + t('modals.users'),
-      children: <RemoveUserCityModal data={user} />,
+      children: <RemoveUserTownModal data={user} />,
     }),
   disable: (user: User) => {
     const me = getCurrentUser()!;
     return (
-      user.city!.user.id === user.id ||
-      (user.city!.user.id !== me.id && user.id !== me.id)
+      user.town!.user.id === user.id ||
+      (user.town!.user.id !== me.id && user.id !== me.id)
     );
   },
   color: Color.RED,

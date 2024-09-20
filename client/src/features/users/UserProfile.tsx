@@ -258,13 +258,13 @@ export default function UserProfile({ data: user }: Props) {
               </div>
               <div>
                 <Text size='sm' weight='bold'>
-                  {t('columns.city')}
+                  {t('columns.town')}
                 </Text>
                 <Group spacing={8}>
                   <IconBuildingSkyscraper size={32} />
                   <div>
-                    {user.city ? (
-                      <PlaceText {...user.city} />
+                    {user.town ? (
+                      <PlaceText {...user.town} />
                     ) : (
                       <SingleText text='-' />
                     )}

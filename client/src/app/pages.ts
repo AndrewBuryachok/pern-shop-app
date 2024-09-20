@@ -17,7 +17,7 @@ const CardsPage = lazy(() => import('../pages/cards/CardsPage'));
 const ExchangesPage = lazy(() => import('../pages/exchanges/ExchangesPage'));
 const PaymentsPage = lazy(() => import('../pages/payments/PaymentsPage'));
 const InvoicesPage = lazy(() => import('../pages/invoices/InvoicesPage'));
-const CitiesPage = lazy(() => import('../pages/cities/CitiesPage'));
+const TownsPage = lazy(() => import('../pages/towns/TownsPage'));
 const FarmsPage = lazy(() => import('../pages/farms/FarmsPage'));
 const ShopsPage = lazy(() => import('../pages/shops/ShopsPage'));
 const MarketsPage = lazy(() => import('../pages/markets/MarketsPage'));
@@ -155,8 +155,8 @@ export const pages = [
     ],
   },
   {
-    path: 'cities',
-    element: CitiesPage,
+    path: 'towns',
+    element: TownsPage,
     nested: [
       { index: true },
       { path: 'my' },

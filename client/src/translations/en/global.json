@@ -69,7 +69,7 @@
     "adverts": "Adverts",
     "map": "Map",
     "places": "Places",
-    "cities": "Cities",
+    "towns": "Towns",
     "farms": "Farms",
     "shops": "Shops",
     "markets": "Markets",
@@ -112,7 +112,7 @@
     "storages-deliveries": "View deliveries; create, take, execute, complete, rate deliveries",
     "tasks": "View tasks; create, take, execute, complete, rate tasks",
     "adverts": "View adverts; create, edit, delete, respond to adverts",
-    "cities": "View cities; create, edit cities; add, remove users",
+    "towns": "View towns; create, edit towns; add, remove users",
     "farms": "View farms; create, edit farms; add, remove users",
     "shops": "View shops; create, edit shops; add, remove users",
     "markets": "View markets; create, edit markets",
@@ -206,7 +206,7 @@
     "role": "Role",
     "roles": "Roles",
     "owner": "Owner",
-    "city": "City",
+    "town": "Town",
     "time": "Hours",
     "friends": "Friends",
     "subscribers": "Subscribers",
@@ -316,7 +316,7 @@
     "exchanges": "Exchange",
     "payments": "Payment",
     "invoices": "Invoice",
-    "cities": "City",
+    "towns": "Town",
     "farms": "Farm",
     "shops": "Shop",
     "markets": "Market",
@@ -396,11 +396,11 @@
       "completed": "completed your invoice",
       "deleted": "deleted your invoice"
     },
-    "cities": {
-      "created": "created city",
-      "added": "added you in city",
-      "removed": "removed you from city",
-      "left": "left your city"
+    "towns": {
+      "created": "created town",
+      "added": "added you in town",
+      "removed": "removed you from town",
+      "left": "left your town"
     },
     "farms": {
       "created": "created farm",

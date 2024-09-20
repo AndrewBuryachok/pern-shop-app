@@ -3,60 +3,60 @@ import { useTranslation } from 'react-i18next';
 import { Input, Stack, Textarea, TextInput } from '@mantine/core';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
-import { City } from './city.model';
+import { Town } from './town.model';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import CustomImage from '../../common/components/CustomImage';
 import CustomVideo from '../../common/components/CustomVideo';
 import { parseTime } from '../../common/utils';
 import { Color } from '../../common/constants';
 
-type Props = IModal<City>;
+type Props = IModal<Town>;
 
-export default function ViewCityModal({ data: city }: Props) {
+export default function ViewTownModal({ data: town }: Props) {
   const [t] = useTranslation();
 
   return (
     <Stack spacing={8}>
-      <TextInput label={t('columns.id')} value={city.id} readOnly />
+      <TextInput label={t('columns.id')} value={town.id} readOnly />
       <TextInput
         label={t('columns.owner')}
-        icon={<CustomAvatar {...city.user} />}
+        icon={<CustomAvatar {...town.user} />}
         iconWidth={48}
-        value={city.user.nick}
+        value={town.user.nick}
         readOnly
       />
-      <TextInput label={t('columns.city')} value={city.name} readOnly />
-      {city.image && (
+      <TextInput label={t('columns.town')} value={town.name} readOnly />
+      {town.image && (
         <Input.Wrapper label={t('columns.image')}>
-          <CustomImage image={city.image} />
+          <CustomImage image={town.image} />
         </Input.Wrapper>
       )}
-      {city.video && (
+      {town.video && (
         <Input.Wrapper label={t('columns.video')}>
-          <CustomVideo video={city.video} />
+          <CustomVideo video={town.video} />
         </Input.Wrapper>
       )}
       <Textarea
         label={t('columns.description')}
-        value={city.description || '-'}
+        value={town.description || '-'}
         readOnly
       />
-      <TextInput label={t('columns.x')} value={city.x} readOnly />
-      <TextInput label={t('columns.y')} value={city.y} readOnly />
+      <TextInput label={t('columns.x')} value={town.x} readOnly />
+      <TextInput label={t('columns.y')} value={town.y} readOnly />
       <TextInput
         label={t('columns.created')}
-        value={parseTime(city.createdAt)}
+        value={parseTime(town.createdAt)}
         readOnly
       />
     </Stack>
   );
 }
 
-export const viewCityAction = {
-  open: (city: City) =>
+export const viewTownAction = {
+  open: (town: Town) =>
     openModal({
-      title: t('actions.view') + ' ' + t('modals.cities'),
-      children: <ViewCityModal data={city} />,
+      title: t('actions.view') + ' ' + t('modals.towns'),
+      children: <ViewTownModal data={town} />,
     }),
   disable: () => false,
   color: Color.BLUE,

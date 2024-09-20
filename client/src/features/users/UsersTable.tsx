@@ -21,7 +21,7 @@ export default function UsersTable({ actions = [], ...props }: Props) {
       columns={[
         'user',
         'roles',
-        'city',
+        'town',
         props.column,
         'online',
         'created',
@@ -38,8 +38,8 @@ export default function UsersTable({ actions = [], ...props }: Props) {
             <RolesBadge roles={user.roles} />
           </td>
           <td>
-            {user.city ? (
-              <PlaceWithSingleAvatar {...user.city} />
+            {user.town ? (
+              <PlaceWithSingleAvatar {...user.town} />
             ) : (
               <SingleText text='-' />
             )}

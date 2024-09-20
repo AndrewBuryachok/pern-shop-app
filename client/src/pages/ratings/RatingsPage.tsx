@@ -27,7 +27,7 @@ export default function RatingsPage() {
           id: +(searchParams.get('id') || 0) || null,
           user: searchParams.get('user'),
           roles: searchParams.get('roles')?.split(',') || [],
-          city: searchParams.get('city'),
+          town: searchParams.get('town'),
           type: searchParams.get('type'),
           minDate: searchParams.get('minDate'),
           maxDate: searchParams.get('maxDate'),
