@@ -18,7 +18,7 @@ import { Card } from '../../features/cards/card.entity';
 import { Exchange } from '../../features/exchanges/exchange.entity';
 import { Payment } from '../../features/payments/payment.entity';
 import { Invoice } from '../../features/invoices/invoice.entity';
-import { City } from '../../features/cities/city.entity';
+import { Town } from '../../features/towns/town.entity';
 import { Farm } from '../../features/farms/farm.entity';
 import { Shop } from '../../features/shops/shop.entity';
 import { Market } from '../../features/markets/market.entity';
@@ -245,14 +245,14 @@ export default class AppSeed implements Seeder {
         return invoice;
       })
       .makeMany(20);
-    let citizens = users.sort(() => 0.5 - Math.random());
-    const cities = await factory(City)()
-      .map(async (city) => {
+    let towners = users.sort(() => 0.5 - Math.random());
+    const towns = await factory(Town)()
+      .map(async (town) => {
         const count = Math.floor(Math.random() * 2) + 1;
-        city.users = citizens.slice(0, count);
-        city.user = city.users[0];
-        citizens = citizens.slice(count);
-        return city;
+        town.users = towners.slice(0, count);
+        town.user = town.users[0];
+        towners = towners.slice(count);
+        return town;
       })
       .createMany(10);
     const farms = await factory(Farm)()

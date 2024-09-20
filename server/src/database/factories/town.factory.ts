@@ -1,24 +1,24 @@
 import { Faker } from '@faker-js/faker';
 import { define } from 'typeorm-seeding';
-import { City } from '../../features/cities/city.entity';
+import { Town } from '../../features/towns/town.entity';
 import {
   MAX_COORDINATE_VALUE,
   MIN_COORDINATE_VALUE,
 } from '../../common/constants';
 
-define(City, (faker: Faker) => {
-  const city = new City();
-  city.name = faker.address.city();
-  city.image = '';
-  city.video = '';
-  city.description = '';
-  city.x =
+define(Town, (faker: Faker) => {
+  const town = new Town();
+  town.name = faker.address.city();
+  town.image = '';
+  town.video = '';
+  town.description = '';
+  town.x =
     Math.floor(
       Math.random() * (MAX_COORDINATE_VALUE - MIN_COORDINATE_VALUE + 1),
     ) + MIN_COORDINATE_VALUE;
-  city.y =
+  town.y =
     Math.floor(
       Math.random() * (MAX_COORDINATE_VALUE - MIN_COORDINATE_VALUE + 1),
     ) + MIN_COORDINATE_VALUE;
-  return city;
+  return town;
 });

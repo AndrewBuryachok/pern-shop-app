@@ -261,20 +261,20 @@ describe('Without Auth', () => {
     });
   });
 
-  describe('Cities', () => {
-    it('GET /cities/my', async () => {
-      return request(app.getHttpServer()).get('/cities/my').expect(401);
+  describe('Towns', () => {
+    it('GET /towns/my', async () => {
+      return request(app.getHttpServer()).get('/towns/my').expect(401);
     });
 
-    it('GET /cities/all', async () => {
+    it('GET /towns/all', async () => {
       return request(app.getHttpServer())
-        .get('/cities/all')
+        .get('/towns/all')
         .set('Authorization', `Bearer ${user.access}`)
         .expect(403);
     });
 
-    it('GET /cities/my/select', async () => {
-      return request(app.getHttpServer()).get('/cities/my/select').expect(401);
+    it('GET /towns/my/select', async () => {
+      return request(app.getHttpServer()).get('/towns/my/select').expect(401);
     });
   });
 

@@ -33,7 +33,7 @@ describe('With Auth', () => {
   let exchangesId: number;
   let paymentsId: number;
   let invoicesId: number;
-  let cityId: number;
+  let townId: number;
   let farmId: number;
   let shopId: number;
   let marketId: number;
@@ -209,12 +209,12 @@ describe('With Auth', () => {
   });
 
   describe('Users', () => {
-    it('POST /cities', async () => {
+    it('POST /towns', async () => {
       return request(app.getHttpServer())
-        .post('/cities')
+        .post('/towns')
         .set('Authorization', `Bearer ${user.access}`)
         .send({
-          name: 'My City',
+          name: 'My Town',
           image: '',
           video: '',
           description: '',
@@ -1260,53 +1260,53 @@ describe('With Auth', () => {
     });
   });
 
-  describe('Cities', () => {
-    it('GET /cities', async () => {
+  describe('Towns', () => {
+    it('GET /towns', async () => {
       return request(app.getHttpServer())
-        .get('/cities')
+        .get('/towns')
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
 
-    it('GET /cities/my', async () => {
+    it('GET /towns/my', async () => {
       return request(app.getHttpServer())
-        .get('/cities/my')
+        .get('/towns/my')
         .set('Authorization', `Bearer ${user.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0))
-        .then((res) => (cityId = res.body.result[0].id));
+        .then((res) => (townId = res.body.result[0].id));
     });
 
-    it('GET /cities/all', async () => {
+    it('GET /towns/all', async () => {
       return request(app.getHttpServer())
-        .get('/cities/all')
+        .get('/towns/all')
         .set('Authorization', `Bearer ${admin.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
 
-    it('GET /cities/all/select', async () => {
+    it('GET /towns/all/select', async () => {
       return request(app.getHttpServer())
-        .get('/cities/all/select')
+        .get('/towns/all/select')
         .expect((res) => expect(res.body.length).toBeGreaterThan(0));
     });
 
-    it('GET /cities/my/select', async () => {
+    it('GET /towns/my/select', async () => {
       return request(app.getHttpServer())
-        .get('/cities/my/select')
+        .get('/towns/my/select')
         .set('Authorization', `Bearer ${user.access}`)
         .expect((res) => expect(res.body.length).toBeGreaterThan(0));
     });
 
-    it('GET /cities/:cityId/users', async () => {
+    it('GET /towns/:townId/users', async () => {
       return request(app.getHttpServer())
-        .get(`/cities/${cityId}/users`)
+        .get(`/towns/${townId}/users`)
         .expect((res) => expect(res.body.length).toBeGreaterThan(0));
     });
 
-    it('PATCH /cities/:cityId', async () => {
+    it('PATCH /towns/:townId', async () => {
       return request(app.getHttpServer())
-        .patch(`/cities/${cityId}`)
+        .patch(`/towns/${townId}`)
         .set('Authorization', `Bearer ${user.access}`)
         .send({
-          name: 'My City',
+          name: 'My Town',
           image: '',
           video: '',
           description: '',
@@ -1316,17 +1316,17 @@ describe('With Auth', () => {
         .expect('');
     });
 
-    it('POST /cities/:cityId/users', async () => {
+    it('POST /towns/:townId/users', async () => {
       return request(app.getHttpServer())
-        .post(`/cities/${cityId}/users`)
+        .post(`/towns/${townId}/users`)
         .set('Authorization', `Bearer ${user.access}`)
         .send({ userId: admin.id })
         .expect('');
     });
 
-    it('DELETE /cities/:cityId/users', async () => {
+    it('DELETE /towns/:townId/users', async () => {
       return request(app.getHttpServer())
-        .delete(`/cities/${cityId}/users`)
+        .delete(`/towns/${townId}/users`)
         .set('Authorization', `Bearer ${user.access}`)
         .send({ userId: admin.id })
         .expect('');

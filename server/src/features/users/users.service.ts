@@ -47,7 +47,7 @@ export class UsersService {
     const [result, count] = await this.getFriendsQueryBuilder(req)
       .leftJoin('user.friends', 'friend')
       .groupBy('user.id')
-      .addGroupBy('city.id')
+      .addGroupBy('town.id')
       .addGroupBy('ownerUser.id')
       .orderBy('user_friends', 'DESC', 'NULLS LAST')
       .addOrderBy('user.type', 'DESC')
@@ -62,7 +62,7 @@ export class UsersService {
     const [result, count] = await this.getSubscribersQueryBuilder(req)
       .leftJoin('user.receivedSubscribers', 'subscriber')
       .groupBy('user.id')
-      .addGroupBy('city.id')
+      .addGroupBy('town.id')
       .addGroupBy('ownerUser.id')
       .orderBy('user_subscribers', 'DESC', 'NULLS LAST')
       .addOrderBy('user.type', 'DESC')
@@ -77,7 +77,7 @@ export class UsersService {
     const [result, count] = await this.getRatingsQueryBuilder(req)
       .leftJoin('user.receivedRatings', 'rating')
       .groupBy('user.id')
-      .addGroupBy('city.id')
+      .addGroupBy('town.id')
       .addGroupBy('ownerUser.id')
       .orderBy('user_rating', 'DESC', 'NULLS LAST')
       .addOrderBy('user_ratings', 'DESC', 'NULLS LAST')
@@ -92,8 +92,8 @@ export class UsersService {
 
   async getMyUsers(myId: number, req: Request): Promise<Response<User>> {
     const [result, count] = await this.getExtUsersQueryBuilder(req)
-      .leftJoin('city.users', 'cityUsers')
-      .andWhere('cityUsers.id = :myId', { myId })
+      .leftJoin('town.users', 'townUsers')
+      .andWhere('townUsers.id = :myId', { myId })
       .getManyAndCount();
     return { result, count };
   }
@@ -132,7 +132,7 @@ export class UsersService {
 
   selectNotCitizensUsers(): Promise<User[]> {
     return this.selectUsersQueryBuilder()
-      .where('user.cityId IS NULL')
+      .where('user.townId IS NULL')
       .getMany();
   }
 
@@ -533,8 +533,8 @@ export class UsersService {
   private getUsersQueryBuilder(req: Request): SelectQueryBuilder<User> {
     return this.usersRepository
       .createQueryBuilder('user')
-      .leftJoin('user.city', 'city')
-      .leftJoin('city.user', 'ownerUser')
+      .leftJoin('user.town', 'town')
+      .leftJoin('town.user', 'ownerUser')
       .where(
         new Brackets((qb) =>
           qb.where(`${!req.id}`).orWhere('user.id = :id', { id: req.id }),
@@ -557,8 +557,8 @@ export class UsersService {
       .andWhere(
         new Brackets((qb) =>
           qb
-            .where(`${!req.city}`)
-            .orWhere('city.id = :cityId', { cityId: req.city }),
+            .where(`${!req.town}`)
+            .orWhere('town.id = :townId', { townId: req.town }),
         ),
       )
       .andWhere(
@@ -595,13 +595,13 @@ export class UsersService {
         'user.createdAt',
         'user.onlineAt',
         'user.type',
-        'city.id',
+        'town.id',
         'ownerUser.id',
         'ownerUser.nick',
         'ownerUser.avatar',
-        'city.name',
-        'city.x',
-        'city.y',
+        'town.name',
+        'town.x',
+        'town.y',
       ]);
   }
 

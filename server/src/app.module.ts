@@ -15,7 +15,7 @@ import { CardsModule } from './features/cards/cards.module';
 import { ExchangesModule } from './features/exchanges/exchanges.module';
 import { PaymentsModule } from './features/payments/payments.module';
 import { InvoicesModule } from './features/invoices/invoices.module';
-import { CitiesModule } from './features/cities/cities.module';
+import { TownsModule } from './features/towns/towns.module';
 import { FarmsModule } from './features/farms/farms.module';
 import { ShopsModule } from './features/shops/shops.module';
 import { MarketsModule } from './features/markets/markets.module';
@@ -83,7 +83,7 @@ import { LoggerModule } from './features/logger/logger.module';
     ExchangesModule,
     PaymentsModule,
     InvoicesModule,
-    CitiesModule,
+    TownsModule,
     FarmsModule,
     ShopsModule,
     MarketsModule,

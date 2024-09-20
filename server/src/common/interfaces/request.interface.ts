@@ -62,7 +62,7 @@ export class Request {
   @IsOptional()
   @IsInt()
   @Type(() => Number)
-  city?: number;
+  town?: number;
 
   @ApiProperty({ required: false })
   @IsOptional()

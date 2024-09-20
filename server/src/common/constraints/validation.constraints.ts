@@ -15,7 +15,7 @@ import { CardsService } from '../../features/cards/cards.service';
 import { ExchangesService } from '../../features/exchanges/exchanges.service';
 import { PaymentsService } from '../../features/payments/payments.service';
 import { InvoicesService } from '../../features/invoices/invoices.service';
-import { CitiesService } from '../../features/cities/cities.service';
+import { TownsService } from '../../features/towns/towns.service';
 import { FarmsService } from '../../features/farms/farms.service';
 import { ShopsService } from '../../features/shops/shops.service';
 import { MarketsService } from '../../features/markets/markets.service';
@@ -273,13 +273,13 @@ export class IsInvoiceExists implements ValidatorConstraintInterface {
 }
 
 @Injectable()
-@ValidatorConstraint({ name: 'isCityExists', async: true })
-export class IsCityExists implements ValidatorConstraintInterface {
-  constructor(private citiesService: CitiesService) {}
+@ValidatorConstraint({ name: 'isTownExists', async: true })
+export class IsTownExists implements ValidatorConstraintInterface {
+  constructor(private townsService: TownsService) {}
 
   async validate(value: number): Promise<boolean> {
     try {
-      await this.citiesService.checkCityExists(value);
+      await this.townsService.checkTownExists(value);
     } catch (error) {
       return false;
     }
@@ -287,7 +287,7 @@ export class IsCityExists implements ValidatorConstraintInterface {
   }
 
   defaultMessage(): string {
-    return 'Unknown city';
+    return 'Unknown town';
   }
 }
 

@@ -10,7 +10,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Role } from './role.enum';
-import { City } from '../cities/city.entity';
+import { Town } from '../towns/town.entity';
 import { Card } from '../cards/card.entity';
 import { Rating } from '../ratings/rating.entity';
 
@@ -58,12 +58,12 @@ export class User {
   @Column({ default: 0 })
   time: number;
 
-  @Column({ name: 'city_id', nullable: true })
-  cityId?: number;
+  @Column({ name: 'town_id', nullable: true })
+  townId?: number;
 
-  @ManyToOne(() => City, { nullable: true })
-  @JoinColumn({ name: 'city_id' })
-  city?: City;
+  @ManyToOne(() => Town, { nullable: true })
+  @JoinColumn({ name: 'town_id' })
+  town?: Town;
 
   @ManyToMany(() => User)
   @JoinTable({
