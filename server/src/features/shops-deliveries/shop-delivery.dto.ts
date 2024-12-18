@@ -7,11 +7,11 @@ import {
   IsBargainExists,
 } from '../../common/constraints';
 import {
-  CreateHaulageDto,
-  EditHaulageDto,
-  RateHaulageDto,
-  TakeHaulageDto,
-} from '../haulages/haulage.dto';
+  CreateDeliveryDto,
+  EditDeliveryDto,
+  RateDeliveryDto,
+  TakeDeliveryDto,
+} from '../deliveries/delivery.dto';
 
 export class ShopDeliveryIdDto {
   @ApiProperty()
@@ -26,7 +26,7 @@ export class ExtShopDeliveryIdDto extends ShopDeliveryIdDto {
   hasRole: boolean;
 }
 
-export class CreateShopDeliveryDto extends CreateHaulageDto {
+export class CreateShopDeliveryDto extends CreateDeliveryDto {
   @ApiProperty()
   @IsId()
   @Validate(IsBargainExists)
@@ -38,7 +38,7 @@ export class ExtCreateShopDeliveryDto extends CreateShopDeliveryDto {
   hasRole: boolean;
 }
 
-export class EditShopDeliveryDto extends EditHaulageDto {}
+export class EditShopDeliveryDto extends EditDeliveryDto {}
 
 export class ExtEditShopDeliveryDto extends EditShopDeliveryDto {
   shopDeliveryId: number;
@@ -46,7 +46,7 @@ export class ExtEditShopDeliveryDto extends EditShopDeliveryDto {
   hasRole: boolean;
 }
 
-export class TakeShopDeliveryDto extends TakeHaulageDto {}
+export class TakeShopDeliveryDto extends TakeDeliveryDto {}
 
 export class ExtTakeShopDeliveryDto extends TakeShopDeliveryDto {
   shopDeliveryId: number;
@@ -54,7 +54,7 @@ export class ExtTakeShopDeliveryDto extends TakeShopDeliveryDto {
   hasRole: boolean;
 }
 
-export class RateShopDeliveryDto extends RateHaulageDto {}
+export class RateShopDeliveryDto extends RateDeliveryDto {}
 
 export class ExtRateShopDeliveryDto extends RateShopDeliveryDto {
   shopDeliveryId: number;

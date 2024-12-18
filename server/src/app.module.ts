@@ -36,7 +36,7 @@ import { BargainsModule } from './features/bargains/bargains.module';
 import { TradesModule } from './features/trades/trades.module';
 import { SalesModule } from './features/sales/sales.module';
 import { OrdersModule } from './features/orders/orders.module';
-import { DeliveriesModule } from './features/deliveries/deliveries.module';
+import { HaulagesModule } from './features/haulages/haulages.module';
 import { ShopsDeliveriesModule } from './features/shops-deliveries/shops-deliveries.module';
 import { MarketsDeliveriesModule } from './features/markets-deliveries/markets-deliveries.module';
 import { StoragesDeliveriesModule } from './features/storages-deliveries/storages-deliveries.module';
@@ -104,7 +104,7 @@ import { LoggerModule } from './features/logger/logger.module';
     TradesModule,
     SalesModule,
     OrdersModule,
-    DeliveriesModule,
+    HaulagesModule,
     ShopsDeliveriesModule,
     MarketsDeliveriesModule,
     StoragesDeliveriesModule,

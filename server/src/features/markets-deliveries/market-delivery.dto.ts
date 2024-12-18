@@ -7,11 +7,11 @@ import {
   IsTradeExists,
 } from '../../common/constraints';
 import {
-  CreateHaulageDto,
-  EditHaulageDto,
-  RateHaulageDto,
-  TakeHaulageDto,
-} from '../haulages/haulage.dto';
+  CreateDeliveryDto,
+  EditDeliveryDto,
+  RateDeliveryDto,
+  TakeDeliveryDto,
+} from '../deliveries/delivery.dto';
 
 export class MarketDeliveryIdDto {
   @ApiProperty()
@@ -26,7 +26,7 @@ export class ExtMarketDeliveryIdDto extends MarketDeliveryIdDto {
   hasRole: boolean;
 }
 
-export class CreateMarketDeliveryDto extends CreateHaulageDto {
+export class CreateMarketDeliveryDto extends CreateDeliveryDto {
   @ApiProperty()
   @IsId()
   @Validate(IsTradeExists)
@@ -38,7 +38,7 @@ export class ExtCreateMarketDeliveryDto extends CreateMarketDeliveryDto {
   hasRole: boolean;
 }
 
-export class EditMarketDeliveryDto extends EditHaulageDto {}
+export class EditMarketDeliveryDto extends EditDeliveryDto {}
 
 export class ExtEditMarketDeliveryDto extends EditMarketDeliveryDto {
   marketDeliveryId: number;
@@ -46,7 +46,7 @@ export class ExtEditMarketDeliveryDto extends EditMarketDeliveryDto {
   hasRole: boolean;
 }
 
-export class TakeMarketDeliveryDto extends TakeHaulageDto {}
+export class TakeMarketDeliveryDto extends TakeDeliveryDto {}
 
 export class ExtTakeMarketDeliveryDto extends TakeMarketDeliveryDto {
   marketDeliveryId: number;
@@ -54,7 +54,7 @@ export class ExtTakeMarketDeliveryDto extends TakeMarketDeliveryDto {
   hasRole: boolean;
 }
 
-export class RateMarketDeliveryDto extends RateHaulageDto {}
+export class RateMarketDeliveryDto extends RateDeliveryDto {}
 
 export class ExtRateMarketDeliveryDto extends RateMarketDeliveryDto {
   marketDeliveryId: number;

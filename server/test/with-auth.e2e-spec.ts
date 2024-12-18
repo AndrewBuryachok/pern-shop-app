@@ -54,7 +54,7 @@ describe('With Auth', () => {
   let tradesId: number;
   let salesId: number;
   let ordersId: number;
-  let deliveriesId: number;
+  let haulagesId: number;
   let shopsDeliveriesId: number;
   let marketsDeliveriesId: number;
   let storagesDeliveriesId: number;
@@ -2778,10 +2778,10 @@ describe('With Auth', () => {
     });
   });
 
-  describe('Deliveries', () => {
-    it('POST /deliveries', async () => {
+  describe('Haulages', () => {
+    it('POST /haulages', async () => {
       return request(app.getHttpServer())
-        .post('/deliveries')
+        .post('/haulages')
         .set('Authorization', `Bearer ${user.access}`)
         .send({
           fromStationId: stationId,
@@ -2797,9 +2797,9 @@ describe('With Auth', () => {
         .expect('');
     });
 
-    it('POST /deliveries', async () => {
+    it('POST /haulages', async () => {
       return request(app.getHttpServer())
-        .post('/deliveries')
+        .post('/haulages')
         .set('Authorization', `Bearer ${user.access}`)
         .send({
           fromStationId: stationId,
@@ -2815,23 +2815,23 @@ describe('With Auth', () => {
         .expect('');
     });
 
-    it('GET /deliveries', async () => {
+    it('GET /haulages', async () => {
       return request(app.getHttpServer())
-        .get('/deliveries')
+        .get('/haulages')
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
 
-    it('GET /deliveries/my', async () => {
+    it('GET /haulages/my', async () => {
       return request(app.getHttpServer())
-        .get('/deliveries/my')
+        .get('/haulages/my')
         .set('Authorization', `Bearer ${user.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0))
-        .then((res) => (deliveriesId = res.body.result.map((d) => d.id)));
+        .then((res) => (haulagesId = res.body.result.map((d) => d.id)));
     });
 
-    it('PATCH /deliveries/:deliveryId', async () => {
+    it('PATCH /haulages/:haulageId', async () => {
       return request(app.getHttpServer())
-        .patch(`/deliveries/${deliveriesId[0]}`)
+        .patch(`/haulages/${haulagesId[0]}`)
         .set('Authorization', `Bearer ${user.access}`)
         .send({
           item: 1,
@@ -2844,75 +2844,75 @@ describe('With Auth', () => {
         .expect('');
     });
 
-    it('POST /deliveries/:deliveryId/take', async () => {
+    it('POST /haulages/:haulageId/take', async () => {
       return request(app.getHttpServer())
-        .post(`/deliveries/${deliveriesId[0]}/take`)
+        .post(`/haulages/${haulagesId[0]}/take`)
         .set('Authorization', `Bearer ${user.access}`)
         .send({ cardId })
         .expect('');
     });
 
-    it('GET /deliveries/taken', async () => {
+    it('GET /haulages/taken', async () => {
       return request(app.getHttpServer())
-        .get('/deliveries/taken')
+        .get('/haulages/taken')
         .set('Authorization', `Bearer ${user.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
 
-    it('GET /deliveries/placed', async () => {
+    it('GET /haulages/placed', async () => {
       return request(app.getHttpServer())
-        .get('/deliveries/placed')
+        .get('/haulages/placed')
         .set('Authorization', `Bearer ${user.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
 
-    it('GET /deliveries/all', async () => {
+    it('GET /haulages/all', async () => {
       return request(app.getHttpServer())
-        .get('/deliveries/all')
+        .get('/haulages/all')
         .set('Authorization', `Bearer ${merchant.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
 
-    it('POST /deliveries/:deliveryId/execute', async () => {
+    it('POST /haulages/:haulageId/execute', async () => {
       return request(app.getHttpServer())
-        .post(`/deliveries/${deliveriesId[0]}/execute`)
+        .post(`/haulages/${haulagesId[0]}/execute`)
         .set('Authorization', `Bearer ${user.access}`)
         .expect('');
     });
 
-    it('POST /deliveries/:deliveryId', async () => {
+    it('POST /haulages/:haulageId', async () => {
       return request(app.getHttpServer())
-        .post(`/deliveries/${deliveriesId[0]}`)
+        .post(`/haulages/${haulagesId[0]}`)
         .set('Authorization', `Bearer ${user.access}`)
         .expect('');
     });
 
-    it('PATCH /deliveries/:deliveryId/rate', async () => {
+    it('PATCH /haulages/:haulageId/rate', async () => {
       return request(app.getHttpServer())
-        .patch(`/deliveries/${deliveriesId[0]}/rate`)
+        .patch(`/haulages/${haulagesId[0]}/rate`)
         .set('Authorization', `Bearer ${user.access}`)
         .send({ rate: 5 })
         .expect('');
     });
 
-    it('POST /deliveries/:deliveryId/take', async () => {
+    it('POST /haulages/:haulageId/take', async () => {
       return request(app.getHttpServer())
-        .post(`/deliveries/${deliveriesId[1]}/take`)
+        .post(`/haulages/${haulagesId[1]}/take`)
         .set('Authorization', `Bearer ${user.access}`)
         .send({ cardId })
         .expect('');
     });
 
-    it('DELETE /deliveries/:deliveryId/take', async () => {
+    it('DELETE /haulages/:haulageId/take', async () => {
       return request(app.getHttpServer())
-        .delete(`/deliveries/${deliveriesId[1]}/take`)
+        .delete(`/haulages/${haulagesId[1]}/take`)
         .set('Authorization', `Bearer ${user.access}`)
         .expect('');
     });
 
-    it('DELETE /deliveries/:deliveryId', async () => {
+    it('DELETE /haulages/:haulageId', async () => {
       return request(app.getHttpServer())
-        .delete(`/deliveries/${deliveriesId[1]}`)
+        .delete(`/haulages/${haulagesId[1]}`)
         .set('Authorization', `Bearer ${user.access}`)
         .expect('');
     });

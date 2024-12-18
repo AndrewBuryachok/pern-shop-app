@@ -1,65 +1,32 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Validate } from 'class-validator';
-import { Type } from 'class-transformer';
-import { IsId } from '../../common/decorators';
-import { IsDeliveryExists, IsStationExists } from '../../common/constraints';
-import {
-  CreateTransportationDto,
-  RateTransportationDto,
-  TakeTransportationDto,
-} from '../transportations/transportation.dto';
-import { CreateThingDto } from '../things/thing.dto';
+import { IsId, IsRate } from '../../common/decorators';
+import { IsCardExists, IsStationExists } from '../../common/constraints';
+import { EditStateDto } from '../states/state.dto';
 
-export class DeliveryIdDto {
-  @ApiProperty()
-  @IsId()
-  @Validate(IsDeliveryExists)
-  @Type(() => Number)
-  deliveryId: number;
-}
+export abstract class EditDeliveryDto extends EditStateDto {}
 
-export class ExtDeliveryIdDto extends DeliveryIdDto {
-  myId: number;
-  hasRole: boolean;
-}
-
-export class CreateDeliveryDto extends CreateTransportationDto {
+export abstract class CreateDeliveryDto extends EditDeliveryDto {
   @ApiProperty()
   @IsId()
   @Validate(IsStationExists)
-  fromStationId: number;
+  stationId: number;
 
   @ApiProperty()
   @IsId()
-  @Validate(IsStationExists)
-  toStationId: number;
+  @Validate(IsCardExists)
+  cardId: number;
 }
 
-export class EditDeliveryDto extends CreateThingDto {}
-
-export class ExtEditDeliveryDto extends EditDeliveryDto {
-  deliveryId: number;
-  myId: number;
-  hasRole: boolean;
+export abstract class TakeDeliveryDto {
+  @ApiProperty()
+  @IsId()
+  @Validate(IsCardExists)
+  cardId: number;
 }
 
-export class ExtCreateDeliveryDto extends CreateDeliveryDto {
-  myId: number;
-  hasRole: boolean;
-}
-
-export class TakeDeliveryDto extends TakeTransportationDto {}
-
-export class ExtTakeDeliveryDto extends TakeDeliveryDto {
-  deliveryId: number;
-  myId: number;
-  hasRole: boolean;
-}
-
-export class RateDeliveryDto extends RateTransportationDto {}
-
-export class ExtRateDeliveryDto extends RateDeliveryDto {
-  deliveryId: number;
-  myId: number;
-  hasRole: boolean;
+export abstract class RateDeliveryDto {
+  @ApiProperty()
+  @IsRate()
+  rate: number;
 }

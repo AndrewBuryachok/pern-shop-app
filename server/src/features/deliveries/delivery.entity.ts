@@ -1,20 +1,40 @@
-import { Column, Entity, JoinColumn, OneToOne } from 'typeorm';
-import { Transportation } from '../transportations/transportation.entity';
-import { Hire } from '../hires/hire.entity';
+import {
+  Column,
+  CreateDateColumn,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { Card } from '../cards/card.entity';
+import { Status } from '../transportations/status.enum';
 
-@Entity('deliveries')
-export class Delivery extends Transportation {
-  @Column({ name: 'from_hire_id' })
-  fromHireId: number;
+export abstract class Delivery {
+  @PrimaryGeneratedColumn()
+  id: number;
 
-  @OneToOne(() => Hire, { nullable: false })
-  @JoinColumn({ name: 'from_hire_id' })
-  fromHire: Hire;
+  @Column()
+  price: number;
 
-  @Column({ name: 'to_hire_id' })
-  toHireId: number;
+  @Column({
+    type: 'enum',
+    enum: Status,
+    default: Status.CREATED,
+  })
+  status: Status;
 
-  @OneToOne(() => Hire, { nullable: false })
-  @JoinColumn({ name: 'to_hire_id' })
-  toHire: Hire;
+  @Column({ name: 'executor_card_id', nullable: true })
+  executorCardId?: number;
+
+  @ManyToOne(() => Card, { nullable: true })
+  @JoinColumn({ name: 'executor_card_id' })
+  executorCard?: Card;
+
+  @CreateDateColumn({ type: 'timestamptz', name: 'created_at' })
+  createdAt: Date;
+
+  @Column({ type: 'timestamptz', name: 'completed_at', nullable: true })
+  completedAt?: Date;
+
+  @Column({ nullable: true })
+  rate?: number;
 }

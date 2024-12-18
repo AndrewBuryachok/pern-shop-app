@@ -2,7 +2,8 @@ import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 import { Receipt } from '../receipts/receipt.entity';
 import { Drawer } from '../drawers/drawer.entity';
 import { Order } from '../orders/order.entity';
-import { Delivery } from '../deliveries/delivery.entity';
+import { Haulage } from '../haulages/haulage.entity';
+import { ShopDelivery } from '../shops-deliveries/shop-delivery.entity';
 import { MarketDelivery } from '../markets-deliveries/market-delivery.entity';
 import { StorageDelivery } from '../storages-deliveries/storage-delivery.entity';
 
@@ -18,11 +19,14 @@ export class Hire extends Receipt {
   @OneToMany(() => Order, (order) => order.hire)
   orders: Order[];
 
-  @OneToMany(() => Delivery, (delivery) => delivery.fromHire)
-  fromDeliveries: Delivery[];
+  @OneToMany(() => Haulage, (haulage) => haulage.fromHire)
+  fromHaulages: Haulage[];
 
-  @OneToMany(() => Delivery, (delivery) => delivery.toHire)
-  toDeliveries: Delivery[];
+  @OneToMany(() => Haulage, (haulage) => haulage.toHire)
+  toHaulages: Haulage[];
+
+  @OneToMany(() => ShopDelivery, (shopDelivery) => shopDelivery.hire)
+  shopsDeliveries: ShopDelivery[];
 
   @OneToMany(() => MarketDelivery, (marketDelivery) => marketDelivery.hire)
   marketsDeliveries: MarketDelivery[];

@@ -7,11 +7,11 @@ import {
   IsStorageDeliveryExists,
 } from '../../common/constraints';
 import {
-  CreateHaulageDto,
-  EditHaulageDto,
-  RateHaulageDto,
-  TakeHaulageDto,
-} from '../haulages/haulage.dto';
+  CreateDeliveryDto,
+  EditDeliveryDto,
+  RateDeliveryDto,
+  TakeDeliveryDto,
+} from '../deliveries/delivery.dto';
 
 export class StorageDeliveryIdDto {
   @ApiProperty()
@@ -26,7 +26,7 @@ export class ExtStorageDeliveryIdDto extends StorageDeliveryIdDto {
   hasRole: boolean;
 }
 
-export class CreateStorageDeliveryDto extends CreateHaulageDto {
+export class CreateStorageDeliveryDto extends CreateDeliveryDto {
   @ApiProperty()
   @IsId()
   @Validate(IsSaleExists)
@@ -38,7 +38,7 @@ export class ExtCreateStorageDeliveryDto extends CreateStorageDeliveryDto {
   hasRole: boolean;
 }
 
-export class EditStorageDeliveryDto extends EditHaulageDto {}
+export class EditStorageDeliveryDto extends EditDeliveryDto {}
 
 export class ExtEditStorageDeliveryDto extends EditStorageDeliveryDto {
   storageDeliveryId: number;
@@ -46,7 +46,7 @@ export class ExtEditStorageDeliveryDto extends EditStorageDeliveryDto {
   hasRole: boolean;
 }
 
-export class TakeStorageDeliveryDto extends TakeHaulageDto {}
+export class TakeStorageDeliveryDto extends TakeDeliveryDto {}
 
 export class ExtTakeStorageDeliveryDto extends TakeStorageDeliveryDto {
   storageDeliveryId: number;
@@ -54,7 +54,7 @@ export class ExtTakeStorageDeliveryDto extends TakeStorageDeliveryDto {
   hasRole: boolean;
 }
 
-export class RateStorageDeliveryDto extends RateHaulageDto {}
+export class RateStorageDeliveryDto extends RateDeliveryDto {}
 
 export class ExtRateStorageDeliveryDto extends RateStorageDeliveryDto {
   storageDeliveryId: number;

@@ -1,0 +1,17 @@
+export enum HaulageError {
+  ALREADY_EXPIRED = '400: Haulage already expired',
+  ALREADY_TAKEN = '400: Haulage already taken',
+  NOT_TAKEN = '400: Haulage is not taken',
+  NOT_EXECUTED = '400: Haulage is not executed',
+  NOT_COMPLETED = '400: Haulage is not completed',
+  NOT_CUSTOMER = '403: You are not haulage customer',
+  NOT_EXECUTOR = '403: You are not haulage executor',
+  CREATE_FAILED = '500: Failed to create haulage',
+  EDIT_FAILED = '500: Failed to edit haulage',
+  TAKE_FAILED = '500: Failed to take haulage',
+  UNTAKE_FAILED = '500: Failed to untake haulage',
+  EXECUTE_FAILED = '500: Failed to execute haulage',
+  COMPLETE_FAILED = '500: Failed to complete haulage',
+  DELETE_FAILED = '500: Failed to delete haulage',
+  RATE_FAILED = '500: Failed to rate haulage',
+}

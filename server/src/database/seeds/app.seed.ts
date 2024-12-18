@@ -45,7 +45,7 @@ import { Bargain } from '../../features/bargains/bargain.entity';
 import { Trade } from '../../features/trades/trade.entity';
 import { Sale } from '../../features/sales/sale.entity';
 import { Order } from '../../features/orders/order.entity';
-import { Delivery } from '../../features/deliveries/delivery.entity';
+import { Haulage } from '../../features/haulages/haulage.entity';
 import { ShopDelivery } from '../../features/shops-deliveries/shop-delivery.entity';
 import { MarketDelivery } from '../../features/markets-deliveries/market-delivery.entity';
 import { StorageDelivery } from '../../features/storages-deliveries/storage-delivery.entity';
@@ -569,25 +569,25 @@ export default class AppSeed implements Seeder {
         return order;
       })
       .makeMany(10);
-    const deliveries = await factory(Delivery)()
-      .map(async (delivery) => {
-        delivery.fromHire = hires[hireId++];
-        delivery.toHire = hires[hireId++];
-        delivery.fromHire.card.balance -= delivery.price;
-        if (delivery.status !== Status.CREATED) {
-          delivery.executorCard = faker.helpers.arrayElement(cards);
+    const haulages = await factory(Haulage)()
+      .map(async (haulage) => {
+        haulage.fromHire = hires[hireId++];
+        haulage.toHire = hires[hireId++];
+        haulage.fromHire.card.balance -= haulage.price;
+        if (haulage.status !== Status.CREATED) {
+          haulage.executorCard = faker.helpers.arrayElement(cards);
         }
-        if (delivery.status === Status.COMPLETED) {
+        if (haulage.status === Status.COMPLETED) {
           const payment = await factory(Payment)().make({
-            senderCard: delivery.fromHire.card,
-            receiverCard: delivery.executorCard,
-            sum: delivery.price,
+            senderCard: haulage.fromHire.card,
+            receiverCard: haulage.executorCard,
+            sum: haulage.price,
             description: '',
           });
           payments.push(payment);
-          delivery.executorCard.balance += delivery.price;
+          haulage.executorCard.balance += haulage.price;
         }
-        return delivery;
+        return haulage;
       })
       .makeMany(10);
     let bargainId = 0;
@@ -807,9 +807,9 @@ export default class AppSeed implements Seeder {
       .map(async () => orders[id++])
       .createMany(orders.length);
     id = 0;
-    await factory(Delivery)()
-      .map(async () => deliveries[id++])
-      .createMany(deliveries.length);
+    await factory(Haulage)()
+      .map(async () => haulages[id++])
+      .createMany(haulages.length);
     id = 0;
     await factory(Bargain)()
       .map(async () => bargains[id++])

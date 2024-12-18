@@ -684,22 +684,22 @@ describe('Without Auth', () => {
     });
   });
 
-  describe('Deliveries', () => {
-    it('GET /deliveries/my', async () => {
-      return request(app.getHttpServer()).get('/deliveries/my').expect(401);
+  describe('Haulages', () => {
+    it('GET /haulages/my', async () => {
+      return request(app.getHttpServer()).get('/haulages/my').expect(401);
     });
 
-    it('GET /deliveries/taken', async () => {
-      return request(app.getHttpServer()).get('/deliveries/taken').expect(401);
+    it('GET /haulages/taken', async () => {
+      return request(app.getHttpServer()).get('/haulages/taken').expect(401);
     });
 
-    it('GET /deliveries/placed', async () => {
-      return request(app.getHttpServer()).get('/deliveries/placed').expect(401);
+    it('GET /haulages/placed', async () => {
+      return request(app.getHttpServer()).get('/haulages/placed').expect(401);
     });
 
-    it('GET /deliveries/all', async () => {
+    it('GET /haulages/all', async () => {
       return request(app.getHttpServer())
-        .get('/deliveries/all')
+        .get('/haulages/all')
         .set('Authorization', `Bearer ${user.access}`)
         .expect(403);
     });

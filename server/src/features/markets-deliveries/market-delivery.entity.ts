@@ -1,10 +1,10 @@
 import { Column, Entity, JoinColumn, ManyToOne, OneToOne } from 'typeorm';
-import { Haulage } from '../haulages/haulage.entity';
+import { Delivery } from '../deliveries/delivery.entity';
 import { Hire } from '../hires/hire.entity';
 import { Trade } from '../trades/trade.entity';
 
 @Entity('markets_deliveries')
-export class MarketDelivery extends Haulage {
+export class MarketDelivery extends Delivery {
   @Column({ name: 'hire_id' })
   hireId: number;
 

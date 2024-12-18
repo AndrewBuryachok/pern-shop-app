@@ -738,17 +738,17 @@ export class UsersService {
       .where('user.id = :userId', { userId })
       .select('COUNT(order.id)', 'ordersCount')
       .getRawOne();
-    const deliveriesCount = await this.usersRepository
+    const haulagesCount = await this.usersRepository
       .createQueryBuilder('user')
       .leftJoin('user.cards', 'card')
       .leftJoinAndMapMany(
-        'card.deliveries',
-        'deliveries',
-        'delivery',
-        'card.id = delivery.executorCardId',
+        'card.haulages',
+        'haulages',
+        'haulage',
+        'card.id = haulage.executorCardId',
       )
       .where('user.id = :userId', { userId })
-      .select('COUNT(delivery.id)', 'deliveriesCount')
+      .select('COUNT(haulage.id)', 'haulagesCount')
       .getRawOne();
     const waresRate = await this.usersRepository
       .createQueryBuilder('user')
@@ -790,17 +790,17 @@ export class UsersService {
       .where('user.id = :userId', { userId })
       .select('AVG(order.rate)', 'ordersRate')
       .getRawOne();
-    const deliveriesRate = await this.usersRepository
+    const haulagesRate = await this.usersRepository
       .createQueryBuilder('user')
       .leftJoin('user.cards', 'card')
       .leftJoinAndMapMany(
-        'card.deliveries',
-        'deliveries',
-        'delivery',
-        'card.id = delivery.executorCardId',
+        'card.haulages',
+        'haulages',
+        'haulage',
+        'card.id = haulage.executorCardId',
       )
       .where('user.id = :userId', { userId })
-      .select('AVG(delivery.rate)', 'deliveriesRate')
+      .select('AVG(haulage.rate)', 'haulagesRate')
       .getRawOne();
     const user = {
       ...rating,
@@ -811,11 +811,11 @@ export class UsersService {
       ...waresCount,
       ...productsCount,
       ...ordersCount,
-      ...deliveriesCount,
+      ...haulagesCount,
       ...waresRate,
       ...productsRate,
       ...ordersRate,
-      ...deliveriesRate,
+      ...haulagesRate,
     };
     Object.keys(user).forEach((key) => (user[key] = +user[key]));
     return user;

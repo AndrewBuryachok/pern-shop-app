@@ -36,7 +36,7 @@ import { BargainsService } from '../../features/bargains/bargains.service';
 import { TradesService } from '../../features/trades/trades.service';
 import { SalesService } from '../../features/sales/sales.service';
 import { OrdersService } from '../../features/orders/orders.service';
-import { DeliveriesService } from '../../features/deliveries/deliveries.service';
+import { HaulagesService } from '../../features/haulages/haulages.service';
 import { ShopsDeliveriesService } from '../../features/shops-deliveries/shops-deliveries.service';
 import { MarketsDeliveriesService } from '../../features/markets-deliveries/markets-deliveries.service';
 import { StoragesDeliveriesService } from '../../features/storages-deliveries/storages-deliveries.service';
@@ -672,13 +672,13 @@ export class IsOrderExists implements ValidatorConstraintInterface {
 }
 
 @Injectable()
-@ValidatorConstraint({ name: 'isDeliveryExists', async: true })
-export class IsDeliveryExists implements ValidatorConstraintInterface {
-  constructor(private deliveriesService: DeliveriesService) {}
+@ValidatorConstraint({ name: 'isHaulageExists', async: true })
+export class IsHaulageExists implements ValidatorConstraintInterface {
+  constructor(private haulagesService: HaulagesService) {}
 
   async validate(value: number): Promise<boolean> {
     try {
-      await this.deliveriesService.checkDeliveryExists(value);
+      await this.haulagesService.checkHaulageExists(value);
     } catch (error) {
       return false;
     }
@@ -686,7 +686,7 @@ export class IsDeliveryExists implements ValidatorConstraintInterface {
   }
 
   defaultMessage(): string {
-    return 'Unknown delivery';
+    return 'Unknown haulage';
   }
 }
 

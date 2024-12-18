@@ -1,38 +1,38 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
-import { Delivery } from './delivery.entity';
+import { Haulage } from './haulage.entity';
 import { HiresService } from '../hires/hires.service';
 import { CardsService } from '../cards/cards.service';
 import { PaymentsService } from '../payments/payments.service';
 import { MqttService } from '../mqtt/mqtt.service';
 import {
-  ExtCreateDeliveryDto,
-  ExtDeliveryIdDto,
-  ExtEditDeliveryDto,
-  ExtRateDeliveryDto,
-  ExtTakeDeliveryDto,
-} from './delivery.dto';
+  ExtCreateHaulageDto,
+  ExtEditHaulageDto,
+  ExtHaulageIdDto,
+  ExtRateHaulageDto,
+  ExtTakeHaulageDto,
+} from './haulage.dto';
 import { Request, Response } from '../../common/interfaces';
 import { AppException } from '../../common/exceptions';
-import { DeliveryError } from './delivery-error.enum';
+import { HaulageError } from './haulage-error.enum';
 import { Status } from '../transportations/status.enum';
 import { Mode, Notification } from '../../common/enums';
 
 @Injectable()
-export class DeliveriesService {
+export class HaulagesService {
   constructor(
-    @InjectRepository(Delivery)
-    private deliveriesRepository: Repository<Delivery>,
+    @InjectRepository(Haulage)
+    private haulagesRepository: Repository<Haulage>,
     private hiresService: HiresService,
     private cardsService: CardsService,
     private paymentsService: PaymentsService,
     private mqttService: MqttService,
   ) {}
 
-  async getMainDeliveries(req: Request): Promise<Response<Delivery>> {
-    const [result, count] = await this.getDeliveriesQueryBuilder(req)
-      .andWhere('delivery.status = :status', {
+  async getMainHaulages(req: Request): Promise<Response<Haulage>> {
+    const [result, count] = await this.getHaulagesQueryBuilder(req)
+      .andWhere('haulage.status = :status', {
         status: Status.CREATED,
       })
       .andWhere('fromHire.completedAt > NOW()')
@@ -41,33 +41,30 @@ export class DeliveriesService {
     return { result, count };
   }
 
-  async getMyDeliveries(
-    myId: number,
-    req: Request,
-  ): Promise<Response<Delivery>> {
-    const [result, count] = await this.getDeliveriesQueryBuilder(req)
+  async getMyHaulages(myId: number, req: Request): Promise<Response<Haulage>> {
+    const [result, count] = await this.getHaulagesQueryBuilder(req)
       .innerJoin('customerCard.users', 'customerUsers')
       .andWhere('customerUsers.id = :myId', { myId })
       .getManyAndCount();
     return { result, count };
   }
 
-  async getTakenDeliveries(
+  async getTakenHaulages(
     myId: number,
     req: Request,
-  ): Promise<Response<Delivery>> {
-    const [result, count] = await this.getDeliveriesQueryBuilder(req)
+  ): Promise<Response<Haulage>> {
+    const [result, count] = await this.getHaulagesQueryBuilder(req)
       .leftJoin('executorCard.users', 'executorUsers')
       .andWhere('executorUsers.id = :myId', { myId })
       .getManyAndCount();
     return { result, count };
   }
 
-  async getPlacedDeliveries(
+  async getPlacedHaulages(
     myId: number,
     req: Request,
-  ): Promise<Response<Delivery>> {
-    const [result, count] = await this.getDeliveriesQueryBuilder(req)
+  ): Promise<Response<Haulage>> {
+    const [result, count] = await this.getHaulagesQueryBuilder(req)
       .innerJoin('fromOwnerCard.users', 'fromOwnerUsers')
       .innerJoin('toOwnerCard.users', 'toOwnerUsers')
       .andWhere(
@@ -82,15 +79,15 @@ export class DeliveriesService {
     return { result, count };
   }
 
-  async getAllDeliveries(req: Request): Promise<Response<Delivery>> {
-    const [result, count] = await this.getDeliveriesQueryBuilder(
+  async getAllHaulages(req: Request): Promise<Response<Haulage>> {
+    const [result, count] = await this.getHaulagesQueryBuilder(
       req,
     ).getManyAndCount();
     return { result, count };
   }
 
-  async createDelivery(
-    dto: ExtCreateDeliveryDto & { nick: string },
+  async createHaulage(
+    dto: ExtCreateHaulageDto & { nick: string },
   ): Promise<void> {
     const fromHireId = await this.hiresService.createHire({
       ...dto,
@@ -101,215 +98,205 @@ export class DeliveriesService {
       stationId: dto.toStationId,
     });
     await this.cardsService.decreaseCardBalance({ ...dto, sum: dto.price });
-    const delivery = await this.create({
+    const haulage = await this.create({
       ...dto,
       fromStationId: fromHireId,
       toStationId: toHireId,
     });
     this.mqttService.publishNotificationMessage(
-      delivery.id,
+      haulage.id,
       0,
       dto.nick,
-      Notification.CREATED_DELIVERY,
+      Notification.CREATED_HAULAGE,
     );
   }
 
-  async editDelivery(dto: ExtEditDeliveryDto): Promise<void> {
-    const delivery = await this.checkDeliveryCustomer(
-      dto.deliveryId,
+  async editHaulage(dto: ExtEditHaulageDto): Promise<void> {
+    const haulage = await this.checkHaulageCustomer(
+      dto.haulageId,
       dto.myId,
       dto.hasRole,
     );
-    if (delivery.status !== Status.CREATED) {
-      throw new AppException(DeliveryError.ALREADY_TAKEN);
+    if (haulage.status !== Status.CREATED) {
+      throw new AppException(HaulageError.ALREADY_TAKEN);
     }
-    if (dto.price !== delivery.price) {
-      if (dto.price < delivery.price) {
+    if (dto.price !== haulage.price) {
+      if (dto.price < haulage.price) {
         await this.cardsService.increaseCardBalance({
-          cardId: delivery.fromHire.cardId,
-          sum: delivery.price - dto.price,
+          cardId: haulage.fromHire.cardId,
+          sum: haulage.price - dto.price,
         });
       } else {
         await this.cardsService.decreaseCardBalance({
-          cardId: delivery.fromHire.cardId,
-          sum: dto.price - delivery.price,
+          cardId: haulage.fromHire.cardId,
+          sum: dto.price - haulage.price,
         });
       }
     }
-    await this.edit(delivery, dto);
+    await this.edit(haulage, dto);
   }
 
-  async takeDelivery(
-    dto: ExtTakeDeliveryDto & { nick: string },
-  ): Promise<void> {
+  async takeHaulage(dto: ExtTakeHaulageDto & { nick: string }): Promise<void> {
     await this.cardsService.checkCardUser(dto.cardId, dto.myId, dto.hasRole);
-    const delivery = await this.deliveriesRepository.findOne({
+    const haulage = await this.haulagesRepository.findOne({
       relations: ['fromHire', 'fromHire.card', 'toHire'],
-      where: { id: dto.deliveryId },
+      where: { id: dto.haulageId },
     });
-    if (delivery.status !== Status.CREATED) {
-      throw new AppException(DeliveryError.ALREADY_TAKEN);
+    if (haulage.status !== Status.CREATED) {
+      throw new AppException(HaulageError.ALREADY_TAKEN);
     }
     if (
-      delivery.fromHire.completedAt < new Date() ||
-      delivery.toHire.completedAt < new Date()
+      haulage.fromHire.completedAt < new Date() ||
+      haulage.toHire.completedAt < new Date()
     ) {
-      throw new AppException(DeliveryError.ALREADY_EXPIRED);
+      throw new AppException(HaulageError.ALREADY_EXPIRED);
     }
-    await this.take(delivery, dto.cardId);
+    await this.take(haulage, dto.cardId);
     this.mqttService.publishNotificationMessage(
-      dto.deliveryId,
-      delivery.fromHire.card.userId,
+      dto.haulageId,
+      haulage.fromHire.card.userId,
       dto.nick,
-      Notification.TAKEN_DELIVERY,
+      Notification.TAKEN_HAULAGE,
     );
   }
 
-  async untakeDelivery(
-    dto: ExtDeliveryIdDto & { nick: string },
-  ): Promise<void> {
-    const delivery = await this.checkDeliveryExecutor(
-      dto.deliveryId,
+  async untakeHaulage(dto: ExtHaulageIdDto & { nick: string }): Promise<void> {
+    const haulage = await this.checkHaulageExecutor(
+      dto.haulageId,
       dto.myId,
       dto.hasRole,
     );
-    if (delivery.status !== Status.TAKEN) {
-      throw new AppException(DeliveryError.NOT_TAKEN);
+    if (haulage.status !== Status.TAKEN) {
+      throw new AppException(HaulageError.NOT_TAKEN);
     }
-    await this.untake(delivery);
+    await this.untake(haulage);
     this.mqttService.publishNotificationMessage(
-      dto.deliveryId,
-      delivery.fromHire.card.userId,
+      dto.haulageId,
+      haulage.fromHire.card.userId,
       dto.nick,
-      Notification.UNTAKEN_DELIVERY,
+      Notification.UNTAKEN_HAULAGE,
     );
   }
 
-  async executeDelivery(
-    dto: ExtDeliveryIdDto & { nick: string },
-  ): Promise<void> {
-    const delivery = await this.checkDeliveryExecutor(
-      dto.deliveryId,
+  async executeHaulage(dto: ExtHaulageIdDto & { nick: string }): Promise<void> {
+    const haulage = await this.checkHaulageExecutor(
+      dto.haulageId,
       dto.myId,
       dto.hasRole,
     );
-    if (delivery.status !== Status.TAKEN) {
-      throw new AppException(DeliveryError.NOT_TAKEN);
+    if (haulage.status !== Status.TAKEN) {
+      throw new AppException(HaulageError.NOT_TAKEN);
     }
-    await this.execute(delivery);
+    await this.execute(haulage);
     this.mqttService.publishNotificationMessage(
-      dto.deliveryId,
-      delivery.fromHire.card.userId,
+      dto.haulageId,
+      haulage.fromHire.card.userId,
       dto.nick,
-      Notification.EXECUTED_DELIVERY,
+      Notification.EXECUTED_HAULAGE,
     );
   }
 
-  async completeDelivery(
-    dto: ExtDeliveryIdDto & { nick: string },
+  async completeHaulage(
+    dto: ExtHaulageIdDto & { nick: string },
   ): Promise<void> {
-    const delivery = await this.checkDeliveryCustomer(
-      dto.deliveryId,
+    const haulage = await this.checkHaulageCustomer(
+      dto.haulageId,
       dto.myId,
       dto.hasRole,
     );
-    if (delivery.status !== Status.EXECUTED) {
-      throw new AppException(DeliveryError.NOT_EXECUTED);
+    if (haulage.status !== Status.EXECUTED) {
+      throw new AppException(HaulageError.NOT_EXECUTED);
     }
     await this.cardsService.increaseCardBalance({
-      cardId: delivery.fromHire.cardId,
-      sum: delivery.price,
+      cardId: haulage.fromHire.cardId,
+      sum: haulage.price,
     });
     await this.paymentsService.createPayment({
       myId: dto.myId,
       nick: dto.nick,
       hasRole: dto.hasRole,
-      senderCardId: delivery.fromHire.cardId,
-      receiverCardId: delivery.executorCardId,
-      sum: delivery.price,
+      senderCardId: haulage.fromHire.cardId,
+      receiverCardId: haulage.executorCardId,
+      sum: haulage.price,
       description: '',
     });
     try {
       await this.hiresService.completeHire({
         ...dto,
-        hireId: delivery.fromHireId,
+        hireId: haulage.fromHireId,
       });
     } catch (error) {}
     try {
       await this.hiresService.completeHire({
         ...dto,
-        hireId: delivery.toHireId,
+        hireId: haulage.toHireId,
       });
     } catch (error) {}
-    await this.complete(delivery);
+    await this.complete(haulage);
     this.mqttService.publishNotificationMessage(
-      dto.deliveryId,
-      delivery.executorCard.userId,
+      dto.haulageId,
+      haulage.executorCard.userId,
       dto.nick,
-      Notification.COMPLETED_DELIVERY,
+      Notification.COMPLETED_HAULAGE,
     );
   }
 
-  async deleteDelivery(
-    dto: ExtDeliveryIdDto & { nick: string },
-  ): Promise<void> {
-    const delivery = await this.checkDeliveryCustomer(
-      dto.deliveryId,
+  async deleteHaulage(dto: ExtHaulageIdDto & { nick: string }): Promise<void> {
+    const haulage = await this.checkHaulageCustomer(
+      dto.haulageId,
       dto.myId,
       dto.hasRole,
     );
-    if (delivery.status !== Status.CREATED) {
-      throw new AppException(DeliveryError.ALREADY_TAKEN);
+    if (haulage.status !== Status.CREATED) {
+      throw new AppException(HaulageError.ALREADY_TAKEN);
     }
     await this.cardsService.increaseCardBalance({
-      cardId: delivery.fromHire.cardId,
-      sum: delivery.price,
+      cardId: haulage.fromHire.cardId,
+      sum: haulage.price,
     });
     try {
       await this.hiresService.completeHire({
         ...dto,
-        hireId: delivery.fromHireId,
+        hireId: haulage.fromHireId,
       });
     } catch (error) {}
     try {
       await this.hiresService.completeHire({
         ...dto,
-        hireId: delivery.toHireId,
+        hireId: haulage.toHireId,
       });
     } catch (error) {}
-    await this.delete(delivery);
+    await this.delete(haulage);
   }
 
-  async rateDelivery(
-    dto: ExtRateDeliveryDto & { nick: string },
-  ): Promise<void> {
-    const delivery = await this.checkDeliveryCustomer(
-      dto.deliveryId,
+  async rateHaulage(dto: ExtRateHaulageDto & { nick: string }): Promise<void> {
+    const haulage = await this.checkHaulageCustomer(
+      dto.haulageId,
       dto.myId,
       dto.hasRole,
     );
-    if (delivery.status !== Status.COMPLETED) {
-      throw new AppException(DeliveryError.NOT_COMPLETED);
+    if (haulage.status !== Status.COMPLETED) {
+      throw new AppException(HaulageError.NOT_COMPLETED);
     }
-    await this.rate(delivery, dto.rate);
+    await this.rate(haulage, dto.rate);
     this.mqttService.publishNotificationMessage(
-      dto.deliveryId,
-      delivery.executorCard.userId,
+      dto.haulageId,
+      haulage.executorCard.userId,
       dto.nick,
-      Notification.RATED_DELIVERY,
+      Notification.RATED_HAULAGE,
     );
   }
 
-  async checkDeliveryExists(id: number): Promise<void> {
-    await this.deliveriesRepository.findOneByOrFail({ id });
+  async checkHaulageExists(id: number): Promise<void> {
+    await this.haulagesRepository.findOneByOrFail({ id });
   }
 
-  private async checkDeliveryCustomer(
+  private async checkHaulageCustomer(
     id: number,
     userId: number,
     hasRole: boolean,
-  ): Promise<Delivery> {
-    const delivery = await this.deliveriesRepository.findOne({
+  ): Promise<Haulage> {
+    const haulage = await this.haulagesRepository.findOne({
       relations: [
         'fromHire',
         'fromHire.card',
@@ -319,20 +306,20 @@ export class DeliveriesService {
       where: { id },
     });
     if (
-      !delivery.fromHire.card.users.map((user) => user.id).includes(userId) &&
+      !haulage.fromHire.card.users.map((user) => user.id).includes(userId) &&
       !hasRole
     ) {
-      throw new AppException(DeliveryError.NOT_CUSTOMER);
+      throw new AppException(HaulageError.NOT_CUSTOMER);
     }
-    return delivery;
+    return haulage;
   }
 
-  private async checkDeliveryExecutor(
+  private async checkHaulageExecutor(
     id: number,
     userId: number,
     hasRole: boolean,
-  ): Promise<Delivery> {
-    const delivery = await this.deliveriesRepository.findOne({
+  ): Promise<Haulage> {
+    const haulage = await this.haulagesRepository.findOne({
       relations: [
         'executorCard',
         'executorCard.users',
@@ -342,17 +329,17 @@ export class DeliveriesService {
       where: { id },
     });
     if (
-      !delivery.executorCard.users.map((user) => user.id).includes(userId) &&
+      !haulage.executorCard.users.map((user) => user.id).includes(userId) &&
       !hasRole
     ) {
-      throw new AppException(DeliveryError.NOT_EXECUTOR);
+      throw new AppException(HaulageError.NOT_EXECUTOR);
     }
-    return delivery;
+    return haulage;
   }
 
-  private async create(dto: ExtCreateDeliveryDto): Promise<Delivery> {
+  private async create(dto: ExtCreateHaulageDto): Promise<Haulage> {
     try {
-      const delivery = this.deliveriesRepository.create({
+      const haulage = this.haulagesRepository.create({
         fromHireId: dto.fromStationId,
         toHireId: dto.toStationId,
         item: dto.item,
@@ -362,109 +349,104 @@ export class DeliveriesService {
         kit: dto.kit,
         price: dto.price,
       });
-      await this.deliveriesRepository.save(delivery);
-      return delivery;
+      await this.haulagesRepository.save(haulage);
+      return haulage;
     } catch (error) {
-      throw new AppException(DeliveryError.CREATE_FAILED);
+      throw new AppException(HaulageError.CREATE_FAILED);
     }
   }
 
-  private async edit(
-    delivery: Delivery,
-    dto: ExtEditDeliveryDto,
-  ): Promise<void> {
+  private async edit(haulage: Haulage, dto: ExtEditHaulageDto): Promise<void> {
     try {
-      delivery.item = dto.item;
-      delivery.description = dto.description;
-      delivery.amount = dto.amount;
-      delivery.intake = dto.intake;
-      delivery.kit = dto.kit;
-      delivery.price = dto.price;
-      await this.deliveriesRepository.save(delivery);
+      haulage.item = dto.item;
+      haulage.description = dto.description;
+      haulage.amount = dto.amount;
+      haulage.intake = dto.intake;
+      haulage.kit = dto.kit;
+      haulage.price = dto.price;
+      await this.haulagesRepository.save(haulage);
     } catch (error) {
-      throw new AppException(DeliveryError.EDIT_FAILED);
+      throw new AppException(HaulageError.EDIT_FAILED);
     }
   }
 
-  private async take(delivery: Delivery, cardId: number): Promise<void> {
+  private async take(haulage: Haulage, cardId: number): Promise<void> {
     try {
-      delivery.executorCardId = cardId;
-      delivery.status = Status.TAKEN;
-      await this.deliveriesRepository.save(delivery);
+      haulage.executorCardId = cardId;
+      haulage.status = Status.TAKEN;
+      await this.haulagesRepository.save(haulage);
     } catch (error) {
-      throw new AppException(DeliveryError.TAKE_FAILED);
+      throw new AppException(HaulageError.TAKE_FAILED);
     }
   }
 
-  private async untake(delivery: Delivery): Promise<void> {
+  private async untake(haulage: Haulage): Promise<void> {
     try {
-      delivery.executorCard = null;
-      delivery.executorCardId = null;
-      delivery.status = Status.CREATED;
-      await this.deliveriesRepository.save(delivery);
+      haulage.executorCard = null;
+      haulage.executorCardId = null;
+      haulage.status = Status.CREATED;
+      await this.haulagesRepository.save(haulage);
     } catch (error) {
-      throw new AppException(DeliveryError.UNTAKE_FAILED);
+      throw new AppException(HaulageError.UNTAKE_FAILED);
     }
   }
 
-  private async execute(delivery: Delivery): Promise<void> {
+  private async execute(haulage: Haulage): Promise<void> {
     try {
-      delivery.status = Status.EXECUTED;
-      await this.deliveriesRepository.save(delivery);
+      haulage.status = Status.EXECUTED;
+      await this.haulagesRepository.save(haulage);
     } catch (error) {
-      throw new AppException(DeliveryError.EXECUTE_FAILED);
+      throw new AppException(HaulageError.EXECUTE_FAILED);
     }
   }
 
-  private async complete(delivery: Delivery): Promise<void> {
+  private async complete(haulage: Haulage): Promise<void> {
     try {
-      delivery.completedAt = new Date();
-      delivery.status = Status.COMPLETED;
-      await this.deliveriesRepository.save(delivery);
+      haulage.completedAt = new Date();
+      haulage.status = Status.COMPLETED;
+      await this.haulagesRepository.save(haulage);
     } catch (error) {
-      throw new AppException(DeliveryError.COMPLETE_FAILED);
+      throw new AppException(HaulageError.COMPLETE_FAILED);
     }
   }
 
-  private async delete(delivery: Delivery): Promise<void> {
+  private async delete(haulage: Haulage): Promise<void> {
     try {
-      await this.deliveriesRepository.remove(delivery);
+      await this.haulagesRepository.remove(haulage);
     } catch (error) {
-      throw new AppException(DeliveryError.DELETE_FAILED);
+      throw new AppException(HaulageError.DELETE_FAILED);
     }
   }
 
-  private async rate(delivery: Delivery, rate: number): Promise<void> {
+  private async rate(haulage: Haulage, rate: number): Promise<void> {
     try {
-      delivery.rate = rate;
-      await this.deliveriesRepository.save(delivery);
+      haulage.rate = rate;
+      await this.haulagesRepository.save(haulage);
     } catch (error) {
-      throw new AppException(DeliveryError.RATE_FAILED);
+      throw new AppException(HaulageError.RATE_FAILED);
     }
   }
 
-  private getDeliveriesQueryBuilder(
-    req: Request,
-  ): SelectQueryBuilder<Delivery> {
-    return this.deliveriesRepository
-      .createQueryBuilder('delivery')
-      .innerJoin('delivery.fromHire', 'fromHire')
+  private getHaulagesQueryBuilder(req: Request): SelectQueryBuilder<Haulage> {
+    return this.haulagesRepository
+      .createQueryBuilder('haulage')
+      .innerJoin('haulage.fromHire', 'fromHire')
       .innerJoin('fromHire.drawer', 'fromDrawer')
       .innerJoin('fromDrawer.station', 'fromStation')
       .innerJoin('fromStation.card', 'fromOwnerCard')
       .innerJoin('fromOwnerCard.user', 'fromOwnerUser')
-      .innerJoin('delivery.toHire', 'toHire')
+      .innerJoin('haulage.toHire', 'toHire')
       .innerJoin('toHire.drawer', 'toDrawer')
       .innerJoin('toDrawer.station', 'toStation')
       .innerJoin('toStation.card', 'toOwnerCard')
       .innerJoin('toOwnerCard.user', 'toOwnerUser')
       .innerJoin('fromHire.card', 'customerCard')
       .innerJoin('customerCard.user', 'customerUser')
-      .leftJoin('delivery.executorCard', 'executorCard')
+      .leftJoin('haulage.executorCard', 'executorCard')
       .leftJoin('executorCard.user', 'executorUser')
       .where(
         new Brackets((qb) =>
-          qb.where(`${!req.id}`).orWhere('delivery.id = :id', { id: req.id }),
+          qb.where(`${!req.id}`).orWhere('haulage.id = :id', { id: req.id }),
         ),
       )
       .andWhere(
@@ -547,14 +529,14 @@ export class DeliveriesService {
         new Brackets((qb) =>
           qb
             .where(`${!req.item}`)
-            .orWhere('delivery.item = :item', { item: req.item }),
+            .orWhere('haulage.item = :item', { item: req.item }),
         ),
       )
       .andWhere(
         new Brackets((qb) =>
           qb
             .where(`${!req.description}`)
-            .orWhere('delivery.description ILIKE :description', {
+            .orWhere('haulage.description ILIKE :description', {
               description: req.description,
             }),
         ),
@@ -563,7 +545,7 @@ export class DeliveriesService {
         new Brackets((qb) =>
           qb
             .where(`${!req.minAmount}`)
-            .orWhere('delivery.amount >= :minAmount', {
+            .orWhere('haulage.amount >= :minAmount', {
               minAmount: req.minAmount,
             }),
         ),
@@ -572,7 +554,7 @@ export class DeliveriesService {
         new Brackets((qb) =>
           qb
             .where(`${!req.maxAmount}`)
-            .orWhere('delivery.amount <= :maxAmount', {
+            .orWhere('haulage.amount <= :maxAmount', {
               maxAmount: req.maxAmount,
             }),
         ),
@@ -581,7 +563,7 @@ export class DeliveriesService {
         new Brackets((qb) =>
           qb
             .where(`${!req.minIntake}`)
-            .orWhere('delivery.intake >= :minIntake', {
+            .orWhere('haulage.intake >= :minIntake', {
               minIntake: req.minIntake,
             }),
         ),
@@ -590,7 +572,7 @@ export class DeliveriesService {
         new Brackets((qb) =>
           qb
             .where(`${!req.maxIntake}`)
-            .orWhere('delivery.intake <= :maxIntake', {
+            .orWhere('haulage.intake <= :maxIntake', {
               maxIntake: req.maxIntake,
             }),
         ),
@@ -599,60 +581,56 @@ export class DeliveriesService {
         new Brackets((qb) =>
           qb
             .where(`${!req.kit}`)
-            .orWhere('delivery.kit = :kit', { kit: req.kit }),
+            .orWhere('haulage.kit = :kit', { kit: req.kit }),
         ),
       )
       .andWhere(
         new Brackets((qb) =>
           qb
             .where(`${!req.minPrice}`)
-            .orWhere('delivery.price >= :minPrice', { minPrice: req.minPrice }),
+            .orWhere('haulage.price >= :minPrice', { minPrice: req.minPrice }),
         ),
       )
       .andWhere(
         new Brackets((qb) =>
           qb
             .where(`${!req.maxPrice}`)
-            .orWhere('delivery.price <= :maxPrice', { maxPrice: req.maxPrice }),
+            .orWhere('haulage.price <= :maxPrice', { maxPrice: req.maxPrice }),
         ),
       )
       .andWhere(
         new Brackets((qb) =>
           qb
             .where(`${!req.status}`)
-            .orWhere('delivery.status = :status', { status: req.status }),
+            .orWhere('haulage.status = :status', { status: req.status }),
         ),
       )
       .andWhere(
         new Brackets((qb) =>
           qb
             .where(`${!req.rate}`)
-            .orWhere('delivery.rate = :rate', { rate: req.rate }),
+            .orWhere('haulage.rate = :rate', { rate: req.rate }),
         ),
       )
       .andWhere(
         new Brackets((qb) =>
-          qb
-            .where(`${!req.minDate}`)
-            .orWhere('delivery.createdAt >= :minDate', {
-              minDate: req.minDate,
-            }),
+          qb.where(`${!req.minDate}`).orWhere('haulage.createdAt >= :minDate', {
+            minDate: req.minDate,
+          }),
         ),
       )
       .andWhere(
         new Brackets((qb) =>
-          qb
-            .where(`${!req.maxDate}`)
-            .orWhere('delivery.createdAt <= :maxDate', {
-              maxDate: req.maxDate,
-            }),
+          qb.where(`${!req.maxDate}`).orWhere('haulage.createdAt <= :maxDate', {
+            maxDate: req.maxDate,
+          }),
         ),
       )
       .andWhere(
         new Brackets((qb) =>
           qb
             .where(`${req.completed !== 1}`)
-            .orWhere('delivery.completedAt IS NOT NULL')
+            .orWhere('haulage.completedAt IS NOT NULL')
             .orWhere('fromHire.completedAt < NOW()')
             .orWhere('toHire.completedAt < NOW()'),
         ),
@@ -664,18 +642,18 @@ export class DeliveriesService {
             .orWhere(
               new Brackets((qb) =>
                 qb
-                  .where('delivery.completedAt IS NULL')
+                  .where('haulage.completedAt IS NULL')
                   .andWhere('fromHire.completedAt > NOW()')
                   .andWhere('toHire.completedAt > NOW()'),
               ),
             ),
         ),
       )
-      .orderBy('delivery.id', 'DESC')
+      .orderBy('haulage.id', 'DESC')
       .skip(req.skip)
       .take(req.take)
       .select([
-        'delivery.id',
+        'haulage.id',
         'fromHire.id',
         'fromDrawer.id',
         'fromStation.id',
@@ -708,22 +686,22 @@ export class DeliveriesService {
         'customerUser.avatar',
         'customerCard.name',
         'customerCard.color',
-        'delivery.item',
-        'delivery.description',
-        'delivery.amount',
-        'delivery.intake',
-        'delivery.kit',
-        'delivery.price',
-        'delivery.status',
+        'haulage.item',
+        'haulage.description',
+        'haulage.amount',
+        'haulage.intake',
+        'haulage.kit',
+        'haulage.price',
+        'haulage.status',
         'executorCard.id',
         'executorUser.id',
         'executorUser.nick',
         'executorUser.avatar',
         'executorCard.name',
         'executorCard.color',
-        'delivery.createdAt',
-        'delivery.completedAt',
-        'delivery.rate',
+        'haulage.createdAt',
+        'haulage.completedAt',
+        'haulage.rate',
       ]);
   }
 }
