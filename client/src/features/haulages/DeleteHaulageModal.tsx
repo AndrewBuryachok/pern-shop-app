@@ -4,77 +4,80 @@ import { Textarea, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
-import { Delivery } from './delivery.model';
-import { useUntakeDeliveryMutation } from './deliveries.api';
-import { DeliveryIdDto } from './delivery.dto';
+import { Haulage } from './haulage.model';
+import { useDeleteHaulageMutation } from './haulages.api';
+import { HaulageIdDto } from './haulage.dto';
 import CustomForm from '../../common/components/CustomForm';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import ThingImage from '../../common/components/ThingImage';
 import { parseCard, parseItem, parseThingAmount } from '../../common/utils';
 import { Color, Status } from '../../common/constants';
 
-type Props = IModal<Delivery>;
+type Props = IModal<Haulage>;
 
-export default function UntakeDeliveryModal({ data: delivery }: Props) {
+export default function DeleteHaulageModal({ data: haulage }: Props) {
   const [t] = useTranslation();
 
   const form = useForm({
     initialValues: {
-      deliveryId: delivery.id,
+      haulageId: haulage.id,
     },
   });
 
-  const [untakeDelivery, { isLoading }] = useUntakeDeliveryMutation();
+  const [deleteHaulage, { isLoading }] = useDeleteHaulageMutation();
 
-  const handleSubmit = async (dto: DeliveryIdDto) => {
-    await untakeDelivery(dto);
+  const handleSubmit = async (dto: HaulageIdDto) => {
+    await deleteHaulage(dto);
   };
 
   return (
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={t('actions.untake') + ' ' + t('modals.deliveries')}
+      text={t('actions.delete') + ' ' + t('modals.haulages')}
     >
       <TextInput
         label={t('columns.customer')}
-        icon={<CustomAvatar {...delivery.fromHire.card.user} />}
+        description={`${t('information.increase')} ${haulage.price} ${t(
+          'constants.currency',
+        )}`}
+        icon={<CustomAvatar {...haulage.fromHire.card.user} />}
         iconWidth={48}
-        value={parseCard(delivery.fromHire.card)}
+        value={parseCard(haulage.fromHire.card)}
         readOnly
       />
       <TextInput
         label={t('columns.item')}
-        icon={<ThingImage {...delivery} />}
+        icon={<ThingImage {...haulage} />}
         iconWidth={48}
-        value={parseItem(delivery.item)}
+        value={parseItem(haulage.item)}
         readOnly
       />
       <Textarea
         label={t('columns.description')}
-        value={delivery.description || '-'}
+        value={haulage.description || '-'}
         readOnly
       />
       <TextInput
         label={t('columns.amount')}
-        value={parseThingAmount(delivery)}
+        value={parseThingAmount(haulage)}
         readOnly
       />
       <TextInput
         label={t('columns.price')}
-        value={`${delivery.price} ${t('constants.currency')}`}
+        value={`${haulage.price} ${t('constants.currency')}`}
         readOnly
       />
     </CustomForm>
   );
 }
 
-export const untakeDeliveryAction = {
-  open: (delivery: Delivery) =>
+export const deleteHaulageAction = {
+  open: (haulage: Haulage) =>
     openModal({
-      title: t('actions.untake') + ' ' + t('modals.deliveries'),
-      children: <UntakeDeliveryModal data={delivery} />,
+      title: t('actions.delete') + ' ' + t('modals.haulages'),
+      children: <DeleteHaulageModal data={haulage} />,
     }),
-  disable: (delivery: Delivery) => delivery.status !== Status.TAKEN,
+  disable: (haulage: Haulage) => haulage.status !== Status.CREATED,
   color: Color.RED,
 };

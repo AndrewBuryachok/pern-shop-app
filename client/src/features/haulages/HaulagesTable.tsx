@@ -1,5 +1,5 @@
 import { ITableWithActions } from '../../common/interfaces';
-import { Delivery } from './delivery.model';
+import { Haulage } from './haulage.model';
 import CustomTable from '../../common/components/CustomTable';
 import AvatarWithDoubleText from '../../common/components/AvatarWithDoubleText';
 import ThingImageWithText from '../../common/components/ThingImageWithText';
@@ -8,12 +8,12 @@ import PriceText from '../../common/components/PriceText';
 import StatusBadge from '../../common/components/StatusBadge';
 import PlaceWithDoubleAvatar from '../../common/components/PlaceWithDoubleAvatar';
 import CustomActions from '../../common/components/CustomActions';
-import { viewDeliveryAction } from './ViewDeliveryModal';
+import { viewHaulageAction } from './ViewHaulageModal';
 import { parseThingAmount } from '../../common/utils';
 
-type Props = ITableWithActions<Delivery>;
+type Props = ITableWithActions<Haulage>;
 
-export default function DeliveriesTable({ actions = [], ...props }: Props) {
+export default function HaulagesTable({ actions = [], ...props }: Props) {
   return (
     <CustomTable
       minWidth={1200}
@@ -29,39 +29,39 @@ export default function DeliveriesTable({ actions = [], ...props }: Props) {
       ]}
       {...props}
     >
-      {props.data?.result.map((delivery) => (
-        <tr key={delivery.id}>
+      {props.data?.result.map((haulage) => (
+        <tr key={haulage.id}>
           <td>
-            <AvatarWithDoubleText {...delivery.fromHire.card} />
+            <AvatarWithDoubleText {...haulage.fromHire.card} />
           </td>
           <td>
-            <ThingImageWithText {...delivery} />
+            <ThingImageWithText {...haulage} />
           </td>
           <td>
-            <SingleText text={parseThingAmount(delivery)} />
+            <SingleText text={parseThingAmount(haulage)} />
           </td>
           <td>
-            <PriceText {...delivery} />
+            <PriceText {...haulage} />
           </td>
           <td>
-            <StatusBadge {...delivery} />
+            <StatusBadge {...haulage} />
           </td>
           <td>
             <PlaceWithDoubleAvatar
-              {...delivery.fromHire.drawer.station}
-              container={delivery.fromHire.drawer.name}
+              {...haulage.fromHire.drawer.station}
+              container={haulage.fromHire.drawer.name}
             />
           </td>
           <td>
             <PlaceWithDoubleAvatar
-              {...delivery.toHire.drawer.station}
-              container={delivery.toHire.drawer.name}
+              {...haulage.toHire.drawer.station}
+              container={haulage.toHire.drawer.name}
             />
           </td>
           <td>
             <CustomActions
-              data={delivery}
-              actions={[viewDeliveryAction, ...actions]}
+              data={haulage}
+              actions={[viewHaulageAction, ...actions]}
             />
           </td>
         </tr>

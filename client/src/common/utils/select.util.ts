@@ -229,10 +229,10 @@ export const selectStatuses = () =>
     label: t(`constants.statuses.${status}`),
   }));
 
-export const selectHaulages = () =>
-  ['without', 'with'].map((haulage, index) => ({
+export const selectDeliveries = () =>
+  ['without', 'with'].map((delivery, index) => ({
     value: `${index}`,
-    label: t(`constants.haulages.${haulage}`),
+    label: t(`constants.deliveries.${delivery}`),
   }));
 
 export const selectMarks = () =>

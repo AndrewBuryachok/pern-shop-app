@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Input, Rating, Stack, Textarea, TextInput } from '@mantine/core';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
-import { Delivery } from './delivery.model';
+import { Haulage } from './haulage.model';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import ThingImage from '../../common/components/ThingImage';
 import {
@@ -16,105 +16,105 @@ import {
 } from '../../common/utils';
 import { Color } from '../../common/constants';
 
-type Props = IModal<Delivery>;
+type Props = IModal<Haulage>;
 
-export default function ViewDeliveryModal({ data: delivery }: Props) {
+export default function ViewHaulageModal({ data: haulage }: Props) {
   const [t] = useTranslation();
 
   return (
     <Stack spacing={8}>
-      <TextInput label={t('columns.id')} value={delivery.id} readOnly />
+      <TextInput label={t('columns.id')} value={haulage.id} readOnly />
       <TextInput
         label={t('columns.customer')}
-        icon={<CustomAvatar {...delivery.fromHire.card.user} />}
+        icon={<CustomAvatar {...haulage.fromHire.card.user} />}
         iconWidth={48}
-        value={parseCard(delivery.fromHire.card)}
+        value={parseCard(haulage.fromHire.card)}
         readOnly
       />
       <TextInput
         label={t('columns.item')}
-        icon={<ThingImage {...delivery} />}
+        icon={<ThingImage {...haulage} />}
         iconWidth={48}
-        value={parseItem(delivery.item)}
+        value={parseItem(haulage.item)}
         readOnly
       />
       <Textarea
         label={t('columns.description')}
-        value={delivery.description || '-'}
+        value={haulage.description || '-'}
         readOnly
       />
       <TextInput
         label={t('columns.amount')}
-        value={parseThingAmount(delivery)}
+        value={parseThingAmount(haulage)}
         readOnly
       />
       <TextInput
         label={t('columns.price')}
-        value={`${delivery.price} ${t('constants.currency')}`}
+        value={`${haulage.price} ${t('constants.currency')}`}
         readOnly
       />
       <TextInput
         label={t('columns.status')}
-        value={parseStatus(delivery.status)}
+        value={parseStatus(haulage.status)}
         readOnly
       />
       <TextInput
         label={t('columns.executor')}
         icon={
-          delivery.executorCard && (
-            <CustomAvatar {...delivery.executorCard.user} />
+          haulage.executorCard && (
+            <CustomAvatar {...haulage.executorCard.user} />
           )
         }
         iconWidth={48}
-        value={delivery.executorCard ? parseCard(delivery.executorCard) : '-'}
+        value={haulage.executorCard ? parseCard(haulage.executorCard) : '-'}
         readOnly
       />
       <TextInput
         label={t('columns.fromStation')}
-        value={parseDrawer(delivery.fromHire.drawer)}
+        value={parseDrawer(haulage.fromHire.drawer)}
         readOnly
       />
       <TextInput
         label={t('columns.owner')}
-        icon={<CustomAvatar {...delivery.fromHire.drawer.station.card.user} />}
+        icon={<CustomAvatar {...haulage.fromHire.drawer.station.card.user} />}
         iconWidth={48}
-        value={parseCard(delivery.fromHire.drawer.station.card)}
+        value={parseCard(haulage.fromHire.drawer.station.card)}
         readOnly
       />
       <TextInput
         label={t('columns.toStation')}
-        value={parseDrawer(delivery.toHire.drawer)}
+        value={parseDrawer(haulage.toHire.drawer)}
         readOnly
       />
       <TextInput
         label={t('columns.owner')}
-        icon={<CustomAvatar {...delivery.toHire.drawer.station.card.user} />}
+        icon={<CustomAvatar {...haulage.toHire.drawer.station.card.user} />}
         iconWidth={48}
-        value={parseCard(delivery.toHire.drawer.station.card)}
+        value={parseCard(haulage.toHire.drawer.station.card)}
         readOnly
       />
       <TextInput
         label={t('columns.created')}
-        value={parseTime(delivery.createdAt)}
+        value={parseTime(haulage.createdAt)}
         readOnly
       />
       <TextInput
         label={t('columns.completed')}
-        value={parseTime(delivery.completedAt)}
+        value={parseTime(haulage.completedAt)}
         readOnly
       />
       <Input.Wrapper label={t('columns.rate')}>
-        <Rating value={delivery.rate} readOnly />
+        <Rating value={haulage.rate} readOnly />
       </Input.Wrapper>
     </Stack>
   );
 }
 
-export const viewDeliveryAction = {
-  open: (delivery: Delivery) =>
+export const viewHaulageAction = {
+  open: (haulage: Haulage) =>
     openModal({
-      title: t('actions.view') + ' ' + t('modals.deliveries'),
-      children: <ViewDeliveryModal data={delivery} />,
+      title: t('actions.view') + ' ' + t('modals.haulages'),
+      children: <ViewHaulageModal data={haulage} />,
     }),
   disable: () => false,
   color: Color.BLUE,

@@ -1,19 +1,19 @@
 import {
-  CreateHaulageDto,
-  EditHaulageDto,
-  RateHaulageDto,
-  TakeHaulageDto,
-} from '../haulages/haulage.dto';
+  CreateDeliveryDto,
+  EditDeliveryDto,
+  RateDeliveryDto,
+  TakeDeliveryDto,
+} from '../deliveries/delivery.dto';
 
-export interface CreateShopDeliveryDto extends CreateHaulageDto {
+export interface CreateShopDeliveryDto extends CreateDeliveryDto {
   bargainId: number;
 }
 
-export interface EditShopDeliveryDto extends EditHaulageDto {
+export interface EditShopDeliveryDto extends EditDeliveryDto {
   shopDeliveryId: number;
 }
 
-export interface TakeShopDeliveryDto extends TakeHaulageDto {
+export interface TakeShopDeliveryDto extends TakeDeliveryDto {
   shopDeliveryId: number;
 }
 
@@ -21,6 +21,6 @@ export interface ShopDeliveryIdDto {
   shopDeliveryId: number;
 }
 
-export interface RateShopDeliveryDto extends RateHaulageDto {
+export interface RateShopDeliveryDto extends RateDeliveryDto {
   shopDeliveryId: number;
 }

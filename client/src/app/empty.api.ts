@@ -39,7 +39,7 @@ export const emptyApi = createApi({
     'Ware',
     'Product',
     'Order',
-    'Delivery',
+    'Haulage',
     'Bargain',
     'Trade',
     'Sale',

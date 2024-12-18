@@ -111,11 +111,7 @@ export default function UserProfile({ data: user }: Props) {
     { label: 'wares', count: user.waresCount, rate: user.waresRate },
     { label: 'products', count: user.productsCount, rate: user.productsRate },
     { label: 'orders', count: user.ordersCount, rate: user.ordersRate },
-    {
-      label: 'deliveries',
-      count: user.deliveriesCount,
-      rate: user.deliveriesRate,
-    },
+    { label: 'haulages', count: user.haulagesCount, rate: user.haulagesRate },
   ];
 
   return (

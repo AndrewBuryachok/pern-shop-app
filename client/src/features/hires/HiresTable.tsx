@@ -49,8 +49,9 @@ export default function HiresTable({ actions = [], ...props }: Props) {
             <CustomAnchor
               text={`${
                 hire.orders +
-                hire.fromDeliveries +
-                hire.toDeliveries +
+                hire.fromHaulages +
+                hire.toHaulages +
+                hire.shopsDeliveries +
                 hire.marketsDeliveries +
                 hire.storagesDeliveries
               }`}

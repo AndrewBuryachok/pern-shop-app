@@ -1,7 +1,13 @@
-import { Transportation } from '../transportations/transportation.model';
 import { SmHire } from '../hires/hire.model';
+import { MdCard } from '../cards/card.model';
 
-export interface Delivery extends Transportation {
-  fromHire: SmHire;
-  toHire: SmHire;
+export interface Delivery {
+  id: number;
+  hire: SmHire;
+  price: number;
+  status: number;
+  executorCard?: MdCard;
+  createdAt: Date;
+  completedAt?: Date;
+  rate?: number;
 }

@@ -4,66 +4,66 @@ import { Input, Rating, Textarea, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
-import { Delivery } from './delivery.model';
-import { useRateDeliveryMutation } from './deliveries.api';
-import { RateDeliveryDto } from './delivery.dto';
+import { Haulage } from './haulage.model';
+import { useRateHaulageMutation } from './haulages.api';
+import { RateHaulageDto } from './haulage.dto';
 import CustomForm from '../../common/components/CustomForm';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import ThingImage from '../../common/components/ThingImage';
 import { parseCard, parseItem, parseThingAmount } from '../../common/utils';
 import { Color, Status } from '../../common/constants';
 
-type Props = IModal<Delivery>;
+type Props = IModal<Haulage>;
 
-export default function RateDeliveryModal({ data: delivery }: Props) {
+export default function RateHaulageModal({ data: haulage }: Props) {
   const [t] = useTranslation();
 
   const form = useForm({
     initialValues: {
-      deliveryId: delivery.id,
+      haulageId: haulage.id,
       rate: 5,
     },
   });
 
-  const [rateDelivery, { isLoading }] = useRateDeliveryMutation();
+  const [rateHaulage, { isLoading }] = useRateHaulageMutation();
 
-  const handleSubmit = async (dto: RateDeliveryDto) => {
-    await rateDelivery(dto);
+  const handleSubmit = async (dto: RateHaulageDto) => {
+    await rateHaulage(dto);
   };
 
   return (
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={t('actions.rate') + ' ' + t('modals.deliveries')}
+      text={t('actions.rate') + ' ' + t('modals.haulages')}
     >
       <TextInput
         label={t('columns.executor')}
-        icon={<CustomAvatar {...delivery.executorCard!.user} />}
+        icon={<CustomAvatar {...haulage.executorCard!.user} />}
         iconWidth={48}
-        value={parseCard(delivery.executorCard!)}
+        value={parseCard(haulage.executorCard!)}
         readOnly
       />
       <TextInput
         label={t('columns.item')}
-        icon={<ThingImage {...delivery} />}
+        icon={<ThingImage {...haulage} />}
         iconWidth={48}
-        value={parseItem(delivery.item)}
+        value={parseItem(haulage.item)}
         readOnly
       />
       <Textarea
         label={t('columns.description')}
-        value={delivery.description || '-'}
+        value={haulage.description || '-'}
         readOnly
       />
       <TextInput
         label={t('columns.amount')}
-        value={parseThingAmount(delivery)}
+        value={parseThingAmount(haulage)}
         readOnly
       />
       <TextInput
         label={t('columns.price')}
-        value={`${delivery.price} ${t('constants.currency')}`}
+        value={`${haulage.price} ${t('constants.currency')}`}
         readOnly
       />
       <Input.Wrapper label={t('columns.rate')} required>
@@ -73,13 +73,13 @@ export default function RateDeliveryModal({ data: delivery }: Props) {
   );
 }
 
-export const rateDeliveryAction = {
-  open: (delivery: Delivery) =>
+export const rateHaulageAction = {
+  open: (haulage: Haulage) =>
     openModal({
-      title: t('actions.rate') + ' ' + t('modals.deliveries'),
-      children: <RateDeliveryModal data={delivery} />,
+      title: t('actions.rate') + ' ' + t('modals.haulages'),
+      children: <RateHaulageModal data={haulage} />,
     }),
-  disable: (delivery: Delivery) =>
-    delivery.status !== Status.COMPLETED || !!delivery.rate,
+  disable: (haulage: Haulage) =>
+    haulage.status !== Status.COMPLETED || !!haulage.rate,
   color: Color.YELLOW,
 };

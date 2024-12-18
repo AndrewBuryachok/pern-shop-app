@@ -8,8 +8,9 @@ export interface SmHire extends MdReceipt {
 export interface Hire extends Receipt {
   drawer: LgDrawer;
   orders: number;
-  fromDeliveries: number;
-  toDeliveries: number;
+  fromHaulages: number;
+  toHaulages: number;
+  shopsDeliveries: number;
   marketsDeliveries: number;
   storagesDeliveries: number;
 }

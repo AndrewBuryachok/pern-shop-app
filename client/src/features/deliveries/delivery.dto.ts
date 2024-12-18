@@ -1,27 +1,16 @@
-import {
-  CreateTransportationDto,
-  RateTransportationDto,
-  TakeTransportationDto,
-} from '../transportations/transportation.dto';
-import { CreateThingDto } from '../things/thing.dto';
+import { EditStateDto } from '../states/state.dto';
 
-export interface CreateDeliveryDto extends CreateTransportationDto {
-  fromStationId: number;
-  toStationId: number;
+export interface EditDeliveryDto extends EditStateDto {}
+
+export interface CreateDeliveryDto extends EditDeliveryDto {
+  stationId: number;
+  cardId: number;
 }
 
-export interface EditDeliveryDto extends CreateThingDto {
-  deliveryId: number;
+export interface TakeDeliveryDto {
+  cardId: number;
 }
 
-export interface TakeDeliveryDto extends TakeTransportationDto {
-  deliveryId: number;
-}
-
-export interface DeliveryIdDto {
-  deliveryId: number;
-}
-
-export interface RateDeliveryDto extends RateTransportationDto {
-  deliveryId: number;
+export interface RateDeliveryDto {
+  rate: number;
 }

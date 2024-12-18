@@ -1,6 +1,6 @@
-import { Haulage } from '../haulages/haulage.model';
+import { Delivery } from '../deliveries/delivery.model';
 import { SmBargainWithoutPrice } from '../bargains/bargain.model';
 
-export interface ShopDelivery extends Haulage {
+export interface ShopDelivery extends Delivery {
   bargain: SmBargainWithoutPrice;
 }

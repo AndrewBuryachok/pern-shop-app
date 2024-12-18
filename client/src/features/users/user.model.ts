@@ -37,9 +37,9 @@ export interface ExtUser extends User {
   waresCount: number;
   productsCount: number;
   ordersCount: number;
-  deliveriesCount: number;
+  haulagesCount: number;
   waresRate: number;
   productsRate: number;
   ordersRate: number;
-  deliveriesRate: number;
+  haulagesRate: number;
 }

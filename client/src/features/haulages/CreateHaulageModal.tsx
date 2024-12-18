@@ -4,14 +4,14 @@ import { useTranslation } from 'react-i18next';
 import { NumberInput, Select, Textarea } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
-import { useCreateDeliveryMutation } from './deliveries.api';
+import { useCreateHaulageMutation } from './haulages.api';
 import { useSelectFreeStationsQuery } from '../stations/stations.api';
 import { useSelectAllUsersQuery } from '../users/users.api';
 import {
   useSelectMyCardsQuery,
   useSelectUserCardsWithBalanceQuery,
 } from '../cards/cards.api';
-import { CreateDeliveryDto } from './delivery.dto';
+import { CreateHaulageDto } from './haulage.dto';
 import CustomForm from '../../common/components/CustomForm';
 import RefetchAction from '../../common/components/RefetchAction';
 import CustomAvatar from '../../common/components/CustomAvatar';
@@ -37,7 +37,7 @@ import {
 
 type Props = { hasRole: boolean };
 
-export default function CreateDeliveryModal({ hasRole }: Props) {
+export default function CreateHaulageModal({ hasRole }: Props) {
   const [t] = useTranslation();
 
   const myCard = { balance: 0 };
@@ -104,17 +104,17 @@ export default function CreateDeliveryModal({ hasRole }: Props) {
   myCard.balance =
     cards?.find((card) => card.id === +form.values.card)?.balance || 0;
 
-  const [createDelivery, { isLoading }] = useCreateDeliveryMutation();
+  const [createHaulage, { isLoading }] = useCreateHaulageMutation();
 
-  const handleSubmit = async (dto: CreateDeliveryDto) => {
-    await createDelivery(dto);
+  const handleSubmit = async (dto: CreateHaulageDto) => {
+    await createHaulage(dto);
   };
 
   return (
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={t('actions.create') + ' ' + t('modals.deliveries')}
+      text={t('actions.create') + ' ' + t('modals.haulages')}
     >
       <Select
         label={t('columns.fromStation')}
@@ -233,15 +233,15 @@ export default function CreateDeliveryModal({ hasRole }: Props) {
   );
 }
 
-export const createDeliveryFactory = (hasRole: boolean) => ({
+export const createHaulageFactory = (hasRole: boolean) => ({
   label: 'create',
   open: () =>
     openModal({
-      title: t('actions.create') + ' ' + t('modals.deliveries'),
-      children: <CreateDeliveryModal hasRole={hasRole} />,
+      title: t('actions.create') + ' ' + t('modals.haulages'),
+      children: <CreateHaulageModal hasRole={hasRole} />,
     }),
 });
 
-export const createMyDeliveryButton = createDeliveryFactory(false);
+export const createMyHaulageButton = createHaulageFactory(false);
 
-export const createUserDeliveryButton = createDeliveryFactory(true);
+export const createUserHaulageButton = createHaulageFactory(true);

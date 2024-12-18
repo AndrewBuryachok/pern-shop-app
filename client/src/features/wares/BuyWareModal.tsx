@@ -27,7 +27,7 @@ import {
   parseItem,
   parseThingAmount,
   selectCardsWithBalance,
-  selectHaulages,
+  selectDeliveries,
   selectStationsWithPrice,
   selectUsers,
 } from '../../common/utils';
@@ -47,11 +47,11 @@ export default function BuyWareModal({ data: ware, hasRole }: Props) {
       user: '',
       card: '',
       amount: 1,
-      haulage: '0',
+      delivery: '0',
       station: '',
       price: 0,
     },
-    transformValues: ({ user, card, haulage, station, ...rest }) => ({
+    transformValues: ({ user, card, delivery, station, ...rest }) => ({
       ...rest,
       cardId: +card,
       stationId: +station,
@@ -69,8 +69,8 @@ export default function BuyWareModal({ data: ware, hasRole }: Props) {
 
   useEffect(() => {
     form.setFieldValue('station', '');
-    form.setFieldValue('price', +form.values.haulage);
-  }, [form.values.haulage]);
+    form.setFieldValue('price', +form.values.delivery);
+  }, [form.values.delivery]);
 
   const { data: users, ...usersResponse } = useSelectAllUsersQuery(undefined, {
     skip: !hasRole,
@@ -82,7 +82,7 @@ export default function BuyWareModal({ data: ware, hasRole }: Props) {
     : useSelectMyCardsQuery();
   const { data: stations, ...stationsResponse } = useSelectFreeStationsQuery(
     undefined,
-    { skip: !+form.values.haulage },
+    { skip: !+form.values.delivery },
   );
 
   const user = users?.find((user) => user.id === +form.values.user);
@@ -181,14 +181,14 @@ export default function BuyWareModal({ data: ware, hasRole }: Props) {
         {...form.getInputProps('amount')}
       />
       <Select
-        label={t('columns.haulage')}
-        placeholder={t('columns.haulage')}
-        data={selectHaulages()}
+        label={t('columns.delivery')}
+        placeholder={t('columns.delivery')}
+        data={selectDeliveries()}
         searchable
         required
-        {...form.getInputProps('haulage')}
+        {...form.getInputProps('delivery')}
       />
-      {!!+form.values.haulage && (
+      {!!+form.values.delivery && (
         <>
           <Select
             label={t('columns.station')}

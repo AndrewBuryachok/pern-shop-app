@@ -5,14 +5,14 @@ import { Select, Textarea, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
-import { Delivery } from './delivery.model';
-import { useTakeDeliveryMutation } from './deliveries.api';
+import { Haulage } from './haulage.model';
+import { useTakeHaulageMutation } from './haulages.api';
 import { useSelectAllUsersQuery } from '../users/users.api';
 import {
   useSelectMyCardsQuery,
   useSelectUserCardsWithBalanceQuery,
 } from '../cards/cards.api';
-import { TakeDeliveryDto } from './delivery.dto';
+import { TakeHaulageDto } from './haulage.dto';
 import CustomForm from '../../common/components/CustomForm';
 import RefetchAction from '../../common/components/RefetchAction';
 import CustomAvatar from '../../common/components/CustomAvatar';
@@ -28,14 +28,14 @@ import {
 } from '../../common/utils';
 import { Color, Status } from '../../common/constants';
 
-type Props = IModal<Delivery> & { hasRole: boolean };
+type Props = IModal<Haulage> & { hasRole: boolean };
 
-export default function TakeDeliveryModal({ data: delivery, hasRole }: Props) {
+export default function TakeHaulageModal({ data: haulage, hasRole }: Props) {
   const [t] = useTranslation();
 
   const form = useForm({
     initialValues: {
-      deliveryId: delivery.id,
+      haulageId: haulage.id,
       user: '',
       card: '',
     },
@@ -55,45 +55,45 @@ export default function TakeDeliveryModal({ data: delivery, hasRole }: Props) {
 
   const user = users?.find((user) => user.id === +form.values.user);
 
-  const [takeDelivery, { isLoading }] = useTakeDeliveryMutation();
+  const [takeHaulage, { isLoading }] = useTakeHaulageMutation();
 
-  const handleSubmit = async (dto: TakeDeliveryDto) => {
-    await takeDelivery(dto);
+  const handleSubmit = async (dto: TakeHaulageDto) => {
+    await takeHaulage(dto);
   };
 
   return (
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={t('actions.take') + ' ' + t('modals.deliveries')}
+      text={t('actions.take') + ' ' + t('modals.haulages')}
     >
       <TextInput
         label={t('columns.customer')}
-        icon={<CustomAvatar {...delivery.fromHire.card.user} />}
+        icon={<CustomAvatar {...haulage.fromHire.card.user} />}
         iconWidth={48}
-        value={parseCard(delivery.fromHire.card)}
+        value={parseCard(haulage.fromHire.card)}
         readOnly
       />
       <TextInput
         label={t('columns.item')}
-        icon={<ThingImage {...delivery} />}
+        icon={<ThingImage {...haulage} />}
         iconWidth={48}
-        value={parseItem(delivery.item)}
+        value={parseItem(haulage.item)}
         readOnly
       />
       <Textarea
         label={t('columns.description')}
-        value={delivery.description || '-'}
+        value={haulage.description || '-'}
         readOnly
       />
       <TextInput
         label={t('columns.amount')}
-        value={parseThingAmount(delivery)}
+        value={parseThingAmount(haulage)}
         readOnly
       />
       <TextInput
         label={t('columns.price')}
-        value={`${delivery.price} ${t('constants.currency')}`}
+        value={`${haulage.price} ${t('constants.currency')}`}
         readOnly
       />
       {hasRole && (
@@ -133,16 +133,16 @@ export default function TakeDeliveryModal({ data: delivery, hasRole }: Props) {
   );
 }
 
-export const takeDeliveryFactory = (hasRole: boolean) => ({
-  open: (delivery: Delivery) =>
+export const takeHaulageFactory = (hasRole: boolean) => ({
+  open: (haulage: Haulage) =>
     openModal({
-      title: t('actions.take') + ' ' + t('modals.deliveries'),
-      children: <TakeDeliveryModal data={delivery} hasRole={hasRole} />,
+      title: t('actions.take') + ' ' + t('modals.haulages'),
+      children: <TakeHaulageModal data={haulage} hasRole={hasRole} />,
     }),
-  disable: (delivery: Delivery) => delivery.status !== Status.CREATED,
+  disable: (haulage: Haulage) => haulage.status !== Status.CREATED,
   color: Color.GREEN,
 });
 
-export const takeMyDeliveryAction = takeDeliveryFactory(false);
+export const takeMyHaulageAction = takeHaulageFactory(false);
 
-export const takeUserDeliveryAction = takeDeliveryFactory(true);
+export const takeUserHaulageAction = takeHaulageFactory(true);

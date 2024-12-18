@@ -21,8 +21,9 @@ export default function ViewHireThingsModal({ data: hire }: Props) {
       label={t('columns.things')}
       placeholder={`${t('components.total')}: ${
         hire.orders +
-        hire.fromDeliveries +
-        hire.toDeliveries +
+        hire.fromHaulages +
+        hire.toHaulages +
+        hire.shopsDeliveries +
         hire.marketsDeliveries +
         hire.storagesDeliveries
       }`}

@@ -4,13 +4,13 @@ import { NumberInput, Select, Textarea } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
-import { Delivery } from './delivery.model';
-import { useEditDeliveryMutation } from './deliveries.api';
+import { Haulage } from './haulage.model';
+import { useEditHaulageMutation } from './haulages.api';
 import {
   useSelectMyCardsQuery,
   useSelectUserCardsWithBalanceQuery,
 } from '../cards/cards.api';
-import { EditDeliveryDto } from './delivery.dto';
+import { EditHaulageDto } from './haulage.dto';
 import CustomForm from '../../common/components/CustomForm';
 import RefetchAction from '../../common/components/RefetchAction';
 import ThingImage from '../../common/components/ThingImage';
@@ -29,23 +29,23 @@ import {
   Status,
 } from '../../common/constants';
 
-type Props = IModal<Delivery> & { hasRole: boolean };
+type Props = IModal<Haulage> & { hasRole: boolean };
 
-export default function EditDeliveryModal({ data: delivery, hasRole }: Props) {
+export default function EditHaulageModal({ data: haulage, hasRole }: Props) {
   const [t] = useTranslation();
 
   const myCard = { balance: 0 };
 
   const form = useForm({
     initialValues: {
-      deliveryId: delivery.id,
-      item: `${delivery.item}`,
-      description: delivery.description,
-      amount: delivery.amount,
-      intake: delivery.intake,
-      kit: `${delivery.kit}`,
-      price: delivery.price,
-      card: `${delivery.fromHire.card.id}`,
+      haulageId: haulage.id,
+      item: `${haulage.item}`,
+      description: haulage.description,
+      amount: haulage.amount,
+      intake: haulage.intake,
+      kit: `${haulage.kit}`,
+      price: haulage.price,
+      card: `${haulage.fromHire.card.id}`,
     },
     transformValues: ({ item, kit, card, ...rest }) => ({
       ...rest,
@@ -54,31 +54,31 @@ export default function EditDeliveryModal({ data: delivery, hasRole }: Props) {
     }),
     validate: {
       card: (_, values) =>
-        delivery.price < values.price &&
-        myCard.balance < values.price - delivery.price
+        haulage.price < values.price &&
+        myCard.balance < values.price - haulage.price
           ? t('errors.not_enough_balance')
           : null,
     },
   });
 
   const { data: cards, ...cardsResponse } = hasRole
-    ? useSelectUserCardsWithBalanceQuery(delivery.fromHire.card.user.id)
+    ? useSelectUserCardsWithBalanceQuery(haulage.fromHire.card.user.id)
     : useSelectMyCardsQuery();
 
   myCard.balance =
     cards?.find((card) => card.id === +form.values.card)?.balance || 0;
 
-  const [editDelivery, { isLoading }] = useEditDeliveryMutation();
+  const [editHaulage, { isLoading }] = useEditHaulageMutation();
 
-  const handleSubmit = async (dto: EditDeliveryDto) => {
-    await editDelivery(dto);
+  const handleSubmit = async (dto: EditHaulageDto) => {
+    await editHaulage(dto);
   };
 
   return (
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={t('actions.edit') + ' ' + t('modals.deliveries')}
+      text={t('actions.edit') + ' ' + t('modals.haulages')}
       isChanged={!form.isDirty()}
     >
       <Select
@@ -134,10 +134,10 @@ export default function EditDeliveryModal({ data: delivery, hasRole }: Props) {
       <Select
         label={t('columns.card')}
         description={`${
-          delivery.price > form.values.price
+          haulage.price > form.values.price
             ? t('information.increase')
             : t('information.decrease')
-        } ${Math.abs(delivery.price - form.values.price)} ${t(
+        } ${Math.abs(haulage.price - form.values.price)} ${t(
           'constants.currency',
         )}`}
         rightSection={<RefetchAction {...cardsResponse} />}
@@ -149,16 +149,16 @@ export default function EditDeliveryModal({ data: delivery, hasRole }: Props) {
   );
 }
 
-export const editDeliveryFactory = (hasRole: boolean) => ({
-  open: (delivery: Delivery) =>
+export const editHaulageFactory = (hasRole: boolean) => ({
+  open: (haulage: Haulage) =>
     openModal({
-      title: t('actions.edit') + ' ' + t('modals.deliveries'),
-      children: <EditDeliveryModal data={delivery} hasRole={hasRole} />,
+      title: t('actions.edit') + ' ' + t('modals.haulages'),
+      children: <EditHaulageModal data={haulage} hasRole={hasRole} />,
     }),
-  disable: (delivery: Delivery) => delivery.status !== Status.CREATED,
+  disable: (haulage: Haulage) => haulage.status !== Status.CREATED,
   color: Color.YELLOW,
 });
 
-export const editMyDeliveryAction = editDeliveryFactory(false);
+export const editMyHaulageAction = editHaulageFactory(false);
 
-export const editUserDeliveryAction = editDeliveryFactory(true);
+export const editUserHaulageAction = editHaulageFactory(true);

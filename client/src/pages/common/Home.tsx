@@ -128,7 +128,7 @@ export default function Home() {
       icon: IconTrolley,
     },
     {
-      title: 'deliveries',
+      title: 'haulages',
       icon: IconTruck,
     },
     {

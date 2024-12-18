@@ -93,7 +93,7 @@ export default function CustomNavbar(props: Props) {
       icon: IconMailbox,
       nested: [
         'orders',
-        'deliveries',
+        'haulages',
         'shops-deliveries',
         'markets-deliveries',
         'storages-deliveries',

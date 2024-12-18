@@ -60,7 +60,7 @@
     "sales": "Sales",
     "transportations": "Transportations",
     "orders": "Orders",
-    "deliveries": "Deliveries",
+    "haulages": "Haulages",
     "shops-deliveries": "Shops Deliveries",
     "markets-deliveries": "Markets Deliveries",
     "storages-deliveries": "Storages Deliveries",
@@ -106,7 +106,7 @@
     "trades": "View trades; rate trades",
     "sales": "View sales; rate sales",
     "orders": "View orders; create, take, execute, complete, rate orders",
-    "deliveries": "View deliveries; create, take, execute, complete, rate deliveries",
+    "haulages": "View haulages; create, take, execute, complete, rate haulages",
     "shops-deliveries": "View deliveries; create, take, execute, complete, rate deliveries",
     "markets-deliveries": "View deliveries; create, take, execute, complete, rate deliveries",
     "storages-deliveries": "View deliveries; create, take, execute, complete, rate deliveries",
@@ -262,7 +262,7 @@
     "fromStation": "From Station",
     "toStation": "To Station",
     "status": "Status",
-    "haulage": "Haulage",
+    "delivery": "Delivery",
     "bargain": "Bargain",
     "trade": "Trade",
     "sale": "Sale",
@@ -336,7 +336,7 @@
     "trades": "Trade",
     "sales": "Sale",
     "orders": "Order",
-    "deliveries": "Delivery",
+    "haulages": "Haulage",
     "tasks": "Task",
     "adverts": "Advert",
     "polls": "Poll",
@@ -474,13 +474,13 @@
       "completed": "completed your order",
       "rated": "rated your order"
     },
-    "deliveries": {
-      "created": "created delivery",
-      "taken": "taken your delivery",
-      "untaken": "untaken your delivery",
-      "executed": "executed your delivery",
-      "completed": "completed your delivery",
-      "rated": "rated your delivery"
+    "haulages": {
+      "created": "created haulage",
+      "taken": "taken your haulage",
+      "untaken": "untaken your haulage",
+      "executed": "executed your haulage",
+      "completed": "completed your haulage",
+      "rated": "rated your haulage"
     },
     "shops-deliveries": {
       "created": "created delivery",
@@ -581,7 +581,7 @@
       "executed": "Executed",
       "completed": "Completed"
     },
-    "haulages": {
+    "deliveries": {
       "without": "Without Delivery",
       "with": "With Delivery"
     },
