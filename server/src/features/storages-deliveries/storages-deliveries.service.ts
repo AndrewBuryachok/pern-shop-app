@@ -435,8 +435,8 @@ export class StoragesDeliveriesService {
       .innerJoin('storage.card', 'fromOwnerCard')
       .innerJoin('fromOwnerCard.user', 'fromOwnerUser')
       .innerJoin('storageDelivery.hire', 'hire')
-      .innerJoin('hire.drawer', 'drawer')
-      .innerJoin('drawer.station', 'station')
+      .innerJoin('hire.box', 'box')
+      .innerJoin('box.station', 'station')
       .innerJoin('station.card', 'toOwnerCard')
       .innerJoin('toOwnerCard.user', 'toOwnerUser')
       .innerJoin('hire.card', 'customerCard')
@@ -534,8 +534,8 @@ export class StoragesDeliveriesService {
       .andWhere(
         new Brackets((qb) =>
           qb
-            .where(`${!req.drawer}`)
-            .orWhere('drawer.id = :drawerId', { drawerId: req.drawer }),
+            .where(`${!req.box}`)
+            .orWhere('box.id = :boxId', { boxId: req.box }),
         ),
       )
       .andWhere(
@@ -692,7 +692,7 @@ export class StoragesDeliveriesService {
         'product.kit',
         'sale.amount',
         'hire.id',
-        'drawer.id',
+        'box.id',
         'station.id',
         'toOwnerCard.id',
         'toOwnerUser.id',
@@ -703,7 +703,7 @@ export class StoragesDeliveriesService {
         'station.name',
         'station.x',
         'station.y',
-        'drawer.name',
+        'box.name',
         'customerCard.id',
         'customerUser.id',
         'customerUser.nick',

@@ -43,7 +43,7 @@ describe('With Auth', () => {
   let storageTagId: number;
   let stallId: number;
   let cellId: number;
-  let drawerId: number;
+  let boxId: number;
   let rentId: number;
   let leaseId: number;
   let hireId: number;
@@ -1925,149 +1925,149 @@ describe('With Auth', () => {
     });
   });
 
-  describe('Drawers', () => {
-    it('POST /drawers', async () => {
+  describe('Boxes', () => {
+    it('POST /boxes', async () => {
       return request(app.getHttpServer())
-        .post('/drawers')
+        .post('/boxes')
         .set('Authorization', `Bearer ${user.access}`)
         .send({ stationId })
         .expect('');
     });
 
-    it('POST /drawers', async () => {
+    it('POST /boxes', async () => {
       return request(app.getHttpServer())
-        .post('/drawers')
+        .post('/boxes')
         .set('Authorization', `Bearer ${user.access}`)
         .send({ stationId })
         .expect('');
     });
 
-    it('POST /drawers', async () => {
+    it('POST /boxes', async () => {
       return request(app.getHttpServer())
-        .post('/drawers')
+        .post('/boxes')
         .set('Authorization', `Bearer ${user.access}`)
         .send({ stationId })
         .expect('');
     });
 
-    it('POST /drawers', async () => {
+    it('POST /boxes', async () => {
       return request(app.getHttpServer())
-        .post('/drawers')
+        .post('/boxes')
         .set('Authorization', `Bearer ${user.access}`)
         .send({ stationId })
         .expect('');
     });
 
-    it('POST /drawers', async () => {
+    it('POST /boxes', async () => {
       return request(app.getHttpServer())
-        .post('/drawers')
+        .post('/boxes')
         .set('Authorization', `Bearer ${user.access}`)
         .send({ stationId })
         .expect('');
     });
 
-    it('POST /drawers', async () => {
+    it('POST /boxes', async () => {
       return request(app.getHttpServer())
-        .post('/drawers')
+        .post('/boxes')
         .set('Authorization', `Bearer ${user.access}`)
         .send({ stationId })
         .expect('');
     });
 
-    it('POST /drawers', async () => {
+    it('POST /boxes', async () => {
       return request(app.getHttpServer())
-        .post('/drawers')
+        .post('/boxes')
         .set('Authorization', `Bearer ${user.access}`)
         .send({ stationId })
         .expect('');
     });
 
-    it('POST /drawers', async () => {
+    it('POST /boxes', async () => {
       return request(app.getHttpServer())
-        .post('/drawers')
+        .post('/boxes')
         .set('Authorization', `Bearer ${user.access}`)
         .send({ stationId })
         .expect('');
     });
 
-    it('POST /drawers', async () => {
+    it('POST /boxes', async () => {
       return request(app.getHttpServer())
-        .post('/drawers')
+        .post('/boxes')
         .set('Authorization', `Bearer ${user.access}`)
         .send({ stationId })
         .expect('');
     });
 
-    it('POST /drawers', async () => {
+    it('POST /boxes', async () => {
       return request(app.getHttpServer())
-        .post('/drawers')
+        .post('/boxes')
         .set('Authorization', `Bearer ${user.access}`)
         .send({ stationId })
         .expect('');
     });
 
-    it('POST /drawers', async () => {
+    it('POST /boxes', async () => {
       return request(app.getHttpServer())
-        .post('/drawers')
+        .post('/boxes')
         .set('Authorization', `Bearer ${user.access}`)
         .send({ stationId })
         .expect('');
     });
 
-    it('POST /drawers', async () => {
+    it('POST /boxes', async () => {
       return request(app.getHttpServer())
-        .post('/drawers')
+        .post('/boxes')
         .set('Authorization', `Bearer ${user.access}`)
         .send({ stationId })
         .expect('');
     });
 
-    it('POST /drawers', async () => {
+    it('POST /boxes', async () => {
       return request(app.getHttpServer())
-        .post('/drawers')
+        .post('/boxes')
         .set('Authorization', `Bearer ${user.access}`)
         .send({ stationId })
         .expect('');
     });
 
-    it('POST /drawers', async () => {
+    it('POST /boxes', async () => {
       return request(app.getHttpServer())
-        .post('/drawers')
+        .post('/boxes')
         .set('Authorization', `Bearer ${user.access}`)
         .send({ stationId })
         .expect('');
     });
 
-    it('GET /drawers', async () => {
+    it('GET /boxes', async () => {
       return request(app.getHttpServer())
-        .get('/drawers')
+        .get('/boxes')
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
 
-    it('GET /drawers/my', async () => {
+    it('GET /boxes/my', async () => {
       return request(app.getHttpServer())
-        .get('/drawers/my')
+        .get('/boxes/my')
         .set('Authorization', `Bearer ${user.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0))
-        .then((res) => (drawerId = res.body.result[0].id));
+        .then((res) => (boxId = res.body.result[0].id));
     });
 
-    it('GET /drawers/all', async () => {
+    it('GET /boxes/all', async () => {
       return request(app.getHttpServer())
-        .get('/drawers/all')
+        .get('/boxes/all')
         .set('Authorization', `Bearer ${merchant.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
 
-    it('GET /drawers/:stationId/select', async () => {
+    it('GET /boxes/:stationId/select', async () => {
       return request(app.getHttpServer())
-        .get(`/drawers/${stationId}/select`)
+        .get(`/boxes/${stationId}/select`)
         .expect((res) => expect(res.body.length).toBeGreaterThan(0));
     });
 
-    it('GET /drawers/:drawerId/station', async () => {
+    it('GET /boxes/:boxId/station', async () => {
       return request(app.getHttpServer())
-        .get(`/drawers/${drawerId}/station`)
+        .get(`/boxes/${boxId}/station`)
         .expect((res) => expect(res.body.id).toBeGreaterThan(0));
     });
 
@@ -3259,9 +3259,9 @@ describe('With Auth', () => {
   });
 
   describe('Hires', () => {
-    it('POST /drawers', async () => {
+    it('POST /boxes', async () => {
       return request(app.getHttpServer())
-        .post('/drawers')
+        .post('/boxes')
         .set('Authorization', `Bearer ${user.access}`)
         .send({ stationId })
         .expect('');

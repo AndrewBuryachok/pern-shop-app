@@ -4,7 +4,7 @@ import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { InjectSchedule, Schedule } from 'nest-schedule';
 import { Hire } from './hire.entity';
 import { Thing } from '../things/thing.entity';
-import { DrawersService } from '../drawers/drawers.service';
+import { BoxesService } from '../boxes/boxes.service';
 import { MqttService } from '../mqtt/mqtt.service';
 import { ExtCreateHireDto, ExtHireIdDto } from './hire.dto';
 import { Request, Response } from '../../common/interfaces';
@@ -18,7 +18,7 @@ export class HiresService implements OnModuleInit {
   constructor(
     @InjectRepository(Hire)
     private hiresRepository: Repository<Hire>,
-    private drawersService: DrawersService,
+    private boxesService: BoxesService,
     private mqttService: MqttService,
     @InjectSchedule()
     private schedule: Schedule,
@@ -156,14 +156,14 @@ export class HiresService implements OnModuleInit {
   }
 
   async createHire(dto: ExtCreateHireDto & { nick: string }): Promise<number> {
-    const drawer = await this.drawersService.reserveDrawer(dto);
+    const box = await this.boxesService.reserveBox(dto);
     const hire = await this.create(
-      { ...dto, stationId: drawer.id },
-      drawer.station.price,
+      { ...dto, stationId: box.id },
+      box.station.price,
     );
     this.mqttService.publishNotificationMessage(
       hire.id,
-      drawer.station.card.userId,
+      box.station.card.userId,
       dto.nick,
       Notification.CREATED_HIRE,
     );
@@ -173,15 +173,15 @@ export class HiresService implements OnModuleInit {
 
   async continueHire(dto: ExtHireIdDto & { nick: string }): Promise<void> {
     const hire = await this.checkHireOwner(dto.hireId, dto.myId, dto.hasRole);
-    const drawer = await this.drawersService.continueDrawer({
+    const box = await this.boxesService.continueBox({
       ...dto,
-      stationId: hire.drawerId,
+      stationId: hire.boxId,
       cardId: hire.cardId,
     });
-    await this.continue(hire, drawer.station.price);
+    await this.continue(hire, box.station.price);
     this.mqttService.publishNotificationMessage(
       dto.hireId,
-      drawer.station.card.userId,
+      box.station.card.userId,
       dto.nick,
       Notification.CONTINUED_HIRE,
     );
@@ -191,11 +191,11 @@ export class HiresService implements OnModuleInit {
 
   async completeHire(dto: ExtHireIdDto & { nick: string }): Promise<void> {
     const hire = await this.checkHireOwner(dto.hireId, dto.myId, dto.hasRole);
-    const drawer = await this.drawersService.unreserveDrawer(hire.drawerId);
+    const box = await this.boxesService.unreserveBox(hire.boxId);
     await this.complete(hire);
     this.mqttService.publishNotificationMessage(
       dto.hireId,
-      drawer.station.card.userId,
+      box.station.card.userId,
       dto.nick,
       Notification.COMPLETED_HIRE,
     );
@@ -249,7 +249,7 @@ export class HiresService implements OnModuleInit {
   private async create(dto: ExtCreateHireDto, sum: number): Promise<Hire> {
     try {
       const hire = this.hiresRepository.create({
-        drawerId: dto.stationId,
+        boxId: dto.stationId,
         cardId: dto.cardId,
         sum,
         completedAt: getDateWeekAfter(),
@@ -283,8 +283,8 @@ export class HiresService implements OnModuleInit {
   private getHiresQueryBuilder(req: Request): SelectQueryBuilder<Hire> {
     return this.hiresRepository
       .createQueryBuilder('hire')
-      .innerJoin('hire.drawer', 'drawer')
-      .innerJoin('drawer.station', 'station')
+      .innerJoin('hire.box', 'box')
+      .innerJoin('box.station', 'station')
       .innerJoin('station.card', 'ownerCard')
       .innerJoin('ownerCard.user', 'ownerUser')
       .innerJoin('hire.card', 'tenantCard')
@@ -358,8 +358,8 @@ export class HiresService implements OnModuleInit {
       .andWhere(
         new Brackets((qb) =>
           qb
-            .where(`${!req.drawer}`)
-            .orWhere('drawer.id = :drawerId', { drawerId: req.drawer }),
+            .where(`${!req.box}`)
+            .orWhere('box.id = :boxId', { boxId: req.box }),
         ),
       )
       .andWhere(
@@ -409,7 +409,7 @@ export class HiresService implements OnModuleInit {
       .take(req.take)
       .select([
         'hire.id',
-        'drawer.id',
+        'box.id',
         'station.id',
         'ownerCard.id',
         'ownerUser.id',
@@ -420,7 +420,7 @@ export class HiresService implements OnModuleInit {
         'station.name',
         'station.x',
         'station.y',
-        'drawer.name',
+        'box.name',
         'tenantCard.id',
         'tenantUser.id',
         'tenantUser.nick',

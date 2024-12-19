@@ -2,28 +2,28 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Validate } from 'class-validator';
 import { Type } from 'class-transformer';
 import { IsId } from '../../common/decorators';
-import { IsDrawerExists, IsStationExists } from '../../common/constraints';
+import { IsBoxExists, IsStationExists } from '../../common/constraints';
 import { ExtCreateHireDto } from '../hires/hire.dto';
 
-export class DrawerIdDto {
+export class BoxIdDto {
   @ApiProperty()
   @IsId()
-  @Validate(IsDrawerExists)
+  @Validate(IsBoxExists)
   @Type(() => Number)
-  drawerId: number;
+  boxId: number;
 }
 
-export class CreateDrawerDto {
+export class CreateBoxDto {
   @ApiProperty()
   @IsId()
   @Validate(IsStationExists)
   stationId: number;
 }
 
-export class ExtCreateDrawerDto extends CreateDrawerDto {
+export class ExtCreateBoxDto extends CreateBoxDto {
   myId: number;
   hasRole: boolean;
   name?: number;
 }
 
-export class ReserveDrawerDto extends ExtCreateHireDto {}
+export class ReserveBoxDto extends ExtCreateHireDto {}

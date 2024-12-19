@@ -122,7 +122,7 @@ export class Request {
   @IsOptional()
   @IsInt()
   @Type(() => Number)
-  drawer?: number;
+  box?: number;
 
   @ApiProperty({ required: false })
   @IsOptional()

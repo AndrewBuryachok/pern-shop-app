@@ -25,7 +25,7 @@ import { MarketsTagsService } from '../../features/markets-tags/markets-tags.ser
 import { StoragesTagsService } from '../../features/storages-tags/storages-tags.service';
 import { StallsService } from '../../features/stalls/stalls.service';
 import { CellsService } from '../../features/cells/cells.service';
-import { DrawersService } from '../../features/drawers/drawers.service';
+import { BoxesService } from '../../features/boxes/boxes.service';
 import { RentsService } from '../../features/rents/rents.service';
 import { LeasesService } from '../../features/leases/leases.service';
 import { HiresService } from '../../features/hires/hires.service';
@@ -463,13 +463,13 @@ export class IsCellExists implements ValidatorConstraintInterface {
 }
 
 @Injectable()
-@ValidatorConstraint({ name: 'isDrawerExists', async: true })
-export class IsDrawerExists implements ValidatorConstraintInterface {
-  constructor(private drawersService: DrawersService) {}
+@ValidatorConstraint({ name: 'isBoxExists', async: true })
+export class IsBoxExists implements ValidatorConstraintInterface {
+  constructor(private boxesService: BoxesService) {}
 
   async validate(value: number): Promise<boolean> {
     try {
-      await this.drawersService.checkDrawerExists(value);
+      await this.boxesService.checkBoxExists(value);
     } catch (error) {
       return false;
     }
@@ -477,7 +477,7 @@ export class IsDrawerExists implements ValidatorConstraintInterface {
   }
 
   defaultMessage(): string {
-    return 'Unknown drawer';
+    return 'Unknown box';
   }
 }
 

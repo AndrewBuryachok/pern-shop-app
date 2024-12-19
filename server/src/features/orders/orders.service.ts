@@ -369,8 +369,8 @@ export class OrdersService {
     return this.ordersRepository
       .createQueryBuilder('order')
       .innerJoin('order.hire', 'hire')
-      .innerJoin('hire.drawer', 'drawer')
-      .innerJoin('drawer.station', 'station')
+      .innerJoin('hire.box', 'box')
+      .innerJoin('box.station', 'station')
       .innerJoin('station.card', 'ownerCard')
       .innerJoin('ownerCard.user', 'ownerUser')
       .innerJoin('hire.card', 'customerCard')
@@ -448,8 +448,8 @@ export class OrdersService {
       .andWhere(
         new Brackets((qb) =>
           qb
-            .where(`${!req.drawer}`)
-            .orWhere('drawer.id = :drawerId', { drawerId: req.drawer }),
+            .where(`${!req.box}`)
+            .orWhere('box.id = :boxId', { boxId: req.box }),
         ),
       )
       .andWhere(
@@ -570,7 +570,7 @@ export class OrdersService {
       .select([
         'order.id',
         'hire.id',
-        'drawer.id',
+        'box.id',
         'station.id',
         'ownerCard.id',
         'ownerUser.id',
@@ -581,7 +581,7 @@ export class OrdersService {
         'station.name',
         'station.x',
         'station.y',
-        'drawer.name',
+        'box.name',
         'customerCard.id',
         'customerUser.id',
         'customerUser.nick',

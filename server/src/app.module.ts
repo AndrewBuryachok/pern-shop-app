@@ -25,7 +25,7 @@ import { MarketsTagsModule } from './features/markets-tags/markets-tags.module';
 import { StoragesTagsModule } from './features/storages-tags/storages-tags.module';
 import { StallsModule } from './features/stalls/stalls.module';
 import { CellsModule } from './features/cells/cells.module';
-import { DrawersModule } from './features/drawers/drawers.module';
+import { BoxesModule } from './features/boxes/boxes.module';
 import { RentsModule } from './features/rents/rents.module';
 import { LeasesModule } from './features/leases/leases.module';
 import { HiresModule } from './features/hires/hires.module';
@@ -93,7 +93,7 @@ import { LoggerModule } from './features/logger/logger.module';
     StoragesTagsModule,
     StallsModule,
     CellsModule,
-    DrawersModule,
+    BoxesModule,
     RentsModule,
     LeasesModule,
     HiresModule,

@@ -426,8 +426,8 @@ export class ShopsDeliveriesService {
       .innerJoin('shop.card', 'fromOwnerCard')
       .innerJoin('fromOwnerCard.user', 'fromOwnerUser')
       .innerJoin('shopDelivery.hire', 'hire')
-      .innerJoin('hire.drawer', 'drawer')
-      .innerJoin('drawer.station', 'station')
+      .innerJoin('hire.box', 'box')
+      .innerJoin('box.station', 'station')
       .innerJoin('station.card', 'toOwnerCard')
       .innerJoin('toOwnerCard.user', 'toOwnerUser')
       .innerJoin('hire.card', 'customerCard')
@@ -518,8 +518,8 @@ export class ShopsDeliveriesService {
       .andWhere(
         new Brackets((qb) =>
           qb
-            .where(`${!req.drawer}`)
-            .orWhere('drawer.id = :drawerId', { drawerId: req.drawer }),
+            .where(`${!req.box}`)
+            .orWhere('box.id = :boxId', { boxId: req.box }),
         ),
       )
       .andWhere(
@@ -669,7 +669,7 @@ export class ShopsDeliveriesService {
         'good.kit',
         'bargain.amount',
         'hire.id',
-        'drawer.id',
+        'box.id',
         'station.id',
         'toOwnerCard.id',
         'toOwnerUser.id',
@@ -680,7 +680,7 @@ export class ShopsDeliveriesService {
         'station.name',
         'station.x',
         'station.y',
-        'drawer.name',
+        'box.name',
         'customerCard.id',
         'customerUser.id',
         'customerUser.nick',

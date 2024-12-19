@@ -431,13 +431,13 @@ export class HaulagesService {
     return this.haulagesRepository
       .createQueryBuilder('haulage')
       .innerJoin('haulage.fromHire', 'fromHire')
-      .innerJoin('fromHire.drawer', 'fromDrawer')
-      .innerJoin('fromDrawer.station', 'fromStation')
+      .innerJoin('fromHire.box', 'fromBox')
+      .innerJoin('fromBox.station', 'fromStation')
       .innerJoin('fromStation.card', 'fromOwnerCard')
       .innerJoin('fromOwnerCard.user', 'fromOwnerUser')
       .innerJoin('haulage.toHire', 'toHire')
-      .innerJoin('toHire.drawer', 'toDrawer')
-      .innerJoin('toDrawer.station', 'toStation')
+      .innerJoin('toHire.box', 'toBox')
+      .innerJoin('toBox.station', 'toStation')
       .innerJoin('toStation.card', 'toOwnerCard')
       .innerJoin('toOwnerCard.user', 'toOwnerUser')
       .innerJoin('fromHire.card', 'customerCard')
@@ -520,9 +520,9 @@ export class HaulagesService {
       .andWhere(
         new Brackets((qb) =>
           qb
-            .where(`${!req.drawer}`, { drawerId: req.drawer })
-            .orWhere('fromDrawer.id = :drawerId')
-            .orWhere('toDrawer.id = :drawerId'),
+            .where(`${!req.box}`, { boxId: req.box })
+            .orWhere('fromBox.id = :boxId')
+            .orWhere('toBox.id = :boxId'),
         ),
       )
       .andWhere(
@@ -655,7 +655,7 @@ export class HaulagesService {
       .select([
         'haulage.id',
         'fromHire.id',
-        'fromDrawer.id',
+        'fromBox.id',
         'fromStation.id',
         'fromOwnerCard.id',
         'fromOwnerUser.id',
@@ -666,9 +666,9 @@ export class HaulagesService {
         'fromStation.name',
         'fromStation.x',
         'fromStation.y',
-        'fromDrawer.name',
+        'fromBox.name',
         'toHire.id',
-        'toDrawer.id',
+        'toBox.id',
         'toStation.id',
         'toOwnerCard.id',
         'toOwnerUser.id',
@@ -679,7 +679,7 @@ export class HaulagesService {
         'toStation.name',
         'toStation.x',
         'toStation.y',
-        'toDrawer.name',
+        'toBox.name',
         'customerCard.id',
         'customerUser.id',
         'customerUser.nick',

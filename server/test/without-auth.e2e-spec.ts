@@ -436,14 +436,14 @@ describe('Without Auth', () => {
     });
   });
 
-  describe('Drawers', () => {
-    it('GET /drawers/my', async () => {
-      return request(app.getHttpServer()).get('/drawers/my').expect(401);
+  describe('Boxes', () => {
+    it('GET /boxes/my', async () => {
+      return request(app.getHttpServer()).get('/boxes/my').expect(401);
     });
 
-    it('GET /drawers/all', async () => {
+    it('GET /boxes/all', async () => {
       return request(app.getHttpServer())
-        .get('/drawers/all')
+        .get('/boxes/all')
         .set('Authorization', `Bearer ${user.access}`)
         .expect(403);
     });
