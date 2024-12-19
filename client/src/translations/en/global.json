@@ -2,9 +2,6 @@
   "header": {
     "title": "Shop",
     "menu": {
-      "streamers": {
-        "title": "Streamers"
-      },
       "settings": {
         "title": "Settings",
         "language": "Language EN",
@@ -88,6 +85,11 @@
     "hires": "Hires",
     "polls": "Polls",
     "ratings": "Ratings"
+  },
+  "aside": {
+    "live": "Live",
+    "online": "Online",
+    "offline": "Offline"
   },
   "information": {
     "users": "View users; add, remove roles; edit password",

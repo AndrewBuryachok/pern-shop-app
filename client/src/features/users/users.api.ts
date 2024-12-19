@@ -1,6 +1,6 @@
 import { emptyApi } from '../../app/empty.api';
 import { IRequest, IResponse } from '../../common/interfaces';
-import { ExtUser, SmUser, User } from './user.model';
+import { ExtUser, SmUser, TwitchUser, User } from './user.model';
 import {
   EditUserPasswordDto,
   EditUserProfileDto,
@@ -82,7 +82,7 @@ export const usersApi = emptyApi.injectEndpoints({
       }),
       providesTags: ['Auth', 'User', 'Rating'],
     }),
-    selectTwitchUsers: build.query<{ live: string[]; unlive: string[] }, void>({
+    selectTwitchUsers: build.query<TwitchUser[], void>({
       query: () => ({
         url: '/users/twitch/select',
       }),

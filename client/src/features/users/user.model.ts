@@ -6,6 +6,10 @@ export interface SmUser {
   avatar: string;
 }
 
+export interface TwitchUser extends SmUser {
+  twitch: string;
+}
+
 export interface MdUser extends SmUser {
   roles: number[];
 }

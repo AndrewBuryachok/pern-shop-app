@@ -10,7 +10,7 @@ import {
   Title,
   Tooltip,
 } from '@mantine/core';
-import { IconBroadcast, IconBroadcastOff } from '@tabler/icons';
+import { IconUser, IconUserOff } from '@tabler/icons';
 import SettingsMenu from './SettingsMenu';
 import NotificationsMenu from './NotificationsMenu';
 import AccountMenu from './AccountMenu';
@@ -36,7 +36,7 @@ export default function CustomHeader(props: Props) {
           </MediaQuery>
         </Group>
         <Group spacing={8}>
-          <Tooltip label={t('header.menu.streamers.title')} withArrow>
+          <Tooltip label={t('navbar.users')} withArrow>
             <ActionIcon
               size={32}
               variant='filled'
@@ -44,9 +44,9 @@ export default function CustomHeader(props: Props) {
               onClick={props.toggleA}
             >
               {props.openedA ? (
-                <IconBroadcastOff size={24} />
+                <IconUserOff size={24} />
               ) : (
-                <IconBroadcast size={24} />
+                <IconUser size={24} />
               )}
             </ActionIcon>
           </Tooltip>

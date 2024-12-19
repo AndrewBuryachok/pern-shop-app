@@ -1,21 +1,28 @@
-import { AspectRatio } from '@mantine/core';
+import { Avatar, Group } from '@mantine/core';
+import { TwitchUser } from '../../features/users/user.model';
+import CustomIndicator from './CustomIndicator';
+import SingleText from './SingleText';
 
-type Props = {
-  nick: string;
-};
+type Props = TwitchUser;
 
 export default function CustomStream(props: Props) {
   return (
-    <AspectRatio ratio={16 / 9}>
-      <iframe
-        width='100%'
-        height='100%'
-        src={`https://player.twitch.tv/?channel=${props.nick}&parent=${
-          import.meta.env.VITE_APP_URL
-        }`}
-        style={{ border: 0 }}
-        allowFullScreen
-      />
-    </AspectRatio>
+    <Group spacing={8}>
+      <CustomIndicator {...props}>
+        <Avatar
+          component='a'
+          href={`https://twitch.tv/${props.twitch}`}
+          target='_blank'
+          size={32}
+          src={`${import.meta.env.VITE_AVATAR_URL}${
+            import.meta.env.VITE_HEAD_ROUTE
+          }${props.avatar || props.nick}`}
+          alt={props.nick}
+        >
+          {props.nick.toUpperCase().slice(0, 2)}
+        </Avatar>
+      </CustomIndicator>
+      <SingleText text={props.nick} bold />
+    </Group>
   );
 }
