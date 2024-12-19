@@ -4,7 +4,7 @@ import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { InjectSchedule, Schedule } from 'nest-schedule';
 import { Rent } from './rent.entity';
 import { Thing } from '../things/thing.entity';
-import { StoresService } from '../stores/stores.service';
+import { StallsService } from '../stalls/stalls.service';
 import { MqttService } from '../mqtt/mqtt.service';
 import { ExtCreateRentDto, ExtRentIdDto } from './rent.dto';
 import { Request, Response } from '../../common/interfaces';
@@ -18,7 +18,7 @@ export class RentsService implements OnModuleInit {
   constructor(
     @InjectRepository(Rent)
     private rentsRepository: Repository<Rent>,
-    private storesService: StoresService,
+    private stallsService: StallsService,
     private mqttService: MqttService,
     @InjectSchedule()
     private schedule: Schedule,
@@ -98,11 +98,11 @@ export class RentsService implements OnModuleInit {
   }
 
   async createRent(dto: ExtCreateRentDto & { nick: string }): Promise<void> {
-    const store = await this.storesService.reserveStore(dto);
-    const rent = await this.create(dto, store.marketTag.price);
+    const stall = await this.stallsService.reserveStall(dto);
+    const rent = await this.create(dto, stall.marketTag.price);
     this.mqttService.publishNotificationMessage(
       rent.id,
-      store.market.card.userId,
+      stall.market.card.userId,
       dto.nick,
       Notification.CREATED_RENT,
     );
@@ -111,15 +111,15 @@ export class RentsService implements OnModuleInit {
 
   async continueRent(dto: ExtRentIdDto & { nick: string }): Promise<void> {
     const rent = await this.checkRentOwner(dto.rentId, dto.myId, dto.hasRole);
-    const store = await this.storesService.continueStore({
+    const stall = await this.stallsService.continueStall({
       ...dto,
-      storeId: rent.storeId,
+      stallId: rent.stallId,
       cardId: rent.cardId,
     });
-    await this.continue(rent, store.marketTag.price);
+    await this.continue(rent, stall.marketTag.price);
     this.mqttService.publishNotificationMessage(
       dto.rentId,
-      store.market.card.userId,
+      stall.market.card.userId,
       dto.nick,
       Notification.CONTINUED_RENT,
     );
@@ -129,11 +129,11 @@ export class RentsService implements OnModuleInit {
 
   async completeRent(dto: ExtRentIdDto & { nick: string }): Promise<void> {
     const rent = await this.checkRentOwner(dto.rentId, dto.myId, dto.hasRole);
-    const store = await this.storesService.unreserveStore(rent.storeId);
+    const stall = await this.stallsService.unreserveStall(rent.stallId);
     await this.complete(rent);
     this.mqttService.publishNotificationMessage(
       dto.rentId,
-      store.market.card.userId,
+      stall.market.card.userId,
       dto.nick,
       Notification.COMPLETED_RENT,
     );
@@ -187,7 +187,7 @@ export class RentsService implements OnModuleInit {
   private async create(dto: ExtCreateRentDto, sum: number): Promise<Rent> {
     try {
       const rent = this.rentsRepository.create({
-        storeId: dto.storeId,
+        stallId: dto.stallId,
         cardId: dto.cardId,
         sum,
         completedAt: getDateWeekAfter(),
@@ -221,27 +221,27 @@ export class RentsService implements OnModuleInit {
   private selectRentsQueryBuilder(): SelectQueryBuilder<Rent> {
     return this.rentsRepository
       .createQueryBuilder('rent')
-      .innerJoin('rent.store', 'store')
-      .innerJoin('store.market', 'market')
+      .innerJoin('rent.stall', 'stall')
+      .innerJoin('stall.market', 'market')
       .where('rent.completedAt > NOW()')
       .orderBy('rent.id', 'DESC')
       .select([
         'rent.id',
-        'store.id',
+        'stall.id',
         'market.id',
         'market.name',
         'market.x',
         'market.y',
-        'store.name',
+        'stall.name',
       ]);
   }
 
   private getRentsQueryBuilder(req: Request): SelectQueryBuilder<Rent> {
     return this.rentsRepository
       .createQueryBuilder('rent')
-      .innerJoin('rent.store', 'store')
-      .innerJoin('store.marketTag', 'marketTag')
-      .innerJoin('store.market', 'market')
+      .innerJoin('rent.stall', 'stall')
+      .innerJoin('stall.marketTag', 'marketTag')
+      .innerJoin('stall.market', 'market')
       .innerJoin('market.card', 'ownerCard')
       .innerJoin('ownerCard.user', 'ownerUser')
       .innerJoin('rent.card', 'tenantCard')
@@ -313,8 +313,8 @@ export class RentsService implements OnModuleInit {
       .andWhere(
         new Brackets((qb) =>
           qb
-            .where(`${!req.store}`)
-            .orWhere('store.id = :storeId', { storeId: req.store }),
+            .where(`${!req.stall}`)
+            .orWhere('stall.id = :stallId', { stallId: req.stall }),
         ),
       )
       .andWhere(
@@ -364,7 +364,7 @@ export class RentsService implements OnModuleInit {
       .take(req.take)
       .select([
         'rent.id',
-        'store.id',
+        'stall.id',
         'market.id',
         'ownerCard.id',
         'ownerUser.id',
@@ -375,7 +375,7 @@ export class RentsService implements OnModuleInit {
         'market.name',
         'market.x',
         'market.y',
-        'store.name',
+        'stall.name',
         'tenantCard.id',
         'tenantUser.id',
         'tenantUser.nick',

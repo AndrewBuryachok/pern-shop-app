@@ -2,29 +2,29 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Validate } from 'class-validator';
 import { Type } from 'class-transformer';
 import { IsId } from '../../common/decorators';
-import { IsMarketTagExists, IsStoreExists } from '../../common/constraints';
+import { IsMarketTagExists, IsStallExists } from '../../common/constraints';
 import { ExtCreateRentDto } from '../rents/rent.dto';
 
-export class StoreIdDto {
+export class StallIdDto {
   @ApiProperty()
   @IsId()
-  @Validate(IsStoreExists)
+  @Validate(IsStallExists)
   @Type(() => Number)
-  storeId: number;
+  stallId: number;
 }
 
-export class CreateStoreDto {
+export class CreateStallDto {
   @ApiProperty()
   @IsId()
   @Validate(IsMarketTagExists)
   marketTagId: number;
 }
 
-export class ExtCreateStoreDto extends CreateStoreDto {
+export class ExtCreateStallDto extends CreateStallDto {
   myId: number;
   hasRole: boolean;
   marketId?: number;
   name?: number;
 }
 
-export class ReserveStoreDto extends ExtCreateRentDto {}
+export class ReserveStallDto extends ExtCreateRentDto {}

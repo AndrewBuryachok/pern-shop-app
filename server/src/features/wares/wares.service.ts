@@ -239,8 +239,8 @@ export class WaresService {
     return this.waresRepository
       .createQueryBuilder('ware')
       .innerJoin('ware.rent', 'rent')
-      .innerJoin('rent.store', 'store')
-      .innerJoin('store.market', 'market')
+      .innerJoin('rent.stall', 'stall')
+      .innerJoin('stall.market', 'market')
       .innerJoin('market.card', 'ownerCard')
       .innerJoin('ownerCard.user', 'ownerUser')
       .innerJoin('rent.card', 'sellerCard')
@@ -303,8 +303,8 @@ export class WaresService {
       .andWhere(
         new Brackets((qb) =>
           qb
-            .where(`${!req.store}`)
-            .orWhere('store.id = :storeId', { storeId: req.store }),
+            .where(`${!req.stall}`)
+            .orWhere('stall.id = :stallId', { stallId: req.stall }),
         ),
       )
       .andWhere(
@@ -411,7 +411,7 @@ export class WaresService {
       .select([
         'ware.id',
         'rent.id',
-        'store.id',
+        'stall.id',
         'market.id',
         'ownerCard.id',
         'ownerUser.id',
@@ -422,7 +422,7 @@ export class WaresService {
         'market.name',
         'market.x',
         'market.y',
-        'store.name',
+        'stall.name',
         'sellerCard.id',
         'sellerUser.id',
         'sellerUser.nick',

@@ -41,7 +41,7 @@ describe('With Auth', () => {
   let stationId: number;
   let marketTagId: number;
   let storageTagId: number;
-  let storeId: number;
+  let stallId: number;
   let cellId: number;
   let drawerId: number;
   let rentId: number;
@@ -1827,51 +1827,51 @@ describe('With Auth', () => {
     });
   });
 
-  describe('Stores', () => {
-    it('POST /stores', async () => {
+  describe('Stalls', () => {
+    it('POST /stalls', async () => {
       return request(app.getHttpServer())
-        .post('/stores')
+        .post('/stalls')
         .set('Authorization', `Bearer ${user.access}`)
         .send({ marketTagId })
         .expect('');
     });
 
-    it('GET /stores', async () => {
+    it('GET /stalls', async () => {
       return request(app.getHttpServer())
-        .get('/stores')
+        .get('/stalls')
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
 
-    it('GET /stores/my', async () => {
+    it('GET /stalls/my', async () => {
       return request(app.getHttpServer())
-        .get('/stores/my')
+        .get('/stalls/my')
         .set('Authorization', `Bearer ${user.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0))
-        .then((res) => (storeId = res.body.result[0].id));
+        .then((res) => (stallId = res.body.result[0].id));
     });
 
-    it('GET /stores/all', async () => {
+    it('GET /stalls/all', async () => {
       return request(app.getHttpServer())
-        .get('/stores/all')
+        .get('/stalls/all')
         .set('Authorization', `Bearer ${merchant.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
 
-    it('GET /stores/:marketId/markets', async () => {
+    it('GET /stalls/:marketId/markets', async () => {
       return request(app.getHttpServer())
-        .get(`/stores/${marketId}/markets`)
+        .get(`/stalls/${marketId}/markets`)
         .expect((res) => expect(res.body.length).toBeGreaterThan(0));
     });
 
-    it('GET /stores/:marketTagId/tags', async () => {
+    it('GET /stalls/:marketTagId/tags', async () => {
       return request(app.getHttpServer())
-        .get(`/stores/${marketTagId}/tags`)
+        .get(`/stalls/${marketTagId}/tags`)
         .expect((res) => expect(res.body.length).toBeGreaterThan(0));
     });
 
-    it('GET /stores/:storeId/tag', async () => {
+    it('GET /stalls/:stallId/tag', async () => {
       return request(app.getHttpServer())
-        .get(`/stores/${storeId}/tag`)
+        .get(`/stalls/${stallId}/tag`)
         .expect((res) => expect(res.body.id).toBeGreaterThan(0));
     });
   });
@@ -2083,7 +2083,7 @@ describe('With Auth', () => {
       return request(app.getHttpServer())
         .post('/rents')
         .set('Authorization', `Bearer ${user.access}`)
-        .send({ storeId, cardId })
+        .send({ stallId, cardId })
         .expect('');
     });
 

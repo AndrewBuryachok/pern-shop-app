@@ -410,14 +410,14 @@ describe('Without Auth', () => {
     });
   });
 
-  describe('Stores', () => {
-    it('GET /stores/my', async () => {
-      return request(app.getHttpServer()).get('/stores/my').expect(401);
+  describe('Stalls', () => {
+    it('GET /stalls/my', async () => {
+      return request(app.getHttpServer()).get('/stalls/my').expect(401);
     });
 
-    it('GET /stores/all', async () => {
+    it('GET /stalls/all', async () => {
       return request(app.getHttpServer())
-        .get('/stores/all')
+        .get('/stalls/all')
         .set('Authorization', `Bearer ${user.access}`)
         .expect(403);
     });

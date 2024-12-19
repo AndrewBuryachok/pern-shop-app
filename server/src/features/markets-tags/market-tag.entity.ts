@@ -8,7 +8,7 @@ import {
 } from 'typeorm';
 import { Tag } from '../tags/tag.entity';
 import { Market } from '../markets/market.entity';
-import { Store } from '../stores/store.entity';
+import { Stall } from '../stalls/stall.entity';
 import { MarketTagState } from './market-tag-state.entity';
 
 @Entity('markets_tags')
@@ -20,8 +20,8 @@ export class MarketTag extends Tag {
   @JoinColumn({ name: 'market_id' })
   market: Market;
 
-  @OneToMany(() => Store, (store) => store.marketTag)
-  stores: Store[];
+  @OneToMany(() => Stall, (stall) => stall.marketTag)
+  stalls: Stall[];
 
   @OneToMany(() => MarketTagState, (state) => state.marketTag)
   states: MarketTagState[];

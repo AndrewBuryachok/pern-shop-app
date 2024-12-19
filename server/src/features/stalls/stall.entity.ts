@@ -3,8 +3,8 @@ import { Container } from '../containers/container.entity';
 import { Market } from '../markets/market.entity';
 import { MarketTag } from '../markets-tags/market-tag.entity';
 
-@Entity('stores')
-export class Store extends Container {
+@Entity('stalls')
+export class Stall extends Container {
   @Column({ name: 'market_id' })
   marketId: number;
 

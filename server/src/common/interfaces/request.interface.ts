@@ -110,7 +110,7 @@ export class Request {
   @IsOptional()
   @IsInt()
   @Type(() => Number)
-  store?: number;
+  stall?: number;
 
   @ApiProperty({ required: false })
   @IsOptional()

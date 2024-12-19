@@ -23,7 +23,7 @@ import { StoragesModule } from './features/storages/storages.module';
 import { StationsModule } from './features/stations/stations.module';
 import { MarketsTagsModule } from './features/markets-tags/markets-tags.module';
 import { StoragesTagsModule } from './features/storages-tags/storages-tags.module';
-import { StoresModule } from './features/stores/stores.module';
+import { StallsModule } from './features/stalls/stalls.module';
 import { CellsModule } from './features/cells/cells.module';
 import { DrawersModule } from './features/drawers/drawers.module';
 import { RentsModule } from './features/rents/rents.module';
@@ -91,7 +91,7 @@ import { LoggerModule } from './features/logger/logger.module';
     StationsModule,
     MarketsTagsModule,
     StoragesTagsModule,
-    StoresModule,
+    StallsModule,
     CellsModule,
     DrawersModule,
     RentsModule,

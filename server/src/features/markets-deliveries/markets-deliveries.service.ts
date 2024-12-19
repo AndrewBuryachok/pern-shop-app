@@ -432,8 +432,8 @@ export class MarketsDeliveriesService {
       .innerJoin('marketDelivery.trade', 'trade')
       .innerJoin('trade.ware', 'ware')
       .innerJoin('ware.rent', 'rent')
-      .innerJoin('rent.store', 'store')
-      .innerJoin('store.market', 'market')
+      .innerJoin('rent.stall', 'stall')
+      .innerJoin('stall.market', 'market')
       .innerJoin('market.card', 'fromOwnerCard')
       .innerJoin('fromOwnerCard.user', 'fromOwnerUser')
       .innerJoin('marketDelivery.hire', 'hire')
@@ -522,8 +522,8 @@ export class MarketsDeliveriesService {
       .andWhere(
         new Brackets((qb) =>
           qb
-            .where(`${!req.store}`)
-            .orWhere('store.id = :storeId', { storeId: req.store }),
+            .where(`${!req.stall}`)
+            .orWhere('stall.id = :stallId', { stallId: req.stall }),
         ),
       )
       .andWhere(
@@ -668,7 +668,7 @@ export class MarketsDeliveriesService {
         'trade.id',
         'ware.id',
         'rent.id',
-        'store.id',
+        'stall.id',
         'market.id',
         'fromOwnerCard.id',
         'fromOwnerUser.id',
@@ -679,7 +679,7 @@ export class MarketsDeliveriesService {
         'market.name',
         'market.x',
         'market.y',
-        'store.name',
+        'stall.name',
         'ware.item',
         'ware.description',
         'ware.intake',

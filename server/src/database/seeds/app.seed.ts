@@ -29,7 +29,7 @@ import { StorageTag } from '../../features/storages-tags/storage-tag.entity';
 import { MarketTagState } from '../../features/markets-tags/market-tag-state.entity';
 import { StorageTagState } from '../../features/storages-tags/storage-tag-state.entity';
 import { StationState } from '../../features/stations/station-state.entity';
-import { Store } from '../../features/stores/store.entity';
+import { Stall } from '../../features/stalls/stall.entity';
 import { Cell } from '../../features/cells/cell.entity';
 import { Drawer } from '../../features/drawers/drawer.entity';
 import { Rent } from '../../features/rents/rent.entity';
@@ -273,7 +273,7 @@ export default class AppSeed implements Seeder {
     const markets = await factory(Market)()
       .map(async (market) => {
         market.card = faker.helpers.arrayElement(cards);
-        market.stores = [];
+        market.stalls = [];
         return market;
       })
       .makeMany(10);
@@ -327,13 +327,13 @@ export default class AppSeed implements Seeder {
         return stationState;
       })
       .makeMany(stations.length);
-    const stores = await factory(Store)()
-      .map(async (store) => {
-        store.marketTag = faker.helpers.arrayElement(marketsTags);
-        store.market = store.marketTag.market;
-        store.market.stores.push(store);
-        store.name = store.market.stores.length;
-        return store;
+    const stalls = await factory(Stall)()
+      .map(async (stall) => {
+        stall.marketTag = faker.helpers.arrayElement(marketsTags);
+        stall.market = stall.marketTag.market;
+        stall.market.stalls.push(stall);
+        stall.name = stall.market.stalls.length;
+        return stall;
       })
       .makeMany(40);
     const cells = await factory(Cell)()
@@ -355,23 +355,23 @@ export default class AppSeed implements Seeder {
       .makeMany(60);
     const rents = await factory(Rent)()
       .map(async (rent) => {
-        rent.store = faker.helpers.arrayElement(
-          stores.filter((store) => !store.reservedUntil),
+        rent.stall = faker.helpers.arrayElement(
+          stalls.filter((stall) => !stall.reservedUntil),
         );
-        rent.store.reservedUntil = getDateWeekAfter();
+        rent.stall.reservedUntil = getDateWeekAfter();
         rent.card = faker.helpers.arrayElement(
-          cards.filter((card) => card.balance >= rent.store.marketTag.price),
+          cards.filter((card) => card.balance >= rent.stall.marketTag.price),
         );
-        rent.sum = rent.store.marketTag.price;
+        rent.sum = rent.stall.marketTag.price;
         const payment = await factory(Payment)().make({
           senderCard: rent.card,
-          receiverCard: rent.store.market.card,
-          sum: rent.store.marketTag.price,
+          receiverCard: rent.stall.market.card,
+          sum: rent.stall.marketTag.price,
           description: '',
         });
         payments.push(payment);
-        rent.card.balance -= rent.store.marketTag.price;
-        rent.store.market.card.balance += rent.store.marketTag.price;
+        rent.card.balance -= rent.stall.marketTag.price;
+        rent.stall.market.card.balance += rent.stall.marketTag.price;
         return rent;
       })
       .makeMany(10);
@@ -755,9 +755,9 @@ export default class AppSeed implements Seeder {
       .map(async () => stationsStates[id++])
       .createMany(stationsStates.length);
     id = 0;
-    await factory(Store)()
-      .map(async () => stores[id++])
-      .createMany(stores.length);
+    await factory(Stall)()
+      .map(async () => stalls[id++])
+      .createMany(stalls.length);
     id = 0;
     await factory(Cell)()
       .map(async () => cells[id++])

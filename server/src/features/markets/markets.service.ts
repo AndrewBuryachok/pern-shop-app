@@ -49,14 +49,14 @@ export class MarketsService {
     return this.selectMarketsQueryBuilder()
       .innerJoin('market.card', 'ownerCard')
       .innerJoin('ownerCard.users', 'ownerUsers')
-      .loadRelationCountAndMap('market.stores', 'market.stores')
+      .loadRelationCountAndMap('market.stalls', 'market.stalls')
       .where('ownerUsers.id = :myId', { myId })
       .getMany();
   }
 
   selectAllMarkets(): Promise<Market[]> {
     return this.selectMarketsQueryBuilder()
-      .loadRelationCountAndMap('market.stores', 'market.stores')
+      .loadRelationCountAndMap('market.stalls', 'market.stalls')
       .getMany();
   }
 
@@ -171,7 +171,7 @@ export class MarketsService {
       .innerJoin('market.card', 'ownerCard')
       .innerJoin('ownerCard.user', 'ownerUser')
       .loadRelationCountAndMap('market.tags', 'market.tags')
-      .loadRelationCountAndMap('market.stores', 'market.stores')
+      .loadRelationCountAndMap('market.stalls', 'market.stalls')
       .where(
         new Brackets((qb) =>
           qb.where(`${!req.id}`).orWhere('market.id = :id', { id: req.id }),

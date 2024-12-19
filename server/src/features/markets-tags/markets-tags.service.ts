@@ -178,7 +178,7 @@ export class MarketsTagsService {
       .innerJoin('marketTag.market', 'market')
       .innerJoin('market.card', 'ownerCard')
       .innerJoin('ownerCard.user', 'ownerUser')
-      .loadRelationCountAndMap('marketTag.stores', 'marketTag.stores')
+      .loadRelationCountAndMap('marketTag.stalls', 'marketTag.stalls')
       .where(
         new Brackets((qb) =>
           qb.where(`${!req.id}`).orWhere('marketTag.id = :id', { id: req.id }),

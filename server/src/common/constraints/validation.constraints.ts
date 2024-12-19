@@ -23,7 +23,7 @@ import { StoragesService } from '../../features/storages/storages.service';
 import { StationsService } from '../../features/stations/stations.service';
 import { MarketsTagsService } from '../../features/markets-tags/markets-tags.service';
 import { StoragesTagsService } from '../../features/storages-tags/storages-tags.service';
-import { StoresService } from '../../features/stores/stores.service';
+import { StallsService } from '../../features/stalls/stalls.service';
 import { CellsService } from '../../features/cells/cells.service';
 import { DrawersService } from '../../features/drawers/drawers.service';
 import { RentsService } from '../../features/rents/rents.service';
@@ -425,13 +425,13 @@ export class IsStorageTagExists implements ValidatorConstraintInterface {
 }
 
 @Injectable()
-@ValidatorConstraint({ name: 'isStoreExists', async: true })
-export class IsStoreExists implements ValidatorConstraintInterface {
-  constructor(private storesService: StoresService) {}
+@ValidatorConstraint({ name: 'isStallExists', async: true })
+export class IsStallExists implements ValidatorConstraintInterface {
+  constructor(private stallsService: StallsService) {}
 
   async validate(value: number): Promise<boolean> {
     try {
-      await this.storesService.checkStoreExists(value);
+      await this.stallsService.checkStallExists(value);
     } catch (error) {
       return false;
     }
@@ -439,7 +439,7 @@ export class IsStoreExists implements ValidatorConstraintInterface {
   }
 
   defaultMessage(): string {
-    return 'Unknown store';
+    return 'Unknown stall';
   }
 }
 

@@ -1,16 +1,16 @@
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 import { Receipt } from '../receipts/receipt.entity';
-import { Store } from '../stores/store.entity';
+import { Stall } from '../stalls/stall.entity';
 import { Ware } from '../wares/ware.entity';
 
 @Entity('rents')
 export class Rent extends Receipt {
-  @Column({ name: 'store_id' })
-  storeId: number;
+  @Column({ name: 'stall_id' })
+  stallId: number;
 
-  @ManyToOne(() => Store, { nullable: false })
-  @JoinColumn({ name: 'store_id' })
-  store: Store;
+  @ManyToOne(() => Stall, { nullable: false })
+  @JoinColumn({ name: 'stall_id' })
+  stall: Stall;
 
   @OneToMany(() => Ware, (ware) => ware.rent)
   wares: Ware[];
