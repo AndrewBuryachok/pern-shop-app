@@ -33,23 +33,15 @@ export default function CustomHead(props: Props) {
         </Popover>
       </Group>
       <Group spacing={8}>
-        <Button
-          leftIcon={<IconRefresh size={16} />}
-          loading={props.isFetching}
-          loaderPosition='center'
-          onClick={props.refetch}
-          compact
-        >
-          {t('components.refresh')}
+        <Button loading={props.isFetching} onClick={props.refetch} compact>
+          <IconRefresh size={16} />
         </Button>
         <Button
-          leftIcon={<IconSearch size={16} />}
           loading={props.isFetching}
-          loaderPosition='center'
           onClick={() => openSearchModal(props)}
           compact
         >
-          {t('components.search')}
+          <IconSearch size={16} />
         </Button>
       </Group>
     </Group>

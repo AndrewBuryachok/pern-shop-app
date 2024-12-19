@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { Button, Group, Menu, Paper, Stack } from '@mantine/core';
+import { Button, Group, HoverCard, Paper, Stack } from '@mantine/core';
 import { useIntersection } from '@mantine/hooks';
 import { IconEye, IconThumbDown, IconThumbUp } from '@tabler/icons';
 import { IAction } from '../../common/interfaces';
@@ -17,6 +17,7 @@ import ViewReportLikesMenu from './ViewReportLikesMenu';
 import ViewReportCommentsModal from './ViewReportCommentsModal';
 import { openAuthModal } from '../auth/AuthModal';
 import { viewReportAction } from './ViewReportModal';
+import { openViewReportViewsModal } from './ViewReportViewsModal';
 
 type Props = {
   report: Report & {
@@ -69,18 +70,12 @@ export default function ReportPaper({ report, ...props }: Props) {
         {report.video && <CustomVideo video={report.video} />}
         <Group spacing={0} position='apart'>
           <Group spacing={8}>
-            <Menu
-              zIndex={100}
-              offset={4}
-              position='top-start'
-              trigger='hover'
-              withArrow
-            >
-              <Menu.Target>
+            <HoverCard zIndex={100} offset={4} position='top-start' withArrow>
+              <HoverCard.Target>
                 <Button
                   leftIcon={<IconThumbUp size={16} />}
-                  variant={report.upLiked ? 'filled' : 'light'}
-                  color={report.upLiked ? 'violet' : 'gray'}
+                  variant='light'
+                  color={report.upLiked ? 'green' : 'gray'}
                   loading={props.isLikedLoading}
                   onClick={() =>
                     user
@@ -94,23 +89,19 @@ export default function ReportPaper({ report, ...props }: Props) {
                 >
                   {report.upLikes}
                 </Button>
-              </Menu.Target>
-              <Menu.Dropdown>
-                <ViewReportLikesMenu data={report} type={true} />
-              </Menu.Dropdown>
-            </Menu>
-            <Menu
-              zIndex={100}
-              offset={4}
-              position='top-start'
-              trigger='hover'
-              withArrow
-            >
-              <Menu.Target>
+              </HoverCard.Target>
+              {!!report.upLikes && (
+                <HoverCard.Dropdown p={4}>
+                  <ViewReportLikesMenu data={report} type={true} />
+                </HoverCard.Dropdown>
+              )}
+            </HoverCard>
+            <HoverCard zIndex={100} offset={4} position='top-start' withArrow>
+              <HoverCard.Target>
                 <Button
                   leftIcon={<IconThumbDown size={16} />}
-                  variant={report.downLiked ? 'filled' : 'light'}
-                  color={report.downLiked ? 'violet' : 'gray'}
+                  variant='light'
+                  color={report.downLiked ? 'red' : 'gray'}
                   loading={props.isLikedLoading}
                   onClick={() =>
                     user
@@ -124,35 +115,34 @@ export default function ReportPaper({ report, ...props }: Props) {
                 >
                   {report.downLikes}
                 </Button>
-              </Menu.Target>
-              <Menu.Dropdown>
-                <ViewReportLikesMenu data={report} type={false} />
-              </Menu.Dropdown>
-            </Menu>
+              </HoverCard.Target>
+              {!!report.downLikes && (
+                <HoverCard.Dropdown p={4}>
+                  <ViewReportLikesMenu data={report} type={false} />
+                </HoverCard.Dropdown>
+              )}
+            </HoverCard>
           </Group>
-          <Menu
-            zIndex={100}
-            offset={4}
-            position='top-end'
-            trigger='hover'
-            withArrow
-          >
-            <Menu.Target>
+          <HoverCard zIndex={100} offset={4} position='top-end' withArrow>
+            <HoverCard.Target>
               <Button
                 ref={ref}
                 leftIcon={<IconEye size={16} />}
                 variant='light'
-                color='gray'
+                color={report.viewed ? 'blue' : 'gray'}
                 loading={props.isViewedLoading}
+                onClick={() => openViewReportViewsModal(report)}
                 compact
               >
                 {report.views}
               </Button>
-            </Menu.Target>
-            <Menu.Dropdown>
-              <ViewReportViewsMenu data={report} />
-            </Menu.Dropdown>
-          </Menu>
+            </HoverCard.Target>
+            {!!report.views && (
+              <HoverCard.Dropdown p={4}>
+                <ViewReportViewsMenu data={report} />
+              </HoverCard.Dropdown>
+            )}
+          </HoverCard>
         </Group>
         <ViewReportCommentsModal data={report} />
       </Stack>

@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
-import { Navigate, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { Navigate, useNavigate } from 'react-router-dom';
 import { Modal } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import AuthModal from '../../features/auth/AuthModal';
@@ -13,9 +13,9 @@ type Props = {
 };
 
 export default function Protected(props: Props) {
-  const navigate = useNavigate();
-
   const [t] = useTranslation();
+
+  const navigate = useNavigate();
 
   const [opened, { close }] = useDisclosure(true);
 

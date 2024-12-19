@@ -132,7 +132,7 @@ export default function CustomNavbar(props: Props) {
           p='md'
           hiddenBreakpoint='sm'
           hidden={!props.opened}
-          width={{ sm: 200, lg: 300 }}
+          width={{ sm: 200 }}
           withBorder={false}
         >
           <Navbar.Section component={ScrollArea} grow>

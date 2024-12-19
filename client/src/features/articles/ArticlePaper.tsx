@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Group, Menu, Paper, Stack } from '@mantine/core';
+import { Button, Group, HoverCard, Paper, Stack } from '@mantine/core';
 import { useIntersection } from '@mantine/hooks';
 import { IconEye, IconThumbDown, IconThumbUp } from '@tabler/icons';
 import { IAction } from '../../common/interfaces';
@@ -23,6 +23,7 @@ import ViewArticleLikesMenu from './ViewArticleLikesMenu';
 import ViewArticleCommentsModal from './ViewArticleCommentsModal';
 import { openAuthModal } from '../auth/AuthModal';
 import { viewArticleAction } from './ViewArticleModal';
+import { openViewArticleViewsModal } from './ViewArticleViewsModal';
 
 type Props = {
   article: Article & {
@@ -81,7 +82,7 @@ export default function ArticlePaper({ article, ...props }: Props) {
           <Group spacing={8}>
             <AvatarWithDateText {...article} />
             <Button
-              color={article.subscribed ? 'gray' : 'violet'}
+              color={article.subscribed ? 'gray' : undefined}
               loading={props.isSubscribersLoading}
               loaderPosition='center'
               onClick={() =>
@@ -110,18 +111,12 @@ export default function ArticlePaper({ article, ...props }: Props) {
         {article.video && <CustomVideo video={article.video} />}
         <Group spacing={0} position='apart'>
           <Group spacing={8}>
-            <Menu
-              zIndex={100}
-              offset={4}
-              position='top-start'
-              trigger='hover'
-              withArrow
-            >
-              <Menu.Target>
+            <HoverCard zIndex={100} offset={4} position='top-start' withArrow>
+              <HoverCard.Target>
                 <Button
                   leftIcon={<IconThumbUp size={16} />}
-                  variant={article.upLiked ? 'filled' : 'light'}
-                  color={article.upLiked ? 'violet' : 'gray'}
+                  variant='light'
+                  color={article.upLiked ? 'green' : 'gray'}
                   loading={props.isLikedLoading}
                   onClick={() =>
                     user
@@ -132,23 +127,19 @@ export default function ArticlePaper({ article, ...props }: Props) {
                 >
                   {article.upLikes}
                 </Button>
-              </Menu.Target>
-              <Menu.Dropdown>
-                <ViewArticleLikesMenu data={article} type={true} />
-              </Menu.Dropdown>
-            </Menu>
-            <Menu
-              zIndex={100}
-              offset={4}
-              position='top-start'
-              trigger='hover'
-              withArrow
-            >
-              <Menu.Target>
+              </HoverCard.Target>
+              {!!article.upLikes && (
+                <HoverCard.Dropdown p={4}>
+                  <ViewArticleLikesMenu data={article} type={true} />
+                </HoverCard.Dropdown>
+              )}
+            </HoverCard>
+            <HoverCard zIndex={100} offset={4} position='top-start' withArrow>
+              <HoverCard.Target>
                 <Button
                   leftIcon={<IconThumbDown size={16} />}
-                  variant={article.downLiked ? 'filled' : 'light'}
-                  color={article.downLiked ? 'violet' : 'gray'}
+                  variant='light'
+                  color={article.downLiked ? 'red' : 'gray'}
                   loading={props.isLikedLoading}
                   onClick={() =>
                     user
@@ -159,35 +150,34 @@ export default function ArticlePaper({ article, ...props }: Props) {
                 >
                   {article.downLikes}
                 </Button>
-              </Menu.Target>
-              <Menu.Dropdown>
-                <ViewArticleLikesMenu data={article} type={false} />
-              </Menu.Dropdown>
-            </Menu>
+              </HoverCard.Target>
+              {!!article.downLikes && (
+                <HoverCard.Dropdown p={4}>
+                  <ViewArticleLikesMenu data={article} type={false} />
+                </HoverCard.Dropdown>
+              )}
+            </HoverCard>
           </Group>
-          <Menu
-            zIndex={100}
-            offset={4}
-            position='top-end'
-            trigger='hover'
-            withArrow
-          >
-            <Menu.Target>
+          <HoverCard zIndex={100} offset={4} position='top-end' withArrow>
+            <HoverCard.Target>
               <Button
                 ref={ref}
                 leftIcon={<IconEye size={16} />}
                 variant='light'
-                color='gray'
+                color={article.viewed ? 'blue' : 'gray'}
                 loading={props.isViewedLoading}
+                onClick={() => openViewArticleViewsModal(article)}
                 compact
               >
                 {article.views}
               </Button>
-            </Menu.Target>
-            <Menu.Dropdown>
-              <ViewArticleViewsMenu data={article} />
-            </Menu.Dropdown>
-          </Menu>
+            </HoverCard.Target>
+            {!!article.views && (
+              <HoverCard.Dropdown p={4}>
+                <ViewArticleViewsMenu data={article} />
+              </HoverCard.Dropdown>
+            )}
+          </HoverCard>
         </Group>
         <ViewArticleCommentsModal data={article} />
       </Stack>

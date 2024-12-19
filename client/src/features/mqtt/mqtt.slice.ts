@@ -1,7 +1,7 @@
 import { connect } from 'mqtt/dist/mqtt.min';
 import { t } from 'i18next';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { showNotification } from '@mantine/notifications';
+import { hideNotification, showNotification } from '@mantine/notifications';
 import { store } from '../../app/store';
 import { useAppSelector } from '../../app/hooks';
 import { handleEvent } from './events.handler';
@@ -53,6 +53,7 @@ client.on('message', (topic, message) => {
         }
       } else {
         store.dispatch(removeNotification(notification));
+        hideNotification(notification);
       }
       break;
     case 'events':

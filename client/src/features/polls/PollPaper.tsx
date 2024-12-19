@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { Button, Group, Menu, Paper, Stack } from '@mantine/core';
+import { Button, Group, HoverCard, Paper, Stack } from '@mantine/core';
 import { useIntersection } from '@mantine/hooks';
 import { IconEye, IconThumbDown, IconThumbUp } from '@tabler/icons';
 import { IAction } from '../../common/interfaces';
@@ -19,6 +19,7 @@ import ViewPollLikesMenu from './ViewPollLikesMenu';
 import ViewPollCommentsModal from './ViewPollCommentsModal';
 import { openAuthModal } from '../auth/AuthModal';
 import { viewPollAction } from './ViewPollModal';
+import { openViewPollViewsModal } from './ViewPollViewsModal';
 
 type Props = {
   poll: Poll & {
@@ -73,18 +74,12 @@ export default function PollPaper({ poll, ...props }: Props) {
         {poll.video && <CustomVideo video={poll.video} />}
         <Group spacing={0} position='apart'>
           <Group spacing={8}>
-            <Menu
-              zIndex={100}
-              offset={4}
-              position='top-start'
-              trigger='hover'
-              withArrow
-            >
-              <Menu.Target>
+            <HoverCard zIndex={100} offset={4} position='top-start' withArrow>
+              <HoverCard.Target>
                 <Button
                   leftIcon={<IconThumbUp size={16} />}
-                  variant={poll.upLiked ? 'filled' : 'light'}
-                  color={poll.upLiked ? 'violet' : 'gray'}
+                  variant='light'
+                  color={poll.upLiked ? 'green' : 'gray'}
                   loading={props.isLikedLoading}
                   onClick={() =>
                     user
@@ -95,23 +90,19 @@ export default function PollPaper({ poll, ...props }: Props) {
                 >
                   {poll.upLikes}
                 </Button>
-              </Menu.Target>
-              <Menu.Dropdown>
-                <ViewPollLikesMenu data={poll} type={true} />
-              </Menu.Dropdown>
-            </Menu>
-            <Menu
-              zIndex={100}
-              offset={4}
-              position='top-start'
-              trigger='hover'
-              withArrow
-            >
-              <Menu.Target>
+              </HoverCard.Target>
+              {!!poll.upLikes && (
+                <HoverCard.Dropdown p={4}>
+                  <ViewPollLikesMenu data={poll} type={true} />
+                </HoverCard.Dropdown>
+              )}
+            </HoverCard>
+            <HoverCard zIndex={100} offset={4} position='top-start' withArrow>
+              <HoverCard.Target>
                 <Button
                   leftIcon={<IconThumbDown size={16} />}
-                  variant={poll.downLiked ? 'filled' : 'light'}
-                  color={poll.downLiked ? 'violet' : 'gray'}
+                  variant='light'
+                  color={poll.downLiked ? 'red' : 'gray'}
                   loading={props.isLikedLoading}
                   onClick={() =>
                     user
@@ -122,35 +113,34 @@ export default function PollPaper({ poll, ...props }: Props) {
                 >
                   {poll.downLikes}
                 </Button>
-              </Menu.Target>
-              <Menu.Dropdown>
-                <ViewPollLikesMenu data={poll} type={false} />
-              </Menu.Dropdown>
-            </Menu>
+              </HoverCard.Target>
+              {!!poll.downLikes && (
+                <HoverCard.Dropdown p={4}>
+                  <ViewPollLikesMenu data={poll} type={false} />
+                </HoverCard.Dropdown>
+              )}
+            </HoverCard>
           </Group>
-          <Menu
-            zIndex={100}
-            offset={4}
-            position='top-end'
-            trigger='hover'
-            withArrow
-          >
-            <Menu.Target>
+          <HoverCard zIndex={100} offset={4} position='top-end' withArrow>
+            <HoverCard.Target>
               <Button
                 ref={ref}
                 leftIcon={<IconEye size={16} />}
                 variant='light'
-                color='gray'
+                color={poll.viewed ? 'blue' : 'gray'}
                 loading={props.isViewedLoading}
+                onClick={() => openViewPollViewsModal(poll)}
                 compact
               >
                 {poll.views}
               </Button>
-            </Menu.Target>
-            <Menu.Dropdown>
-              <ViewPollViewsMenu data={poll} />
-            </Menu.Dropdown>
-          </Menu>
+            </HoverCard.Target>
+            {!!poll.views && (
+              <HoverCard.Dropdown p={4}>
+                <ViewPollViewsMenu data={poll} />
+              </HoverCard.Dropdown>
+            )}
+          </HoverCard>
         </Group>
         <ViewPollCommentsModal data={poll} />
       </Stack>

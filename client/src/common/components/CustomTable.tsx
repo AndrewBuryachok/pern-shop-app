@@ -10,7 +10,7 @@ export default function CustomTable<T>(props: Props<T>) {
   const [t] = useTranslation();
 
   return (
-    <CustomPage {...props}>
+    <CustomPage size='lg' {...props}>
       <Paper component={ScrollArea}>
         <Table
           miw={props.minWidth}

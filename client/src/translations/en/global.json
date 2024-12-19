@@ -188,7 +188,6 @@
   },
   "components": {
     "submit": "Submit",
-    "refresh": "Refresh",
     "search": "Search",
     "new": "New",
     "pagination": {

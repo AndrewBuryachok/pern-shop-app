@@ -6,13 +6,13 @@ import CustomStats from './CustomStats';
 import CustomHead from './CustomHead';
 import CustomPagination from './CustomPagination';
 
-type Props<T> = IPage<T>;
+type Props<T> = IPage<T> & { size: 'sm' | 'lg' };
 
 export default function CustomPage<T>(props: Props<T>) {
   const active = useLocation().pathname.split('/');
 
   return (
-    <Container size='md' px={0}>
+    <Container size={props.size} px={0}>
       <Stack spacing={8}>
         <CustomNav {...props} />
         {['goods', 'wares', 'products'].includes(active[1]) &&

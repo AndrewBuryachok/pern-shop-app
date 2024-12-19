@@ -31,7 +31,7 @@ export default function CustomNav(props: Props) {
           key={link.path}
           component={Link}
           to={`/${active[1]}/${link.path}`.replace('/main', '')}
-          color={link.path === tab ? 'violet' : 'gray'}
+          color={link.path === tab ? undefined : 'gray'}
           disabled={
             link.path !== 'main' &&
             !tabs.includes(link.path!) &&
@@ -44,10 +44,9 @@ export default function CustomNav(props: Props) {
       ))}
       {props.button && (
         <Button
-          key={props.button.label}
-          onClick={props.button.open}
           leftIcon={<IconPlus size={16} />}
           color='green'
+          onClick={props.button.open}
           disabled={notHasRole}
           compact
         >

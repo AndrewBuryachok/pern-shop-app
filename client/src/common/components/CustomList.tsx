@@ -6,7 +6,7 @@ type Props<T> = IPage<T>;
 
 export default function CustomList<T>(props: Props<T>) {
   return (
-    <CustomPage {...props}>
+    <CustomPage size='sm' {...props}>
       {props.isFetching
         ? [...Array(10).keys()].map((key) => (
             <Paper key={key} p='md'>

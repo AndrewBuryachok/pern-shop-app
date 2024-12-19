@@ -33,7 +33,7 @@ export default function CustomAside(props: Props) {
           p='md'
           hiddenBreakpoint='sm'
           hidden={!props.opened}
-          width={{ sm: 200, lg: 300 }}
+          width={{ sm: 200 }}
           withBorder={false}
         >
           <Aside.Section component={ScrollArea} grow>

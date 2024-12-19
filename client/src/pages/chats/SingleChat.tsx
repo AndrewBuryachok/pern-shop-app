@@ -53,12 +53,6 @@ export default function SingleChat() {
 
   const { data: user } = useSelectSingleUserQuery(nick!);
 
-  useEffect(() => {
-    if (user) {
-      form.setFieldValue('userId', user.id);
-    }
-  }, [user]);
-
   const response = useSelectUserMessagesQuery(user?.id || 0, { skip: !user });
 
   useEffect(() => {
@@ -74,8 +68,8 @@ export default function SingleChat() {
   const [createMessage, { isLoading }] = useCreateMessageMutation();
 
   const handleSubmit = async (dto: CreateMessageDto) => {
-    await createMessage(dto);
-    form.setFieldValue('text', '');
+    await createMessage({ ...dto, userId: user?.id || 0 });
+    form.reset();
   };
 
   return (
@@ -91,7 +85,6 @@ export default function SingleChat() {
               size={24}
               loading={response.isFetching}
               onClick={response.refetch}
-              disabled={response.isFetching}
             >
               <IconRefresh size={16} />
             </ActionIcon>

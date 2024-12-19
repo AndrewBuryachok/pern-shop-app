@@ -8,8 +8,6 @@ import {
 } from '@mantine/core';
 import {
   useDisclosure,
-  useFullscreen,
-  useHotkeys,
   useInterval,
   useLocalStorage,
   useMediaQuery,
@@ -19,12 +17,10 @@ import { ModalsProvider } from '@mantine/modals';
 import { NotificationsProvider } from '@mantine/notifications';
 import { useAppDispatch } from './app/hooks';
 import { getCurrentUser } from './features/auth/auth.slice';
-import { toggleCurrentLanguage } from './features/lang/lang.slice';
 import {
   publishOffline,
   publishOnline,
   subscribe,
-  toggleMute,
   unsubscribe,
 } from './features/mqtt/mqtt.slice';
 import CustomHeader from './common/components/CustomHeader';
@@ -32,7 +28,6 @@ import CustomNavbar from './common/components/CustomNavbar';
 import CustomAside from './common/components/CustomAside';
 import CustomLoader from './common/components/CustomLoader';
 import Protected from './common/components/Protected';
-import CustomAffix from './common/components/CustomAffix';
 import { pages, tabs } from './app/pages';
 
 export default function App() {
@@ -81,15 +76,6 @@ export default function App() {
   const toggleColorScheme = (value?: ColorScheme) =>
     setColorScheme(value || (colorScheme === 'dark' ? 'light' : 'dark'));
 
-  const { toggle: toggleFullscreen } = useFullscreen();
-
-  useHotkeys([
-    ['J', () => toggleColorScheme()],
-    ['F', () => toggleFullscreen()],
-    ['L', () => dispatch(toggleCurrentLanguage())],
-    ['M', () => dispatch(toggleMute())],
-  ]);
-
   const matches = useMediaQuery('(min-width: 768px)');
 
   const [openedN, { toggle: toggleN, open: openN, close: closeN }] =
@@ -118,7 +104,7 @@ export default function App() {
         withNormalizeCSS
       >
         <ModalsProvider>
-          <NotificationsProvider>
+          <NotificationsProvider limit={1}>
             <AppShell
               styles={(theme) => ({
                 main: {
@@ -172,7 +158,6 @@ export default function App() {
                 </Routes>
               </Suspense>
             </AppShell>
-            <CustomAffix />
           </NotificationsProvider>
         </ModalsProvider>
       </MantineProvider>

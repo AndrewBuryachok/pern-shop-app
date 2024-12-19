@@ -1,11 +1,5 @@
-import { ActionIcon, Group, Menu } from '@mantine/core';
-import {
-  IconDots,
-  IconEye,
-  IconMinus,
-  IconPencil,
-  IconPlus,
-} from '@tabler/icons';
+import { ActionIcon, Group } from '@mantine/core';
+import { IconEye, IconMinus, IconPencil, IconPlus } from '@tabler/icons';
 import { IAction, IModal } from '../interfaces';
 import { getCurrentUser } from '../../features/auth/auth.slice';
 import { openAuthModal } from '../../features/auth/AuthModal';
@@ -52,28 +46,19 @@ export default function CustomActions<T>(props: Props<T>) {
   );
 
   return (
-    <Menu zIndex={100} offset={4} position='left' trigger='hover'>
-      <Menu.Target>
-        <ActionIcon size={24}>
-          <IconDots size={16} />
+    <Group spacing={0}>
+      {sorted.map((action) => (
+        <ActionIcon
+          key={action.color}
+          size={24}
+          variant='transparent'
+          color={colors[action.color - 1]}
+          onClick={() => action.open(props.data)}
+          disabled={action.disabled}
+        >
+          {icons[action.color - 1]}
         </ActionIcon>
-      </Menu.Target>
-      <Menu.Dropdown>
-        <Group spacing={4}>
-          {sorted.map((action) => (
-            <ActionIcon
-              key={action.color}
-              size={24}
-              variant='filled'
-              color={colors[action.color - 1]}
-              onClick={() => action.open(props.data)}
-              disabled={action.disabled}
-            >
-              {icons[action.color - 1]}
-            </ActionIcon>
-          ))}
-        </Group>
-      </Menu.Dropdown>
-    </Menu>
+      ))}
+    </Group>
   );
 }

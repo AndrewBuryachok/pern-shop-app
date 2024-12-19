@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { ActionIcon, Kbd, Menu, useMantineColorScheme } from '@mantine/core';
+import { ActionIcon, Menu, useMantineColorScheme } from '@mantine/core';
 import { useFullscreen } from '@mantine/hooks';
 import {
   IconArrowsMaximize,
@@ -36,14 +36,12 @@ export default function SettingsMenu() {
         <Menu.Label>{t('header.menu.settings.title')}</Menu.Label>
         <Menu.Item
           icon={<IconWorld size={16} />}
-          rightSection={<Kbd>L</Kbd>}
           onClick={() => dispatch(toggleCurrentLanguage())}
         >
           {t('header.menu.settings.language')}
         </Menu.Item>
         <Menu.Item
           icon={dark ? <IconSun size={16} /> : <IconMoon size={16} />}
-          rightSection={<Kbd>J</Kbd>}
           onClick={() => toggleColorScheme()}
         >
           {dark
@@ -58,7 +56,6 @@ export default function SettingsMenu() {
               <IconArrowsMaximize size={16} />
             )
           }
-          rightSection={<Kbd>F</Kbd>}
           onClick={() => toggleFullscreen()}
         >
           {fullscreen
@@ -67,7 +64,6 @@ export default function SettingsMenu() {
         </Menu.Item>
         <Menu.Item
           icon={mute ? <IconVolume size={16} /> : <IconVolumeOff size={16} />}
-          rightSection={<Kbd>M</Kbd>}
           onClick={() => dispatch(toggleMute())}
         >
           {mute

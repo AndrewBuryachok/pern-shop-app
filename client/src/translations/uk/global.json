@@ -188,7 +188,6 @@
   },
   "components": {
     "submit": "Підтвердити",
-    "refresh": "Оновити",
     "search": "Пошук",
     "new": "Нові",
     "pagination": {

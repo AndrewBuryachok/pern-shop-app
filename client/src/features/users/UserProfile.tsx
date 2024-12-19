@@ -152,9 +152,9 @@ export default function UserProfile({ data: user }: Props) {
                   {({ copy }) => (
                     <Button
                       leftIcon={<IconBrandDiscord size={16} />}
-                      onClick={copy}
                       variant='light'
                       color='gray'
+                      onClick={copy}
                       compact
                     >
                       {user.discord}
@@ -167,10 +167,10 @@ export default function UserProfile({ data: user }: Props) {
                   contact.label && (
                     <Button
                       key={index}
-                      leftIcon={<contact.icon size={16} />}
                       component='a'
                       href={contact.href}
                       target='_blank'
+                      leftIcon={<contact.icon size={16} />}
                       variant='light'
                       color='gray'
                       compact
