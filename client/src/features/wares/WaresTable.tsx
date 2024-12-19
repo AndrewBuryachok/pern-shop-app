@@ -44,8 +44,8 @@ export default function WaresTable({ actions = [], ...props }: Props) {
           </td>
           <td>
             <PlaceWithDoubleAvatar
-              {...ware.rent.store.market}
-              container={ware.rent.store.name}
+              {...ware.rent.stall.market}
+              container={ware.rent.stall.name}
             />
           </td>
           <td>

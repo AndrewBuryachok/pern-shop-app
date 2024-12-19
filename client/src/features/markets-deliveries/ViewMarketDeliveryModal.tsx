@@ -11,7 +11,7 @@ import {
   parseDrawer,
   parseItem,
   parseStatus,
-  parseStore,
+  parseStall,
   parseTime,
   parseTradeAmount,
 } from '../../common/utils';
@@ -78,18 +78,18 @@ export default function ViewMarketDeliveryModal({
       />
       <TextInput
         label={t('columns.fromMarket')}
-        value={parseStore(marketDelivery.trade.ware.rent.store)}
+        value={parseStall(marketDelivery.trade.ware.rent.stall)}
         readOnly
       />
       <TextInput
         label={t('columns.owner')}
         icon={
           <CustomAvatar
-            {...marketDelivery.trade.ware.rent.store.market.card.user}
+            {...marketDelivery.trade.ware.rent.stall.market.card.user}
           />
         }
         iconWidth={48}
-        value={parseCard(marketDelivery.trade.ware.rent.store.market.card)}
+        value={parseCard(marketDelivery.trade.ware.rent.stall.market.card)}
         readOnly
       />
       <TextInput

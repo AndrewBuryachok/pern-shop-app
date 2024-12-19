@@ -7,7 +7,7 @@ import { ExtPlace } from './place.model';
 import { useSelectTownUsersQuery } from '../towns/towns.api';
 import { useSelectFarmUsersQuery } from '../farms/farms.api';
 import { useSelectShopGoodsQuery } from '../shops/shops.api';
-import { useSelectMarketStoresQuery } from '../stores/stores.api';
+import { useSelectMarketStallsQuery } from '../stalls/stalls.api';
 import { useSelectStorageCellsQuery } from '../cells/cells.api';
 import { useSelectStationDrawersQuery } from '../drawers/drawers.api';
 import RefetchAction from '../../common/components/RefetchAction';
@@ -47,7 +47,7 @@ export default function PlaceModal({ data: place }: Props) {
   const { data: goods, ...goodsResponse } = useSelectShopGoodsQuery(place.id, {
     skip: place.type !== 2,
   });
-  const { data: stores, ...storesResponse } = useSelectMarketStoresQuery(
+  const { data: stalls, ...stallsResponse } = useSelectMarketStallsQuery(
     place.id,
     { skip: place.type !== 3 },
   );
@@ -135,11 +135,11 @@ export default function PlaceModal({ data: place }: Props) {
       )}
       {place.type === 3 && (
         <Select
-          label={t('columns.stores')}
-          placeholder={`${t('components.total')}: ${stores?.length || 0}`}
-          rightSection={<RefetchAction {...storesResponse} />}
+          label={t('columns.stalls')}
+          placeholder={`${t('components.total')}: ${stalls?.length || 0}`}
+          rightSection={<RefetchAction {...stallsResponse} />}
           itemComponent={component}
-          data={viewContainers(stores || [])}
+          data={viewContainers(stalls || [])}
           limit={20}
           searchable
         />

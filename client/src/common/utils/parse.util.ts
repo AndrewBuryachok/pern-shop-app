@@ -1,7 +1,7 @@
 import { t } from 'i18next';
 import { MdCard } from '../../features/cards/card.model';
 import { SmPlace } from '../../features/places/place.model';
-import { MdStore } from '../../features/stores/store.model';
+import { MdStall } from '../../features/stalls/stall.model';
 import { MdCell } from '../../features/cells/cell.model';
 import { MdDrawer } from '../../features/drawers/drawer.model';
 import { SmBargainWithoutPrice } from '../../features/bargains/bargain.model';
@@ -39,8 +39,8 @@ export const parseCard = (card: MdCard) => `${card.user.nick} - ${card.name}`;
 export const parsePlace = (place: SmPlace) =>
   `${place.name} (${place.x} ${place.y})`;
 
-export const parseStore = (store: MdStore) =>
-  `${parsePlace(store.market)} #${store.name}`;
+export const parseStall = (stall: MdStall) =>
+  `${parsePlace(stall.market)} #${stall.name}`;
 
 export const parseCell = (cell: MdCell) =>
   `${parsePlace(cell.storage)} #${cell.name}`;

@@ -6,9 +6,9 @@ export interface MdMarket extends SmPlaceWithCard {}
 
 export interface Market extends PlaceWithCard {
   tags: number;
-  stores: number;
+  stalls: number;
 }
 
 export interface MyMarket extends SmMarket {
-  stores: number;
+  stalls: number;
 }

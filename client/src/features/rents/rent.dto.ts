@@ -1,5 +1,5 @@
 export interface CreateRentDto {
-  storeId: number;
+  stallId: number;
   cardId: number;
 }
 

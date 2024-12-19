@@ -1,20 +1,20 @@
 import { MdReceipt, Receipt, SmReceipt } from '../receipts/receipt.model';
-import { LgStore, MdStore } from '../stores/store.model';
+import { LgStall, MdStall } from '../stalls/stall.model';
 
 export interface SmRent extends SmReceipt {
-  store: LgStore;
+  stall: LgStall;
 }
 
 export interface MdRent extends MdReceipt {
-  store: LgStore;
+  stall: LgStall;
 }
 
 export interface Rent extends Receipt {
-  store: LgStore;
+  stall: LgStall;
   things: number;
 }
 
 export interface SelectRent {
   id: number;
-  store: MdStore;
+  stall: MdStall;
 }

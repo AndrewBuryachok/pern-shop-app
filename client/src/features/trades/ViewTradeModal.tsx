@@ -9,7 +9,7 @@ import ThingImage from '../../common/components/ThingImage';
 import {
   parseCard,
   parseItem,
-  parseStore,
+  parseStall,
   parseTime,
   parseTradeAmount,
 } from '../../common/utils';
@@ -61,14 +61,14 @@ export default function ViewTradeModal({ data: trade }: Props) {
       />
       <TextInput
         label={t('columns.market')}
-        value={parseStore(trade.ware.rent.store)}
+        value={parseStall(trade.ware.rent.stall)}
         readOnly
       />
       <TextInput
         label={t('columns.owner')}
-        icon={<CustomAvatar {...trade.ware.rent.store.market.card.user} />}
+        icon={<CustomAvatar {...trade.ware.rent.stall.market.card.user} />}
         iconWidth={48}
-        value={parseCard(trade.ware.rent.store.market.card)}
+        value={parseCard(trade.ware.rent.stall.market.card)}
         readOnly
       />
       <TextInput

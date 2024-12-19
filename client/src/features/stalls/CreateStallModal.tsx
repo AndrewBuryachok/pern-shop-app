@@ -4,13 +4,13 @@ import { useTranslation } from 'react-i18next';
 import { Select, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
-import { useCreateStoreMutation } from './stores.api';
+import { useCreateStallMutation } from './stalls.api';
 import {
   useSelectAllMarketsQuery,
   useSelectMyMarketsQuery,
 } from '../markets/markets.api';
 import { useSelectMarketTagsQuery } from '../markets-tags/markets-tags.api';
-import { CreateStoreDto } from './store.dto';
+import { CreateStallDto } from './stall.dto';
 import CustomForm from '../../common/components/CustomForm';
 import RefetchAction from '../../common/components/RefetchAction';
 import { PlacesItem } from '../../common/components/PlacesItem';
@@ -18,7 +18,7 @@ import { selectMarkets, selectTags } from '../../common/utils';
 
 type Props = { hasRole: boolean };
 
-export default function CreateStoreModal({ hasRole }: Props) {
+export default function CreateStallModal({ hasRole }: Props) {
   const [t] = useTranslation();
 
   const form = useForm({
@@ -41,21 +41,21 @@ export default function CreateStoreModal({ hasRole }: Props) {
   const market = markets?.find((market) => market.id === +form.values.market);
 
   useEffect(
-    () => form.setFieldValue('name', market ? `#${market.stores + 1}` : '-'),
+    () => form.setFieldValue('name', market ? `#${market.stalls + 1}` : '-'),
     [form.values.market],
   );
 
-  const [createStore, { isLoading }] = useCreateStoreMutation();
+  const [createStall, { isLoading }] = useCreateStallMutation();
 
-  const handleSubmit = async (dto: CreateStoreDto) => {
-    await createStore(dto);
+  const handleSubmit = async (dto: CreateStallDto) => {
+    await createStall(dto);
   };
 
   return (
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={t('actions.create') + ' ' + t('modals.stores')}
+      text={t('actions.create') + ' ' + t('modals.stalls')}
     >
       <Select
         label={t('columns.market')}
@@ -91,15 +91,15 @@ export default function CreateStoreModal({ hasRole }: Props) {
   );
 }
 
-export const createStoreFactory = (hasRole: boolean) => ({
+export const createStallFactory = (hasRole: boolean) => ({
   label: 'create',
   open: () =>
     openModal({
-      title: t('actions.create') + ' ' + t('modals.stores'),
-      children: <CreateStoreModal hasRole={hasRole} />,
+      title: t('actions.create') + ' ' + t('modals.stalls'),
+      children: <CreateStallModal hasRole={hasRole} />,
     }),
 });
 
-export const createMyStoreButton = createStoreFactory(false);
+export const createMyStallButton = createStallFactory(false);
 
-export const createUserStoreButton = createStoreFactory(true);
+export const createUserStallButton = createStallFactory(true);

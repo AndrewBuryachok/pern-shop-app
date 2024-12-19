@@ -16,7 +16,7 @@ export interface ISearch {
   station?: string | null;
   marketTag?: string | null;
   storageTag?: string | null;
-  store?: string | null;
+  stall?: string | null;
   cell?: string | null;
   drawer?: string | null;
   item?: string | null;

@@ -125,10 +125,10 @@ export const selectContainers = (containers?: Container[]) =>
 
 export const selectRents = (rents?: SelectRent[]) =>
   rents?.map((rent) => ({
-    ...rent.store.market,
-    container: rent.store.name,
+    ...rent.stall.market,
+    container: rent.stall.name,
     value: `${rent.id}`,
-    label: `${parsePlace(rent.store.market)} #${rent.store.name}`,
+    label: `${parsePlace(rent.stall.market)} #${rent.stall.name}`,
   })) || [];
 
 export const selectLeases = (leases?: SelectLease[]) =>

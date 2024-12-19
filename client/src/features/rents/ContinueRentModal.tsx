@@ -6,7 +6,7 @@ import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { Rent } from './rent.model';
 import { useContinueRentMutation } from './rents.api';
-import { useSelectStoreTagQuery } from '../stores/stores.api';
+import { useSelectStallTagQuery } from '../stalls/stalls.api';
 import {
   useSelectMyCardsQuery,
   useSelectUserCardsWithBalanceQuery,
@@ -17,7 +17,7 @@ import RefetchAction from '../../common/components/RefetchAction';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import {
   parseCard,
-  parseStore,
+  parseStall,
   selectCardsWithBalance,
 } from '../../common/utils';
 import { Color } from '../../common/constants';
@@ -29,7 +29,7 @@ export default function ContinueRentModal({ data: rent, hasRole }: Props) {
 
   const myCard = { balance: 0 };
 
-  const { data: tag, ...tagResponse } = useSelectStoreTagQuery(rent.store.id);
+  const { data: tag, ...tagResponse } = useSelectStallTagQuery(rent.stall.id);
 
   const form = useForm({
     initialValues: {
@@ -73,14 +73,14 @@ export default function ContinueRentModal({ data: rent, hasRole }: Props) {
       />
       <TextInput
         label={t('columns.owner')}
-        icon={<CustomAvatar {...rent.store.market.card.user} />}
+        icon={<CustomAvatar {...rent.stall.market.card.user} />}
         iconWidth={48}
-        value={parseCard(rent.store.market.card)}
+        value={parseCard(rent.stall.market.card)}
         readOnly
       />
       <TextInput
         label={t('columns.market')}
-        value={parseStore(rent.store)}
+        value={parseStall(rent.stall)}
         readOnly
       />
       <TextInput

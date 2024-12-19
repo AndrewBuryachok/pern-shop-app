@@ -48,8 +48,8 @@ export default function DeliveriesTable({ actions = [], ...props }: Props) {
           </td>
           <td>
             <PlaceWithDoubleAvatar
-              {...marketDelivery.trade.ware.rent.store.market}
-              container={marketDelivery.trade.ware.rent.store.name}
+              {...marketDelivery.trade.ware.rent.stall.market}
+              container={marketDelivery.trade.ware.rent.stall.name}
             />
           </td>
           <td>

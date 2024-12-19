@@ -1,20 +1,20 @@
 import { useLocation, useSearchParams } from 'react-router-dom';
 import {
-  useGetAllStoresQuery,
-  useGetMainStoresQuery,
-  useGetMyStoresQuery,
-} from '../../features/stores/stores.api';
-import StoresTable from '../../features/stores/StoresTable';
+  useGetAllStallsQuery,
+  useGetMainStallsQuery,
+  useGetMyStallsQuery,
+} from '../../features/stalls/stalls.api';
+import StallsTable from '../../features/stalls/StallsTable';
 import {
-  createMyStoreButton,
-  createUserStoreButton,
-} from '../../features/stores/CreateStoreModal';
+  createMyStallButton,
+  createUserStallButton,
+} from '../../features/stalls/CreateStallModal';
 import {
-  reserveMyStoreAction,
-  reserveUserStoreAction,
-} from '../../features/stores/ReserveStoreModal';
+  reserveMyStallAction,
+  reserveUserStallAction,
+} from '../../features/stalls/ReserveStallModal';
 
-export default function StoresPage() {
+export default function StallsPage() {
   const tab = useLocation().pathname.split('/')[2] || 'main';
 
   const [searchParams] = useSearchParams();
@@ -26,31 +26,31 @@ export default function StoresPage() {
     card: searchParams.get('card'),
     market: searchParams.get('market'),
     marketTag: searchParams.get('marketTag'),
-    store: searchParams.get('store'),
+    stall: searchParams.get('stall'),
     minPrice: +(searchParams.get('minPrice') || 0) || null,
     maxPrice: +(searchParams.get('maxPrice') || 0) || null,
     completed: searchParams.get('completed'),
   };
 
   const response = {
-    main: useGetMainStoresQuery,
-    my: useGetMyStoresQuery,
-    all: useGetAllStoresQuery,
+    main: useGetMainStallsQuery,
+    my: useGetMyStallsQuery,
+    all: useGetAllStallsQuery,
   }[tab]!(search);
 
   const button = {
-    main: createMyStoreButton,
-    my: createMyStoreButton,
-    all: createUserStoreButton,
+    main: createMyStallButton,
+    my: createMyStallButton,
+    all: createUserStallButton,
   }[tab];
 
   const actions = {
-    main: [reserveMyStoreAction],
-    all: [reserveUserStoreAction],
+    main: [reserveMyStallAction],
+    all: [reserveUserStallAction],
   }[tab];
 
   return (
-    <StoresTable
+    <StallsTable
       {...response}
       search={search}
       button={button}

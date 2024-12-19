@@ -52,8 +52,8 @@ export default function TradesTable({ actions = [], ...props }: Props) {
           </td>
           <td>
             <PlaceWithDoubleAvatar
-              {...trade.ware.rent.store.market}
-              container={trade.ware.rent.store.name}
+              {...trade.ware.rent.stall.market}
+              container={trade.ware.rent.stall.name}
             />
           </td>
           <td>

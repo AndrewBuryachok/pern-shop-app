@@ -46,8 +46,8 @@ export const getQuery = (req: IRequest) => {
   if (req?.storageTag) {
     query.append('storageTag', req.storageTag);
   }
-  if (req?.store) {
-    query.append('store', req.store);
+  if (req?.stall) {
+    query.append('stall', req.stall);
   }
   if (req?.cell) {
     query.append('cell', req.cell);

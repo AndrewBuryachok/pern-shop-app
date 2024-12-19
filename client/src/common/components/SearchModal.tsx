@@ -31,9 +31,9 @@ import { useSelectMainStationsQuery } from '../../features/stations/stations.api
 import { useSelectMarketTagsQuery } from '../../features/markets-tags/markets-tags.api';
 import { useSelectStorageTagsQuery } from '../../features/storages-tags/storages-tags.api';
 import {
-  useSelectMarketStoresQuery,
-  useSelectTagStoresQuery,
-} from '../../features/stores/stores.api';
+  useSelectMarketStallsQuery,
+  useSelectTagStallsQuery,
+} from '../../features/stalls/stalls.api';
 import {
   useSelectStorageCellsQuery,
   useSelectTagCellsQuery,
@@ -163,8 +163,8 @@ export default function SearchModal(props: Props) {
   }, [form.values.storage]);
 
   useEffect(() => {
-    if (form.values.store !== undefined) {
-      form.setFieldValue('store', null);
+    if (form.values.stall !== undefined) {
+      form.setFieldValue('stall', null);
     }
   }, [form.values.marketTag]);
 
@@ -216,12 +216,12 @@ export default function SearchModal(props: Props) {
     useSelectStorageTagsQuery(+(form.values.storage || ''), {
       skip: props.search.storageTag === undefined || !form.values.storage,
     });
-  const { data: stores, ...storesResponse } = form.values.marketTag
-    ? useSelectTagStoresQuery(+(form.values.marketTag || ''), {
-        skip: props.search.store === undefined || !form.values.marketTag,
+  const { data: stalls, ...stallsResponse } = form.values.marketTag
+    ? useSelectTagStallsQuery(+(form.values.marketTag || ''), {
+        skip: props.search.stall === undefined || !form.values.marketTag,
       })
-    : useSelectMarketStoresQuery(+(form.values.market || ''), {
-        skip: props.search.store === undefined || !form.values.market,
+    : useSelectMarketStallsQuery(+(form.values.market || ''), {
+        skip: props.search.stall === undefined || !form.values.market,
       });
   const { data: cells, ...cellsResponse } = form.values.storageTag
     ? useSelectTagCellsQuery(+(form.values.storageTag || ''), {
@@ -439,19 +439,19 @@ export default function SearchModal(props: Props) {
           {...form.getInputProps('storageTag')}
         />
       )}
-      {props.search.store !== undefined && (
+      {props.search.stall !== undefined && (
         <Select
-          label={t('columns.store')}
-          placeholder={`${t('components.total')}: ${stores?.length || 0}`}
+          label={t('columns.stall')}
+          placeholder={`${t('components.total')}: ${stalls?.length || 0}`}
           rightSection={
-            <RefetchAction {...storesResponse} skip={!form.values.market} />
+            <RefetchAction {...stallsResponse} skip={!form.values.market} />
           }
-          data={selectContainers(stores)}
+          data={selectContainers(stalls)}
           limit={20}
           searchable
           allowDeselect
-          readOnly={storesResponse.isFetching}
-          {...form.getInputProps('store')}
+          readOnly={stallsResponse.isFetching}
+          {...form.getInputProps('stall')}
         />
       )}
       {props.search.cell !== undefined && (

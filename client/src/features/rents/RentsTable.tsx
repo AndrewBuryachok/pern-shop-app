@@ -33,15 +33,15 @@ export default function RentsTable({ actions = [], ...props }: Props) {
             <AvatarWithDoubleText {...rent.card} />
           </td>
           <td>
-            <AvatarWithDoubleText {...rent.store.market.card} />
+            <AvatarWithDoubleText {...rent.stall.market.card} />
           </td>
           <td>
-            <PlaceText {...rent.store.market} container={rent.store.name} />
+            <PlaceText {...rent.stall.market} container={rent.stall.name} />
           </td>
           <td>
             <SumText
               fromId={rent.card.user.id}
-              toId={rent.store.market.card.user.id}
+              toId={rent.stall.market.card.user.id}
               sum={rent.sum}
             />
           </td>

@@ -29,7 +29,7 @@ export const emptyApi = createApi({
     'Station',
     'MarketTag',
     'StorageTag',
-    'Store',
+    'Stall',
     'Cell',
     'Drawer',
     'Rent',

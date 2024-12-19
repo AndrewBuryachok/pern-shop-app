@@ -22,7 +22,7 @@ import { StatesItem } from '../../common/components/StatesItem';
 import {
   parseCard,
   parseItem,
-  parseStore,
+  parseStall,
   parseThingAmount,
   parseTime,
   viewStates,
@@ -80,14 +80,14 @@ export default function ViewWareModal({ data: ware }: Props) {
       />
       <TextInput
         label={t('columns.market')}
-        value={parseStore(ware.rent.store)}
+        value={parseStall(ware.rent.stall)}
         readOnly
       />
       <TextInput
         label={t('columns.owner')}
-        icon={<CustomAvatar {...ware.rent.store.market.card.user} />}
+        icon={<CustomAvatar {...ware.rent.stall.market.card.user} />}
         iconWidth={48}
-        value={parseCard(ware.rent.store.market.card)}
+        value={parseCard(ware.rent.stall.market.card)}
         readOnly
       />
       <TextInput

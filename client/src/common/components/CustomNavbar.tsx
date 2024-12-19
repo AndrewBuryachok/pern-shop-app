@@ -121,7 +121,7 @@ export default function CustomNavbar(props: Props) {
     {
       route: 'containers',
       icon: IconContainer,
-      nested: ['stores', 'cells', 'drawers'],
+      nested: ['stalls', 'cells', 'drawers'],
     },
     {
       route: 'receipts',

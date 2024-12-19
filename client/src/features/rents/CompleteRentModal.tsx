@@ -9,7 +9,7 @@ import { useCompleteRentMutation } from './rents.api';
 import { RentIdDto } from './rent.dto';
 import CustomForm from '../../common/components/CustomForm';
 import CustomAvatar from '../../common/components/CustomAvatar';
-import { parseCard, parseStore } from '../../common/utils';
+import { parseCard, parseStall } from '../../common/utils';
 import { Color } from '../../common/constants';
 
 type Props = IModal<Rent>;
@@ -44,14 +44,14 @@ export default function CompleteRentModal({ data: rent }: Props) {
       />
       <TextInput
         label={t('columns.owner')}
-        icon={<CustomAvatar {...rent.store.market.card.user} />}
+        icon={<CustomAvatar {...rent.stall.market.card.user} />}
         iconWidth={48}
-        value={parseCard(rent.store.market.card)}
+        value={parseCard(rent.stall.market.card)}
         readOnly
       />
       <TextInput
         label={t('columns.market')}
-        value={parseStore(rent.store)}
+        value={parseStall(rent.stall)}
         readOnly
       />
       <TextInput

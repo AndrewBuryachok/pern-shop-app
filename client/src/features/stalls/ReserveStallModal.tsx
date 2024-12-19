@@ -5,7 +5,7 @@ import { Select, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
-import { Store } from './store.model';
+import { Stall } from './stall.model';
 import { useCreateRentMutation } from '../rents/rents.api';
 import { useSelectAllUsersQuery } from '../users/users.api';
 import {
@@ -20,29 +20,29 @@ import { UsersItem } from '../../common/components/UsersItem';
 import { CardsItem } from '../../common/components/CardsItem';
 import {
   parseCard,
-  parseStore,
+  parseStall,
   selectCardsWithBalance,
   selectUsers,
 } from '../../common/utils';
 import { Color } from '../../common/constants';
 
-type Props = IModal<Store> & { hasRole: boolean };
+type Props = IModal<Stall> & { hasRole: boolean };
 
-export default function ReserveStoreModal({ data: store, hasRole }: Props) {
+export default function ReserveStallModal({ data: stall, hasRole }: Props) {
   const [t] = useTranslation();
 
   const myCard = { balance: 0 };
 
   const form = useForm({
     initialValues: {
-      storeId: store.id,
+      stallId: stall.id,
       user: '',
       card: '',
     },
     transformValues: ({ user, card, ...rest }) => ({ ...rest, cardId: +card }),
     validate: {
       card: () =>
-        myCard.balance < store.marketTag.price
+        myCard.balance < stall.marketTag.price
           ? t('errors.not_enough_balance')
           : null,
     },
@@ -74,23 +74,23 @@ export default function ReserveStoreModal({ data: store, hasRole }: Props) {
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={t('actions.reserve') + ' ' + t('modals.stores')}
+      text={t('actions.reserve') + ' ' + t('modals.stalls')}
     >
       <TextInput
         label={t('columns.owner')}
-        icon={<CustomAvatar {...store.market.card.user} />}
+        icon={<CustomAvatar {...stall.market.card.user} />}
         iconWidth={48}
-        value={parseCard(store.market.card)}
+        value={parseCard(stall.market.card)}
         readOnly
       />
       <TextInput
-        label={t('columns.store')}
-        value={parseStore(store)}
+        label={t('columns.stall')}
+        value={parseStall(stall)}
         readOnly
       />
       <TextInput
         label={t('columns.price')}
-        value={`${store.marketTag.price} ${t('constants.currency')}`}
+        value={`${stall.marketTag.price} ${t('constants.currency')}`}
         readOnly
       />
       {hasRole && (
@@ -112,7 +112,7 @@ export default function ReserveStoreModal({ data: store, hasRole }: Props) {
       <Select
         label={t('columns.card')}
         placeholder={t('columns.card')}
-        description={`${t('information.decrease')} ${store.marketTag.price} ${t(
+        description={`${t('information.decrease')} ${stall.marketTag.price} ${t(
           'constants.currency',
         )}`}
         rightSection={
@@ -133,16 +133,16 @@ export default function ReserveStoreModal({ data: store, hasRole }: Props) {
   );
 }
 
-export const reserveStoreFactory = (hasRole: boolean) => ({
-  open: (store: Store) =>
+export const reserveStallFactory = (hasRole: boolean) => ({
+  open: (stall: Stall) =>
     openModal({
-      title: t('actions.reserve') + ' ' + t('modals.stores'),
-      children: <ReserveStoreModal data={store} hasRole={hasRole} />,
+      title: t('actions.reserve') + ' ' + t('modals.stalls'),
+      children: <ReserveStallModal data={stall} hasRole={hasRole} />,
     }),
   disable: () => false,
   color: Color.GREEN,
 });
 
-export const reserveMyStoreAction = reserveStoreFactory(false);
+export const reserveMyStallAction = reserveStallFactory(false);
 
-export const reserveUserStoreAction = reserveStoreFactory(true);
+export const reserveUserStallAction = reserveStallFactory(true);

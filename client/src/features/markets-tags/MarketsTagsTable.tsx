@@ -9,7 +9,7 @@ import CustomAnchor from '../../common/components/CustomAnchor';
 import DateText from '../../common/components/DateText';
 import CustomActions from '../../common/components/CustomActions';
 import { viewMarketTagAction } from './ViewMarketTagModal';
-import { openViewMarketTagStoresAction } from './ViewMarketTagStoresModal';
+import { openViewMarketTagStallsAction } from './ViewMarketTagStallsModal';
 
 type Props = ITableWithActions<MarketTag>;
 
@@ -22,7 +22,7 @@ export default function MarketsTagsTable({ actions = [], ...props }: Props) {
         'market',
         'tag',
         'price',
-        'stores',
+        'stalls',
         'created',
         'action',
       ]}
@@ -44,8 +44,8 @@ export default function MarketsTagsTable({ actions = [], ...props }: Props) {
           </td>
           <td>
             <CustomAnchor
-              text={`${marketTag.stores}`}
-              open={() => openViewMarketTagStoresAction(marketTag)}
+              text={`${marketTag.stalls}`}
+              open={() => openViewMarketTagStallsAction(marketTag)}
             />
           </td>
           <td>

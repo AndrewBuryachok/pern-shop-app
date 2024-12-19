@@ -2,17 +2,17 @@ import { Container } from '../containers/container.model';
 import { MdMarket, SmMarket } from '../markets/market.model';
 import { SmMarketTag } from '../markets-tags/market-tag.model';
 
-export interface SmStore extends Container {}
+export interface SmStall extends Container {}
 
-export interface MdStore extends SmStore {
+export interface MdStall extends SmStall {
   market: SmMarket;
 }
 
-export interface LgStore extends SmStore {
+export interface LgStall extends SmStall {
   market: MdMarket;
 }
 
-export interface Store extends LgStore {
+export interface Stall extends LgStall {
   marketTag: SmMarketTag;
   reservedUntil?: Date;
 }

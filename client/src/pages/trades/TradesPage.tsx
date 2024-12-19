@@ -23,7 +23,7 @@ export default function TradesPage() {
     modes: [Mode.BUYER, Mode.SELLER, Mode.OWNER],
     mode: searchParams.get('mode') as Mode,
     market: searchParams.get('market'),
-    store: searchParams.get('store'),
+    stall: searchParams.get('stall'),
     item: searchParams.get('item'),
     description: searchParams.get('description') || '',
     minAmount: +(searchParams.get('minAmount') || 0) || null,

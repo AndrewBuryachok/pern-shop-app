@@ -160,7 +160,7 @@ export default function Home() {
       icon: IconMailbox,
     },
     {
-      title: 'stores',
+      title: 'stalls',
       icon: IconBuildingCircus,
     },
     {

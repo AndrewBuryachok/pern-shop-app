@@ -3,51 +3,51 @@ import { useTranslation } from 'react-i18next';
 import { Stack, TextInput } from '@mantine/core';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
-import { Store } from './store.model';
+import { Stall } from './stall.model';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import { parseCard, parsePlace, parseTime } from '../../common/utils';
 import { Color } from '../../common/constants';
 
-type Props = IModal<Store>;
+type Props = IModal<Stall>;
 
-export default function ViewStoreModal({ data: store }: Props) {
+export default function ViewStallModal({ data: stall }: Props) {
   const [t] = useTranslation();
 
   return (
     <Stack spacing={8}>
-      <TextInput label={t('columns.id')} value={store.id} readOnly />
+      <TextInput label={t('columns.id')} value={stall.id} readOnly />
       <TextInput
         label={t('columns.owner')}
-        icon={<CustomAvatar {...store.market.card.user} />}
+        icon={<CustomAvatar {...stall.market.card.user} />}
         iconWidth={48}
-        value={parseCard(store.market.card)}
+        value={parseCard(stall.market.card)}
         readOnly
       />
       <TextInput
         label={t('columns.market')}
-        value={parsePlace(store.market)}
+        value={parsePlace(stall.market)}
         readOnly
       />
-      <TextInput label={t('columns.store')} value={`#${store.name}`} readOnly />
+      <TextInput label={t('columns.stall')} value={`#${stall.name}`} readOnly />
       <TextInput
         label={t('columns.price')}
-        value={`${store.marketTag.price} ${t('constants.currency')}`}
+        value={`${stall.marketTag.price} ${t('constants.currency')}`}
         readOnly
       />
       <TextInput
         label={t('columns.reserved')}
-        value={parseTime(store.reservedUntil)}
+        value={parseTime(stall.reservedUntil)}
         readOnly
       />
     </Stack>
   );
 }
 
-export const viewStoreAction = {
-  open: (store: Store) =>
+export const viewStallAction = {
+  open: (stall: Stall) =>
     openModal({
-      title: t('actions.view') + ' ' + t('modals.stores'),
-      children: <ViewStoreModal data={store} />,
+      title: t('actions.view') + ' ' + t('modals.stalls'),
+      children: <ViewStallModal data={stall} />,
     }),
   disable: () => false,
   color: Color.BLUE,

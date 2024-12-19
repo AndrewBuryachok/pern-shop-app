@@ -5,5 +5,5 @@ export interface SmMarketTag extends SmTag {}
 
 export interface MarketTag extends Tag {
   market: MdMarket;
-  stores: number;
+  stalls: number;
 }

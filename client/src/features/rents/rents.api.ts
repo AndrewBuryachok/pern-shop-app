@@ -55,14 +55,14 @@ export const rentsApi = emptyApi.injectEndpoints({
         method: 'POST',
         body: dto,
       }),
-      invalidatesTags: ['Rent', 'Store', 'Payment', 'Card'],
+      invalidatesTags: ['Rent', 'Stall', 'Payment', 'Card'],
     }),
     continueRent: build.mutation<void, RentIdDto>({
       query: ({ rentId }) => ({
         url: `/rents/${rentId}/continue`,
         method: 'POST',
       }),
-      invalidatesTags: ['Rent', 'Store', 'Payment', 'Card'],
+      invalidatesTags: ['Rent', 'Stall', 'Payment', 'Card'],
     }),
     completeRent: build.mutation<void, RentIdDto>({
       query: ({ rentId }) => ({
