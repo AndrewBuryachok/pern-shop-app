@@ -9,7 +9,7 @@ import { useCompleteHireMutation } from './hires.api';
 import { HireIdDto } from './hire.dto';
 import CustomForm from '../../common/components/CustomForm';
 import CustomAvatar from '../../common/components/CustomAvatar';
-import { parseCard, parseDrawer } from '../../common/utils';
+import { parseBox, parseCard } from '../../common/utils';
 import { Color } from '../../common/constants';
 
 type Props = IModal<Hire>;
@@ -44,14 +44,14 @@ export default function CompleteHireModal({ data: hire }: Props) {
       />
       <TextInput
         label={t('columns.owner')}
-        icon={<CustomAvatar {...hire.drawer.station.card.user} />}
+        icon={<CustomAvatar {...hire.box.station.card.user} />}
         iconWidth={48}
-        value={parseCard(hire.drawer.station.card)}
+        value={parseCard(hire.box.station.card)}
         readOnly
       />
       <TextInput
         label={t('columns.station')}
-        value={parseDrawer(hire.drawer)}
+        value={parseBox(hire.box)}
         readOnly
       />
       <TextInput

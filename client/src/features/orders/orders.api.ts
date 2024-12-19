@@ -48,7 +48,7 @@ export const ordersApi = emptyApi.injectEndpoints({
         method: 'POST',
         body: dto,
       }),
-      invalidatesTags: ['Order', 'Hire', 'Drawer', 'Payment', 'Card'],
+      invalidatesTags: ['Order', 'Hire', 'Box', 'Payment', 'Card'],
     }),
     editOrder: build.mutation<void, EditOrderDto>({
       query: ({ orderId, ...dto }) => ({

@@ -48,7 +48,7 @@ export const marketsDeliveriesApi = emptyApi.injectEndpoints({
         method: 'POST',
         body: dto,
       }),
-      invalidatesTags: ['MarketDelivery', 'Hire', 'Drawer', 'Payment', 'Card'],
+      invalidatesTags: ['MarketDelivery', 'Hire', 'Box', 'Payment', 'Card'],
     }),
     editMarketDelivery: build.mutation<void, EditMarketDeliveryDto>({
       query: ({ marketDeliveryId, ...dto }) => ({

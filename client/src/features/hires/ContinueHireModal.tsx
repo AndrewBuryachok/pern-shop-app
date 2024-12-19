@@ -6,7 +6,7 @@ import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { Hire } from './hire.model';
 import { useContinueHireMutation } from './hires.api';
-import { useSelectDrawerStationQuery } from '../drawers/drawers.api';
+import { useSelectBoxStationQuery } from '../boxes/boxes.api';
 import {
   useSelectMyCardsQuery,
   useSelectUserCardsWithBalanceQuery,
@@ -16,8 +16,8 @@ import CustomForm from '../../common/components/CustomForm';
 import RefetchAction from '../../common/components/RefetchAction';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import {
+  parseBox,
   parseCard,
-  parseDrawer,
   selectCardsWithBalance,
 } from '../../common/utils';
 import { Color } from '../../common/constants';
@@ -29,8 +29,8 @@ export default function ContinueHireModal({ data: hire, hasRole }: Props) {
 
   const myCard = { balance: 0 };
 
-  const { data: station, ...stationResponse } = useSelectDrawerStationQuery(
-    hire.drawer.id,
+  const { data: station, ...stationResponse } = useSelectBoxStationQuery(
+    hire.box.id,
   );
 
   const form = useForm({
@@ -75,14 +75,14 @@ export default function ContinueHireModal({ data: hire, hasRole }: Props) {
       />
       <TextInput
         label={t('columns.owner')}
-        icon={<CustomAvatar {...hire.drawer.station.card.user} />}
+        icon={<CustomAvatar {...hire.box.station.card.user} />}
         iconWidth={48}
-        value={parseCard(hire.drawer.station.card)}
+        value={parseCard(hire.box.station.card)}
         readOnly
       />
       <TextInput
         label={t('columns.station')}
-        value={parseDrawer(hire.drawer)}
+        value={parseBox(hire.box)}
         readOnly
       />
       <TextInput

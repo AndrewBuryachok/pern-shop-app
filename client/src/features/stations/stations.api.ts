@@ -40,19 +40,19 @@ export const stationsApi = emptyApi.injectEndpoints({
       query: () => ({
         url: '/stations/my/select',
       }),
-      providesTags: ['Auth', 'Station', 'Drawer'],
+      providesTags: ['Auth', 'Station', 'Box'],
     }),
     selectAllStations: build.query<MyStation[], void>({
       query: () => ({
         url: '/stations/all/select',
       }),
-      providesTags: ['Auth', 'Station', 'Drawer'],
+      providesTags: ['Auth', 'Station', 'Box'],
     }),
     selectFreeStations: build.query<SmStationWithPrice[], void>({
       query: () => ({
         url: '/stations/free/select',
       }),
-      providesTags: ['Station', 'Drawer'],
+      providesTags: ['Station', 'Box'],
     }),
     selectStationStates: build.query<State[], number>({
       query: (stationId) => ({

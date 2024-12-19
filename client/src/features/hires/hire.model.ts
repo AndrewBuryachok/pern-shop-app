@@ -1,12 +1,12 @@
 import { MdReceipt, Receipt } from '../receipts/receipt.model';
-import { LgDrawer } from '../drawers/drawer.model';
+import { LgBox } from '../boxes/box.model';
 
 export interface SmHire extends MdReceipt {
-  drawer: LgDrawer;
+  box: LgBox;
 }
 
 export interface Hire extends Receipt {
-  drawer: LgDrawer;
+  box: LgBox;
   orders: number;
   fromHaulages: number;
   toHaulages: number;

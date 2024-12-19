@@ -51,8 +51,8 @@ export default function DeliveriesTable({ actions = [], ...props }: Props) {
           </td>
           <td>
             <PlaceWithDoubleAvatar
-              {...shopDelivery.hire.drawer.station}
-              container={shopDelivery.hire.drawer.name}
+              {...shopDelivery.hire.box.station}
+              container={shopDelivery.hire.box.name}
             />
           </td>
           <td>

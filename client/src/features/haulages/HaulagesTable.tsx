@@ -48,14 +48,14 @@ export default function HaulagesTable({ actions = [], ...props }: Props) {
           </td>
           <td>
             <PlaceWithDoubleAvatar
-              {...haulage.fromHire.drawer.station}
-              container={haulage.fromHire.drawer.name}
+              {...haulage.fromHire.box.station}
+              container={haulage.fromHire.box.name}
             />
           </td>
           <td>
             <PlaceWithDoubleAvatar
-              {...haulage.toHire.drawer.station}
-              container={haulage.toHire.drawer.name}
+              {...haulage.toHire.box.station}
+              container={haulage.toHire.box.name}
             />
           </td>
           <td>

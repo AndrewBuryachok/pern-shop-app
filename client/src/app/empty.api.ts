@@ -31,7 +31,7 @@ export const emptyApi = createApi({
     'StorageTag',
     'Stall',
     'Cell',
-    'Drawer',
+    'Box',
     'Rent',
     'Lease',
     'Hire',

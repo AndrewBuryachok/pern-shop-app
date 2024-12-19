@@ -1,16 +1,16 @@
 import { useLocation, useSearchParams } from 'react-router-dom';
 import {
-  useGetAllDrawersQuery,
-  useGetMainDrawersQuery,
-  useGetMyDrawersQuery,
-} from '../../features/drawers/drawers.api';
-import DrawersTable from '../../features/drawers/DrawersTable';
+  useGetAllBoxesQuery,
+  useGetMainBoxesQuery,
+  useGetMyBoxesQuery,
+} from '../../features/boxes/boxes.api';
+import BoxesTable from '../../features/boxes/BoxesTable';
 import {
-  createMyDrawerButton,
-  createUserDrawerButton,
-} from '../../features/drawers/CreateDrawerModal';
+  createMyBoxButton,
+  createUserBoxButton,
+} from '../../features/boxes/CreateBoxModal';
 
-export default function DrawersPage() {
+export default function BoxesPage() {
   const tab = useLocation().pathname.split('/')[2] || 'main';
 
   const [searchParams] = useSearchParams();
@@ -21,23 +21,23 @@ export default function DrawersPage() {
     user: searchParams.get('user'),
     card: searchParams.get('card'),
     station: searchParams.get('station'),
-    drawer: searchParams.get('drawer'),
+    box: searchParams.get('box'),
     minPrice: +(searchParams.get('minPrice') || 0) || null,
     maxPrice: +(searchParams.get('maxPrice') || 0) || null,
     completed: searchParams.get('completed'),
   };
 
   const response = {
-    main: useGetMainDrawersQuery,
-    my: useGetMyDrawersQuery,
-    all: useGetAllDrawersQuery,
+    main: useGetMainBoxesQuery,
+    my: useGetMyBoxesQuery,
+    all: useGetAllBoxesQuery,
   }[tab]!(search);
 
   const button = {
-    main: createMyDrawerButton,
-    my: createMyDrawerButton,
-    all: createUserDrawerButton,
+    main: createMyBoxButton,
+    my: createMyBoxButton,
+    all: createUserBoxButton,
   }[tab];
 
-  return <DrawersTable {...response} search={search} button={button} />;
+  return <BoxesTable {...response} search={search} button={button} />;
 }

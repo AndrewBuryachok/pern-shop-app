@@ -7,9 +7,9 @@ import { StorageDelivery } from './storage-delivery.model';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import ThingImage from '../../common/components/ThingImage';
 import {
+  parseBox,
   parseCard,
   parseCell,
-  parseDrawer,
   parseItem,
   parseSaleAmount,
   parseStatus,
@@ -94,16 +94,14 @@ export default function ViewStorageDeliveryModal({
       />
       <TextInput
         label={t('columns.toStation')}
-        value={parseDrawer(storageDelivery.hire.drawer)}
+        value={parseBox(storageDelivery.hire.box)}
         readOnly
       />
       <TextInput
         label={t('columns.owner')}
-        icon={
-          <CustomAvatar {...storageDelivery.hire.drawer.station.card.user} />
-        }
+        icon={<CustomAvatar {...storageDelivery.hire.box.station.card.user} />}
         iconWidth={48}
-        value={parseCard(storageDelivery.hire.drawer.station.card)}
+        value={parseCard(storageDelivery.hire.box.station.card)}
         readOnly
       />
       <TextInput

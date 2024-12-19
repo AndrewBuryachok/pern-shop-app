@@ -5,17 +5,17 @@ import {
   SmStation,
 } from '../stations/station.model';
 
-export interface SmDrawer extends Container {}
+export interface SmBox extends Container {}
 
-export interface MdDrawer extends SmDrawer {
+export interface MdBox extends SmBox {
   station: SmStation;
 }
 
-export interface LgDrawer extends SmDrawer {
+export interface LgBox extends SmBox {
   station: MdStation;
 }
 
-export interface Drawer extends SmDrawer {
+export interface Box extends SmBox {
   station: MdStationWithPrice;
   reservedUntil?: Date;
 }

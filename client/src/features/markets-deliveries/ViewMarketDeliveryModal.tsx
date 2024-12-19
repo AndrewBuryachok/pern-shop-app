@@ -7,11 +7,11 @@ import { MarketDelivery } from './market-delivery.model';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import ThingImage from '../../common/components/ThingImage';
 import {
+  parseBox,
   parseCard,
-  parseDrawer,
   parseItem,
-  parseStatus,
   parseStall,
+  parseStatus,
   parseTime,
   parseTradeAmount,
 } from '../../common/utils';
@@ -94,16 +94,14 @@ export default function ViewMarketDeliveryModal({
       />
       <TextInput
         label={t('columns.toStation')}
-        value={parseDrawer(marketDelivery.hire.drawer)}
+        value={parseBox(marketDelivery.hire.box)}
         readOnly
       />
       <TextInput
         label={t('columns.owner')}
-        icon={
-          <CustomAvatar {...marketDelivery.hire.drawer.station.card.user} />
-        }
+        icon={<CustomAvatar {...marketDelivery.hire.box.station.card.user} />}
         iconWidth={48}
-        value={parseCard(marketDelivery.hire.drawer.station.card)}
+        value={parseCard(marketDelivery.hire.box.station.card)}
         readOnly
       />
       <TextInput

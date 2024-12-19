@@ -8,7 +8,7 @@ import CustomAnchor from '../../common/components/CustomAnchor';
 import DateText from '../../common/components/DateText';
 import CustomActions from '../../common/components/CustomActions';
 import { viewStationAction } from './ViewStationModal';
-import { openViewStationDrawersAction } from './ViewStationDrawersModal';
+import { openViewStationBoxesAction } from './ViewStationBoxesModal';
 
 type Props = ITableWithActions<Station>;
 
@@ -16,7 +16,7 @@ export default function StationsTable({ actions = [], ...props }: Props) {
   return (
     <CustomTable
       minWidth={700}
-      columns={['owner', 'station', 'price', 'drawers', 'created', 'action']}
+      columns={['owner', 'station', 'price', 'boxes', 'created', 'action']}
       {...props}
     >
       {props.data?.result.map((station) => (
@@ -32,8 +32,8 @@ export default function StationsTable({ actions = [], ...props }: Props) {
           </td>
           <td>
             <CustomAnchor
-              text={`${station.drawers}`}
-              open={() => openViewStationDrawersAction(station)}
+              text={`${station.boxes}`}
+              open={() => openViewStationBoxesAction(station)}
             />
           </td>
           <td>

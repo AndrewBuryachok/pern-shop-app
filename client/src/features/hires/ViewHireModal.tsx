@@ -5,7 +5,7 @@ import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { Hire } from './hire.model';
 import CustomAvatar from '../../common/components/CustomAvatar';
-import { parseCard, parseDrawer, parseTime } from '../../common/utils';
+import { parseBox, parseCard, parseTime } from '../../common/utils';
 import { Color } from '../../common/constants';
 
 type Props = IModal<Hire>;
@@ -25,14 +25,14 @@ export default function ViewHireModal({ data: hire }: Props) {
       />
       <TextInput
         label={t('columns.owner')}
-        icon={<CustomAvatar {...hire.drawer.station.card.user} />}
+        icon={<CustomAvatar {...hire.box.station.card.user} />}
         iconWidth={48}
-        value={parseCard(hire.drawer.station.card)}
+        value={parseCard(hire.box.station.card)}
         readOnly
       />
       <TextInput
         label={t('columns.station')}
-        value={parseDrawer(hire.drawer)}
+        value={parseBox(hire.box)}
         readOnly
       />
       <TextInput

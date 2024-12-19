@@ -42,7 +42,7 @@ export const hiresApi = emptyApi.injectEndpoints({
         url: `/hires/${hireId}/continue`,
         method: 'POST',
       }),
-      invalidatesTags: ['Hire', 'Drawer', 'Payment', 'Card'],
+      invalidatesTags: ['Hire', 'Box', 'Payment', 'Card'],
     }),
     completeHire: build.mutation<void, HireIdDto>({
       query: ({ hireId }) => ({

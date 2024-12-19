@@ -7,8 +7,8 @@ import { Haulage } from './haulage.model';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import ThingImage from '../../common/components/ThingImage';
 import {
+  parseBox,
   parseCard,
-  parseDrawer,
   parseItem,
   parseStatus,
   parseThingAmount,
@@ -71,26 +71,26 @@ export default function ViewHaulageModal({ data: haulage }: Props) {
       />
       <TextInput
         label={t('columns.fromStation')}
-        value={parseDrawer(haulage.fromHire.drawer)}
+        value={parseBox(haulage.fromHire.box)}
         readOnly
       />
       <TextInput
         label={t('columns.owner')}
-        icon={<CustomAvatar {...haulage.fromHire.drawer.station.card.user} />}
+        icon={<CustomAvatar {...haulage.fromHire.box.station.card.user} />}
         iconWidth={48}
-        value={parseCard(haulage.fromHire.drawer.station.card)}
+        value={parseCard(haulage.fromHire.box.station.card)}
         readOnly
       />
       <TextInput
         label={t('columns.toStation')}
-        value={parseDrawer(haulage.toHire.drawer)}
+        value={parseBox(haulage.toHire.box)}
         readOnly
       />
       <TextInput
         label={t('columns.owner')}
-        icon={<CustomAvatar {...haulage.toHire.drawer.station.card.user} />}
+        icon={<CustomAvatar {...haulage.toHire.box.station.card.user} />}
         iconWidth={48}
-        value={parseCard(haulage.toHire.drawer.station.card)}
+        value={parseCard(haulage.toHire.box.station.card)}
         readOnly
       />
       <TextInput

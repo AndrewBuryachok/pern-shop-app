@@ -18,7 +18,7 @@ export interface ISearch {
   storageTag?: string | null;
   stall?: string | null;
   cell?: string | null;
-  drawer?: string | null;
+  box?: string | null;
   item?: string | null;
   description?: string;
   activity?: string;

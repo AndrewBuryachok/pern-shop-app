@@ -3,7 +3,7 @@ import { MdCard } from '../../features/cards/card.model';
 import { SmPlace } from '../../features/places/place.model';
 import { MdStall } from '../../features/stalls/stall.model';
 import { MdCell } from '../../features/cells/cell.model';
-import { MdDrawer } from '../../features/drawers/drawer.model';
+import { MdBox } from '../../features/boxes/box.model';
 import { SmBargainWithoutPrice } from '../../features/bargains/bargain.model';
 import { SmTradeWithoutPrice } from '../../features/trades/trade.model';
 import { SmSaleWithoutPrice } from '../../features/sales/sale.model';
@@ -45,8 +45,8 @@ export const parseStall = (stall: MdStall) =>
 export const parseCell = (cell: MdCell) =>
   `${parsePlace(cell.storage)} #${cell.name}`;
 
-export const parseDrawer = (drawer: MdDrawer) =>
-  `${parsePlace(drawer.station)} #${drawer.name}`;
+export const parseBox = (box: MdBox) =>
+  `${parsePlace(box.station)} #${box.name}`;
 
 export const parseItem = (item: number) =>
   t(`constants.items.${items[item - 1]}`);

@@ -9,7 +9,7 @@ import { useSelectFarmUsersQuery } from '../farms/farms.api';
 import { useSelectShopGoodsQuery } from '../shops/shops.api';
 import { useSelectMarketStallsQuery } from '../stalls/stalls.api';
 import { useSelectStorageCellsQuery } from '../cells/cells.api';
-import { useSelectStationDrawersQuery } from '../drawers/drawers.api';
+import { useSelectStationBoxesQuery } from '../boxes/boxes.api';
 import RefetchAction from '../../common/components/RefetchAction';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import CustomImage from '../../common/components/CustomImage';
@@ -55,7 +55,7 @@ export default function PlaceModal({ data: place }: Props) {
     place.id,
     { skip: place.type !== 4 },
   );
-  const { data: drawers, ...drawersResponse } = useSelectStationDrawersQuery(
+  const { data: boxes, ...boxesResponse } = useSelectStationBoxesQuery(
     place.id,
     { skip: place.type !== 5 },
   );
@@ -157,11 +157,11 @@ export default function PlaceModal({ data: place }: Props) {
       )}
       {place.type === 5 && (
         <Select
-          label={t('columns.drawers')}
-          placeholder={`${t('components.total')}: ${drawers?.length || 0}`}
-          rightSection={<RefetchAction {...drawersResponse} />}
+          label={t('columns.boxes')}
+          placeholder={`${t('components.total')}: ${boxes?.length || 0}`}
+          rightSection={<RefetchAction {...boxesResponse} />}
           itemComponent={component}
-          data={viewContainers(drawers || [])}
+          data={viewContainers(boxes || [])}
           limit={20}
           searchable
         />

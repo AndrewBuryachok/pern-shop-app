@@ -168,7 +168,7 @@ export default function Home() {
       icon: IconBoxModel,
     },
     {
-      title: 'drawers',
+      title: 'boxes',
       icon: IconArchive,
     },
     {

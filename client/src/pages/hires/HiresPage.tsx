@@ -26,7 +26,7 @@ export default function HiresPage() {
     modes: [Mode.TENANT, Mode.OWNER],
     mode: searchParams.get('mode') as Mode,
     station: searchParams.get('station'),
-    drawer: searchParams.get('drawer'),
+    box: searchParams.get('box'),
     minSum: +(searchParams.get('minSum') || 0) || null,
     maxSum: +(searchParams.get('maxSum') || 0) || null,
     minDate: searchParams.get('minDate'),

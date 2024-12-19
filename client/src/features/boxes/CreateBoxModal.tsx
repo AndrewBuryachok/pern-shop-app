@@ -4,12 +4,12 @@ import { useTranslation } from 'react-i18next';
 import { Select, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
-import { useCreateDrawerMutation } from './drawers.api';
+import { useCreateBoxMutation } from './boxes.api';
 import {
   useSelectAllStationsQuery,
   useSelectMyStationsQuery,
 } from '../stations/stations.api';
-import { CreateDrawerDto } from './drawer.dto';
+import { CreateBoxDto } from './box.dto';
 import CustomForm from '../../common/components/CustomForm';
 import RefetchAction from '../../common/components/RefetchAction';
 import { PlacesItem } from '../../common/components/PlacesItem';
@@ -17,7 +17,7 @@ import { selectStations } from '../../common/utils';
 
 type Props = { hasRole: boolean };
 
-export default function CreateDrawerModal({ hasRole }: Props) {
+export default function CreateBoxModal({ hasRole }: Props) {
   const [t] = useTranslation();
 
   const form = useForm({
@@ -37,21 +37,21 @@ export default function CreateDrawerModal({ hasRole }: Props) {
   );
 
   useEffect(
-    () => form.setFieldValue('name', station ? `#${station.drawers + 1}` : ''),
+    () => form.setFieldValue('name', station ? `#${station.boxes + 1}` : ''),
     [form.values.station],
   );
 
-  const [createDrawer, { isLoading }] = useCreateDrawerMutation();
+  const [createBox, { isLoading }] = useCreateBoxMutation();
 
-  const handleSubmit = async (dto: CreateDrawerDto) => {
-    await createDrawer(dto);
+  const handleSubmit = async (dto: CreateBoxDto) => {
+    await createBox(dto);
   };
 
   return (
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={t('actions.create') + ' ' + t('modals.drawers')}
+      text={t('actions.create') + ' ' + t('modals.boxes')}
     >
       <Select
         label={t('columns.station')}
@@ -74,15 +74,15 @@ export default function CreateDrawerModal({ hasRole }: Props) {
   );
 }
 
-export const createDrawerFactory = (hasRole: boolean) => ({
+export const createBoxFactory = (hasRole: boolean) => ({
   label: 'create',
   open: () =>
     openModal({
-      title: t('actions.create') + ' ' + t('modals.drawers'),
-      children: <CreateDrawerModal hasRole={hasRole} />,
+      title: t('actions.create') + ' ' + t('modals.boxes'),
+      children: <CreateBoxModal hasRole={hasRole} />,
     }),
 });
 
-export const createMyDrawerButton = createDrawerFactory(false);
+export const createMyBoxButton = createBoxFactory(false);
 
-export const createUserDrawerButton = createDrawerFactory(true);
+export const createUserBoxButton = createBoxFactory(true);

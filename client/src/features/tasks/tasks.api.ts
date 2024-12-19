@@ -42,7 +42,7 @@ export const tasksApi = emptyApi.injectEndpoints({
         method: 'POST',
         body: dto,
       }),
-      invalidatesTags: ['Task', 'Hire', 'Drawer', 'Payment', 'Card'],
+      invalidatesTags: ['Task', 'Hire', 'Box', 'Payment', 'Card'],
     }),
     editTask: build.mutation<void, EditTaskDto>({
       query: ({ taskId, ...dto }) => ({

@@ -16,9 +16,9 @@ export interface MdStation extends SmPlaceWithCard {}
 export interface MdStationWithPrice extends SmPlaceWithPrice {}
 
 export interface Station extends PlaceWithPrice {
-  drawers: number;
+  boxes: number;
 }
 
 export interface MyStation extends SmStation {
-  drawers: number;
+  boxes: number;
 }

@@ -38,7 +38,7 @@ import {
   useSelectStorageCellsQuery,
   useSelectTagCellsQuery,
 } from '../../features/cells/cells.api';
-import { useSelectStationDrawersQuery } from '../../features/drawers/drawers.api';
+import { useSelectStationBoxesQuery } from '../../features/boxes/boxes.api';
 import CustomForm from './CustomForm';
 import RefetchAction from './RefetchAction';
 import CustomAvatar from './CustomAvatar';
@@ -175,8 +175,8 @@ export default function SearchModal(props: Props) {
   }, [form.values.storageTag]);
 
   useEffect(() => {
-    if (form.values.drawer !== undefined) {
-      form.setFieldValue('drawer', null);
+    if (form.values.box !== undefined) {
+      form.setFieldValue('box', null);
     }
   }, [form.values.station]);
 
@@ -230,9 +230,9 @@ export default function SearchModal(props: Props) {
     : useSelectStorageCellsQuery(+(form.values.storage || ''), {
         skip: props.search.cell === undefined || !form.values.storage,
       });
-  const { data: drawers, ...drawersResponse } = useSelectStationDrawersQuery(
+  const { data: boxes, ...boxesResponse } = useSelectStationBoxesQuery(
     +(form.values.station || ''),
-    { skip: props.search.drawer === undefined || !form.values.station },
+    { skip: props.search.box === undefined || !form.values.station },
   );
 
   const user = users?.find((user) => user.id === +form.values.user!);
@@ -469,19 +469,19 @@ export default function SearchModal(props: Props) {
           {...form.getInputProps('cell')}
         />
       )}
-      {props.search.drawer !== undefined && (
+      {props.search.box !== undefined && (
         <Select
-          label={t('columns.drawer')}
-          placeholder={`${t('components.total')}: ${drawers?.length || 0}`}
+          label={t('columns.box')}
+          placeholder={`${t('components.total')}: ${boxes?.length || 0}`}
           rightSection={
-            <RefetchAction {...drawersResponse} skip={!form.values.station} />
+            <RefetchAction {...boxesResponse} skip={!form.values.station} />
           }
-          data={selectContainers(drawers)}
+          data={selectContainers(boxes)}
           limit={20}
           searchable
           allowDeselect
-          readOnly={drawersResponse.isFetching}
-          {...form.getInputProps('drawer')}
+          readOnly={boxesResponse.isFetching}
+          {...form.getInputProps('box')}
         />
       )}
       {props.search.item !== undefined && (

@@ -47,8 +47,8 @@ export default function OrdersTable({ actions = [], ...props }: Props) {
           </td>
           <td>
             <PlaceWithDoubleAvatar
-              {...order.hire.drawer.station}
-              container={order.hire.drawer.name}
+              {...order.hire.box.station}
+              container={order.hire.box.name}
             />
           </td>
           <td>

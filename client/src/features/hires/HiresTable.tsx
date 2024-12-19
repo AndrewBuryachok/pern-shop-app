@@ -33,15 +33,15 @@ export default function HiresTable({ actions = [], ...props }: Props) {
             <AvatarWithDoubleText {...hire.card} />
           </td>
           <td>
-            <AvatarWithDoubleText {...hire.drawer.station.card} />
+            <AvatarWithDoubleText {...hire.box.station.card} />
           </td>
           <td>
-            <PlaceText {...hire.drawer.station} container={hire.drawer.name} />
+            <PlaceText {...hire.box.station} container={hire.box.name} />
           </td>
           <td>
             <SumText
               fromId={hire.card.user.id}
-              toId={hire.drawer.station.card.user.id}
+              toId={hire.box.station.card.user.id}
               sum={hire.sum}
             />
           </td>

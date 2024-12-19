@@ -1,5 +1,5 @@
 import { ITableWithActions } from '../../common/interfaces';
-import { Drawer } from './drawer.model';
+import { Box } from './box.model';
 import CustomTable from '../../common/components/CustomTable';
 import AvatarWithDoubleText from '../../common/components/AvatarWithDoubleText';
 import PlaceText from '../../common/components/PlaceText';
@@ -7,39 +7,36 @@ import SingleText from '../../common/components/SingleText';
 import PriceText from '../../common/components/PriceText';
 import DateText from '../../common/components/DateText';
 import CustomActions from '../../common/components/CustomActions';
-import { viewDrawerAction } from './ViewDrawerModal';
+import { viewBoxAction } from './ViewBoxModal';
 
-type Props = ITableWithActions<Drawer>;
+type Props = ITableWithActions<Box>;
 
-export default function DrawersTable({ actions = [], ...props }: Props) {
+export default function BoxesTable({ actions = [], ...props }: Props) {
   return (
     <CustomTable
       minWidth={700}
-      columns={['owner', 'station', 'drawer', 'price', 'reserved', 'action']}
+      columns={['owner', 'station', 'box', 'price', 'reserved', 'action']}
       {...props}
     >
-      {props.data?.result.map((drawer) => (
-        <tr key={drawer.id}>
+      {props.data?.result.map((box) => (
+        <tr key={box.id}>
           <td>
-            <AvatarWithDoubleText {...drawer.station.card} />
+            <AvatarWithDoubleText {...box.station.card} />
           </td>
           <td>
-            <PlaceText {...drawer.station} />
+            <PlaceText {...box.station} />
           </td>
           <td>
-            <SingleText text={`#${drawer.name}`} />
+            <SingleText text={`#${box.name}`} />
           </td>
           <td>
-            <PriceText {...drawer.station} />
+            <PriceText {...box.station} />
           </td>
           <td>
-            <DateText date={drawer.reservedUntil} />
+            <DateText date={box.reservedUntil} />
           </td>
           <td>
-            <CustomActions
-              data={drawer}
-              actions={[viewDrawerAction, ...actions]}
-            />
+            <CustomActions data={box} actions={[viewBoxAction, ...actions]} />
           </td>
         </tr>
       ))}

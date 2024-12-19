@@ -39,7 +39,7 @@ export default function HaulagesPage() {
     modes: [Mode.CUSTOMER, Mode.EXECUTOR, Mode.OWNER],
     mode: searchParams.get('mode') as Mode,
     station: searchParams.get('station'),
-    drawer: searchParams.get('drawer'),
+    box: searchParams.get('box'),
     item: searchParams.get('item'),
     description: searchParams.get('description') || '',
     minAmount: +(searchParams.get('minAmount') || 0) || null,

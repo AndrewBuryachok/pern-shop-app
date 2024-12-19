@@ -48,7 +48,7 @@ export const storagesDeliveriesApi = emptyApi.injectEndpoints({
         method: 'POST',
         body: dto,
       }),
-      invalidatesTags: ['StorageDelivery', 'Hire', 'Drawer', 'Payment', 'Card'],
+      invalidatesTags: ['StorageDelivery', 'Hire', 'Box', 'Payment', 'Card'],
     }),
     editStorageDelivery: build.mutation<void, EditStorageDeliveryDto>({
       query: ({ storageDeliveryId, ...dto }) => ({

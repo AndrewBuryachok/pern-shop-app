@@ -8,8 +8,8 @@ import CustomAvatar from '../../common/components/CustomAvatar';
 import ThingImage from '../../common/components/ThingImage';
 import {
   parseBargainAmount,
+  parseBox,
   parseCard,
-  parseDrawer,
   parseItem,
   parsePlace,
   parseStatus,
@@ -86,14 +86,14 @@ export default function ViewShopDeliveryModal({ data: shopDelivery }: Props) {
       />
       <TextInput
         label={t('columns.toStation')}
-        value={parseDrawer(shopDelivery.hire.drawer)}
+        value={parseBox(shopDelivery.hire.box)}
         readOnly
       />
       <TextInput
         label={t('columns.owner')}
-        icon={<CustomAvatar {...shopDelivery.hire.drawer.station.card.user} />}
+        icon={<CustomAvatar {...shopDelivery.hire.box.station.card.user} />}
         iconWidth={48}
-        value={parseCard(shopDelivery.hire.drawer.station.card)}
+        value={parseCard(shopDelivery.hire.box.station.card)}
         readOnly
       />
       <TextInput

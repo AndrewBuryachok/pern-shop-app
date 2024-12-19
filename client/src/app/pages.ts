@@ -31,7 +31,7 @@ const StoragesTagsPage = lazy(
 );
 const StallsPage = lazy(() => import('../pages/stalls/StallsPage'));
 const CellsPage = lazy(() => import('../pages/cells/CellsPage'));
-const DrawersPage = lazy(() => import('../pages/drawers/DrawersPage'));
+const BoxesPage = lazy(() => import('../pages/boxes/BoxesPage'));
 const RentsPage = lazy(() => import('../pages/rents/RentsPage'));
 const LeasesPage = lazy(() => import('../pages/leases/LeasesPage'));
 const HiresPage = lazy(() => import('../pages/hires/HiresPage'));
@@ -245,8 +245,8 @@ export const pages = [
     ],
   },
   {
-    path: 'drawers',
-    element: DrawersPage,
+    path: 'boxes',
+    element: BoxesPage,
     nested: [
       { index: true },
       { path: 'my' },
