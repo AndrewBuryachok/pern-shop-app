@@ -185,16 +185,17 @@ export class UsersService {
     return users.filter((user) => !raters.includes(user.id));
   }
 
-  async selectTwitchUsers(): Promise<{ live: string[]; unlive: string[] }> {
+  async selectTwitchUsers(): Promise<User[]> {
     const users = await this.selectUsersQueryBuilder()
       .where(':role = ANY(user.roles)', { role: Role.STREAMER })
       .andWhere("user.twitch != ''")
       .addSelect('user.twitch')
       .getMany();
-    const streamers = users.map((user) => user.twitch.toLowerCase());
-    const live = await this.twitchService.getStreams(streamers);
-    const unlive = streamers.filter((user) => !live.includes(user));
-    return { live, unlive };
+    const nicks = users.map((user) => user.twitch.toLowerCase());
+    const streamers = await this.twitchService.getStreams(nicks);
+    return users.filter((user) =>
+      streamers.includes(user.twitch.toLowerCase()),
+    );
   }
 
   selectSingleUser(nick: string): Promise<User> {

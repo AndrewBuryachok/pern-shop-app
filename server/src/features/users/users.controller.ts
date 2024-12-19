@@ -100,7 +100,7 @@ export class UsersController {
 
   @Public()
   @Get('twitch/select')
-  selectTwitchUsers(): Promise<{ live: string[]; unlive: string[] }> {
+  selectTwitchUsers(): Promise<User[]> {
     return this.usersService.selectTwitchUsers();
   }
 
