@@ -4,22 +4,19 @@ import { Navbar, NavLink, ScrollArea } from '@mantine/core';
 import { hideNotification } from '@mantine/notifications';
 import {
   IconArticle,
-  IconBasket,
-  IconBuildingCommunity,
+  IconBuildingCottage,
+  IconBuildingSkyscraper,
+  IconBuildingStadium,
+  IconBuildingStore,
+  IconBuildingWarehouse,
   IconChartBar,
   IconChecklist,
-  IconContainer,
-  IconDiscount,
-  IconFriends,
   IconHome,
-  IconMail,
   IconMailbox,
   IconMap,
   IconMessages,
   IconNews,
-  IconReceipt,
   IconStar,
-  IconTags,
   IconUsers,
   IconWallet,
 } from '@tabler/icons';
@@ -41,25 +38,6 @@ export default function CustomNavbar(props: Props) {
       icon: IconHome,
     },
     {
-      route: 'users',
-      icon: IconUsers,
-    },
-    {
-      route: 'friends',
-      icon: IconFriends,
-      sub: '/top',
-    },
-    {
-      route: 'subscribers',
-      icon: IconMail,
-      sub: '/top',
-    },
-    {
-      route: 'chats',
-      icon: IconMessages,
-      sub: '/my',
-    },
-    {
       route: 'reports',
       icon: IconNews,
     },
@@ -72,32 +50,50 @@ export default function CustomNavbar(props: Props) {
       icon: IconChartBar,
     },
     {
+      route: 'chats',
+      icon: IconMessages,
+      sub: '/my',
+    },
+    {
       route: 'wallet',
       icon: IconWallet,
-      nested: ['cards', 'payments', 'exchanges', 'invoices'],
-      sub: '/my',
+      nested: ['cards/my', 'payments/my', 'exchanges/my', 'invoices/my'],
     },
     {
-      route: 'things',
-      icon: IconBasket,
-      nested: ['goods', 'wares', 'products'],
-    },
-    {
-      route: 'purchases',
-      icon: IconDiscount,
-      nested: ['bargains', 'trades', 'sales'],
-      sub: '/my',
-    },
-    {
-      route: 'transportations',
-      icon: IconMailbox,
+      route: 'market',
+      icon: IconBuildingStadium,
       nested: [
-        'orders',
-        'haulages',
-        'shops-deliveries',
+        'wares',
+        'trades/my',
         'markets-deliveries',
-        'storages-deliveries',
+        'rents',
+        'stalls',
+        'markets-tags',
+        'markets',
       ],
+    },
+    {
+      route: 'storage',
+      icon: IconBuildingWarehouse,
+      nested: [
+        'products',
+        'sales/my',
+        'storages-deliveries',
+        'leases',
+        'cells',
+        'storages-tags',
+        'storages',
+      ],
+    },
+    {
+      route: 'shop',
+      icon: IconBuildingStore,
+      nested: ['goods', 'bargains/my', 'shops-deliveries', 'shops'],
+    },
+    {
+      route: 'station',
+      icon: IconMailbox,
+      nested: ['orders', 'haulages', 'hires', 'boxes', 'stations'],
     },
     {
       route: 'services',
@@ -109,29 +105,21 @@ export default function CustomNavbar(props: Props) {
       icon: IconMap,
     },
     {
-      route: 'places',
-      icon: IconBuildingCommunity,
-      nested: ['towns', 'farms', 'shops', 'markets', 'storages', 'stations'],
+      route: 'farms',
+      icon: IconBuildingCottage,
     },
     {
-      route: 'tags',
-      icon: IconTags,
-      nested: ['markets-tags', 'storages-tags'],
-    },
-    {
-      route: 'containers',
-      icon: IconContainer,
-      nested: ['stalls', 'cells', 'boxes'],
-    },
-    {
-      route: 'receipts',
-      icon: IconReceipt,
-      nested: ['rents', 'leases', 'hires'],
+      route: 'towns',
+      icon: IconBuildingSkyscraper,
     },
     {
       route: 'ratings',
       icon: IconStar,
       sub: '/top',
+    },
+    {
+      route: 'users',
+      icon: IconUsers,
     },
   ];
 
@@ -155,24 +143,29 @@ export default function CustomNavbar(props: Props) {
                   label={t(`navbar.${link.route}`)}
                   icon={
                     <NotificationBadge
-                      pages={link.nested}
+                      pages={link.nested.map((route) => route.split('/')[0])}
                       icon={<link.icon size={16} />}
                     />
                   }
-                  active={link.nested.includes(active)}
+                  active={link.nested
+                    .map((route) => route.split('/')[0])
+                    .includes(active)}
                   childrenOffset={28}
                 >
                   {link.nested.map((route) => (
                     <NavLink
                       key={route}
-                      label={t(`navbar.${route}`)}
-                      icon={<NotificationBadge pages={[route]} />}
+                      label={t(`navbar.${route.split('/')[0]}`)}
+                      icon={<NotificationBadge pages={[route.split('/')[0]]} />}
                       component={Link}
-                      to={`${route}${link.sub || ''}`}
-                      active={route === active}
+                      to={route}
+                      active={route.split('/')[0] === active}
                       onClick={() =>
                         notifications
-                          .filter((notification) => notification.page === route)
+                          .filter(
+                            (notification) =>
+                              notification.page === route.split('/')[0],
+                          )
                           .forEach((notification) =>
                             hideNotification(notification.key),
                           )

@@ -1,6 +1,6 @@
 import { lazy } from 'react';
-const Home = lazy(() => import('../pages/common/Home'));
 const NotFound = lazy(() => import('../pages/common/NotFound'));
+const Home = lazy(() => import('../pages/common/Home'));
 const Map = lazy(() => import('../pages/map/Map'));
 const Logger = lazy(() => import('../pages/common/Logger'));
 const UsersPage = lazy(() => import('../pages/users/UsersPage'));

@@ -1,7 +1,14 @@
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { Avatar, Menu } from '@mantine/core';
-import { IconLock, IconLogin, IconLogout, IconUser } from '@tabler/icons';
+import {
+  IconFriends,
+  IconLock,
+  IconLogin,
+  IconLogout,
+  IconMail,
+  IconUser,
+} from '@tabler/icons';
 import { useAppDispatch } from '../../app/hooks';
 import {
   getCurrentUser,
@@ -11,6 +18,7 @@ import { publishOffline, unsubscribe } from '../../features/mqtt/mqtt.slice';
 import { useLogoutMutation } from '../../features/auth/auth.api';
 import { openAuthModal } from '../../features/auth/AuthModal';
 import { openUpdatePasswordModal } from '../../features/auth/UpdatePasswordModal';
+import NotificationBadge from './NotificationBadge';
 
 export default function AccountMenu() {
   const [t] = useTranslation();
@@ -27,6 +35,11 @@ export default function AccountMenu() {
     dispatch(publishOffline(user!.id));
     dispatch(unsubscribe(user!.id));
   };
+
+  const links = [
+    { label: 'friends', icon: IconFriends },
+    { label: 'subscribers', icon: IconMail },
+  ];
 
   return (
     <Menu offset={4} position='bottom-end' trigger='hover'>
@@ -58,6 +71,21 @@ export default function AccountMenu() {
             >
               {t('header.menu.account.profile')}
             </Menu.Item>
+            {links.map((link) => (
+              <Menu.Item
+                key={link.label}
+                icon={
+                  <NotificationBadge
+                    pages={[link.label]}
+                    icon={<link.icon size={16} />}
+                  />
+                }
+                component={Link}
+                to={`/${link.label}/my`}
+              >
+                {t(`navbar.${link.label}`)}
+              </Menu.Item>
+            ))}
             <Menu.Item
               icon={<IconLock size={16} />}
               onClick={openUpdatePasswordModal}

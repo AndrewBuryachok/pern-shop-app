@@ -31,8 +31,8 @@
     }
   },
   "navbar": {
-    "home": "Home",
     "notfound": "Not Found",
+    "home": "Home",
     "user": "User",
     "users": "Users",
     "friends": "Friends",
@@ -41,21 +41,19 @@
     "chats": "Chats",
     "reports": "Reports",
     "articles": "Articles",
+    "polls": "Polls",
     "likes": "Likes",
     "wallet": "Wallet",
     "cards": "Cards",
     "payments": "Payments",
     "exchanges": "Exchanges",
     "invoices": "Invoices",
-    "things": "Things",
     "goods": "Goods",
     "wares": "Wares",
     "products": "Products",
-    "purchases": "Purchases",
     "bargains": "Bargains",
     "trades": "Trades",
     "sales": "Sales",
-    "transportations": "Transportations",
     "orders": "Orders",
     "haulages": "Haulages",
     "shops-deliveries": "Shops Deliveries",
@@ -65,17 +63,18 @@
     "tasks": "Tasks",
     "adverts": "Adverts",
     "map": "Map",
-    "places": "Places",
     "towns": "Towns",
     "farms": "Farms",
+    "shop": "Shop",
     "shops": "Shops",
+    "market": "Market",
     "markets": "Markets",
+    "storage": "Storage",
     "storages": "Storages",
+    "station": "Mail",
     "stations": "Stations",
-    "tags": "Tags",
     "markets-tags": "Markets Tags",
     "storages-tags": "Storages Tags",
-    "containers": "Containers",
     "stalls": "Stalls",
     "cells": "Cells",
     "boxes": "Boxes",
@@ -83,7 +82,6 @@
     "rents": "Rents",
     "leases": "Leases",
     "hires": "Hires",
-    "polls": "Polls",
     "ratings": "Ratings"
   },
   "aside": {
@@ -97,6 +95,7 @@
     "subscribers": "View subscribers; add, remove subscribers",
     "reports": "View reports; create, edit, delete reports; like, comment reports",
     "articles": "View articles; create, edit, delete articles; like, comment articles",
+    "polls": "View polls; create, edit, complete, delete polls; like, comment polls",
     "cards": "View cards; create, edit cards; add, remove users",
     "payments": "View payments; create payments",
     "exchanges": "View exchanges; increase, decrease balance",
@@ -128,7 +127,6 @@
     "rents": "View rents; continue, complete rents",
     "leases": "View leases; continue, complete leases",
     "hires": "View hires; continue, complete hires",
-    "polls": "View polls; create, edit, complete, delete polls; like, comment polls",
     "ratings": "View ratings; create, edit, delete ratings",
     "increase": "Will be added to card",
     "decrease": "Will be removed from card"
@@ -313,6 +311,7 @@
     "subscribers": "Subscriber",
     "reports": "Report",
     "articles": "Article",
+    "polls": "Poll",
     "comments": "Comment",
     "cards": "Card",
     "exchanges": "Exchange",
@@ -341,7 +340,6 @@
     "haulages": "Haulage",
     "tasks": "Task",
     "adverts": "Advert",
-    "polls": "Poll",
     "ratings": "Rating"
   },
   "errors": {
@@ -381,6 +379,15 @@
       "commented": "commented your article",
       "replied": "replied to your comment",
       "mentioned": "mentioned you in article",
+      "submentioned": "mentioned you in comment"
+    },
+    "polls": {
+      "created": "created poll",
+      "reacted": "reacted to your poll",
+      "commented": "commented your poll",
+      "completed": "completed your poll",
+      "replied": "replied to your comment",
+      "mentioned": "mentioned you in poll",
       "submentioned": "mentioned you in comment"
     },
     "cards": {
@@ -519,15 +526,6 @@
     },
     "adverts": {
       "created": "created advert"
-    },
-    "polls": {
-      "created": "created poll",
-      "reacted": "reacted to your poll",
-      "commented": "commented your poll",
-      "completed": "completed your poll",
-      "replied": "replied to your comment",
-      "mentioned": "mentioned you in poll",
-      "submentioned": "mentioned you in comment"
     },
     "ratings": {
       "created": "created rating to you",
