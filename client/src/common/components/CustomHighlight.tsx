@@ -16,11 +16,14 @@ export default function CustomHighlight(props: Props) {
     tasklists: true,
     tables: true,
     emoji: true,
-    ghMentions: true,
-    ghMentionsLink: '/users/{u}',
   });
 
-  const html = DOMPurify.sanitize(converter.makeHtml(props.text));
+  const text = props.text.replace(
+    /@(\w+)/g,
+    (match, nick) => `[${match}](/users/${nick})`,
+  );
+
+  const html = DOMPurify.sanitize(converter.makeHtml(text));
 
   return (
     <TypographyStylesProvider>
