@@ -1,4 +1,5 @@
 import showdown from 'showdown';
+import DOMPurify from 'dompurify';
 import { TypographyStylesProvider } from '@mantine/core';
 
 type Props = {
@@ -19,12 +20,12 @@ export default function CustomHighlight(props: Props) {
     ghMentionsLink: '/users/{u}',
   });
 
+  const html = DOMPurify.sanitize(converter.makeHtml(props.text));
+
   return (
     <TypographyStylesProvider>
       <div
-        dangerouslySetInnerHTML={{
-          __html: converter.makeHtml(props.text),
-        }}
+        dangerouslySetInnerHTML={{ __html: html }}
         style={{ fontSize: 14, marginBottom: -20 }}
       />
     </TypographyStylesProvider>
