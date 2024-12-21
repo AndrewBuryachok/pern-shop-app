@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Invitation } from './invitation.entity';
+import { Offer } from './offer.entity';
 import { User } from '../users/user.entity';
 import { UsersService } from '../users/users.service';
 import { MqttService } from '../mqtt/mqtt.service';
@@ -14,8 +14,8 @@ import { Notification } from '../../common/enums';
 @Injectable()
 export class FriendsService {
   constructor(
-    @InjectRepository(Invitation)
-    private invitationsRepository: Repository<Invitation>,
+    @InjectRepository(Offer)
+    private offersRepository: Repository<Offer>,
     private usersService: UsersService,
     private mqttService: MqttService,
   ) {}
@@ -33,12 +33,12 @@ export class FriendsService {
     const [result, count] = await this.usersService
       .getFriendsQueryBuilder(req)
       .leftJoinAndMapMany(
-        'user.invitations',
-        'invitations',
-        'invitation',
-        'invitation.receiverUserId = user.id',
+        'user.offers',
+        'offers',
+        'offer',
+        'offer.receiverUserId = user.id',
       )
-      .andWhere('invitation.senderUserId = :myId', { myId })
+      .andWhere('offer.senderUserId = :myId', { myId })
       .getManyAndCount();
     return { result, count };
   }
@@ -50,36 +50,36 @@ export class FriendsService {
     const [result, count] = await this.usersService
       .getFriendsQueryBuilder(req)
       .leftJoinAndMapMany(
-        'user.invitations',
-        'invitations',
-        'invitation',
-        'invitation.senderUserId = user.id',
+        'user.offers',
+        'offers',
+        'offer',
+        'offer.senderUserId = user.id',
       )
-      .andWhere('invitation.receiverUserId = :myId', { myId })
+      .andWhere('offer.receiverUserId = :myId', { myId })
       .getManyAndCount();
     return { result, count };
   }
 
   async addFriend(dto: UpdateFriendDto & { nick: string }): Promise<void> {
-    const invitation1 = await this.invitationsRepository.findOneBy({
+    const offer1 = await this.offersRepository.findOneBy({
       senderUserId: dto.myId,
       receiverUserId: dto.userId,
     });
-    if (invitation1 && dto.myId !== dto.userId) {
-      throw new AppException(FriendError.ALREADY_INVITED);
+    if (offer1 && dto.myId !== dto.userId) {
+      throw new AppException(FriendError.ALREADY_OFFERED);
     }
-    const invitation2 = await this.invitationsRepository.findOneBy({
+    const offer2 = await this.offersRepository.findOneBy({
       senderUserId: dto.userId,
       receiverUserId: dto.myId,
     });
-    if (!invitation2) {
+    if (!offer2) {
       await this.usersService.checkNotFriends(dto.myId, dto.userId);
       await this.create(dto);
       this.mqttService.publishNotificationMessage(
         dto.myId,
         dto.userId,
         dto.nick,
-        Notification.INVITED_FRIEND,
+        Notification.OFFERED_FRIEND,
       );
     } else {
       await this.usersService.addUserFriend({
@@ -92,7 +92,7 @@ export class FriendsService {
           receiverUserId: dto.myId,
         });
       }
-      await this.delete(invitation2);
+      await this.delete(offer2);
       this.mqttService.publishNotificationMessage(
         dto.myId,
         dto.userId,
@@ -103,24 +103,24 @@ export class FriendsService {
   }
 
   async removeFriend(dto: UpdateFriendDto & { nick: string }): Promise<void> {
-    const invitation1 = await this.invitationsRepository.findOneBy({
+    const offer1 = await this.offersRepository.findOneBy({
       senderUserId: dto.myId,
       receiverUserId: dto.userId,
     });
-    const invitation2 = await this.invitationsRepository.findOneBy({
+    const offer2 = await this.offersRepository.findOneBy({
       senderUserId: dto.userId,
       receiverUserId: dto.myId,
     });
-    if (invitation1) {
-      await this.delete(invitation1);
+    if (offer1) {
+      await this.delete(offer1);
       this.mqttService.publishNotificationMessage(
         dto.myId,
         dto.userId,
         dto.nick,
         Notification.CANCELED_FRIEND,
       );
-    } else if (invitation2) {
-      await this.delete(invitation2);
+    } else if (offer2) {
+      await this.delete(offer2);
       this.mqttService.publishNotificationMessage(
         dto.myId,
         dto.userId,
@@ -147,22 +147,22 @@ export class FriendsService {
     }
   }
 
-  private async create(dto: UpdateFriendDto): Promise<Invitation> {
+  private async create(dto: UpdateFriendDto): Promise<Offer> {
     try {
-      const invitation = this.invitationsRepository.create({
+      const offer = this.offersRepository.create({
         senderUserId: dto.myId,
         receiverUserId: dto.userId,
       });
-      await this.invitationsRepository.save(invitation);
-      return invitation;
+      await this.offersRepository.save(offer);
+      return offer;
     } catch (error) {
       throw new AppException(FriendError.CREATE_FAILED);
     }
   }
 
-  private async delete(invitation: Invitation): Promise<void> {
+  private async delete(offer: Offer): Promise<void> {
     try {
-      await this.invitationsRepository.remove(invitation);
+      await this.offersRepository.remove(offer);
     } catch (error) {
       throw new AppException(FriendError.DELETE_FAILED);
     }

@@ -1,6 +1,6 @@
 export enum Notification {
   MESSAGED_USER = 'messaged chats',
-  INVITED_FRIEND = 'invited friends',
+  OFFERED_FRIEND = 'offered friends',
   APPROVED_FRIEND = 'approved friends',
   CANCELED_FRIEND = 'canceled friends',
   REJECTED_FRIEND = 'rejected friends',

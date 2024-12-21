@@ -143,22 +143,22 @@ export class UsersService {
         where: { id: myId },
       })
     ).friends.map((friend) => friend.id);
-    const invitations = (
+    const offers = (
       await this.usersRepository
         .createQueryBuilder('user')
         .leftJoinAndMapMany(
-          'user.invitations',
-          'invitations',
-          'invitation',
-          'invitation.senderUserId = user.id',
+          'user.offers',
+          'offers',
+          'offer',
+          'offer.senderUserId = user.id',
         )
         .where('user.id = :myId', { myId })
-        .select(['user.id', 'invitation.receiverUserId'])
+        .select(['user.id', 'offer.receiverUserId'])
         .getOne()
-    )['invitations'].map((invitation) => invitation.receiverUserId);
+    )['offers'].map((offer) => offer.receiverUserId);
     const users = await this.selectUsersQueryBuilder().getMany();
     return users.filter(
-      (user) => !friends.includes(user.id) && !invitations.includes(user.id),
+      (user) => !friends.includes(user.id) && !offers.includes(user.id),
     );
   }
 

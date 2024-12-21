@@ -8,8 +8,8 @@ import {
 } from 'typeorm';
 import { User } from '../users/user.entity';
 
-@Entity('invitations')
-export class Invitation {
+@Entity('offers')
+export class Offer {
   @PrimaryGeneratedColumn()
   id: number;
 
