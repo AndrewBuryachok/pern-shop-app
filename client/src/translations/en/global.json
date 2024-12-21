@@ -351,10 +351,10 @@
     "message": "Operation completed successfully",
     "notification": "Notification",
     "friends": {
-      "invited": "invited you in friends",
-      "approved": "approved you in friends",
-      "canceled": "canceled you in friends",
-      "rejected": "rejected you in friends",
+      "offered": "offered you friendship",
+      "approved": "approved your friendship",
+      "canceled": "canceled your friendship",
+      "rejected": "rejected your friendship",
       "deleted": "deleted you from friends"
     },
     "subscribers": {

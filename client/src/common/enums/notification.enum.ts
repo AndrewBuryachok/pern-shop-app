@@ -1,6 +1,6 @@
 export const notificationToTab = [
   'messaged chats main',
-  'invited friends received',
+  'offered friends received',
   'approved friends my',
   'canceled friends received',
   'rejected friends sent',
