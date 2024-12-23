@@ -97,7 +97,7 @@ export class FriendsService {
         dto.myId,
         dto.userId,
         dto.nick,
-        Notification.APPROVED_FRIEND,
+        Notification.ACCEPTED_FRIEND,
       );
     }
   }

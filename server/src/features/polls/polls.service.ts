@@ -278,7 +278,7 @@ export class PollsService {
 
   private async complete(poll: Poll, dto: ExtCompletePollDto): Promise<void> {
     try {
-      poll.result = dto.type ? Result.APPROVED : Result.REJECTED;
+      poll.result = dto.type ? Result.ACCEPTED : Result.REJECTED;
       poll.completedAt = new Date();
       await this.pollsRepository.save(poll);
     } catch (error) {

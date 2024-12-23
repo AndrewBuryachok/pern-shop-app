@@ -13,7 +13,7 @@ define(Poll, (faker: Faker) => {
   const completed = !!Math.floor(Math.random() * 2);
   if (completed) {
     poll.result = !!Math.floor(Math.random() * 2)
-      ? Result.APPROVED
+      ? Result.ACCEPTED
       : Result.REJECTED;
     poll.completedAt = new Date();
   }
