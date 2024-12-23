@@ -201,7 +201,7 @@ export const selectExchangeTypes = () =>
   }));
 
 export const selectPollTypes = () =>
-  ['rejected', 'approved'].map((type, index) => ({
+  ['rejected', 'accepted'].map((type, index) => ({
     text: t(`constants.results.${type}`),
     color: `${index * 2 + 1}`,
     value: `${index}`,

@@ -352,7 +352,7 @@
     "notification": "Notification",
     "friends": {
       "offered": "offered you friendship",
-      "approved": "approved your friendship",
+      "accepted": "accepted your friendship",
       "canceled": "canceled your friendship",
       "rejected": "rejected your friendship",
       "deleted": "deleted you from friends"
@@ -590,7 +590,7 @@
     },
     "results": {
       "progress": "In progress",
-      "approved": "Approved",
+      "accepted": "Accepted",
       "rejected": "Rejected"
     },
     "items": {
