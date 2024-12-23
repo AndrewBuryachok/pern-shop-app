@@ -11,6 +11,7 @@ import {
   UpdateUserFriendDto,
   UpdateUserSubscriberDto,
   UpdateUserTokenDto,
+  UpdateUserTownDto,
 } from './user.dto';
 import { Request, Response } from '../../common/interfaces';
 import { hashData } from '../../common/utils';
@@ -124,6 +125,10 @@ export class UsersService {
       'user.ratersCount',
       'user.receivedRatings',
     );
+  }
+
+  getResidentsQueryBuilder(req: Request): SelectQueryBuilder<User> {
+    return this.getExtUsersQueryBuilder(req);
   }
 
   selectAllUsers(): Promise<User[]> {
@@ -284,6 +289,22 @@ export class UsersService {
       throw new AppException(UserError.NOT_HAS_ROLE);
     }
     await this.removeRole(user, dto.role);
+  }
+
+  async addUserTown(dto: UpdateUserTownDto): Promise<void> {
+    const user = await this.usersRepository.findOneBy({ id: dto.userId });
+    if (user.townId) {
+      throw new AppException(UserError.ALREADY_IN_TOWN);
+    }
+    await this.addTown(user, dto.townId);
+  }
+
+  async removeUserTown(dto: UpdateUserTownDto): Promise<void> {
+    const user = await this.usersRepository.findOneBy({ id: dto.userId });
+    if (user.townId !== dto.townId) {
+      throw new AppException(UserError.NOT_IN_TOWN);
+    }
+    await this.removeTown(user);
   }
 
   async addUserFriend(dto: UpdateUserFriendDto): Promise<void> {
@@ -473,6 +494,24 @@ export class UsersService {
       await this.usersRepository.save(user);
     } catch (error) {
       throw new AppException(UserError.REMOVE_ROLE_FAILED);
+    }
+  }
+
+  private async addTown(user: User, townId: number): Promise<void> {
+    try {
+      user.townId = townId;
+      await this.usersRepository.save(user);
+    } catch (error) {
+      throw new AppException(UserError.ADD_TOWN_FAILED);
+    }
+  }
+
+  private async removeTown(user: User): Promise<void> {
+    try {
+      user.townId = null;
+      await this.usersRepository.save(user);
+    } catch (error) {
+      throw new AppException(UserError.REMOVE_TOWN_FAILED);
     }
   }
 

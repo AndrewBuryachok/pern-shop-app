@@ -4,7 +4,6 @@ import { Type } from 'class-transformer';
 import { IsId } from '../../common/decorators';
 import { IsTownExists, IsUserExists } from '../../common/constraints';
 import { CreatePlaceDto } from '../places/place.dto';
-import { UserIdDto } from '../users/user.dto';
 
 export class TownIdDto {
   @ApiProperty()
@@ -31,10 +30,7 @@ export class ExtEditTownDto extends EditTownDto {
   hasRole: boolean;
 }
 
-export class UpdateTownUserDto extends UserIdDto {}
-
-export class ExtUpdateTownUserDto extends UpdateTownUserDto {
-  townId: number;
+export class DeleteTownDto extends TownIdDto {
   myId: number;
   hasRole: boolean;
 }

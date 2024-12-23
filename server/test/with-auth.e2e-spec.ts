@@ -1315,20 +1315,143 @@ describe('With Auth', () => {
         })
         .expect('');
     });
+  });
 
-    it('POST /towns/:townId/users', async () => {
+  describe('Invitations', () => {
+    it('POST /invitations/sent/:userId', async () => {
       return request(app.getHttpServer())
-        .post(`/towns/${townId}/users`)
+        .post(`/invitations/sent/${admin.id}`)
         .set('Authorization', `Bearer ${user.access}`)
-        .send({ userId: admin.id })
         .expect('');
     });
 
-    it('DELETE /towns/:townId/users', async () => {
+    it('GET /invitations/sent', async () => {
       return request(app.getHttpServer())
-        .delete(`/towns/${townId}/users`)
+        .get('/invitations/sent')
         .set('Authorization', `Bearer ${user.access}`)
-        .send({ userId: admin.id })
+        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
+    });
+
+    it('GET /invitations/received', async () => {
+      return request(app.getHttpServer())
+        .get('/invitations/received')
+        .set('Authorization', `Bearer ${admin.access}`)
+        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
+    });
+
+    it('DELETE /invitations/sent/:userId', async () => {
+      return request(app.getHttpServer())
+        .delete(`/invitations/sent/${admin.id}`)
+        .set('Authorization', `Bearer ${user.access}`)
+        .expect('');
+    });
+
+    it('POST /invitations/sent/:userId', async () => {
+      return request(app.getHttpServer())
+        .post(`/invitations/sent/${admin.id}`)
+        .set('Authorization', `Bearer ${user.access}`)
+        .expect('');
+    });
+
+    it('DELETE /invitations/received/:townId', async () => {
+      return request(app.getHttpServer())
+        .delete(`/invitations/received/${townId}`)
+        .set('Authorization', `Bearer ${admin.access}`)
+        .expect('');
+    });
+
+    it('POST /invitations/sent/:userId', async () => {
+      return request(app.getHttpServer())
+        .post(`/invitations/sent/${admin.id}`)
+        .set('Authorization', `Bearer ${user.access}`)
+        .expect('');
+    });
+
+    it('POST /invitations/received/:townId', async () => {
+      return request(app.getHttpServer())
+        .post(`/invitations/received/${townId}`)
+        .set('Authorization', `Bearer ${admin.access}`)
+        .expect('');
+    });
+
+    it('DELETE /residents/:userId', async () => {
+      return request(app.getHttpServer())
+        .delete(`/residents/${admin.id}`)
+        .set('Authorization', `Bearer ${user.access}`)
+        .expect('');
+    });
+  });
+
+  describe('Applications', () => {
+    it('POST /applications/sent/:townId', async () => {
+      return request(app.getHttpServer())
+        .post(`/applications/sent/${townId}`)
+        .set('Authorization', `Bearer ${admin.access}`)
+        .expect('');
+    });
+
+    it('GET /applications/sent', async () => {
+      return request(app.getHttpServer())
+        .get('/applications/sent')
+        .set('Authorization', `Bearer ${admin.access}`)
+        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
+    });
+
+    it('GET /applications/received', async () => {
+      return request(app.getHttpServer())
+        .get('/applications/received')
+        .set('Authorization', `Bearer ${user.access}`)
+        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
+    });
+
+    it('DELETE /applications/sent/:townId', async () => {
+      return request(app.getHttpServer())
+        .delete(`/applications/sent/${townId}`)
+        .set('Authorization', `Bearer ${admin.access}`)
+        .expect('');
+    });
+
+    it('POST /applications/sent/:townId', async () => {
+      return request(app.getHttpServer())
+        .post(`/applications/sent/${townId}`)
+        .set('Authorization', `Bearer ${admin.access}`)
+        .expect('');
+    });
+
+    it('DELETE /applications/received/:userId', async () => {
+      return request(app.getHttpServer())
+        .delete(`/applications/received/${admin.id}`)
+        .set('Authorization', `Bearer ${user.access}`)
+        .expect('');
+    });
+
+    it('POST /applications/sent/:townId', async () => {
+      return request(app.getHttpServer())
+        .post(`/applications/sent/${townId}`)
+        .set('Authorization', `Bearer ${admin.access}`)
+        .expect('');
+    });
+
+    it('POST /applications/received/:userId', async () => {
+      return request(app.getHttpServer())
+        .post(`/applications/received/${admin.id}`)
+        .set('Authorization', `Bearer ${user.access}`)
+        .expect('');
+    });
+  });
+
+  describe('Residents', () => {
+    it('GET /residents/my', async () => {
+      return request(app.getHttpServer())
+        .get('/residents/my')
+        .set('Authorization', `Bearer ${user.access}`)
+        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
+    });
+
+    it('DELETE /towns/:townId', async () => {
+      return request(app.getHttpServer())
+        .delete(`/towns/${townId}`)
+        .set('Authorization', `Bearer ${user.access}`)
         .expect('');
     });
   });

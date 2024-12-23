@@ -4,11 +4,7 @@ import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { Town } from './town.entity';
 import { User } from '../users/user.entity';
 import { MqttService } from '../mqtt/mqtt.service';
-import {
-  ExtCreateTownDto,
-  ExtEditTownDto,
-  ExtUpdateTownUserDto,
-} from './town.dto';
+import { DeleteTownDto, ExtCreateTownDto, ExtEditTownDto } from './town.dto';
 import { Request, Response } from '../../common/interfaces';
 import { AppException } from '../../common/exceptions';
 import { TownError } from './town-error.enum';
@@ -44,6 +40,10 @@ export class TownsService {
     return { result, count };
   }
 
+  getResidentsQueryBuilder(req: Request): SelectQueryBuilder<Town> {
+    return this.getTownsQueryBuilder(req);
+  }
+
   selectAllTowns(): Promise<Town[]> {
     return this.selectTownsQueryBuilder().getMany();
   }
@@ -68,7 +68,7 @@ export class TownsService {
   }
 
   async createTown(dto: ExtCreateTownDto & { nick: string }): Promise<void> {
-    await this.checkNotTownUser(dto.userId);
+    await this.checkNotInTown(dto.userId);
     await this.checkNameNotUsed(dto.name);
     await this.checkCoordinatesNotUsed(dto.x, dto.y);
     const town = await this.create(dto);
@@ -87,63 +87,21 @@ export class TownsService {
     await this.edit(town, dto);
   }
 
-  async addTownUser(
-    dto: ExtUpdateTownUserDto & { nick: string },
-  ): Promise<void> {
+  async deleteTown(dto: DeleteTownDto & { nick: string }): Promise<void> {
     const town = await this.checkTownOwner(dto.townId, dto.myId, dto.hasRole);
-    await this.checkNotTownUser(dto.userId);
-    await this.addUser(town, dto.userId);
-    this.mqttService.publishNotificationMessage(
-      dto.townId,
-      dto.userId,
-      dto.nick,
-      Notification.ADDED_TOWN,
+    await this.delete(town);
+    town.users.forEach((user) =>
+      this.mqttService.publishNotificationMessage(
+        dto.townId,
+        user.id,
+        dto.nick,
+        Notification.DELETED_TOWN,
+      ),
     );
-  }
-
-  async removeTownUser(
-    dto: ExtUpdateTownUserDto & { nick: string },
-  ): Promise<void> {
-    const town =
-      dto.userId === dto.myId
-        ? await this.findTownById(dto.townId)
-        : await this.checkTownOwner(dto.townId, dto.myId, dto.hasRole);
-    if (town.userId === dto.userId) {
-      throw new AppException(TownError.OWNER);
-    }
-    if (!town.users.map((user) => user.id).includes(dto.userId)) {
-      throw new AppException(TownError.NOT_IN_TOWN);
-    }
-    await this.removeUser(town, dto.userId);
-    if (dto.userId === dto.myId) {
-      this.mqttService.publishNotificationMessage(
-        dto.townId,
-        town.userId,
-        dto.nick,
-        Notification.LEFT_TOWN,
-      );
-    } else {
-      this.mqttService.publishNotificationMessage(
-        dto.townId,
-        dto.userId,
-        dto.nick,
-        Notification.REMOVED_TOWN,
-      );
-    }
   }
 
   async checkTownExists(id: number): Promise<void> {
     await this.townsRepository.findOneByOrFail({ id });
-  }
-
-  async checkNotTownUser(userId: number): Promise<void> {
-    const town = await this.townsRepository.findOne({
-      relations: ['users'],
-      where: { users: [{ id: userId }] },
-    });
-    if (town) {
-      throw new AppException(TownError.ALREADY_IN_TOWN);
-    }
   }
 
   async checkTownOwner(
@@ -156,6 +114,40 @@ export class TownsService {
       throw new AppException(TownError.NOT_OWNER);
     }
     return town;
+  }
+
+  async checkHaveTown(userId: number): Promise<Town> {
+    const town = await this.townsRepository.findOneBy({ userId });
+    if (!town) {
+      throw new AppException(TownError.NOT_HAVE);
+    }
+    return town;
+  }
+
+  async checkNotInTown(userId: number): Promise<void> {
+    const town = await this.townsRepository.findOne({
+      relations: ['users'],
+      where: { users: [{ id: userId }] },
+    });
+    if (town) {
+      throw new AppException(TownError.ALREADY_IN);
+    }
+  }
+
+  async checkInTown(userId: number): Promise<Town> {
+    const town = await this.townsRepository.findOne({
+      relations: ['users'],
+      where: { users: [{ id: userId }] },
+    });
+    if (!town) {
+      throw new AppException(TownError.NOT_IN);
+    }
+    return town;
+  }
+
+  async findTownUserIdById(id: number): Promise<number> {
+    const town = await this.townsRepository.findOneBy({ id });
+    return town.userId;
   }
 
   private async checkNameNotUsed(name: string, id?: number): Promise<void> {
@@ -216,23 +208,11 @@ export class TownsService {
     }
   }
 
-  private async addUser(town: Town, userId: number): Promise<void> {
+  private async delete(town: Town): Promise<void> {
     try {
-      const user = new User();
-      user.id = userId;
-      town.users.push(user);
-      await this.townsRepository.save(town);
+      await this.townsRepository.remove(town);
     } catch (error) {
-      throw new AppException(TownError.ADD_USER_FAILED);
-    }
-  }
-
-  private async removeUser(town: Town, userId: number): Promise<void> {
-    try {
-      town.users = town.users.filter((user) => user.id !== userId);
-      await this.townsRepository.save(town);
-    } catch (error) {
-      throw new AppException(TownError.REMOVE_USER_FAILED);
+      throw new AppException(TownError.DELETE_FAILED);
     }
   }
 

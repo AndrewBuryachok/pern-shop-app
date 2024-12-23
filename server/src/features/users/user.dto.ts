@@ -83,6 +83,10 @@ export class ExtUpdateUserRoleDto extends UpdateUserRoleDto {
   userId: number;
 }
 
+export class UpdateUserTownDto extends UserIdDto {
+  townId: number;
+}
+
 export class UpdateUserFriendDto {
   senderUserId: number;
   receiverUserId: number;

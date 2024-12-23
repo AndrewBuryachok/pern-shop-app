@@ -17,7 +17,6 @@ import {
   EditTownDto,
   ExtCreateTownDto,
   TownIdDto,
-  UpdateTownUserDto,
 } from './town.dto';
 import { Request, Response } from '../../common/interfaces';
 import { HasRole, MyId, MyNick, Public, Roles } from '../../common/decorators';
@@ -93,33 +92,14 @@ export class TownsController {
     return this.townsService.editTown({ ...dto, townId, myId, hasRole });
   }
 
-  @Post(':townId/users')
-  addTownUser(
+  @Delete(':townId')
+  deleteTown(
     @MyId() myId: number,
     @MyNick() nick: string,
     @HasRole(Role.INSPECTOR) hasRole: boolean,
     @Param() { townId }: TownIdDto,
-    @Body() dto: UpdateTownUserDto,
   ): Promise<void> {
-    return this.townsService.addTownUser({
-      ...dto,
-      townId,
-      myId,
-      nick,
-      hasRole,
-    });
-  }
-
-  @Delete(':townId/users')
-  removeTownUser(
-    @MyId() myId: number,
-    @MyNick() nick: string,
-    @HasRole(Role.INSPECTOR) hasRole: boolean,
-    @Param() { townId }: TownIdDto,
-    @Body() dto: UpdateTownUserDto,
-  ): Promise<void> {
-    return this.townsService.removeTownUser({
-      ...dto,
+    return this.townsService.deleteTown({
       townId,
       myId,
       nick,

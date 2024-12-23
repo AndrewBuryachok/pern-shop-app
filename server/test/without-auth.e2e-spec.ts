@@ -278,6 +278,36 @@ describe('Without Auth', () => {
     });
   });
 
+  describe('Invitations', () => {
+    it('GET /invitations/sent', async () => {
+      return request(app.getHttpServer()).get('/invitations/sent').expect(401);
+    });
+
+    it('GET /invitations/received', async () => {
+      return request(app.getHttpServer())
+        .get('/invitations/received')
+        .expect(401);
+    });
+  });
+
+  describe('Applications', () => {
+    it('GET /applications/sent', async () => {
+      return request(app.getHttpServer()).get('/applications/sent').expect(401);
+    });
+
+    it('GET /applications/received', async () => {
+      return request(app.getHttpServer())
+        .get('/applications/received')
+        .expect(401);
+    });
+  });
+
+  describe('Residents', () => {
+    it('GET /residents/my', async () => {
+      return request(app.getHttpServer()).get('/residents/my').expect(401);
+    });
+  });
+
   describe('Farms', () => {
     it('GET /farms/my', async () => {
       return request(app.getHttpServer()).get('/farms/my').expect(401);
