@@ -4,10 +4,10 @@ import { TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
-import { User } from './user.model';
+import { User } from '../users/user.model';
 import { getCurrentUser } from '../auth/auth.slice';
-import { useRemoveTownUserMutation } from '../towns/towns.api';
-import { UpdateTownUserDto } from '../towns/town.dto';
+import { useDeleteResidentMutation } from './residents.api';
+import { UserIdDto } from '../users/user.dto';
 import CustomForm from '../../common/components/CustomForm';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import { parsePlace } from '../../common/utils';
@@ -15,27 +15,26 @@ import { Color } from '../../common/constants';
 
 type Props = IModal<User>;
 
-export default function RemoveUserTownModal({ data: user }: Props) {
+export default function DeleteResidentModal({ data: user }: Props) {
   const [t] = useTranslation();
 
   const form = useForm({
     initialValues: {
       userId: user.id,
-      townId: user.town!.id,
     },
   });
 
-  const [removeUserTown, { isLoading }] = useRemoveTownUserMutation();
+  const [deleteResident, { isLoading }] = useDeleteResidentMutation();
 
-  const handleSubmit = async (dto: UpdateTownUserDto) => {
-    await removeUserTown(dto);
+  const handleSubmit = async (dto: UserIdDto) => {
+    await deleteResident(dto);
   };
 
   return (
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={t('actions.remove') + ' ' + t('modals.users')}
+      text={t('actions.delete') + ' ' + t('modals.residents')}
     >
       <TextInput
         label={t('columns.user')}
@@ -53,11 +52,11 @@ export default function RemoveUserTownModal({ data: user }: Props) {
   );
 }
 
-export const removeUserTownAction = {
+export const deleteResidentAction = {
   open: (user: User) =>
     openModal({
-      title: t('actions.remove') + ' ' + t('modals.users'),
-      children: <RemoveUserTownModal data={user} />,
+      title: t('actions.delete') + ' ' + t('modals.residents'),
+      children: <DeleteResidentModal data={user} />,
     }),
   disable: (user: User) => {
     const me = getCurrentUser()!;

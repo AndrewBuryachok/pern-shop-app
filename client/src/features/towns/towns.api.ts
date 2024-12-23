@@ -6,7 +6,7 @@ import {
   CreateTownDto,
   EditTownDto,
   ExtCreateTownDto,
-  UpdateTownUserDto,
+  TownIdDto,
 } from './town.dto';
 import { getQuery } from '../../common/utils';
 
@@ -72,21 +72,12 @@ export const townsApi = emptyApi.injectEndpoints({
       }),
       invalidatesTags: ['Town'],
     }),
-    addTownUser: build.mutation<void, UpdateTownUserDto>({
-      query: ({ townId, ...dto }) => ({
-        url: `/towns/${townId}/users`,
-        method: 'POST',
-        body: dto,
-      }),
-      invalidatesTags: ['Town', 'User'],
-    }),
-    removeTownUser: build.mutation<void, UpdateTownUserDto>({
-      query: ({ townId, ...dto }) => ({
-        url: `/towns/${townId}/users`,
+    deleteTown: build.mutation<void, TownIdDto>({
+      query: ({ townId }) => ({
+        url: `/towns/${townId}`,
         method: 'DELETE',
-        body: dto,
       }),
-      invalidatesTags: ['Town', 'User'],
+      invalidatesTags: ['Town', 'Resident'],
     }),
   }),
 });
@@ -101,6 +92,5 @@ export const {
   useCreateMyTownMutation,
   useCreateUserTownMutation,
   useEditTownMutation,
-  useAddTownUserMutation,
-  useRemoveTownUserMutation,
+  useDeleteTownMutation,
 } = townsApi;

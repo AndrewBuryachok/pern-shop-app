@@ -18,6 +18,13 @@ const ExchangesPage = lazy(() => import('../pages/exchanges/ExchangesPage'));
 const PaymentsPage = lazy(() => import('../pages/payments/PaymentsPage'));
 const InvoicesPage = lazy(() => import('../pages/invoices/InvoicesPage'));
 const TownsPage = lazy(() => import('../pages/towns/TownsPage'));
+const ResidentsPage = lazy(() => import('../pages/residents/ResidentsPage'));
+const InvitationsPage = lazy(
+  () => import('../pages/invitations/InvitationsPage'),
+);
+const ApplicationsPage = lazy(
+  () => import('../pages/applications/ApplicationsPage'),
+);
 const FarmsPage = lazy(() => import('../pages/farms/FarmsPage'));
 const ShopsPage = lazy(() => import('../pages/shops/ShopsPage'));
 const MarketsPage = lazy(() => import('../pages/markets/MarketsPage'));
@@ -69,7 +76,6 @@ export const pages = [
     nested: [
       { index: true },
       { path: 'top' },
-      { path: 'my' },
       { path: 'all', role: Role.ADMIN },
     ],
   },
@@ -162,6 +168,21 @@ export const pages = [
       { path: 'my' },
       { path: 'all', role: Role.INSPECTOR },
     ],
+  },
+  {
+    path: 'residents',
+    element: ResidentsPage,
+    nested: [{ path: 'my' }],
+  },
+  {
+    path: 'invitations',
+    element: InvitationsPage,
+    nested: [{ path: 'sent' }, { path: 'received' }],
+  },
+  {
+    path: 'applications',
+    element: ApplicationsPage,
+    nested: [{ path: 'sent' }, { path: 'received' }],
   },
   {
     path: 'farms',

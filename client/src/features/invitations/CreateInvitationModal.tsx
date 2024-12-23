@@ -1,51 +1,45 @@
 import { t } from 'i18next';
 import { useTranslation } from 'react-i18next';
-import { Select, TextInput } from '@mantine/core';
+import { Select } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
-import { IModal } from '../../common/interfaces';
-import { Town } from './town.model';
-import { getCurrentUser } from '../auth/auth.slice';
-import { useAddTownUserMutation } from './towns.api';
+import { useCreateInvitationMutation } from './invitations.api';
 import { useSelectNotCitizensUsersQuery } from '../users/users.api';
-import { UpdateTownUserDto } from './town.dto';
+import { UserIdDto } from '../users/user.dto';
 import CustomForm from '../../common/components/CustomForm';
 import RefetchAction from '../../common/components/RefetchAction';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import { UsersItem } from '../../common/components/UsersItem';
-import { parsePlace, selectUsers } from '../../common/utils';
-import { Color } from '../../common/constants';
+import { selectUsers } from '../../common/utils';
 
-type Props = IModal<Town>;
-
-export default function AddTownUserModal({ data: town }: Props) {
+export default function CreateInvitationModal() {
   const [t] = useTranslation();
 
   const form = useForm({
     initialValues: {
-      townId: town.id,
       user: '',
     },
-    transformValues: ({ user, ...rest }) => ({ ...rest, userId: +user }),
+    transformValues: ({ user }) => ({
+      userId: +user,
+    }),
   });
 
   const { data: users, ...usersResponse } = useSelectNotCitizensUsersQuery();
 
   const user = users?.find((user) => user.id === +form.values.user);
 
-  const [addTownUser, { isLoading }] = useAddTownUserMutation();
+  const [createInvitation, { isLoading }] = useCreateInvitationMutation();
 
-  const handleSubmit = async (dto: UpdateTownUserDto) => {
-    await addTownUser(dto);
+  const handleSubmit = async (dto: UserIdDto) => {
+    await createInvitation(dto);
   };
 
   return (
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={t('actions.add') + ' ' + t('modals.users')}
+      text={t('actions.create') + ' ' + t('modals.invitations')}
     >
-      <TextInput label={t('columns.town')} value={parsePlace(town)} readOnly />
       <Select
         label={t('columns.user')}
         placeholder={t('columns.user')}
@@ -64,19 +58,11 @@ export default function AddTownUserModal({ data: town }: Props) {
   );
 }
 
-export const addTownUserFactory = (hasRole: boolean) => ({
-  open: (town: Town) =>
+export const createInvitationButton = {
+  label: 'create',
+  open: () =>
     openModal({
-      title: t('actions.add') + ' ' + t('modals.users'),
-      children: <AddTownUserModal data={town} />,
+      title: t('actions.create') + ' ' + t('modals.invitations'),
+      children: <CreateInvitationModal />,
     }),
-  disable: (town: Town) => {
-    const user = getCurrentUser()!;
-    return town.user.id !== user.id && !hasRole;
-  },
-  color: Color.GREEN,
-});
-
-export const addMyTownUserAction = addTownUserFactory(false);
-
-export const addUserTownUserAction = addTownUserFactory(true);
+};

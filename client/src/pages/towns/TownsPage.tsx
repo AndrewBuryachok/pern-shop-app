@@ -14,13 +14,9 @@ import {
   editUserTownAction,
 } from '../../features/towns/EditTownModal';
 import {
-  addMyTownUserAction,
-  addUserTownUserAction,
-} from '../../features/towns/AddTownUserModal';
-import {
-  removeMyTownUserAction,
-  removeUserTownUserAction,
-} from '../../features/towns/RemoveTownUserModal';
+  deleteMyTownAction,
+  deleteUserTownAction,
+} from '../../features/towns/DeleteTownModal';
 
 export default function TownsPage() {
   const tab = useLocation().pathname.split('/')[2] || 'main';
@@ -47,8 +43,8 @@ export default function TownsPage() {
   }[tab];
 
   const actions = {
-    my: [editMyTownAction, addMyTownUserAction, removeMyTownUserAction],
-    all: [editUserTownAction, addUserTownUserAction, removeUserTownUserAction],
+    my: [editMyTownAction, deleteMyTownAction],
+    all: [editUserTownAction, deleteUserTownAction],
   }[tab];
 
   return (

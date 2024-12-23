@@ -64,6 +64,9 @@
     "adverts": "Adverts",
     "map": "Map",
     "towns": "Towns",
+    "residents": "Residents",
+    "invitations": "Invitations",
+    "applications": "Applications",
     "farms": "Farms",
     "shop": "Shop",
     "shops": "Shops",
@@ -114,6 +117,9 @@
     "tasks": "View tasks; create, take, execute, complete, rate tasks",
     "adverts": "View adverts; create, edit, delete, respond to adverts",
     "towns": "View towns; create, edit towns; add, remove users",
+    "residents": "View residents; add, remove residents",
+    "invitations": "View invitations; create, add, remove invitations",
+    "applications": "View applications; create, add, remove applications",
     "farms": "View farms; create, edit farms; add, remove users",
     "shops": "View shops; create, edit shops; add, remove users",
     "markets": "View markets; create, edit markets",
@@ -183,6 +189,9 @@
     "unfriend": "Remove from Friends",
     "subscribe": "Subscribe",
     "unsubscribe": "Unsubscribe",
+    "cancel": "Cancel",
+    "accept": "Accept",
+    "reject": "Reject",
     "view": "View",
     "hide": "Hide"
   },
@@ -317,6 +326,9 @@
     "payments": "Payment",
     "invoices": "Invoice",
     "towns": "Town",
+    "residents": "Resident",
+    "invitations": "Invitation",
+    "applications": "Application",
     "farms": "Farm",
     "shops": "Shop",
     "markets": "Market",
@@ -406,9 +418,23 @@
     },
     "towns": {
       "created": "created town",
-      "added": "added you in town",
-      "removed": "removed you from town",
+      "deleted": "deleted town"
+    },
+    "residents": {
+      "deleted": "deleted you from town",
       "left": "left your town"
+    },
+    "invitations": {
+      "created": "invited you in town",
+      "accepted": "accepted your intivation",
+      "canceled": "canceled your intivation",
+      "rejected": "rejected your intivation"
+    },
+    "applications": {
+      "created": "want in your town",
+      "accepted": "accepted your application",
+      "canceled": "canceled your application",
+      "rejected": "rejected your application"
     },
     "farms": {
       "created": "created farm",

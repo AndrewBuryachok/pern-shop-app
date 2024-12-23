@@ -1,15 +1,9 @@
 import { useLocation, useSearchParams } from 'react-router-dom';
-import {
-  useGetAllUsersQuery,
-  useGetMainUsersQuery,
-  useGetTopUsersQuery,
-} from '../../features/users/users.api';
+import { useGetMyResidentsQuery } from '../../features/residents/residents.api';
 import UsersTable from '../../features/users/UsersTable';
-import { editUserPasswordAction } from '../../features/users/EditUserPasswordModal';
-import { addUserRoleAction } from '../../features/users/AddUserRoleModal';
-import { removeUserRoleAction } from '../../features/users/RemoveUserRoleModal';
+import { deleteResidentAction } from '../../features/residents/DeleteResidentModal';
 
-export default function UsersPage() {
+export default function ResidentsPage() {
   const tab = useLocation().pathname.split('/')[2] || 'main';
 
   const [searchParams] = useSearchParams();
@@ -26,13 +20,11 @@ export default function UsersPage() {
   };
 
   const response = {
-    main: useGetMainUsersQuery,
-    top: useGetTopUsersQuery,
-    all: useGetAllUsersQuery,
+    my: useGetMyResidentsQuery,
   }[tab]!(search);
 
   const actions = {
-    all: [editUserPasswordAction, addUserRoleAction, removeUserRoleAction],
+    my: [deleteResidentAction],
   }[tab];
 
   return (

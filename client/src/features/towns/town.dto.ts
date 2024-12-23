@@ -10,7 +10,6 @@ export interface EditTownDto extends CreatePlaceDto {
   townId: number;
 }
 
-export interface UpdateTownUserDto {
+export interface TownIdDto {
   townId: number;
-  userId: number;
 }

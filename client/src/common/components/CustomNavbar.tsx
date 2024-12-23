@@ -111,6 +111,12 @@ export default function CustomNavbar(props: Props) {
     {
       route: 'towns',
       icon: IconBuildingSkyscraper,
+      nested: [
+        'towns',
+        'residents/my',
+        'invitations/sent',
+        'applications/sent',
+      ],
     },
     {
       route: 'ratings',
