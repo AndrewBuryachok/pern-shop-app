@@ -50,15 +50,7 @@ const HaulagesPage = lazy(() => import('../pages/haulages/HaulagesPage'));
 const BargainsPage = lazy(() => import('../pages/bargains/BargainsPage'));
 const TradesPage = lazy(() => import('../pages/trades/TradesPage'));
 const SalesPage = lazy(() => import('../pages/sales/SalesPage'));
-const ShopsDeliveriesPage = lazy(
-  () => import('../pages/shops-deliveries/ShopsDeliveriesPage'),
-);
-const MarketsDeliveriesPage = lazy(
-  () => import('../pages/markets-deliveries/MarketsDeliveriesPage'),
-);
-const StoragesDeliveriesPage = lazy(
-  () => import('../pages/storages-deliveries/StoragesDeliveriesPage'),
-);
+const DeliveriesPage = lazy(() => import('../pages/deliveries/DeliveriesPage'));
 const TasksPage = lazy(() => import('../pages/tasks/TasksPage'));
 const AdvertsPage = lazy(() => import('../pages/adverts/AdvertsPage'));
 const RatingsPage = lazy(() => import('../pages/ratings/RatingsPage'));
@@ -385,30 +377,8 @@ export const pages = [
     ],
   },
   {
-    path: 'shops-deliveries',
-    element: ShopsDeliveriesPage,
-    nested: [
-      { index: true },
-      { path: 'my' },
-      { path: 'taken' },
-      { path: 'placed' },
-      { path: 'all', role: Role.MERCHANT },
-    ],
-  },
-  {
-    path: 'markets-deliveries',
-    element: MarketsDeliveriesPage,
-    nested: [
-      { index: true },
-      { path: 'my' },
-      { path: 'taken' },
-      { path: 'placed' },
-      { path: 'all', role: Role.MERCHANT },
-    ],
-  },
-  {
-    path: 'storages-deliveries',
-    element: StoragesDeliveriesPage,
+    path: 'deliveries',
+    element: DeliveriesPage,
     nested: [
       { index: true },
       { path: 'my' },

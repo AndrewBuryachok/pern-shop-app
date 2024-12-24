@@ -60,12 +60,16 @@ export default function CustomNavbar(props: Props) {
       nested: ['cards/my', 'payments/my', 'exchanges/my', 'invoices/my'],
     },
     {
+      route: 'trading',
+      icon: IconBuildingStore,
+      nested: ['deliveries'],
+    },
+    {
       route: 'market',
       icon: IconBuildingStadium,
       nested: [
         'wares',
         'trades/my',
-        'markets-deliveries',
         'rents',
         'stalls',
         'markets-tags',
@@ -78,7 +82,6 @@ export default function CustomNavbar(props: Props) {
       nested: [
         'products',
         'sales/my',
-        'storages-deliveries',
         'leases',
         'cells',
         'storages-tags',
@@ -88,7 +91,7 @@ export default function CustomNavbar(props: Props) {
     {
       route: 'shop',
       icon: IconBuildingStore,
-      nested: ['goods', 'bargains/my', 'shops-deliveries', 'shops'],
+      nested: ['goods', 'bargains/my', 'shops'],
     },
     {
       route: 'station',

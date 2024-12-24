@@ -10,7 +10,5 @@ export interface Hire extends Receipt {
   orders: number;
   fromHaulages: number;
   toHaulages: number;
-  shopsDeliveries: number;
-  marketsDeliveries: number;
-  storagesDeliveries: number;
+  deliveries: number;
 }

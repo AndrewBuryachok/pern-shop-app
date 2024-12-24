@@ -48,6 +48,7 @@
     "payments": "Payments",
     "exchanges": "Exchanges",
     "invoices": "Invoices",
+    "trading": "Trading",
     "goods": "Goods",
     "wares": "Wares",
     "products": "Products",
@@ -56,9 +57,7 @@
     "sales": "Sales",
     "orders": "Orders",
     "haulages": "Haulages",
-    "shops-deliveries": "Shops Deliveries",
-    "markets-deliveries": "Markets Deliveries",
-    "storages-deliveries": "Storages Deliveries",
+    "deliveries": "Deliveries",
     "services": "Services",
     "tasks": "Tasks",
     "adverts": "Adverts",
@@ -111,9 +110,7 @@
     "sales": "View sales; rate sales",
     "orders": "View orders; create, take, execute, complete, rate orders",
     "haulages": "View haulages; create, take, execute, complete, rate haulages",
-    "shops-deliveries": "View deliveries; create, take, execute, complete, rate deliveries",
-    "markets-deliveries": "View deliveries; create, take, execute, complete, rate deliveries",
-    "storages-deliveries": "View deliveries; create, take, execute, complete, rate deliveries",
+    "deliveries": "View deliveries; create, take, execute, complete, rate deliveries",
     "tasks": "View tasks; create, take, execute, complete, rate tasks",
     "adverts": "View adverts; create, edit, delete, respond to adverts",
     "towns": "View towns; create, edit towns; add, remove users",
@@ -349,6 +346,7 @@
     "sales": "Sale",
     "orders": "Order",
     "haulages": "Haulage",
+    "deliveries": "Delivery",
     "tasks": "Task",
     "adverts": "Advert",
     "ratings": "Rating"
@@ -516,23 +514,7 @@
       "completed": "completed your haulage",
       "rated": "rated your haulage"
     },
-    "shops-deliveries": {
-      "created": "created delivery",
-      "taken": "taken your delivery",
-      "untaken": "untaken your delivery",
-      "executed": "executed your delivery",
-      "completed": "completed your delivery",
-      "rated": "rated your delivery"
-    },
-    "markets-deliveries": {
-      "created": "created delivery",
-      "taken": "taken your delivery",
-      "untaken": "untaken your delivery",
-      "executed": "executed your delivery",
-      "completed": "completed your delivery",
-      "rated": "rated your delivery"
-    },
-    "storages-deliveries": {
+    "deliveries": {
       "created": "created delivery",
       "taken": "taken your delivery",
       "untaken": "untaken your delivery",

@@ -5,14 +5,14 @@ import { Select, Textarea, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
-import { MarketDelivery } from './market-delivery.model';
-import { useTakeMarketDeliveryMutation } from './markets-deliveries.api';
+import { Delivery } from './delivery.model';
+import { useTakeDeliveryMutation } from './deliveries.api';
 import { useSelectAllUsersQuery } from '../users/users.api';
 import {
   useSelectMyCardsQuery,
   useSelectUserCardsWithBalanceQuery,
 } from '../cards/cards.api';
-import { TakeMarketDeliveryDto } from './market-delivery.dto';
+import { TakeDeliveryDto } from './delivery.dto';
 import CustomForm from '../../common/components/CustomForm';
 import RefetchAction from '../../common/components/RefetchAction';
 import CustomAvatar from '../../common/components/CustomAvatar';
@@ -20,25 +20,24 @@ import ThingImage from '../../common/components/ThingImage';
 import { UsersItem } from '../../common/components/UsersItem';
 import { CardsItem } from '../../common/components/CardsItem';
 import {
+  parseBargainAmount,
   parseCard,
   parseItem,
+  parseSaleAmount,
   parseTradeAmount,
   selectCardsWithBalance,
   selectUsers,
 } from '../../common/utils';
 import { Color, Status } from '../../common/constants';
 
-type Props = IModal<MarketDelivery> & { hasRole: boolean };
+type Props = IModal<Delivery> & { hasRole: boolean };
 
-export default function TakeMarketDeliveryModal({
-  data: marketDelivery,
-  hasRole,
-}: Props) {
+export default function TakeDeliveryModal({ data: delivery, hasRole }: Props) {
   const [t] = useTranslation();
 
   const form = useForm({
     initialValues: {
-      marketDeliveryId: marketDelivery.id,
+      deliveryId: delivery.id,
       user: '',
       card: '',
     },
@@ -58,10 +57,10 @@ export default function TakeMarketDeliveryModal({
 
   const user = users?.find((user) => user.id === +form.values.user);
 
-  const [takeMarketDelivery, { isLoading }] = useTakeMarketDeliveryMutation();
+  const [takeDelivery, { isLoading }] = useTakeDeliveryMutation();
 
-  const handleSubmit = async (dto: TakeMarketDeliveryDto) => {
-    await takeMarketDelivery(dto);
+  const handleSubmit = async (dto: TakeDeliveryDto) => {
+    await takeDelivery(dto);
   };
 
   return (
@@ -72,31 +71,72 @@ export default function TakeMarketDeliveryModal({
     >
       <TextInput
         label={t('columns.customer')}
-        icon={<CustomAvatar {...marketDelivery.hire.card.user} />}
+        icon={<CustomAvatar {...delivery.hire.card.user} />}
         iconWidth={48}
-        value={parseCard(marketDelivery.hire.card)}
+        value={parseCard(delivery.hire.card)}
         readOnly
       />
-      <TextInput
-        label={t('columns.item')}
-        icon={<ThingImage {...marketDelivery.trade.ware} />}
-        iconWidth={48}
-        value={parseItem(marketDelivery.trade.ware.item)}
-        readOnly
-      />
+      {delivery.bargain && (
+        <TextInput
+          label={t('columns.item')}
+          icon={<ThingImage {...delivery.bargain.good} />}
+          iconWidth={48}
+          value={parseItem(delivery.bargain.good.item)}
+          readOnly
+        />
+      )}
+      {delivery.trade && (
+        <TextInput
+          label={t('columns.item')}
+          icon={<ThingImage {...delivery.trade.ware} />}
+          iconWidth={48}
+          value={parseItem(delivery.trade.ware.item)}
+          readOnly
+        />
+      )}
+      {delivery.sale && (
+        <TextInput
+          label={t('columns.item')}
+          icon={<ThingImage {...delivery.sale.product} />}
+          iconWidth={48}
+          value={parseItem(delivery.sale.product.item)}
+          readOnly
+        />
+      )}
       <Textarea
         label={t('columns.description')}
-        value={marketDelivery.trade.ware.description || '-'}
+        value={
+          delivery.bargain?.good.description ||
+          delivery.trade?.ware.description ||
+          delivery.sale?.product.description ||
+          '-'
+        }
         readOnly
       />
-      <TextInput
-        label={t('columns.amount')}
-        value={parseTradeAmount(marketDelivery.trade)}
-        readOnly
-      />
+      {delivery.bargain && (
+        <TextInput
+          label={t('columns.amount')}
+          value={parseBargainAmount(delivery.bargain)}
+          readOnly
+        />
+      )}
+      {delivery.trade && (
+        <TextInput
+          label={t('columns.amount')}
+          value={parseTradeAmount(delivery.trade)}
+          readOnly
+        />
+      )}
+      {delivery.sale && (
+        <TextInput
+          label={t('columns.amount')}
+          value={parseSaleAmount(delivery.sale)}
+          readOnly
+        />
+      )}
       <TextInput
         label={t('columns.price')}
-        value={`${marketDelivery.price} ${t('constants.currency')}`}
+        value={`${delivery.price} ${t('constants.currency')}`}
         readOnly
       />
       {hasRole && (
@@ -136,19 +176,16 @@ export default function TakeMarketDeliveryModal({
   );
 }
 
-export const takeMarketDeliveryFactory = (hasRole: boolean) => ({
-  open: (marketDelivery: MarketDelivery) =>
+export const takeDeliveryFactory = (hasRole: boolean) => ({
+  open: (delivery: Delivery) =>
     openModal({
       title: t('actions.take') + ' ' + t('modals.deliveries'),
-      children: (
-        <TakeMarketDeliveryModal data={marketDelivery} hasRole={hasRole} />
-      ),
+      children: <TakeDeliveryModal data={delivery} hasRole={hasRole} />,
     }),
-  disable: (marketDelivery: MarketDelivery) =>
-    marketDelivery.status !== Status.CREATED,
+  disable: (delivery: Delivery) => delivery.status !== Status.CREATED,
   color: Color.GREEN,
 });
 
-export const takeMyMarketDeliveryAction = takeMarketDeliveryFactory(false);
+export const takeMyDeliveryAction = takeDeliveryFactory(false);
 
-export const takeUserMarketDeliveryAction = takeMarketDeliveryFactory(true);
+export const takeUserDeliveryAction = takeDeliveryFactory(true);

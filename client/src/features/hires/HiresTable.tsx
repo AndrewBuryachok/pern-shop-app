@@ -51,9 +51,7 @@ export default function HiresTable({ actions = [], ...props }: Props) {
                 hire.orders +
                 hire.fromHaulages +
                 hire.toHaulages +
-                hire.shopsDeliveries +
-                hire.marketsDeliveries +
-                hire.storagesDeliveries
+                hire.deliveries
               }`}
               open={() => openViewHireThingsAction(hire)}
             />
