@@ -2,7 +2,7 @@ import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { Trade } from './trade.entity';
-import { MarketsDeliveriesService } from '../markets-deliveries/markets-deliveries.service';
+import { DeliveriesService } from '../deliveries/deliveries.service';
 import { WaresService } from '../wares/wares.service';
 import { MqttService } from '../mqtt/mqtt.service';
 import { ExtCreateTradeDto, ExtRateTradeDto, TradeIdDto } from './trade.dto';
@@ -17,8 +17,8 @@ export class TradesService {
   constructor(
     @InjectRepository(Trade)
     private tradesRepository: Repository<Trade>,
-    @Inject(forwardRef(() => MarketsDeliveriesService))
-    private marketsDeliveriesService: MarketsDeliveriesService,
+    @Inject(forwardRef(() => DeliveriesService))
+    private deliveriesService: DeliveriesService,
     private waresService: WaresService,
     private mqttService: MqttService,
   ) {}
@@ -83,7 +83,7 @@ export class TradesService {
       Notification.CREATED_TRADE,
     );
     if (dto.stationId && dto.price) {
-      await this.marketsDeliveriesService.createMarketDelivery({
+      await this.deliveriesService.createMarketDelivery({
         ...dto,
         tradeId: trade.id,
       });

@@ -71,14 +71,12 @@ export class HiresService implements OnModuleInit {
       .leftJoin('hire.orders', 'order')
       .leftJoin('hire.fromHaulages', 'fromHaulage')
       .leftJoin('hire.toHaulages', 'toHaulage')
-      .leftJoin('hire.shopsDeliveries', 'shopDelivery')
-      .leftJoin('shopDelivery.bargain', 'bargain')
+      .leftJoin('hire.deliveries', 'delivery')
+      .leftJoin('delivery.bargain', 'bargain')
       .leftJoin('bargain.good', 'good')
-      .leftJoin('hire.marketsDeliveries', 'marketDelivery')
-      .leftJoin('marketDelivery.trade', 'trade')
+      .leftJoin('delivery.trade', 'trade')
       .leftJoin('trade.ware', 'ware')
-      .leftJoin('hire.storagesDeliveries', 'storageDelivery')
-      .leftJoin('storageDelivery.sale', 'sale')
+      .leftJoin('delivery.sale', 'sale')
       .leftJoin('sale.product', 'product')
       .where('hire.id = :hireId', { hireId })
       .select([
@@ -104,7 +102,7 @@ export class HiresService implements OnModuleInit {
         'toHaulage.intake',
         'toHaulage.kit',
         'toHaulage.price',
-        'shopDelivery.id',
+        'delivery.id',
         'bargain.id',
         'good.id',
         'good.item',
@@ -113,7 +111,6 @@ export class HiresService implements OnModuleInit {
         'good.kit',
         'good.price',
         'bargain.amount',
-        'marketDelivery.id',
         'trade.id',
         'ware.id',
         'ware.item',
@@ -122,7 +119,6 @@ export class HiresService implements OnModuleInit {
         'ware.kit',
         'ware.price',
         'trade.amount',
-        'storageDelivery.id',
         'sale.id',
         'product.id',
         'product.item',
@@ -137,20 +133,12 @@ export class HiresService implements OnModuleInit {
       ...hire.orders,
       ...hire.fromHaulages,
       ...hire.toHaulages,
-      ...hire.shopsDeliveries.map((shopDelivery) => ({
-        ...shopDelivery.bargain.good,
-        id: shopDelivery.id,
-        amount: shopDelivery.bargain.amount,
-      })),
-      ...hire.marketsDeliveries.map((marketDelivery) => ({
-        ...marketDelivery.trade.ware,
-        id: marketDelivery.id,
-        amount: marketDelivery.trade.amount,
-      })),
-      ...hire.storagesDeliveries.map((storageDelivery) => ({
-        ...storageDelivery.sale.product,
-        id: storageDelivery.id,
-        amount: storageDelivery.sale.amount,
+      ...hire.deliveries.map((delivery) => ({
+        ...delivery.bargain.good,
+        ...delivery.trade.ware,
+        ...delivery.sale.product,
+        id: delivery.id,
+        amount: delivery.bargain.amount,
       })),
     ];
   }
@@ -292,15 +280,7 @@ export class HiresService implements OnModuleInit {
       .loadRelationCountAndMap('hire.orders', 'hire.orders')
       .loadRelationCountAndMap('hire.fromHaulages', 'hire.fromHaulages')
       .loadRelationCountAndMap('hire.toHaulages', 'hire.toHaulages')
-      .loadRelationCountAndMap('hire.shopsDeliveries', 'hire.shopsDeliveries')
-      .loadRelationCountAndMap(
-        'hire.marketsDeliveries',
-        'hire.marketsDeliveries',
-      )
-      .loadRelationCountAndMap(
-        'hire.storagesDeliveries',
-        'hire.storagesDeliveries',
-      )
+      .loadRelationCountAndMap('hire.deliveries', 'hire.deliveries')
       .where(
         new Brackets((qb) =>
           qb.where(`${!req.id}`).orWhere('hire.id = :id', { id: req.id }),

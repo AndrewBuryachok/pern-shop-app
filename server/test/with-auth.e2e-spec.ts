@@ -3042,105 +3042,105 @@ describe('With Auth', () => {
   });
 
   describe('Shops Deliveries', () => {
-    it('POST /shops-deliveries', async () => {
+    it('POST /deliveries/shops', async () => {
       return request(app.getHttpServer())
-        .post('/shops-deliveries')
+        .post('/deliveries/shops')
         .set('Authorization', `Bearer ${user.access}`)
         .send({ bargainId: bargainsId[0], stationId, cardId, price: 10 })
         .expect('');
     });
 
-    it('GET /shops-deliveries', async () => {
+    it('GET /deliveries', async () => {
       return request(app.getHttpServer())
-        .get('/shops-deliveries')
+        .get('/deliveries')
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
 
-    it('GET /shops-deliveries/my', async () => {
+    it('GET /deliveries/my', async () => {
       return request(app.getHttpServer())
-        .get('/shops-deliveries/my')
+        .get(`/deliveries/my?shop=${shopId}`)
         .set('Authorization', `Bearer ${user.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0))
         .then((res) => (shopsDeliveriesId = res.body.result.map((d) => d.id)));
     });
 
-    it('PATCH /shops-deliveries/:shopDeliveryId', async () => {
+    it('PATCH /deliveries/:deliveryId', async () => {
       return request(app.getHttpServer())
-        .patch(`/shops-deliveries/${shopsDeliveriesId[0]}`)
+        .patch(`/deliveries/${shopsDeliveriesId[0]}`)
         .set('Authorization', `Bearer ${user.access}`)
         .send({ price: 10 })
         .expect('');
     });
 
-    it('POST /shops-deliveries/:shopDeliveryId/take', async () => {
+    it('POST /deliveries/:deliveryId/take', async () => {
       return request(app.getHttpServer())
-        .post(`/shops-deliveries/${shopsDeliveriesId[0]}/take`)
+        .post(`/deliveries/${shopsDeliveriesId[0]}/take`)
         .set('Authorization', `Bearer ${user.access}`)
         .send({ cardId })
         .expect('');
     });
 
-    it('GET /shops-deliveries/taken', async () => {
+    it('GET /deliveries/taken', async () => {
       return request(app.getHttpServer())
-        .get('/shops-deliveries/taken')
+        .get('/deliveries/taken')
         .set('Authorization', `Bearer ${user.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
 
-    it('GET /shops-deliveries/placed', async () => {
+    it('GET /deliveries/placed', async () => {
       return request(app.getHttpServer())
-        .get('/shops-deliveries/placed')
+        .get('/deliveries/placed')
         .set('Authorization', `Bearer ${user.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
 
-    it('GET /shops-deliveries/all', async () => {
+    it('GET /deliveries/all', async () => {
       return request(app.getHttpServer())
-        .get('/shops-deliveries/all')
+        .get('/deliveries/all')
         .set('Authorization', `Bearer ${merchant.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
 
-    it('POST /shops-deliveries/:shopDeliveryId/execute', async () => {
+    it('POST /deliveries/:deliveryId/execute', async () => {
       return request(app.getHttpServer())
-        .post(`/shops-deliveries/${shopsDeliveriesId[0]}/execute`)
+        .post(`/deliveries/${shopsDeliveriesId[0]}/execute`)
         .set('Authorization', `Bearer ${user.access}`)
         .expect('');
     });
 
-    it('POST /shops-deliveries/:shopDeliveryId', async () => {
+    it('POST /deliveries/:deliveryId', async () => {
       return request(app.getHttpServer())
-        .post(`/shops-deliveries/${shopsDeliveriesId[0]}`)
+        .post(`/deliveries/${shopsDeliveriesId[0]}`)
         .set('Authorization', `Bearer ${user.access}`)
         .expect('');
     });
 
-    it('PATCH /shops-deliveries/:shopDeliveryId/rate', async () => {
+    it('PATCH /deliveries/:deliveryId/rate', async () => {
       return request(app.getHttpServer())
-        .patch(`/shops-deliveries/${shopsDeliveriesId[0]}/rate`)
+        .patch(`/deliveries/${shopsDeliveriesId[0]}/rate`)
         .set('Authorization', `Bearer ${user.access}`)
         .send({ rate: 5 })
         .expect('');
     });
 
-    it('POST /shops-deliveries/:shopDeliveryId/take', async () => {
+    it('POST /deliveries/:deliveryId/take', async () => {
       return request(app.getHttpServer())
-        .post(`/shops-deliveries/${shopsDeliveriesId[1]}/take`)
+        .post(`/deliveries/${shopsDeliveriesId[1]}/take`)
         .set('Authorization', `Bearer ${user.access}`)
         .send({ cardId })
         .expect('');
     });
 
-    it('DELETE /shops-deliveries/:shopDeliveryId/take', async () => {
+    it('DELETE /deliveries/:shopDeliveryId/take', async () => {
       return request(app.getHttpServer())
-        .delete(`/shops-deliveries/${shopsDeliveriesId[1]}/take`)
+        .delete(`/deliveries/${shopsDeliveriesId[1]}/take`)
         .set('Authorization', `Bearer ${user.access}`)
         .expect('');
     });
 
-    it('DELETE /shops-deliveries/:shopDeliveryId', async () => {
+    it('DELETE /deliveries/:deliveryId', async () => {
       return request(app.getHttpServer())
-        .delete(`/shops-deliveries/${shopsDeliveriesId[1]}`)
+        .delete(`/deliveries/${shopsDeliveriesId[1]}`)
         .set('Authorization', `Bearer ${user.access}`)
         .expect('');
     });
@@ -3154,23 +3154,23 @@ describe('With Auth', () => {
   });
 
   describe('Markets Deliveries', () => {
-    it('POST /markets-deliveries', async () => {
+    it('POST /deliveries/markets', async () => {
       return request(app.getHttpServer())
-        .post('/markets-deliveries')
+        .post('/deliveries/markets')
         .set('Authorization', `Bearer ${user.access}`)
         .send({ tradeId: tradesId[0], stationId, cardId, price: 10 })
         .expect('');
     });
 
-    it('GET /markets-deliveries', async () => {
+    it('GET /deliveries', async () => {
       return request(app.getHttpServer())
-        .get('/markets-deliveries')
+        .get('/deliveries')
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
 
-    it('GET /markets-deliveries/my', async () => {
+    it('GET /deliveries/my', async () => {
       return request(app.getHttpServer())
-        .get('/markets-deliveries/my')
+        .get(`/deliveries/my?market=${marketId}`)
         .set('Authorization', `Bearer ${user.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0))
         .then(
@@ -3178,83 +3178,83 @@ describe('With Auth', () => {
         );
     });
 
-    it('PATCH /markets-deliveries/:marketDeliveryId', async () => {
+    it('PATCH /deliveries/:deliveryId', async () => {
       return request(app.getHttpServer())
-        .patch(`/markets-deliveries/${marketsDeliveriesId[0]}`)
+        .patch(`/deliveries/${marketsDeliveriesId[0]}`)
         .set('Authorization', `Bearer ${user.access}`)
         .send({ price: 10 })
         .expect('');
     });
 
-    it('POST /markets-deliveries/:marketDeliveryId/take', async () => {
+    it('POST /deliveries/:deliveryId/take', async () => {
       return request(app.getHttpServer())
-        .post(`/markets-deliveries/${marketsDeliveriesId[0]}/take`)
+        .post(`/deliveries/${marketsDeliveriesId[0]}/take`)
         .set('Authorization', `Bearer ${user.access}`)
         .send({ cardId })
         .expect('');
     });
 
-    it('GET /markets-deliveries/taken', async () => {
+    it('GET /deliveries/taken', async () => {
       return request(app.getHttpServer())
-        .get('/markets-deliveries/taken')
+        .get('/deliveries/taken')
         .set('Authorization', `Bearer ${user.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
 
-    it('GET /markets-deliveries/placed', async () => {
+    it('GET /deliveries/placed', async () => {
       return request(app.getHttpServer())
-        .get('/markets-deliveries/placed')
+        .get('/deliveries/placed')
         .set('Authorization', `Bearer ${user.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
 
-    it('GET /markets-deliveries/all', async () => {
+    it('GET /deliveries/all', async () => {
       return request(app.getHttpServer())
-        .get('/markets-deliveries/all')
+        .get('/deliveries/all')
         .set('Authorization', `Bearer ${merchant.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
 
-    it('POST /markets-deliveries/:marketDeliveryId/execute', async () => {
+    it('POST /deliveries/:deliveryId/execute', async () => {
       return request(app.getHttpServer())
-        .post(`/markets-deliveries/${marketsDeliveriesId[0]}/execute`)
+        .post(`/deliveries/${marketsDeliveriesId[0]}/execute`)
         .set('Authorization', `Bearer ${user.access}`)
         .expect('');
     });
 
-    it('POST /markets-deliveries/:marketDeliveryId', async () => {
+    it('POST /deliveries/:deliveryId', async () => {
       return request(app.getHttpServer())
-        .post(`/markets-deliveries/${marketsDeliveriesId[0]}`)
+        .post(`/deliveries/${marketsDeliveriesId[0]}`)
         .set('Authorization', `Bearer ${user.access}`)
         .expect('');
     });
 
-    it('PATCH /markets-deliveries/:marketDeliveryId/rate', async () => {
+    it('PATCH /deliveries/:deliveryId/rate', async () => {
       return request(app.getHttpServer())
-        .patch(`/markets-deliveries/${marketsDeliveriesId[0]}/rate`)
+        .patch(`/deliveries/${marketsDeliveriesId[0]}/rate`)
         .set('Authorization', `Bearer ${user.access}`)
         .send({ rate: 5 })
         .expect('');
     });
 
-    it('POST /markets-deliveries/:marketDeliveryId/take', async () => {
+    it('POST /deliveries/:deliveryId/take', async () => {
       return request(app.getHttpServer())
-        .post(`/markets-deliveries/${marketsDeliveriesId[1]}/take`)
+        .post(`/deliveries/${marketsDeliveriesId[1]}/take`)
         .set('Authorization', `Bearer ${user.access}`)
         .send({ cardId })
         .expect('');
     });
 
-    it('DELETE /markets-deliveries/:marketDeliveryId/take', async () => {
+    it('DELETE /deliveries/:deliveryId/take', async () => {
       return request(app.getHttpServer())
-        .delete(`/markets-deliveries/${marketsDeliveriesId[1]}/take`)
+        .delete(`/deliveries/${marketsDeliveriesId[1]}/take`)
         .set('Authorization', `Bearer ${user.access}`)
         .expect('');
     });
 
-    it('DELETE /markets-deliveries/:marketDeliveryId', async () => {
+    it('DELETE /deliveries/:deliveryId', async () => {
       return request(app.getHttpServer())
-        .delete(`/markets-deliveries/${marketsDeliveriesId[1]}`)
+        .delete(`/deliveries/${marketsDeliveriesId[1]}`)
         .set('Authorization', `Bearer ${user.access}`)
         .expect('');
     });
@@ -3268,23 +3268,23 @@ describe('With Auth', () => {
   });
 
   describe('Storages Deliveries', () => {
-    it('POST /storages-deliveries', async () => {
+    it('POST /deliveries/storages', async () => {
       return request(app.getHttpServer())
-        .post('/storages-deliveries')
+        .post('/deliveries/storages')
         .set('Authorization', `Bearer ${user.access}`)
         .send({ saleId: salesId[0], stationId, cardId, price: 10 })
         .expect('');
     });
 
-    it('GET /storages-deliveries', async () => {
+    it('GET /deliveries', async () => {
       return request(app.getHttpServer())
-        .get('/storages-deliveries')
+        .get('/deliveries')
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
 
-    it('GET /storages-deliveries/my', async () => {
+    it('GET /deliveries/my', async () => {
       return request(app.getHttpServer())
-        .get('/storages-deliveries/my')
+        .get(`/deliveries/my?storage=${storageId}`)
         .set('Authorization', `Bearer ${user.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0))
         .then(
@@ -3292,83 +3292,83 @@ describe('With Auth', () => {
         );
     });
 
-    it('PATCH /storages-deliveries/:storageDeliveryId', async () => {
+    it('PATCH /deliveries/:storageDeliveryId', async () => {
       return request(app.getHttpServer())
-        .patch(`/storages-deliveries/${storagesDeliveriesId[0]}`)
+        .patch(`/deliveries/${storagesDeliveriesId[0]}`)
         .set('Authorization', `Bearer ${user.access}`)
         .send({ price: 10 })
         .expect('');
     });
 
-    it('POST /storages-deliveries/:storageDeliveryId/take', async () => {
+    it('POST /deliveries/:storageDeliveryId/take', async () => {
       return request(app.getHttpServer())
-        .post(`/storages-deliveries/${storagesDeliveriesId[0]}/take`)
+        .post(`/deliveries/${storagesDeliveriesId[0]}/take`)
         .set('Authorization', `Bearer ${user.access}`)
         .send({ cardId })
         .expect('');
     });
 
-    it('GET /storages-deliveries/taken', async () => {
+    it('GET /deliveries/taken', async () => {
       return request(app.getHttpServer())
-        .get('/storages-deliveries/taken')
+        .get('/deliveries/taken')
         .set('Authorization', `Bearer ${user.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
 
-    it('GET /storages-deliveries/placed', async () => {
+    it('GET /deliveries/placed', async () => {
       return request(app.getHttpServer())
-        .get('/storages-deliveries/placed')
+        .get('/deliveries/placed')
         .set('Authorization', `Bearer ${user.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
 
-    it('GET /storages-deliveries/all', async () => {
+    it('GET /deliveries/all', async () => {
       return request(app.getHttpServer())
-        .get('/storages-deliveries/all')
+        .get('/deliveries/all')
         .set('Authorization', `Bearer ${merchant.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
 
-    it('POST /storages-deliveries/:storageDeliveryId/execute', async () => {
+    it('POST /deliveries/:storageDeliveryId/execute', async () => {
       return request(app.getHttpServer())
-        .post(`/storages-deliveries/${storagesDeliveriesId[0]}/execute`)
+        .post(`/deliveries/${storagesDeliveriesId[0]}/execute`)
         .set('Authorization', `Bearer ${user.access}`)
         .expect('');
     });
 
-    it('POST /storages-deliveries/:storageDeliveryId', async () => {
+    it('POST /deliveries/:storageDeliveryId', async () => {
       return request(app.getHttpServer())
-        .post(`/storages-deliveries/${storagesDeliveriesId[0]}`)
+        .post(`/deliveries/${storagesDeliveriesId[0]}`)
         .set('Authorization', `Bearer ${user.access}`)
         .expect('');
     });
 
-    it('PATCH /storages-deliveries/:storageDeliveryId/rate', async () => {
+    it('PATCH /deliveries/:storageDeliveryId/rate', async () => {
       return request(app.getHttpServer())
-        .patch(`/storages-deliveries/${storagesDeliveriesId[0]}/rate`)
+        .patch(`/deliveries/${storagesDeliveriesId[0]}/rate`)
         .set('Authorization', `Bearer ${user.access}`)
         .send({ rate: 5 })
         .expect('');
     });
 
-    it('POST /storages-deliveries/:storageDeliveryId/take', async () => {
+    it('POST /deliveries/:storageDeliveryId/take', async () => {
       return request(app.getHttpServer())
-        .post(`/storages-deliveries/${storagesDeliveriesId[1]}/take`)
+        .post(`/deliveries/${storagesDeliveriesId[1]}/take`)
         .set('Authorization', `Bearer ${user.access}`)
         .send({ cardId })
         .expect('');
     });
 
-    it('DELETE /storages-deliveries/:storageDeliveryId/take', async () => {
+    it('DELETE /deliveries/:storageDeliveryId/take', async () => {
       return request(app.getHttpServer())
-        .delete(`/storages-deliveries/${storagesDeliveriesId[1]}/take`)
+        .delete(`/deliveries/${storagesDeliveriesId[1]}/take`)
         .set('Authorization', `Bearer ${user.access}`)
         .expect('');
     });
 
-    it('DELETE /storages-deliveries/:storageDeliveryId', async () => {
+    it('DELETE /deliveries/:storageDeliveryId', async () => {
       return request(app.getHttpServer())
-        .delete(`/storages-deliveries/${storagesDeliveriesId[1]}`)
+        .delete(`/deliveries/${storagesDeliveriesId[1]}`)
         .set('Authorization', `Bearer ${user.access}`)
         .expect('');
     });

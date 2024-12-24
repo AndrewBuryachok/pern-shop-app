@@ -35,15 +35,15 @@ export class CreateHaulageDto extends CreateTransportationDto {
   toStationId: number;
 }
 
-export class EditHaulageDto extends CreateThingDto {}
-
-export class ExtEditHaulageDto extends EditHaulageDto {
-  haulageId: number;
+export class ExtCreateHaulageDto extends CreateHaulageDto {
   myId: number;
   hasRole: boolean;
 }
 
-export class ExtCreateHaulageDto extends CreateHaulageDto {
+export class EditHaulageDto extends CreateThingDto {}
+
+export class ExtEditHaulageDto extends EditHaulageDto {
+  haulageId: number;
   myId: number;
   hasRole: boolean;
 }

@@ -1,7 +1,7 @@
 import { forwardRef, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Trade } from './trade.entity';
-import { MarketsDeliveriesModule } from '../markets-deliveries/markets-deliveries.module';
+import { DeliveriesModule } from '../deliveries/deliveries.module';
 import { WaresModule } from '../wares/wares.module';
 import { MqttModule } from '../mqtt/mqtt.module';
 import { TradesController } from './trades.controller';
@@ -11,7 +11,7 @@ import { IsTradeExists } from '../../common/constraints';
 @Module({
   imports: [
     TypeOrmModule.forFeature([Trade]),
-    forwardRef(() => MarketsDeliveriesModule),
+    forwardRef(() => DeliveriesModule),
     WaresModule,
     MqttModule,
   ],

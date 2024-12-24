@@ -2,7 +2,7 @@ import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { Sale } from './sale.entity';
-import { StoragesDeliveriesService } from '../storages-deliveries/storages-deliveries.service';
+import { DeliveriesService } from '../deliveries/deliveries.service';
 import { ProductsService } from '../products/products.service';
 import { MqttService } from '../mqtt/mqtt.service';
 import { ExtCreateSaleDto, ExtRateSaleDto, SaleIdDto } from './sale.dto';
@@ -17,8 +17,8 @@ export class SalesService {
   constructor(
     @InjectRepository(Sale)
     private salesRepository: Repository<Sale>,
-    @Inject(forwardRef(() => StoragesDeliveriesService))
-    private storagesDeliveriesService: StoragesDeliveriesService,
+    @Inject(forwardRef(() => DeliveriesService))
+    private deliveriesService: DeliveriesService,
     private productsService: ProductsService,
     private mqttService: MqttService,
   ) {}
@@ -83,7 +83,7 @@ export class SalesService {
       Notification.CREATED_SALE,
     );
     if (dto.stationId && dto.price) {
-      await this.storagesDeliveriesService.createStorageDelivery({
+      await this.deliveriesService.createStorageDelivery({
         ...dto,
         saleId: sale.id,
       });

@@ -1,7 +1,7 @@
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 import { Purchase } from '../purchases/purchase.entity';
 import { Ware } from '../wares/ware.entity';
-import { MarketDelivery } from '../markets-deliveries/market-delivery.entity';
+import { Delivery } from '../deliveries/delivery.entity';
 
 @Entity('trades')
 export class Trade extends Purchase {
@@ -12,6 +12,6 @@ export class Trade extends Purchase {
   @JoinColumn({ name: 'ware_id' })
   ware: Ware;
 
-  @OneToMany(() => MarketDelivery, (marketDelivery) => marketDelivery.trade)
-  deliveries: MarketDelivery[];
+  @OneToMany(() => Delivery, (delivery) => delivery.trade)
+  deliveries: Delivery[];
 }

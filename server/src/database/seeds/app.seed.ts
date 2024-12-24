@@ -46,9 +46,7 @@ import { Trade } from '../../features/trades/trade.entity';
 import { Sale } from '../../features/sales/sale.entity';
 import { Order } from '../../features/orders/order.entity';
 import { Haulage } from '../../features/haulages/haulage.entity';
-import { ShopDelivery } from '../../features/shops-deliveries/shop-delivery.entity';
-import { MarketDelivery } from '../../features/markets-deliveries/market-delivery.entity';
-import { StorageDelivery } from '../../features/storages-deliveries/storage-delivery.entity';
+import { Delivery } from '../../features/deliveries/delivery.entity';
 import { Task } from '../../features/tasks/task.entity';
 import { Advert } from '../../features/adverts/advert.entity';
 import { Rating } from '../../features/ratings/rating.entity';
@@ -591,71 +589,39 @@ export default class AppSeed implements Seeder {
       })
       .makeMany(10);
     let bargainId = 0;
-    const shopsDeliveries = await factory(ShopDelivery)()
-      .map(async (shopDelivery) => {
-        shopDelivery.bargain = bargains[bargainId++];
-        shopDelivery.hire = hires[hireId++];
-        shopDelivery.hire.card.balance -= shopDelivery.price;
-        if (shopDelivery.status !== Status.CREATED) {
-          shopDelivery.executorCard = faker.helpers.arrayElement(cards);
-        }
-        if (shopDelivery.status === Status.COMPLETED) {
-          const payment = await factory(Payment)().make({
-            senderCard: shopDelivery.hire.card,
-            receiverCard: shopDelivery.executorCard,
-            sum: shopDelivery.price,
-            description: '',
-          });
-          payments.push(payment);
-          shopDelivery.executorCard.balance += shopDelivery.price;
-        }
-        return shopDelivery;
-      })
-      .makeMany(10);
     let tradeId = 0;
-    const marketsDeliveries = await factory(MarketDelivery)()
-      .map(async (marketDelivery) => {
-        marketDelivery.trade = trades[tradeId++];
-        marketDelivery.hire = hires[hireId++];
-        marketDelivery.hire.card.balance -= marketDelivery.price;
-        if (marketDelivery.status !== Status.CREATED) {
-          marketDelivery.executorCard = faker.helpers.arrayElement(cards);
-        }
-        if (marketDelivery.status === Status.COMPLETED) {
-          const payment = await factory(Payment)().make({
-            senderCard: marketDelivery.hire.card,
-            receiverCard: marketDelivery.executorCard,
-            sum: marketDelivery.price,
-            description: '',
-          });
-          payments.push(payment);
-          marketDelivery.executorCard.balance += marketDelivery.price;
-        }
-        return marketDelivery;
-      })
-      .makeMany(10);
     let saleId = 0;
-    const storagesDeliveries = await factory(StorageDelivery)()
-      .map(async (storageDelivery) => {
-        storageDelivery.sale = sales[saleId++];
-        storageDelivery.hire = hires[hireId++];
-        storageDelivery.hire.card.balance -= storageDelivery.price;
-        if (storageDelivery.status !== Status.CREATED) {
-          storageDelivery.executorCard = faker.helpers.arrayElement(cards);
+    const deliveries = await factory(Delivery)()
+      .map(async (delivery) => {
+        delivery.hire = hires[hireId++];
+        delivery.hire.card.balance -= delivery.price;
+        switch (Math.floor(Math.random() * 3)) {
+          case 0:
+            delivery.bargain = bargains[bargainId++];
+            break;
+          case 1:
+            delivery.trade = trades[tradeId++];
+            break;
+          case 2:
+            delivery.sale = sales[saleId++];
+            break;
         }
-        if (storageDelivery.status === Status.COMPLETED) {
+        if (delivery.status !== Status.CREATED) {
+          delivery.executorCard = faker.helpers.arrayElement(cards);
+        }
+        if (delivery.status === Status.COMPLETED) {
           const payment = await factory(Payment)().make({
-            senderCard: storageDelivery.hire.card,
-            receiverCard: storageDelivery.executorCard,
-            sum: storageDelivery.price,
+            senderCard: delivery.hire.card,
+            receiverCard: delivery.executorCard,
+            sum: delivery.price,
             description: '',
           });
           payments.push(payment);
-          storageDelivery.executorCard.balance += storageDelivery.price;
+          delivery.executorCard.balance += delivery.price;
         }
-        return storageDelivery;
+        return delivery;
       })
-      .makeMany(10);
+      .makeMany(30);
     const tasks = await factory(Task)()
       .map(async (task) => {
         task.customerCard = faker.helpers.arrayElement(
@@ -823,17 +789,9 @@ export default class AppSeed implements Seeder {
       .map(async () => sales[id++])
       .createMany(sales.length);
     id = 0;
-    await factory(ShopDelivery)()
-      .map(async () => shopsDeliveries[id++])
-      .createMany(shopsDeliveries.length);
-    id = 0;
-    await factory(MarketDelivery)()
-      .map(async () => marketsDeliveries[id++])
-      .createMany(marketsDeliveries.length);
-    id = 0;
-    await factory(StorageDelivery)()
-      .map(async () => storagesDeliveries[id++])
-      .createMany(storagesDeliveries.length);
+    await factory(Delivery)()
+      .map(async () => deliveries[id++])
+      .createMany(deliveries.length);
     id = 0;
     await factory(Task)()
       .map(async () => tasks[id++])

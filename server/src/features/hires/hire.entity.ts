@@ -3,9 +3,7 @@ import { Receipt } from '../receipts/receipt.entity';
 import { Box } from '../boxes/box.entity';
 import { Order } from '../orders/order.entity';
 import { Haulage } from '../haulages/haulage.entity';
-import { ShopDelivery } from '../shops-deliveries/shop-delivery.entity';
-import { MarketDelivery } from '../markets-deliveries/market-delivery.entity';
-import { StorageDelivery } from '../storages-deliveries/storage-delivery.entity';
+import { Delivery } from '../deliveries/delivery.entity';
 
 @Entity('hires')
 export class Hire extends Receipt {
@@ -25,12 +23,6 @@ export class Hire extends Receipt {
   @OneToMany(() => Haulage, (haulage) => haulage.toHire)
   toHaulages: Haulage[];
 
-  @OneToMany(() => ShopDelivery, (shopDelivery) => shopDelivery.hire)
-  shopsDeliveries: ShopDelivery[];
-
-  @OneToMany(() => MarketDelivery, (marketDelivery) => marketDelivery.hire)
-  marketsDeliveries: MarketDelivery[];
-
-  @OneToMany(() => StorageDelivery, (storageDelivery) => storageDelivery.hire)
-  storagesDeliveries: StorageDelivery[];
+  @OneToMany(() => Delivery, (delivery) => delivery.hire)
+  deliveries: Delivery[];
 }

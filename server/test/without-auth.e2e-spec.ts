@@ -735,82 +735,22 @@ describe('Without Auth', () => {
     });
   });
 
-  describe('Shops Deliveries', () => {
-    it('GET /shops-deliveries/my', async () => {
-      return request(app.getHttpServer())
-        .get('/shops-deliveries/my')
-        .expect(401);
+  describe('Deliveries', () => {
+    it('GET /deliveries/my', async () => {
+      return request(app.getHttpServer()).get('/deliveries/my').expect(401);
     });
 
-    it('GET /shops-deliveries/taken', async () => {
-      return request(app.getHttpServer())
-        .get('/shops-deliveries/taken')
-        .expect(401);
+    it('GET /deliveries/taken', async () => {
+      return request(app.getHttpServer()).get('/deliveries/taken').expect(401);
     });
 
-    it('GET /shops-deliveries/placed', async () => {
-      return request(app.getHttpServer())
-        .get('/shops-deliveries/placed')
-        .expect(401);
+    it('GET /deliveries/placed', async () => {
+      return request(app.getHttpServer()).get('/deliveries/placed').expect(401);
     });
 
-    it('GET /shops-deliveries/all', async () => {
+    it('GET /deliveries/all', async () => {
       return request(app.getHttpServer())
-        .get('/shops-deliveries/all')
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect(403);
-    });
-  });
-
-  describe('Markets Deliveries', () => {
-    it('GET /markets-deliveries/my', async () => {
-      return request(app.getHttpServer())
-        .get('/markets-deliveries/my')
-        .expect(401);
-    });
-
-    it('GET /markets-deliveries/taken', async () => {
-      return request(app.getHttpServer())
-        .get('/markets-deliveries/taken')
-        .expect(401);
-    });
-
-    it('GET /markets-deliveries/placed', async () => {
-      return request(app.getHttpServer())
-        .get('/markets-deliveries/placed')
-        .expect(401);
-    });
-
-    it('GET /markets-deliveries/all', async () => {
-      return request(app.getHttpServer())
-        .get('/markets-deliveries/all')
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect(403);
-    });
-  });
-
-  describe('Storages Deliveries', () => {
-    it('GET /storages-deliveries/my', async () => {
-      return request(app.getHttpServer())
-        .get('/storages-deliveries/my')
-        .expect(401);
-    });
-
-    it('GET /storages-deliveries/taken', async () => {
-      return request(app.getHttpServer())
-        .get('/storages-deliveries/taken')
-        .expect(401);
-    });
-
-    it('GET /storages-deliveries/placed', async () => {
-      return request(app.getHttpServer())
-        .get('/storages-deliveries/placed')
-        .expect(401);
-    });
-
-    it('GET /storages-deliveries/all', async () => {
-      return request(app.getHttpServer())
-        .get('/storages-deliveries/all')
+        .get('/deliveries/all')
         .set('Authorization', `Bearer ${user.access}`)
         .expect(403);
     });

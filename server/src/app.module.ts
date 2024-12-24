@@ -38,9 +38,7 @@ import { TradesModule } from './features/trades/trades.module';
 import { SalesModule } from './features/sales/sales.module';
 import { OrdersModule } from './features/orders/orders.module';
 import { HaulagesModule } from './features/haulages/haulages.module';
-import { ShopsDeliveriesModule } from './features/shops-deliveries/shops-deliveries.module';
-import { MarketsDeliveriesModule } from './features/markets-deliveries/markets-deliveries.module';
-import { StoragesDeliveriesModule } from './features/storages-deliveries/storages-deliveries.module';
+import { DeliveriesModule } from './features/deliveries/deliveries.module';
 import { TasksModule } from './features/tasks/tasks.module';
 import { AdvertsModule } from './features/adverts/adverts.module';
 import { RatingsModule } from './features/ratings/ratings.module';
@@ -107,9 +105,7 @@ import { LoggerModule } from './features/logger/logger.module';
     SalesModule,
     OrdersModule,
     HaulagesModule,
-    ShopsDeliveriesModule,
-    MarketsDeliveriesModule,
-    StoragesDeliveriesModule,
+    DeliveriesModule,
     TasksModule,
     AdvertsModule,
     RatingsModule,

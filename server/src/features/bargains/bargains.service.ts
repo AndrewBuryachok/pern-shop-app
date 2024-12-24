@@ -2,7 +2,7 @@ import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { Bargain } from './bargain.entity';
-import { ShopsDeliveriesService } from '../shops-deliveries/shops-deliveries.service';
+import { DeliveriesService } from '../deliveries/deliveries.service';
 import { GoodsService } from '../goods/goods.service';
 import { MqttService } from '../mqtt/mqtt.service';
 import {
@@ -20,8 +20,8 @@ export class BargainsService {
   constructor(
     @InjectRepository(Bargain)
     private bargainsRepository: Repository<Bargain>,
-    @Inject(forwardRef(() => ShopsDeliveriesService))
-    private shopsDeliveriesService: ShopsDeliveriesService,
+    @Inject(forwardRef(() => DeliveriesService))
+    private deliveriesService: DeliveriesService,
     private goodsService: GoodsService,
     private mqttService: MqttService,
   ) {}
@@ -74,7 +74,7 @@ export class BargainsService {
       Notification.CREATED_BARGAIN,
     );
     if (dto.stationId && dto.price) {
-      await this.shopsDeliveriesService.createShopDelivery({
+      await this.deliveriesService.createShopDelivery({
         ...dto,
         bargainId: bargain.id,
       });
