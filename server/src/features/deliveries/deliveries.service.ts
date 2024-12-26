@@ -1,23 +1,14 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import {
-  Brackets,
-  FindOptionsWhere,
-  Repository,
-  SelectQueryBuilder,
-} from 'typeorm';
+import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { Delivery } from './delivery.entity';
-import { BargainsService } from '../bargains/bargains.service';
-import { TradesService } from '../trades/trades.service';
-import { SalesService } from '../sales/sales.service';
+import { PurchasesService } from '../purchases/purchases.service';
 import { HiresService } from '../hires/hires.service';
 import { CardsService } from '../cards/cards.service';
 import { PaymentsService } from '../payments/payments.service';
 import { MqttService } from '../mqtt/mqtt.service';
 import {
-  ExtCreateMarketDeliveryDto,
-  ExtCreateShopDeliveryDto,
-  ExtCreateStorageDeliveryDto,
+  ExtCreateDeliveryDto,
   ExtDeliveryIdDto,
   ExtEditDeliveryDto,
   ExtRateDeliveryDto,
@@ -34,12 +25,8 @@ export class DeliveriesService {
   constructor(
     @InjectRepository(Delivery)
     private deliveriesRepository: Repository<Delivery>,
-    @Inject(forwardRef(() => BargainsService))
-    private bargainsService: BargainsService,
-    @Inject(forwardRef(() => TradesService))
-    private tradesService: TradesService,
-    @Inject(forwardRef(() => SalesService))
-    private salesService: SalesService,
+    @Inject(forwardRef(() => PurchasesService))
+    private purchasesService: PurchasesService,
     private hiresService: HiresService,
     private cardsService: CardsService,
     private paymentsService: PaymentsService,
@@ -108,55 +95,27 @@ export class DeliveriesService {
     return { result, count };
   }
 
-  async createShopDelivery(
-    dto: ExtCreateShopDeliveryDto & { nick: string },
+  async createDelivery(
+    dto: ExtCreateDeliveryDto & { nick: string },
   ): Promise<void> {
-    await this.bargainsService.checkBargainOwner(
-      dto.bargainId,
+    await this.purchasesService.checkPurchaseOwner(
+      dto.purchaseId,
       dto.myId,
       dto.hasRole,
     );
-    await this.checkDeliveryNotExists({ bargainId: dto.bargainId });
+    const delivery = await this.deliveriesRepository.findOneBy({
+      purchaseId: dto.purchaseId,
+    });
+    if (delivery) {
+      throw new AppException(DeliveryError.ALREADY_EXISTS);
+    }
     const hireId = await this.hiresService.createHire(dto);
     await this.cardsService.decreaseCardBalance({ ...dto, sum: dto.price });
-    const delivery = await this.createShop(dto, hireId);
-    this.publishCreateDeliveryNotification(delivery.id, dto.nick);
-  }
-
-  async createMarketDelivery(
-    dto: ExtCreateMarketDeliveryDto & { nick: string },
-  ): Promise<void> {
-    await this.tradesService.checkTradeOwner(
-      dto.tradeId,
-      dto.myId,
-      dto.hasRole,
-    );
-    await this.checkDeliveryNotExists({ tradeId: dto.tradeId });
-    const hireId = await this.hiresService.createHire(dto);
-    await this.cardsService.decreaseCardBalance({ ...dto, sum: dto.price });
-    const delivery = await this.createMarket(dto, hireId);
-    this.publishCreateDeliveryNotification(delivery.id, dto.nick);
-  }
-
-  async createStorageDelivery(
-    dto: ExtCreateStorageDeliveryDto & { nick: string },
-  ): Promise<void> {
-    await this.salesService.checkSaleOwner(dto.saleId, dto.myId, dto.hasRole);
-    await this.checkDeliveryNotExists({ saleId: dto.saleId });
-    const hireId = await this.hiresService.createHire(dto);
-    await this.cardsService.decreaseCardBalance({ ...dto, sum: dto.price });
-    const delivery = await this.createStorage(dto, hireId);
-    this.publishCreateDeliveryNotification(delivery.id, dto.nick);
-  }
-
-  private async publishCreateDeliveryNotification(
-    id: number,
-    nick: string,
-  ): Promise<void> {
+    const result = await this.create(dto, hireId);
     this.mqttService.publishNotificationMessage(
-      id,
+      result.id,
       0,
-      nick,
+      dto.nick,
       Notification.CREATED_DELIVERY,
     );
   }
@@ -336,15 +295,6 @@ export class DeliveriesService {
     await this.deliveriesRepository.findOneByOrFail({ id });
   }
 
-  private async checkDeliveryNotExists(
-    options: FindOptionsWhere<Delivery>,
-  ): Promise<void> {
-    const delivery = await this.deliveriesRepository.findOneBy(options);
-    if (delivery) {
-      throw new AppException(DeliveryError.ALREADY_EXISTS);
-    }
-  }
-
   private async checkDeliveryCustomer(
     id: number,
     userId: number,
@@ -381,54 +331,20 @@ export class DeliveriesService {
     return delivery;
   }
 
-  private async createShop(
-    dto: ExtCreateShopDeliveryDto,
+  private async create(
+    dto: ExtCreateDeliveryDto,
     hireId: number,
   ): Promise<Delivery> {
     try {
       const delivery = this.deliveriesRepository.create({
+        purchaseId: dto.purchaseId,
         hireId,
-        bargainId: dto.bargainId,
         price: dto.price,
       });
       await this.deliveriesRepository.save(delivery);
       return delivery;
     } catch (error) {
-      throw new AppException(DeliveryError.CREATE_SHOP_FAILED);
-    }
-  }
-
-  private async createMarket(
-    dto: ExtCreateMarketDeliveryDto,
-    hireId: number,
-  ): Promise<Delivery> {
-    try {
-      const delivery = this.deliveriesRepository.create({
-        hireId,
-        tradeId: dto.tradeId,
-        price: dto.price,
-      });
-      await this.deliveriesRepository.save(delivery);
-      return delivery;
-    } catch (error) {
-      throw new AppException(DeliveryError.CREATE_MARKET_FAILED);
-    }
-  }
-
-  private async createStorage(
-    dto: ExtCreateStorageDeliveryDto,
-    hireId: number,
-  ): Promise<Delivery> {
-    try {
-      const delivery = this.deliveriesRepository.create({
-        hireId,
-        saleId: dto.saleId,
-        price: dto.price,
-      });
-      await this.deliveriesRepository.save(delivery);
-      return delivery;
-    } catch (error) {
-      throw new AppException(DeliveryError.CREATE_STORAGE_FAILED);
+      throw new AppException(DeliveryError.CREATE_FAILED);
     }
   }
 
@@ -506,20 +422,18 @@ export class DeliveriesService {
   ): SelectQueryBuilder<Delivery> {
     return this.deliveriesRepository
       .createQueryBuilder('delivery')
-      .leftJoin('delivery.bargain', 'bargain')
-      .leftJoin('bargain.good', 'good')
+      .innerJoin('delivery.purchase', 'purchase')
+      .leftJoin('purchase.good', 'good')
       .leftJoin('good.shop', 'shop')
       .leftJoin('shop.card', 'shopCard')
       .leftJoin('shopCard.user', 'shopUser')
-      .leftJoin('delivery.trade', 'trade')
-      .leftJoin('trade.ware', 'ware')
+      .leftJoin('purchase.ware', 'ware')
       .leftJoin('ware.rent', 'rent')
       .leftJoin('rent.stall', 'stall')
       .leftJoin('stall.market', 'market')
       .leftJoin('market.card', 'marketCard')
       .leftJoin('marketCard.user', 'marketUser')
-      .leftJoin('delivery.sale', 'sale')
-      .leftJoin('sale.product', 'product')
+      .leftJoin('purchase.product', 'product')
       .leftJoin('product.lease', 'lease')
       .leftJoin('lease.cell', 'cell')
       .leftJoin('cell.storage', 'storage')
@@ -681,19 +595,19 @@ export class DeliveriesService {
       .andWhere(
         new Brackets((qb) =>
           qb
-            .where(`${!req.minAmount}`, { minAmount: req.minAmount })
-            .orWhere('bargain.amount >= :minAmount')
-            .orWhere('trade.amount >= :minAmount')
-            .orWhere('sale.amount >= :minAmount'),
+            .where(`${!req.minAmount}`)
+            .orWhere('purchase.amount >= :minAmount', {
+              minAmount: req.minAmount,
+            }),
         ),
       )
       .andWhere(
         new Brackets((qb) =>
           qb
-            .where(`${!req.maxAmount}`, { maxAmount: req.maxAmount })
-            .orWhere('bargain.amount <= :maxAmount')
-            .orWhere('trade.amount <= :maxAmount')
-            .orWhere('sale.amount <= :maxAmount'),
+            .where(`${!req.maxAmount}`)
+            .orWhere('purchase.amount <= :maxAmount', {
+              maxAmount: req.maxAmount,
+            }),
         ),
       )
       .andWhere(
@@ -795,7 +709,7 @@ export class DeliveriesService {
       .take(req.take)
       .select([
         'delivery.id',
-        'bargain.id',
+        'purchase.id',
         'good.id',
         'shop.id',
         'shopCard.id',
@@ -811,8 +725,6 @@ export class DeliveriesService {
         'good.description',
         'good.intake',
         'good.kit',
-        'bargain.amount',
-        'trade.id',
         'ware.id',
         'rent.id',
         'stall.id',
@@ -831,8 +743,6 @@ export class DeliveriesService {
         'ware.description',
         'ware.intake',
         'ware.kit',
-        'trade.amount',
-        'sale.id',
         'product.id',
         'lease.id',
         'cell.id',
@@ -851,7 +761,7 @@ export class DeliveriesService {
         'product.description',
         'product.intake',
         'product.kit',
-        'sale.amount',
+        'purchase.amount',
         'hire.id',
         'box.id',
         'station.id',

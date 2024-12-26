@@ -72,12 +72,10 @@ export class HiresService implements OnModuleInit {
       .leftJoin('hire.fromHaulages', 'fromHaulage')
       .leftJoin('hire.toHaulages', 'toHaulage')
       .leftJoin('hire.deliveries', 'delivery')
-      .leftJoin('delivery.bargain', 'bargain')
-      .leftJoin('bargain.good', 'good')
-      .leftJoin('delivery.trade', 'trade')
-      .leftJoin('trade.ware', 'ware')
-      .leftJoin('delivery.sale', 'sale')
-      .leftJoin('sale.product', 'product')
+      .leftJoin('delivery.purchase', 'purchase')
+      .leftJoin('purchase.good', 'good')
+      .leftJoin('purchase.ware', 'ware')
+      .leftJoin('purchase.product', 'product')
       .where('hire.id = :hireId', { hireId })
       .select([
         'hire.id',
@@ -103,30 +101,26 @@ export class HiresService implements OnModuleInit {
         'toHaulage.kit',
         'toHaulage.price',
         'delivery.id',
-        'bargain.id',
+        'purchase.id',
         'good.id',
         'good.item',
         'good.description',
         'good.intake',
         'good.kit',
         'good.price',
-        'bargain.amount',
-        'trade.id',
         'ware.id',
         'ware.item',
         'ware.description',
         'ware.intake',
         'ware.kit',
         'ware.price',
-        'trade.amount',
-        'sale.id',
         'product.id',
         'product.item',
         'product.description',
         'product.intake',
         'product.kit',
         'product.price',
-        'sale.amount',
+        'purchase.amount',
       ])
       .getOne();
     return [
@@ -134,11 +128,11 @@ export class HiresService implements OnModuleInit {
       ...hire.fromHaulages,
       ...hire.toHaulages,
       ...hire.deliveries.map((delivery) => ({
-        ...delivery.bargain.good,
-        ...delivery.trade.ware,
-        ...delivery.sale.product,
+        ...delivery.purchase.good,
+        ...delivery.purchase.ware,
+        ...delivery.purchase.product,
         id: delivery.id,
-        amount: delivery.bargain.amount,
+        amount: delivery.purchase.amount,
       })),
     ];
   }

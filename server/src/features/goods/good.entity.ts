@@ -9,7 +9,7 @@ import {
 import { Thing } from '../things/thing.entity';
 import { Shop } from '../shops/shop.entity';
 import { GoodState } from './good-state.entity';
-import { Bargain } from '../bargains/bargain.entity';
+import { Purchase } from '../purchases/purchase.entity';
 
 @Entity('goods')
 export class Good extends Thing {
@@ -23,8 +23,8 @@ export class Good extends Thing {
   @OneToMany(() => GoodState, (goodState) => goodState.good)
   states: GoodState[];
 
-  @OneToMany(() => Bargain, (bargain) => bargain.good)
-  bargains: Bargain[];
+  @OneToMany(() => Purchase, (purchase) => purchase.good)
+  purchases: Purchase[];
 
   @AfterLoad()
   setPrice() {

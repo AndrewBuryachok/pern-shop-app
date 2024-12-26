@@ -800,9 +800,9 @@ export class UsersService {
         'card.id = rent.cardId',
       )
       .leftJoin('rent.wares', 'ware')
-      .leftJoin('ware.trades', 'trade')
+      .leftJoin('ware.purchases', 'purchase')
       .where('user.id = :userId', { userId })
-      .select('AVG(trade.rate)', 'waresRate')
+      .select('AVG(purchase.rate)', 'waresRate')
       .getRawOne();
     const productsRate = await this.usersRepository
       .createQueryBuilder('user')
@@ -814,9 +814,9 @@ export class UsersService {
         'card.id = lease.cardId',
       )
       .leftJoin('lease.products', 'product')
-      .leftJoin('product.sales', 'sale')
+      .leftJoin('product.purchases', 'purchase')
       .where('user.id = :userId', { userId })
-      .select('AVG(sale.rate)', 'productsRate')
+      .select('AVG(purchase.rate)', 'productsRate')
       .getRawOne();
     const ordersRate = await this.usersRepository
       .createQueryBuilder('user')

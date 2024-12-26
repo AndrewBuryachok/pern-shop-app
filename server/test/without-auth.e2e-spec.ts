@@ -599,95 +599,31 @@ describe('Without Auth', () => {
     });
   });
 
-  describe('Bargains', () => {
-    it('GET /bargains/my', async () => {
-      return request(app.getHttpServer()).get('/bargains/my').expect(401);
+  describe('Purchases', () => {
+    it('GET /purchases/my', async () => {
+      return request(app.getHttpServer()).get('/purchases/my').expect(401);
     });
 
-    it('GET /bargains/sold', async () => {
-      return request(app.getHttpServer()).get('/bargains/sold').expect(401);
+    it('GET /purchases/sold', async () => {
+      return request(app.getHttpServer()).get('/purchases/sold').expect(401);
     });
 
-    it('GET /bargains/all', async () => {
+    it('GET /purchases/all', async () => {
       return request(app.getHttpServer())
-        .get('/bargains/all')
+        .get('/purchases/all')
         .set('Authorization', `Bearer ${user.access}`)
         .expect(403);
     });
 
-    it('GET /bargains/my/select', async () => {
+    it('GET /purchases/my/select', async () => {
       return request(app.getHttpServer())
-        .get('/bargains/my/select')
+        .get('/purchases/my/select')
         .expect(401);
     });
 
-    it('GET /bargains/:userId/select', async () => {
+    it('GET /purchases/:userId/select', async () => {
       return request(app.getHttpServer())
-        .get(`/bargains/${user.id}/select`)
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect(403);
-    });
-  });
-
-  describe('Trades', () => {
-    it('GET /trades/my', async () => {
-      return request(app.getHttpServer()).get('/trades/my').expect(401);
-    });
-
-    it('GET /trades/sold', async () => {
-      return request(app.getHttpServer()).get('/trades/sold').expect(401);
-    });
-
-    it('GET /trades/placed', async () => {
-      return request(app.getHttpServer()).get('/trades/placed').expect(401);
-    });
-
-    it('GET /trades/all', async () => {
-      return request(app.getHttpServer())
-        .get('/trades/all')
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect(403);
-    });
-
-    it('GET /trades/my/select', async () => {
-      return request(app.getHttpServer()).get('/trades/my/select').expect(401);
-    });
-
-    it('GET /trades/:userId/select', async () => {
-      return request(app.getHttpServer())
-        .get(`/trades/${user.id}/select`)
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect(403);
-    });
-  });
-
-  describe('Sales', () => {
-    it('GET /sales/my', async () => {
-      return request(app.getHttpServer()).get('/sales/my').expect(401);
-    });
-
-    it('GET /sales/sold', async () => {
-      return request(app.getHttpServer()).get('/sales/sold').expect(401);
-    });
-
-    it('GET /sales/placed', async () => {
-      return request(app.getHttpServer()).get('/sales/placed').expect(401);
-    });
-
-    it('GET /sales/all', async () => {
-      return request(app.getHttpServer())
-        .get('/sales/all')
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect(403);
-    });
-
-    it('GET /sales/my/select', async () => {
-      return request(app.getHttpServer()).get('/sales/my/select').expect(401);
-    });
-
-    it('GET /sales/:userId/select', async () => {
-      return request(app.getHttpServer())
-        .get(`/sales/${user.id}/select`)
+        .get(`/purchases/${user.id}/select`)
         .set('Authorization', `Bearer ${user.access}`)
         .expect(403);
     });

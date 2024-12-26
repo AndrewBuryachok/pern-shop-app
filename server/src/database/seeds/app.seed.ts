@@ -35,15 +35,14 @@ import { Box } from '../../features/boxes/box.entity';
 import { Rent } from '../../features/rents/rent.entity';
 import { Lease } from '../../features/leases/lease.entity';
 import { Hire } from '../../features/hires/hire.entity';
+import { Thing } from '../../features/things/thing.entity';
 import { Good } from '../../features/goods/good.entity';
 import { GoodState } from '../../features/goods/good-state.entity';
 import { Ware } from '../../features/wares/ware.entity';
 import { WareState } from '../../features/wares/ware-state.entity';
 import { Product } from '../../features/products/product.entity';
 import { ProductState } from '../../features/products/product-state.entity';
-import { Bargain } from '../../features/bargains/bargain.entity';
-import { Trade } from '../../features/trades/trade.entity';
-import { Sale } from '../../features/sales/sale.entity';
+import { Purchase } from '../../features/purchases/purchase.entity';
 import { Order } from '../../features/orders/order.entity';
 import { Haulage } from '../../features/haulages/haulage.entity';
 import { Delivery } from '../../features/deliveries/delivery.entity';
@@ -459,93 +458,56 @@ export default class AppSeed implements Seeder {
         return productState;
       })
       .makeMany(products.length);
-    const bargains = await factory(Bargain)()
-      .map(async (bargain) => {
-        bargain.good = faker.helpers.arrayElement(
-          goods.filter((good) => good.amount),
+    const purchases = await factory(Purchase)()
+      .map(async (purchase) => {
+        let thing: Thing, card: Card;
+        switch (Math.floor(Math.random() * 3)) {
+          case 0:
+            purchase.good = faker.helpers.arrayElement(
+              goods.filter((good) => good.amount),
+            );
+            thing = purchase.good;
+            card = purchase.good.shop.card;
+            break;
+          case 1:
+            purchase.ware = faker.helpers.arrayElement(
+              wares.filter((ware) => ware.amount),
+            );
+            thing = purchase.ware;
+            card = purchase.ware.rent.card;
+            break;
+          case 2:
+            purchase.product = faker.helpers.arrayElement(
+              products.filter((product) => product.amount),
+            );
+            thing = purchase.product;
+            card = purchase.product.lease.card;
+            break;
+        }
+        purchase.card = faker.helpers.arrayElement(
+          cards.filter((card) => card.balance >= thing.price),
         );
-        bargain.card = faker.helpers.arrayElement(
-          cards.filter((card) => card.balance >= bargain.good.price),
-        );
-        bargain.amount =
+        purchase.amount =
           Math.floor(
             Math.random() *
               Math.min(
-                bargain.good.amount,
-                Math.floor(bargain.card.balance / bargain.good.price),
+                thing.amount,
+                Math.floor(purchase.card.balance / thing.price),
               ),
           ) + 1;
-        bargain.good.amount -= bargain.amount;
+        thing.amount -= purchase.amount;
         const payment = await factory(Payment)().make({
-          senderCard: bargain.card,
-          receiverCard: bargain.good.shop.card,
-          sum: bargain.amount * bargain.good.price,
+          senderCard: purchase.card,
+          receiverCard: card,
+          sum: purchase.amount * thing.price,
           description: '',
         });
         payments.push(payment);
-        bargain.card.balance -= bargain.amount * bargain.good.price;
-        bargain.good.shop.card.balance += bargain.amount * bargain.good.price;
-        return bargain;
+        purchase.card.balance -= purchase.amount * thing.price;
+        card.balance += purchase.amount * thing.price;
+        return purchase;
       })
-      .makeMany(20);
-    const trades = await factory(Trade)()
-      .map(async (trade) => {
-        trade.ware = faker.helpers.arrayElement(
-          wares.filter((ware) => ware.amount),
-        );
-        trade.card = faker.helpers.arrayElement(
-          cards.filter((card) => card.balance >= trade.ware.price),
-        );
-        trade.amount =
-          Math.floor(
-            Math.random() *
-              Math.min(
-                trade.ware.amount,
-                Math.floor(trade.card.balance / trade.ware.price),
-              ),
-          ) + 1;
-        trade.ware.amount -= trade.amount;
-        const payment = await factory(Payment)().make({
-          senderCard: trade.card,
-          receiverCard: trade.ware.rent.card,
-          sum: trade.amount * trade.ware.price,
-          description: '',
-        });
-        payments.push(payment);
-        trade.card.balance -= trade.amount * trade.ware.price;
-        trade.ware.rent.card.balance += trade.amount * trade.ware.price;
-        return trade;
-      })
-      .makeMany(20);
-    const sales = await factory(Sale)()
-      .map(async (sale) => {
-        sale.product = faker.helpers.arrayElement(
-          products.filter((product) => product.amount),
-        );
-        sale.card = faker.helpers.arrayElement(
-          cards.filter((card) => card.balance >= sale.product.price),
-        );
-        sale.amount =
-          Math.floor(
-            Math.random() *
-              Math.min(
-                sale.product.amount,
-                Math.floor(sale.card.balance / sale.product.price),
-              ),
-          ) + 1;
-        sale.product.amount -= sale.amount;
-        const payment = await factory(Payment)().make({
-          senderCard: sale.card,
-          receiverCard: sale.product.lease.card,
-          sum: sale.amount * sale.product.price,
-          description: '',
-        });
-        payments.push(payment);
-        sale.card.balance -= sale.amount * sale.product.price;
-        sale.product.lease.card.balance += sale.amount * sale.product.price;
-        return sale;
-      })
-      .makeMany(20);
+      .makeMany(60);
     let hireId = 0;
     const orders = await factory(Order)()
       .map(async (order) => {
@@ -588,24 +550,12 @@ export default class AppSeed implements Seeder {
         return haulage;
       })
       .makeMany(10);
-    let bargainId = 0;
-    let tradeId = 0;
-    let saleId = 0;
+    let purchaseId = 0;
     const deliveries = await factory(Delivery)()
       .map(async (delivery) => {
+        delivery.purchase = purchases[purchaseId++];
         delivery.hire = hires[hireId++];
         delivery.hire.card.balance -= delivery.price;
-        switch (Math.floor(Math.random() * 3)) {
-          case 0:
-            delivery.bargain = bargains[bargainId++];
-            break;
-          case 1:
-            delivery.trade = trades[tradeId++];
-            break;
-          case 2:
-            delivery.sale = sales[saleId++];
-            break;
-        }
         if (delivery.status !== Status.CREATED) {
           delivery.executorCard = faker.helpers.arrayElement(cards);
         }
@@ -777,17 +727,9 @@ export default class AppSeed implements Seeder {
       .map(async () => haulages[id++])
       .createMany(haulages.length);
     id = 0;
-    await factory(Bargain)()
-      .map(async () => bargains[id++])
-      .createMany(bargains.length);
-    id = 0;
-    await factory(Trade)()
-      .map(async () => trades[id++])
-      .createMany(trades.length);
-    id = 0;
-    await factory(Sale)()
-      .map(async () => sales[id++])
-      .createMany(sales.length);
+    await factory(Purchase)()
+      .map(async () => purchases[id++])
+      .createMany(purchases.length);
     id = 0;
     await factory(Delivery)()
       .map(async () => deliveries[id++])

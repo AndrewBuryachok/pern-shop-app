@@ -71,9 +71,9 @@ export class GoodsService {
   async selectGoodRating(goodId: number): Promise<{ rate: number }> {
     const good = await this.goodsRepository
       .createQueryBuilder('good')
-      .leftJoin('good.bargains', 'bargain')
+      .leftJoin('good.purchases', 'purchase')
       .where('good.id = :goodId', { goodId })
-      .select('AVG(bargain.rate)', 'rate')
+      .select('AVG(purchase.rate)', 'rate')
       .getRawOne();
     return { rate: +good.rate };
   }

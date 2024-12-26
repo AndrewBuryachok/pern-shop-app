@@ -3,12 +3,10 @@ import { Validate } from 'class-validator';
 import { Type } from 'class-transformer';
 import { IsId } from '../../common/decorators';
 import {
-  IsBargainExists,
   IsCardExists,
   IsDeliveryExists,
-  IsSaleExists,
+  IsPurchaseExists,
   IsStationExists,
-  IsTradeExists,
 } from '../../common/constraints';
 import { EditStateDto } from '../states/state.dto';
 import {
@@ -40,6 +38,11 @@ export class ExtEditDeliveryDto extends EditDeliveryDto {
 export class CreateDeliveryDto extends EditDeliveryDto {
   @ApiProperty()
   @IsId()
+  @Validate(IsPurchaseExists)
+  purchaseId: number;
+
+  @ApiProperty()
+  @IsId()
   @Validate(IsStationExists)
   stationId: number;
 
@@ -49,38 +52,7 @@ export class CreateDeliveryDto extends EditDeliveryDto {
   cardId: number;
 }
 
-export class CreateShopDeliveryDto extends CreateDeliveryDto {
-  @ApiProperty()
-  @IsId()
-  @Validate(IsBargainExists)
-  bargainId: number;
-}
-
-export class ExtCreateShopDeliveryDto extends CreateShopDeliveryDto {
-  myId: number;
-  hasRole: boolean;
-}
-
-export class CreateMarketDeliveryDto extends CreateDeliveryDto {
-  @ApiProperty()
-  @IsId()
-  @Validate(IsTradeExists)
-  tradeId: number;
-}
-
-export class ExtCreateMarketDeliveryDto extends CreateMarketDeliveryDto {
-  myId: number;
-  hasRole: boolean;
-}
-
-export class CreateStorageDeliveryDto extends CreateDeliveryDto {
-  @ApiProperty()
-  @IsId()
-  @Validate(IsSaleExists)
-  saleId: number;
-}
-
-export class ExtCreateStorageDeliveryDto extends CreateStorageDeliveryDto {
+export class ExtCreateDeliveryDto extends CreateDeliveryDto {
   myId: number;
   hasRole: boolean;
 }

@@ -1,9 +1,7 @@
 import { forwardRef, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Delivery } from './delivery.entity';
-import { BargainsModule } from '../bargains/bargains.module';
-import { TradesModule } from '../trades/trades.module';
-import { SalesModule } from '../sales/sales.module';
+import { PurchasesModule } from '../purchases/purchases.module';
 import { HiresModule } from '../hires/hires.module';
 import { CardsModule } from '../cards/cards.module';
 import { PaymentsModule } from '../payments/payments.module';
@@ -15,9 +13,7 @@ import { IsDeliveryExists } from '../../common/constraints';
 @Module({
   imports: [
     TypeOrmModule.forFeature([Delivery]),
-    forwardRef(() => BargainsModule),
-    forwardRef(() => TradesModule),
-    forwardRef(() => SalesModule),
+    forwardRef(() => PurchasesModule),
     HiresModule,
     CardsModule,
     PaymentsModule,

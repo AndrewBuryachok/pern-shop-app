@@ -7,11 +7,9 @@ import {
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Card } from '../cards/card.entity';
+import { Purchase } from '../purchases/purchase.entity';
 import { Hire } from '../hires/hire.entity';
-import { Bargain } from '../bargains/bargain.entity';
-import { Trade } from '../trades/trade.entity';
-import { Sale } from '../sales/sale.entity';
+import { Card } from '../cards/card.entity';
 import { Status } from '../transportations/status.enum';
 
 @Entity('deliveries')
@@ -19,33 +17,19 @@ export class Delivery {
   @PrimaryGeneratedColumn()
   id: number;
 
+  @Column({ name: 'purchase_id' })
+  purchaseId: number;
+
+  @OneToOne(() => Purchase, { nullable: false })
+  @JoinColumn({ name: 'purchase_id' })
+  purchase: Purchase;
+
   @Column({ name: 'hire_id' })
   hireId: number;
 
   @ManyToOne(() => Hire, { nullable: false })
   @JoinColumn({ name: 'hire_id' })
   hire: Hire;
-
-  @Column({ name: 'bargain_id', nullable: true })
-  bargainId: number;
-
-  @OneToOne(() => Bargain, { nullable: true, onDelete: 'CASCADE' })
-  @JoinColumn({ name: 'bargain_id' })
-  bargain: Bargain;
-
-  @Column({ name: 'trade_id', nullable: true })
-  tradeId: number;
-
-  @OneToOne(() => Trade, { nullable: true, onDelete: 'CASCADE' })
-  @JoinColumn({ name: 'trade_id' })
-  trade: Trade;
-
-  @Column({ name: 'sale_id', nullable: true })
-  saleId: number;
-
-  @OneToOne(() => Sale, { nullable: true, onDelete: 'CASCADE' })
-  @JoinColumn({ name: 'sale_id' })
-  sale: Sale;
 
   @Column()
   price: number;

@@ -1,0 +1,139 @@
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
+} from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
+import { PurchasesService } from './purchases.service';
+import { Purchase } from './purchase.entity';
+import {
+  CreateMarketPurchaseDto,
+  CreateShopPurchaseDto,
+  CreateStoragePurchaseDto,
+  PurchaseIdDto,
+  RatePurchaseDto,
+} from './purchase.dto';
+import { UserIdDto } from '../users/user.dto';
+import { Request, Response } from '../../common/interfaces';
+import { HasRole, MyId, MyNick, Roles } from '../../common/decorators';
+import { Role } from '../users/role.enum';
+
+@ApiTags('purchases')
+@Controller('purchases')
+export class PurchasesController {
+  constructor(private purchasesService: PurchasesService) {}
+
+  @Get('my')
+  getMyPurchases(
+    @MyId() myId: number,
+    @Query() req: Request,
+  ): Promise<Response<Purchase>> {
+    return this.purchasesService.getMyPurchases(myId, req);
+  }
+
+  @Get('sold')
+  getSoldPurchases(
+    @MyId() myId: number,
+    @Query() req: Request,
+  ): Promise<Response<Purchase>> {
+    return this.purchasesService.getSoldPurchases(myId, req);
+  }
+
+  @Get('placed')
+  getPlacedPurchases(
+    @MyId() myId: number,
+    @Query() req: Request,
+  ): Promise<Response<Purchase>> {
+    return this.purchasesService.getPlacedPurchases(myId, req);
+  }
+
+  @Roles(Role.MERCHANT)
+  @Get('all')
+  getAllPurchases(@Query() req: Request): Promise<Response<Purchase>> {
+    return this.purchasesService.getAllPurchases(req);
+  }
+
+  @Get('my/select')
+  selectMyPurchases(@MyId() myId: number): Promise<Purchase[]> {
+    return this.purchasesService.selectUserPurchases(myId);
+  }
+
+  @Roles(Role.MERCHANT)
+  @Get(':userId/select')
+  selectUserPurchases(@Param() { userId }: UserIdDto): Promise<Purchase[]> {
+    return this.purchasesService.selectUserPurchases(userId);
+  }
+
+  @Post('shops')
+  createShopPurchase(
+    @MyId() myId: number,
+    @MyNick() nick: string,
+    @HasRole(Role.MERCHANT) hasRole: boolean,
+    @Body() dto: CreateShopPurchaseDto,
+  ): Promise<void> {
+    return this.purchasesService.createShopPurchase({
+      ...dto,
+      myId,
+      nick,
+      hasRole,
+    });
+  }
+
+  @Post('markets')
+  createMarketPurchase(
+    @MyId() myId: number,
+    @MyNick() nick: string,
+    @HasRole(Role.MERCHANT) hasRole: boolean,
+    @Body() dto: CreateMarketPurchaseDto,
+  ): Promise<void> {
+    return this.purchasesService.createMarketPurchase({
+      ...dto,
+      myId,
+      nick,
+      hasRole,
+    });
+  }
+
+  @Post('storages')
+  createStoragePurchase(
+    @MyId() myId: number,
+    @MyNick() nick: string,
+    @HasRole(Role.MERCHANT) hasRole: boolean,
+    @Body() dto: CreateStoragePurchaseDto,
+  ): Promise<void> {
+    return this.purchasesService.createStoragePurchase({
+      ...dto,
+      myId,
+      nick,
+      hasRole,
+    });
+  }
+
+  @Patch(':purchaseId/rate')
+  ratePurchase(
+    @MyId() myId: number,
+    @MyNick() nick: string,
+    @HasRole(Role.MERCHANT) hasRole: boolean,
+    @Param() { purchaseId }: PurchaseIdDto,
+    @Body() dto: RatePurchaseDto,
+  ): Promise<void> {
+    return this.purchasesService.ratePurchase({
+      ...dto,
+      purchaseId,
+      myId,
+      nick,
+      hasRole,
+    });
+  }
+
+  @Roles(Role.MERCHANT)
+  @Delete(':purchaseId')
+  deletePurchase(@Param() { purchaseId }: PurchaseIdDto): Promise<void> {
+    return this.purchasesService.deletePurchase({ purchaseId });
+  }
+}

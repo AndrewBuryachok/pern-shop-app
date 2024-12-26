@@ -80,9 +80,9 @@ export class WaresService {
   async selectWareRating(wareId: number): Promise<{ rate: number }> {
     const ware = await this.waresRepository
       .createQueryBuilder('ware')
-      .leftJoin('ware.trades', 'trade')
+      .leftJoin('ware.purchases', 'purchase')
       .where('ware.id = :wareId', { wareId })
-      .select('AVG(trade.rate)', 'rate')
+      .select('AVG(purchase.rate)', 'rate')
       .getRawOne();
     return { rate: +ware.rate };
   }

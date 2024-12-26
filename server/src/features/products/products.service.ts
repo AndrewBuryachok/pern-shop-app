@@ -83,9 +83,9 @@ export class ProductsService {
   async selectProductRating(productId: number): Promise<{ rate: number }> {
     const product = await this.productsRepository
       .createQueryBuilder('product')
-      .leftJoin('product.sales', 'sale')
+      .leftJoin('product.purchases', 'purchase')
       .where('product.id = :productId', { productId })
-      .select('AVG(sale.rate)', 'rate')
+      .select('AVG(purchase.rate)', 'rate')
       .getRawOne();
     return { rate: +product.rate };
   }

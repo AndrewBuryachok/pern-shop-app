@@ -12,9 +12,7 @@ import { ApiTags } from '@nestjs/swagger';
 import { DeliveriesService } from './deliveries.service';
 import { Delivery } from './delivery.entity';
 import {
-  CreateMarketDeliveryDto,
-  CreateShopDeliveryDto,
-  CreateStorageDeliveryDto,
+  CreateDeliveryDto,
   DeliveryIdDto,
   EditDeliveryDto,
   RateDeliveryDto,
@@ -65,44 +63,14 @@ export class DeliveriesController {
     return this.deliveriesService.getAllDeliveries(req);
   }
 
-  @Post('shops')
-  createShopDelivery(
+  @Post()
+  createDelivery(
     @MyId() myId: number,
     @MyNick() nick: string,
     @HasRole(Role.MERCHANT) hasRole: boolean,
-    @Body() dto: CreateShopDeliveryDto,
+    @Body() dto: CreateDeliveryDto,
   ): Promise<void> {
-    return this.deliveriesService.createShopDelivery({
-      ...dto,
-      myId,
-      nick,
-      hasRole,
-    });
-  }
-
-  @Post('markets')
-  createMarketDelivery(
-    @MyId() myId: number,
-    @MyNick() nick: string,
-    @HasRole(Role.MERCHANT) hasRole: boolean,
-    @Body() dto: CreateMarketDeliveryDto,
-  ): Promise<void> {
-    return this.deliveriesService.createMarketDelivery({
-      ...dto,
-      myId,
-      nick,
-      hasRole,
-    });
-  }
-
-  @Post('storages')
-  createStorageDelivery(
-    @MyId() myId: number,
-    @MyNick() nick: string,
-    @HasRole(Role.MERCHANT) hasRole: boolean,
-    @Body() dto: CreateStorageDeliveryDto,
-  ): Promise<void> {
-    return this.deliveriesService.createStorageDelivery({
+    return this.deliveriesService.createDelivery({
       ...dto,
       myId,
       nick,

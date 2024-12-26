@@ -33,9 +33,7 @@ import { HiresModule } from './features/hires/hires.module';
 import { GoodsModule } from './features/goods/goods.module';
 import { WaresModule } from './features/wares/wares.module';
 import { ProductsModule } from './features/products/products.module';
-import { BargainsModule } from './features/bargains/bargains.module';
-import { TradesModule } from './features/trades/trades.module';
-import { SalesModule } from './features/sales/sales.module';
+import { PurchasesModule } from './features/purchases/purchases.module';
 import { OrdersModule } from './features/orders/orders.module';
 import { HaulagesModule } from './features/haulages/haulages.module';
 import { DeliveriesModule } from './features/deliveries/deliveries.module';
@@ -100,9 +98,7 @@ import { LoggerModule } from './features/logger/logger.module';
     GoodsModule,
     WaresModule,
     ProductsModule,
-    BargainsModule,
-    TradesModule,
-    SalesModule,
+    PurchasesModule,
     OrdersModule,
     HaulagesModule,
     DeliveriesModule,
