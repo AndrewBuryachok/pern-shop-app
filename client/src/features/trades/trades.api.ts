@@ -6,12 +6,6 @@ import { getQuery } from '../../common/utils';
 
 export const tradesApi = emptyApi.injectEndpoints({
   endpoints: (build) => ({
-    getTradesStats: build.query<number, void>({
-      query: () => ({
-        url: '/trades/stats',
-      }),
-      providesTags: ['Trade'],
-    }),
     getMyTrades: build.query<IResponse<Trade>, IRequest>({
       query: (req) => ({
         url: `/trades/my?${getQuery(req)}`,
@@ -75,7 +69,6 @@ export const tradesApi = emptyApi.injectEndpoints({
 });
 
 export const {
-  useGetTradesStatsQuery,
   useGetMyTradesQuery,
   useGetSoldTradesQuery,
   useGetPlacedTradesQuery,

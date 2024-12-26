@@ -6,12 +6,6 @@ import { getQuery } from '../../common/utils';
 
 export const salesApi = emptyApi.injectEndpoints({
   endpoints: (build) => ({
-    getSalesStats: build.query<number, void>({
-      query: () => ({
-        url: '/sales/stats',
-      }),
-      providesTags: ['Sale'],
-    }),
     getMySales: build.query<IResponse<Sale>, IRequest>({
       query: (req) => ({
         url: `/sales/my?${getQuery(req)}`,
@@ -75,7 +69,6 @@ export const salesApi = emptyApi.injectEndpoints({
 });
 
 export const {
-  useGetSalesStatsQuery,
   useGetMySalesQuery,
   useGetSoldSalesQuery,
   useGetPlacedSalesQuery,

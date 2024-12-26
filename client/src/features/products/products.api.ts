@@ -11,12 +11,6 @@ import { getQuery } from '../../common/utils';
 
 export const productsApi = emptyApi.injectEndpoints({
   endpoints: (build) => ({
-    getProductsStats: build.query<number, void>({
-      query: () => ({
-        url: '/products/stats',
-      }),
-      providesTags: ['Product'],
-    }),
     getMainProducts: build.query<IResponse<Product>, IRequest>({
       query: (req) => ({
         url: `/products?${getQuery(req)}`,
@@ -80,7 +74,6 @@ export const productsApi = emptyApi.injectEndpoints({
 });
 
 export const {
-  useGetProductsStatsQuery,
   useGetMainProductsQuery,
   useGetMyProductsQuery,
   useGetPlacedProductsQuery,
