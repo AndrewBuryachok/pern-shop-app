@@ -9,11 +9,7 @@ import StatusBadge from '../../common/components/StatusBadge';
 import PlaceWithDoubleAvatar from '../../common/components/PlaceWithDoubleAvatar';
 import CustomActions from '../../common/components/CustomActions';
 import { viewDeliveryAction } from './ViewDeliveryModal';
-import {
-  parseBargainAmount,
-  parseSaleAmount,
-  parseTradeAmount,
-} from '../../common/utils';
+import { parsePurchaseAmount } from '../../common/utils';
 
 type Props = ITableWithActions<Delivery>;
 
@@ -39,22 +35,18 @@ export default function DeliveriesTable({ actions = [], ...props }: Props) {
             <AvatarWithDoubleText {...delivery.hire.card} />
           </td>
           <td>
-            {delivery.bargain && (
-              <ThingImageWithText {...delivery.bargain.good} />
+            {delivery.purchase.good && (
+              <ThingImageWithText {...delivery.purchase.good} />
             )}
-            {delivery.trade && <ThingImageWithText {...delivery.trade.ware} />}
-            {delivery.sale && <ThingImageWithText {...delivery.sale.product} />}
+            {delivery.purchase.ware && (
+              <ThingImageWithText {...delivery.purchase.ware} />
+            )}
+            {delivery.purchase.product && (
+              <ThingImageWithText {...delivery.purchase.product} />
+            )}
           </td>
           <td>
-            {delivery.bargain && (
-              <SingleText text={parseBargainAmount(delivery.bargain)} />
-            )}
-            {delivery.trade && (
-              <SingleText text={parseTradeAmount(delivery.trade)} />
-            )}
-            {delivery.sale && (
-              <SingleText text={parseSaleAmount(delivery.sale)} />
-            )}
+            <SingleText text={parsePurchaseAmount(delivery.purchase)} />
           </td>
           <td>
             <PriceText {...delivery} />
@@ -63,19 +55,19 @@ export default function DeliveriesTable({ actions = [], ...props }: Props) {
             <StatusBadge {...delivery} />
           </td>
           <td>
-            {delivery.bargain && (
-              <PlaceWithDoubleAvatar {...delivery.bargain.good.shop} />
+            {delivery.purchase.good && (
+              <PlaceWithDoubleAvatar {...delivery.purchase.good.shop} />
             )}
-            {delivery.trade && (
+            {delivery.purchase.ware && (
               <PlaceWithDoubleAvatar
-                {...delivery.trade.ware.rent.stall.market}
-                container={delivery.trade.ware.rent.stall.name}
+                {...delivery.purchase.ware.rent.stall.market}
+                container={delivery.purchase.ware.rent.stall.name}
               />
             )}
-            {delivery.sale && (
+            {delivery.purchase.product && (
               <PlaceWithDoubleAvatar
-                {...delivery.sale.product.lease.cell.storage}
-                container={delivery.sale.product.lease.cell.name}
+                {...delivery.purchase.product.lease.cell.storage}
+                container={delivery.purchase.product.lease.cell.name}
               />
             )}
           </td>

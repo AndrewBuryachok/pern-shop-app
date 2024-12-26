@@ -1,16 +1,16 @@
 import { useLocation, useSearchParams } from 'react-router-dom';
 import { Mode } from '../../common/enums';
 import {
-  useGetAllTradesQuery,
-  useGetMyTradesQuery,
-  useGetPlacedTradesQuery,
-  useGetSoldTradesQuery,
-} from '../../features/trades/trades.api';
-import TradesTable from '../../features/trades/TradesTable';
-import { rateTradeAction } from '../../features/trades/RateTradeModal';
-import { deleteTradeAction } from '../../features/trades/DeleteTradeModal';
+  useGetAllPurchasesQuery,
+  useGetMyPurchasesQuery,
+  useGetPlacedPurchasesQuery,
+  useGetSoldPurchasesQuery,
+} from '../../features/purchases/purchases.api';
+import PurchasesTable from '../../features/purchases/PurchasesTable';
+import { ratePurchaseAction } from '../../features/purchases/RatePurchaseModal';
+import { deletePurchaseAction } from '../../features/purchases/DeletePurchaseModal';
 
-export default function TradesPage() {
+export default function PurchasesPage() {
   const tab = useLocation().pathname.split('/')[2] || 'main';
 
   const [searchParams] = useSearchParams();
@@ -22,8 +22,11 @@ export default function TradesPage() {
     card: searchParams.get('card'),
     modes: [Mode.BUYER, Mode.SELLER, Mode.OWNER],
     mode: searchParams.get('mode') as Mode,
+    shop: searchParams.get('shop'),
     market: searchParams.get('market'),
     stall: searchParams.get('stall'),
+    storage: searchParams.get('storage'),
+    cell: searchParams.get('cell'),
     item: searchParams.get('item'),
     description: searchParams.get('description') || '',
     minAmount: +(searchParams.get('minAmount') || 0) || null,
@@ -39,16 +42,16 @@ export default function TradesPage() {
   };
 
   const response = {
-    my: useGetMyTradesQuery,
-    sold: useGetSoldTradesQuery,
-    placed: useGetPlacedTradesQuery,
-    all: useGetAllTradesQuery,
+    my: useGetMyPurchasesQuery,
+    sold: useGetSoldPurchasesQuery,
+    placed: useGetPlacedPurchasesQuery,
+    all: useGetAllPurchasesQuery,
   }[tab]!(search);
 
   const actions = {
-    my: [rateTradeAction],
-    all: [rateTradeAction, deleteTradeAction],
+    my: [ratePurchaseAction],
+    all: [ratePurchaseAction, deletePurchaseAction],
   }[tab];
 
-  return <TradesTable {...response} search={search} actions={actions} />;
+  return <PurchasesTable {...response} search={search} actions={actions} />;
 }

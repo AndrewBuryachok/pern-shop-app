@@ -14,9 +14,7 @@ import { SmTag } from '../../features/tags/tag.model';
 import { Container } from '../../features/containers/container.model';
 import { SelectRent } from '../../features/rents/rent.model';
 import { SelectLease } from '../../features/leases/lease.model';
-import { SmBargain } from '../../features/bargains/bargain.model';
-import { SmTrade } from '../../features/trades/trade.model';
-import { SmSale } from '../../features/sales/sale.model';
+import { SmPurchaseWithPrice } from '../../features/purchases/purchase.model';
 import { parseItem, parsePlace } from './parse.util';
 import {
   backgrounds,
@@ -139,28 +137,14 @@ export const selectLeases = (leases?: SelectLease[]) =>
     label: `${parsePlace(lease.cell.storage)} #${lease.cell.name}`,
   })) || [];
 
-export const selectBargains = (bargains?: SmBargain[]) =>
-  bargains?.map(({ good, ...bargain }) => ({
+export const selectPurchases = (purchases?: SmPurchaseWithPrice[]) =>
+  purchases?.map(({ good, ware, product, ...purchase }) => ({
     ...good,
-    ...bargain,
-    value: `${bargain.id}`,
-    label: parseItem(good.item),
-  })) || [];
-
-export const selectTrades = (trades?: SmTrade[]) =>
-  trades?.map(({ ware, ...trade }) => ({
     ...ware,
-    ...trade,
-    value: `${trade.id}`,
-    label: parseItem(ware.item),
-  })) || [];
-
-export const selectSales = (sales?: SmSale[]) =>
-  sales?.map(({ product, ...sale }) => ({
     ...product,
-    ...sale,
-    value: `${sale.id}`,
-    label: parseItem(product.item),
+    ...purchase,
+    value: `${purchase.id}`,
+    label: parseItem(good?.item || ware?.item || product?.item || 1),
   })) || [];
 
 export const selectBackgrounds = () =>

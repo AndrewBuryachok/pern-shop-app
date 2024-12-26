@@ -4,9 +4,7 @@ import { SmPlace } from '../../features/places/place.model';
 import { MdStall } from '../../features/stalls/stall.model';
 import { MdCell } from '../../features/cells/cell.model';
 import { MdBox } from '../../features/boxes/box.model';
-import { SmBargainWithoutPrice } from '../../features/bargains/bargain.model';
-import { SmTradeWithoutPrice } from '../../features/trades/trade.model';
-import { SmSaleWithoutPrice } from '../../features/sales/sale.model';
+import { SmPurchaseWithoutPrice } from '../../features/purchases/purchase.model';
 import { Color, items, kits, statuses } from '../constants';
 
 type Coordinates = {
@@ -60,19 +58,21 @@ export const parseThingAmount = (data: {
     `constants.kits.${kits[data.kit - 1]}`,
   )}`;
 
-export const parseBargainAmount = (bargain: SmBargainWithoutPrice) =>
-  `${bargain.amount} * ${bargain.good.intake} ${t(
-    `constants.kits.${kits[bargain.good.kit - 1]}`,
-  )}`;
-
-export const parseTradeAmount = (trade: SmTradeWithoutPrice) =>
-  `${trade.amount} * ${trade.ware.intake} ${t(
-    `constants.kits.${kits[trade.ware.kit - 1]}`,
-  )}`;
-
-export const parseSaleAmount = (sale: SmSaleWithoutPrice) =>
-  `${sale.amount} * ${sale.product.intake} ${t(
-    `constants.kits.${kits[sale.product.kit - 1]}`,
+export const parsePurchaseAmount = (purchase: SmPurchaseWithoutPrice) =>
+  `${purchase.amount} * ${
+    purchase.good?.intake ||
+    purchase.ware?.intake ||
+    purchase.product?.intake ||
+    0
+  } ${t(
+    `constants.kits.${
+      kits[
+        (purchase.good?.kit ||
+          purchase.ware?.kit ||
+          purchase.product?.kit ||
+          1) - 1
+      ]
+    }`,
   )}`;
 
 export const parseStatus = (status: number) =>

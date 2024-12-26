@@ -45,7 +45,7 @@ export const productsApi = emptyApi.injectEndpoints({
       query: (productId) => ({
         url: `/products/${productId}/rating`,
       }),
-      providesTags: ['Sale'],
+      providesTags: ['Purchase'],
     }),
     createProduct: build.mutation<void, CreateProductDto>({
       query: (dto) => ({

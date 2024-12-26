@@ -5,25 +5,10 @@ import {
 } from '../transportations/transportation.dto';
 
 export interface CreateDeliveryDto extends EditStateDto {
+  purchaseId: number;
   stationId: number;
   cardId: number;
 }
-
-export interface CreateShopDeliveryDto extends CreateDeliveryDto {
-  bargainId: number;
-}
-
-export interface CreateMarketDeliveryDto extends CreateDeliveryDto {
-  tradeId: number;
-}
-
-export interface CreateStorageDeliveryDto extends CreateDeliveryDto {
-  saleId: number;
-}
-
-export type CreateAnyDeliveryDto = CreateShopDeliveryDto &
-  CreateMarketDeliveryDto &
-  CreateStorageDeliveryDto;
 
 export interface EditDeliveryDto extends EditStateDto {
   deliveryId: number;

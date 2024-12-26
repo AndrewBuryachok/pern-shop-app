@@ -47,9 +47,7 @@ const WaresPage = lazy(() => import('../pages/wares/WaresPage'));
 const ProductsPage = lazy(() => import('../pages/products/ProductsPage'));
 const OrdersPage = lazy(() => import('../pages/orders/OrdersPage'));
 const HaulagesPage = lazy(() => import('../pages/haulages/HaulagesPage'));
-const BargainsPage = lazy(() => import('../pages/bargains/BargainsPage'));
-const TradesPage = lazy(() => import('../pages/trades/TradesPage'));
-const SalesPage = lazy(() => import('../pages/sales/SalesPage'));
+const PurchasesPage = lazy(() => import('../pages/purchases/PurchasesPage'));
 const DeliveriesPage = lazy(() => import('../pages/deliveries/DeliveriesPage'));
 const TasksPage = lazy(() => import('../pages/tasks/TasksPage'));
 const AdvertsPage = lazy(() => import('../pages/adverts/AdvertsPage'));
@@ -348,27 +346,8 @@ export const pages = [
     ],
   },
   {
-    path: 'bargains',
-    element: BargainsPage,
-    nested: [
-      { path: 'my' },
-      { path: 'sold' },
-      { path: 'all', role: Role.MERCHANT },
-    ],
-  },
-  {
-    path: 'trades',
-    element: TradesPage,
-    nested: [
-      { path: 'my' },
-      { path: 'sold' },
-      { path: 'placed' },
-      { path: 'all', role: Role.MERCHANT },
-    ],
-  },
-  {
-    path: 'sales',
-    element: SalesPage,
+    path: 'purchases',
+    element: PurchasesPage,
     nested: [
       { path: 'my' },
       { path: 'sold' },

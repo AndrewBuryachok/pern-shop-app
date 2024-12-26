@@ -7,17 +7,15 @@ import { Delivery } from './delivery.model';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import ThingImage from '../../common/components/ThingImage';
 import {
-  parseBargainAmount,
   parseBox,
   parseCard,
   parseCell,
   parseItem,
   parsePlace,
-  parseSaleAmount,
+  parsePurchaseAmount,
   parseStall,
   parseStatus,
   parseTime,
-  parseTradeAmount,
 } from '../../common/utils';
 import { Color } from '../../common/constants';
 
@@ -36,64 +34,48 @@ export default function ViewDeliveryModal({ data: delivery }: Props) {
         value={parseCard(delivery.hire.card)}
         readOnly
       />
-      {delivery.bargain && (
+      {delivery.purchase.good && (
         <TextInput
           label={t('columns.item')}
-          icon={<ThingImage {...delivery.bargain.good} />}
+          icon={<ThingImage {...delivery.purchase.good} />}
           iconWidth={48}
-          value={parseItem(delivery.bargain.good.item)}
+          value={parseItem(delivery.purchase.good.item)}
           readOnly
         />
       )}
-      {delivery.trade && (
+      {delivery.purchase.ware && (
         <TextInput
           label={t('columns.item')}
-          icon={<ThingImage {...delivery.trade.ware} />}
+          icon={<ThingImage {...delivery.purchase.ware} />}
           iconWidth={48}
-          value={parseItem(delivery.trade.ware.item)}
+          value={parseItem(delivery.purchase.ware.item)}
           readOnly
         />
       )}
-      {delivery.sale && (
+      {delivery.purchase.product && (
         <TextInput
           label={t('columns.item')}
-          icon={<ThingImage {...delivery.sale.product} />}
+          icon={<ThingImage {...delivery.purchase.product} />}
           iconWidth={48}
-          value={parseItem(delivery.sale.product.item)}
+          value={parseItem(delivery.purchase.product.item)}
           readOnly
         />
       )}
       <Textarea
         label={t('columns.description')}
         value={
-          delivery.bargain?.good.description ||
-          delivery.trade?.ware.description ||
-          delivery.sale?.product.description ||
+          delivery.purchase.good?.description ||
+          delivery.purchase.ware?.description ||
+          delivery.purchase.product?.description ||
           '-'
         }
         readOnly
       />
-      {delivery.bargain && (
-        <TextInput
-          label={t('columns.amount')}
-          value={parseBargainAmount(delivery.bargain)}
-          readOnly
-        />
-      )}
-      {delivery.trade && (
-        <TextInput
-          label={t('columns.amount')}
-          value={parseTradeAmount(delivery.trade)}
-          readOnly
-        />
-      )}
-      {delivery.sale && (
-        <TextInput
-          label={t('columns.amount')}
-          value={parseSaleAmount(delivery.sale)}
-          readOnly
-        />
-      )}
+      <TextInput
+        label={t('columns.amount')}
+        value={parsePurchaseAmount(delivery.purchase)}
+        readOnly
+      />
       <TextInput
         label={t('columns.price')}
         value={`${delivery.price} ${t('constants.currency')}`}
@@ -115,59 +97,59 @@ export default function ViewDeliveryModal({ data: delivery }: Props) {
         value={delivery.executorCard ? parseCard(delivery.executorCard) : '-'}
         readOnly
       />
-      {delivery.bargain && (
+      {delivery.purchase.good && (
         <TextInput
           label={t('columns.fromShop')}
-          value={parsePlace(delivery.bargain.good.shop)}
+          value={parsePlace(delivery.purchase.good.shop)}
           readOnly
         />
       )}
-      {delivery.trade && (
+      {delivery.purchase.ware && (
         <TextInput
           label={t('columns.fromMarket')}
-          value={parseStall(delivery.trade.ware.rent.stall)}
+          value={parseStall(delivery.purchase.ware.rent.stall)}
           readOnly
         />
       )}
-      {delivery.sale && (
+      {delivery.purchase.product && (
         <TextInput
           label={t('columns.fromStorage')}
-          value={parseCell(delivery.sale.product.lease.cell)}
+          value={parseCell(delivery.purchase.product.lease.cell)}
           readOnly
         />
       )}
-      {delivery.bargain && (
+      {delivery.purchase.good && (
         <TextInput
           label={t('columns.owner')}
-          icon={<CustomAvatar {...delivery.bargain.good.shop.card.user} />}
+          icon={<CustomAvatar {...delivery.purchase.good.shop.card.user} />}
           iconWidth={48}
-          value={parseCard(delivery.bargain.good.shop.card)}
+          value={parseCard(delivery.purchase.good.shop.card)}
           readOnly
         />
       )}
-      {delivery.trade && (
-        <TextInput
-          label={t('columns.owner')}
-          icon={
-            <CustomAvatar
-              {...delivery.trade.ware.rent.stall.market.card.user}
-            />
-          }
-          iconWidth={48}
-          value={parseCard(delivery.trade.ware.rent.stall.market.card)}
-          readOnly
-        />
-      )}
-      {delivery.sale && (
+      {delivery.purchase.ware && (
         <TextInput
           label={t('columns.owner')}
           icon={
             <CustomAvatar
-              {...delivery.sale.product.lease.cell.storage.card.user}
+              {...delivery.purchase.ware.rent.stall.market.card.user}
             />
           }
           iconWidth={48}
-          value={parseCard(delivery.sale.product.lease.cell.storage.card)}
+          value={parseCard(delivery.purchase.ware.rent.stall.market.card)}
+          readOnly
+        />
+      )}
+      {delivery.purchase.product && (
+        <TextInput
+          label={t('columns.owner')}
+          icon={
+            <CustomAvatar
+              {...delivery.purchase.product.lease.cell.storage.card.user}
+            />
+          }
+          iconWidth={48}
+          value={parseCard(delivery.purchase.product.lease.cell.storage.card)}
           readOnly
         />
       )}

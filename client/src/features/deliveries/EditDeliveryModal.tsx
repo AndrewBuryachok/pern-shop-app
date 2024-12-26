@@ -16,11 +16,9 @@ import RefetchAction from '../../common/components/RefetchAction';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import ThingImage from '../../common/components/ThingImage';
 import {
-  parseBargainAmount,
   parseCard,
   parseItem,
-  parseSaleAmount,
-  parseTradeAmount,
+  parsePurchaseAmount,
   selectCardsWithBalance,
 } from '../../common/utils';
 import { Color, MAX_PRICE_VALUE, Status } from '../../common/constants';
@@ -75,64 +73,48 @@ export default function EditDeliveryModal({ data: delivery, hasRole }: Props) {
         value={parseCard(delivery.hire.card)}
         readOnly
       />
-      {delivery.bargain && (
+      {delivery.purchase.good && (
         <TextInput
           label={t('columns.item')}
-          icon={<ThingImage {...delivery.bargain.good} />}
+          icon={<ThingImage {...delivery.purchase.good} />}
           iconWidth={48}
-          value={parseItem(delivery.bargain.good.item)}
+          value={parseItem(delivery.purchase.good.item)}
           readOnly
         />
       )}
-      {delivery.trade && (
+      {delivery.purchase.ware && (
         <TextInput
           label={t('columns.item')}
-          icon={<ThingImage {...delivery.trade.ware} />}
+          icon={<ThingImage {...delivery.purchase.ware} />}
           iconWidth={48}
-          value={parseItem(delivery.trade.ware.item)}
+          value={parseItem(delivery.purchase.ware.item)}
           readOnly
         />
       )}
-      {delivery.sale && (
+      {delivery.purchase.product && (
         <TextInput
           label={t('columns.item')}
-          icon={<ThingImage {...delivery.sale.product} />}
+          icon={<ThingImage {...delivery.purchase.product} />}
           iconWidth={48}
-          value={parseItem(delivery.sale.product.item)}
+          value={parseItem(delivery.purchase.product.item)}
           readOnly
         />
       )}
       <Textarea
         label={t('columns.description')}
         value={
-          delivery.bargain?.good.description ||
-          delivery.trade?.ware.description ||
-          delivery.sale?.product.description ||
+          delivery.purchase.good?.description ||
+          delivery.purchase.ware?.description ||
+          delivery.purchase.product?.description ||
           '-'
         }
         readOnly
       />
-      {delivery.bargain && (
-        <TextInput
-          label={t('columns.amount')}
-          value={parseBargainAmount(delivery.bargain)}
-          readOnly
-        />
-      )}
-      {delivery.trade && (
-        <TextInput
-          label={t('columns.amount')}
-          value={parseTradeAmount(delivery.trade)}
-          readOnly
-        />
-      )}
-      {delivery.sale && (
-        <TextInput
-          label={t('columns.amount')}
-          value={parseSaleAmount(delivery.sale)}
-          readOnly
-        />
-      )}
+      <TextInput
+        label={t('columns.amount')}
+        value={parsePurchaseAmount(delivery.purchase)}
+        readOnly
+      />
       <NumberInput
         label={t('columns.price')}
         placeholder={t('columns.price')}

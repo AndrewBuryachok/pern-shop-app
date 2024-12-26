@@ -6,14 +6,14 @@ import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { Ware } from './ware.model';
-import { useCreateTradeMutation } from '../trades/trades.api';
+import { useCreateMarketPurchaseMutation } from '../purchases/purchases.api';
 import { useSelectAllUsersQuery } from '../users/users.api';
 import {
   useSelectMyCardsQuery,
   useSelectUserCardsWithBalanceQuery,
 } from '../cards/cards.api';
 import { useSelectFreeStationsQuery } from '../stations/stations.api';
-import { CreateTradeDto } from '../trades/trade.dto';
+import { CreateMarketPurchaseDto } from '../purchases/purchase.dto';
 import CustomForm from '../../common/components/CustomForm';
 import RefetchAction from '../../common/components/RefetchAction';
 import CustomAvatar from '../../common/components/CustomAvatar';
@@ -95,10 +95,11 @@ export default function BuyWareModal({ data: ware, hasRole }: Props) {
     stations?.find((station) => station.id === +form.values.station)?.price ||
     0;
 
-  const [createTrade, { isLoading }] = useCreateTradeMutation();
+  const [createMarketPurchase, { isLoading }] =
+    useCreateMarketPurchaseMutation();
 
-  const handleSubmit = async (dto: CreateTradeDto) => {
-    await createTrade(dto);
+  const handleSubmit = async (dto: CreateMarketPurchaseDto) => {
+    await createMarketPurchase(dto);
   };
 
   return (

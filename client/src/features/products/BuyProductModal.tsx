@@ -6,14 +6,14 @@ import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { Product } from './product.model';
-import { useCreateSaleMutation } from '../sales/sales.api';
+import { useCreateStoragePurchaseMutation } from '../purchases/purchases.api';
 import { useSelectAllUsersQuery } from '../users/users.api';
 import {
   useSelectMyCardsQuery,
   useSelectUserCardsWithBalanceQuery,
 } from '../cards/cards.api';
 import { useSelectFreeStationsQuery } from '../stations/stations.api';
-import { CreateSaleDto } from '../sales/sale.dto';
+import { CreateStoragePurchaseDto } from '../purchases/purchase.dto';
 import CustomForm from '../../common/components/CustomForm';
 import RefetchAction from '../../common/components/RefetchAction';
 import CustomAvatar from '../../common/components/CustomAvatar';
@@ -97,10 +97,11 @@ export default function BuyProductModal({ data: product, hasRole }: Props) {
     stations?.find((station) => station.id === +form.values.station)?.price ||
     0;
 
-  const [createSale, { isLoading }] = useCreateSaleMutation();
+  const [createStoragePurchase, { isLoading }] =
+    useCreateStoragePurchaseMutation();
 
-  const handleSubmit = async (dto: CreateSaleDto) => {
-    await createSale(dto);
+  const handleSubmit = async (dto: CreateStoragePurchaseDto) => {
+    await createStoragePurchase(dto);
   };
 
   return (

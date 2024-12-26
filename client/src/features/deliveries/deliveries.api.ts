@@ -2,9 +2,7 @@ import { emptyApi } from '../../app/empty.api';
 import { IRequest, IResponse } from '../../common/interfaces';
 import { Delivery } from './delivery.model';
 import {
-  CreateMarketDeliveryDto,
-  CreateShopDeliveryDto,
-  CreateStorageDeliveryDto,
+  CreateDeliveryDto,
   DeliveryIdDto,
   EditDeliveryDto,
   RateDeliveryDto,
@@ -44,25 +42,9 @@ export const deliveriesApi = emptyApi.injectEndpoints({
       }),
       providesTags: ['Auth', 'Delivery'],
     }),
-    createShopDelivery: build.mutation<void, CreateShopDeliveryDto>({
+    createDelivery: build.mutation<void, CreateDeliveryDto>({
       query: (dto) => ({
-        url: '/deliveries/shops',
-        method: 'POST',
-        body: dto,
-      }),
-      invalidatesTags: ['Delivery', 'Hire', 'Box', 'Payment', 'Card'],
-    }),
-    createMarketDelivery: build.mutation<void, CreateMarketDeliveryDto>({
-      query: (dto) => ({
-        url: '/deliveries/markets',
-        method: 'POST',
-        body: dto,
-      }),
-      invalidatesTags: ['Delivery', 'Hire', 'Box', 'Payment', 'Card'],
-    }),
-    createStorageDelivery: build.mutation<void, CreateStorageDeliveryDto>({
-      query: (dto) => ({
-        url: '/deliveries/storages',
+        url: '/deliveries',
         method: 'POST',
         body: dto,
       }),
@@ -129,9 +111,7 @@ export const {
   useGetTakenDeliveriesQuery,
   useGetPlacedDeliveriesQuery,
   useGetAllDeliveriesQuery,
-  useCreateShopDeliveryMutation,
-  useCreateMarketDeliveryMutation,
-  useCreateStorageDeliveryMutation,
+  useCreateDeliveryMutation,
   useEditDeliveryMutation,
   useTakeDeliveryMutation,
   useUntakeDeliveryMutation,
