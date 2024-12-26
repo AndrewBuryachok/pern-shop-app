@@ -22,12 +22,6 @@ export class ProductsController {
   constructor(private productsService: ProductsService) {}
 
   @Public()
-  @Get('stats')
-  getProductsStats(): Promise<number> {
-    return this.productsService.getProductsStats();
-  }
-
-  @Public()
   @Get()
   getMainProducts(@Query() req: Request): Promise<Response<Product>> {
     return this.productsService.getMainProducts(req);

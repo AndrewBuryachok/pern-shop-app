@@ -14,19 +14,13 @@ import { Sale } from './sale.entity';
 import { CreateSaleDto, RateSaleDto, SaleIdDto } from './sale.dto';
 import { UserIdDto } from '../users/user.dto';
 import { Request, Response } from '../../common/interfaces';
-import { HasRole, MyId, MyNick, Public, Roles } from '../../common/decorators';
+import { HasRole, MyId, MyNick, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
 
 @ApiTags('sales')
 @Controller('sales')
 export class SalesController {
   constructor(private salesService: SalesService) {}
-
-  @Public()
-  @Get('stats')
-  getSalesStats(): Promise<number> {
-    return this.salesService.getSalesStats();
-  }
 
   @Get('my')
   getMySales(

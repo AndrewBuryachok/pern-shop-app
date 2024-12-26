@@ -14,19 +14,13 @@ import { Trade } from './trade.entity';
 import { CreateTradeDto, RateTradeDto, TradeIdDto } from './trade.dto';
 import { UserIdDto } from '../users/user.dto';
 import { Request, Response } from '../../common/interfaces';
-import { HasRole, MyId, MyNick, Public, Roles } from '../../common/decorators';
+import { HasRole, MyId, MyNick, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
 
 @ApiTags('trades')
 @Controller('trades')
 export class TradesController {
   constructor(private tradesService: TradesService) {}
-
-  @Public()
-  @Get('stats')
-  getTradesStats(): Promise<number> {
-    return this.tradesService.getTradesStats();
-  }
 
   @Get('my')
   getMyTrades(

@@ -13,7 +13,6 @@ import {
   ExtEditProductDto,
 } from './product.dto';
 import { Request, Response } from '../../common/interfaces';
-import { getDateMonthBefore } from '../../common/utils';
 import { AppException } from '../../common/exceptions';
 import { ProductError } from './product-error.enum';
 import { Mode, Notification } from '../../common/enums';
@@ -29,15 +28,6 @@ export class ProductsService {
     private paymentsService: PaymentsService,
     private mqttService: MqttService,
   ) {}
-
-  getProductsStats(): Promise<number> {
-    return this.productsRepository
-      .createQueryBuilder('product')
-      .where('product.createdAt >= :createdAt', {
-        createdAt: getDateMonthBefore(),
-      })
-      .getCount();
-  }
 
   async getMainProducts(req: Request): Promise<Response<Product>> {
     const [result, count] = await this.getProductsQueryBuilder(req)

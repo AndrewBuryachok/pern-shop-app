@@ -7,7 +7,6 @@ import { ProductsService } from '../products/products.service';
 import { MqttService } from '../mqtt/mqtt.service';
 import { ExtCreateSaleDto, ExtRateSaleDto, SaleIdDto } from './sale.dto';
 import { Request, Response } from '../../common/interfaces';
-import { getDateMonthBefore } from '../../common/utils';
 import { AppException } from '../../common/exceptions';
 import { SaleError } from './sale-error.enum';
 import { Mode, Notification } from '../../common/enums';
@@ -22,15 +21,6 @@ export class SalesService {
     private productsService: ProductsService,
     private mqttService: MqttService,
   ) {}
-
-  getSalesStats(): Promise<number> {
-    return this.salesRepository
-      .createQueryBuilder('sale')
-      .where('sale.createdAt >= :createdAt', {
-        createdAt: getDateMonthBefore(),
-      })
-      .getCount();
-  }
 
   async getMySales(myId: number, req: Request): Promise<Response<Sale>> {
     const [result, count] = await this.getSalesQueryBuilder(req)

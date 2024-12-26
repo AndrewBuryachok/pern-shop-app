@@ -7,7 +7,6 @@ import { WaresService } from '../wares/wares.service';
 import { MqttService } from '../mqtt/mqtt.service';
 import { ExtCreateTradeDto, ExtRateTradeDto, TradeIdDto } from './trade.dto';
 import { Request, Response } from '../../common/interfaces';
-import { getDateMonthBefore } from '../../common/utils';
 import { AppException } from '../../common/exceptions';
 import { TradeError } from './trade-error.enum';
 import { Mode, Notification } from '../../common/enums';
@@ -22,15 +21,6 @@ export class TradesService {
     private waresService: WaresService,
     private mqttService: MqttService,
   ) {}
-
-  getTradesStats(): Promise<number> {
-    return this.tradesRepository
-      .createQueryBuilder('trade')
-      .where('trade.createdAt >= :createdAt', {
-        createdAt: getDateMonthBefore(),
-      })
-      .getCount();
-  }
 
   async getMyTrades(myId: number, req: Request): Promise<Response<Trade>> {
     const [result, count] = await this.getTradesQueryBuilder(req)

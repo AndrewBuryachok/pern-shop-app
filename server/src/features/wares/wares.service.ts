@@ -13,7 +13,6 @@ import {
   ExtEditWareDto,
 } from './ware.dto';
 import { Request, Response } from '../../common/interfaces';
-import { getDateMonthBefore } from '../../common/utils';
 import { AppException } from '../../common/exceptions';
 import { WareError } from './ware-error.enum';
 import { Mode, Notification } from '../../common/enums';
@@ -29,15 +28,6 @@ export class WaresService {
     private paymentsService: PaymentsService,
     private mqttService: MqttService,
   ) {}
-
-  getWaresStats(): Promise<number> {
-    return this.waresRepository
-      .createQueryBuilder('ware')
-      .where('ware.createdAt >= :createdAt', {
-        createdAt: getDateMonthBefore(),
-      })
-      .getCount();
-  }
 
   async getMainWares(req: Request): Promise<Response<Ware>> {
     const [result, count] = await this.getWaresQueryBuilder(req)
