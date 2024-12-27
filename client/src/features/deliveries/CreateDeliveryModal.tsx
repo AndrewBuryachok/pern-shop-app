@@ -1,7 +1,7 @@
 import { t } from 'i18next';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { NumberInput, Radio, Select } from '@mantine/core';
+import { NumberInput, Select } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { useCreateDeliveryMutation } from './deliveries.api';
@@ -125,18 +125,7 @@ export default function CreateDeliveryModal({ hasRole }: Props) {
       <Select
         label={t('columns.purchase')}
         placeholder={t('columns.purchase')}
-        icon={
-          purchase && (
-            <ThingImage
-              item={
-                purchase.good?.item ||
-                purchase.ware?.item ||
-                purchase.product?.item ||
-                1
-              }
-            />
-          )
-        }
+        icon={purchase && <ThingImage item={purchase.good.item} />}
         iconWidth={48}
         rightSection={
           <RefetchAction

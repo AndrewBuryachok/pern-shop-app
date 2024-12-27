@@ -43,8 +43,6 @@ const RentsPage = lazy(() => import('../pages/rents/RentsPage'));
 const LeasesPage = lazy(() => import('../pages/leases/LeasesPage'));
 const HiresPage = lazy(() => import('../pages/hires/HiresPage'));
 const GoodsPage = lazy(() => import('../pages/goods/GoodsPage'));
-const WaresPage = lazy(() => import('../pages/wares/WaresPage'));
-const ProductsPage = lazy(() => import('../pages/products/ProductsPage'));
 const OrdersPage = lazy(() => import('../pages/orders/OrdersPage'));
 const HaulagesPage = lazy(() => import('../pages/haulages/HaulagesPage'));
 const PurchasesPage = lazy(() => import('../pages/purchases/PurchasesPage'));
@@ -297,25 +295,6 @@ export const pages = [
   {
     path: 'goods',
     element: GoodsPage,
-    nested: [
-      { index: true },
-      { path: 'my' },
-      { path: 'all', role: Role.MERCHANT },
-    ],
-  },
-  {
-    path: 'wares',
-    element: WaresPage,
-    nested: [
-      { index: true },
-      { path: 'my' },
-      { path: 'placed' },
-      { path: 'all', role: Role.MERCHANT },
-    ],
-  },
-  {
-    path: 'products',
-    element: ProductsPage,
     nested: [
       { index: true },
       { path: 'my' },

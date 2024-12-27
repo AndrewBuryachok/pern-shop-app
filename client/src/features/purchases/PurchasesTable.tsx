@@ -35,59 +35,59 @@ export default function PurchasesTable({ actions = [], ...props }: Props) {
             <AvatarWithDoubleText {...purchase.card} />
           </td>
           <td>
-            {purchase.good && (
+            {purchase.good.shop && (
               <AvatarWithDoubleText {...purchase.good.shop.card} />
             )}
-            {purchase.ware && (
-              <AvatarWithDoubleText {...purchase.ware.rent.card} />
+            {purchase.good.rent && (
+              <AvatarWithDoubleText {...purchase.good.rent.card} />
             )}
-            {purchase.product && (
-              <AvatarWithDoubleText {...purchase.product.lease.card} />
+            {purchase.good.lease && (
+              <AvatarWithDoubleText {...purchase.good.lease.card} />
             )}
           </td>
           <td>
-            {purchase.good && <ThingImageWithText {...purchase.good} />}
-            {purchase.ware && <ThingImageWithText {...purchase.ware} />}
-            {purchase.product && <ThingImageWithText {...purchase.product} />}
+            <ThingImageWithText {...purchase.good} />
           </td>
           <td>
             <SingleText text={parsePurchaseAmount(purchase)} />
           </td>
           <td>
-            {purchase.good && (
+            {purchase.good.shop && (
               <SumText
                 fromId={purchase.card.user.id}
                 toId={purchase.good.shop.card.user.id}
                 sum={purchase.amount * purchase.good.price}
               />
             )}
-            {purchase.ware && (
+            {purchase.good.rent && (
               <SumText
                 fromId={purchase.card.user.id}
-                toId={purchase.ware.rent.card.user.id}
-                sum={purchase.amount * purchase.ware.price}
+                toId={purchase.good.rent.card.user.id}
+                sum={purchase.amount * purchase.good.price}
               />
             )}
-            {purchase.product && (
+            {purchase.good.lease && (
               <SumText
                 fromId={purchase.card.user.id}
-                toId={purchase.product.lease.card.user.id}
-                sum={purchase.amount * purchase.product.price}
+                toId={purchase.good.lease.card.user.id}
+                sum={purchase.amount * purchase.good.price}
               />
             )}
           </td>
           <td>
-            {purchase.good && <PlaceWithDoubleAvatar {...purchase.good.shop} />}
-            {purchase.ware && (
+            {purchase.good.shop && (
+              <PlaceWithDoubleAvatar {...purchase.good.shop} />
+            )}
+            {purchase.good.rent && (
               <PlaceWithDoubleAvatar
-                {...purchase.ware.rent.stall.market}
-                container={purchase.ware.rent.stall.name}
+                {...purchase.good.rent.stall.market}
+                container={purchase.good.rent.stall.name}
               />
             )}
-            {purchase.product && (
+            {purchase.good.lease && (
               <PlaceWithDoubleAvatar
-                {...purchase.product.lease.cell.storage}
-                container={purchase.product.lease.cell.name}
+                {...purchase.good.lease.cell.storage}
+                container={purchase.good.lease.cell.name}
               />
             )}
           </td>

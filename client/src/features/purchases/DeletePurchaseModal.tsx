@@ -43,41 +43,16 @@ export default function DeletePurchaseModal({ data: purchase }: Props) {
         value={parseCard(purchase.card)}
         readOnly
       />
-      {purchase.good && (
-        <TextInput
-          label={t('columns.item')}
-          icon={<ThingImage {...purchase.good} />}
-          iconWidth={48}
-          value={parseItem(purchase.good.item)}
-          readOnly
-        />
-      )}
-      {purchase.ware && (
-        <TextInput
-          label={t('columns.item')}
-          icon={<ThingImage {...purchase.ware} />}
-          iconWidth={48}
-          value={parseItem(purchase.ware.item)}
-          readOnly
-        />
-      )}
-      {purchase.product && (
-        <TextInput
-          label={t('columns.item')}
-          icon={<ThingImage {...purchase.product} />}
-          iconWidth={48}
-          value={parseItem(purchase.product.item)}
-          readOnly
-        />
-      )}
+      <TextInput
+        label={t('columns.item')}
+        icon={<ThingImage {...purchase.good} />}
+        iconWidth={48}
+        value={parseItem(purchase.good.item)}
+        readOnly
+      />
       <Textarea
         label={t('columns.description')}
-        value={
-          purchase.good?.description ||
-          purchase.ware?.description ||
-          purchase.product?.description ||
-          '-'
-        }
+        value={purchase.good.description || '-'}
         readOnly
       />
       <TextInput
@@ -87,13 +62,9 @@ export default function DeletePurchaseModal({ data: purchase }: Props) {
       />
       <TextInput
         label={t('columns.sum')}
-        value={`${
-          purchase.amount *
-          (purchase.good?.price ||
-            purchase.ware?.price ||
-            purchase.product?.price ||
-            0)
-        } ${t('constants.currency')}`}
+        value={`${purchase.amount * purchase.good.price} ${t(
+          'constants.currency',
+        )}`}
         readOnly
       />
     </CustomForm>

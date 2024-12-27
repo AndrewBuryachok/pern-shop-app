@@ -36,13 +36,33 @@ export default function CompleteGoodModal({ data: good }: Props) {
       isLoading={isLoading}
       text={t('actions.complete') + ' ' + t('modals.goods')}
     >
-      <TextInput
-        label={t('columns.seller')}
-        icon={<CustomAvatar {...good.shop.card.user} />}
-        iconWidth={48}
-        value={parseCard(good.shop.card)}
-        readOnly
-      />
+      {good.shop && (
+        <TextInput
+          label={t('columns.seller')}
+          icon={<CustomAvatar {...good.shop.card.user} />}
+          iconWidth={48}
+          value={parseCard(good.shop.card)}
+          readOnly
+        />
+      )}
+      {good.rent && (
+        <TextInput
+          label={t('columns.seller')}
+          icon={<CustomAvatar {...good.rent.card.user} />}
+          iconWidth={48}
+          value={parseCard(good.rent.card)}
+          readOnly
+        />
+      )}
+      {good.lease && (
+        <TextInput
+          label={t('columns.seller')}
+          icon={<CustomAvatar {...good.lease.card.user} />}
+          iconWidth={48}
+          value={parseCard(good.lease.card)}
+          readOnly
+        />
+      )}
       <TextInput
         label={t('columns.item')}
         icon={<ThingImage {...good} />}

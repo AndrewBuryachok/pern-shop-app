@@ -5,7 +5,7 @@ import AvatarWithDoubleText from '../../common/components/AvatarWithDoubleText';
 import ThingImageWithText from '../../common/components/ThingImageWithText';
 import SingleText from '../../common/components/SingleText';
 import PriceText from '../../common/components/PriceText';
-import PlaceText from '../../common/components/PlaceText';
+import PlaceWithDoubleAvatar from '../../common/components/PlaceWithDoubleAvatar';
 import DateText from '../../common/components/DateText';
 import CustomActions from '../../common/components/CustomActions';
 import { viewGoodAction } from './ViewGoodModal';
@@ -22,7 +22,7 @@ export default function GoodsTable({ actions = [], ...props }: Props) {
         'item',
         'amount',
         'price',
-        'shop',
+        'place',
         'created',
         'action',
       ]}
@@ -31,7 +31,9 @@ export default function GoodsTable({ actions = [], ...props }: Props) {
       {props.data?.result.map((good) => (
         <tr key={good.id}>
           <td>
-            <AvatarWithDoubleText {...good.shop.card} />
+            {good.shop && <AvatarWithDoubleText {...good.shop.card} />}
+            {good.rent && <AvatarWithDoubleText {...good.rent.card} />}
+            {good.lease && <AvatarWithDoubleText {...good.lease.card} />}
           </td>
           <td>
             <ThingImageWithText {...good} />
@@ -43,7 +45,19 @@ export default function GoodsTable({ actions = [], ...props }: Props) {
             <PriceText {...good} />
           </td>
           <td>
-            <PlaceText {...good.shop} />
+            {good.shop && <PlaceWithDoubleAvatar {...good.shop} />}
+            {good.rent && (
+              <PlaceWithDoubleAvatar
+                {...good.rent.stall.market}
+                container={good.rent.stall.name}
+              />
+            )}
+            {good.lease && (
+              <PlaceWithDoubleAvatar
+                {...good.lease.cell.storage}
+                container={good.lease.cell.name}
+              />
+            )}
           </td>
           <td>
             <DateText date={good.createdAt} />

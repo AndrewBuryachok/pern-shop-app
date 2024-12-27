@@ -108,10 +108,14 @@ export default function UserProfile({ data: user }: Props) {
     { label: 'likes', count: user.articlesLikes },
     { label: 'polls', count: user.polls },
     { label: 'likes', count: user.pollsLikes },
-    { label: 'wares', count: user.waresCount, rate: user.waresRate },
-    { label: 'products', count: user.productsCount, rate: user.productsRate },
+    { label: 'goods', count: user.goodsCount, rate: user.goodsRate },
     { label: 'orders', count: user.ordersCount, rate: user.ordersRate },
     { label: 'haulages', count: user.haulagesCount, rate: user.haulagesRate },
+    {
+      label: 'deliveries',
+      count: user.deliveriesCount,
+      rate: user.deliveriesRate,
+    },
   ];
 
   return (

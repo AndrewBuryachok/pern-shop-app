@@ -32,11 +32,9 @@ import {
   IconMailbox,
   IconMap,
   IconNews,
-  IconPaperBag,
   IconReportMoney,
   IconScript,
   IconShoppingBag,
-  IconShoppingCart,
   IconStar,
   IconTir,
   IconTrolley,
@@ -106,16 +104,8 @@ export default function Home() {
       icon: IconBasket,
     },
     {
-      title: 'wares',
-      icon: IconShoppingBag,
-    },
-    {
-      title: 'products',
-      icon: IconShoppingCart,
-    },
-    {
       title: 'purchases',
-      icon: IconPaperBag,
+      icon: IconShoppingBag,
       sub: '/my',
     },
     {

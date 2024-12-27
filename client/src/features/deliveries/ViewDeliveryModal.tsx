@@ -34,41 +34,16 @@ export default function ViewDeliveryModal({ data: delivery }: Props) {
         value={parseCard(delivery.hire.card)}
         readOnly
       />
-      {delivery.purchase.good && (
-        <TextInput
-          label={t('columns.item')}
-          icon={<ThingImage {...delivery.purchase.good} />}
-          iconWidth={48}
-          value={parseItem(delivery.purchase.good.item)}
-          readOnly
-        />
-      )}
-      {delivery.purchase.ware && (
-        <TextInput
-          label={t('columns.item')}
-          icon={<ThingImage {...delivery.purchase.ware} />}
-          iconWidth={48}
-          value={parseItem(delivery.purchase.ware.item)}
-          readOnly
-        />
-      )}
-      {delivery.purchase.product && (
-        <TextInput
-          label={t('columns.item')}
-          icon={<ThingImage {...delivery.purchase.product} />}
-          iconWidth={48}
-          value={parseItem(delivery.purchase.product.item)}
-          readOnly
-        />
-      )}
+      <TextInput
+        label={t('columns.item')}
+        icon={<ThingImage {...delivery.purchase.good} />}
+        iconWidth={48}
+        value={parseItem(delivery.purchase.good.item)}
+        readOnly
+      />
       <Textarea
         label={t('columns.description')}
-        value={
-          delivery.purchase.good?.description ||
-          delivery.purchase.ware?.description ||
-          delivery.purchase.product?.description ||
-          '-'
-        }
+        value={delivery.purchase.good.description || '-'}
         readOnly
       />
       <TextInput
@@ -97,28 +72,28 @@ export default function ViewDeliveryModal({ data: delivery }: Props) {
         value={delivery.executorCard ? parseCard(delivery.executorCard) : '-'}
         readOnly
       />
-      {delivery.purchase.good && (
+      {delivery.purchase.good.shop && (
         <TextInput
           label={t('columns.fromShop')}
           value={parsePlace(delivery.purchase.good.shop)}
           readOnly
         />
       )}
-      {delivery.purchase.ware && (
+      {delivery.purchase.good.rent && (
         <TextInput
           label={t('columns.fromMarket')}
-          value={parseStall(delivery.purchase.ware.rent.stall)}
+          value={parseStall(delivery.purchase.good.rent.stall)}
           readOnly
         />
       )}
-      {delivery.purchase.product && (
+      {delivery.purchase.good.lease && (
         <TextInput
           label={t('columns.fromStorage')}
-          value={parseCell(delivery.purchase.product.lease.cell)}
+          value={parseCell(delivery.purchase.good.lease.cell)}
           readOnly
         />
       )}
-      {delivery.purchase.good && (
+      {delivery.purchase.good.shop && (
         <TextInput
           label={t('columns.owner')}
           icon={<CustomAvatar {...delivery.purchase.good.shop.card.user} />}
@@ -127,29 +102,29 @@ export default function ViewDeliveryModal({ data: delivery }: Props) {
           readOnly
         />
       )}
-      {delivery.purchase.ware && (
+      {delivery.purchase.good.rent && (
         <TextInput
           label={t('columns.owner')}
           icon={
             <CustomAvatar
-              {...delivery.purchase.ware.rent.stall.market.card.user}
+              {...delivery.purchase.good.rent.stall.market.card.user}
             />
           }
           iconWidth={48}
-          value={parseCard(delivery.purchase.ware.rent.stall.market.card)}
+          value={parseCard(delivery.purchase.good.rent.stall.market.card)}
           readOnly
         />
       )}
-      {delivery.purchase.product && (
+      {delivery.purchase.good.lease && (
         <TextInput
           label={t('columns.owner')}
           icon={
             <CustomAvatar
-              {...delivery.purchase.product.lease.cell.storage.card.user}
+              {...delivery.purchase.good.lease.cell.storage.card.user}
             />
           }
           iconWidth={48}
-          value={parseCard(delivery.purchase.product.lease.cell.storage.card)}
+          value={parseCard(delivery.purchase.good.lease.cell.storage.card)}
           readOnly
         />
       )}

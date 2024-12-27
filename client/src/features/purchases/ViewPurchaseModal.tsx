@@ -32,7 +32,7 @@ export default function ViewPurchaseModal({ data: purchase }: Props) {
         value={parseCard(purchase.card)}
         readOnly
       />
-      {purchase.good && (
+      {purchase.good.shop && (
         <TextInput
           label={t('columns.seller')}
           icon={<CustomAvatar {...purchase.good.shop.card.user} />}
@@ -41,59 +41,34 @@ export default function ViewPurchaseModal({ data: purchase }: Props) {
           readOnly
         />
       )}
-      {purchase.ware && (
+      {purchase.good.rent && (
         <TextInput
           label={t('columns.seller')}
-          icon={<CustomAvatar {...purchase.ware.rent.card.user} />}
+          icon={<CustomAvatar {...purchase.good.rent.card.user} />}
           iconWidth={48}
-          value={parseCard(purchase.ware.rent.card)}
+          value={parseCard(purchase.good.rent.card)}
           readOnly
         />
       )}
-      {purchase.product && (
+      {purchase.good.lease && (
         <TextInput
           label={t('columns.seller')}
-          icon={<CustomAvatar {...purchase.product.lease.card.user} />}
+          icon={<CustomAvatar {...purchase.good.lease.card.user} />}
           iconWidth={48}
-          value={parseCard(purchase.product.lease.card)}
+          value={parseCard(purchase.good.lease.card)}
           readOnly
         />
       )}
-      {purchase.good && (
-        <TextInput
-          label={t('columns.item')}
-          icon={<ThingImage {...purchase.good} />}
-          iconWidth={48}
-          value={parseItem(purchase.good.item)}
-          readOnly
-        />
-      )}
-      {purchase.ware && (
-        <TextInput
-          label={t('columns.item')}
-          icon={<ThingImage {...purchase.ware} />}
-          iconWidth={48}
-          value={parseItem(purchase.ware.item)}
-          readOnly
-        />
-      )}
-      {purchase.product && (
-        <TextInput
-          label={t('columns.item')}
-          icon={<ThingImage {...purchase.product} />}
-          iconWidth={48}
-          value={parseItem(purchase.product.item)}
-          readOnly
-        />
-      )}
+      <TextInput
+        label={t('columns.item')}
+        icon={<ThingImage {...purchase.good} />}
+        iconWidth={48}
+        value={parseItem(purchase.good.item)}
+        readOnly
+      />
       <Textarea
         label={t('columns.description')}
-        value={
-          purchase.good?.description ||
-          purchase.ware?.description ||
-          purchase.product?.description ||
-          '-'
-        }
+        value={purchase.good.description || '-'}
         readOnly
       />
       <TextInput
@@ -103,37 +78,33 @@ export default function ViewPurchaseModal({ data: purchase }: Props) {
       />
       <TextInput
         label={t('columns.sum')}
-        value={`${
-          purchase.amount *
-          (purchase.good?.price ||
-            purchase.ware?.price ||
-            purchase.product?.price ||
-            0)
-        } ${t('constants.currency')}`}
+        value={`${purchase.amount * purchase.good.price} ${t(
+          'constants.currency',
+        )}`}
         readOnly
       />
-      {purchase.good && (
+      {purchase.good.shop && (
         <TextInput
           label={t('columns.shop')}
           value={parsePlace(purchase.good.shop)}
           readOnly
         />
       )}
-      {purchase.ware && (
+      {purchase.good.rent && (
         <TextInput
           label={t('columns.market')}
-          value={parseStall(purchase.ware.rent.stall)}
+          value={parseStall(purchase.good.rent.stall)}
           readOnly
         />
       )}
-      {purchase.product && (
+      {purchase.good.lease && (
         <TextInput
           label={t('columns.storage')}
-          value={parseCell(purchase.product.lease.cell)}
+          value={parseCell(purchase.good.lease.cell)}
           readOnly
         />
       )}
-      {purchase.good && (
+      {purchase.good.shop && (
         <TextInput
           label={t('columns.owner')}
           icon={<CustomAvatar {...purchase.good.shop.card.user} />}
@@ -142,23 +113,23 @@ export default function ViewPurchaseModal({ data: purchase }: Props) {
           readOnly
         />
       )}
-      {purchase.ware && (
+      {purchase.good.rent && (
         <TextInput
           label={t('columns.owner')}
-          icon={<CustomAvatar {...purchase.ware.rent.stall.market.card.user} />}
+          icon={<CustomAvatar {...purchase.good.rent.stall.market.card.user} />}
           iconWidth={48}
-          value={parseCard(purchase.ware.rent.stall.market.card)}
+          value={parseCard(purchase.good.rent.stall.market.card)}
           readOnly
         />
       )}
-      {purchase.product && (
+      {purchase.good.lease && (
         <TextInput
           label={t('columns.owner')}
           icon={
-            <CustomAvatar {...purchase.product.lease.cell.storage.card.user} />
+            <CustomAvatar {...purchase.good.lease.cell.storage.card.user} />
           }
           iconWidth={48}
-          value={parseCard(purchase.product.lease.cell.storage.card)}
+          value={parseCard(purchase.good.lease.cell.storage.card)}
           readOnly
         />
       )}

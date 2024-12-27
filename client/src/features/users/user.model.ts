@@ -38,12 +38,12 @@ export interface ExtUser extends User {
   articlesLikes: number;
   polls: number;
   pollsLikes: number;
-  waresCount: number;
-  productsCount: number;
+  goodsCount: number;
   ordersCount: number;
   haulagesCount: number;
-  waresRate: number;
-  productsRate: number;
+  deliveriesCount: number;
+  goodsRate: number;
   ordersRate: number;
   haulagesRate: number;
+  deliveriesRate: number;
 }

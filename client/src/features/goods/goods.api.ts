@@ -2,7 +2,13 @@ import { emptyApi } from '../../app/empty.api';
 import { IRequest, IResponse } from '../../common/interfaces';
 import { Good } from './good.model';
 import { State } from '../states/state.model';
-import { CompleteGoodDto, CreateGoodDto, EditGoodDto } from './good.dto';
+import {
+  CompleteGoodDto,
+  CreateMarketGoodDto,
+  CreateShopGoodDto,
+  CreateStorageGoodDto,
+  EditGoodDto,
+} from './good.dto';
 import { getQuery } from '../../common/utils';
 
 export const goodsApi = emptyApi.injectEndpoints({
@@ -16,6 +22,12 @@ export const goodsApi = emptyApi.injectEndpoints({
     getMyGoods: build.query<IResponse<Good>, IRequest>({
       query: (req) => ({
         url: `/goods/my?${getQuery(req)}`,
+      }),
+      providesTags: ['Auth', 'Good'],
+    }),
+    getPlacedGoods: build.query<IResponse<Good>, IRequest>({
+      query: (req) => ({
+        url: `/goods/placed?${getQuery(req)}`,
       }),
       providesTags: ['Auth', 'Good'],
     }),
@@ -37,9 +49,25 @@ export const goodsApi = emptyApi.injectEndpoints({
       }),
       providesTags: ['Purchase'],
     }),
-    createGood: build.mutation<void, CreateGoodDto>({
+    createShopGood: build.mutation<void, CreateShopGoodDto>({
       query: (dto) => ({
-        url: '/goods',
+        url: '/goods/shops',
+        method: 'POST',
+        body: dto,
+      }),
+      invalidatesTags: ['Good'],
+    }),
+    createMarketGood: build.mutation<void, CreateMarketGoodDto>({
+      query: (dto) => ({
+        url: '/goods/markets',
+        method: 'POST',
+        body: dto,
+      }),
+      invalidatesTags: ['Good'],
+    }),
+    createStorageGood: build.mutation<void, CreateStorageGoodDto>({
+      query: (dto) => ({
+        url: '/goods/storages',
         method: 'POST',
         body: dto,
       }),
@@ -66,10 +94,13 @@ export const goodsApi = emptyApi.injectEndpoints({
 export const {
   useGetMainGoodsQuery,
   useGetMyGoodsQuery,
+  useGetPlacedGoodsQuery,
   useGetAllGoodsQuery,
   useSelectGoodStatesQuery,
   useSelectGoodRatingQuery,
-  useCreateGoodMutation,
+  useCreateShopGoodMutation,
+  useCreateMarketGoodMutation,
+  useCreateStorageGoodMutation,
   useEditGoodMutation,
   useCompleteGoodMutation,
 } = goodsApi;

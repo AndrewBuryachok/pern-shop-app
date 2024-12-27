@@ -59,20 +59,8 @@ export const parseThingAmount = (data: {
   )}`;
 
 export const parsePurchaseAmount = (purchase: SmPurchaseWithoutPrice) =>
-  `${purchase.amount} * ${
-    purchase.good?.intake ||
-    purchase.ware?.intake ||
-    purchase.product?.intake ||
-    0
-  } ${t(
-    `constants.kits.${
-      kits[
-        (purchase.good?.kit ||
-          purchase.ware?.kit ||
-          purchase.product?.kit ||
-          1) - 1
-      ]
-    }`,
+  `${purchase.amount} * ${purchase.good.intake} ${t(
+    `constants.kits.${kits[purchase.good.kit - 1]}`,
   )}`;
 
 export const parseStatus = (status: number) =>

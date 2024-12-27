@@ -138,13 +138,11 @@ export const selectLeases = (leases?: SelectLease[]) =>
   })) || [];
 
 export const selectPurchases = (purchases?: SmPurchaseWithPrice[]) =>
-  purchases?.map(({ good, ware, product, ...purchase }) => ({
+  purchases?.map(({ good, ...purchase }) => ({
     ...good,
-    ...ware,
-    ...product,
     ...purchase,
     value: `${purchase.id}`,
-    label: parseItem(good?.item || ware?.item || product?.item || 1),
+    label: parseItem(good.item),
   })) || [];
 
 export const selectBackgrounds = () =>

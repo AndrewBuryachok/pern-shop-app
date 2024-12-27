@@ -2,9 +2,7 @@ import { emptyApi } from '../../app/empty.api';
 import { IRequest, IResponse } from '../../common/interfaces';
 import { Purchase, SmPurchaseWithPrice } from './purchase.model';
 import {
-  CreateMarketPurchaseDto,
-  CreateShopPurchaseDto,
-  CreateStoragePurchaseDto,
+  CreatePurchaseDto,
   PurchaseIdDto,
   RatePurchaseDto,
 } from './purchase.dto';
@@ -48,29 +46,13 @@ export const purchasesApi = emptyApi.injectEndpoints({
       }),
       providesTags: ['Purchase'],
     }),
-    createShopPurchase: build.mutation<void, CreateShopPurchaseDto>({
+    createPurchase: build.mutation<void, CreatePurchaseDto>({
       query: (dto) => ({
-        url: '/purchases/shops',
+        url: '/purchases',
         method: 'POST',
         body: dto,
       }),
       invalidatesTags: ['Purchase', 'Good', 'Payment', 'Card'],
-    }),
-    createMarketPurchase: build.mutation<void, CreateMarketPurchaseDto>({
-      query: (dto) => ({
-        url: '/purchases/markets',
-        method: 'POST',
-        body: dto,
-      }),
-      invalidatesTags: ['Purchase', 'Ware', 'Payment', 'Card'],
-    }),
-    createStoragePurchase: build.mutation<void, CreateStoragePurchaseDto>({
-      query: (dto) => ({
-        url: '/purchases/storages',
-        method: 'POST',
-        body: dto,
-      }),
-      invalidatesTags: ['Purchase', 'Product', 'Payment', 'Card'],
     }),
     ratePurchase: build.mutation<void, RatePurchaseDto>({
       query: ({ purchaseId, ...dto }) => ({
@@ -97,9 +79,7 @@ export const {
   useGetAllPurchasesQuery,
   useSelectMyPurchasesQuery,
   useSelectUserPurchasesQuery,
-  useCreateShopPurchaseMutation,
-  useCreateMarketPurchaseMutation,
-  useCreateStoragePurchaseMutation,
+  useCreatePurchaseMutation,
   useRatePurchaseMutation,
   useDeletePurchaseMutation,
 } = purchasesApi;

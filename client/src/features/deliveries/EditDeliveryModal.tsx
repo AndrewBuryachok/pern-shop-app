@@ -73,41 +73,16 @@ export default function EditDeliveryModal({ data: delivery, hasRole }: Props) {
         value={parseCard(delivery.hire.card)}
         readOnly
       />
-      {delivery.purchase.good && (
-        <TextInput
-          label={t('columns.item')}
-          icon={<ThingImage {...delivery.purchase.good} />}
-          iconWidth={48}
-          value={parseItem(delivery.purchase.good.item)}
-          readOnly
-        />
-      )}
-      {delivery.purchase.ware && (
-        <TextInput
-          label={t('columns.item')}
-          icon={<ThingImage {...delivery.purchase.ware} />}
-          iconWidth={48}
-          value={parseItem(delivery.purchase.ware.item)}
-          readOnly
-        />
-      )}
-      {delivery.purchase.product && (
-        <TextInput
-          label={t('columns.item')}
-          icon={<ThingImage {...delivery.purchase.product} />}
-          iconWidth={48}
-          value={parseItem(delivery.purchase.product.item)}
-          readOnly
-        />
-      )}
+      <TextInput
+        label={t('columns.item')}
+        icon={<ThingImage {...delivery.purchase.good} />}
+        iconWidth={48}
+        value={parseItem(delivery.purchase.good.item)}
+        readOnly
+      />
       <Textarea
         label={t('columns.description')}
-        value={
-          delivery.purchase.good?.description ||
-          delivery.purchase.ware?.description ||
-          delivery.purchase.product?.description ||
-          '-'
-        }
+        value={delivery.purchase.good.description || '-'}
         readOnly
       />
       <TextInput

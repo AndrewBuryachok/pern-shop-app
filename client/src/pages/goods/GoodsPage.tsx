@@ -1,8 +1,10 @@
 import { useLocation, useSearchParams } from 'react-router-dom';
+import { Mode } from '../../common/enums';
 import {
   useGetAllGoodsQuery,
   useGetMainGoodsQuery,
   useGetMyGoodsQuery,
+  useGetPlacedGoodsQuery,
 } from '../../features/goods/goods.api';
 import GoodsTable from '../../features/goods/GoodsTable';
 import {
@@ -26,7 +28,13 @@ export default function GoodsPage() {
     id: +(searchParams.get('id') || 0) || null,
     user: searchParams.get('user'),
     card: searchParams.get('card'),
+    modes: [Mode.SELLER, Mode.OWNER],
+    mode: searchParams.get('mode') as Mode,
     shop: searchParams.get('shop'),
+    market: searchParams.get('market'),
+    stall: searchParams.get('stall'),
+    storage: searchParams.get('storage'),
+    cell: searchParams.get('cell'),
     item: searchParams.get('item'),
     description: searchParams.get('description') || '',
     minAmount: +(searchParams.get('minAmount') || 0) || null,
@@ -44,6 +52,7 @@ export default function GoodsPage() {
   const response = {
     main: useGetMainGoodsQuery,
     my: useGetMyGoodsQuery,
+    placed: useGetPlacedGoodsQuery,
     all: useGetAllGoodsQuery,
   }[tab]!(search);
 

@@ -39,8 +39,6 @@ export const emptyApi = createApi({
     'Lease',
     'Hire',
     'Good',
-    'Ware',
-    'Product',
     'Order',
     'Haulage',
     'Purchase',

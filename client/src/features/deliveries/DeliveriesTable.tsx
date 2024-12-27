@@ -35,15 +35,7 @@ export default function DeliveriesTable({ actions = [], ...props }: Props) {
             <AvatarWithDoubleText {...delivery.hire.card} />
           </td>
           <td>
-            {delivery.purchase.good && (
-              <ThingImageWithText {...delivery.purchase.good} />
-            )}
-            {delivery.purchase.ware && (
-              <ThingImageWithText {...delivery.purchase.ware} />
-            )}
-            {delivery.purchase.product && (
-              <ThingImageWithText {...delivery.purchase.product} />
-            )}
+            <ThingImageWithText {...delivery.purchase.good} />
           </td>
           <td>
             <SingleText text={parsePurchaseAmount(delivery.purchase)} />
@@ -55,19 +47,19 @@ export default function DeliveriesTable({ actions = [], ...props }: Props) {
             <StatusBadge {...delivery} />
           </td>
           <td>
-            {delivery.purchase.good && (
+            {delivery.purchase.good.shop && (
               <PlaceWithDoubleAvatar {...delivery.purchase.good.shop} />
             )}
-            {delivery.purchase.ware && (
+            {delivery.purchase.good.rent && (
               <PlaceWithDoubleAvatar
-                {...delivery.purchase.ware.rent.stall.market}
-                container={delivery.purchase.ware.rent.stall.name}
+                {...delivery.purchase.good.rent.stall.market}
+                container={delivery.purchase.good.rent.stall.name}
               />
             )}
-            {delivery.purchase.product && (
+            {delivery.purchase.good.lease && (
               <PlaceWithDoubleAvatar
-                {...delivery.purchase.product.lease.cell.storage}
-                container={delivery.purchase.product.lease.cell.name}
+                {...delivery.purchase.good.lease.cell.storage}
+                container={delivery.purchase.good.lease.cell.name}
               />
             )}
           </td>

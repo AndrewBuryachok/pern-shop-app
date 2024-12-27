@@ -6,14 +6,14 @@ import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { Good } from './good.model';
-import { useCreateShopPurchaseMutation } from '../purchases/purchases.api';
+import { useCreatePurchaseMutation } from '../purchases/purchases.api';
 import { useSelectAllUsersQuery } from '../users/users.api';
 import {
   useSelectMyCardsQuery,
   useSelectUserCardsWithBalanceQuery,
 } from '../cards/cards.api';
 import { useSelectFreeStationsQuery } from '../stations/stations.api';
-import { CreateShopPurchaseDto } from '../purchases/purchase.dto';
+import { CreatePurchaseDto } from '../purchases/purchase.dto';
 import CustomForm from '../../common/components/CustomForm';
 import RefetchAction from '../../common/components/RefetchAction';
 import CustomAvatar from '../../common/components/CustomAvatar';
@@ -95,10 +95,10 @@ export default function BuyGoodModal({ data: good, hasRole }: Props) {
     stations?.find((station) => station.id === +form.values.station)?.price ||
     0;
 
-  const [createShopPurchase, { isLoading }] = useCreateShopPurchaseMutation();
+  const [createPurchase, { isLoading }] = useCreatePurchaseMutation();
 
-  const handleSubmit = async (dto: CreateShopPurchaseDto) => {
-    await createShopPurchase(dto);
+  const handleSubmit = async (dto: CreatePurchaseDto) => {
+    await createPurchase(dto);
   };
 
   return (
@@ -107,13 +107,33 @@ export default function BuyGoodModal({ data: good, hasRole }: Props) {
       isLoading={isLoading}
       text={t('actions.buy') + ' ' + t('modals.goods')}
     >
-      <TextInput
-        label={t('columns.seller')}
-        icon={<CustomAvatar {...good.shop.card.user} />}
-        iconWidth={48}
-        value={parseCard(good.shop.card)}
-        readOnly
-      />
+      {good.shop && (
+        <TextInput
+          label={t('columns.seller')}
+          icon={<CustomAvatar {...good.shop.card.user} />}
+          iconWidth={48}
+          value={parseCard(good.shop.card)}
+          readOnly
+        />
+      )}
+      {good.rent && (
+        <TextInput
+          label={t('columns.seller')}
+          icon={<CustomAvatar {...good.rent.card.user} />}
+          iconWidth={48}
+          value={parseCard(good.rent.card)}
+          readOnly
+        />
+      )}
+      {good.lease && (
+        <TextInput
+          label={t('columns.seller')}
+          icon={<CustomAvatar {...good.lease.card.user} />}
+          iconWidth={48}
+          value={parseCard(good.lease.card)}
+          readOnly
+        />
+      )}
       <TextInput
         label={t('columns.item')}
         icon={<ThingImage {...good} />}
