@@ -74,8 +74,6 @@ export class HiresService implements OnModuleInit {
       .leftJoin('hire.deliveries', 'delivery')
       .leftJoin('delivery.purchase', 'purchase')
       .leftJoin('purchase.good', 'good')
-      .leftJoin('purchase.ware', 'ware')
-      .leftJoin('purchase.product', 'product')
       .where('hire.id = :hireId', { hireId })
       .select([
         'hire.id',
@@ -108,18 +106,6 @@ export class HiresService implements OnModuleInit {
         'good.intake',
         'good.kit',
         'good.price',
-        'ware.id',
-        'ware.item',
-        'ware.description',
-        'ware.intake',
-        'ware.kit',
-        'ware.price',
-        'product.id',
-        'product.item',
-        'product.description',
-        'product.intake',
-        'product.kit',
-        'product.price',
         'purchase.amount',
       ])
       .getOne();
@@ -129,8 +115,6 @@ export class HiresService implements OnModuleInit {
       ...hire.toHaulages,
       ...hire.deliveries.map((delivery) => ({
         ...delivery.purchase.good,
-        ...delivery.purchase.ware,
-        ...delivery.purchase.product,
         id: delivery.id,
         amount: delivery.purchase.amount,
       })),

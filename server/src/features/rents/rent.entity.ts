@@ -1,7 +1,7 @@
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 import { Receipt } from '../receipts/receipt.entity';
 import { Stall } from '../stalls/stall.entity';
-import { Ware } from '../wares/ware.entity';
+import { Good } from '../goods/good.entity';
 
 @Entity('rents')
 export class Rent extends Receipt {
@@ -12,6 +12,6 @@ export class Rent extends Receipt {
   @JoinColumn({ name: 'stall_id' })
   stall: Stall;
 
-  @OneToMany(() => Ware, (ware) => ware.rent)
-  wares: Ware[];
+  @OneToMany(() => Good, (good) => good.rent)
+  goods: Good[];
 }

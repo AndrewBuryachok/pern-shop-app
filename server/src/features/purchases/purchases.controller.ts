@@ -12,9 +12,7 @@ import { ApiTags } from '@nestjs/swagger';
 import { PurchasesService } from './purchases.service';
 import { Purchase } from './purchase.entity';
 import {
-  CreateMarketPurchaseDto,
-  CreateShopPurchaseDto,
-  CreateStoragePurchaseDto,
+  CreatePurchaseDto,
   PurchaseIdDto,
   RatePurchaseDto,
 } from './purchase.dto';
@@ -69,44 +67,14 @@ export class PurchasesController {
     return this.purchasesService.selectUserPurchases(userId);
   }
 
-  @Post('shops')
-  createShopPurchase(
+  @Post()
+  createPurchase(
     @MyId() myId: number,
     @MyNick() nick: string,
     @HasRole(Role.MERCHANT) hasRole: boolean,
-    @Body() dto: CreateShopPurchaseDto,
+    @Body() dto: CreatePurchaseDto,
   ): Promise<void> {
-    return this.purchasesService.createShopPurchase({
-      ...dto,
-      myId,
-      nick,
-      hasRole,
-    });
-  }
-
-  @Post('markets')
-  createMarketPurchase(
-    @MyId() myId: number,
-    @MyNick() nick: string,
-    @HasRole(Role.MERCHANT) hasRole: boolean,
-    @Body() dto: CreateMarketPurchaseDto,
-  ): Promise<void> {
-    return this.purchasesService.createMarketPurchase({
-      ...dto,
-      myId,
-      nick,
-      hasRole,
-    });
-  }
-
-  @Post('storages')
-  createStoragePurchase(
-    @MyId() myId: number,
-    @MyNick() nick: string,
-    @HasRole(Role.MERCHANT) hasRole: boolean,
-    @Body() dto: CreateStoragePurchaseDto,
-  ): Promise<void> {
-    return this.purchasesService.createStoragePurchase({
+    return this.purchasesService.createPurchase({
       ...dto,
       myId,
       nick,

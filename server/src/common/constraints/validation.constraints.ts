@@ -30,8 +30,6 @@ import { RentsService } from '../../features/rents/rents.service';
 import { LeasesService } from '../../features/leases/leases.service';
 import { HiresService } from '../../features/hires/hires.service';
 import { GoodsService } from '../../features/goods/goods.service';
-import { WaresService } from '../../features/wares/wares.service';
-import { ProductsService } from '../../features/products/products.service';
 import { PurchasesService } from '../../features/purchases/purchases.service';
 import { OrdersService } from '../../features/orders/orders.service';
 import { HaulagesService } from '../../features/haulages/haulages.service';
@@ -550,44 +548,6 @@ export class IsGoodExists implements ValidatorConstraintInterface {
 
   defaultMessage(): string {
     return 'Unknown good';
-  }
-}
-
-@Injectable()
-@ValidatorConstraint({ name: 'isWareExists', async: true })
-export class IsWareExists implements ValidatorConstraintInterface {
-  constructor(private waresService: WaresService) {}
-
-  async validate(value: number): Promise<boolean> {
-    try {
-      await this.waresService.checkWareExists(value);
-    } catch (error) {
-      return false;
-    }
-    return true;
-  }
-
-  defaultMessage(): string {
-    return 'Unknown ware';
-  }
-}
-
-@Injectable()
-@ValidatorConstraint({ name: 'isProductExists', async: true })
-export class IsProductExists implements ValidatorConstraintInterface {
-  constructor(private productsService: ProductsService) {}
-
-  async validate(value: number): Promise<boolean> {
-    try {
-      await this.productsService.checkProductExists(value);
-    } catch (error) {
-      return false;
-    }
-    return true;
-  }
-
-  defaultMessage(): string {
-    return 'Unknown product';
   }
 }
 

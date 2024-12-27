@@ -31,8 +31,6 @@ import { RentsModule } from './features/rents/rents.module';
 import { LeasesModule } from './features/leases/leases.module';
 import { HiresModule } from './features/hires/hires.module';
 import { GoodsModule } from './features/goods/goods.module';
-import { WaresModule } from './features/wares/wares.module';
-import { ProductsModule } from './features/products/products.module';
 import { PurchasesModule } from './features/purchases/purchases.module';
 import { OrdersModule } from './features/orders/orders.module';
 import { HaulagesModule } from './features/haulages/haulages.module';
@@ -96,8 +94,6 @@ import { LoggerModule } from './features/logger/logger.module';
     LeasesModule,
     HiresModule,
     GoodsModule,
-    WaresModule,
-    ProductsModule,
     PurchasesModule,
     OrdersModule,
     HaulagesModule,

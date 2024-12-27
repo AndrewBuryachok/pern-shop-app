@@ -83,21 +83,21 @@ export class LeasesService implements OnModuleInit {
   async selectLeaseThings(leaseId: number): Promise<Thing[]> {
     const lease = await this.leasesRepository
       .createQueryBuilder('lease')
-      .leftJoin('lease.products', 'product')
+      .leftJoin('lease.goods', 'good')
       .where('lease.id = :leaseId', { leaseId })
-      .orderBy('product.id', 'DESC')
+      .orderBy('good.id', 'DESC')
       .select([
         'lease.id',
-        'product.id',
-        'product.item',
-        'product.description',
-        'product.amount',
-        'product.intake',
-        'product.kit',
-        'product.price',
+        'good.id',
+        'good.item',
+        'good.description',
+        'good.amount',
+        'good.intake',
+        'good.kit',
+        'good.price',
       ])
       .getOne();
-    return lease.products;
+    return lease.goods;
   }
 
   async createLease(dto: ExtCreateLeaseDto & { nick: string }): Promise<void> {
@@ -257,8 +257,8 @@ export class LeasesService implements OnModuleInit {
       .innerJoin('ownerCard.user', 'ownerUser')
       .innerJoin('lease.card', 'tenantCard')
       .innerJoin('tenantCard.user', 'tenantUser')
-      .loadRelationCountAndMap('lease.things', 'lease.products', 'p', (qb) =>
-        qb.where('p.amount > 0'),
+      .loadRelationCountAndMap('lease.things', 'lease.goods', 'good', (qb) =>
+        qb.where('good.amount > 0'),
       )
       .where(
         new Brackets((qb) =>

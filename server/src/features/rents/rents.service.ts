@@ -80,21 +80,21 @@ export class RentsService implements OnModuleInit {
   async selectRentThings(rentId: number): Promise<Thing[]> {
     const rent = await this.rentsRepository
       .createQueryBuilder('rent')
-      .leftJoin('rent.wares', 'ware')
+      .leftJoin('rent.goods', 'good')
       .where('rent.id = :rentId', { rentId })
-      .orderBy('ware.id', 'DESC')
+      .orderBy('good.id', 'DESC')
       .select([
         'rent.id',
-        'ware.id',
-        'ware.item',
-        'ware.description',
-        'ware.amount',
-        'ware.intake',
-        'ware.kit',
-        'ware.price',
+        'good.id',
+        'good.item',
+        'good.description',
+        'good.amount',
+        'good.intake',
+        'good.kit',
+        'good.price',
       ])
       .getOne();
-    return rent.wares;
+    return rent.goods;
   }
 
   async createRent(dto: ExtCreateRentDto & { nick: string }): Promise<void> {
@@ -246,8 +246,8 @@ export class RentsService implements OnModuleInit {
       .innerJoin('ownerCard.user', 'ownerUser')
       .innerJoin('rent.card', 'tenantCard')
       .innerJoin('tenantCard.user', 'tenantUser')
-      .loadRelationCountAndMap('rent.things', 'rent.wares', 'w', (qb) =>
-        qb.where('w.amount > 0'),
+      .loadRelationCountAndMap('rent.things', 'rent.goods', 'good', (qb) =>
+        qb.where('good.amount > 0'),
       )
       .where(
         new Brackets((qb) =>

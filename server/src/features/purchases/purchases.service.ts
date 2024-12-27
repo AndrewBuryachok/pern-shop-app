@@ -4,13 +4,9 @@ import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { Purchase } from './purchase.entity';
 import { DeliveriesService } from '../deliveries/deliveries.service';
 import { GoodsService } from '../goods/goods.service';
-import { WaresService } from '../wares/wares.service';
-import { ProductsService } from '../products/products.service';
 import { MqttService } from '../mqtt/mqtt.service';
 import {
-  ExtCreateMarketPurchaseDto,
-  ExtCreateShopPurchaseDto,
-  ExtCreateStoragePurchaseDto,
+  ExtCreatePurchaseDto,
   ExtRatePurchaseDto,
   PurchaseIdDto,
 } from './purchase.dto';
@@ -27,8 +23,6 @@ export class PurchasesService {
     @Inject(forwardRef(() => DeliveriesService))
     private deliveriesService: DeliveriesService,
     private goodsService: GoodsService,
-    private waresService: WaresService,
-    private productsService: ProductsService,
     private mqttService: MqttService,
   ) {}
 
@@ -102,71 +96,25 @@ export class PurchasesService {
       .getMany();
   }
 
-  async createShopPurchase(
-    dto: ExtCreateShopPurchaseDto & { nick: string },
+  async createPurchase(
+    dto: ExtCreatePurchaseDto & { nick: string },
   ): Promise<void> {
     const good = await this.goodsService.buyGood(dto);
-    const purchase = await this.createShop(dto);
-    this.publishCreatePurchaseNotification(
-      purchase.id,
-      good.shop.card.userId,
-      dto.nick,
-    );
-    if (dto.stationId && dto.price) {
-      await this.deliveriesService.createDelivery({
-        ...dto,
-        purchaseId: purchase.id,
-      });
-    }
-  }
-
-  async createMarketPurchase(
-    dto: ExtCreateMarketPurchaseDto & { nick: string },
-  ): Promise<void> {
-    const ware = await this.waresService.buyWare(dto);
-    const purchase = await this.createMarket(dto);
-    this.publishCreatePurchaseNotification(
-      purchase.id,
-      ware.rent.card.userId,
-      dto.nick,
-    );
-    if (dto.stationId && dto.price) {
-      await this.deliveriesService.createDelivery({
-        ...dto,
-        purchaseId: purchase.id,
-      });
-    }
-  }
-
-  async createStoragePurchase(
-    dto: ExtCreateStoragePurchaseDto & { nick: string },
-  ): Promise<void> {
-    const product = await this.productsService.buyProduct(dto);
-    const purchase = await this.createStorage(dto);
-    this.publishCreatePurchaseNotification(
-      purchase.id,
-      product.lease.card.userId,
-      dto.nick,
-    );
-    if (dto.stationId && dto.price) {
-      await this.deliveriesService.createDelivery({
-        ...dto,
-        purchaseId: purchase.id,
-      });
-    }
-  }
-
-  private publishCreatePurchaseNotification(
-    id: number,
-    userId: number,
-    nick: string,
-  ): void {
+    const purchase = await this.create(dto);
     this.mqttService.publishNotificationMessage(
-      id,
-      userId,
-      nick,
+      purchase.id,
+      good.shop?.card.userId ||
+        good.rent?.card.userId ||
+        good.lease?.card.userId,
+      dto.nick,
       Notification.CREATED_PURCHASE,
     );
+    if (dto.stationId && dto.price) {
+      await this.deliveriesService.createDelivery({
+        ...dto,
+        purchaseId: purchase.id,
+      });
+    }
   }
 
   async ratePurchase(
@@ -180,9 +128,9 @@ export class PurchasesService {
     await this.rate(purchase, dto.rate);
     this.mqttService.publishNotificationMessage(
       dto.purchaseId,
-      purchase.good?.shop.card.userId ||
-        purchase.ware?.rent.card.userId ||
-        purchase.product?.lease.card.userId,
+      purchase.good.shop?.card.userId ||
+        purchase.good.rent?.card.userId ||
+        purchase.good.lease?.card.userId,
       dto.nick,
       Notification.RATED_PURCHASE,
     );
@@ -211,12 +159,10 @@ export class PurchasesService {
         'good',
         'good.shop',
         'good.shop.card',
-        'ware',
-        'ware.rent',
-        'ware.rent.card',
-        'product',
-        'product.lease',
-        'product.lease.card',
+        'good.rent',
+        'good.rent.card',
+        'good.lease',
+        'good.lease.card',
       ],
       where: { id },
     });
@@ -229,7 +175,7 @@ export class PurchasesService {
     return purchase;
   }
 
-  private async createShop(dto: ExtCreateShopPurchaseDto): Promise<Purchase> {
+  private async create(dto: ExtCreatePurchaseDto): Promise<Purchase> {
     try {
       const purchase = this.purchasesRepository.create({
         goodId: dto.goodId,
@@ -239,39 +185,7 @@ export class PurchasesService {
       await this.purchasesRepository.save(purchase);
       return purchase;
     } catch (error) {
-      throw new AppException(PurchaseError.CREATE_SHOP_FAILED);
-    }
-  }
-
-  private async createMarket(
-    dto: ExtCreateMarketPurchaseDto,
-  ): Promise<Purchase> {
-    try {
-      const purchase = this.purchasesRepository.create({
-        wareId: dto.wareId,
-        cardId: dto.cardId,
-        amount: dto.amount,
-      });
-      await this.purchasesRepository.save(purchase);
-      return purchase;
-    } catch (error) {
-      throw new AppException(PurchaseError.CREATE_MARKET_FAILED);
-    }
-  }
-
-  private async createStorage(
-    dto: ExtCreateStoragePurchaseDto,
-  ): Promise<Purchase> {
-    try {
-      const purchase = this.purchasesRepository.create({
-        productId: dto.productId,
-        cardId: dto.cardId,
-        amount: dto.amount,
-      });
-      await this.purchasesRepository.save(purchase);
-      return purchase;
-    } catch (error) {
-      throw new AppException(PurchaseError.CREATE_STORAGE_FAILED);
+      throw new AppException(PurchaseError.CREATE_FAILED);
     }
   }
 
@@ -295,42 +209,14 @@ export class PurchasesService {
   private selectPurchasesQueryBuilder(): SelectQueryBuilder<Purchase> {
     return this.purchasesRepository
       .createQueryBuilder('purchase')
-      .leftJoin('purchase.good', 'good')
-      .leftJoin('purchase.ware', 'ware')
-      .leftJoin('purchase.product', 'product')
+      .innerJoin('purchase.good', 'good')
+      .leftJoin('good.states', 'state', 'state.createdAt < purchase.createdAt')
       .leftJoin(
         'good.states',
-        'goodState',
-        'goodState.createdAt < purchase.createdAt',
-      )
-      .leftJoin(
-        'good.states',
-        'goodNext',
-        'goodState.createdAt < goodNext.createdAt AND goodNext.createdAt < purchase.createdAt',
-      )
-      .leftJoin(
-        'ware.states',
-        'wareState',
-        'wareState.createdAt < purchase.createdAt',
-      )
-      .leftJoin(
-        'ware.states',
-        'wareNext',
-        'wareState.createdAt < wareNext.createdAt AND wareNext.createdAt < purchase.createdAt',
-      )
-      .leftJoin(
-        'product.states',
-        'productState',
-        'productState.createdAt < purchase.createdAt',
-      )
-      .leftJoin(
-        'product.states',
-        'productNext',
-        'productState.createdAt < productNext.createdAt AND productNext.createdAt < purchase.createdAt',
+        'next',
+        'state.createdAt < next.createdAt AND next.createdAt < purchase.createdAt',
       )
       .where('goodNext.id IS NULL')
-      .andWhere('wareNext.id IS NULL')
-      .andWhere('productNext.id IS NULL')
       .orderBy('purchase.id', 'DESC')
       .select([
         'purchase.id',
@@ -339,19 +225,7 @@ export class PurchasesService {
         'good.description',
         'good.intake',
         'good.kit',
-        'goodState.price',
-        'ware.id',
-        'ware.item',
-        'ware.description',
-        'ware.intake',
-        'ware.kit',
-        'wareState.price',
-        'product.id',
-        'product.item',
-        'product.description',
-        'product.intake',
-        'product.kit',
-        'productState.price',
+        'state.price',
         'purchase.amount',
       ]);
   }
@@ -359,20 +233,18 @@ export class PurchasesService {
   private getPurchasesQueryBuilder(req: Request): SelectQueryBuilder<Purchase> {
     return this.purchasesRepository
       .createQueryBuilder('purchase')
-      .leftJoin('purchase.good', 'good')
+      .innerJoin('purchase.good', 'good')
       .leftJoin('good.shop', 'shop')
       .leftJoin('shop.card', 'shopCard')
       .leftJoin('shopCard.user', 'shopUser')
-      .leftJoin('purchase.ware', 'ware')
-      .leftJoin('ware.rent', 'rent')
+      .leftJoin('good.rent', 'rent')
       .leftJoin('rent.stall', 'stall')
       .leftJoin('stall.market', 'market')
       .leftJoin('market.card', 'marketOwnerCard')
       .leftJoin('marketOwnerCard.user', 'marketOwnerUser')
       .leftJoin('rent.card', 'marketSellerCard')
       .leftJoin('marketSellerCard.user', 'marketSellerUser')
-      .leftJoin('purchase.product', 'product')
-      .leftJoin('product.lease', 'lease')
+      .leftJoin('good.lease', 'lease')
       .leftJoin('lease.cell', 'cell')
       .leftJoin('cell.storage', 'storage')
       .leftJoin('storage.card', 'storageOwnerCard')
@@ -381,39 +253,13 @@ export class PurchasesService {
       .leftJoin('storageSellerCard.user', 'storageSellerUser')
       .innerJoin('purchase.card', 'buyerCard')
       .innerJoin('buyerCard.user', 'buyerUser')
+      .leftJoin('good.states', 'state', 'state.createdAt < purchase.createdAt')
       .leftJoin(
         'good.states',
-        'goodState',
-        'goodState.createdAt < purchase.createdAt',
+        'next',
+        'state.createdAt < next.createdAt AND next.createdAt < purchase.createdAt',
       )
-      .leftJoin(
-        'good.states',
-        'goodNext',
-        'goodState.createdAt < goodNext.createdAt AND goodNext.createdAt < purchase.createdAt',
-      )
-      .leftJoin(
-        'ware.states',
-        'wareState',
-        'wareState.createdAt < purchase.createdAt',
-      )
-      .leftJoin(
-        'ware.states',
-        'wareNext',
-        'wareState.createdAt < wareNext.createdAt AND wareNext.createdAt < purchase.createdAt',
-      )
-      .leftJoin(
-        'product.states',
-        'productState',
-        'productState.createdAt < purchase.createdAt',
-      )
-      .leftJoin(
-        'product.states',
-        'productNext',
-        'productState.createdAt < productNext.createdAt AND productNext.createdAt < purchase.createdAt',
-      )
-      .where('goodNext.id IS NULL')
-      .andWhere('wareNext.id IS NULL')
-      .andWhere('productNext.id IS NULL')
+      .where('next.id IS NULL')
       .andWhere(
         new Brackets((qb) =>
           qb.where(`${!req.id}`).orWhere('purchase.id = :id', { id: req.id }),
@@ -541,19 +387,17 @@ export class PurchasesService {
       .andWhere(
         new Brackets((qb) =>
           qb
-            .where(`${!req.item}`, { item: req.item })
-            .orWhere('good.item = :item')
-            .orWhere('ware.item = :item')
-            .orWhere('product.item = :item'),
+            .where(`${!req.item}`)
+            .orWhere('good.item = :item', { item: req.item }),
         ),
       )
       .andWhere(
         new Brackets((qb) =>
           qb
-            .where(`${!req.description}`, { description: req.description })
-            .orWhere('good.description ILIKE :description')
-            .orWhere('ware.description ILIKE :description')
-            .orWhere('product.description ILIKE :description'),
+            .where(`${!req.description}`)
+            .orWhere('good.description ILIKE :description', {
+              description: req.description,
+            }),
         ),
       )
       .andWhere(
@@ -577,46 +421,34 @@ export class PurchasesService {
       .andWhere(
         new Brackets((qb) =>
           qb
-            .where(`${!req.minIntake}`, { minIntake: req.minIntake })
-            .orWhere('good.intake >= :minIntake')
-            .orWhere('ware.intake >= :minIntake')
-            .orWhere('product.intake >= :minIntake'),
+            .where(`${!req.minIntake}`)
+            .orWhere('good.intake >= :minIntake', { minIntake: req.minIntake }),
         ),
       )
       .andWhere(
         new Brackets((qb) =>
           qb
-            .where(`${!req.maxIntake}`, { maxIntake: req.maxIntake })
-            .orWhere('good.intake <= :maxIntake')
-            .orWhere('ware.intake <= :maxIntake')
-            .orWhere('product.intake <= :maxIntake'),
+            .where(`${!req.maxIntake}`)
+            .orWhere('good.intake <= :maxIntake', { maxIntake: req.maxIntake }),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb.where(`${!req.kit}`).orWhere('good.kit = :kit', { kit: req.kit }),
         ),
       )
       .andWhere(
         new Brackets((qb) =>
           qb
-            .where(`${!req.kit}`, { kit: req.kit })
-            .orWhere('good.kit = :kit')
-            .orWhere('ware.kit = :kit')
-            .orWhere('product.kit = :kit'),
+            .where(`${!req.minPrice}`)
+            .orWhere('state.price >= :minPrice', { minPrice: req.minPrice }),
         ),
       )
       .andWhere(
         new Brackets((qb) =>
           qb
-            .where(`${!req.minPrice}`, { minPrice: req.minPrice })
-            .orWhere('goodState.price >= :minPrice')
-            .orWhere('wareState.price >= :minPrice')
-            .orWhere('productState.price >= :minPrice'),
-        ),
-      )
-      .andWhere(
-        new Brackets((qb) =>
-          qb
-            .where(`${!req.maxPrice}`, { maxPrice: req.maxPrice })
-            .orWhere('goodState.price <= :maxPrice')
-            .orWhere('wareState.price <= :maxPrice')
-            .orWhere('productState.price <= :maxPrice'),
+            .where(`${!req.maxPrice}`)
+            .orWhere('state.price <= :maxPrice', { maxPrice: req.maxPrice }),
         ),
       )
       .andWhere(
@@ -660,12 +492,6 @@ export class PurchasesService {
         'shop.name',
         'shop.x',
         'shop.y',
-        'good.item',
-        'good.description',
-        'good.intake',
-        'good.kit',
-        'goodState.price',
-        'ware.id',
         'rent.id',
         'stall.id',
         'market.id',
@@ -685,12 +511,6 @@ export class PurchasesService {
         'marketSellerUser.avatar',
         'marketSellerCard.name',
         'marketSellerCard.color',
-        'ware.item',
-        'ware.description',
-        'ware.intake',
-        'ware.kit',
-        'wareState.price',
-        'product.id',
         'lease.id',
         'cell.id',
         'storage.id',
@@ -710,11 +530,11 @@ export class PurchasesService {
         'storageSellerUser.avatar',
         'storageSellerCard.name',
         'storageSellerCard.color',
-        'product.item',
-        'product.description',
-        'product.intake',
-        'product.kit',
-        'productState.price',
+        'good.item',
+        'good.description',
+        'good.intake',
+        'good.kit',
+        'state.price',
         'buyerCard.id',
         'buyerUser.id',
         'buyerUser.nick',

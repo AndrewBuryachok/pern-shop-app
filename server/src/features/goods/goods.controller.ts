@@ -11,7 +11,13 @@ import { ApiTags } from '@nestjs/swagger';
 import { GoodsService } from './goods.service';
 import { Good } from './good.entity';
 import { GoodState } from './good-state.entity';
-import { CreateGoodDto, EditGoodDto, GoodIdDto } from './good.dto';
+import {
+  CreateMarketGoodDto,
+  CreateShopGoodDto,
+  CreateStorageGoodDto,
+  EditGoodDto,
+  GoodIdDto,
+} from './good.dto';
 import { Request, Response } from '../../common/interfaces';
 import { HasRole, MyId, MyNick, Public, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
@@ -35,6 +41,14 @@ export class GoodsController {
     return this.goodsService.getMyGoods(myId, req);
   }
 
+  @Get('placed')
+  getPlacedGoods(
+    @MyId() myId: number,
+    @Query() req: Request,
+  ): Promise<Response<Good>> {
+    return this.goodsService.getPlacedGoods(myId, req);
+  }
+
   @Roles(Role.MERCHANT)
   @Get('all')
   getAllGoods(@Query() req: Request): Promise<Response<Good>> {
@@ -53,14 +67,34 @@ export class GoodsController {
     return this.goodsService.selectGoodRating(goodId);
   }
 
-  @Post()
-  createGood(
+  @Post('shops')
+  createShopGood(
     @MyId() myId: number,
     @MyNick() nick: string,
     @HasRole(Role.MERCHANT) hasRole: boolean,
-    @Body() dto: CreateGoodDto,
+    @Body() dto: CreateShopGoodDto,
   ): Promise<void> {
-    return this.goodsService.createGood({ ...dto, myId, nick, hasRole });
+    return this.goodsService.createShopGood({ ...dto, myId, nick, hasRole });
+  }
+
+  @Post('markets')
+  createMarketGood(
+    @MyId() myId: number,
+    @MyNick() nick: string,
+    @HasRole(Role.MERCHANT) hasRole: boolean,
+    @Body() dto: CreateMarketGoodDto,
+  ): Promise<void> {
+    return this.goodsService.createMarketGood({ ...dto, myId, nick, hasRole });
+  }
+
+  @Post('storages')
+  createStorageGood(
+    @MyId() myId: number,
+    @MyNick() nick: string,
+    @HasRole(Role.MERCHANT) hasRole: boolean,
+    @Body() dto: CreateStorageGoodDto,
+  ): Promise<void> {
+    return this.goodsService.createStorageGood({ ...dto, myId, nick, hasRole });
   }
 
   @Patch(':goodId')

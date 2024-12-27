@@ -557,43 +557,13 @@ describe('Without Auth', () => {
       return request(app.getHttpServer()).get('/goods/my').expect(401);
     });
 
+    it('GET /goods/placed', async () => {
+      return request(app.getHttpServer()).get('/goods/placed').expect(401);
+    });
+
     it('GET /goods/all', async () => {
       return request(app.getHttpServer())
         .get('/goods/all')
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect(403);
-    });
-  });
-
-  describe('Wares', () => {
-    it('GET /wares/my', async () => {
-      return request(app.getHttpServer()).get('/wares/my').expect(401);
-    });
-
-    it('GET /wares/placed', async () => {
-      return request(app.getHttpServer()).get('/wares/placed').expect(401);
-    });
-
-    it('GET /wares/all', async () => {
-      return request(app.getHttpServer())
-        .get('/wares/all')
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect(403);
-    });
-  });
-
-  describe('Products', () => {
-    it('GET /products/my', async () => {
-      return request(app.getHttpServer()).get('/products/my').expect(401);
-    });
-
-    it('GET /products/placed', async () => {
-      return request(app.getHttpServer()).get('/products/placed').expect(401);
-    });
-
-    it('GET /products/all', async () => {
-      return request(app.getHttpServer())
-        .get('/products/all')
         .set('Authorization', `Bearer ${user.access}`)
         .expect(403);
     });

@@ -5,10 +5,8 @@ import { IsAmount, IsId, IsPrice, IsRate } from '../../common/decorators';
 import {
   IsCardExists,
   IsGoodExists,
-  IsProductExists,
   IsPurchaseExists,
   IsStationExists,
-  IsWareExists,
 } from '../../common/constraints';
 
 export class PurchaseIdDto {
@@ -20,6 +18,11 @@ export class PurchaseIdDto {
 }
 
 export class CreatePurchaseDto {
+  @ApiProperty()
+  @IsId()
+  @Validate(IsGoodExists)
+  goodId: number;
+
   @ApiProperty()
   @IsId()
   @Validate(IsCardExists)
@@ -41,38 +44,7 @@ export class CreatePurchaseDto {
   price: number;
 }
 
-export class CreateShopPurchaseDto extends CreatePurchaseDto {
-  @ApiProperty()
-  @IsId()
-  @Validate(IsGoodExists)
-  goodId: number;
-}
-
-export class ExtCreateShopPurchaseDto extends CreateShopPurchaseDto {
-  myId: number;
-  hasRole: boolean;
-}
-
-export class CreateMarketPurchaseDto extends CreatePurchaseDto {
-  @ApiProperty()
-  @IsId()
-  @Validate(IsWareExists)
-  wareId: number;
-}
-
-export class ExtCreateMarketPurchaseDto extends CreateMarketPurchaseDto {
-  myId: number;
-  hasRole: boolean;
-}
-
-export class CreateStoragePurchaseDto extends CreatePurchaseDto {
-  @ApiProperty()
-  @IsId()
-  @Validate(IsProductExists)
-  productId: number;
-}
-
-export class ExtCreateStoragePurchaseDto extends CreateStoragePurchaseDto {
+export class ExtCreatePurchaseDto extends CreatePurchaseDto {
   myId: number;
   hasRole: boolean;
 }

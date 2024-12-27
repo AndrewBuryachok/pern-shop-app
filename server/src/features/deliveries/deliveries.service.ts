@@ -423,18 +423,16 @@ export class DeliveriesService {
     return this.deliveriesRepository
       .createQueryBuilder('delivery')
       .innerJoin('delivery.purchase', 'purchase')
-      .leftJoin('purchase.good', 'good')
+      .innerJoin('purchase.good', 'good')
       .leftJoin('good.shop', 'shop')
       .leftJoin('shop.card', 'shopCard')
       .leftJoin('shopCard.user', 'shopUser')
-      .leftJoin('purchase.ware', 'ware')
-      .leftJoin('ware.rent', 'rent')
+      .leftJoin('good.rent', 'rent')
       .leftJoin('rent.stall', 'stall')
       .leftJoin('stall.market', 'market')
       .leftJoin('market.card', 'marketCard')
       .leftJoin('marketCard.user', 'marketUser')
-      .leftJoin('purchase.product', 'product')
-      .leftJoin('product.lease', 'lease')
+      .leftJoin('good.lease', 'lease')
       .leftJoin('lease.cell', 'cell')
       .leftJoin('cell.storage', 'storage')
       .leftJoin('storage.card', 'storageCard')
@@ -577,19 +575,17 @@ export class DeliveriesService {
       .andWhere(
         new Brackets((qb) =>
           qb
-            .where(`${!req.item}`, { item: req.item })
-            .orWhere('good.item = :item')
-            .orWhere('ware.item = :item')
-            .orWhere('product.item = :item'),
+            .where(`${!req.item}`)
+            .orWhere('good.item = :item', { item: req.item }),
         ),
       )
       .andWhere(
         new Brackets((qb) =>
           qb
-            .where(`${!req.description}`, { description: req.description })
-            .orWhere('good.description ILIKE :description')
-            .orWhere('ware.description ILIKE :description')
-            .orWhere('product.description ILIKE :description'),
+            .where(`${!req.description}`)
+            .orWhere('good.description ILIKE :description', {
+              description: req.description,
+            }),
         ),
       )
       .andWhere(
@@ -613,28 +609,20 @@ export class DeliveriesService {
       .andWhere(
         new Brackets((qb) =>
           qb
-            .where(`${!req.minIntake}`, { minIntake: req.minIntake })
-            .orWhere('good.intake >= :minIntake')
-            .orWhere('ware.intake >= :minIntake')
-            .orWhere('product.intake >= :minIntake'),
+            .where(`${!req.minIntake}`)
+            .orWhere('good.intake >= :minIntake', { minIntake: req.minIntake }),
         ),
       )
       .andWhere(
         new Brackets((qb) =>
           qb
-            .where(`${!req.maxIntake}`, { maxIntake: req.maxIntake })
-            .orWhere('good.intake <= :maxIntake')
-            .orWhere('ware.intake <= :maxIntake')
-            .orWhere('product.intake <= :maxIntake'),
+            .where(`${!req.maxIntake}`)
+            .orWhere('good.intake <= :maxIntake', { maxIntake: req.maxIntake }),
         ),
       )
       .andWhere(
         new Brackets((qb) =>
-          qb
-            .where(`${!req.kit}`, { kit: req.kit })
-            .orWhere('good.kit = :kit')
-            .orWhere('ware.kit = :kit')
-            .orWhere('product.kit = :kit'),
+          qb.where(`${!req.kit}`).orWhere('good.kit = :kit', { kit: req.kit }),
         ),
       )
       .andWhere(
@@ -721,11 +709,6 @@ export class DeliveriesService {
         'shop.name',
         'shop.x',
         'shop.y',
-        'good.item',
-        'good.description',
-        'good.intake',
-        'good.kit',
-        'ware.id',
         'rent.id',
         'stall.id',
         'market.id',
@@ -739,11 +722,6 @@ export class DeliveriesService {
         'market.x',
         'market.y',
         'stall.name',
-        'ware.item',
-        'ware.description',
-        'ware.intake',
-        'ware.kit',
-        'product.id',
         'lease.id',
         'cell.id',
         'storage.id',
@@ -757,10 +735,10 @@ export class DeliveriesService {
         'storage.x',
         'storage.y',
         'cell.name',
-        'product.item',
-        'product.description',
-        'product.intake',
-        'product.kit',
+        'good.item',
+        'good.description',
+        'good.intake',
+        'good.kit',
         'purchase.amount',
         'hire.id',
         'box.id',
