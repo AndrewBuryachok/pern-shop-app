@@ -5,11 +5,11 @@ const Map = lazy(() => import('../pages/map/Map'));
 const Logger = lazy(() => import('../pages/common/Logger'));
 const UsersPage = lazy(() => import('../pages/users/UsersPage'));
 const SingleUser = lazy(() => import('../pages/users/SingleUser'));
+const ChatsPage = lazy(() => import('../pages/chats/ChatsPage'));
 const FriendsPage = lazy(() => import('../pages/friends/FriendsPage'));
 const SubscribersPage = lazy(
   () => import('../pages/subscribers/SubscribersPage'),
 );
-const ChatsPage = lazy(() => import('../pages/chats/ChatsPage'));
 const ReportsPage = lazy(() => import('../pages/reports/ReportsPage'));
 const ArticlesPage = lazy(() => import('../pages/articles/ArticlesPage'));
 const PollsPage = lazy(() => import('../pages/polls/PollsPage'));
@@ -43,10 +43,10 @@ const RentsPage = lazy(() => import('../pages/rents/RentsPage'));
 const LeasesPage = lazy(() => import('../pages/leases/LeasesPage'));
 const HiresPage = lazy(() => import('../pages/hires/HiresPage'));
 const GoodsPage = lazy(() => import('../pages/goods/GoodsPage'));
-const OrdersPage = lazy(() => import('../pages/orders/OrdersPage'));
-const HaulagesPage = lazy(() => import('../pages/haulages/HaulagesPage'));
 const PurchasesPage = lazy(() => import('../pages/purchases/PurchasesPage'));
 const DeliveriesPage = lazy(() => import('../pages/deliveries/DeliveriesPage'));
+const OrdersPage = lazy(() => import('../pages/orders/OrdersPage'));
+const HaulagesPage = lazy(() => import('../pages/haulages/HaulagesPage'));
 const TasksPage = lazy(() => import('../pages/tasks/TasksPage'));
 const AdvertsPage = lazy(() => import('../pages/adverts/AdvertsPage'));
 const RatingsPage = lazy(() => import('../pages/ratings/RatingsPage'));
@@ -69,6 +69,11 @@ export const pages = [
   },
   { path: 'users/:nick', element: SingleUser },
   {
+    path: 'chats',
+    element: ChatsPage,
+    nested: [{ path: 'my' }, { path: ':nick' }],
+  },
+  {
     path: 'friends',
     element: FriendsPage,
     nested: [
@@ -82,11 +87,6 @@ export const pages = [
     path: 'subscribers',
     element: SubscribersPage,
     nested: [{ path: 'top' }, { path: 'my' }, { path: 'received' }],
-  },
-  {
-    path: 'chats',
-    element: ChatsPage,
-    nested: [{ path: 'my' }, { path: ':nick' }],
   },
   {
     path: 'reports',
@@ -303,6 +303,27 @@ export const pages = [
     ],
   },
   {
+    path: 'purchases',
+    element: PurchasesPage,
+    nested: [
+      { path: 'my' },
+      { path: 'sold' },
+      { path: 'placed' },
+      { path: 'all', role: Role.MERCHANT },
+    ],
+  },
+  {
+    path: 'deliveries',
+    element: DeliveriesPage,
+    nested: [
+      { index: true },
+      { path: 'my' },
+      { path: 'taken' },
+      { path: 'placed' },
+      { path: 'all', role: Role.MERCHANT },
+    ],
+  },
+  {
     path: 'orders',
     element: OrdersPage,
     nested: [
@@ -316,27 +337,6 @@ export const pages = [
   {
     path: 'haulages',
     element: HaulagesPage,
-    nested: [
-      { index: true },
-      { path: 'my' },
-      { path: 'taken' },
-      { path: 'placed' },
-      { path: 'all', role: Role.MERCHANT },
-    ],
-  },
-  {
-    path: 'purchases',
-    element: PurchasesPage,
-    nested: [
-      { path: 'my' },
-      { path: 'sold' },
-      { path: 'placed' },
-      { path: 'all', role: Role.MERCHANT },
-    ],
-  },
-  {
-    path: 'deliveries',
-    element: DeliveriesPage,
     nested: [
       { index: true },
       { path: 'my' },
