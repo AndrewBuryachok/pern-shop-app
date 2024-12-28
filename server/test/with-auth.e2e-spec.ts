@@ -29,6 +29,8 @@ describe('With Auth', () => {
   let reportCommentId: number;
   let articlesId: number;
   let articleCommentId: number;
+  let pollsId: number;
+  let pollCommentId: number;
   let cardId: number;
   let exchangesId: number;
   let paymentsId: number;
@@ -53,15 +55,13 @@ describe('With Auth', () => {
   let shopsPurchasesId: number;
   let marketsPurchasesId: number;
   let storagesPurchasesId: number;
-  let ordersId: number;
-  let haulagesId: number;
   let shopsDeliveriesId: number;
   let marketsDeliveriesId: number;
   let storagesDeliveriesId: number;
+  let ordersId: number;
+  let haulagesId: number;
   let tasksId: number;
   let advertId: number;
-  let pollsId: number;
-  let pollCommentId: number;
   let ratingId: number;
 
   beforeAll(async () => {
@@ -2790,284 +2790,6 @@ describe('With Auth', () => {
     });
   });
 
-  describe('Orders', () => {
-    it('POST /orders', async () => {
-      return request(app.getHttpServer())
-        .post('/orders')
-        .set('Authorization', `Bearer ${user.access}`)
-        .send({
-          stationId,
-          cardId,
-          item: 1,
-          description: '',
-          amount: 1,
-          intake: 1,
-          kit: 1,
-          price: 10,
-        })
-        .expect('');
-    });
-
-    it('POST /orders', async () => {
-      return request(app.getHttpServer())
-        .post('/orders')
-        .set('Authorization', `Bearer ${user.access}`)
-        .send({
-          stationId,
-          cardId,
-          item: 1,
-          description: '',
-          amount: 1,
-          intake: 1,
-          kit: 1,
-          price: 10,
-        })
-        .expect('');
-    });
-
-    it('GET /orders', async () => {
-      return request(app.getHttpServer())
-        .get('/orders')
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
-    });
-
-    it('GET /orders/my', async () => {
-      return request(app.getHttpServer())
-        .get('/orders/my')
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0))
-        .then((res) => (ordersId = res.body.result.map((o) => o.id)));
-    });
-
-    it('PATCH /orders/:orderId', async () => {
-      return request(app.getHttpServer())
-        .patch(`/orders/${ordersId[0]}`)
-        .set('Authorization', `Bearer ${user.access}`)
-        .send({
-          item: 1,
-          description: '',
-          amount: 1,
-          intake: 1,
-          kit: 1,
-          price: 10,
-        })
-        .expect('');
-    });
-
-    it('POST /orders/:orderId/take', async () => {
-      return request(app.getHttpServer())
-        .post(`/orders/${ordersId[0]}/take`)
-        .set('Authorization', `Bearer ${user.access}`)
-        .send({ cardId })
-        .expect('');
-    });
-
-    it('GET /orders/taken', async () => {
-      return request(app.getHttpServer())
-        .get('/orders/taken')
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
-    });
-
-    it('GET /orders/placed', async () => {
-      return request(app.getHttpServer())
-        .get('/orders/placed')
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
-    });
-
-    it('GET /orders/all', async () => {
-      return request(app.getHttpServer())
-        .get('/orders/all')
-        .set('Authorization', `Bearer ${merchant.access}`)
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
-    });
-
-    it('POST /orders/:orderId/execute', async () => {
-      return request(app.getHttpServer())
-        .post(`/orders/${ordersId[0]}/execute`)
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect('');
-    });
-
-    it('POST /orders/:orderId', async () => {
-      return request(app.getHttpServer())
-        .post(`/orders/${ordersId[0]}`)
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect('');
-    });
-
-    it('PATCH /orders/:orderId/rate', async () => {
-      return request(app.getHttpServer())
-        .patch(`/orders/${ordersId[0]}/rate`)
-        .set('Authorization', `Bearer ${user.access}`)
-        .send({ rate: 5 })
-        .expect('');
-    });
-
-    it('POST /orders/:orderId/take', async () => {
-      return request(app.getHttpServer())
-        .post(`/orders/${ordersId[1]}/take`)
-        .set('Authorization', `Bearer ${user.access}`)
-        .send({ cardId })
-        .expect('');
-    });
-
-    it('DELETE /orders/:orderId/take', async () => {
-      return request(app.getHttpServer())
-        .delete(`/orders/${ordersId[1]}/take`)
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect('');
-    });
-
-    it('DELETE /orders/:orderId', async () => {
-      return request(app.getHttpServer())
-        .delete(`/orders/${ordersId[1]}`)
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect('');
-    });
-  });
-
-  describe('Haulages', () => {
-    it('POST /haulages', async () => {
-      return request(app.getHttpServer())
-        .post('/haulages')
-        .set('Authorization', `Bearer ${user.access}`)
-        .send({
-          fromStationId: stationId,
-          toStationId: stationId,
-          cardId,
-          item: 1,
-          description: '',
-          amount: 1,
-          intake: 1,
-          kit: 1,
-          price: 10,
-        })
-        .expect('');
-    });
-
-    it('POST /haulages', async () => {
-      return request(app.getHttpServer())
-        .post('/haulages')
-        .set('Authorization', `Bearer ${user.access}`)
-        .send({
-          fromStationId: stationId,
-          toStationId: stationId,
-          cardId,
-          item: 1,
-          description: '',
-          amount: 1,
-          intake: 1,
-          kit: 1,
-          price: 10,
-        })
-        .expect('');
-    });
-
-    it('GET /haulages', async () => {
-      return request(app.getHttpServer())
-        .get('/haulages')
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
-    });
-
-    it('GET /haulages/my', async () => {
-      return request(app.getHttpServer())
-        .get('/haulages/my')
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0))
-        .then((res) => (haulagesId = res.body.result.map((d) => d.id)));
-    });
-
-    it('PATCH /haulages/:haulageId', async () => {
-      return request(app.getHttpServer())
-        .patch(`/haulages/${haulagesId[0]}`)
-        .set('Authorization', `Bearer ${user.access}`)
-        .send({
-          item: 1,
-          description: '',
-          amount: 1,
-          intake: 1,
-          kit: 1,
-          price: 10,
-        })
-        .expect('');
-    });
-
-    it('POST /haulages/:haulageId/take', async () => {
-      return request(app.getHttpServer())
-        .post(`/haulages/${haulagesId[0]}/take`)
-        .set('Authorization', `Bearer ${user.access}`)
-        .send({ cardId })
-        .expect('');
-    });
-
-    it('GET /haulages/taken', async () => {
-      return request(app.getHttpServer())
-        .get('/haulages/taken')
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
-    });
-
-    it('GET /haulages/placed', async () => {
-      return request(app.getHttpServer())
-        .get('/haulages/placed')
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
-    });
-
-    it('GET /haulages/all', async () => {
-      return request(app.getHttpServer())
-        .get('/haulages/all')
-        .set('Authorization', `Bearer ${merchant.access}`)
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
-    });
-
-    it('POST /haulages/:haulageId/execute', async () => {
-      return request(app.getHttpServer())
-        .post(`/haulages/${haulagesId[0]}/execute`)
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect('');
-    });
-
-    it('POST /haulages/:haulageId', async () => {
-      return request(app.getHttpServer())
-        .post(`/haulages/${haulagesId[0]}`)
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect('');
-    });
-
-    it('PATCH /haulages/:haulageId/rate', async () => {
-      return request(app.getHttpServer())
-        .patch(`/haulages/${haulagesId[0]}/rate`)
-        .set('Authorization', `Bearer ${user.access}`)
-        .send({ rate: 5 })
-        .expect('');
-    });
-
-    it('POST /haulages/:haulageId/take', async () => {
-      return request(app.getHttpServer())
-        .post(`/haulages/${haulagesId[1]}/take`)
-        .set('Authorization', `Bearer ${user.access}`)
-        .send({ cardId })
-        .expect('');
-    });
-
-    it('DELETE /haulages/:haulageId/take', async () => {
-      return request(app.getHttpServer())
-        .delete(`/haulages/${haulagesId[1]}/take`)
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect('');
-    });
-
-    it('DELETE /haulages/:haulageId', async () => {
-      return request(app.getHttpServer())
-        .delete(`/haulages/${haulagesId[1]}`)
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect('');
-    });
-  });
-
   describe('Shops Deliveries', () => {
     it('POST /deliveries', async () => {
       return request(app.getHttpServer())
@@ -3414,6 +3136,284 @@ describe('With Auth', () => {
       return request(app.getHttpServer())
         .delete(`/purchases/${storagesPurchasesId[1]}`)
         .set('Authorization', `Bearer ${merchant.access}`)
+        .expect('');
+    });
+  });
+
+  describe('Orders', () => {
+    it('POST /orders', async () => {
+      return request(app.getHttpServer())
+        .post('/orders')
+        .set('Authorization', `Bearer ${user.access}`)
+        .send({
+          stationId,
+          cardId,
+          item: 1,
+          description: '',
+          amount: 1,
+          intake: 1,
+          kit: 1,
+          price: 10,
+        })
+        .expect('');
+    });
+
+    it('POST /orders', async () => {
+      return request(app.getHttpServer())
+        .post('/orders')
+        .set('Authorization', `Bearer ${user.access}`)
+        .send({
+          stationId,
+          cardId,
+          item: 1,
+          description: '',
+          amount: 1,
+          intake: 1,
+          kit: 1,
+          price: 10,
+        })
+        .expect('');
+    });
+
+    it('GET /orders', async () => {
+      return request(app.getHttpServer())
+        .get('/orders')
+        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
+    });
+
+    it('GET /orders/my', async () => {
+      return request(app.getHttpServer())
+        .get('/orders/my')
+        .set('Authorization', `Bearer ${user.access}`)
+        .expect((res) => expect(res.body.count).toBeGreaterThan(0))
+        .then((res) => (ordersId = res.body.result.map((o) => o.id)));
+    });
+
+    it('PATCH /orders/:orderId', async () => {
+      return request(app.getHttpServer())
+        .patch(`/orders/${ordersId[0]}`)
+        .set('Authorization', `Bearer ${user.access}`)
+        .send({
+          item: 1,
+          description: '',
+          amount: 1,
+          intake: 1,
+          kit: 1,
+          price: 10,
+        })
+        .expect('');
+    });
+
+    it('POST /orders/:orderId/take', async () => {
+      return request(app.getHttpServer())
+        .post(`/orders/${ordersId[0]}/take`)
+        .set('Authorization', `Bearer ${user.access}`)
+        .send({ cardId })
+        .expect('');
+    });
+
+    it('GET /orders/taken', async () => {
+      return request(app.getHttpServer())
+        .get('/orders/taken')
+        .set('Authorization', `Bearer ${user.access}`)
+        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
+    });
+
+    it('GET /orders/placed', async () => {
+      return request(app.getHttpServer())
+        .get('/orders/placed')
+        .set('Authorization', `Bearer ${user.access}`)
+        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
+    });
+
+    it('GET /orders/all', async () => {
+      return request(app.getHttpServer())
+        .get('/orders/all')
+        .set('Authorization', `Bearer ${merchant.access}`)
+        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
+    });
+
+    it('POST /orders/:orderId/execute', async () => {
+      return request(app.getHttpServer())
+        .post(`/orders/${ordersId[0]}/execute`)
+        .set('Authorization', `Bearer ${user.access}`)
+        .expect('');
+    });
+
+    it('POST /orders/:orderId', async () => {
+      return request(app.getHttpServer())
+        .post(`/orders/${ordersId[0]}`)
+        .set('Authorization', `Bearer ${user.access}`)
+        .expect('');
+    });
+
+    it('PATCH /orders/:orderId/rate', async () => {
+      return request(app.getHttpServer())
+        .patch(`/orders/${ordersId[0]}/rate`)
+        .set('Authorization', `Bearer ${user.access}`)
+        .send({ rate: 5 })
+        .expect('');
+    });
+
+    it('POST /orders/:orderId/take', async () => {
+      return request(app.getHttpServer())
+        .post(`/orders/${ordersId[1]}/take`)
+        .set('Authorization', `Bearer ${user.access}`)
+        .send({ cardId })
+        .expect('');
+    });
+
+    it('DELETE /orders/:orderId/take', async () => {
+      return request(app.getHttpServer())
+        .delete(`/orders/${ordersId[1]}/take`)
+        .set('Authorization', `Bearer ${user.access}`)
+        .expect('');
+    });
+
+    it('DELETE /orders/:orderId', async () => {
+      return request(app.getHttpServer())
+        .delete(`/orders/${ordersId[1]}`)
+        .set('Authorization', `Bearer ${user.access}`)
+        .expect('');
+    });
+  });
+
+  describe('Haulages', () => {
+    it('POST /haulages', async () => {
+      return request(app.getHttpServer())
+        .post('/haulages')
+        .set('Authorization', `Bearer ${user.access}`)
+        .send({
+          fromStationId: stationId,
+          toStationId: stationId,
+          cardId,
+          item: 1,
+          description: '',
+          amount: 1,
+          intake: 1,
+          kit: 1,
+          price: 10,
+        })
+        .expect('');
+    });
+
+    it('POST /haulages', async () => {
+      return request(app.getHttpServer())
+        .post('/haulages')
+        .set('Authorization', `Bearer ${user.access}`)
+        .send({
+          fromStationId: stationId,
+          toStationId: stationId,
+          cardId,
+          item: 1,
+          description: '',
+          amount: 1,
+          intake: 1,
+          kit: 1,
+          price: 10,
+        })
+        .expect('');
+    });
+
+    it('GET /haulages', async () => {
+      return request(app.getHttpServer())
+        .get('/haulages')
+        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
+    });
+
+    it('GET /haulages/my', async () => {
+      return request(app.getHttpServer())
+        .get('/haulages/my')
+        .set('Authorization', `Bearer ${user.access}`)
+        .expect((res) => expect(res.body.count).toBeGreaterThan(0))
+        .then((res) => (haulagesId = res.body.result.map((d) => d.id)));
+    });
+
+    it('PATCH /haulages/:haulageId', async () => {
+      return request(app.getHttpServer())
+        .patch(`/haulages/${haulagesId[0]}`)
+        .set('Authorization', `Bearer ${user.access}`)
+        .send({
+          item: 1,
+          description: '',
+          amount: 1,
+          intake: 1,
+          kit: 1,
+          price: 10,
+        })
+        .expect('');
+    });
+
+    it('POST /haulages/:haulageId/take', async () => {
+      return request(app.getHttpServer())
+        .post(`/haulages/${haulagesId[0]}/take`)
+        .set('Authorization', `Bearer ${user.access}`)
+        .send({ cardId })
+        .expect('');
+    });
+
+    it('GET /haulages/taken', async () => {
+      return request(app.getHttpServer())
+        .get('/haulages/taken')
+        .set('Authorization', `Bearer ${user.access}`)
+        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
+    });
+
+    it('GET /haulages/placed', async () => {
+      return request(app.getHttpServer())
+        .get('/haulages/placed')
+        .set('Authorization', `Bearer ${user.access}`)
+        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
+    });
+
+    it('GET /haulages/all', async () => {
+      return request(app.getHttpServer())
+        .get('/haulages/all')
+        .set('Authorization', `Bearer ${merchant.access}`)
+        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
+    });
+
+    it('POST /haulages/:haulageId/execute', async () => {
+      return request(app.getHttpServer())
+        .post(`/haulages/${haulagesId[0]}/execute`)
+        .set('Authorization', `Bearer ${user.access}`)
+        .expect('');
+    });
+
+    it('POST /haulages/:haulageId', async () => {
+      return request(app.getHttpServer())
+        .post(`/haulages/${haulagesId[0]}`)
+        .set('Authorization', `Bearer ${user.access}`)
+        .expect('');
+    });
+
+    it('PATCH /haulages/:haulageId/rate', async () => {
+      return request(app.getHttpServer())
+        .patch(`/haulages/${haulagesId[0]}/rate`)
+        .set('Authorization', `Bearer ${user.access}`)
+        .send({ rate: 5 })
+        .expect('');
+    });
+
+    it('POST /haulages/:haulageId/take', async () => {
+      return request(app.getHttpServer())
+        .post(`/haulages/${haulagesId[1]}/take`)
+        .set('Authorization', `Bearer ${user.access}`)
+        .send({ cardId })
+        .expect('');
+    });
+
+    it('DELETE /haulages/:haulageId/take', async () => {
+      return request(app.getHttpServer())
+        .delete(`/haulages/${haulagesId[1]}/take`)
+        .set('Authorization', `Bearer ${user.access}`)
+        .expect('');
+    });
+
+    it('DELETE /haulages/:haulageId', async () => {
+      return request(app.getHttpServer())
+        .delete(`/haulages/${haulagesId[1]}`)
+        .set('Authorization', `Bearer ${user.access}`)
         .expect('');
     });
   });

@@ -32,9 +32,9 @@ import { LeasesModule } from './features/leases/leases.module';
 import { HiresModule } from './features/hires/hires.module';
 import { GoodsModule } from './features/goods/goods.module';
 import { PurchasesModule } from './features/purchases/purchases.module';
+import { DeliveriesModule } from './features/deliveries/deliveries.module';
 import { OrdersModule } from './features/orders/orders.module';
 import { HaulagesModule } from './features/haulages/haulages.module';
-import { DeliveriesModule } from './features/deliveries/deliveries.module';
 import { TasksModule } from './features/tasks/tasks.module';
 import { AdvertsModule } from './features/adverts/adverts.module';
 import { RatingsModule } from './features/ratings/ratings.module';
@@ -95,9 +95,9 @@ import { LoggerModule } from './features/logger/logger.module';
     HiresModule,
     GoodsModule,
     PurchasesModule,
+    DeliveriesModule,
     OrdersModule,
     HaulagesModule,
-    DeliveriesModule,
     TasksModule,
     AdvertsModule,
     RatingsModule,

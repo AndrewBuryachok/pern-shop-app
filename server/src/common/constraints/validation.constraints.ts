@@ -31,9 +31,9 @@ import { LeasesService } from '../../features/leases/leases.service';
 import { HiresService } from '../../features/hires/hires.service';
 import { GoodsService } from '../../features/goods/goods.service';
 import { PurchasesService } from '../../features/purchases/purchases.service';
+import { DeliveriesService } from '../../features/deliveries/deliveries.service';
 import { OrdersService } from '../../features/orders/orders.service';
 import { HaulagesService } from '../../features/haulages/haulages.service';
-import { DeliveriesService } from '../../features/deliveries/deliveries.service';
 import { TasksService } from '../../features/tasks/tasks.service';
 import { AdvertsService } from '../../features/adverts/adverts.service';
 import { RatingsService } from '../../features/ratings/ratings.service';
@@ -571,6 +571,25 @@ export class IsPurchaseExists implements ValidatorConstraintInterface {
 }
 
 @Injectable()
+@ValidatorConstraint({ name: 'isDeliveryExists', async: true })
+export class IsDeliveryExists implements ValidatorConstraintInterface {
+  constructor(private deliveriesService: DeliveriesService) {}
+
+  async validate(value: number): Promise<boolean> {
+    try {
+      await this.deliveriesService.checkDeliveryExists(value);
+    } catch (error) {
+      return false;
+    }
+    return true;
+  }
+
+  defaultMessage(): string {
+    return 'Unknown delivery';
+  }
+}
+
+@Injectable()
 @ValidatorConstraint({ name: 'isOrderExists', async: true })
 export class IsOrderExists implements ValidatorConstraintInterface {
   constructor(private ordersService: OrdersService) {}
@@ -605,25 +624,6 @@ export class IsHaulageExists implements ValidatorConstraintInterface {
 
   defaultMessage(): string {
     return 'Unknown haulage';
-  }
-}
-
-@Injectable()
-@ValidatorConstraint({ name: 'isDeliveryExists', async: true })
-export class IsDeliveryExists implements ValidatorConstraintInterface {
-  constructor(private deliveriesService: DeliveriesService) {}
-
-  async validate(value: number): Promise<boolean> {
-    try {
-      await this.deliveriesService.checkDeliveryExists(value);
-    } catch (error) {
-      return false;
-    }
-    return true;
-  }
-
-  defaultMessage(): string {
-    return 'Unknown delivery';
   }
 }
 
