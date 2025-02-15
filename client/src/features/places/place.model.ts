@@ -21,8 +21,6 @@ export interface SmPlaceWithPrice extends SmPlaceWithCard {
 }
 
 export interface Place extends SmPlace {
-  image: string;
-  video: string;
   description: string;
   createdAt: Date;
 }

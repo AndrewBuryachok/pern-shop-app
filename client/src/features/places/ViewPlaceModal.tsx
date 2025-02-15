@@ -1,6 +1,6 @@
 import { t } from 'i18next';
 import { useTranslation } from 'react-i18next';
-import { Input, Select, Stack, Textarea, TextInput } from '@mantine/core';
+import { Select, Stack, Textarea, TextInput } from '@mantine/core';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { ExtPlace } from './place.model';
@@ -12,8 +12,6 @@ import { useSelectStorageCellsQuery } from '../cells/cells.api';
 import { useSelectStationBoxesQuery } from '../boxes/boxes.api';
 import RefetchAction from '../../common/components/RefetchAction';
 import CustomAvatar from '../../common/components/CustomAvatar';
-import CustomImage from '../../common/components/CustomImage';
-import CustomVideo from '../../common/components/CustomVideo';
 import { UsersItem } from '../../common/components/UsersItem';
 import { ThingsItemWithAmount } from '../../common/components/ThingsItemWithAmount';
 import {
@@ -71,16 +69,6 @@ export default function PlaceModal({ data: place }: Props) {
         readOnly
       />
       <TextInput label={t('columns.place')} value={place.name} readOnly />
-      {place.image && (
-        <Input.Wrapper label={t('columns.image')}>
-          <CustomImage image={place.image} />
-        </Input.Wrapper>
-      )}
-      {place.video && (
-        <Input.Wrapper label={t('columns.video')}>
-          <CustomVideo video={place.video} />
-        </Input.Wrapper>
-      )}
       <Textarea
         label={t('columns.description')}
         value={place.description || '-'}

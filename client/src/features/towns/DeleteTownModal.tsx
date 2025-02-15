@@ -1,6 +1,6 @@
 import { t } from 'i18next';
 import { useTranslation } from 'react-i18next';
-import { Input, Textarea, TextInput } from '@mantine/core';
+import { Textarea, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
@@ -9,8 +9,6 @@ import { useDeleteTownMutation } from './towns.api';
 import { TownIdDto } from './town.dto';
 import CustomForm from '../../common/components/CustomForm';
 import CustomAvatar from '../../common/components/CustomAvatar';
-import CustomImage from '../../common/components/CustomImage';
-import CustomVideo from '../../common/components/CustomVideo';
 import { parseTime } from '../../common/utils';
 import { Color } from '../../common/constants';
 
@@ -45,16 +43,6 @@ export default function DeleteTownModal({ data: town }: Props) {
         readOnly
       />
       <TextInput label={t('columns.town')} value={town.name} readOnly />
-      {town.image && (
-        <Input.Wrapper label={t('columns.image')}>
-          <CustomImage image={town.image} />
-        </Input.Wrapper>
-      )}
-      {town.video && (
-        <Input.Wrapper label={t('columns.video')}>
-          <CustomVideo video={town.video} />
-        </Input.Wrapper>
-      )}
       <Textarea
         label={t('columns.description')}
         value={town.description || '-'}

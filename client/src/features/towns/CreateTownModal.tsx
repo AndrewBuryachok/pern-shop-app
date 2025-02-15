@@ -1,7 +1,6 @@
 import { t } from 'i18next';
 import { useTranslation } from 'react-i18next';
 import { NumberInput, Select, Textarea, TextInput } from '@mantine/core';
-import { useDebouncedValue } from '@mantine/hooks';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import {
@@ -13,14 +12,11 @@ import { ExtCreateTownDto } from './town.dto';
 import CustomForm from '../../common/components/CustomForm';
 import RefetchAction from '../../common/components/RefetchAction';
 import CustomAvatar from '../../common/components/CustomAvatar';
-import CustomImage from '../../common/components/CustomImage';
-import CustomVideo from '../../common/components/CustomVideo';
 import { UsersItem } from '../../common/components/UsersItem';
 import { selectUsers } from '../../common/utils';
 import {
   MAX_COORDINATE_VALUE,
   MAX_DESCRIPTION_LENGTH,
-  MAX_LINK_LENGTH,
   MAX_NAME_LENGTH,
   MIN_COORDINATE_VALUE,
   MIN_NAME_LENGTH,
@@ -35,17 +31,12 @@ export default function CreateTownModal({ hasRole }: Props) {
     initialValues: {
       user: '',
       name: '',
-      image: '',
-      video: '',
       description: '',
       x: 0,
       y: 0,
     },
     transformValues: ({ user, ...rest }) => ({ ...rest, userId: +user }),
   });
-
-  const [image] = useDebouncedValue(form.values.image, 500);
-  const [video] = useDebouncedValue(form.values.video, 500);
 
   const { data: users, ...usersResponse } = useSelectAllUsersQuery(undefined, {
     skip: !hasRole,
@@ -91,22 +82,6 @@ export default function CreateTownModal({ hasRole }: Props) {
         maxLength={MAX_NAME_LENGTH}
         {...form.getInputProps('name')}
       />
-      <Textarea
-        label={t('columns.image')}
-        placeholder={t('columns.image')}
-        autosize
-        maxLength={MAX_LINK_LENGTH}
-        {...form.getInputProps('image')}
-      />
-      {image && <CustomImage image={image} />}
-      <Textarea
-        label={t('columns.video')}
-        placeholder={t('columns.video')}
-        autosize
-        maxLength={MAX_LINK_LENGTH}
-        {...form.getInputProps('video')}
-      />
-      {video && <CustomVideo video={video} />}
       <Textarea
         label={t('columns.description')}
         placeholder={t('columns.description')}

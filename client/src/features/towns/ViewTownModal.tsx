@@ -1,12 +1,10 @@
 import { t } from 'i18next';
 import { useTranslation } from 'react-i18next';
-import { Input, Stack, Textarea, TextInput } from '@mantine/core';
+import { Stack, Textarea, TextInput } from '@mantine/core';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { Town } from './town.model';
 import CustomAvatar from '../../common/components/CustomAvatar';
-import CustomImage from '../../common/components/CustomImage';
-import CustomVideo from '../../common/components/CustomVideo';
 import { parseTime } from '../../common/utils';
 import { Color } from '../../common/constants';
 
@@ -26,16 +24,6 @@ export default function ViewTownModal({ data: town }: Props) {
         readOnly
       />
       <TextInput label={t('columns.town')} value={town.name} readOnly />
-      {town.image && (
-        <Input.Wrapper label={t('columns.image')}>
-          <CustomImage image={town.image} />
-        </Input.Wrapper>
-      )}
-      {town.video && (
-        <Input.Wrapper label={t('columns.video')}>
-          <CustomVideo video={town.video} />
-        </Input.Wrapper>
-      )}
       <Textarea
         label={t('columns.description')}
         value={town.description || '-'}

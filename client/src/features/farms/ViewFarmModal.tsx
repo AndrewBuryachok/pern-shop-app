@@ -1,12 +1,10 @@
 import { t } from 'i18next';
 import { useTranslation } from 'react-i18next';
-import { Input, Stack, Textarea, TextInput } from '@mantine/core';
+import { Stack, Textarea, TextInput } from '@mantine/core';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { Farm } from './farm.model';
 import CustomAvatar from '../../common/components/CustomAvatar';
-import CustomImage from '../../common/components/CustomImage';
-import CustomVideo from '../../common/components/CustomVideo';
 import { parseTime } from '../../common/utils';
 import { Color } from '../../common/constants';
 
@@ -26,16 +24,6 @@ export default function ViewFarmModal({ data: farm }: Props) {
         readOnly
       />
       <TextInput label={t('columns.farm')} value={farm.name} readOnly />
-      {farm.image && (
-        <Input.Wrapper label={t('columns.image')}>
-          <CustomImage image={farm.image} />
-        </Input.Wrapper>
-      )}
-      {farm.video && (
-        <Input.Wrapper label={t('columns.video')}>
-          <CustomVideo video={farm.video} />
-        </Input.Wrapper>
-      )}
       <Textarea
         label={t('columns.description')}
         value={farm.description || '-'}

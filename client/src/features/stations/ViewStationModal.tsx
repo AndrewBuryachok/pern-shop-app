@@ -1,14 +1,12 @@
 import { t } from 'i18next';
 import { useTranslation } from 'react-i18next';
-import { Input, Select, Stack, Textarea, TextInput } from '@mantine/core';
+import { Select, Stack, Textarea, TextInput } from '@mantine/core';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { Station } from './station.model';
 import { useSelectStationStatesQuery } from './stations.api';
 import RefetchAction from '../../common/components/RefetchAction';
 import CustomAvatar from '../../common/components/CustomAvatar';
-import CustomImage from '../../common/components/CustomImage';
-import CustomVideo from '../../common/components/CustomVideo';
 import { StatesItem } from '../../common/components/StatesItem';
 import { parseCard, parseTime, viewStates } from '../../common/utils';
 import { Color } from '../../common/constants';
@@ -33,12 +31,6 @@ export default function ViewStationModal({ data: station }: Props) {
         readOnly
       />
       <TextInput label={t('columns.station')} value={station.name} readOnly />
-      <Input.Wrapper label={t('columns.image')}>
-        <CustomImage image={station.image} />
-      </Input.Wrapper>
-      <Input.Wrapper label={t('columns.video')}>
-        <CustomVideo video={station.video} />
-      </Input.Wrapper>
       <Textarea
         label={t('columns.description')}
         value={station.description || '-'}

@@ -1,12 +1,10 @@
 import { t } from 'i18next';
 import { useTranslation } from 'react-i18next';
-import { Input, Stack, Textarea, TextInput } from '@mantine/core';
+import { Stack, Textarea, TextInput } from '@mantine/core';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { Shop } from './shop.model';
 import CustomAvatar from '../../common/components/CustomAvatar';
-import CustomImage from '../../common/components/CustomImage';
-import CustomVideo from '../../common/components/CustomVideo';
 import { parseCard, parseTime } from '../../common/utils';
 import { Color } from '../../common/constants';
 
@@ -26,16 +24,6 @@ export default function ViewShopModal({ data: shop }: Props) {
         readOnly
       />
       <TextInput label={t('columns.shop')} value={shop.name} readOnly />
-      {shop.image && (
-        <Input.Wrapper label={t('columns.image')}>
-          <CustomImage image={shop.image} />
-        </Input.Wrapper>
-      )}
-      {shop.video && (
-        <Input.Wrapper label={t('columns.video')}>
-          <CustomVideo video={shop.video} />
-        </Input.Wrapper>
-      )}
       <Textarea
         label={t('columns.description')}
         value={shop.description || '-'}

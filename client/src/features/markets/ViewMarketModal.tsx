@@ -1,12 +1,10 @@
 import { t } from 'i18next';
 import { useTranslation } from 'react-i18next';
-import { Input, Stack, Textarea, TextInput } from '@mantine/core';
+import { Stack, Textarea, TextInput } from '@mantine/core';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { Market } from './market.model';
 import CustomAvatar from '../../common/components/CustomAvatar';
-import CustomImage from '../../common/components/CustomImage';
-import CustomVideo from '../../common/components/CustomVideo';
 import { parseCard, parseTime } from '../../common/utils';
 import { Color } from '../../common/constants';
 
@@ -26,16 +24,6 @@ export default function ViewMarketModal({ data: market }: Props) {
         readOnly
       />
       <TextInput label={t('columns.market')} value={market.name} readOnly />
-      {market.image && (
-        <Input.Wrapper label={t('columns.image')}>
-          <CustomImage image={market.image} />
-        </Input.Wrapper>
-      )}
-      {market.video && (
-        <Input.Wrapper label={t('columns.video')}>
-          <CustomVideo video={market.video} />
-        </Input.Wrapper>
-      )}
       <Textarea
         label={t('columns.description')}
         value={market.description || '-'}

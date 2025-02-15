@@ -1,7 +1,6 @@
 import { t } from 'i18next';
 import { useTranslation } from 'react-i18next';
 import { NumberInput, Textarea, TextInput } from '@mantine/core';
-import { useDebouncedValue } from '@mantine/hooks';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
@@ -9,13 +8,10 @@ import { Station } from './station.model';
 import { useEditStationMutation } from './stations.api';
 import { EditStationDto } from './station.dto';
 import CustomForm from '../../common/components/CustomForm';
-import CustomImage from '../../common/components/CustomImage';
-import CustomVideo from '../../common/components/CustomVideo';
 import {
   Color,
   MAX_COORDINATE_VALUE,
   MAX_DESCRIPTION_LENGTH,
-  MAX_LINK_LENGTH,
   MAX_NAME_LENGTH,
   MAX_PRICE_VALUE,
   MIN_COORDINATE_VALUE,
@@ -31,17 +27,12 @@ export default function EditStationModal({ data: station }: Props) {
     initialValues: {
       stationId: station.id,
       name: station.name,
-      image: station.image,
-      video: station.video,
       description: station.description,
       x: station.x,
       y: station.y,
       price: station.price,
     },
   });
-
-  const [image] = useDebouncedValue(form.values.image, 500);
-  const [video] = useDebouncedValue(form.values.video, 500);
 
   const [editStation, { isLoading }] = useEditStationMutation();
 
@@ -64,20 +55,6 @@ export default function EditStationModal({ data: station }: Props) {
         maxLength={MAX_NAME_LENGTH}
         {...form.getInputProps('name')}
       />
-      <Textarea
-        label={t('columns.image')}
-        placeholder={t('columns.image')}
-        maxLength={MAX_LINK_LENGTH}
-        {...form.getInputProps('image')}
-      />
-      <CustomImage image={image} />
-      <Textarea
-        label={t('columns.video')}
-        placeholder={t('columns.video')}
-        maxLength={MAX_LINK_LENGTH}
-        {...form.getInputProps('video')}
-      />
-      <CustomVideo video={video} />
       <Textarea
         label={t('columns.description')}
         placeholder={t('columns.description')}

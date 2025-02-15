@@ -2,7 +2,6 @@ import { t } from 'i18next';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { NumberInput, Select, Textarea, TextInput } from '@mantine/core';
-import { useDebouncedValue } from '@mantine/hooks';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { useCreateStationMutation } from './stations.api';
@@ -15,15 +14,12 @@ import { CreateStationDto } from './station.dto';
 import CustomForm from '../../common/components/CustomForm';
 import RefetchAction from '../../common/components/RefetchAction';
 import CustomAvatar from '../../common/components/CustomAvatar';
-import CustomImage from '../../common/components/CustomImage';
-import CustomVideo from '../../common/components/CustomVideo';
 import { UsersItem } from '../../common/components/UsersItem';
 import { CardsItem } from '../../common/components/CardsItem';
 import { selectCardsWithBalance, selectUsers } from '../../common/utils';
 import {
   MAX_COORDINATE_VALUE,
   MAX_DESCRIPTION_LENGTH,
-  MAX_LINK_LENGTH,
   MAX_NAME_LENGTH,
   MAX_PRICE_VALUE,
   MIN_COORDINATE_VALUE,
@@ -40,8 +36,6 @@ export default function CreateStationModal({ hasRole }: Props) {
       user: '',
       card: '',
       name: '',
-      image: '',
-      video: '',
       description: '',
       x: 0,
       y: 0,
@@ -49,9 +43,6 @@ export default function CreateStationModal({ hasRole }: Props) {
     },
     transformValues: ({ user, card, ...rest }) => ({ ...rest, cardId: +card }),
   });
-
-  const [image] = useDebouncedValue(form.values.image, 500);
-  const [video] = useDebouncedValue(form.values.video, 500);
 
   useEffect(() => form.setFieldValue('card', ''), [form.values.user]);
 
@@ -118,20 +109,6 @@ export default function CreateStationModal({ hasRole }: Props) {
         maxLength={MAX_NAME_LENGTH}
         {...form.getInputProps('name')}
       />
-      <Textarea
-        label={t('columns.image')}
-        placeholder={t('columns.image')}
-        maxLength={MAX_LINK_LENGTH}
-        {...form.getInputProps('image')}
-      />
-      <CustomImage image={image} />
-      <Textarea
-        label={t('columns.video')}
-        placeholder={t('columns.video')}
-        maxLength={MAX_LINK_LENGTH}
-        {...form.getInputProps('video')}
-      />
-      <CustomVideo video={video} />
       <Textarea
         label={t('columns.description')}
         placeholder={t('columns.description')}
