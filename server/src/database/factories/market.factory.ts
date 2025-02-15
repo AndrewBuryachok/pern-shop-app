@@ -9,8 +9,6 @@ import {
 define(Market, (faker: Faker) => {
   const market = new Market();
   market.name = faker.address.city();
-  market.image = '';
-  market.video = '';
   market.description = '';
   market.x =
     Math.floor(

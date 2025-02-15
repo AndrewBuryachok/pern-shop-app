@@ -163,8 +163,6 @@ export class StationsService {
       const station = this.stationsRepository.create({
         cardId: dto.cardId,
         name: dto.name,
-        image: dto.image,
-        video: dto.video,
         description: dto.description,
         x: dto.x,
         y: dto.y,
@@ -186,8 +184,6 @@ export class StationsService {
     try {
       const equal = station.price === dto.price;
       station.name = dto.name;
-      station.image = dto.image;
-      station.video = dto.video;
       station.description = dto.description;
       station.x = dto.x;
       station.y = dto.y;
@@ -270,8 +266,6 @@ export class StationsService {
         'ownerCard.name',
         'ownerCard.color',
         'station.name',
-        'station.image',
-        'station.video',
         'station.description',
         'station.x',
         'station.y',

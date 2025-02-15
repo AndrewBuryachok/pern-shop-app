@@ -215,8 +215,6 @@ describe('With Auth', () => {
         .set('Authorization', `Bearer ${user.access}`)
         .send({
           name: 'My Town',
-          image: '',
-          video: '',
           description: '',
           x: 500,
           y: 500,
@@ -1307,8 +1305,6 @@ describe('With Auth', () => {
         .set('Authorization', `Bearer ${user.access}`)
         .send({
           name: 'My Town',
-          image: '',
-          video: '',
           description: '',
           x: 500,
           y: 500,
@@ -1463,8 +1459,6 @@ describe('With Auth', () => {
         .set('Authorization', `Bearer ${user.access}`)
         .send({
           name: 'My Farm',
-          image: '',
-          video: '',
           description: '',
           x: 500,
           y: -500,
@@ -1511,8 +1505,6 @@ describe('With Auth', () => {
         .set('Authorization', `Bearer ${user.access}`)
         .send({
           name: 'My Farm',
-          image: '',
-          video: '',
           description: '',
           x: 500,
           y: -500,
@@ -1545,8 +1537,6 @@ describe('With Auth', () => {
         .send({
           cardId,
           name: 'My Shop',
-          image: '',
-          video: '',
           description: '',
           x: 500,
           y: -500,
@@ -1594,8 +1584,6 @@ describe('With Auth', () => {
         .set('Authorization', `Bearer ${user.access}`)
         .send({
           name: 'My Shop',
-          image: '',
-          video: '',
           description: '',
           x: 500,
           y: -500,
@@ -1612,8 +1600,6 @@ describe('With Auth', () => {
         .send({
           cardId,
           name: 'My Market',
-          image: '',
-          video: '',
           description: '',
           x: -500,
           y: 500,
@@ -1668,8 +1654,6 @@ describe('With Auth', () => {
         .set('Authorization', `Bearer ${user.access}`)
         .send({
           name: 'My Market',
-          image: '',
-          video: '',
           description: '',
           x: -500,
           y: 500,
@@ -1686,8 +1670,6 @@ describe('With Auth', () => {
         .send({
           cardId,
           name: 'My Storage',
-          image: '',
-          video: '',
           description: '',
           x: -500,
           y: -500,
@@ -1742,8 +1724,6 @@ describe('With Auth', () => {
         .set('Authorization', `Bearer ${user.access}`)
         .send({
           name: 'My Storage',
-          image: '',
-          video: '',
           description: '',
           x: -500,
           y: -500,
@@ -1760,8 +1740,6 @@ describe('With Auth', () => {
         .send({
           cardId,
           name: 'My Station',
-          image: '',
-          video: '',
           description: '',
           x: -500,
           y: -500,
@@ -1817,8 +1795,6 @@ describe('With Auth', () => {
         .set('Authorization', `Bearer ${user.access}`)
         .send({
           name: 'My Station',
-          image: '',
-          video: '',
           description: '',
           x: -500,
           y: -500,

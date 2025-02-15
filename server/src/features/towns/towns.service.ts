@@ -180,8 +180,6 @@ export class TownsService {
       const town = this.townsRepository.create({
         userId: dto.userId,
         name: dto.name,
-        image: dto.image,
-        video: dto.video,
         description: dto.description,
         x: dto.x,
         y: dto.y,
@@ -197,8 +195,6 @@ export class TownsService {
   private async edit(town: Town, dto: ExtEditTownDto): Promise<void> {
     try {
       town.name = dto.name;
-      town.image = dto.image;
-      town.video = dto.video;
       town.description = dto.description;
       town.x = dto.x;
       town.y = dto.y;
@@ -256,8 +252,6 @@ export class TownsService {
         'ownerUser.nick',
         'ownerUser.avatar',
         'town.name',
-        'town.image',
-        'town.video',
         'town.description',
         'town.x',
         'town.y',

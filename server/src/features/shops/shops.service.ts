@@ -136,8 +136,6 @@ export class ShopsService {
       const shop = this.shopsRepository.create({
         cardId: dto.cardId,
         name: dto.name,
-        image: dto.image,
-        video: dto.video,
         description: dto.description,
         x: dto.x,
         y: dto.y,
@@ -152,8 +150,6 @@ export class ShopsService {
   private async edit(shop: Shop, dto: ExtEditShopDto): Promise<void> {
     try {
       shop.name = dto.name;
-      shop.image = dto.image;
-      shop.video = dto.video;
       shop.description = dto.description;
       shop.x = dto.x;
       shop.y = dto.y;
@@ -214,8 +210,6 @@ export class ShopsService {
         'ownerCard.name',
         'ownerCard.color',
         'shop.name',
-        'shop.image',
-        'shop.video',
         'shop.description',
         'shop.x',
         'shop.y',

@@ -157,8 +157,6 @@ export class FarmsService {
       const farm = this.farmsRepository.create({
         userId: dto.userId,
         name: dto.name,
-        image: dto.image,
-        video: dto.video,
         description: dto.description,
         x: dto.x,
         y: dto.y,
@@ -174,8 +172,6 @@ export class FarmsService {
   private async edit(farm: Farm, dto: ExtEditFarmDto): Promise<void> {
     try {
       farm.name = dto.name;
-      farm.image = dto.image;
-      farm.video = dto.video;
       farm.description = dto.description;
       farm.x = dto.x;
       farm.y = dto.y;
@@ -245,8 +241,6 @@ export class FarmsService {
         'ownerUser.nick',
         'ownerUser.avatar',
         'farm.name',
-        'farm.image',
-        'farm.video',
         'farm.description',
         'farm.x',
         'farm.y',

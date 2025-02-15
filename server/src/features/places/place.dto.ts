@@ -4,7 +4,6 @@ import {
   IsCoordinate,
   IsDescription,
   IsId,
-  IsLink,
   IsName,
   IsPrice,
 } from '../../common/decorators';
@@ -14,14 +13,6 @@ export abstract class CreatePlaceDto {
   @ApiProperty()
   @IsName()
   name: string;
-
-  @ApiProperty()
-  @IsLink()
-  image: string;
-
-  @ApiProperty()
-  @IsLink()
-  video: string;
 
   @ApiProperty()
   @IsDescription()

@@ -9,8 +9,6 @@ import {
 define(Town, (faker: Faker) => {
   const town = new Town();
   town.name = faker.address.city();
-  town.image = '';
-  town.video = '';
   town.description = '';
   town.x =
     Math.floor(

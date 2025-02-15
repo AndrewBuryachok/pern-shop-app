@@ -131,8 +131,6 @@ export class MarketsService {
       const market = this.marketsRepository.create({
         cardId: dto.cardId,
         name: dto.name,
-        image: dto.image,
-        video: dto.video,
         description: dto.description,
         x: dto.x,
         y: dto.y,
@@ -147,8 +145,6 @@ export class MarketsService {
   private async edit(market: Market, dto: ExtEditMarketDto): Promise<void> {
     try {
       market.name = dto.name;
-      market.image = dto.image;
-      market.video = dto.video;
       market.description = dto.description;
       market.x = dto.x;
       market.y = dto.y;
@@ -210,8 +206,6 @@ export class MarketsService {
         'ownerCard.name',
         'ownerCard.color',
         'market.name',
-        'market.image',
-        'market.video',
         'market.description',
         'market.x',
         'market.y',

@@ -16,12 +16,6 @@ export abstract class Place {
   name: string;
 
   @Column()
-  image: string;
-
-  @Column()
-  video: string;
-
-  @Column()
   description: string;
 
   @Column()

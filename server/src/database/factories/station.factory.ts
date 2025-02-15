@@ -9,8 +9,6 @@ import {
 define(Station, (faker: Faker) => {
   const station = new Station();
   station.name = faker.address.city();
-  station.image = '';
-  station.video = '';
   station.description = '';
   station.x =
     Math.floor(
