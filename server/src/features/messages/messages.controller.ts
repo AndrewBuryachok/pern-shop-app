@@ -44,16 +44,10 @@ export class MessagesController {
   @Patch(':messageId')
   editMessage(
     @MyId() myId: number,
-    @MyNick() nick: string,
     @Param() { messageId }: MessageIdDto,
     @Body() dto: EditMessageDto,
   ): Promise<void> {
-    return this.messagesService.editMessage({
-      ...dto,
-      messageId,
-      myId,
-      nick,
-    });
+    return this.messagesService.editMessage({ ...dto, messageId, myId });
   }
 
   @Delete(':messageId')

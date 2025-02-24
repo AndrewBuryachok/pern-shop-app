@@ -67,7 +67,7 @@ export class InvoicesService {
       dto.hasRole,
     );
     const invoice = await this.create(dto);
-    this.mqttService.publishNotificationMessage(
+    this.mqttService.publishNotification(
       invoice.id,
       dto.receiverUserId,
       dto.nick,
@@ -96,7 +96,7 @@ export class InvoicesService {
       description: '',
     });
     await this.complete(invoice, dto.cardId);
-    this.mqttService.publishNotificationMessage(
+    this.mqttService.publishNotification(
       dto.invoiceId,
       invoice.senderCard.userId,
       dto.nick,
@@ -114,7 +114,7 @@ export class InvoicesService {
       throw new AppException(InvoiceError.ALREADY_COMPLETED);
     }
     await this.delete(invoice);
-    this.mqttService.publishNotificationMessage(
+    this.mqttService.publishNotification(
       dto.invoiceId,
       invoice.receiverUserId,
       dto.nick,

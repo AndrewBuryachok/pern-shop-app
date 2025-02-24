@@ -112,7 +112,7 @@ export class DeliveriesService {
     const hireId = await this.hiresService.createHire(dto);
     await this.cardsService.decreaseCardBalance({ ...dto, sum: dto.price });
     const result = await this.create(dto, hireId);
-    this.mqttService.publishNotificationMessage(
+    this.mqttService.publishNotification(
       result.id,
       0,
       dto.nick,
@@ -160,7 +160,7 @@ export class DeliveriesService {
       throw new AppException(DeliveryError.ALREADY_EXPIRED);
     }
     await this.take(delivery, dto.cardId);
-    this.mqttService.publishNotificationMessage(
+    this.mqttService.publishNotification(
       dto.deliveryId,
       delivery.hire.card.userId,
       dto.nick,
@@ -180,7 +180,7 @@ export class DeliveriesService {
       throw new AppException(DeliveryError.NOT_TAKEN);
     }
     await this.untake(delivery);
-    this.mqttService.publishNotificationMessage(
+    this.mqttService.publishNotification(
       dto.deliveryId,
       delivery.hire.card.userId,
       dto.nick,
@@ -200,7 +200,7 @@ export class DeliveriesService {
       throw new AppException(DeliveryError.NOT_TAKEN);
     }
     await this.execute(delivery);
-    this.mqttService.publishNotificationMessage(
+    this.mqttService.publishNotification(
       dto.deliveryId,
       delivery.hire.card.userId,
       dto.nick,
@@ -239,7 +239,7 @@ export class DeliveriesService {
       });
     } catch (error) {}
     await this.complete(delivery);
-    this.mqttService.publishNotificationMessage(
+    this.mqttService.publishNotification(
       dto.deliveryId,
       delivery.executorCard.userId,
       dto.nick,
@@ -283,7 +283,7 @@ export class DeliveriesService {
       throw new AppException(DeliveryError.NOT_COMPLETED);
     }
     await this.rate(delivery, dto.rate);
-    this.mqttService.publishNotificationMessage(
+    this.mqttService.publishNotification(
       dto.deliveryId,
       delivery.executorCard.userId,
       dto.nick,

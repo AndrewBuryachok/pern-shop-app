@@ -122,7 +122,6 @@ export class ArticlesController {
   @Patch(':articleId')
   editArticle(
     @MyId() myId: number,
-    @MyNick() nick: string,
     @HasRole(Role.INSPECTOR) hasRole: boolean,
     @Param() { articleId }: ArticleIdDto,
     @Body() dto: EditArticleDto,
@@ -131,7 +130,6 @@ export class ArticlesController {
       ...dto,
       articleId,
       myId,
-      nick,
       hasRole,
     });
   }

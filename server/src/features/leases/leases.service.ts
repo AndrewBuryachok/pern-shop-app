@@ -103,7 +103,7 @@ export class LeasesService implements OnModuleInit {
   async createLease(dto: ExtCreateLeaseDto & { nick: string }): Promise<void> {
     const cell = await this.cellsService.reserveCell(dto);
     const lease = await this.create(dto, cell.storageTag.price);
-    this.mqttService.publishNotificationMessage(
+    this.mqttService.publishNotification(
       lease.id,
       cell.storage.card.userId,
       dto.nick,
@@ -124,7 +124,7 @@ export class LeasesService implements OnModuleInit {
       cardId: lease.cardId,
     });
     await this.continue(lease, cell.storageTag.price);
-    this.mqttService.publishNotificationMessage(
+    this.mqttService.publishNotification(
       dto.leaseId,
       cell.storage.card.userId,
       dto.nick,
@@ -142,7 +142,7 @@ export class LeasesService implements OnModuleInit {
     );
     const cell = await this.cellsService.unreserveCell(lease.cellId);
     await this.complete(lease);
-    this.mqttService.publishNotificationMessage(
+    this.mqttService.publishNotification(
       dto.leaseId,
       cell.storage.card.userId,
       dto.nick,
@@ -179,7 +179,7 @@ export class LeasesService implements OnModuleInit {
     const diffA = date.getTime() - new Date().getTime();
     const diffB = before.getTime() - new Date().getTime();
     const callbackFactory = (message: string) => () => {
-      this.mqttService.publishNotificationMessage(id, userId, '🔔', message);
+      this.mqttService.publishNotification(id, userId, '🔔', message);
       return true;
     };
     const callbackA = callbackFactory(Notification.ENDED_LEASE);

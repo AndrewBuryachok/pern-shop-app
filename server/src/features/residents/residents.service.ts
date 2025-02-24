@@ -125,14 +125,14 @@ export class ResidentsService {
       townId: town.id,
     });
     if (dto.userId === dto.myId) {
-      this.mqttService.publishNotificationMessage(
+      this.mqttService.publishNotification(
         dto.userId,
         town.userId,
         dto.nick,
         Notification.LEFT_RESIDENT,
       );
     } else {
-      this.mqttService.publishNotificationMessage(
+      this.mqttService.publishNotification(
         dto.userId,
         dto.userId,
         dto.nick,
@@ -148,7 +148,7 @@ export class ResidentsService {
     await this.townsService.checkNotInTown(dto.userId);
     await this.checkInvitationNotExist(town.id, dto.userId);
     await this.createInvitation(dto, town.id);
-    this.mqttService.publishNotificationMessage(
+    this.mqttService.publishNotification(
       town.id,
       dto.userId,
       dto.nick,
@@ -162,7 +162,7 @@ export class ResidentsService {
     const town = await this.townsService.checkHaveTown(dto.myId);
     const invitation = await this.checkInvitationExist(town.id, dto.userId);
     await this.deleteInvitation(invitation);
-    this.mqttService.publishNotificationMessage(
+    this.mqttService.publishNotification(
       town.id,
       dto.userId,
       dto.nick,
@@ -179,7 +179,7 @@ export class ResidentsService {
       townId: dto.townId,
     });
     const userId = await this.townsService.findTownUserIdById(dto.townId);
-    this.mqttService.publishNotificationMessage(
+    this.mqttService.publishNotification(
       dto.myId,
       userId,
       dto.nick,
@@ -194,7 +194,7 @@ export class ResidentsService {
     const invitation = await this.checkInvitationExist(dto.townId, dto.myId);
     await this.deleteInvitation(invitation);
     const userId = await this.townsService.findTownUserIdById(dto.townId);
-    this.mqttService.publishNotificationMessage(
+    this.mqttService.publishNotification(
       dto.myId,
       userId,
       dto.nick,
@@ -209,7 +209,7 @@ export class ResidentsService {
     await this.checkApplicationNotExist(dto.townId, dto.myId);
     await this.createApplication(dto);
     const userId = await this.townsService.findTownUserIdById(dto.townId);
-    this.mqttService.publishNotificationMessage(
+    this.mqttService.publishNotification(
       dto.myId,
       userId,
       dto.nick,
@@ -223,7 +223,7 @@ export class ResidentsService {
     const application = await this.checkApplicationExist(dto.townId, dto.myId);
     await this.deleteApplication(application);
     const userId = await this.townsService.findTownUserIdById(dto.townId);
-    this.mqttService.publishNotificationMessage(
+    this.mqttService.publishNotification(
       dto.myId,
       userId,
       dto.nick,
@@ -240,7 +240,7 @@ export class ResidentsService {
       userId: dto.userId,
       townId: town.id,
     });
-    this.mqttService.publishNotificationMessage(
+    this.mqttService.publishNotification(
       town.id,
       dto.userId,
       dto.nick,
@@ -255,7 +255,7 @@ export class ResidentsService {
     const town = await this.townsService.checkHaveTown(dto.myId);
     const application = await this.checkApplicationExist(town.id, dto.userId);
     await this.deleteApplication(application);
-    this.mqttService.publishNotificationMessage(
+    this.mqttService.publishNotification(
       town.id,
       dto.userId,
       dto.nick,

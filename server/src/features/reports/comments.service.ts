@@ -33,7 +33,7 @@ export class CommentsService {
   ): Promise<void> {
     const { id } = await this.create(dto);
     const report = await this.reportsService.findReportById(dto.reportId);
-    this.mqttService.publishNotificationMessage(
+    this.mqttService.publishNotification(
       dto.reportId,
       report.userId,
       dto.nick,
@@ -43,19 +43,13 @@ export class CommentsService {
       const reply = await this.commentsRepository.findOneBy({
         id: dto.commentId,
       });
-      this.mqttService.publishNotificationMessage(
+      this.mqttService.publishNotification(
         dto.reportId,
         reply.userId,
         dto.nick,
         Notification.REPLIED_REPORT_COMMENT,
       );
     }
-    await this.mqttService.publishNotificationMention(
-      dto.reportId,
-      dto.text,
-      dto.nick,
-      Notification.MENTIONED_REPORT_COMMENT,
-    );
     const body = await this.selectCommentsQueryBuilder()
       .where('comment.id = :id', { id })
       .getOne();
@@ -67,19 +61,13 @@ export class CommentsService {
     );
   }
 
-  async editComment(dto: ExtEditCommentDto & { nick: string }): Promise<void> {
+  async editComment(dto: ExtEditCommentDto): Promise<void> {
     const comment = await this.checkCommentOwner(
       dto.commentId,
       dto.myId,
       dto.hasRole,
     );
     await this.edit(comment, dto);
-    await this.mqttService.publishNotificationMention(
-      comment.reportId,
-      dto.text,
-      dto.nick,
-      Notification.MENTIONED_REPORT_COMMENT,
-    );
     const body = { id: dto.commentId, text: dto.text };
     this.mqttService.publishEvent(
       0,

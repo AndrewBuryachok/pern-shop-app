@@ -59,7 +59,7 @@ export class RatingsService {
       throw new AppException(RatingError.ALREADY_HAS_RATING);
     }
     const result = await this.create(dto);
-    this.mqttService.publishNotificationMessage(
+    this.mqttService.publishNotification(
       result.id,
       dto.receiverUserId,
       dto.nick,
@@ -74,7 +74,7 @@ export class RatingsService {
       dto.hasRole,
     );
     await this.edit(rating, dto.rate);
-    this.mqttService.publishNotificationMessage(
+    this.mqttService.publishNotification(
       dto.ratingId,
       rating.receiverUserId,
       dto.nick,
@@ -89,7 +89,7 @@ export class RatingsService {
       dto.hasRole,
     );
     await this.delete(rating);
-    this.mqttService.publishNotificationMessage(
+    this.mqttService.publishNotification(
       dto.ratingId,
       rating.receiverUserId,
       dto.nick,

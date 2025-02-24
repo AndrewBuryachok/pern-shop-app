@@ -127,7 +127,7 @@ export class HiresService implements OnModuleInit {
       { ...dto, stationId: box.id },
       box.station.price,
     );
-    this.mqttService.publishNotificationMessage(
+    this.mqttService.publishNotification(
       hire.id,
       box.station.card.userId,
       dto.nick,
@@ -145,7 +145,7 @@ export class HiresService implements OnModuleInit {
       cardId: hire.cardId,
     });
     await this.continue(hire, box.station.price);
-    this.mqttService.publishNotificationMessage(
+    this.mqttService.publishNotification(
       dto.hireId,
       box.station.card.userId,
       dto.nick,
@@ -159,7 +159,7 @@ export class HiresService implements OnModuleInit {
     const hire = await this.checkHireOwner(dto.hireId, dto.myId, dto.hasRole);
     const box = await this.boxesService.unreserveBox(hire.boxId);
     await this.complete(hire);
-    this.mqttService.publishNotificationMessage(
+    this.mqttService.publishNotification(
       dto.hireId,
       box.station.card.userId,
       dto.nick,
@@ -196,7 +196,7 @@ export class HiresService implements OnModuleInit {
     const diffA = date.getTime() - new Date().getTime();
     const diffB = before.getTime() - new Date().getTime();
     const callbackFactory = (message: string) => () => {
-      this.mqttService.publishNotificationMessage(id, userId, '🔔', message);
+      this.mqttService.publishNotification(id, userId, '🔔', message);
       return true;
     };
     const callbackA = callbackFactory(Notification.ENDED_HIRE);

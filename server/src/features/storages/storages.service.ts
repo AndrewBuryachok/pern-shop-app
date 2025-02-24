@@ -67,7 +67,7 @@ export class StoragesService {
     await this.checkNameNotUsed(dto.name);
     await this.checkCoordinatesNotUsed(dto.x, dto.y);
     const storage = await this.create(dto);
-    this.mqttService.publishNotificationMessage(
+    this.mqttService.publishNotification(
       storage.id,
       0,
       dto.nick,

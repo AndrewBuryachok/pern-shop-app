@@ -99,7 +99,7 @@ export class StationsService {
     await this.checkNameNotUsed(dto.name);
     await this.checkCoordinatesNotUsed(dto.x, dto.y);
     const station = await this.create(dto);
-    this.mqttService.publishNotificationMessage(
+    this.mqttService.publishNotification(
       station.id,
       0,
       dto.nick,

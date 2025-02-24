@@ -81,7 +81,7 @@ export class CardsService {
       throw new AppException(CardError.ALREADY_IN_CARD);
     }
     await this.addUser(card, dto.userId);
-    this.mqttService.publishNotificationMessage(
+    this.mqttService.publishNotification(
       dto.cardId,
       dto.userId,
       dto.nick,
@@ -100,7 +100,7 @@ export class CardsService {
       throw new AppException(CardError.NOT_IN_CARD);
     }
     await this.removeUser(card, dto.userId);
-    this.mqttService.publishNotificationMessage(
+    this.mqttService.publishNotification(
       dto.cardId,
       dto.userId,
       dto.nick,

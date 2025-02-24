@@ -107,29 +107,17 @@ export class PollsService {
 
   async createPoll(dto: ExtCreatePollDto & { nick: string }): Promise<void> {
     const poll = await this.create(dto);
-    this.mqttService.publishNotificationMessage(
+    this.mqttService.publishNotification(
       poll.id,
       0,
       dto.nick,
       Notification.CREATED_POLL,
     );
-    await this.mqttService.publishNotificationMention(
-      poll.id,
-      dto.text,
-      dto.nick,
-      Notification.MENTIONED_POLL,
-    );
   }
 
-  async editPoll(dto: ExtEditPollDto & { nick: string }): Promise<void> {
+  async editPoll(dto: ExtEditPollDto): Promise<void> {
     const poll = await this.checkPollOwner(dto.pollId, dto.myId, dto.hasRole);
     await this.edit(poll, dto);
-    await this.mqttService.publishNotificationMention(
-      dto.pollId,
-      dto.text,
-      dto.nick,
-      Notification.MENTIONED_POLL,
-    );
   }
 
   async completePoll(
@@ -137,7 +125,7 @@ export class PollsService {
   ): Promise<void> {
     const poll = await this.checkPollNotCompleted(dto.pollId);
     await this.complete(poll, dto);
-    this.mqttService.publishNotificationMessage(
+    this.mqttService.publishNotification(
       dto.pollId,
       poll.userId,
       dto.nick,
@@ -208,7 +196,7 @@ export class PollsService {
     }
     if (notify) {
       const poll = await this.findPollById(dto.pollId);
-      this.mqttService.publishNotificationMessage(
+      this.mqttService.publishNotification(
         dto.pollId,
         poll.userId,
         dto.nick,

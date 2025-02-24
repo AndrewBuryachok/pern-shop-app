@@ -52,7 +52,7 @@ export class ExchangesService {
       ? await this.cardsService.increaseCardBalance(dto)
       : await this.cardsService.decreaseCardBalance(dto);
     const exchange = await this.create(dto);
-    this.mqttService.publishNotificationMessage(
+    this.mqttService.publishNotification(
       exchange.id,
       card.userId,
       dto.nick,

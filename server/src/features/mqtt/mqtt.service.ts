@@ -85,23 +85,7 @@ export class MqttService {
     return result;
   }
 
-  async publishNotificationMention(
-    id: number,
-    text: string,
-    nick: string,
-    message: string,
-  ): Promise<void> {
-    const mentions = /@\w+/.exec(text) || [];
-    const promises = mentions.map(async (mention) => {
-      const user = await this.usersService.findUserByNick(mention.slice(1));
-      if (user) {
-        this.publishNotificationMessage(id, user.id, nick, message);
-      }
-    });
-    await Promise.all(promises);
-  }
-
-  publishNotificationMessage(
+  publishNotification(
     id: number,
     userId: number,
     nick: string,

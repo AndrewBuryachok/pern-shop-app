@@ -65,7 +65,7 @@ export class FarmsService {
     await this.checkNameNotUsed(dto.name);
     await this.checkCoordinatesNotUsed(dto.x, dto.y);
     const farm = await this.create(dto);
-    this.mqttService.publishNotificationMessage(
+    this.mqttService.publishNotification(
       farm.id,
       0,
       dto.nick,
@@ -88,7 +88,7 @@ export class FarmsService {
       throw new AppException(FarmError.ALREADY_IN_FARM);
     }
     await this.addUser(farm, dto.userId);
-    this.mqttService.publishNotificationMessage(
+    this.mqttService.publishNotification(
       dto.farmId,
       dto.userId,
       dto.nick,
@@ -107,7 +107,7 @@ export class FarmsService {
       throw new AppException(FarmError.NOT_IN_FARM);
     }
     await this.removeUser(farm, dto.userId);
-    this.mqttService.publishNotificationMessage(
+    this.mqttService.publishNotification(
       dto.farmId,
       dto.userId,
       dto.nick,

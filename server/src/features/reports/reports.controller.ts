@@ -187,18 +187,11 @@ export class ReportsController {
   @Patch(':reportId')
   editReport(
     @MyId() myId: number,
-    @MyNick() nick: string,
     @HasRole(Role.INSPECTOR) hasRole: boolean,
     @Param() { reportId }: ReportIdDto,
     @Body() dto: EditReportDto,
   ): Promise<void> {
-    return this.reportsService.editReport({
-      ...dto,
-      reportId,
-      myId,
-      nick,
-      hasRole,
-    });
+    return this.reportsService.editReport({ ...dto, reportId, myId, hasRole });
   }
 
   @Delete(':reportId')

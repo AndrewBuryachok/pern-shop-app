@@ -79,7 +79,7 @@ export class ShopsService {
     await this.checkNameNotUsed(dto.name);
     await this.checkCoordinatesNotUsed(dto.x, dto.y);
     const shop = await this.create(dto);
-    this.mqttService.publishNotificationMessage(
+    this.mqttService.publishNotification(
       shop.id,
       0,
       dto.nick,

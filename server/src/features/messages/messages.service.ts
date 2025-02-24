@@ -67,7 +67,7 @@ export class MessagesService {
     dto: ExtCreateMessageDto & { nick: string },
   ): Promise<void> {
     const { id } = await this.create(dto);
-    this.mqttService.publishNotificationMessage(
+    this.mqttService.publishNotification(
       dto.myId,
       dto.userId,
       dto.nick,
@@ -92,7 +92,7 @@ export class MessagesService {
     }
   }
 
-  async editMessage(dto: ExtEditMessageDto & { nick: string }): Promise<void> {
+  async editMessage(dto: ExtEditMessageDto): Promise<void> {
     const message = await this.checkMessageOwner(dto.messageId, dto.myId);
     await this.edit(message, dto);
     const body = { id: dto.messageId, text: dto.text };

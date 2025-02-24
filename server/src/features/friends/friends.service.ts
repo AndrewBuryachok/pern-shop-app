@@ -75,7 +75,7 @@ export class FriendsService {
     if (!offer2) {
       await this.usersService.checkNotFriends(dto.myId, dto.userId);
       await this.create(dto);
-      this.mqttService.publishNotificationMessage(
+      this.mqttService.publishNotification(
         dto.myId,
         dto.userId,
         dto.nick,
@@ -93,7 +93,7 @@ export class FriendsService {
         });
       }
       await this.delete(offer2);
-      this.mqttService.publishNotificationMessage(
+      this.mqttService.publishNotification(
         dto.myId,
         dto.userId,
         dto.nick,
@@ -113,7 +113,7 @@ export class FriendsService {
     });
     if (offer1) {
       await this.delete(offer1);
-      this.mqttService.publishNotificationMessage(
+      this.mqttService.publishNotification(
         dto.myId,
         dto.userId,
         dto.nick,
@@ -121,7 +121,7 @@ export class FriendsService {
       );
     } else if (offer2) {
       await this.delete(offer2);
-      this.mqttService.publishNotificationMessage(
+      this.mqttService.publishNotification(
         dto.myId,
         dto.userId,
         dto.nick,
@@ -138,7 +138,7 @@ export class FriendsService {
           receiverUserId: dto.myId,
         });
       }
-      this.mqttService.publishNotificationMessage(
+      this.mqttService.publishNotification(
         dto.myId,
         dto.userId,
         dto.nick,

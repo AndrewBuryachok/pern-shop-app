@@ -103,7 +103,7 @@ export class HaulagesService {
       fromStationId: fromHireId,
       toStationId: toHireId,
     });
-    this.mqttService.publishNotificationMessage(
+    this.mqttService.publishNotification(
       haulage.id,
       0,
       dto.nick,
@@ -152,7 +152,7 @@ export class HaulagesService {
       throw new AppException(HaulageError.ALREADY_EXPIRED);
     }
     await this.take(haulage, dto.cardId);
-    this.mqttService.publishNotificationMessage(
+    this.mqttService.publishNotification(
       dto.haulageId,
       haulage.fromHire.card.userId,
       dto.nick,
@@ -170,7 +170,7 @@ export class HaulagesService {
       throw new AppException(HaulageError.NOT_TAKEN);
     }
     await this.untake(haulage);
-    this.mqttService.publishNotificationMessage(
+    this.mqttService.publishNotification(
       dto.haulageId,
       haulage.fromHire.card.userId,
       dto.nick,
@@ -188,7 +188,7 @@ export class HaulagesService {
       throw new AppException(HaulageError.NOT_TAKEN);
     }
     await this.execute(haulage);
-    this.mqttService.publishNotificationMessage(
+    this.mqttService.publishNotification(
       dto.haulageId,
       haulage.fromHire.card.userId,
       dto.nick,
@@ -233,7 +233,7 @@ export class HaulagesService {
       });
     } catch (error) {}
     await this.complete(haulage);
-    this.mqttService.publishNotificationMessage(
+    this.mqttService.publishNotification(
       dto.haulageId,
       haulage.executorCard.userId,
       dto.nick,
@@ -279,7 +279,7 @@ export class HaulagesService {
       throw new AppException(HaulageError.NOT_COMPLETED);
     }
     await this.rate(haulage, dto.rate);
-    this.mqttService.publishNotificationMessage(
+    this.mqttService.publishNotification(
       dto.haulageId,
       haulage.executorCard.userId,
       dto.nick,

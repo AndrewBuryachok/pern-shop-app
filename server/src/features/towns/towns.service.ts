@@ -72,7 +72,7 @@ export class TownsService {
     await this.checkNameNotUsed(dto.name);
     await this.checkCoordinatesNotUsed(dto.x, dto.y);
     const town = await this.create(dto);
-    this.mqttService.publishNotificationMessage(
+    this.mqttService.publishNotification(
       town.id,
       0,
       dto.nick,
@@ -91,7 +91,7 @@ export class TownsService {
     const town = await this.checkTownOwner(dto.townId, dto.myId, dto.hasRole);
     await this.delete(town);
     town.users.forEach((user) =>
-      this.mqttService.publishNotificationMessage(
+      this.mqttService.publishNotification(
         dto.townId,
         user.id,
         dto.nick,

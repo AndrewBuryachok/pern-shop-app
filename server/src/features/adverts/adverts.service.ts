@@ -55,7 +55,7 @@ export class AdvertsService {
   ): Promise<void> {
     await this.cardsService.checkCardUser(dto.cardId, dto.myId, dto.hasRole);
     const advert = await this.create(dto);
-    this.mqttService.publishNotificationMessage(
+    this.mqttService.publishNotification(
       advert.id,
       0,
       dto.nick,
@@ -91,7 +91,7 @@ export class AdvertsService {
       where: { id: dto.advertId },
     });
     const task = await this.respond(dto, advert.cardId);
-    this.mqttService.publishNotificationMessage(
+    this.mqttService.publishNotification(
       task.id,
       advert.card.userId,
       dto.nick,

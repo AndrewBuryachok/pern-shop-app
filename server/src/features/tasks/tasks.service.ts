@@ -64,7 +64,7 @@ export class TasksService {
     await this.cardsService.checkCardUser(dto.cardId, dto.myId, dto.hasRole);
     await this.cardsService.decreaseCardBalance({ ...dto, sum: dto.price });
     const task = await this.create(dto);
-    this.mqttService.publishNotificationMessage(
+    this.mqttService.publishNotification(
       task.id,
       0,
       dto.nick,
@@ -107,7 +107,7 @@ export class TasksService {
       throw new AppException(TaskError.ALREADY_TAKEN);
     }
     await this.take(task, dto.cardId);
-    this.mqttService.publishNotificationMessage(
+    this.mqttService.publishNotification(
       dto.taskId,
       task.customerCard.userId,
       dto.nick,
@@ -125,7 +125,7 @@ export class TasksService {
       throw new AppException(TaskError.NOT_TAKEN);
     }
     await this.untake(task);
-    this.mqttService.publishNotificationMessage(
+    this.mqttService.publishNotification(
       dto.taskId,
       task.customerCard.userId,
       dto.nick,
@@ -143,7 +143,7 @@ export class TasksService {
       throw new AppException(TaskError.NOT_TAKEN);
     }
     await this.execute(task);
-    this.mqttService.publishNotificationMessage(
+    this.mqttService.publishNotification(
       dto.taskId,
       task.customerCard.userId,
       dto.nick,
@@ -174,7 +174,7 @@ export class TasksService {
       description: 'выполнение заказа',
     });
     await this.complete(task);
-    this.mqttService.publishNotificationMessage(
+    this.mqttService.publishNotification(
       dto.taskId,
       task.executorCard.userId,
       dto.nick,
@@ -208,7 +208,7 @@ export class TasksService {
       throw new AppException(TaskError.NOT_COMPLETED);
     }
     await this.rate(task, dto.rate);
-    this.mqttService.publishNotificationMessage(
+    this.mqttService.publishNotification(
       dto.taskId,
       task.executorCard.userId,
       dto.nick,

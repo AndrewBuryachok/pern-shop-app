@@ -75,7 +75,7 @@ export class OrdersService {
     const hireId = await this.hiresService.createHire(dto);
     await this.cardsService.decreaseCardBalance({ ...dto, sum: dto.price });
     const order = await this.create({ ...dto, stationId: hireId });
-    this.mqttService.publishNotificationMessage(
+    this.mqttService.publishNotification(
       order.id,
       0,
       dto.nick,
@@ -121,7 +121,7 @@ export class OrdersService {
       throw new AppException(OrderError.ALREADY_EXPIRED);
     }
     await this.take(order, dto.cardId);
-    this.mqttService.publishNotificationMessage(
+    this.mqttService.publishNotification(
       dto.orderId,
       order.hire.card.userId,
       dto.nick,
@@ -139,7 +139,7 @@ export class OrdersService {
       throw new AppException(OrderError.NOT_TAKEN);
     }
     await this.untake(order);
-    this.mqttService.publishNotificationMessage(
+    this.mqttService.publishNotification(
       dto.orderId,
       order.hire.card.userId,
       dto.nick,
@@ -157,7 +157,7 @@ export class OrdersService {
       throw new AppException(OrderError.NOT_TAKEN);
     }
     await this.execute(order);
-    this.mqttService.publishNotificationMessage(
+    this.mqttService.publishNotification(
       dto.orderId,
       order.hire.card.userId,
       dto.nick,
@@ -191,7 +191,7 @@ export class OrdersService {
       await this.hiresService.completeHire({ ...dto, hireId: order.hireId });
     } catch (error) {}
     await this.complete(order);
-    this.mqttService.publishNotificationMessage(
+    this.mqttService.publishNotification(
       dto.orderId,
       order.executorCard.userId,
       dto.nick,
@@ -228,7 +228,7 @@ export class OrdersService {
       throw new AppException(OrderError.NOT_COMPLETED);
     }
     await this.rate(order, dto.rate);
-    this.mqttService.publishNotificationMessage(
+    this.mqttService.publishNotification(
       dto.orderId,
       order.executorCard.userId,
       dto.nick,

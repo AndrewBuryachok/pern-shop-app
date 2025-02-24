@@ -100,7 +100,7 @@ export class RentsService implements OnModuleInit {
   async createRent(dto: ExtCreateRentDto & { nick: string }): Promise<void> {
     const stall = await this.stallsService.reserveStall(dto);
     const rent = await this.create(dto, stall.marketTag.price);
-    this.mqttService.publishNotificationMessage(
+    this.mqttService.publishNotification(
       rent.id,
       stall.market.card.userId,
       dto.nick,
@@ -117,7 +117,7 @@ export class RentsService implements OnModuleInit {
       cardId: rent.cardId,
     });
     await this.continue(rent, stall.marketTag.price);
-    this.mqttService.publishNotificationMessage(
+    this.mqttService.publishNotification(
       dto.rentId,
       stall.market.card.userId,
       dto.nick,
@@ -131,7 +131,7 @@ export class RentsService implements OnModuleInit {
     const rent = await this.checkRentOwner(dto.rentId, dto.myId, dto.hasRole);
     const stall = await this.stallsService.unreserveStall(rent.stallId);
     await this.complete(rent);
-    this.mqttService.publishNotificationMessage(
+    this.mqttService.publishNotification(
       dto.rentId,
       stall.market.card.userId,
       dto.nick,
@@ -168,7 +168,7 @@ export class RentsService implements OnModuleInit {
     const diffA = date.getTime() - new Date().getTime();
     const diffB = before.getTime() - new Date().getTime();
     const callbackFactory = (message: string) => () => {
-      this.mqttService.publishNotificationMessage(id, userId, '🔔', message);
+      this.mqttService.publishNotification(id, userId, '🔔', message);
       return true;
     };
     const callbackA = callbackFactory(Notification.ENDED_RENT);

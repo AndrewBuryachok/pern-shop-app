@@ -101,7 +101,7 @@ export class PurchasesService {
   ): Promise<void> {
     const good = await this.goodsService.buyGood(dto);
     const purchase = await this.create(dto);
-    this.mqttService.publishNotificationMessage(
+    this.mqttService.publishNotification(
       purchase.id,
       good.shop?.card.userId ||
         good.rent?.card.userId ||
@@ -126,7 +126,7 @@ export class PurchasesService {
       dto.hasRole,
     );
     await this.rate(purchase, dto.rate);
-    this.mqttService.publishNotificationMessage(
+    this.mqttService.publishNotification(
       dto.purchaseId,
       purchase.good.shop?.card.userId ||
         purchase.good.rent?.card.userId ||

@@ -111,12 +111,11 @@ export class PollsController {
   @Patch(':pollId')
   editPoll(
     @MyId() myId: number,
-    @MyNick() nick: string,
     @HasRole(Role.INSPECTOR) hasRole: boolean,
     @Param() { pollId }: PollIdDto,
     @Body() dto: EditPollDto,
   ): Promise<void> {
-    return this.pollsService.editPoll({ ...dto, pollId, myId, nick, hasRole });
+    return this.pollsService.editPoll({ ...dto, pollId, myId, hasRole });
   }
 
   @Roles(Role.INSPECTOR)

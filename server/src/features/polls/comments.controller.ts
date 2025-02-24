@@ -38,7 +38,6 @@ export class CommentsController {
   @Patch(':commentId')
   editComment(
     @MyId() myId: number,
-    @MyNick() nick: string,
     @HasRole(Role.INSPECTOR) hasRole: boolean,
     @Param() { commentId }: CommentIdDto,
     @Body() dto: EditCommentDto,
@@ -47,7 +46,6 @@ export class CommentsController {
       ...dto,
       commentId,
       myId,
-      nick,
       hasRole,
     });
   }

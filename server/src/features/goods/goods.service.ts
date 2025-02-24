@@ -155,7 +155,7 @@ export class GoodsService {
   }
 
   private publishCreateGoodNotification(id: number, nick: string): void {
-    this.mqttService.publishNotificationMessage(
+    this.mqttService.publishNotification(
       id,
       0,
       nick,
@@ -212,7 +212,7 @@ export class GoodsService {
         good.shop?.card.userId ||
         good.rent?.card.userId ||
         good.lease?.card.userId;
-      this.mqttService.publishNotificationMessage(
+      this.mqttService.publishNotification(
         good.id,
         userId,
         '🔔',
