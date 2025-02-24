@@ -18,12 +18,7 @@ export default function CustomHighlight(props: Props) {
     emoji: true,
   });
 
-  const text = props.text.replace(
-    /@(\w+)/g,
-    (match, nick) => `[${match}](/users/${nick})`,
-  );
-
-  const html = DOMPurify.sanitize(converter.makeHtml(text));
+  const html = DOMPurify.sanitize(converter.makeHtml(props.text));
 
   return (
     <TypographyStylesProvider>

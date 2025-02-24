@@ -360,26 +360,20 @@
       "created": "created report",
       "reacted": "reacted to your report",
       "commented": "commented your report",
-      "replied": "replied to your comment",
-      "mentioned": "mentioned you in report",
-      "submentioned": "mentioned you in comment"
+      "replied": "replied to your comment"
     },
     "articles": {
       "created": "created article",
       "reacted": "reacted to your article",
       "commented": "commented your article",
-      "replied": "replied to your comment",
-      "mentioned": "mentioned you in article",
-      "submentioned": "mentioned you in comment"
+      "replied": "replied to your comment"
     },
     "polls": {
       "created": "created poll",
       "reacted": "reacted to your poll",
       "commented": "commented your poll",
       "completed": "completed your poll",
-      "replied": "replied to your comment",
-      "mentioned": "mentioned you in poll",
-      "submentioned": "mentioned you in comment"
+      "replied": "replied to your comment"
     },
     "cards": {
       "added": "added you in card",
