@@ -17,8 +17,7 @@ import { IconBell } from '@tabler/icons';
 import { useAppDispatch } from '../../app/hooks';
 import {
   getActiveNotifications,
-  publishNotification,
-  removeNotification,
+  publishNotificationWithUser,
 } from '../../features/mqtt/mqtt.slice';
 import NotificationBadge from './NotificationBadge';
 import NotificationAvatar from './NotificationAvatar';
@@ -117,9 +116,9 @@ export default function NotificationsMenu() {
                       color='red'
                       onClick={() =>
                         notificationsByTabs[tab].forEach((notification) =>
-                          notification.userId
-                            ? dispatch(publishNotification(notification.key))
-                            : dispatch(removeNotification(notification.key)),
+                          dispatch(
+                            publishNotificationWithUser(notification.key),
+                          ),
                         )
                       }
                       fullWidth
@@ -168,13 +167,11 @@ export default function NotificationsMenu() {
                                 variant='subtle'
                                 color='red'
                                 onClick={() =>
-                                  notification.userId
-                                    ? dispatch(
-                                        publishNotification(notification.key),
-                                      )
-                                    : dispatch(
-                                        removeNotification(notification.key),
-                                      )
+                                  dispatch(
+                                    publishNotificationWithUser(
+                                      notification.key,
+                                    ),
+                                  )
                                 }
                                 fullWidth
                                 compact

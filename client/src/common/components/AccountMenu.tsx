@@ -16,9 +16,8 @@ import {
 } from '../../features/auth/auth.slice';
 import {
   getActiveNotifications,
-  publishNotification,
+  publishNotificationWithUser,
   publishOffline,
-  removeNotification,
   unsubscribe,
 } from '../../features/mqtt/mqtt.slice';
 import { useLogoutMutation } from '../../features/auth/auth.api';
@@ -94,9 +93,7 @@ export default function AccountMenu() {
                   notifications
                     .filter((notification) => notification.page === link.label)
                     .forEach((notification) =>
-                      notification.userId
-                        ? dispatch(publishNotification(notification.key))
-                        : dispatch(removeNotification(notification.key)),
+                      dispatch(publishNotificationWithUser(notification.key)),
                     )
                 }
               >

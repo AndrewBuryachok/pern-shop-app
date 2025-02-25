@@ -20,8 +20,7 @@ import {
 import { useAppDispatch } from '../../app/hooks';
 import {
   getActiveNotifications,
-  publishNotification,
-  removeNotification,
+  publishNotificationWithUser,
 } from '../../features/mqtt/mqtt.slice';
 import NotificationBadgeByPages from './NotificationBadgeByPages';
 
@@ -168,9 +167,9 @@ export default function CustomNavbar(props: Props) {
                               notification.page === route.split('/')[0],
                           )
                           .forEach((notification) =>
-                            notification.userId
-                              ? dispatch(publishNotification(notification.key))
-                              : dispatch(removeNotification(notification.key)),
+                            dispatch(
+                              publishNotificationWithUser(notification.key),
+                            ),
                           )
                       }
                     />
@@ -197,9 +196,7 @@ export default function CustomNavbar(props: Props) {
                         (notification) => notification.page === link.route,
                       )
                       .forEach((notification) =>
-                        notification.userId
-                          ? dispatch(publishNotification(notification.key))
-                          : dispatch(removeNotification(notification.key)),
+                        dispatch(publishNotificationWithUser(notification.key)),
                       )
                   }
                 />

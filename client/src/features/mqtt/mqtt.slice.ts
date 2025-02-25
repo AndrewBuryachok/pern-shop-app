@@ -2,9 +2,10 @@ import { connect } from 'mqtt/dist/mqtt.min';
 import { t } from 'i18next';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { showNotificationWithAvatar } from '../../common/components/CustomNotification';
-import { store } from '../../app/store';
+import { AppDispatch, RootState, store } from '../../app/store';
 import { useAppSelector } from '../../app/hooks';
 import { handleEvent } from './events.handler';
+import { INotification } from '../../common/interfaces';
 import { Event } from '../../common/enums';
 
 const audio = new Audio('/sound.mp3');
@@ -36,20 +37,28 @@ client.on('message', (topic, message, packet) => {
     case 'notifications':
       const notification = topic.split('/').slice(2).join('/');
       if (payload) {
-        const [nick, action, page] = topic.split('/').slice(3);
         store.dispatch(addNotification([notification, payload]));
         if (!packet.retain) {
+          const [nick, action, page] = topic.split('/').slice(3);
           showNotificationWithAvatar({
             id: notification,
             title: nick,
             message: t(`notifications.${page}.${action}`),
           });
-        }
-        if (!store.getState().mqtt.mute) {
-          audio.play();
+          if (!store.getState().mqtt.mute) {
+            audio.play();
+          }
         }
       } else {
         store.dispatch(removeNotification(notification));
+      }
+      break;
+    case 'unnotifications':
+      const unnotification = topic.split('/').slice(3).join('/');
+      if (payload) {
+        store.dispatch(addUnnotification([unnotification, payload]));
+      } else {
+        store.dispatch(removeUnnotification(unnotification));
       }
       break;
     case 'events':
@@ -63,6 +72,7 @@ client.on('message', (topic, message, packet) => {
 const initialState = {
   users: [] as number[],
   notifications: {} as { [key: string]: string },
+  unnotifications: {} as { [key: string]: string },
   mute: false,
 };
 
@@ -81,6 +91,12 @@ export const mqttSlice = createSlice({
     },
     removeNotification: (state, action: PayloadAction<string>) => {
       delete state.notifications[action.payload];
+    },
+    addUnnotification: (state, action: PayloadAction<[string, string]>) => {
+      state.unnotifications[action.payload[0]] = action.payload[1];
+    },
+    removeUnnotification: (state, action: PayloadAction<string>) => {
+      delete state.unnotifications[action.payload];
     },
     toggleMute: (state) => {
       if (state.mute) {
@@ -104,12 +120,27 @@ export const mqttSlice = createSlice({
         { retain: true },
       );
     },
-    publishNotification: (_, action: PayloadAction<string>) => {
-      client.publish(
-        import.meta.env.VITE_BROKER_TOPIC + 'notifications/' + action.payload,
-        '',
-        { retain: true },
-      );
+    publishNotification: (state, action: PayloadAction<[string, number]>) => {
+      const [notification, myId] = action.payload;
+      const userId = +notification.split('/')[0];
+      if (userId) {
+        client.publish(
+          import.meta.env.VITE_BROKER_TOPIC + 'notifications/' + notification,
+          '',
+          { retain: true },
+        );
+      } else if (myId) {
+        client.publish(
+          import.meta.env.VITE_BROKER_TOPIC +
+            'unnotifications/' +
+            myId +
+            notification.slice(1),
+          state.notifications[notification],
+          { retain: true },
+        );
+      } else {
+        delete state.notifications[notification];
+      }
     },
     subscribe: (_, action: PayloadAction<number>) => {
       client.subscribe([
@@ -117,13 +148,27 @@ export const mqttSlice = createSlice({
           'notifications/' +
           action.payload +
           '/#',
+        import.meta.env.VITE_BROKER_TOPIC +
+          'unnotifications/' +
+          action.payload +
+          '/#',
         import.meta.env.VITE_BROKER_TOPIC + 'events/' + action.payload + '/#',
       ]);
     },
-    unsubscribe: (_, action: PayloadAction<number>) => {
+    unsubscribe: (state, action: PayloadAction<number>) => {
+      state.notifications = Object.fromEntries(
+        Object.entries(state.notifications).filter(
+          ([notification]) => !+notification.split('/')[0],
+        ),
+      );
+      state.unnotifications = {};
       client.unsubscribe([
         import.meta.env.VITE_BROKER_TOPIC +
           'notifications/' +
+          action.payload +
+          '/#',
+        import.meta.env.VITE_BROKER_TOPIC +
+          'unnotifications/' +
           action.payload +
           '/#',
         import.meta.env.VITE_BROKER_TOPIC + 'events/' + action.payload + '/#',
@@ -139,6 +184,8 @@ export const {
   removeOnlineUser,
   addNotification,
   removeNotification,
+  addUnnotification,
+  removeUnnotification,
   toggleMute,
   publishOnline,
   publishOffline,
@@ -147,19 +194,33 @@ export const {
   unsubscribe,
 } = mqttSlice.actions;
 
+export const publishNotificationWithUser =
+  (notification: string) =>
+  (dispatch: AppDispatch, getState: () => RootState) =>
+    dispatch(
+      publishNotification([notification, getState().auth.user?.id || 0]),
+    );
+
 export const getOnlineUsers = () => useAppSelector((state) => state.mqtt.users);
 
-export const getActiveNotifications = () =>
+export const getActiveNotifications = (): INotification[] =>
   useAppSelector((state) =>
-    Object.keys(state.mqtt.notifications).map((notification) => ({
-      key: notification,
-      userId: +notification.split('/')[0],
-      nick: notification.split('/')[1],
-      action: notification.split('/')[2],
-      page: notification.split('/')[3],
-      id: +notification.split('/')[4],
-      date: new Date(state.mqtt.notifications[notification]),
-    })),
+    Object.entries(state.mqtt.notifications)
+      .filter(
+        ([notification]) =>
+          !state.mqtt.unnotifications[
+            notification.split('/').slice(1).join('/')
+          ],
+      )
+      .map(([notification, date]) => ({
+        key: notification,
+        userId: +notification.split('/')[0],
+        nick: notification.split('/')[1],
+        action: notification.split('/')[2],
+        page: notification.split('/')[3],
+        id: +notification.split('/')[4],
+        date: new Date(date),
+      })),
   );
 
 export const getMute = () => useAppSelector((state) => state.mqtt.mute);
