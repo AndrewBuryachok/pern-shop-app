@@ -39,15 +39,6 @@ export class MqttService {
           if (payload) {
             if (userId) {
               this.notifications.set(notification, new Date(payload));
-            } else {
-              const users = await this.usersService.selectOfflineUsers();
-              users.forEach((user) =>
-                this.publishMessage(
-                  `notifications/${user.id}${notification.slice(1)}`,
-                  payload,
-                  true,
-                ),
-              );
             }
           } else {
             this.notifications.delete(notification);

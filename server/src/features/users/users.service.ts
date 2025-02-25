@@ -385,15 +385,6 @@ export class UsersService {
     return this.usersRepository.findOneBy({ nick });
   }
 
-  selectOfflineUsers(): Promise<User[]> {
-    return this.usersRepository
-      .createQueryBuilder('user')
-      .where('NOT user.type')
-      .andWhere("user.onlineAt > NOW() - INTERVAL '1 day'")
-      .select('user.id')
-      .getMany();
-  }
-
   private async checkNickNotUsed(nick: string): Promise<void> {
     const user = await this.usersRepository.findOneBy({ nick });
     if (user) {
