@@ -8,6 +8,7 @@ export class MqttService {
   private client: MqttClient;
   private users = new Map<number, Date>();
   private notifications = new Map<string, Date>();
+  private unnotifications = new Map<string, Date>();
 
   constructor(private usersService: UsersService) {
     this.client = connect(process.env.BROKER_URL);
@@ -15,6 +16,7 @@ export class MqttService {
       this.client.subscribe([
         process.env.BROKER_TOPIC + 'users/#',
         process.env.BROKER_TOPIC + 'notifications/#',
+        process.env.BROKER_TOPIC + 'unnotifications/#',
       ]),
     );
     this.client.on('message', async (topic, message) => {
@@ -37,11 +39,31 @@ export class MqttService {
         case 'notifications':
           const notification = topic.split('/').slice(2).join('/');
           if (payload) {
-            if (userId) {
-              this.notifications.set(notification, new Date(payload));
-            }
+            this.notifications.set(notification, new Date(payload));
           } else {
             this.notifications.delete(notification);
+            if (!userId) {
+              for (const unnotification of this.unnotifications.keys()) {
+                if (
+                  unnotification.split('/').slice(1).join('/') ===
+                  notification.split('/').slice(1).join('/')
+                ) {
+                  this.publishMessage(
+                    `unnotifications/${unnotification}`,
+                    '',
+                    true,
+                  );
+                }
+              }
+            }
+          }
+          break;
+        case 'unnotifications':
+          const unnotification = topic.split('/').slice(2).join('/');
+          if (payload) {
+            this.unnotifications.set(unnotification, new Date(payload));
+          } else {
+            this.unnotifications.delete(unnotification);
           }
           break;
         default:
@@ -86,7 +108,7 @@ export class MqttService {
     this.publishMessage(
       `notifications/${userId}/${nick}/${action}/${page}/${id}`,
       new Date().toISOString(),
-      !!userId,
+      true,
     );
   }
 
