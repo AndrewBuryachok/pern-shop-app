@@ -1,7 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { Link, useLocation } from 'react-router-dom';
 import { Navbar, NavLink, ScrollArea } from '@mantine/core';
-import { hideNotification } from '@mantine/notifications';
 import {
   IconArticle,
   IconBuildingCottage,
@@ -18,8 +17,13 @@ import {
   IconUsers,
   IconWallet,
 } from '@tabler/icons';
-import { getActiveNotifications } from '../../features/mqtt/mqtt.slice';
-import NotificationBadge from './NotificationBadge';
+import { useAppDispatch } from '../../app/hooks';
+import {
+  getActiveNotifications,
+  publishNotification,
+  removeNotification,
+} from '../../features/mqtt/mqtt.slice';
+import NotificationBadgeByPages from './NotificationBadgeByPages';
 
 type Props = {
   opened: boolean;
@@ -27,6 +31,8 @@ type Props = {
 
 export default function CustomNavbar(props: Props) {
   const [t] = useTranslation();
+
+  const dispatch = useAppDispatch();
 
   const notifications = getActiveNotifications();
 
@@ -133,7 +139,7 @@ export default function CustomNavbar(props: Props) {
                   key={link.route}
                   label={t(`navbar.${link.route}`)}
                   icon={
-                    <NotificationBadge
+                    <NotificationBadgeByPages
                       pages={link.nested.map((route) => route.split('/')[0])}
                       icon={<link.icon size={16} />}
                     />
@@ -147,7 +153,11 @@ export default function CustomNavbar(props: Props) {
                     <NavLink
                       key={route}
                       label={t(`navbar.${route.split('/')[0]}`)}
-                      icon={<NotificationBadge pages={[route.split('/')[0]]} />}
+                      icon={
+                        <NotificationBadgeByPages
+                          pages={[route.split('/')[0]]}
+                        />
+                      }
                       component={Link}
                       to={route}
                       active={route.split('/')[0] === active}
@@ -158,7 +168,9 @@ export default function CustomNavbar(props: Props) {
                               notification.page === route.split('/')[0],
                           )
                           .forEach((notification) =>
-                            hideNotification(notification.key),
+                            notification.userId
+                              ? dispatch(publishNotification(notification.key))
+                              : dispatch(removeNotification(notification.key)),
                           )
                       }
                     />
@@ -169,7 +181,7 @@ export default function CustomNavbar(props: Props) {
                   key={link.route}
                   label={t(`navbar.${link.route}`)}
                   icon={
-                    <NotificationBadge
+                    <NotificationBadgeByPages
                       pages={[link.route]}
                       icon={<link.icon size={16} />}
                     />
@@ -185,7 +197,9 @@ export default function CustomNavbar(props: Props) {
                         (notification) => notification.page === link.route,
                       )
                       .forEach((notification) =>
-                        hideNotification(notification.key),
+                        notification.userId
+                          ? dispatch(publishNotification(notification.key))
+                          : dispatch(removeNotification(notification.key)),
                       )
                   }
                 />

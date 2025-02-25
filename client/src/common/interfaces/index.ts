@@ -8,3 +8,4 @@ export * from './action.interface';
 export * from './page.interface';
 export * from './modal.interface';
 export * from './search.interface';
+export * from './notification.interface';

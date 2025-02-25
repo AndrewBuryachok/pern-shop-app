@@ -1,67 +1,198 @@
+import { Fragment, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
-import { ActionIcon, Indicator, Menu } from '@mantine/core';
-import { hideNotification } from '@mantine/notifications';
-import { IconBell, IconPoint } from '@tabler/icons';
-import { getActiveNotifications } from '../../features/mqtt/mqtt.slice';
-import DoubleText from './DoubleText';
-import { parseTime } from '../utils';
-import { notificationToTab } from '../enums';
+import {
+  ActionIcon,
+  Button,
+  Divider,
+  Drawer,
+  Group,
+  Indicator,
+  ScrollArea,
+  Stack,
+  Tabs,
+} from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
+import { IconBell } from '@tabler/icons';
+import { useAppDispatch } from '../../app/hooks';
+import {
+  getActiveNotifications,
+  publishNotification,
+  removeNotification,
+} from '../../features/mqtt/mqtt.slice';
+import NotificationBadge from './NotificationBadge';
+import NotificationAvatar from './NotificationAvatar';
+import SingleText from './SingleText';
+import { INotification } from '../interfaces';
+import { notificationToLink, parseDate } from '../utils';
 
 export default function NotificationsMenu() {
   const [t] = useTranslation();
 
-  const notifications = [...getActiveNotifications()].sort((a, b) =>
-    b.date.localeCompare(a.date),
+  const [opened, { open, close }] = useDisclosure(false);
+
+  const tabs = ['main', 'my'] as const;
+
+  const [tab, setTab] = useState<(typeof tabs)[number]>(tabs[0]);
+
+  const dispatch = useAppDispatch();
+
+  const notifications = [...getActiveNotifications()].sort(
+    (a, b) => b.date.getTime() - a.date.getTime(),
+  );
+
+  const notificationsByTabs = {
+    main: notifications.filter((notification) => !notification.userId),
+    my: notifications.filter((notification) => notification.userId),
+  };
+
+  const notificationsByDates = tabs.map((tab) =>
+    notificationsByTabs[tab].reduce((acc, cur) => {
+      const date = parseDate(cur.date).date;
+      if (!acc[date]) {
+        acc[date] = [];
+      }
+      acc[date].push(cur);
+      return acc;
+    }, {} as { [key: string]: INotification[] }),
   );
 
   return (
-    <Menu offset={4} position='bottom-end' trigger='hover'>
-      <Menu.Target>
-        <Indicator
-          label={notifications.length}
-          overflowCount={9}
-          showZero={false}
-          dot={false}
-          size={16}
-          color='red'
+    <>
+      <Indicator
+        label={notifications.length}
+        overflowCount={9}
+        showZero={false}
+        dot={false}
+        size={16}
+        color='red'
+      >
+        <ActionIcon size={32} variant='filled' color='violet' onClick={open}>
+          <IconBell size={24} />
+        </ActionIcon>
+      </Indicator>
+      <Drawer
+        opened={opened}
+        onClose={close}
+        title={t('header.menu.notifications.title')}
+        position='right'
+        padding='md'
+        size='lg'
+      >
+        <Tabs
+          value={tab}
+          onTabChange={(tab) => setTab(tab as (typeof tabs)[number])}
         >
-          <ActionIcon size={32} variant='filled' color='violet'>
-            <IconBell size={24} />
-          </ActionIcon>
-        </Indicator>
-      </Menu.Target>
-      <Menu.Dropdown>
-        <Menu.Label>{t('header.menu.notifications.title')}</Menu.Label>
-        {notifications.map(({ key, nick, action, page, id, date }) => (
-          <Menu.Item
-            key={key}
-            icon={<IconPoint size={16} />}
-            component={Link}
-            to={
-              page === 'chats'
-                ? `/${page}/${nick}`
-                : `/${page}/${
-                    notificationToTab
-                      .find(
-                        (notification) =>
-                          notification.split(' ')[0] === action &&
-                          notification.split(' ')[1] === page,
-                      )!
-                      .split(' ')[2]
-                  }?id=${id}`.replace('/main', '')
-            }
-            onClick={() => hideNotification(key)}
-          >
-            <DoubleText
-              text={nick + ' ' + t(`notifications.${page}.${action}`)}
-              subtext={parseTime(new Date(date))}
-              bold
-              dimmed
-            />
-          </Menu.Item>
-        ))}
-      </Menu.Dropdown>
-    </Menu>
+          <Tabs.List grow>
+            {tabs.map((tab) => (
+              <Tabs.Tab
+                key={tab}
+                value={tab}
+                rightSection={
+                  !!notificationsByTabs[tab].length && (
+                    <NotificationBadge
+                      count={notificationsByTabs[tab].length}
+                    />
+                  )
+                }
+              >
+                {t(`pages.${tab}`)}
+              </Tabs.Tab>
+            ))}
+          </Tabs.List>
+          {tabs.map((tab, index) => (
+            <Tabs.Panel key={tab} value={tab}>
+              <ScrollArea style={{ height: 'calc(100vh - 112px)' }}>
+                <Stack spacing={8}>
+                  {!notificationsByTabs[tab].length && (
+                    <Divider
+                      size={0}
+                      label={t('header.menu.notifications.empty')}
+                      labelPosition='center'
+                    />
+                  )}
+                  {!!notificationsByTabs[tab].length && (
+                    <Button
+                      variant='subtle'
+                      color='red'
+                      onClick={() =>
+                        notificationsByTabs[tab].forEach((notification) =>
+                          notification.userId
+                            ? dispatch(publishNotification(notification.key))
+                            : dispatch(removeNotification(notification.key)),
+                        )
+                      }
+                      fullWidth
+                      compact
+                    >
+                      {t('header.menu.notifications.read')}
+                    </Button>
+                  )}
+                  {Object.entries(notificationsByDates[index]).map(
+                    ([date, notifications]) => (
+                      <Fragment key={date}>
+                        <Divider label={date} labelPosition='center' />
+                        {/* <SingleText text={date} dimmed /> */}
+                        {notifications.map((notification) => (
+                          <Fragment key={notification.key}>
+                            <Group spacing={8}>
+                              <NotificationAvatar nick={notification.nick} />
+                              <div>
+                                <Group spacing={8}>
+                                  <SingleText text={notification.nick} bold />
+                                  <SingleText
+                                    text={parseDate(notification.date).time}
+                                    dimmed
+                                  />
+                                </Group>
+                                <SingleText
+                                  text={t(
+                                    `notifications.${notification.page}.${notification.action}`,
+                                  )}
+                                />
+                              </div>
+                            </Group>
+                            <Button.Group>
+                              <Button
+                                variant='subtle'
+                                color='blue'
+                                component={Link}
+                                to={notificationToLink(notification)}
+                                onClick={close}
+                                fullWidth
+                                compact
+                              >
+                                {t('actions.view')}
+                              </Button>
+                              <Button
+                                variant='subtle'
+                                color='red'
+                                onClick={() =>
+                                  notification.userId
+                                    ? dispatch(
+                                        publishNotification(notification.key),
+                                      )
+                                    : dispatch(
+                                        removeNotification(notification.key),
+                                      )
+                                }
+                                fullWidth
+                                compact
+                              >
+                                {t('actions.delete')}
+                              </Button>
+                            </Button.Group>
+                          </Fragment>
+                        ))}
+                      </Fragment>
+                    ),
+                  )}
+                </Stack>
+              </ScrollArea>
+            </Tabs.Panel>
+          ))}
+        </Tabs>
+      </Drawer>
+    </>
   );
 }

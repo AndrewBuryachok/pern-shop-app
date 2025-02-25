@@ -1,4 +1,4 @@
-export const notificationToTab = [
+export const notifications = [
   'messaged chats main',
   'offered friends received',
   'accepted friends my',

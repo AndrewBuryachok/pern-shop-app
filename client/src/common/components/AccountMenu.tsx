@@ -14,11 +14,17 @@ import {
   getCurrentUser,
   removeCurrentUser,
 } from '../../features/auth/auth.slice';
-import { publishOffline, unsubscribe } from '../../features/mqtt/mqtt.slice';
+import {
+  getActiveNotifications,
+  publishNotification,
+  publishOffline,
+  removeNotification,
+  unsubscribe,
+} from '../../features/mqtt/mqtt.slice';
 import { useLogoutMutation } from '../../features/auth/auth.api';
 import { openAuthModal } from '../../features/auth/AuthModal';
 import { openUpdatePasswordModal } from '../../features/auth/UpdatePasswordModal';
-import NotificationBadge from './NotificationBadge';
+import NotificationBadgeByPages from './NotificationBadgeByPages';
 
 export default function AccountMenu() {
   const [t] = useTranslation();
@@ -26,6 +32,8 @@ export default function AccountMenu() {
   const dispatch = useAppDispatch();
 
   const user = getCurrentUser();
+
+  const notifications = getActiveNotifications();
 
   const [logout] = useLogoutMutation();
 
@@ -75,13 +83,22 @@ export default function AccountMenu() {
               <Menu.Item
                 key={link.label}
                 icon={
-                  <NotificationBadge
+                  <NotificationBadgeByPages
                     pages={[link.label]}
                     icon={<link.icon size={16} />}
                   />
                 }
                 component={Link}
                 to={`/${link.label}/my`}
+                onClick={() =>
+                  notifications
+                    .filter((notification) => notification.page === link.label)
+                    .forEach((notification) =>
+                      notification.userId
+                        ? dispatch(publishNotification(notification.key))
+                        : dispatch(removeNotification(notification.key)),
+                    )
+                }
               >
                 {t(`navbar.${link.label}`)}
               </Menu.Item>

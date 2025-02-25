@@ -1,7 +1,7 @@
 import { connect } from 'mqtt/dist/mqtt.min';
 import { t } from 'i18next';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { hideNotification, showNotification } from '@mantine/notifications';
+import { showNotificationWithAvatar } from '../../common/components/CustomNotification';
 import { store } from '../../app/store';
 import { useAppSelector } from '../../app/hooks';
 import { handleEvent } from './events.handler';
@@ -19,7 +19,7 @@ client.on('connect', () =>
   ]),
 );
 
-client.on('message', (topic, message) => {
+client.on('message', (topic, message, packet) => {
   const userId = +topic.split('/')[2];
   const payload = message.toString();
   switch (topic.split('/')[1]) {
@@ -38,22 +38,18 @@ client.on('message', (topic, message) => {
       if (payload) {
         const [nick, action, page] = topic.split('/').slice(3);
         store.dispatch(addNotification([notification, payload]));
-        showNotification({
-          id: notification,
-          title: t('notifications.notification'),
-          message: nick + ' ' + t(`notifications.${page}.${action}`),
-          autoClose: false,
-          onClose: () =>
-            userId
-              ? store.dispatch(publishNotification(notification))
-              : store.dispatch(removeNotification(notification)),
-        });
+        if (!packet.retain) {
+          showNotificationWithAvatar({
+            id: notification,
+            title: nick,
+            message: t(`notifications.${page}.${action}`),
+          });
+        }
         if (!store.getState().mqtt.mute) {
           audio.play();
         }
       } else {
         store.dispatch(removeNotification(notification));
-        hideNotification(notification);
       }
       break;
     case 'events':
@@ -157,12 +153,12 @@ export const getActiveNotifications = () =>
   useAppSelector((state) =>
     Object.keys(state.mqtt.notifications).map((notification) => ({
       key: notification,
-      userId: notification.split('/')[0],
+      userId: +notification.split('/')[0],
       nick: notification.split('/')[1],
       action: notification.split('/')[2],
       page: notification.split('/')[3],
-      id: notification.split('/')[4],
-      date: state.mqtt.notifications[notification],
+      id: +notification.split('/')[4],
+      date: new Date(state.mqtt.notifications[notification]),
     })),
   );
 

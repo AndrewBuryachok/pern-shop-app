@@ -19,7 +19,9 @@
         }
       },
       "notifications": {
-        "title": "Notifications"
+        "title": "Notifications",
+        "empty": "You have no notifications yet",
+        "read": "Mark all as read"
       },
       "account": {
         "title": "Account",
@@ -338,10 +340,8 @@
     "not_enough_balance": "Not enough balance"
   },
   "notifications": {
-    "success": "Success",
-    "error": "Error",
+    "title": "System",
     "message": "Operation completed successfully",
-    "notification": "Notification",
     "friends": {
       "offered": "offered you friendship",
       "accepted": "accepted your friendship",
