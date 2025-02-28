@@ -191,6 +191,7 @@ export class OrdersService {
       await this.hiresService.completeHire({ ...dto, hireId: order.hireId });
     } catch (error) {}
     await this.complete(order);
+    this.unpublishNotification(dto.orderId, dto.nick);
     this.mqttService.publishNotification(
       dto.orderId,
       order.executorCard.userId,
@@ -216,6 +217,7 @@ export class OrdersService {
       await this.hiresService.completeHire({ ...dto, hireId: order.hireId });
     } catch (error) {}
     await this.delete(order);
+    this.unpublishNotification(dto.orderId, dto.nick);
   }
 
   async rateOrder(dto: ExtRateOrderDto & { nick: string }): Promise<void> {
@@ -363,6 +365,15 @@ export class OrdersService {
     } catch (error) {
       throw new AppException(OrderError.RATE_FAILED);
     }
+  }
+
+  private unpublishNotification(id: number, nick: string): void {
+    this.mqttService.unpublishNotification(
+      id,
+      0,
+      nick,
+      Notification.CREATED_ORDER,
+    );
   }
 
   private getOrdersQueryBuilder(req: Request): SelectQueryBuilder<Order> {

@@ -69,10 +69,11 @@ export class AdvertsController {
   @Delete(':advertId')
   deleteAdvert(
     @MyId() myId: number,
+    @MyNick() nick: string,
     @HasRole(Role.MERCHANT) hasRole: boolean,
     @Param() { advertId }: AdvertIdDto,
   ): Promise<void> {
-    return this.advertsService.deleteAdvert({ advertId, myId, hasRole });
+    return this.advertsService.deleteAdvert({ advertId, myId, nick, hasRole });
   }
 
   @Post(':advertId')

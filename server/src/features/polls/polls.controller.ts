@@ -131,10 +131,11 @@ export class PollsController {
   @Delete(':pollId')
   deletePoll(
     @MyId() myId: number,
+    @MyNick() nick: string,
     @HasRole(Role.INSPECTOR) hasRole: boolean,
     @Param() { pollId }: PollIdDto,
   ): Promise<void> {
-    return this.pollsService.deletePoll({ pollId, myId, hasRole });
+    return this.pollsService.deletePoll({ pollId, myId, nick, hasRole });
   }
 
   @Post(':pollId/views')

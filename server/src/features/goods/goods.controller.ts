@@ -110,9 +110,10 @@ export class GoodsController {
   @Post(':goodId')
   completeGood(
     @MyId() myId: number,
+    @MyNick() nick: string,
     @HasRole(Role.MERCHANT) hasRole: boolean,
     @Param() { goodId }: GoodIdDto,
   ): Promise<void> {
-    return this.goodsService.completeGood({ goodId, myId, hasRole });
+    return this.goodsService.completeGood({ goodId, myId, nick, hasRole });
   }
 }

@@ -233,6 +233,7 @@ export class HaulagesService {
       });
     } catch (error) {}
     await this.complete(haulage);
+    this.unpublishNotification(dto.haulageId, dto.nick);
     this.mqttService.publishNotification(
       dto.haulageId,
       haulage.executorCard.userId,
@@ -267,6 +268,7 @@ export class HaulagesService {
       });
     } catch (error) {}
     await this.delete(haulage);
+    this.unpublishNotification(dto.haulageId, dto.nick);
   }
 
   async rateHaulage(dto: ExtRateHaulageDto & { nick: string }): Promise<void> {
@@ -425,6 +427,15 @@ export class HaulagesService {
     } catch (error) {
       throw new AppException(HaulageError.RATE_FAILED);
     }
+  }
+
+  private unpublishNotification(id: number, nick: string): void {
+    this.mqttService.unpublishNotification(
+      id,
+      0,
+      nick,
+      Notification.CREATED_HAULAGE,
+    );
   }
 
   private getHaulagesQueryBuilder(req: Request): SelectQueryBuilder<Haulage> {

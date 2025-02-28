@@ -112,6 +112,20 @@ export class MqttService {
     );
   }
 
+  unpublishNotification(
+    id: number,
+    userId: number,
+    nick: string,
+    message: string,
+  ): void {
+    const [action, page] = message.split(' ');
+    this.publishMessage(
+      `notifications/${userId}/${nick}/${action}/${page}/${id}`,
+      '',
+      true,
+    );
+  }
+
   publishEvent(userId: number, page: Event, id: number, body: string): void {
     this.publishMessage(`events/${userId}/${page}/${id}`, body, false);
   }

@@ -137,10 +137,16 @@ export class ArticlesController {
   @Delete(':articleId')
   deleteArticle(
     @MyId() myId: number,
+    @MyNick() nick: string,
     @HasRole(Role.INSPECTOR) hasRole: boolean,
     @Param() { articleId }: ArticleIdDto,
   ): Promise<void> {
-    return this.articlesService.deleteArticle({ articleId, myId, hasRole });
+    return this.articlesService.deleteArticle({
+      articleId,
+      myId,
+      nick,
+      hasRole,
+    });
   }
 
   @Post(':articleId/views')

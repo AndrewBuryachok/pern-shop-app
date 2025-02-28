@@ -146,13 +146,19 @@ export class ArticlesService {
     await this.edit(article, dto);
   }
 
-  async deleteArticle(dto: DeleteArticleDto): Promise<void> {
+  async deleteArticle(dto: DeleteArticleDto & { nick: string }): Promise<void> {
     const article = await this.checkArticleOwner(
       dto.articleId,
       dto.myId,
       dto.hasRole,
     );
     await this.delete(article);
+    this.mqttService.unpublishNotification(
+      dto.articleId,
+      0,
+      dto.nick,
+      Notification.CREATED_ARTICLE,
+    );
   }
 
   async viewArticle(dto: ViewArticleDto): Promise<void> {

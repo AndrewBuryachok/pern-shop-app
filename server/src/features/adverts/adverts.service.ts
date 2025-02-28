@@ -72,13 +72,19 @@ export class AdvertsService {
     await this.edit(advert, dto);
   }
 
-  async deleteAdvert(dto: DeleteAdvertDto): Promise<void> {
+  async deleteAdvert(dto: DeleteAdvertDto & { nick: string }): Promise<void> {
     const advert = await this.checkAdvertOwner(
       dto.advertId,
       dto.myId,
       dto.hasRole,
     );
     await this.delete(advert);
+    this.mqttService.unpublishNotification(
+      dto.advertId,
+      0,
+      dto.nick,
+      Notification.CREATED_ADVERT,
+    );
   }
 
   async respondAdvert(

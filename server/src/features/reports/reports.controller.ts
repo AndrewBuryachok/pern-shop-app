@@ -197,10 +197,11 @@ export class ReportsController {
   @Delete(':reportId')
   deleteReport(
     @MyId() myId: number,
+    @MyNick() nick: string,
     @HasRole(Role.INSPECTOR) hasRole: boolean,
     @Param() { reportId }: ReportIdDto,
   ): Promise<void> {
-    return this.reportsService.deleteReport({ reportId, myId, hasRole });
+    return this.reportsService.deleteReport({ reportId, myId, nick, hasRole });
   }
 
   @Post(':reportId/views')

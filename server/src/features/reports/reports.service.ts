@@ -91,13 +91,19 @@ export class ReportsService {
     await this.edit(report, dto);
   }
 
-  async deleteReport(dto: DeleteReportDto): Promise<void> {
+  async deleteReport(dto: DeleteReportDto & { nick: string }): Promise<void> {
     const report = await this.checkReportOwner(
       dto.reportId,
       dto.myId,
       dto.hasRole,
     );
     await this.delete(report);
+    this.mqttService.unpublishNotification(
+      dto.reportId,
+      0,
+      dto.nick,
+      Notification.CREATED_REPORT,
+    );
   }
 
   async viewReport(dto: ViewReportDto): Promise<void> {

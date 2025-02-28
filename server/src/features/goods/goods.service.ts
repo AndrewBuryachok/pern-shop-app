@@ -168,9 +168,15 @@ export class GoodsService {
     await this.edit(good, dto);
   }
 
-  async completeGood(dto: CompleteGoodDto): Promise<void> {
+  async completeGood(dto: CompleteGoodDto & { nick: string }): Promise<void> {
     const good = await this.checkGoodOwner(dto.goodId, dto.myId, dto.hasRole);
     await this.complete(good);
+    this.mqttService.unpublishNotification(
+      dto.goodId,
+      0,
+      dto.nick,
+      Notification.CREATED_GOOD,
+    );
   }
 
   async buyGood(dto: BuyGoodDto & { nick: string }): Promise<Good> {

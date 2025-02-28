@@ -174,6 +174,7 @@ export class TasksService {
       description: 'выполнение заказа',
     });
     await this.complete(task);
+    this.unpublishNotification(dto.taskId, dto.nick);
     this.mqttService.publishNotification(
       dto.taskId,
       task.executorCard.userId,
@@ -196,6 +197,7 @@ export class TasksService {
       sum: task.price,
     });
     await this.delete(task);
+    this.unpublishNotification(dto.taskId, dto.nick);
   }
 
   async rateTask(dto: ExtRateTaskDto & { nick: string }): Promise<void> {
@@ -337,6 +339,15 @@ export class TasksService {
     } catch (error) {
       throw new AppException(TaskError.RATE_FAILED);
     }
+  }
+
+  private unpublishNotification(id: number, nick: string): void {
+    this.mqttService.unpublishNotification(
+      id,
+      0,
+      nick,
+      Notification.CREATED_TASK,
+    );
   }
 
   private getTasksQueryBuilder(req: Request): SelectQueryBuilder<Task> {

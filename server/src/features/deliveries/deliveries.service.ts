@@ -239,6 +239,7 @@ export class DeliveriesService {
       });
     } catch (error) {}
     await this.complete(delivery);
+    this.unpublishNotification(dto.deliveryId, dto.nick);
     this.mqttService.publishNotification(
       dto.deliveryId,
       delivery.executorCard.userId,
@@ -269,6 +270,7 @@ export class DeliveriesService {
       });
     } catch (error) {}
     await this.delete(delivery);
+    this.unpublishNotification(dto.deliveryId, dto.nick);
   }
 
   async rateDelivery(
@@ -415,6 +417,15 @@ export class DeliveriesService {
     } catch (error) {
       throw new AppException(DeliveryError.RATE_FAILED);
     }
+  }
+
+  private unpublishNotification(id: number, nick: string): void {
+    this.mqttService.unpublishNotification(
+      id,
+      0,
+      nick,
+      Notification.CREATED_DELIVERY,
+    );
   }
 
   private getDeliveriesQueryBuilder(

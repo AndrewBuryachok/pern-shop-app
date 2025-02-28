@@ -133,9 +133,15 @@ export class PollsService {
     );
   }
 
-  async deletePoll(dto: DeletePollDto): Promise<void> {
+  async deletePoll(dto: DeletePollDto & { nick: string }): Promise<void> {
     const poll = await this.checkPollOwner(dto.pollId, dto.myId, dto.hasRole);
     await this.delete(poll);
+    this.mqttService.unpublishNotification(
+      dto.pollId,
+      0,
+      dto.nick,
+      Notification.CREATED_POLL,
+    );
   }
 
   async viewPoll(dto: ViewPollDto): Promise<void> {
