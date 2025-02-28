@@ -142,7 +142,7 @@ export class FriendsService {
         dto.myId,
         dto.userId,
         dto.nick,
-        Notification.DELETED_FRIENDS,
+        Notification.DELETED_FRIEND,
       );
     }
   }

@@ -1,4 +1,4 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { InjectSchedule, Schedule } from 'nest-schedule';
@@ -14,7 +14,7 @@ import { LeaseError } from './lease-error.enum';
 import { Mode, Notification } from '../../common/enums';
 
 @Injectable()
-export class LeasesService implements OnModuleInit {
+export class LeasesService {
   constructor(
     @InjectRepository(Lease)
     private leasesRepository: Repository<Lease>,
@@ -24,15 +24,25 @@ export class LeasesService implements OnModuleInit {
     private schedule: Schedule,
   ) {}
 
-  async onModuleInit() {
+  async getLeasesNotifications(): Promise<number[]> {
     const leases = await this.leasesRepository
       .createQueryBuilder('lease')
       .innerJoinAndSelect('lease.card', 'card')
-      .where('lease.completedAt > NOW()')
+      .where((qb) =>
+        qb
+          .where('lease.completedAt > NOW()')
+          .andWhere("lease.completedAt < NOW() + INTERVAL '1d'"),
+      )
+      .orWhere((qb) =>
+        qb
+          .where("lease.completedAt > NOW() + INTERVAL '3d'")
+          .andWhere("lease.completedAt < NOW() + INTERVAL '4d'"),
+      )
       .getMany();
     leases.forEach((lease) =>
       this.addTimeout(lease.id, lease.card.userId, lease.completedAt),
     );
+    return leases.map((lease) => lease.id);
   }
 
   async getMainLeases(req: Request): Promise<Response<Lease>> {
@@ -175,7 +185,7 @@ export class LeasesService implements OnModuleInit {
 
   private addTimeout(id: number, userId: number, date: Date): void {
     const before = new Date(date);
-    before.setDate(before.getDate() - 1);
+    before.setDate(before.getDate() - 3);
     const diffA = date.getTime() - new Date().getTime();
     const diffB = before.getTime() - new Date().getTime();
     const callbackFactory = (message: string) => () => {
@@ -184,7 +194,9 @@ export class LeasesService implements OnModuleInit {
     };
     const callbackA = callbackFactory(Notification.ENDED_LEASE);
     const callbackB = callbackFactory(Notification.REMINDED_LEASE);
-    this.schedule.scheduleTimeoutJob(`leases/${id}/a`, diffA, callbackA);
+    if (diffA < 24 * 60 * 60 * 1000) {
+      this.schedule.scheduleTimeoutJob(`leases/${id}/a`, diffA, callbackA);
+    }
     if (diffB > 0) {
       this.schedule.scheduleTimeoutJob(`leases/${id}/b`, diffB, callbackB);
     }

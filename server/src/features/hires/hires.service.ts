@@ -1,4 +1,4 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { InjectSchedule, Schedule } from 'nest-schedule';
@@ -14,7 +14,7 @@ import { HireError } from './hire-error.enum';
 import { Mode, Notification } from '../../common/enums';
 
 @Injectable()
-export class HiresService implements OnModuleInit {
+export class HiresService {
   constructor(
     @InjectRepository(Hire)
     private hiresRepository: Repository<Hire>,
@@ -24,15 +24,25 @@ export class HiresService implements OnModuleInit {
     private schedule: Schedule,
   ) {}
 
-  async onModuleInit() {
+  async getHiresNotifications(): Promise<number[]> {
     const hires = await this.hiresRepository
       .createQueryBuilder('hire')
       .innerJoinAndSelect('hire.card', 'card')
-      .where('hire.completedAt > NOW()')
+      .where((qb) =>
+        qb
+          .where('hire.completedAt > NOW()')
+          .andWhere("hire.completedAt < NOW() + INTERVAL '1d'"),
+      )
+      .orWhere((qb) =>
+        qb
+          .where("hire.completedAt > NOW() + INTERVAL '3d'")
+          .andWhere("hire.completedAt < NOW() + INTERVAL '4d'"),
+      )
       .getMany();
     hires.forEach((hire) =>
       this.addTimeout(hire.id, hire.card.userId, hire.completedAt),
     );
+    return hires.map((hire) => hire.id);
   }
 
   async getMainHires(req: Request): Promise<Response<Hire>> {
@@ -192,7 +202,7 @@ export class HiresService implements OnModuleInit {
 
   private addTimeout(id: number, userId: number, date: Date): void {
     const before = new Date(date);
-    before.setDate(before.getDate() - 1);
+    before.setDate(before.getDate() - 3);
     const diffA = date.getTime() - new Date().getTime();
     const diffB = before.getTime() - new Date().getTime();
     const callbackFactory = (message: string) => () => {
@@ -201,7 +211,9 @@ export class HiresService implements OnModuleInit {
     };
     const callbackA = callbackFactory(Notification.ENDED_HIRE);
     const callbackB = callbackFactory(Notification.REMINDED_HIRE);
-    this.schedule.scheduleTimeoutJob(`hires/${id}/a`, diffA, callbackA);
+    if (diffA < 24 * 60 * 60 * 1000) {
+      this.schedule.scheduleTimeoutJob(`hires/${id}/a`, diffA, callbackA);
+    }
     if (diffB > 0) {
       this.schedule.scheduleTimeoutJob(`hires/${id}/b`, diffB, callbackB);
     }

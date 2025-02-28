@@ -1,4 +1,4 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { InjectSchedule, Schedule } from 'nest-schedule';
@@ -14,7 +14,7 @@ import { RentError } from './rent-error.enum';
 import { Mode, Notification } from '../../common/enums';
 
 @Injectable()
-export class RentsService implements OnModuleInit {
+export class RentsService {
   constructor(
     @InjectRepository(Rent)
     private rentsRepository: Repository<Rent>,
@@ -24,15 +24,25 @@ export class RentsService implements OnModuleInit {
     private schedule: Schedule,
   ) {}
 
-  async onModuleInit() {
+  async getRentsNotifications(): Promise<number[]> {
     const rents = await this.rentsRepository
       .createQueryBuilder('rent')
       .innerJoinAndSelect('rent.card', 'card')
-      .where('rent.completedAt > NOW()')
+      .where((qb) =>
+        qb
+          .where('rent.completedAt > NOW()')
+          .andWhere("rent.completedAt < NOW() + INTERVAL '1d'"),
+      )
+      .orWhere((qb) =>
+        qb
+          .where("rent.completedAt > NOW() + INTERVAL '3d'")
+          .andWhere("rent.completedAt < NOW() + INTERVAL '4d'"),
+      )
       .getMany();
     rents.forEach((rent) =>
       this.addTimeout(rent.id, rent.card.userId, rent.completedAt),
     );
+    return rents.map((rent) => rent.id);
   }
 
   async getMainRents(req: Request): Promise<Response<Rent>> {
@@ -164,7 +174,7 @@ export class RentsService implements OnModuleInit {
 
   private addTimeout(id: number, userId: number, date: Date): void {
     const before = new Date(date);
-    before.setDate(before.getDate() - 1);
+    before.setDate(before.getDate() - 3);
     const diffA = date.getTime() - new Date().getTime();
     const diffB = before.getTime() - new Date().getTime();
     const callbackFactory = (message: string) => () => {
@@ -173,7 +183,9 @@ export class RentsService implements OnModuleInit {
     };
     const callbackA = callbackFactory(Notification.ENDED_RENT);
     const callbackB = callbackFactory(Notification.REMINDED_RENT);
-    this.schedule.scheduleTimeoutJob(`rents/${id}/a`, diffA, callbackA);
+    if (diffA < 24 * 60 * 60 * 1000) {
+      this.schedule.scheduleTimeoutJob(`rents/${id}/a`, diffA, callbackA);
+    }
     if (diffB > 0) {
       this.schedule.scheduleTimeoutJob(`rents/${id}/b`, diffB, callbackB);
     }

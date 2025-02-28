@@ -4,7 +4,7 @@ export enum Notification {
   ACCEPTED_FRIEND = 'accepted friends',
   CANCELED_FRIEND = 'canceled friends',
   REJECTED_FRIEND = 'rejected friends',
-  DELETED_FRIENDS = 'deleted friends',
+  DELETED_FRIEND = 'deleted friends',
   ADDED_SUBSCRIBER = 'added subscribers',
   REMOVED_SUBSCRIBER = 'removed subscribers',
   CREATED_REPORT = 'created reports',
