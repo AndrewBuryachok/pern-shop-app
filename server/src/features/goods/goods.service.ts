@@ -228,6 +228,11 @@ export class GoodsService {
     return good;
   }
 
+  async unbuyGood(id: number, amount: number): Promise<void> {
+    const good = await this.goodsRepository.findOneBy({ id });
+    await this.unbuy(good, amount);
+  }
+
   async checkGoodExists(id: number): Promise<void> {
     await this.goodsRepository.findOneByOrFail({ id });
   }
@@ -368,6 +373,15 @@ export class GoodsService {
       await this.goodsRepository.save(good);
     } catch (error) {
       throw new AppException(GoodError.BUY_FAILED);
+    }
+  }
+
+  private async unbuy(good: Good, amount: number): Promise<void> {
+    try {
+      good.amount += amount;
+      await this.goodsRepository.save(good);
+    } catch (error) {
+      throw new AppException(GoodError.UNBUY_FAILED);
     }
   }
 

@@ -12,10 +12,6 @@ export class PaymentIdDto {
   paymentId: number;
 }
 
-export class ExtPaymentIdDto extends PaymentIdDto {
-  myId: number;
-}
-
 export class CreatePaymentDto {
   @ApiProperty()
   @IsId()

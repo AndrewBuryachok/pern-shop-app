@@ -12,10 +12,6 @@ export class ExchangeIdDto {
   exchangeId: number;
 }
 
-export class ExtExchangeIdDto extends ExchangeIdDto {
-  myId: number;
-}
-
 export class CreateExchangeDto {
   @ApiProperty()
   @IsId()

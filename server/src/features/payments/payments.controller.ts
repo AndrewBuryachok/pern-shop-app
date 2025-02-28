@@ -46,10 +46,7 @@ export class PaymentsController {
 
   @Roles(Role.BANKER)
   @Delete(':paymentId')
-  deletePayment(
-    @MyId() myId: number,
-    @Param() { paymentId }: PaymentIdDto,
-  ): Promise<void> {
-    return this.paymentsService.deletePayment({ paymentId, myId });
+  deletePayment(@Param() { paymentId }: PaymentIdDto): Promise<void> {
+    return this.paymentsService.deletePayment(paymentId);
   }
 }

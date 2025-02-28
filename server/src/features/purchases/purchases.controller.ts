@@ -102,6 +102,6 @@ export class PurchasesController {
   @Roles(Role.MERCHANT)
   @Delete(':purchaseId')
   deletePurchase(@Param() { purchaseId }: PurchaseIdDto): Promise<void> {
-    return this.purchasesService.deletePurchase({ purchaseId });
+    return this.purchasesService.deletePurchase(purchaseId);
   }
 }

@@ -4,7 +4,7 @@ import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { Payment } from './payment.entity';
 import { CardsService } from '../cards/cards.service';
 import { MqttService } from '../mqtt/mqtt.service';
-import { ExtCreatePaymentDto, ExtPaymentIdDto } from './payment.dto';
+import { ExtCreatePaymentDto } from './payment.dto';
 import { Request, Response } from '../../common/interfaces';
 import { AppException } from '../../common/exceptions';
 import { PaymentError } from './payment-error.enum';
@@ -67,10 +67,8 @@ export class PaymentsService {
     );
   }
 
-  async deletePayment(dto: ExtPaymentIdDto): Promise<void> {
-    const payment = await this.paymentsRepository.findOneBy({
-      id: dto.paymentId,
-    });
+  async deletePayment(id: number): Promise<void> {
+    const payment = await this.paymentsRepository.findOneBy({ id });
     await this.cardsService.decreaseCardBalance({
       ...payment,
       cardId: payment.receiverCardId,
@@ -79,13 +77,7 @@ export class PaymentsService {
       ...payment,
       cardId: payment.senderCardId,
     });
-    await this.create({
-      ...dto,
-      ...payment,
-      hasRole: true,
-      senderCardId: payment.receiverCardId,
-      receiverCardId: payment.senderCardId,
-    });
+    await this.delete(payment);
   }
 
   async checkPaymentExists(id: number): Promise<void> {
@@ -104,6 +96,14 @@ export class PaymentsService {
       return payment;
     } catch (error) {
       throw new AppException(PaymentError.CREATE_FAILED);
+    }
+  }
+
+  private async delete(payment: Payment): Promise<void> {
+    try {
+      await this.paymentsRepository.remove(payment);
+    } catch (error) {
+      throw new AppException(PaymentError.DELETE_FAILED);
     }
   }
 

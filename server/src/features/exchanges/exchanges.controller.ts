@@ -51,10 +51,7 @@ export class ExchangesController {
 
   @Roles(Role.BANKER)
   @Delete(':exchangeId')
-  deleteExchange(
-    @MyId() myId: number,
-    @Param() { exchangeId }: ExchangeIdDto,
-  ): Promise<void> {
-    return this.exchangesService.deleteExchange({ exchangeId, myId });
+  deleteExchange(@Param() { exchangeId }: ExchangeIdDto): Promise<void> {
+    return this.exchangesService.deleteExchange(exchangeId);
   }
 }

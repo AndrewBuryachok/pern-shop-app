@@ -9,4 +9,5 @@ export enum GoodError {
   EDIT_FAILED = '500: Failed to edit good',
   COMPLETE_FAILED = '500: Failed to complete good',
   BUY_FAILED = '500: Failed to buy good',
+  UNBUY_FAILED = '500: Failed to unbuy good',
 }

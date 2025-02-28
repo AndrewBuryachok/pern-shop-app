@@ -5,11 +5,7 @@ import { Purchase } from './purchase.entity';
 import { DeliveriesService } from '../deliveries/deliveries.service';
 import { GoodsService } from '../goods/goods.service';
 import { MqttService } from '../mqtt/mqtt.service';
-import {
-  ExtCreatePurchaseDto,
-  ExtRatePurchaseDto,
-  PurchaseIdDto,
-} from './purchase.dto';
+import { ExtCreatePurchaseDto, ExtRatePurchaseDto } from './purchase.dto';
 import { Request, Response } from '../../common/interfaces';
 import { AppException } from '../../common/exceptions';
 import { PurchaseError } from './purchase-error.enum';
@@ -136,10 +132,9 @@ export class PurchasesService {
     );
   }
 
-  async deletePurchase(dto: PurchaseIdDto): Promise<void> {
-    const purchase = await this.purchasesRepository.findOneBy({
-      id: dto.purchaseId,
-    });
+  async deletePurchase(id: number): Promise<void> {
+    const purchase = await this.purchasesRepository.findOneBy({ id });
+    await this.goodsService.unbuyGood(purchase.goodId, purchase.amount);
     await this.delete(purchase);
   }
 

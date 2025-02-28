@@ -4,7 +4,7 @@ import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { Exchange } from './exchange.entity';
 import { CardsService } from '../cards/cards.service';
 import { MqttService } from '../mqtt/mqtt.service';
-import { ExtCreateExchangeDto, ExtExchangeIdDto } from './exchange.dto';
+import { ExtCreateExchangeDto } from './exchange.dto';
 import { Request, Response } from '../../common/interfaces';
 import { AppException } from '../../common/exceptions';
 import { ExchangeError } from './exchange-error.enum';
@@ -60,10 +60,8 @@ export class ExchangesService {
     );
   }
 
-  async deleteExchange(dto: ExtExchangeIdDto): Promise<void> {
-    const exchange = await this.exchangesRepository.findOneBy({
-      id: dto.exchangeId,
-    });
+  async deleteExchange(id: number): Promise<void> {
+    const exchange = await this.exchangesRepository.findOneBy({ id });
     exchange.type
       ? await this.cardsService.decreaseCardBalance({
           ...exchange,
@@ -73,13 +71,7 @@ export class ExchangesService {
           ...exchange,
           cardId: exchange.customerCardId,
         });
-    await this.create({
-      ...dto,
-      ...exchange,
-      hasRole: true,
-      cardId: exchange.customerCardId,
-      type: !exchange.type,
-    });
+    await this.delete(exchange);
   }
 
   async checkExchangeExists(id: number): Promise<void> {
@@ -98,6 +90,14 @@ export class ExchangesService {
       return exchange;
     } catch (error) {
       throw new AppException(ExchangeError.CREATE_FAILED);
+    }
+  }
+
+  private async delete(exchange: Exchange): Promise<void> {
+    try {
+      await this.exchangesRepository.remove(exchange);
+    } catch (error) {
+      throw new AppException(ExchangeError.DELETE_FAILED);
     }
   }
 
