@@ -1,5 +1,5 @@
 import { MqttClient, connect } from 'mqtt';
-import { Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { Event } from '../../common/enums';
 
@@ -10,7 +10,10 @@ export class MqttService {
   private notifications = new Map<string, Date>();
   private unnotifications = new Map<string, Date>();
 
-  constructor(private usersService: UsersService) {
+  constructor(
+    @Inject(forwardRef(() => UsersService))
+    private usersService: UsersService,
+  ) {
     this.client = connect(process.env.BROKER_URL);
     this.client.on('connect', () =>
       this.client.subscribe([

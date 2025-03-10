@@ -1,7 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { User } from './user.entity';
+import { MqttService } from '../mqtt/mqtt.service';
 import { TwitchService } from '../twitch/twitch.service';
 import {
   CreateUserDto,
@@ -18,12 +19,15 @@ import { hashData } from '../../common/utils';
 import { AppException } from '../../common/exceptions';
 import { UserError } from './user-error.enum';
 import { Role } from './role.enum';
+import { Event } from '../../common/enums';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User)
     private usersRepository: Repository<User>,
+    @Inject(forwardRef(() => MqttService))
+    private mqttService: MqttService,
     private twitchService: TwitchService,
   ) {}
 
@@ -230,6 +234,15 @@ export class UsersService {
   async createUser(dto: CreateUserDto): Promise<User> {
     await this.checkNickNotUsed(dto.nick);
     const user = await this.create(dto);
+    const body = await this.selectUsersQueryBuilder()
+      .where('user.id = :id', { id: user.id })
+      .getOne();
+    this.mqttService.publishEvent(
+      0,
+      Event.USERS,
+      user.id,
+      JSON.stringify(body),
+    );
     return user;
   }
 
@@ -266,6 +279,15 @@ export class UsersService {
       await this.checkNickNotUsed(dto.nick);
     }
     await this.editProfile(user, dto);
+    const body = await this.selectUsersQueryBuilder()
+      .where('user.id = :id', { id: user.id })
+      .getOne();
+    this.mqttService.publishEvent(
+      0,
+      Event.USERS,
+      user.id,
+      JSON.stringify(body),
+    );
   }
 
   async updateUserPassword(user: User, password: string): Promise<void> {
