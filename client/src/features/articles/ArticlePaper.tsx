@@ -1,8 +1,15 @@
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Group, HoverCard, Paper, Stack } from '@mantine/core';
+import { Button, Group, HoverCard, Paper, Stack, Tooltip } from '@mantine/core';
 import { useIntersection } from '@mantine/hooks';
-import { IconEye, IconThumbDown, IconThumbUp } from '@tabler/icons';
+import {
+  IconBell,
+  IconBellOff,
+  IconEye,
+  IconMessage,
+  IconThumbDown,
+  IconThumbUp,
+} from '@tabler/icons';
 import { IAction } from '../../common/interfaces';
 import { Article } from './article.model';
 import { getCurrentUser } from '../auth/auth.slice';
@@ -70,7 +77,12 @@ export default function ArticlePaper({ article, ...props }: Props) {
   const { ref, entry } = useIntersection();
 
   useEffect(() => {
-    if (user && !article.viewed && entry?.isIntersecting) {
+    if (
+      user &&
+      !article.viewed &&
+      !props.isViewedLoading &&
+      entry?.isIntersecting
+    ) {
       handleViewSubmit({ articleId: article.id });
     }
   }, [entry?.isIntersecting]);
@@ -81,23 +93,34 @@ export default function ArticlePaper({ article, ...props }: Props) {
         <Group spacing={0} position='apart'>
           <Group spacing={8}>
             <AvatarWithDateText {...article} />
-            <Button
-              color={article.subscribed ? 'gray' : undefined}
-              loading={props.isSubscribersLoading}
-              loaderPosition='center'
-              onClick={() =>
-                user
-                  ? article.subscribed
-                    ? handleUnsubscribeSubmit({ userId: article.user.id })
-                    : handleSubscribeSubmit({ userId: article.user.id })
-                  : openAuthModal()
+            <Tooltip
+              label={
+                article.subscribed
+                  ? t('actions.unsubscribe')
+                  : t('actions.subscribe')
               }
-              compact
+              withArrow
             >
-              {article.subscribed
-                ? t('actions.unsubscribe')
-                : t('actions.subscribe')}
-            </Button>
+              <Button
+                color={article.subscribed ? 'gray' : undefined}
+                loading={props.isSubscribersLoading}
+                loaderPosition='center'
+                onClick={() =>
+                  user
+                    ? article.subscribed
+                      ? handleUnsubscribeSubmit({ userId: article.user.id })
+                      : handleSubscribeSubmit({ userId: article.user.id })
+                    : openAuthModal()
+                }
+                compact
+              >
+                {article.subscribed ? (
+                  <IconBellOff size={16} />
+                ) : (
+                  <IconBell size={16} />
+                )}
+              </Button>
+            </Tooltip>
           </Group>
           <CustomActions
             data={article}
@@ -157,6 +180,14 @@ export default function ArticlePaper({ article, ...props }: Props) {
                 </HoverCard.Dropdown>
               )}
             </HoverCard>
+            <Button
+              leftIcon={<IconMessage size={16} />}
+              variant='light'
+              color='gray'
+              compact
+            >
+              {article.comments}
+            </Button>
           </Group>
           <HoverCard zIndex={100} offset={4} position='top-end' withArrow>
             <HoverCard.Target>

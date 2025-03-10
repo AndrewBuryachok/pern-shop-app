@@ -49,7 +49,7 @@ export default function AccountMenu() {
   ];
 
   return (
-    <Menu offset={4} position='bottom-end' trigger='hover'>
+    <Menu offset={4} position='bottom-end'>
       <Menu.Target>
         <Avatar
           size={32}

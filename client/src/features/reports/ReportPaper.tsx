@@ -1,7 +1,12 @@
 import { useEffect } from 'react';
 import { Button, Group, HoverCard, Paper, Stack } from '@mantine/core';
 import { useIntersection } from '@mantine/hooks';
-import { IconEye, IconThumbDown, IconThumbUp } from '@tabler/icons';
+import {
+  IconEye,
+  IconMessage,
+  IconThumbDown,
+  IconThumbUp,
+} from '@tabler/icons';
 import { IAction } from '../../common/interfaces';
 import { Report } from './report.model';
 import { getCurrentUser } from '../auth/auth.slice';
@@ -48,7 +53,12 @@ export default function ReportPaper({ report, ...props }: Props) {
   const { ref, entry } = useIntersection();
 
   useEffect(() => {
-    if (user && !report.viewed && entry?.isIntersecting) {
+    if (
+      user &&
+      !report.viewed &&
+      !props.isViewedLoading &&
+      entry?.isIntersecting
+    ) {
       handleViewSubmit({ reportId: report.id });
     }
   }, [entry?.isIntersecting]);
@@ -122,6 +132,14 @@ export default function ReportPaper({ report, ...props }: Props) {
                 </HoverCard.Dropdown>
               )}
             </HoverCard>
+            <Button
+              leftIcon={<IconMessage size={16} />}
+              variant='light'
+              color='gray'
+              compact
+            >
+              {report.comments}
+            </Button>
           </Group>
           <HoverCard zIndex={100} offset={4} position='top-end' withArrow>
             <HoverCard.Target>

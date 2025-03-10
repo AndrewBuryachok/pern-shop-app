@@ -26,7 +26,7 @@ export default function SettingsMenu() {
   const dispatch = useAppDispatch();
 
   return (
-    <Menu offset={4} position='bottom-end' trigger='hover'>
+    <Menu offset={4} position='bottom-end'>
       <Menu.Target>
         <ActionIcon size={32} variant='filled' color='violet'>
           <IconSettings size={24} />

@@ -1,7 +1,12 @@
 import { useEffect } from 'react';
 import { Button, Group, HoverCard, Paper, Stack } from '@mantine/core';
 import { useIntersection } from '@mantine/hooks';
-import { IconEye, IconThumbDown, IconThumbUp } from '@tabler/icons';
+import {
+  IconEye,
+  IconMessage,
+  IconThumbDown,
+  IconThumbUp,
+} from '@tabler/icons';
 import { IAction } from '../../common/interfaces';
 import { Poll } from './poll.model';
 import { getCurrentUser } from '../auth/auth.slice';
@@ -50,7 +55,12 @@ export default function PollPaper({ poll, ...props }: Props) {
   const { ref, entry } = useIntersection();
 
   useEffect(() => {
-    if (user && !poll.viewed && entry?.isIntersecting) {
+    if (
+      user &&
+      !poll.viewed &&
+      !props.isViewedLoading &&
+      entry?.isIntersecting
+    ) {
       handleViewSubmit({ pollId: poll.id });
     }
   }, [entry?.isIntersecting]);
@@ -120,6 +130,14 @@ export default function PollPaper({ poll, ...props }: Props) {
                 </HoverCard.Dropdown>
               )}
             </HoverCard>
+            <Button
+              leftIcon={<IconMessage size={16} />}
+              variant='light'
+              color='gray'
+              compact
+            >
+              {poll.comments}
+            </Button>
           </Group>
           <HoverCard zIndex={100} offset={4} position='top-end' withArrow>
             <HoverCard.Target>
