@@ -3,6 +3,7 @@ export interface UserIdDto {
 }
 
 export interface EditUserProfileDto extends UserIdDto {
+  nick: string;
   avatar: string;
   background: number;
   discord: string;

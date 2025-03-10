@@ -10,7 +10,6 @@ import { getCurrentUser } from '../auth/auth.slice';
 import { useEditUserProfileMutation } from './users.api';
 import { EditUserProfileDto } from './user.dto';
 import CustomForm from '../../common/components/CustomForm';
-import CustomAvatar from '../../common/components/CustomAvatar';
 import ProfileAvatar from '../../common/components/ProfileAvatar';
 import { isUserNotHasRole, selectBackgrounds } from '../../common/utils';
 import {
@@ -29,6 +28,7 @@ export default function EditUserProfileModal({ data: user }: Props) {
   const form = useForm({
     initialValues: {
       userId: user.id,
+      nick: user.nick,
       avatar: user.avatar,
       background: `${user.background}`,
       discord: user.discord,
@@ -57,11 +57,12 @@ export default function EditUserProfileModal({ data: user }: Props) {
       isChanged={!form.isDirty()}
     >
       <TextInput
-        label={t('columns.user')}
-        icon={<CustomAvatar {...user} />}
-        iconWidth={48}
-        value={user.nick}
-        readOnly
+        label={t('columns.nick')}
+        placeholder={t('columns.nick')}
+        required
+        minLength={MIN_NICK_LENGTH}
+        maxLength={MAX_NICK_LENGTH}
+        {...form.getInputProps('nick')}
       />
       <TextInput
         label={t('columns.avatar')}
