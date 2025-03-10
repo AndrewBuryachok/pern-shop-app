@@ -1,3 +1,4 @@
+import { handleUserEvent } from '../users/users-events.handler';
 import { handleMessageEvent } from '../messages/messages-events.handler';
 import { handleReportCommentEvent } from '../reports/comments-events.handler';
 import { handleReportLikeEvent } from '../reports/likes-events.handler';
@@ -12,6 +13,9 @@ import { Event } from '../../common/enums';
 
 export const handleEvent = (page: Event, id: number, json: string) => {
   switch (page) {
+    case Event.USERS:
+      handleUserEvent(json);
+      break;
     case Event.MESSAGES:
       handleMessageEvent(id, json);
       break;

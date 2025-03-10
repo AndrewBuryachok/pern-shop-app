@@ -1,4 +1,5 @@
 export enum Event {
+  USERS = 'users',
   MESSAGES = 'messages',
   REPORTS_COMMENTS = 'reports-comments',
   REPORTS_LIKES = 'reports-likes',
