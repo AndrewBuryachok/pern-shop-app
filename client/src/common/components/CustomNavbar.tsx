@@ -3,9 +3,12 @@ import { Link, useLocation } from 'react-router-dom';
 import { Navbar, NavLink, ScrollArea } from '@mantine/core';
 import {
   IconArticle,
+  IconBasket,
+  IconBuildingCircus,
   IconBuildingCottage,
   IconBuildingSkyscraper,
   IconBuildingStore,
+  IconBuildingWarehouse,
   IconChartBar,
   IconChecklist,
   IconHome,
@@ -37,84 +40,110 @@ export default function CustomNavbar(props: Props) {
 
   const links = [
     {
-      route: 'home',
+      label: 'home',
       icon: IconHome,
     },
     {
-      route: 'reports',
+      label: 'reports',
       icon: IconNews,
     },
     {
-      route: 'articles',
+      label: 'articles',
       icon: IconArticle,
     },
     {
-      route: 'polls',
+      label: 'polls',
       icon: IconChartBar,
     },
     {
-      route: 'chats',
+      label: 'chats',
       icon: IconMessages,
       sub: '/my',
     },
     {
-      route: 'wallet',
+      label: 'wallet',
       icon: IconWallet,
-      nested: ['cards/my', 'payments/my', 'exchanges/my', 'invoices/my'],
-    },
-    {
-      route: 'trading',
-      icon: IconBuildingStore,
       nested: [
-        'goods',
-        'purchases/my',
-        'deliveries',
-        'stalls',
-        'rents',
-        'cells',
-        'leases',
-        'shops',
-        'markets',
-        'markets-tags',
-        'storages',
-        'storages-tags',
+        { label: 'cards', sub: '/my' },
+        { label: 'payments', sub: '/my' },
+        { label: 'exchanges', sub: '/my' },
+        { label: 'invoices', sub: '/my' },
       ],
     },
     {
-      route: 'mail',
+      label: 'trading',
+      icon: IconBasket,
+      nested: [
+        { label: 'goods' },
+        { label: 'purchases', sub: '/my' },
+        { label: 'deliveries' },
+      ],
+    },
+    {
+      label: 'shops',
+      icon: IconBuildingStore,
+    },
+    {
+      label: 'markets',
+      icon: IconBuildingCircus,
+      nested: [
+        { label: 'rents' },
+        { label: 'stalls' },
+        { label: 'markets-tags' },
+        { label: 'markets' },
+      ],
+    },
+    {
+      label: 'storages',
+      icon: IconBuildingWarehouse,
+      nested: [
+        { label: 'leases' },
+        { label: 'cells' },
+        { label: 'storages-tags' },
+        { label: 'storages' },
+      ],
+    },
+    {
+      label: 'mail',
       icon: IconMailbox,
-      nested: ['orders', 'haulages', 'hires', 'boxes', 'stations'],
+      nested: [
+        { label: 'orders' },
+        { label: 'haulages' },
+        { label: 'hires' },
+        { label: 'boxes' },
+        { label: 'stations' },
+      ],
     },
     {
-      route: 'services',
+      label: 'services',
       icon: IconChecklist,
-      nested: ['tasks', 'adverts'],
+      nested: [{ label: 'tasks' }, { label: 'adverts' }],
     },
     {
-      route: 'map',
+      label: 'map',
       icon: IconMap,
     },
     {
-      route: 'farms',
+      label: 'farms',
       icon: IconBuildingCottage,
     },
     {
-      route: 'towns',
+      label: 'towns',
       icon: IconBuildingSkyscraper,
       nested: [
-        'towns',
-        'residents/my',
-        'invitations/sent',
-        'applications/sent',
+        { label: 'towns' },
+        { label: 'residents', sub: '/my' },
+        { label: 'invitations', sub: '/sent' },
+        { label: 'applications', sub: '/sent' },
       ],
     },
     {
-      route: 'ratings',
+      label: 'ratings',
       icon: IconStar,
       sub: '/top',
     },
     {
-      route: 'users',
+      label: 'users',
       icon: IconUsers,
     },
   ];
@@ -135,36 +164,34 @@ export default function CustomNavbar(props: Props) {
             {links.map((link) =>
               link.nested ? (
                 <NavLink
-                  key={link.route}
-                  label={t(`navbar.${link.route}`)}
+                  key={link.label}
+                  label={t(`navbar.${link.label}`)}
                   icon={
                     <NotificationBadgeByPages
-                      pages={link.nested.map((route) => route.split('/')[0])}
+                      pages={link.nested.map((sublink) => sublink.label)}
                       icon={<link.icon size={16} />}
                     />
                   }
-                  active={link.nested
-                    .map((route) => route.split('/')[0])
-                    .includes(active)}
+                  active={
+                    !!link.nested.find((sublink) => sublink.label === active)
+                  }
                   childrenOffset={28}
                 >
-                  {link.nested.map((route) => (
+                  {link.nested.map((sublink) => (
                     <NavLink
-                      key={route}
-                      label={t(`navbar.${route.split('/')[0]}`)}
+                      key={sublink.label}
+                      label={t(`navbar.${sublink.label}`)}
                       icon={
-                        <NotificationBadgeByPages
-                          pages={[route.split('/')[0]]}
-                        />
+                        <NotificationBadgeByPages pages={[sublink.label]} />
                       }
                       component={Link}
-                      to={route}
-                      active={route.split('/')[0] === active}
+                      to={`/${sublink.label}${sublink.sub || ''}`}
+                      active={sublink.label === active}
                       onClick={() =>
                         notifications
                           .filter(
                             (notification) =>
-                              notification.page === route.split('/')[0],
+                              notification.page === sublink.label,
                           )
                           .forEach((notification) =>
                             dispatch(
@@ -177,23 +204,23 @@ export default function CustomNavbar(props: Props) {
                 </NavLink>
               ) : (
                 <NavLink
-                  key={link.route}
-                  label={t(`navbar.${link.route}`)}
+                  key={link.label}
+                  label={t(`navbar.${link.label}`)}
                   icon={
                     <NotificationBadgeByPages
-                      pages={[link.route]}
+                      pages={[link.label]}
                       icon={<link.icon size={16} />}
                     />
                   }
                   component={Link}
-                  to={`/${link.route === 'home' ? '' : link.route}${
+                  to={`/${link.label === 'home' ? '' : link.label}${
                     link.sub || ''
                   }`}
-                  active={link.route === active}
+                  active={link.label === active}
                   onClick={() =>
                     notifications
                       .filter(
-                        (notification) => notification.page === link.route,
+                        (notification) => notification.page === link.label,
                       )
                       .forEach((notification) =>
                         dispatch(publishNotificationWithUser(notification.key)),
