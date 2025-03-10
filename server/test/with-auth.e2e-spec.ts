@@ -304,11 +304,12 @@ describe('With Auth', () => {
         .patch(`/users/${user.id}/profile`)
         .set('Authorization', `Bearer ${user.access}`)
         .send({
+          nick: user.nick,
           avatar: '',
           background: 1,
           discord: '',
           twitch: '',
-          youtube: 'string',
+          youtube: '',
         })
         .expect('');
     });

@@ -24,6 +24,6 @@ export class AtStrategy extends PassportStrategy(Strategy, 'jwt-access') {
     if (!user) {
       throw new AppException(AuthError.INVALID_ACCESS_TOKEN);
     }
-    return { ...payload, roles: user.roles };
+    return { ...payload, nick: user.nick, roles: user.roles };
   }
 }

@@ -2,10 +2,10 @@ import { Role } from '../users/role.enum';
 
 export interface JwtPayload {
   sub: number;
-  nick: string;
 }
 
 export interface ExtJwtPayload extends JwtPayload {
+  nick: string;
   roles: Role[];
 }
 

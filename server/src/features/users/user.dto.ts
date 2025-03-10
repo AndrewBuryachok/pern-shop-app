@@ -25,7 +25,7 @@ export class UserNickDto {
   nick: string;
 }
 
-export class EditUserProfileDto {
+export class EditUserProfileDto extends UserNickDto {
   @ApiProperty()
   @IsContact()
   avatar: string;

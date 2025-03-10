@@ -262,6 +262,9 @@ export class UsersService {
       throw new AppException(UserError.NOT_OWNER);
     }
     const user = await this.usersRepository.findOneBy({ id: dto.userId });
+    if (user.nick !== dto.nick) {
+      await this.checkNickNotUsed(dto.nick);
+    }
     await this.editProfile(user, dto);
   }
 
@@ -450,6 +453,7 @@ export class UsersService {
     dto: ExtEditUserProfileDto,
   ): Promise<void> {
     try {
+      user.nick = dto.nick;
       user.avatar = dto.avatar;
       user.background = dto.background;
       user.discord = dto.discord;
