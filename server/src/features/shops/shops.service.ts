@@ -57,7 +57,7 @@ export class ShopsService {
   async selectShopGoods(shopId: number): Promise<Good[]> {
     const shop = await this.shopsRepository
       .createQueryBuilder('shop')
-      .leftJoin('shop.goods', 'good')
+      .leftJoin('shop.goods', 'good', 'good.amount > 0')
       .where('shop.id = :shopId', { shopId })
       .orderBy('good.id', 'DESC')
       .select([
@@ -171,7 +171,9 @@ export class ShopsService {
       .createQueryBuilder('shop')
       .innerJoin('shop.card', 'ownerCard')
       .innerJoin('ownerCard.user', 'ownerUser')
-      .loadRelationCountAndMap('shop.goods', 'shop.goods')
+      .loadRelationCountAndMap('shop.goods', 'shop.goods', 'good', (qb) =>
+        qb.where('good.amount > 0'),
+      )
       .where(
         new Brackets((qb) =>
           qb.where(`${!req.id}`).orWhere('shop.id = :id', { id: req.id }),

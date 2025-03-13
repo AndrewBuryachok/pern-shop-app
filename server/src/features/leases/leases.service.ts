@@ -93,7 +93,7 @@ export class LeasesService {
   async selectLeaseThings(leaseId: number): Promise<Thing[]> {
     const lease = await this.leasesRepository
       .createQueryBuilder('lease')
-      .leftJoin('lease.goods', 'good')
+      .leftJoin('lease.goods', 'good', 'good.amount > 0')
       .where('lease.id = :leaseId', { leaseId })
       .orderBy('good.id', 'DESC')
       .select([

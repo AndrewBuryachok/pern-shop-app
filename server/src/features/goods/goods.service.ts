@@ -38,20 +38,6 @@ export class GoodsService {
   async getMainGoods(req: Request): Promise<Response<Good>> {
     const [result, count] = await this.getGoodsQueryBuilder(req)
       .andWhere('good.amount > 0')
-      .andWhere(
-        new Brackets((qb) =>
-          qb
-            .where('rent.completedAt IS NULL')
-            .orWhere('rent.completedAt > NOW()'),
-        ),
-      )
-      .andWhere(
-        new Brackets((qb) =>
-          qb
-            .where('lease.completedAt IS NULL')
-            .orWhere('lease.completedAt > NOW()'),
-        ),
-      )
       .getManyAndCount();
     return { result, count };
   }
@@ -264,7 +250,11 @@ export class GoodsService {
     ) {
       throw new AppException(GoodError.NOT_OWNER);
     }
-    if (good.completedAt) {
+    if (
+      good.completedAt ||
+      good.rent?.completedAt < new Date() ||
+      good.lease?.completedAt < new Date()
+    ) {
       throw new AppException(GoodError.ALREADY_COMPLETED);
     }
     return good;
@@ -406,7 +396,22 @@ export class GoodsService {
       .leftJoin('lease.card', 'storageSellerCard')
       .leftJoin('storageSellerCard.user', 'storageSellerUser')
       .loadRelationCountAndMap('good.states', 'good.states')
-      .where(
+      .where('good.completedAt IS NULL')
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where('rent.completedAt IS NULL')
+            .orWhere('rent.completedAt > NOW()'),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where('lease.completedAt IS NULL')
+            .orWhere('lease.completedAt > NOW()'),
+        ),
+      )
+      .andWhere(
         new Brackets((qb) =>
           qb.where(`${!req.id}`).orWhere('good.id = :id', { id: req.id }),
         ),
@@ -593,39 +598,6 @@ export class GoodsService {
             .orWhere('good.createdAt <= :maxDate', { maxDate: req.maxDate }),
         ),
       )
-      .andWhere(
-        new Brackets((qb) =>
-          qb
-            .where(`${req.completed !== 1}`)
-            .orWhere('good.completedAt IS NOT NULL')
-            .orWhere('rent.completedAt < NOW()')
-            .orWhere('lease.completedAt < NOW()'),
-        ),
-      )
-      .andWhere(
-        new Brackets((qb) =>
-          qb.where(`${req.completed !== -1}`).orWhere(
-            new Brackets((qb) =>
-              qb
-                .where('good.completedAt IS NULL')
-                .andWhere(
-                  new Brackets((qb) =>
-                    qb
-                      .where('rent.completedAt IS NULL')
-                      .orWhere('rent.completedAt > NOW()'),
-                  ),
-                )
-                .andWhere(
-                  new Brackets((qb) =>
-                    qb
-                      .where('lease.completedAt IS NULL')
-                      .orWhere('lease.completedAt > NOW()'),
-                  ),
-                ),
-            ),
-          ),
-        ),
-      )
       .orderBy('good.id', 'DESC')
       .skip(req.skip)
       .take(req.take)
@@ -686,7 +658,6 @@ export class GoodsService {
         'good.kit',
         'good.price',
         'good.createdAt',
-        'good.completedAt',
       ]);
   }
 }
