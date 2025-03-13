@@ -95,6 +95,6 @@ export const completeGoodAction = {
       title: t('actions.complete') + ' ' + t('modals.goods'),
       children: <CompleteGoodModal data={good} />,
     }),
-  disable: (good: Good) => !!good.completedAt,
+  disable: () => false,
   color: Color.RED,
 };

@@ -153,11 +153,6 @@ export default function ViewGoodModal({ data: good }: Props) {
         value={parseTime(good.createdAt)}
         readOnly
       />
-      <TextInput
-        label={t('columns.completed')}
-        value={parseTime(good.completedAt)}
-        readOnly
-      />
       <Input.Wrapper label={t('columns.rate')}>
         <Rating value={rating?.rate} readOnly />
       </Input.Wrapper>

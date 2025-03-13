@@ -46,7 +46,6 @@ export default function GoodsPage() {
     maxPrice: +(searchParams.get('maxPrice') || 0) || null,
     minDate: searchParams.get('minDate'),
     maxDate: searchParams.get('maxDate'),
-    completed: searchParams.get('completed'),
   };
 
   const response = {

@@ -113,6 +113,6 @@ export const editGoodAction = {
       title: t('actions.edit') + ' ' + t('modals.goods'),
       children: <EditGoodModal data={good} />,
     }),
-  disable: (good: Good) => !!good.completedAt,
+  disable: () => false,
   color: Color.YELLOW,
 };

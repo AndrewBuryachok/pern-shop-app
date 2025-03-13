@@ -16,5 +16,4 @@ export interface MdThing extends SmThing {
 
 export interface LgThing extends MdThing {
   createdAt: Date;
-  completedAt?: Date;
 }
