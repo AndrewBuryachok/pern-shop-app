@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Patch,
@@ -17,6 +18,7 @@ import {
   CreateStorageGoodDto,
   EditGoodDto,
   GoodIdDto,
+  UpdateGoodDto,
 } from './good.dto';
 import { Request, Response } from '../../common/interfaces';
 import { HasRole, MyId, MyNick, Public, Roles } from '../../common/decorators';
@@ -107,6 +109,16 @@ export class GoodsController {
     return this.goodsService.editGood({ ...dto, goodId, myId, hasRole });
   }
 
+  @Patch(':goodId/states')
+  updateGood(
+    @MyId() myId: number,
+    @HasRole(Role.MERCHANT) hasRole: boolean,
+    @Param() { goodId }: GoodIdDto,
+    @Body() dto: UpdateGoodDto,
+  ): Promise<void> {
+    return this.goodsService.updateGood({ ...dto, goodId, myId, hasRole });
+  }
+
   @Post(':goodId')
   completeGood(
     @MyId() myId: number,
@@ -115,5 +127,15 @@ export class GoodsController {
     @Param() { goodId }: GoodIdDto,
   ): Promise<void> {
     return this.goodsService.completeGood({ goodId, myId, nick, hasRole });
+  }
+
+  @Delete(':goodId')
+  deleteGood(
+    @MyId() myId: number,
+    @MyNick() nick: string,
+    @HasRole(Role.MERCHANT) hasRole: boolean,
+    @Param() { goodId }: GoodIdDto,
+  ): Promise<void> {
+    return this.goodsService.deleteGood({ goodId, myId, nick, hasRole });
   }
 }

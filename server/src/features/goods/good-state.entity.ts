@@ -7,7 +7,7 @@ export class GoodState extends State {
   @Column({ name: 'good_id' })
   goodId: number;
 
-  @ManyToOne(() => Good, { nullable: false })
+  @ManyToOne(() => Good, { nullable: false, onDelete: 'CASCADE' })
   @JoinColumn({ name: 'good_id' })
   good: Good;
 }

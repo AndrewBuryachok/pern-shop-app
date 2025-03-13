@@ -20,6 +20,11 @@ export class GoodIdDto {
   goodId: number;
 }
 
+export class ExtGoodIdDto extends GoodIdDto {
+  myId: number;
+  hasRole: boolean;
+}
+
 export class CreateShopGoodDto extends CreateThingDto {
   @ApiProperty()
   @IsId()
@@ -56,7 +61,7 @@ export class ExtCreateStorageGoodDto extends CreateStorageGoodDto {
   hasRole: boolean;
 }
 
-export class EditGoodDto extends ExtEditStateDto {}
+export class EditGoodDto extends CreateThingDto {}
 
 export class ExtEditGoodDto extends EditGoodDto {
   goodId: number;
@@ -64,7 +69,10 @@ export class ExtEditGoodDto extends EditGoodDto {
   hasRole: boolean;
 }
 
-export class CompleteGoodDto extends GoodIdDto {
+export class UpdateGoodDto extends ExtEditStateDto {}
+
+export class ExtUpdateGoodDto extends UpdateGoodDto {
+  goodId: number;
   myId: number;
   hasRole: boolean;
 }

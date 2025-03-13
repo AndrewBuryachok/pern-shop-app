@@ -25,11 +25,11 @@ describe('With Auth', () => {
   let hub: Tokens;
   let end: Tokens;
   let messageId: number;
-  let reportsId: number;
+  let reportsId: number[];
   let reportCommentId: number;
-  let articlesId: number;
+  let articlesId: number[];
   let articleCommentId: number;
-  let pollsId: number;
+  let pollsId: number[];
   let pollCommentId: number;
   let cardId: number;
   let exchangesId: number;
@@ -49,18 +49,18 @@ describe('With Auth', () => {
   let rentId: number;
   let leaseId: number;
   let hireId: number;
-  let shopGoodId: number;
-  let marketGoodId: number;
-  let storageGoodId: number;
-  let shopsPurchasesId: number;
-  let marketsPurchasesId: number;
-  let storagesPurchasesId: number;
-  let shopsDeliveriesId: number;
-  let marketsDeliveriesId: number;
-  let storagesDeliveriesId: number;
-  let ordersId: number;
-  let haulagesId: number;
-  let tasksId: number;
+  let shopGoodsId: number[];
+  let marketGoodsId: number[];
+  let storageGoodsId: number[];
+  let shopsPurchasesId: number[];
+  let marketsPurchasesId: number[];
+  let storagesPurchasesId: number[];
+  let shopsDeliveriesId: number[];
+  let marketsDeliveriesId: number[];
+  let storagesDeliveriesId: number[];
+  let ordersId: number[];
+  let haulagesId: number[];
+  let tasksId: number[];
   let advertId: number;
   let ratingId: number;
 
@@ -2245,6 +2245,22 @@ describe('With Auth', () => {
         .expect('');
     });
 
+    it('POST /goods/markets', async () => {
+      return request(app.getHttpServer())
+        .post('/goods/markets')
+        .set('Authorization', `Bearer ${user.access}`)
+        .send({
+          rentId,
+          item: 1,
+          description: '',
+          amount: 2,
+          intake: 1,
+          kit: 1,
+          price: 5,
+        })
+        .expect('');
+    });
+
     it('GET /rents/:rentId/things', async () => {
       return request(app.getHttpServer())
         .get(`/rents/${rentId}/things`)
@@ -2319,6 +2335,22 @@ describe('With Auth', () => {
         .expect('');
     });
 
+    it('POST /goods/storages', async () => {
+      return request(app.getHttpServer())
+        .post('/goods/storages')
+        .set('Authorization', `Bearer ${user.access}`)
+        .send({
+          leaseId,
+          item: 1,
+          description: '',
+          amount: 2,
+          intake: 1,
+          kit: 1,
+          price: 5,
+        })
+        .expect('');
+    });
+
     it('GET /leases/:leaseId/things', async () => {
       return request(app.getHttpServer())
         .get(`/leases/${leaseId}/things`)
@@ -2327,6 +2359,22 @@ describe('With Auth', () => {
   });
 
   describe('Shops Goods', () => {
+    it('POST /goods/shops', async () => {
+      return request(app.getHttpServer())
+        .post('/goods/shops')
+        .set('Authorization', `Bearer ${user.access}`)
+        .send({
+          shopId,
+          item: 1,
+          description: '',
+          amount: 2,
+          intake: 1,
+          kit: 1,
+          price: 5,
+        })
+        .expect('');
+    });
+
     it('POST /goods/shops', async () => {
       return request(app.getHttpServer())
         .post('/goods/shops')
@@ -2354,7 +2402,7 @@ describe('With Auth', () => {
         .get(`/goods/my?shop=${shopId}`)
         .set('Authorization', `Bearer ${user.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0))
-        .then((res) => (shopGoodId = res.body.result[0].id));
+        .then((res) => (shopGoodsId = res.body.result.map((g) => g.id)));
     });
 
     it('GET /goods/placed', async () => {
@@ -2381,7 +2429,13 @@ describe('With Auth', () => {
       return request(app.getHttpServer())
         .post('/purchases')
         .set('Authorization', `Bearer ${user.access}`)
-        .send({ goodId: shopGoodId, cardId, amount: 1, stationId, price: 10 })
+        .send({
+          goodId: shopGoodsId[0],
+          cardId,
+          amount: 1,
+          stationId,
+          price: 10,
+        })
         .expect('');
     });
 
@@ -2389,28 +2443,56 @@ describe('With Auth', () => {
       return request(app.getHttpServer())
         .post('/purchases')
         .set('Authorization', `Bearer ${user.access}`)
-        .send({ goodId: shopGoodId, cardId, amount: 1, stationId: 0, price: 0 })
+        .send({
+          goodId: shopGoodsId[0],
+          cardId,
+          amount: 1,
+          stationId: 0,
+          price: 0,
+        })
         .expect('');
     });
 
     it('PATCH /goods/:goodId', async () => {
       return request(app.getHttpServer())
-        .patch(`/goods/${shopGoodId}`)
+        .patch(`/goods/${shopGoodsId[1]}`)
+        .set('Authorization', `Bearer ${user.access}`)
+        .send({
+          item: 1,
+          description: '',
+          amount: 2,
+          intake: 1,
+          kit: 1,
+          price: 10,
+        })
+        .expect('');
+    });
+
+    it('PATCH /goods/:goodId/states', async () => {
+      return request(app.getHttpServer())
+        .patch(`/goods/${shopGoodsId[0]}/states`)
         .set('Authorization', `Bearer ${user.access}`)
         .send({ amount: 1, price: 10 })
         .expect('');
     });
 
+    it('DELETE /goods/:goodId', async () => {
+      return request(app.getHttpServer())
+        .delete(`/goods/${shopGoodsId[1]}`)
+        .set('Authorization', `Bearer ${user.access}`)
+        .expect('');
+    });
+
     it('POST /goods/:goodId', async () => {
       return request(app.getHttpServer())
-        .post(`/goods/${shopGoodId}`)
+        .post(`/goods/${shopGoodsId[0]}`)
         .set('Authorization', `Bearer ${user.access}`)
         .expect('');
     });
 
     it('GET /goods/:goodId/states', async () => {
       return request(app.getHttpServer())
-        .get(`/goods/${shopGoodId}/states`)
+        .get(`/goods/${shopGoodsId[0]}/states`)
         .expect((res) => expect(res.body.length).toBeGreaterThan(0));
     });
   });
@@ -2427,7 +2509,7 @@ describe('With Auth', () => {
         .get(`/goods/my?market=${marketId}`)
         .set('Authorization', `Bearer ${user.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0))
-        .then((res) => (marketGoodId = res.body.result[0].id));
+        .then((res) => (marketGoodsId = res.body.result.map((g) => g.id)));
     });
 
     it('GET /goods/placed', async () => {
@@ -2448,7 +2530,13 @@ describe('With Auth', () => {
       return request(app.getHttpServer())
         .post('/purchases')
         .set('Authorization', `Bearer ${user.access}`)
-        .send({ goodId: marketGoodId, cardId, amount: 1, stationId, price: 10 })
+        .send({
+          goodId: marketGoodsId[0],
+          cardId,
+          amount: 1,
+          stationId,
+          price: 10,
+        })
         .expect('');
     });
 
@@ -2457,7 +2545,7 @@ describe('With Auth', () => {
         .post('/purchases')
         .set('Authorization', `Bearer ${user.access}`)
         .send({
-          goodId: marketGoodId,
+          goodId: marketGoodsId[0],
           cardId,
           amount: 1,
           stationId: 0,
@@ -2468,22 +2556,44 @@ describe('With Auth', () => {
 
     it('PATCH /goods/:goodId', async () => {
       return request(app.getHttpServer())
-        .patch(`/goods/${marketGoodId}`)
+        .patch(`/goods/${marketGoodsId[1]}`)
+        .set('Authorization', `Bearer ${user.access}`)
+        .send({
+          item: 1,
+          description: '',
+          amount: 2,
+          intake: 1,
+          kit: 1,
+          price: 10,
+        })
+        .expect('');
+    });
+
+    it('PATCH /goods/:goodId/states', async () => {
+      return request(app.getHttpServer())
+        .patch(`/goods/${marketGoodsId[0]}/states`)
         .set('Authorization', `Bearer ${user.access}`)
         .send({ amount: 1, price: 10 })
         .expect('');
     });
 
+    it('DELETE /goods/:goodId', async () => {
+      return request(app.getHttpServer())
+        .delete(`/goods/${marketGoodsId[1]}`)
+        .set('Authorization', `Bearer ${user.access}`)
+        .expect('');
+    });
+
     it('POST /goods/:goodId', async () => {
       return request(app.getHttpServer())
-        .post(`/goods/${marketGoodId}`)
+        .post(`/goods/${marketGoodsId[0]}`)
         .set('Authorization', `Bearer ${user.access}`)
         .expect('');
     });
 
     it('GET /goods/:goodId/states', async () => {
       return request(app.getHttpServer())
-        .get(`/goods/${marketGoodId}/states`)
+        .get(`/goods/${marketGoodsId[0]}/states`)
         .expect((res) => expect(res.body.length).toBeGreaterThan(0));
     });
 
@@ -2514,7 +2624,7 @@ describe('With Auth', () => {
         .get(`/goods/my?storage=${storageId}`)
         .set('Authorization', `Bearer ${user.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0))
-        .then((res) => (storageGoodId = res.body.result[0].id));
+        .then((res) => (storageGoodsId = res.body.result.map((g) => g.id)));
     });
 
     it('GET /goods/placed', async () => {
@@ -2536,7 +2646,7 @@ describe('With Auth', () => {
         .post('/purchases')
         .set('Authorization', `Bearer ${user.access}`)
         .send({
-          goodId: storageGoodId,
+          goodId: storageGoodsId[0],
           cardId,
           amount: 1,
           stationId,
@@ -2550,7 +2660,7 @@ describe('With Auth', () => {
         .post('/purchases')
         .set('Authorization', `Bearer ${user.access}`)
         .send({
-          goodId: storageGoodId,
+          goodId: storageGoodsId[0],
           cardId,
           amount: 1,
           stationId: 0,
@@ -2561,22 +2671,44 @@ describe('With Auth', () => {
 
     it('PATCH /goods/:goodId', async () => {
       return request(app.getHttpServer())
-        .patch(`/goods/${storageGoodId}`)
+        .patch(`/goods/${storageGoodsId[1]}`)
+        .set('Authorization', `Bearer ${user.access}`)
+        .send({
+          item: 1,
+          description: '',
+          amount: 2,
+          intake: 1,
+          kit: 1,
+          price: 10,
+        })
+        .expect('');
+    });
+
+    it('PATCH /goods/:goodId/states', async () => {
+      return request(app.getHttpServer())
+        .patch(`/goods/${storageGoodsId[0]}/states`)
         .set('Authorization', `Bearer ${user.access}`)
         .send({ amount: 1, price: 10 })
         .expect('');
     });
 
+    it('DELETE /goods/:goodId', async () => {
+      return request(app.getHttpServer())
+        .delete(`/goods/${storageGoodsId[1]}`)
+        .set('Authorization', `Bearer ${user.access}`)
+        .expect('');
+    });
+
     it('POST /goods/:goodId', async () => {
       return request(app.getHttpServer())
-        .post(`/goods/${storageGoodId}`)
+        .post(`/goods/${storageGoodsId[0]}`)
         .set('Authorization', `Bearer ${user.access}`)
         .expect('');
     });
 
     it('GET /goods/:goodId/states', async () => {
       return request(app.getHttpServer())
-        .get(`/goods/${storageGoodId}/states`)
+        .get(`/goods/${storageGoodsId[0]}/states`)
         .expect((res) => expect(res.body.length).toBeGreaterThan(0));
     });
 
@@ -2642,7 +2774,7 @@ describe('With Auth', () => {
 
     it('GET /goods/:goodId/rating', async () => {
       return request(app.getHttpServer())
-        .get(`/goods/${shopGoodId}/rating`)
+        .get(`/goods/${shopGoodsId[0]}/rating`)
         .expect((res) => expect(res.body.rate).toBeGreaterThan(0));
     });
   });
@@ -2701,7 +2833,7 @@ describe('With Auth', () => {
 
     it('GET /goods/:goodId/rating', async () => {
       return request(app.getHttpServer())
-        .get(`/goods/${marketGoodId}/rating`)
+        .get(`/goods/${marketGoodsId[0]}/rating`)
         .expect((res) => expect(res.body.rate).toBeGreaterThan(0));
     });
   });
@@ -2762,7 +2894,7 @@ describe('With Auth', () => {
 
     it('GET /goods/:goodId/rating', async () => {
       return request(app.getHttpServer())
-        .get(`/goods/${storageGoodId}/rating`)
+        .get(`/goods/${storageGoodsId[0]}/rating`)
         .expect((res) => expect(res.body.rate).toBeGreaterThan(0));
     });
   });

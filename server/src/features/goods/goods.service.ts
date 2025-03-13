@@ -10,11 +10,12 @@ import { PaymentsService } from '../payments/payments.service';
 import { MqttService } from '../mqtt/mqtt.service';
 import {
   BuyGoodDto,
-  CompleteGoodDto,
   ExtCreateMarketGoodDto,
   ExtCreateShopGoodDto,
   ExtCreateStorageGoodDto,
   ExtEditGoodDto,
+  ExtGoodIdDto,
+  ExtUpdateGoodDto,
 } from './good.dto';
 import { Request, Response } from '../../common/interfaces';
 import { AppException } from '../../common/exceptions';
@@ -151,18 +152,28 @@ export class GoodsService {
 
   async editGood(dto: ExtEditGoodDto): Promise<void> {
     const good = await this.checkGoodOwner(dto.goodId, dto.myId, dto.hasRole);
+    await this.checkGoodNotBought(dto.goodId);
     await this.edit(good, dto);
   }
 
-  async completeGood(dto: CompleteGoodDto & { nick: string }): Promise<void> {
+  async updateGood(dto: ExtUpdateGoodDto): Promise<void> {
     const good = await this.checkGoodOwner(dto.goodId, dto.myId, dto.hasRole);
+    await this.checkGoodBought(dto.goodId);
+    await this.update(good, dto);
+  }
+
+  async completeGood(dto: ExtGoodIdDto & { nick: string }): Promise<void> {
+    const good = await this.checkGoodOwner(dto.goodId, dto.myId, dto.hasRole);
+    await this.checkGoodBought(dto.goodId);
     await this.complete(good);
-    this.mqttService.unpublishNotification(
-      dto.goodId,
-      0,
-      dto.nick,
-      Notification.CREATED_GOOD,
-    );
+    this.unpublishNotification(dto.goodId, dto.nick);
+  }
+
+  async deleteGood(dto: ExtGoodIdDto & { nick: string }): Promise<void> {
+    const good = await this.checkGoodOwner(dto.goodId, dto.myId, dto.hasRole);
+    await this.checkGoodNotBought(dto.goodId);
+    await this.delete(good);
+    this.unpublishNotification(dto.goodId, dto.nick);
   }
 
   async buyGood(dto: BuyGoodDto & { nick: string }): Promise<Good> {
@@ -260,6 +271,26 @@ export class GoodsService {
     return good;
   }
 
+  private async checkGoodBought(id: number): Promise<void> {
+    const good = await this.goodsRepository.findOne({
+      relations: ['purchases'],
+      where: { id },
+    });
+    if (!good.purchases.length) {
+      throw new AppException(GoodError.NOT_BOUGHT);
+    }
+  }
+
+  private async checkGoodNotBought(id: number): Promise<void> {
+    const good = await this.goodsRepository.findOne({
+      relations: ['purchases'],
+      where: { id },
+    });
+    if (good.purchases.length) {
+      throw new AppException(GoodError.ALREADY_BOUGHT);
+    }
+  }
+
   private async createShop(dto: ExtCreateShopGoodDto): Promise<Good> {
     try {
       const good = this.goodsRepository.create({
@@ -332,7 +363,11 @@ export class GoodsService {
   private async edit(good: Good, dto: ExtEditGoodDto): Promise<void> {
     try {
       const equal = good.price === dto.price;
+      good.item = dto.item;
+      good.description = dto.description;
       good.amount = dto.amount;
+      good.intake = dto.intake;
+      good.kit = dto.kit;
       good.price = dto.price;
       await this.goodsRepository.save(good);
       if (!equal) {
@@ -347,6 +382,24 @@ export class GoodsService {
     }
   }
 
+  private async update(good: Good, dto: ExtUpdateGoodDto): Promise<void> {
+    try {
+      const equal = good.price === dto.price;
+      good.amount = dto.amount;
+      good.price = dto.price;
+      await this.goodsRepository.save(good);
+      if (!equal) {
+        const goodState = this.goodsStatesRepository.create({
+          goodId: good.id,
+          price: good.price,
+        });
+        await this.goodsStatesRepository.save(goodState);
+      }
+    } catch (error) {
+      throw new AppException(GoodError.UPDATE_FAILED);
+    }
+  }
+
   private async complete(good: Good): Promise<void> {
     try {
       good.amount = 0;
@@ -354,6 +407,14 @@ export class GoodsService {
       await this.goodsRepository.save(good);
     } catch (error) {
       throw new AppException(GoodError.COMPLETE_FAILED);
+    }
+  }
+
+  private async delete(good: Good): Promise<void> {
+    try {
+      await this.goodsRepository.remove(good);
+    } catch (error) {
+      throw new AppException(GoodError.DELETE_FAILED);
     }
   }
 
@@ -373,6 +434,15 @@ export class GoodsService {
     } catch (error) {
       throw new AppException(GoodError.UNBUY_FAILED);
     }
+  }
+
+  private unpublishNotification(id: number, nick: string): void {
+    this.mqttService.unpublishNotification(
+      id,
+      0,
+      nick,
+      Notification.CREATED_GOOD,
+    );
   }
 
   private getGoodsQueryBuilder(req: Request): SelectQueryBuilder<Good> {
@@ -396,6 +466,7 @@ export class GoodsService {
       .leftJoin('lease.card', 'storageSellerCard')
       .leftJoin('storageSellerCard.user', 'storageSellerUser')
       .loadRelationCountAndMap('good.states', 'good.states')
+      .loadRelationCountAndMap('good.purchases', 'good.purchases')
       .where('good.completedAt IS NULL')
       .andWhere(
         new Brackets((qb) =>
