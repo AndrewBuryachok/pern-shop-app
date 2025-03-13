@@ -22,4 +22,5 @@ export interface Good extends LgThing {
   rent?: MdRent;
   lease?: MdLease;
   states: number;
+  purchases: number;
 }

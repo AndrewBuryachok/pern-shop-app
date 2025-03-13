@@ -12,11 +12,13 @@ import {
   createUserGoodButton,
 } from '../../features/goods/CreateGoodModal';
 import { editGoodAction } from '../../features/goods/EditGoodModal';
+import { updateGoodAction } from '../../features/goods/UpdateGoodModal';
 import {
   buyMyGoodAction,
   buyUserGoodAction,
 } from '../../features/goods/BuyGoodModal';
 import { completeGoodAction } from '../../features/goods/CompleteGoodModal';
+import { deleteGoodAction } from '../../features/goods/DeleteGoodModal';
 
 export default function GoodsPage() {
   const tab = useLocation().pathname.split('/')[2] || 'main';
@@ -63,8 +65,19 @@ export default function GoodsPage() {
 
   const actions = {
     main: [buyMyGoodAction],
-    my: [editGoodAction, completeGoodAction],
-    all: [editGoodAction, buyUserGoodAction, completeGoodAction],
+    my: [
+      editGoodAction,
+      updateGoodAction,
+      completeGoodAction,
+      deleteGoodAction,
+    ],
+    all: [
+      editGoodAction,
+      updateGoodAction,
+      buyUserGoodAction,
+      completeGoodAction,
+      deleteGoodAction,
+    ],
   }[tab];
 
   return (

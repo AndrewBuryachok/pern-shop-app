@@ -5,7 +5,7 @@ import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { Good } from './good.model';
-import { useCompleteGoodMutation } from './goods.api';
+import { useDeleteGoodMutation } from './goods.api';
 import { GoodIdDto } from './good.dto';
 import CustomForm from '../../common/components/CustomForm';
 import CustomAvatar from '../../common/components/CustomAvatar';
@@ -15,7 +15,7 @@ import { Color } from '../../common/constants';
 
 type Props = IModal<Good>;
 
-export default function CompleteGoodModal({ data: good }: Props) {
+export default function DeleteGoodModal({ data: good }: Props) {
   const [t] = useTranslation();
 
   const form = useForm({
@@ -24,17 +24,17 @@ export default function CompleteGoodModal({ data: good }: Props) {
     },
   });
 
-  const [completeGood, { isLoading }] = useCompleteGoodMutation();
+  const [deleteGood, { isLoading }] = useDeleteGoodMutation();
 
   const handleSubmit = async (dto: GoodIdDto) => {
-    await completeGood(dto);
+    await deleteGood(dto);
   };
 
   return (
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={t('actions.complete') + ' ' + t('modals.goods')}
+      text={t('actions.delete') + ' ' + t('modals.goods')}
     >
       {good.shop && (
         <TextInput
@@ -89,12 +89,12 @@ export default function CompleteGoodModal({ data: good }: Props) {
   );
 }
 
-export const completeGoodAction = {
+export const deleteGoodAction = {
   open: (good: Good) =>
     openModal({
-      title: t('actions.complete') + ' ' + t('modals.goods'),
-      children: <CompleteGoodModal data={good} />,
+      title: t('actions.delete') + ' ' + t('modals.goods'),
+      children: <DeleteGoodModal data={good} />,
     }),
-  disable: (good: Good) => !good.purchases,
+  disable: (good: Good) => !!good.purchases,
   color: Color.RED,
 };

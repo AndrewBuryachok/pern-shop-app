@@ -17,10 +17,14 @@ export type CreateAnyGoodDto = CreateShopGoodDto &
   CreateMarketGoodDto &
   CreateStorageGoodDto;
 
-export interface EditGoodDto extends EditStateDto {
+export interface EditGoodDto extends CreateThingDto {
   goodId: number;
 }
 
-export interface CompleteGoodDto {
+export interface UpdateGoodDto extends EditStateDto {
+  goodId: number;
+}
+
+export interface GoodIdDto {
   goodId: number;
 }

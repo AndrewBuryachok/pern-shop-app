@@ -3,11 +3,12 @@ import { IRequest, IResponse } from '../../common/interfaces';
 import { Good } from './good.model';
 import { State } from '../states/state.model';
 import {
-  CompleteGoodDto,
   CreateMarketGoodDto,
   CreateShopGoodDto,
   CreateStorageGoodDto,
   EditGoodDto,
+  GoodIdDto,
+  UpdateGoodDto,
 } from './good.dto';
 import { getQuery } from '../../common/utils';
 
@@ -81,10 +82,25 @@ export const goodsApi = emptyApi.injectEndpoints({
       }),
       invalidatesTags: ['Good'],
     }),
-    completeGood: build.mutation<void, CompleteGoodDto>({
+    updateGood: build.mutation<void, UpdateGoodDto>({
+      query: ({ goodId, ...dto }) => ({
+        url: `/goods/${goodId}/states`,
+        method: 'PATCH',
+        body: dto,
+      }),
+      invalidatesTags: ['Good'],
+    }),
+    completeGood: build.mutation<void, GoodIdDto>({
       query: ({ goodId }) => ({
         url: `/goods/${goodId}`,
         method: 'POST',
+      }),
+      invalidatesTags: ['Good'],
+    }),
+    deleteGood: build.mutation<void, GoodIdDto>({
+      query: ({ goodId }) => ({
+        url: `/goods/${goodId}`,
+        method: 'DELETE',
       }),
       invalidatesTags: ['Good'],
     }),
@@ -102,5 +118,7 @@ export const {
   useCreateMarketGoodMutation,
   useCreateStorageGoodMutation,
   useEditGoodMutation,
+  useUpdateGoodMutation,
   useCompleteGoodMutation,
+  useDeleteGoodMutation,
 } = goodsApi;
