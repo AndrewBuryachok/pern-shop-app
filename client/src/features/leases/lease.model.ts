@@ -1,11 +1,7 @@
-import { MdReceipt, Receipt, SmReceipt } from '../receipts/receipt.model';
+import { Receipt, SmReceipt } from '../receipts/receipt.model';
 import { LgCell, MdCell } from '../cells/cell.model';
 
 export interface SmLease extends SmReceipt {
-  cell: LgCell;
-}
-
-export interface MdLease extends MdReceipt {
   cell: LgCell;
 }
 

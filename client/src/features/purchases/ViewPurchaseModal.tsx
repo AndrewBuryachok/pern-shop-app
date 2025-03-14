@@ -32,33 +32,13 @@ export default function ViewPurchaseModal({ data: purchase }: Props) {
         value={parseCard(purchase.card)}
         readOnly
       />
-      {purchase.good.shop && (
-        <TextInput
-          label={t('columns.seller')}
-          icon={<CustomAvatar {...purchase.good.shop.card.user} />}
-          iconWidth={48}
-          value={parseCard(purchase.good.shop.card)}
-          readOnly
-        />
-      )}
-      {purchase.good.rent && (
-        <TextInput
-          label={t('columns.seller')}
-          icon={<CustomAvatar {...purchase.good.rent.card.user} />}
-          iconWidth={48}
-          value={parseCard(purchase.good.rent.card)}
-          readOnly
-        />
-      )}
-      {purchase.good.lease && (
-        <TextInput
-          label={t('columns.seller')}
-          icon={<CustomAvatar {...purchase.good.lease.card.user} />}
-          iconWidth={48}
-          value={parseCard(purchase.good.lease.card)}
-          readOnly
-        />
-      )}
+      <TextInput
+        label={t('columns.seller')}
+        icon={<CustomAvatar {...purchase.good.card.user} />}
+        iconWidth={48}
+        value={parseCard(purchase.good.card)}
+        readOnly
+      />
       <TextInput
         label={t('columns.item')}
         icon={<ThingImage {...purchase.good} />}

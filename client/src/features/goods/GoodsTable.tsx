@@ -31,9 +31,7 @@ export default function GoodsTable({ actions = [], ...props }: Props) {
       {props.data?.result.map((good) => (
         <tr key={good.id}>
           <td>
-            {good.shop && <AvatarWithDoubleText {...good.shop.card} />}
-            {good.rent && <AvatarWithDoubleText {...good.rent.card} />}
-            {good.lease && <AvatarWithDoubleText {...good.lease.card} />}
+            <AvatarWithDoubleText {...good.card} />
           </td>
           <td>
             <ThingImageWithText {...good} />

@@ -1,11 +1,7 @@
-import { MdReceipt, Receipt, SmReceipt } from '../receipts/receipt.model';
+import { Receipt, SmReceipt } from '../receipts/receipt.model';
 import { LgStall, MdStall } from '../stalls/stall.model';
 
 export interface SmRent extends SmReceipt {
-  stall: LgStall;
-}
-
-export interface MdRent extends MdReceipt {
   stall: LgStall;
 }
 

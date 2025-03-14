@@ -35,15 +35,7 @@ export default function PurchasesTable({ actions = [], ...props }: Props) {
             <AvatarWithDoubleText {...purchase.card} />
           </td>
           <td>
-            {purchase.good.shop && (
-              <AvatarWithDoubleText {...purchase.good.shop.card} />
-            )}
-            {purchase.good.rent && (
-              <AvatarWithDoubleText {...purchase.good.rent.card} />
-            )}
-            {purchase.good.lease && (
-              <AvatarWithDoubleText {...purchase.good.lease.card} />
-            )}
+            <AvatarWithDoubleText {...purchase.good.card} />
           </td>
           <td>
             <ThingImageWithText {...purchase.good} />
@@ -52,27 +44,11 @@ export default function PurchasesTable({ actions = [], ...props }: Props) {
             <SingleText text={parsePurchaseAmount(purchase)} />
           </td>
           <td>
-            {purchase.good.shop && (
-              <SumText
-                fromId={purchase.card.user.id}
-                toId={purchase.good.shop.card.user.id}
-                sum={purchase.amount * purchase.good.price}
-              />
-            )}
-            {purchase.good.rent && (
-              <SumText
-                fromId={purchase.card.user.id}
-                toId={purchase.good.rent.card.user.id}
-                sum={purchase.amount * purchase.good.price}
-              />
-            )}
-            {purchase.good.lease && (
-              <SumText
-                fromId={purchase.card.user.id}
-                toId={purchase.good.lease.card.user.id}
-                sum={purchase.amount * purchase.good.price}
-              />
-            )}
+            <SumText
+              fromId={purchase.card.user.id}
+              toId={purchase.good.card.user.id}
+              sum={purchase.amount * purchase.good.price}
+            />
           </td>
           <td>
             {purchase.good.shop && (

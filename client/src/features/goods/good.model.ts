@@ -1,7 +1,8 @@
 import { LgThing, SmThing, SmThingWithoutPrice } from '../things/thing.model';
+import { MdCard } from '../cards/card.model';
 import { MdShop } from '../shops/shop.model';
-import { MdRent, SmRent } from '../rents/rent.model';
-import { MdLease, SmLease } from '../leases/lease.model';
+import { SmRent } from '../rents/rent.model';
+import { SmLease } from '../leases/lease.model';
 
 export interface SmGoodWithoutPrice extends SmThingWithoutPrice {
   shop?: MdShop;
@@ -12,15 +13,17 @@ export interface SmGoodWithoutPrice extends SmThingWithoutPrice {
 export interface SmGood extends SmThing {}
 
 export interface MdGood extends SmThing {
+  card: MdCard;
   shop?: MdShop;
-  rent?: MdRent;
-  lease?: MdLease;
+  rent?: SmRent;
+  lease?: SmLease;
 }
 
 export interface Good extends LgThing {
+  card: MdCard;
   shop?: MdShop;
-  rent?: MdRent;
-  lease?: MdLease;
+  rent?: SmRent;
+  lease?: SmLease;
   states: number;
   purchases: number;
 }
