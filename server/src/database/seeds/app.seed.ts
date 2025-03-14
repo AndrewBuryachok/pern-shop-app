@@ -416,12 +416,15 @@ export default class AppSeed implements Seeder {
         switch (Math.floor(Math.random() * 3)) {
           case 0:
             good.shop = faker.helpers.arrayElement(shops);
+            good.card = good.shop.card;
             break;
           case 1:
             good.rent = faker.helpers.arrayElement(rents);
+            good.card = good.rent.card;
             break;
           case 2:
             good.lease = faker.helpers.arrayElement(leases);
+            good.card = good.lease.card;
             break;
         }
         return good;
@@ -440,10 +443,6 @@ export default class AppSeed implements Seeder {
         purchase.good = faker.helpers.arrayElement(
           goods.filter((good) => good.amount),
         );
-        const card =
-          purchase.good.shop?.card ||
-          purchase.good.rent?.card ||
-          purchase.good.lease?.card;
         purchase.card = faker.helpers.arrayElement(
           cards.filter((card) => card.balance >= purchase.good.price),
         );
@@ -458,13 +457,13 @@ export default class AppSeed implements Seeder {
         purchase.good.amount -= purchase.amount;
         const payment = await factory(Payment)().make({
           senderCard: purchase.card,
-          receiverCard: card,
+          receiverCard: purchase.good.card,
           sum: purchase.amount * purchase.good.price,
           description: '',
         });
         payments.push(payment);
         purchase.card.balance -= purchase.amount * purchase.good.price;
-        card.balance += purchase.amount * purchase.good.price;
+        purchase.good.card.balance += purchase.amount * purchase.good.price;
         return purchase;
       })
       .makeMany(60);

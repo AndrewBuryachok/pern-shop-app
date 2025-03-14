@@ -45,18 +45,8 @@ export class GoodsService {
 
   async getMyGoods(myId: number, req: Request): Promise<Response<Good>> {
     const [result, count] = await this.getGoodsQueryBuilder(req)
-      .leftJoin('shopCard.users', 'shopUsers')
-      .leftJoin('marketSellerCard.users', 'marketUsers')
-      .leftJoin('storageSellerCard.users', 'storageUsers')
-      .andWhere(
-        new Brackets((qb) =>
-          qb
-            .where('shopUsers.id = :myId')
-            .orWhere('marketUsers.id = :myId')
-            .orWhere('storageUsers.id = :myId'),
-        ),
-        { myId },
-      )
+      .innerJoin('sellerCard.users', 'sellerUsers')
+      .andWhere('sellerUsers.id = :myId', { myId })
       .getManyAndCount();
     return { result, count };
   }
@@ -64,8 +54,8 @@ export class GoodsService {
   async getPlacedGoods(myId: number, req: Request): Promise<Response<Good>> {
     const [result, count] = await this.getGoodsQueryBuilder(req)
       .leftJoin('shopCard.users', 'shopUsers')
-      .leftJoin('marketOwnerCard.users', 'marketUsers')
-      .leftJoin('storageOwnerCard.users', 'storageUsers')
+      .leftJoin('marketCard.users', 'marketUsers')
+      .leftJoin('storageCard.users', 'storageUsers')
       .andWhere(
         new Brackets((qb) =>
           qb
@@ -116,28 +106,36 @@ export class GoodsService {
   async createShopGood(
     dto: ExtCreateShopGoodDto & { nick: string },
   ): Promise<void> {
-    await this.shopsService.checkShopOwner(dto.shopId, dto.myId, dto.hasRole);
-    const good = await this.createShop(dto);
+    const shop = await this.shopsService.checkShopOwner(
+      dto.shopId,
+      dto.myId,
+      dto.hasRole,
+    );
+    const good = await this.createShop(dto, shop.cardId);
     this.publishCreateGoodNotification(good.id, dto.nick);
   }
 
   async createMarketGood(
     dto: ExtCreateMarketGoodDto & { nick: string },
   ): Promise<void> {
-    await this.rentsService.checkRentOwner(dto.rentId, dto.myId, dto.hasRole);
-    const good = await this.createMarket(dto);
+    const rent = await this.rentsService.checkRentOwner(
+      dto.rentId,
+      dto.myId,
+      dto.hasRole,
+    );
+    const good = await this.createMarket(dto, rent.cardId);
     this.publishCreateGoodNotification(good.id, dto.nick);
   }
 
   async createStorageGood(
     dto: ExtCreateStorageGoodDto & { nick: string },
   ): Promise<void> {
-    await this.leasesService.checkLeaseOwner(
+    const lease = await this.leasesService.checkLeaseOwner(
       dto.leaseId,
       dto.myId,
       dto.hasRole,
     );
-    const good = await this.createStorage(dto);
+    const good = await this.createStorage(dto, lease.cardId);
     this.publishCreateGoodNotification(good.id, dto.nick);
   }
 
@@ -178,14 +176,7 @@ export class GoodsService {
 
   async buyGood(dto: BuyGoodDto & { nick: string }): Promise<Good> {
     const good = await this.goodsRepository.findOne({
-      relations: [
-        'shop',
-        'shop.card',
-        'rent',
-        'rent.card',
-        'lease',
-        'lease.card',
-      ],
+      relations: ['card', 'rent', 'lease'],
       where: { id: dto.goodId },
     });
     if (good.amount < dto.amount) {
@@ -198,26 +189,20 @@ export class GoodsService {
     ) {
       throw new AppException(GoodError.ALREADY_EXPIRED);
     }
-    const receiverCardId =
-      good.shop?.cardId || good.rent?.cardId || good.lease?.cardId;
     await this.paymentsService.createPayment({
       myId: dto.myId,
       nick: dto.nick,
       hasRole: dto.hasRole,
       senderCardId: dto.cardId,
-      receiverCardId,
+      receiverCardId: good.cardId,
       sum: dto.amount * good.price,
       description: '',
     });
     await this.buy(good, dto.amount);
     if (!good.amount) {
-      const userId =
-        good.shop?.card.userId ||
-        good.rent?.card.userId ||
-        good.lease?.card.userId;
       this.mqttService.publishNotification(
         good.id,
-        userId,
+        good.card.userId,
         '🔔',
         Notification.ENDED_GOOD,
       );
@@ -240,25 +225,10 @@ export class GoodsService {
     hasRole: boolean,
   ): Promise<Good> {
     const good = await this.goodsRepository.findOne({
-      relations: [
-        'shop',
-        'shop.card',
-        'shop.card.users',
-        'rent',
-        'rent.card',
-        'rent.card.users',
-        'lease',
-        'lease.card',
-        'lease.card.users',
-      ],
+      relations: ['card', 'card.users', 'rent', 'lease'],
       where: { id },
     });
-    if (
-      !good.shop?.card.users.map((user) => user.id).includes(userId) &&
-      !good.rent?.card.users.map((user) => user.id).includes(userId) &&
-      !good.lease?.card.users.map((user) => user.id).includes(userId) &&
-      !hasRole
-    ) {
+    if (!good.card.users.map((user) => user.id).includes(userId) && !hasRole) {
       throw new AppException(GoodError.NOT_OWNER);
     }
     if (
@@ -291,9 +261,13 @@ export class GoodsService {
     }
   }
 
-  private async createShop(dto: ExtCreateShopGoodDto): Promise<Good> {
+  private async createShop(
+    dto: ExtCreateShopGoodDto,
+    cardId: number,
+  ): Promise<Good> {
     try {
       const good = this.goodsRepository.create({
+        cardId,
         shopId: dto.shopId,
         item: dto.item,
         description: dto.description,
@@ -314,9 +288,13 @@ export class GoodsService {
     }
   }
 
-  private async createMarket(dto: ExtCreateMarketGoodDto): Promise<Good> {
+  private async createMarket(
+    dto: ExtCreateMarketGoodDto,
+    cardId: number,
+  ): Promise<Good> {
     try {
       const good = this.goodsRepository.create({
+        cardId,
         rentId: dto.rentId,
         item: dto.item,
         description: dto.description,
@@ -337,9 +315,13 @@ export class GoodsService {
     }
   }
 
-  private async createStorage(dto: ExtCreateStorageGoodDto): Promise<Good> {
+  private async createStorage(
+    dto: ExtCreateStorageGoodDto,
+    cardId: number,
+  ): Promise<Good> {
     try {
       const good = this.goodsRepository.create({
+        cardId,
         leaseId: dto.leaseId,
         item: dto.item,
         description: dto.description,
@@ -448,23 +430,21 @@ export class GoodsService {
   private getGoodsQueryBuilder(req: Request): SelectQueryBuilder<Good> {
     return this.goodsRepository
       .createQueryBuilder('good')
+      .innerJoin('good.card', 'sellerCard')
+      .innerJoin('sellerCard.user', 'sellerUser')
       .leftJoin('good.shop', 'shop')
       .leftJoin('shop.card', 'shopCard')
       .leftJoin('shopCard.user', 'shopUser')
       .leftJoin('good.rent', 'rent')
       .leftJoin('rent.stall', 'stall')
       .leftJoin('stall.market', 'market')
-      .leftJoin('market.card', 'marketOwnerCard')
-      .leftJoin('marketOwnerCard.user', 'marketOwnerUser')
-      .leftJoin('rent.card', 'marketSellerCard')
-      .leftJoin('marketSellerCard.user', 'marketSellerUser')
+      .leftJoin('market.card', 'marketCard')
+      .leftJoin('marketCard.user', 'marketUser')
       .leftJoin('good.lease', 'lease')
       .leftJoin('lease.cell', 'cell')
       .leftJoin('cell.storage', 'storage')
-      .leftJoin('storage.card', 'storageOwnerCard')
-      .leftJoin('storageOwnerCard.user', 'storageOwnerUser')
-      .leftJoin('lease.card', 'storageSellerCard')
-      .leftJoin('storageSellerCard.user', 'storageSellerUser')
+      .leftJoin('storage.card', 'storageCard')
+      .leftJoin('storageCard.user', 'storageUser')
       .loadRelationCountAndMap('good.states', 'good.states')
       .loadRelationCountAndMap('good.purchases', 'good.purchases')
       .where('good.completedAt IS NULL')
@@ -495,14 +475,7 @@ export class GoodsService {
               new Brackets((qb) =>
                 qb
                   .where(`${!req.mode || req.mode === Mode.SELLER}`)
-                  .andWhere(
-                    new Brackets((qb) =>
-                      qb
-                        .where('shopUser.id = :userId')
-                        .orWhere('marketSellerUser.id = :userId')
-                        .orWhere('storageSellerUser.id = :userId'),
-                    ),
-                  ),
+                  .andWhere('sellerUser.id = :userId'),
               ),
             )
             .orWhere(
@@ -513,8 +486,8 @@ export class GoodsService {
                     new Brackets((qb) =>
                       qb
                         .where('shopUser.id = :userId')
-                        .orWhere('marketOwnerUser.id = :userId')
-                        .orWhere('storageOwnerUser.id = :userId'),
+                        .orWhere('marketUser.id = :userId')
+                        .orWhere('storageUser.id = :userId'),
                     ),
                   ),
               ),
@@ -530,14 +503,7 @@ export class GoodsService {
               new Brackets((qb) =>
                 qb
                   .where(`${!req.mode || req.mode === Mode.SELLER}`)
-                  .andWhere(
-                    new Brackets((qb) =>
-                      qb
-                        .where('shopCard.id = :cardId')
-                        .orWhere('marketSellerCard.id = :cardId')
-                        .orWhere('storageSellerCard.id = :cardId'),
-                    ),
-                  ),
+                  .andWhere('sellerCard.id = :cardId'),
               ),
             )
             .orWhere(
@@ -548,8 +514,8 @@ export class GoodsService {
                     new Brackets((qb) =>
                       qb
                         .where('shopCard.id = :cardId')
-                        .orWhere('marketOwnerCard.id = :cardId')
-                        .orWhere('storageOwnerCard.id = :cardId'),
+                        .orWhere('marketCard.id = :cardId')
+                        .orWhere('storageCard.id = :cardId'),
                     ),
                   ),
               ),
@@ -674,6 +640,12 @@ export class GoodsService {
       .take(req.take)
       .select([
         'good.id',
+        'sellerCard.id',
+        'sellerUser.id',
+        'sellerUser.nick',
+        'sellerUser.avatar',
+        'sellerCard.name',
+        'sellerCard.color',
         'shop.id',
         'shopCard.id',
         'shopUser.id',
@@ -687,41 +659,29 @@ export class GoodsService {
         'rent.id',
         'stall.id',
         'market.id',
-        'marketOwnerCard.id',
-        'marketOwnerUser.id',
-        'marketOwnerUser.nick',
-        'marketOwnerUser.avatar',
-        'marketOwnerCard.name',
-        'marketOwnerCard.color',
+        'marketCard.id',
+        'marketUser.id',
+        'marketUser.nick',
+        'marketUser.avatar',
+        'marketCard.name',
+        'marketCard.color',
         'market.name',
         'market.x',
         'market.y',
         'stall.name',
-        'marketSellerCard.id',
-        'marketSellerUser.id',
-        'marketSellerUser.nick',
-        'marketSellerUser.avatar',
-        'marketSellerCard.name',
-        'marketSellerCard.color',
         'lease.id',
         'cell.id',
         'storage.id',
-        'storageOwnerCard.id',
-        'storageOwnerUser.id',
-        'storageOwnerUser.nick',
-        'storageOwnerUser.avatar',
-        'storageOwnerCard.name',
-        'storageOwnerCard.color',
+        'storageCard.id',
+        'storageUser.id',
+        'storageUser.nick',
+        'storageUser.avatar',
+        'storageCard.name',
+        'storageCard.color',
         'storage.name',
         'storage.x',
         'storage.y',
         'cell.name',
-        'storageSellerCard.id',
-        'storageSellerUser.id',
-        'storageSellerUser.nick',
-        'storageSellerUser.avatar',
-        'storageSellerCard.name',
-        'storageSellerCard.color',
         'good.item',
         'good.description',
         'good.amount',

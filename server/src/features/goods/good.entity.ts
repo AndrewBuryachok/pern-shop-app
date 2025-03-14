@@ -7,6 +7,7 @@ import {
   OneToMany,
 } from 'typeorm';
 import { Thing } from '../things/thing.entity';
+import { Card } from '../cards/card.entity';
 import { Shop } from '../shops/shop.entity';
 import { Rent } from '../rents/rent.entity';
 import { Lease } from '../leases/lease.entity';
@@ -15,6 +16,13 @@ import { Purchase } from '../purchases/purchase.entity';
 
 @Entity('goods')
 export class Good extends Thing {
+  @Column({ name: 'card_id' })
+  cardId: number;
+
+  @ManyToOne(() => Card, { nullable: false })
+  @JoinColumn({ name: 'card_id' })
+  card: Card;
+
   @Column({ name: 'shop_id', nullable: true })
   shopId?: number;
 

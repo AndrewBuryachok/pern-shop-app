@@ -38,18 +38,8 @@ export class PurchasesService {
     req: Request,
   ): Promise<Response<Purchase>> {
     const [result, count] = await this.getPurchasesQueryBuilder(req)
-      .leftJoin('shopCard.users', 'shopUsers')
-      .leftJoin('marketSellerCard.users', 'marketUsers')
-      .leftJoin('storageSellerCard.users', 'storageUsers')
-      .andWhere(
-        new Brackets((qb) =>
-          qb
-            .where('shopUsers.id = :myId')
-            .orWhere('marketUsers.id = :myId')
-            .orWhere('storageUsers.id = :myId'),
-        ),
-        { myId },
-      )
+      .innerJoin('sellerCard.users', 'sellerUsers')
+      .andWhere('sellerUsers.id = :myId', { myId })
       .getManyAndCount();
     return { result, count };
   }
@@ -60,8 +50,8 @@ export class PurchasesService {
   ): Promise<Response<Purchase>> {
     const [result, count] = await this.getPurchasesQueryBuilder(req)
       .leftJoin('shopCard.users', 'shopUsers')
-      .leftJoin('marketOwnerCard.users', 'marketUsers')
-      .leftJoin('storageOwnerCard.users', 'storageUsers')
+      .leftJoin('marketCard.users', 'marketUsers')
+      .leftJoin('storageCard.users', 'storageUsers')
       .andWhere(
         new Brackets((qb) =>
           qb
@@ -99,9 +89,7 @@ export class PurchasesService {
     const purchase = await this.create(dto);
     this.mqttService.publishNotification(
       purchase.id,
-      good.shop?.card.userId ||
-        good.rent?.card.userId ||
-        good.lease?.card.userId,
+      good.card.userId,
       dto.nick,
       Notification.CREATED_PURCHASE,
     );
@@ -124,9 +112,7 @@ export class PurchasesService {
     await this.rate(purchase, dto.rate);
     this.mqttService.publishNotification(
       dto.purchaseId,
-      purchase.good.shop?.card.userId ||
-        purchase.good.rent?.card.userId ||
-        purchase.good.lease?.card.userId,
+      purchase.good.card.userId,
       dto.nick,
       Notification.RATED_PURCHASE,
     );
@@ -148,17 +134,7 @@ export class PurchasesService {
     hasRole: boolean,
   ): Promise<Purchase> {
     const purchase = await this.purchasesRepository.findOne({
-      relations: [
-        'card',
-        'card.users',
-        'good',
-        'good.shop',
-        'good.shop.card',
-        'good.rent',
-        'good.rent.card',
-        'good.lease',
-        'good.lease.card',
-      ],
+      relations: ['card', 'card.users', 'good', 'good.card'],
       where: { id },
     });
     if (
@@ -229,23 +205,21 @@ export class PurchasesService {
     return this.purchasesRepository
       .createQueryBuilder('purchase')
       .innerJoin('purchase.good', 'good')
+      .innerJoin('good.card', 'sellerCard')
+      .innerJoin('sellerCard.user', 'sellerUser')
       .leftJoin('good.shop', 'shop')
       .leftJoin('shop.card', 'shopCard')
       .leftJoin('shopCard.user', 'shopUser')
       .leftJoin('good.rent', 'rent')
       .leftJoin('rent.stall', 'stall')
       .leftJoin('stall.market', 'market')
-      .leftJoin('market.card', 'marketOwnerCard')
-      .leftJoin('marketOwnerCard.user', 'marketOwnerUser')
-      .leftJoin('rent.card', 'marketSellerCard')
-      .leftJoin('marketSellerCard.user', 'marketSellerUser')
+      .leftJoin('market.card', 'marketCard')
+      .leftJoin('marketCard.user', 'marketUser')
       .leftJoin('good.lease', 'lease')
       .leftJoin('lease.cell', 'cell')
       .leftJoin('cell.storage', 'storage')
-      .leftJoin('storage.card', 'storageOwnerCard')
-      .leftJoin('storageOwnerCard.user', 'storageOwnerUser')
-      .leftJoin('lease.card', 'storageSellerCard')
-      .leftJoin('storageSellerCard.user', 'storageSellerUser')
+      .leftJoin('storage.card', 'storageCard')
+      .leftJoin('storageCard.user', 'storageUser')
       .innerJoin('purchase.card', 'buyerCard')
       .innerJoin('buyerCard.user', 'buyerUser')
       .leftJoin('good.states', 'state', 'state.createdAt < purchase.createdAt')
@@ -275,14 +249,7 @@ export class PurchasesService {
               new Brackets((qb) =>
                 qb
                   .where(`${!req.mode || req.mode === Mode.SELLER}`)
-                  .andWhere(
-                    new Brackets((qb) =>
-                      qb
-                        .where('shopUser.id = :userId')
-                        .orWhere('marketSellerUser.id = :userId')
-                        .orWhere('storageSellerUser.id = :userId'),
-                    ),
-                  ),
+                  .andWhere('sellerUser.id = :userId'),
               ),
             )
             .orWhere(
@@ -293,8 +260,8 @@ export class PurchasesService {
                     new Brackets((qb) =>
                       qb
                         .where('shopUser.id = :userId')
-                        .orWhere('marketOwnerUser.id = :userId')
-                        .orWhere('storageOwnerUser.id = :userId'),
+                        .orWhere('marketUser.id = :userId')
+                        .orWhere('storageUser.id = :userId'),
                     ),
                   ),
               ),
@@ -317,14 +284,7 @@ export class PurchasesService {
               new Brackets((qb) =>
                 qb
                   .where(`${!req.mode || req.mode === Mode.SELLER}`)
-                  .andWhere(
-                    new Brackets((qb) =>
-                      qb
-                        .where('shopCard.id = :userId')
-                        .orWhere('marketSellerCard.id = :userId')
-                        .orWhere('storageSellerCard.id = :userId'),
-                    ),
-                  ),
+                  .andWhere('sellerCard.id = :cardId'),
               ),
             )
             .orWhere(
@@ -334,9 +294,9 @@ export class PurchasesService {
                   .andWhere(
                     new Brackets((qb) =>
                       qb
-                        .where('shopCard.id = :userId')
-                        .orWhere('marketOwnerCard.id = :userId')
-                        .orWhere('storageOwnerCard.id = :userId'),
+                        .where('shopCard.id = :cardId')
+                        .orWhere('marketCard.id = :cardId')
+                        .orWhere('storageCard.id = :cardId'),
                     ),
                   ),
               ),
@@ -477,6 +437,12 @@ export class PurchasesService {
       .select([
         'purchase.id',
         'good.id',
+        'sellerCard.id',
+        'sellerUser.id',
+        'sellerUser.nick',
+        'sellerUser.avatar',
+        'sellerCard.name',
+        'sellerCard.color',
         'shop.id',
         'shopCard.id',
         'shopUser.id',
@@ -490,41 +456,29 @@ export class PurchasesService {
         'rent.id',
         'stall.id',
         'market.id',
-        'marketOwnerCard.id',
-        'marketOwnerUser.id',
-        'marketOwnerUser.nick',
-        'marketOwnerUser.avatar',
-        'marketOwnerCard.name',
-        'marketOwnerCard.color',
+        'marketCard.id',
+        'marketUser.id',
+        'marketUser.nick',
+        'marketUser.avatar',
+        'marketCard.name',
+        'marketCard.color',
         'market.name',
         'market.x',
         'market.y',
         'stall.name',
-        'marketSellerCard.id',
-        'marketSellerUser.id',
-        'marketSellerUser.nick',
-        'marketSellerUser.avatar',
-        'marketSellerCard.name',
-        'marketSellerCard.color',
         'lease.id',
         'cell.id',
         'storage.id',
-        'storageOwnerCard.id',
-        'storageOwnerUser.id',
-        'storageOwnerUser.nick',
-        'storageOwnerUser.avatar',
-        'storageOwnerCard.name',
-        'storageOwnerCard.color',
+        'storageCard.id',
+        'storageUser.id',
+        'storageUser.nick',
+        'storageUser.avatar',
+        'storageCard.name',
+        'storageCard.color',
         'storage.name',
         'storage.x',
         'storage.y',
         'cell.name',
-        'storageSellerCard.id',
-        'storageSellerUser.id',
-        'storageSellerUser.nick',
-        'storageSellerUser.avatar',
-        'storageSellerCard.name',
-        'storageSellerCard.color',
         'good.item',
         'good.description',
         'good.intake',

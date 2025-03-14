@@ -757,42 +757,15 @@ export class UsersService {
       .where('user.id = :userId', { userId })
       .select('COUNT(like.id)', 'pollsLikes')
       .getRawOne();
-    const shopsGoodsCount = await this.usersRepository
+    const goodsCount = await this.usersRepository
       .createQueryBuilder('user')
       .leftJoin('user.cards', 'card')
       .leftJoinAndMapMany(
-        'card.shops',
-        'shops',
-        'shop',
-        'card.id = shop.cardId',
+        'card.goods',
+        'goods',
+        'good',
+        'card.id = good.cardId',
       )
-      .leftJoin('shop.goods', 'good')
-      .where('user.id = :userId', { userId })
-      .select('COUNT(good.id)', 'goodsCount')
-      .getRawOne();
-    const marketsGoodsCount = await this.usersRepository
-      .createQueryBuilder('user')
-      .leftJoin('user.cards', 'card')
-      .leftJoinAndMapMany(
-        'card.rents',
-        'rents',
-        'rent',
-        'card.id = rent.cardId',
-      )
-      .leftJoin('rent.goods', 'good')
-      .where('user.id = :userId', { userId })
-      .select('COUNT(good.id)', 'goodsCount')
-      .getRawOne();
-    const storagesGoodsCount = await this.usersRepository
-      .createQueryBuilder('user')
-      .leftJoin('user.cards', 'card')
-      .leftJoinAndMapMany(
-        'card.leases',
-        'leases',
-        'lease',
-        'card.id = lease.cardId',
-      )
-      .leftJoin('lease.goods', 'good')
       .where('user.id = :userId', { userId })
       .select('COUNT(good.id)', 'goodsCount')
       .getRawOne();
@@ -832,44 +805,15 @@ export class UsersService {
       .where('user.id = :userId', { userId })
       .select('COUNT(haulage.id)', 'haulagesCount')
       .getRawOne();
-    const shopsGoodsRate = await this.usersRepository
+    const goodsRate = await this.usersRepository
       .createQueryBuilder('user')
       .leftJoin('user.cards', 'card')
       .leftJoinAndMapMany(
-        'card.shops',
-        'shops',
-        'shop',
-        'card.id = shop.cardId',
+        'card.goods',
+        'goods',
+        'good',
+        'card.id = good.cardId',
       )
-      .leftJoin('shop.goods', 'good')
-      .leftJoin('good.purchases', 'purchase')
-      .where('user.id = :userId', { userId })
-      .select('SUM(purchase.rate)', 'goodsRate')
-      .getRawOne();
-    const marketsGoodsRate = await this.usersRepository
-      .createQueryBuilder('user')
-      .leftJoin('user.cards', 'card')
-      .leftJoinAndMapMany(
-        'card.rents',
-        'rents',
-        'rent',
-        'card.id = rent.cardId',
-      )
-      .leftJoin('rent.goods', 'good')
-      .leftJoin('good.purchases', 'purchase')
-      .where('user.id = :userId', { userId })
-      .select('SUM(purchase.rate)', 'goodsRate')
-      .getRawOne();
-    const storagesGoodsRate = await this.usersRepository
-      .createQueryBuilder('user')
-      .leftJoin('user.cards', 'card')
-      .leftJoinAndMapMany(
-        'card.leases',
-        'leases',
-        'lease',
-        'card.id = lease.cardId',
-      )
-      .leftJoin('lease.goods', 'good')
       .leftJoin('good.purchases', 'purchase')
       .where('user.id = :userId', { userId })
       .select('SUM(purchase.rate)', 'goodsRate')
@@ -916,20 +860,11 @@ export class UsersService {
       ...articlesLikes,
       ...polls,
       ...pollsLikes,
-      goodsCount:
-        +shopsGoodsCount.goodsCount +
-        +marketsGoodsCount.goodsCount +
-        +storagesGoodsCount.goodsCount,
+      ...goodsCount,
       ...deliveriesCount,
       ...ordersCount,
       ...haulagesCount,
-      goodsRate:
-        (+shopsGoodsRate.goodsRate +
-          +marketsGoodsRate.goodsRate +
-          +storagesGoodsRate.goodsRate) /
-        (+shopsGoodsCount.goodsCount +
-          +marketsGoodsCount.goodsCount +
-          +storagesGoodsCount.goodsCount),
+      ...goodsRate,
       ...deliveriesRate,
       ...ordersRate,
       ...haulagesRate,
