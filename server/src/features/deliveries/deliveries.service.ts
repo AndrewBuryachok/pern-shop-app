@@ -1,6 +1,6 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
+import { Brackets, IsNull, Repository, SelectQueryBuilder } from 'typeorm';
 import { Delivery } from './delivery.entity';
 import { PurchasesService } from '../purchases/purchases.service';
 import { HiresService } from '../hires/hires.service';
@@ -48,8 +48,8 @@ export class DeliveriesService {
     req: Request,
   ): Promise<Response<Delivery>> {
     const [result, count] = await this.getDeliveriesQueryBuilder(req)
-      .innerJoin('customerCard.users', 'customerUsers')
-      .andWhere('customerUsers.id = :myId', { myId })
+      .innerJoin('customerAccount.cards', 'customerCards')
+      .andWhere('customerCards.userId = :myId', { myId })
       .getManyAndCount();
     return { result, count };
   }
@@ -59,8 +59,8 @@ export class DeliveriesService {
     req: Request,
   ): Promise<Response<Delivery>> {
     const [result, count] = await this.getDeliveriesQueryBuilder(req)
-      .leftJoin('executorCard.users', 'executorUsers')
-      .andWhere('executorUsers.id = :myId', { myId })
+      .leftJoin('executorAccount.cards', 'executorCards')
+      .andWhere('executorCards.userId = :myId', { myId })
       .getManyAndCount();
     return { result, count };
   }
@@ -70,17 +70,17 @@ export class DeliveriesService {
     req: Request,
   ): Promise<Response<Delivery>> {
     const [result, count] = await this.getDeliveriesQueryBuilder(req)
-      .leftJoin('shopCard.users', 'shopUsers')
-      .leftJoin('marketCard.users', 'marketUsers')
-      .leftJoin('storageCard.users', 'storageUsers')
-      .innerJoin('stationCard.users', 'stationUsers')
+      .leftJoin('shopAccount.cards', 'shopCards')
+      .leftJoin('marketAccount.cards', 'marketCards')
+      .leftJoin('storageAccount.cards', 'storageCards')
+      .innerJoin('stationAccount.cards', 'stationCards')
       .andWhere(
         new Brackets((qb) =>
           qb
-            .where('shopUsers.id = :myId')
-            .orWhere('marketUsers.id = :myId')
-            .orWhere('storageUsers.id = :myId')
-            .orWhere('stationUsers.id = :myId'),
+            .where('shopCards.userId = :myId')
+            .orWhere('marketCards.userId = :myId')
+            .orWhere('storageCards.userId = :myId')
+            .orWhere('stationCards.userId = :myId'),
         ),
         { myId },
       )
@@ -303,13 +303,22 @@ export class DeliveriesService {
     hasRole: boolean,
   ): Promise<Delivery> {
     const delivery = await this.deliveriesRepository.findOne({
-      relations: ['hire', 'hire.card', 'hire.card.users', 'executorCard'],
-      where: { id },
+      relations: [
+        'hire',
+        'hire.card',
+        'hire.card.account',
+        'hire.card.account.cards',
+        'executorCard',
+      ],
+      where: {
+        id,
+        hire: { card: { account: { cards: { completedAt: IsNull() } } } },
+      },
     });
-    if (
-      !delivery.hire.card.users.map((user) => user.id).includes(userId) &&
-      !hasRole
-    ) {
+    const card = delivery.hire.card.account.cards.find(
+      (card) => card.userId === userId,
+    );
+    if (!card && !hasRole) {
       throw new AppException(DeliveryError.NOT_CUSTOMER);
     }
     return delivery;
@@ -321,13 +330,22 @@ export class DeliveriesService {
     hasRole: boolean,
   ): Promise<Delivery> {
     const delivery = await this.deliveriesRepository.findOne({
-      relations: ['executorCard', 'executorCard.users', 'hire', 'hire.card'],
-      where: { id },
+      relations: [
+        'executorCard',
+        'executorCard.account',
+        'executorCard.account.cards',
+        'hire',
+        'hire.card',
+      ],
+      where: {
+        id,
+        executorCard: { account: { cards: { completedAt: IsNull() } } },
+      },
     });
-    if (
-      !delivery.executorCard.users.map((user) => user.id).includes(userId) &&
-      !hasRole
-    ) {
+    const card = delivery.executorCard.account.cards.find(
+      (card) => card.userId === userId,
+    );
+    if (!card && !hasRole) {
       throw new AppException(DeliveryError.NOT_EXECUTOR);
     }
     return delivery;
@@ -437,25 +455,31 @@ export class DeliveriesService {
       .innerJoin('purchase.good', 'good')
       .leftJoin('good.shop', 'shop')
       .leftJoin('shop.card', 'shopCard')
+      .leftJoin('shopCard.account', 'shopAccount')
       .leftJoin('shopCard.user', 'shopUser')
       .leftJoin('good.rent', 'rent')
       .leftJoin('rent.stall', 'stall')
       .leftJoin('stall.market', 'market')
       .leftJoin('market.card', 'marketCard')
+      .leftJoin('marketCard.account', 'marketAccount')
       .leftJoin('marketCard.user', 'marketUser')
       .leftJoin('good.lease', 'lease')
       .leftJoin('lease.cell', 'cell')
       .leftJoin('cell.storage', 'storage')
       .leftJoin('storage.card', 'storageCard')
+      .leftJoin('storageCard.account', 'storageAccount')
       .leftJoin('storageCard.user', 'storageUser')
       .innerJoin('delivery.hire', 'hire')
       .innerJoin('hire.box', 'box')
       .innerJoin('box.station', 'station')
       .innerJoin('station.card', 'stationCard')
+      .innerJoin('stationCard.account', 'stationAccount')
       .innerJoin('stationCard.user', 'stationUser')
       .innerJoin('hire.card', 'customerCard')
+      .innerJoin('customerCard.account', 'customerAccount')
       .innerJoin('customerCard.user', 'customerUser')
       .leftJoin('delivery.executorCard', 'executorCard')
+      .leftJoin('executorCard.account', 'executorAccount')
       .leftJoin('executorCard.user', 'executorUser')
       .where(
         new Brackets((qb) =>
@@ -712,11 +736,12 @@ export class DeliveriesService {
         'good.id',
         'shop.id',
         'shopCard.id',
+        'shopAccount.id',
+        'shopAccount.name',
+        'shopAccount.color',
         'shopUser.id',
         'shopUser.nick',
         'shopUser.avatar',
-        'shopCard.name',
-        'shopCard.color',
         'shop.name',
         'shop.x',
         'shop.y',
@@ -724,11 +749,12 @@ export class DeliveriesService {
         'stall.id',
         'market.id',
         'marketCard.id',
+        'marketAccount.id',
+        'marketAccount.name',
+        'marketAccount.color',
         'marketUser.id',
         'marketUser.nick',
         'marketUser.avatar',
-        'marketCard.name',
-        'marketCard.color',
         'market.name',
         'market.x',
         'market.y',
@@ -737,11 +763,12 @@ export class DeliveriesService {
         'cell.id',
         'storage.id',
         'storageCard.id',
+        'storageAccount.id',
+        'storageAccount.name',
+        'storageAccount.color',
         'storageUser.id',
         'storageUser.nick',
         'storageUser.avatar',
-        'storageCard.name',
-        'storageCard.color',
         'storage.name',
         'storage.x',
         'storage.y',
@@ -755,29 +782,32 @@ export class DeliveriesService {
         'box.id',
         'station.id',
         'stationCard.id',
+        'stationAccount.id',
+        'stationAccount.name',
+        'stationAccount.color',
         'stationUser.id',
         'stationUser.nick',
         'stationUser.avatar',
-        'stationCard.name',
-        'stationCard.color',
         'station.name',
         'station.x',
         'station.y',
         'box.name',
         'customerCard.id',
+        'customerAccount.id',
+        'customerAccount.name',
+        'customerAccount.color',
         'customerUser.id',
         'customerUser.nick',
         'customerUser.avatar',
-        'customerCard.name',
-        'customerCard.color',
         'delivery.price',
         'delivery.status',
         'executorCard.id',
+        'executorAccount.id',
+        'executorAccount.name',
+        'executorAccount.color',
         'executorUser.id',
         'executorUser.nick',
         'executorUser.avatar',
-        'executorCard.name',
-        'executorCard.color',
         'delivery.createdAt',
         'delivery.completedAt',
         'delivery.rate',

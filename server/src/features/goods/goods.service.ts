@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
+import { Brackets, IsNull, Repository, SelectQueryBuilder } from 'typeorm';
 import { Good } from './good.entity';
 import { GoodState } from './good-state.entity';
 import { ShopsService } from '../shops/shops.service';
@@ -45,23 +45,23 @@ export class GoodsService {
 
   async getMyGoods(myId: number, req: Request): Promise<Response<Good>> {
     const [result, count] = await this.getGoodsQueryBuilder(req)
-      .innerJoin('sellerCard.users', 'sellerUsers')
-      .andWhere('sellerUsers.id = :myId', { myId })
+      .innerJoin('sellerAccount.cards', 'sellerCards')
+      .andWhere('sellerCards.userId = :myId', { myId })
       .getManyAndCount();
     return { result, count };
   }
 
   async getPlacedGoods(myId: number, req: Request): Promise<Response<Good>> {
     const [result, count] = await this.getGoodsQueryBuilder(req)
-      .leftJoin('shopCard.users', 'shopUsers')
-      .leftJoin('marketCard.users', 'marketUsers')
-      .leftJoin('storageCard.users', 'storageUsers')
+      .leftJoin('shopAccount.cards', 'shopCards')
+      .leftJoin('marketAccount.cards', 'marketCards')
+      .leftJoin('storageAccount.cards', 'storageCards')
       .andWhere(
         new Brackets((qb) =>
           qb
-            .where('shopUsers.id = :myId')
-            .orWhere('marketUsers.id = :myId')
-            .orWhere('storageUsers.id = :myId'),
+            .where('shopCards.userId = :myId')
+            .orWhere('marketCards.userId = :myId')
+            .orWhere('storageCards.userId = :myId'),
         ),
         { myId },
       )
@@ -111,7 +111,10 @@ export class GoodsService {
       dto.myId,
       dto.hasRole,
     );
-    const good = await this.createShop(dto, shop.cardId);
+    const card = dto.hasRole
+      ? shop.card
+      : shop.card.account.cards.find((card) => card.userId === dto.myId);
+    const good = await this.createShop(dto, card.id);
     this.publishCreateGoodNotification(good.id, dto.nick);
   }
 
@@ -123,7 +126,10 @@ export class GoodsService {
       dto.myId,
       dto.hasRole,
     );
-    const good = await this.createMarket(dto, rent.cardId);
+    const card = dto.hasRole
+      ? rent.card
+      : rent.card.account.cards.find((card) => card.userId === dto.myId);
+    const good = await this.createMarket(dto, card.id);
     this.publishCreateGoodNotification(good.id, dto.nick);
   }
 
@@ -135,7 +141,10 @@ export class GoodsService {
       dto.myId,
       dto.hasRole,
     );
-    const good = await this.createStorage(dto, lease.cardId);
+    const card = dto.hasRole
+      ? lease.card
+      : lease.card.account.cards.find((card) => card.userId === dto.myId);
+    const good = await this.createStorage(dto, card.id);
     this.publishCreateGoodNotification(good.id, dto.nick);
   }
 
@@ -225,10 +234,17 @@ export class GoodsService {
     hasRole: boolean,
   ): Promise<Good> {
     const good = await this.goodsRepository.findOne({
-      relations: ['card', 'card.users', 'rent', 'lease'],
-      where: { id },
+      relations: [
+        'card',
+        'card.account',
+        'card.account.cards',
+        'rent',
+        'lease',
+      ],
+      where: { id, card: { account: { cards: { completedAt: IsNull() } } } },
     });
-    if (!good.card.users.map((user) => user.id).includes(userId) && !hasRole) {
+    const card = good.card.account.cards.find((card) => card.userId === userId);
+    if (!card && !hasRole) {
       throw new AppException(GoodError.NOT_OWNER);
     }
     if (
@@ -431,19 +447,23 @@ export class GoodsService {
     return this.goodsRepository
       .createQueryBuilder('good')
       .innerJoin('good.card', 'sellerCard')
+      .innerJoin('sellerCard.account', 'sellerAccount')
       .innerJoin('sellerCard.user', 'sellerUser')
       .leftJoin('good.shop', 'shop')
       .leftJoin('shop.card', 'shopCard')
+      .leftJoin('shopCard.account', 'shopAccount')
       .leftJoin('shopCard.user', 'shopUser')
       .leftJoin('good.rent', 'rent')
       .leftJoin('rent.stall', 'stall')
       .leftJoin('stall.market', 'market')
       .leftJoin('market.card', 'marketCard')
+      .leftJoin('marketCard.account', 'marketAccount')
       .leftJoin('marketCard.user', 'marketUser')
       .leftJoin('good.lease', 'lease')
       .leftJoin('lease.cell', 'cell')
       .leftJoin('cell.storage', 'storage')
       .leftJoin('storage.card', 'storageCard')
+      .leftJoin('storageCard.account', 'storageAccount')
       .leftJoin('storageCard.user', 'storageUser')
       .loadRelationCountAndMap('good.states', 'good.states')
       .loadRelationCountAndMap('good.purchases', 'good.purchases')
@@ -641,18 +661,20 @@ export class GoodsService {
       .select([
         'good.id',
         'sellerCard.id',
+        'sellerAccount.id',
+        'sellerAccount.name',
+        'sellerAccount.color',
         'sellerUser.id',
         'sellerUser.nick',
         'sellerUser.avatar',
-        'sellerCard.name',
-        'sellerCard.color',
         'shop.id',
         'shopCard.id',
+        'shopAccount.id',
+        'shopAccount.name',
+        'shopAccount.color',
         'shopUser.id',
         'shopUser.nick',
         'shopUser.avatar',
-        'shopCard.name',
-        'shopCard.color',
         'shop.name',
         'shop.x',
         'shop.y',
@@ -660,11 +682,12 @@ export class GoodsService {
         'stall.id',
         'market.id',
         'marketCard.id',
+        'marketAccount.id',
+        'marketAccount.name',
+        'marketAccount.color',
         'marketUser.id',
         'marketUser.nick',
         'marketUser.avatar',
-        'marketCard.name',
-        'marketCard.color',
         'market.name',
         'market.x',
         'market.y',
@@ -673,11 +696,12 @@ export class GoodsService {
         'cell.id',
         'storage.id',
         'storageCard.id',
+        'storageAccount.id',
+        'storageAccount.name',
+        'storageAccount.color',
         'storageUser.id',
         'storageUser.nick',
         'storageUser.avatar',
-        'storageCard.name',
-        'storageCard.color',
         'storage.name',
         'storage.x',
         'storage.y',

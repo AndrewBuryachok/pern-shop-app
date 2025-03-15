@@ -35,8 +35,8 @@ export class StallsService {
 
   async getMyStalls(myId: number, req: Request): Promise<Response<Stall>> {
     const [result, count] = await this.getStallsQueryBuilder(req)
-      .innerJoin('ownerCard.users', 'ownerUsers')
-      .andWhere('ownerUsers.id = :myId', { myId })
+      .innerJoin('ownerAccount.cards', 'ownerCards')
+      .andWhere('ownerCards.userId = :myId', { myId })
       .getManyAndCount();
     return { result, count };
   }
@@ -204,6 +204,7 @@ export class StallsService {
       .createQueryBuilder('stall')
       .innerJoin('stall.market', 'market')
       .innerJoin('market.card', 'ownerCard')
+      .innerJoin('ownerCard.account', 'ownerAccount')
       .innerJoin('ownerCard.user', 'ownerUser')
       .innerJoin('stall.marketTag', 'marketTag')
       .where(
@@ -282,11 +283,12 @@ export class StallsService {
         'stall.id',
         'market.id',
         'ownerCard.id',
+        'ownerAccount.id',
+        'ownerAccount.name',
+        'ownerAccount.color',
         'ownerUser.id',
         'ownerUser.nick',
         'ownerUser.avatar',
-        'ownerCard.name',
-        'ownerCard.color',
         'market.name',
         'market.x',
         'market.y',

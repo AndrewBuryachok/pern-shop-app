@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
+import { Brackets, IsNull, Repository, SelectQueryBuilder } from 'typeorm';
 import { MarketTag } from './market-tag.entity';
 import { MarketTagState } from './market-tag-state.entity';
 import { MarketsService } from '../markets/markets.service';
@@ -31,8 +31,8 @@ export class MarketsTagsService {
     req: Request,
   ): Promise<Response<MarketTag>> {
     const [result, count] = await this.getMarketsTagsQueryBuilder(req)
-      .innerJoin('ownerCard.users', 'ownerUsers')
-      .andWhere('ownerUsers.id = :myId', { myId })
+      .innerJoin('ownerAccount.cards', 'ownerCards')
+      .andWhere('ownerCards.userId = :myId', { myId })
       .getManyAndCount();
     return { result, count };
   }
@@ -97,13 +97,21 @@ export class MarketsTagsService {
     hasRole: boolean,
   ): Promise<MarketTag> {
     const marketTag = await this.marketsTagsRepository.findOne({
-      relations: ['market', 'market.card', 'market.card.users'],
-      where: { id },
+      relations: [
+        'market',
+        'market.card',
+        'market.card.account',
+        'market.card.account.cards',
+      ],
+      where: {
+        id,
+        market: { card: { account: { cards: { completedAt: IsNull() } } } },
+      },
     });
-    if (
-      !marketTag.market.card.users.map((user) => user.id).includes(userId) &&
-      !hasRole
-    ) {
+    const card = marketTag.market.card.account.cards.find(
+      (card) => card.userId === userId,
+    );
+    if (!card && !hasRole) {
       throw new AppException(MarketTagError.NOT_OWNER);
     }
     return marketTag;
@@ -177,6 +185,7 @@ export class MarketsTagsService {
       .createQueryBuilder('marketTag')
       .innerJoin('marketTag.market', 'market')
       .innerJoin('market.card', 'ownerCard')
+      .innerJoin('ownerCard.account', 'ownerAccount')
       .innerJoin('ownerCard.user', 'ownerUser')
       .loadRelationCountAndMap('marketTag.stalls', 'marketTag.stalls')
       .where(
@@ -233,11 +242,12 @@ export class MarketsTagsService {
         'marketTag.id',
         'market.id',
         'ownerCard.id',
+        'ownerAccount.id',
+        'ownerAccount.name',
+        'ownerAccount.color',
         'ownerUser.id',
         'ownerUser.nick',
         'ownerUser.avatar',
-        'ownerCard.name',
-        'ownerCard.color',
         'market.name',
         'market.x',
         'market.y',

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
+import { Brackets, IsNull, Repository, SelectQueryBuilder } from 'typeorm';
 import { Storage } from './storage.entity';
 import { CardsService } from '../cards/cards.service';
 import { MqttService } from '../mqtt/mqtt.service';
@@ -28,8 +28,8 @@ export class StoragesService {
 
   async getMyStorages(myId: number, req: Request): Promise<Response<Storage>> {
     const [result, count] = await this.getStoragesQueryBuilder(req)
-      .innerJoin('ownerCard.users', 'ownerUsers')
-      .andWhere('ownerUsers.id = :myId', { myId })
+      .innerJoin('ownerAccount.cards', 'ownerCards')
+      .andWhere('ownerCards.userId = :myId', { myId })
       .getManyAndCount();
     return { result, count };
   }
@@ -48,9 +48,10 @@ export class StoragesService {
   selectMyStorages(myId: number): Promise<Storage[]> {
     return this.selectStoragesQueryBuilder()
       .innerJoin('storage.card', 'ownerCard')
-      .innerJoin('ownerCard.users', 'ownerUsers')
+      .innerJoin('ownerCard.account', 'ownerAccount')
+      .innerJoin('ownerAccount.cards', 'ownerCards')
       .loadRelationCountAndMap('storage.cells', 'storage.cells')
-      .where('ownerUsers.id = :myId', { myId })
+      .where('ownerCards.userId = :myId', { myId })
       .getMany();
   }
 
@@ -96,13 +97,13 @@ export class StoragesService {
     hasRole: boolean,
   ): Promise<Storage> {
     const storage = await this.storagesRepository.findOne({
-      relations: ['card', 'card.users'],
-      where: { id },
+      relations: ['card', 'card.account', 'card.account.cards'],
+      where: { id, card: { account: { cards: { completedAt: IsNull() } } } },
     });
-    if (
-      !storage.card.users.map((user) => user.id).includes(userId) &&
-      !hasRole
-    ) {
+    const card = storage.card.account.cards.find(
+      (card) => card.userId === userId,
+    );
+    if (!card && !hasRole) {
       throw new AppException(StorageError.NOT_OWNER);
     }
     return storage;
@@ -165,6 +166,7 @@ export class StoragesService {
     return this.storagesRepository
       .createQueryBuilder('storage')
       .innerJoin('storage.card', 'ownerCard')
+      .innerJoin('ownerCard.account', 'ownerAccount')
       .innerJoin('ownerCard.user', 'ownerUser')
       .loadRelationCountAndMap('storage.tags', 'storage.tags')
       .loadRelationCountAndMap('storage.cells', 'storage.cells')
@@ -200,11 +202,12 @@ export class StoragesService {
       .select([
         'storage.id',
         'ownerCard.id',
+        'ownerAccount.id',
+        'ownerAccount.name',
+        'ownerAccount.color',
         'ownerUser.id',
         'ownerUser.nick',
         'ownerUser.avatar',
-        'ownerCard.name',
-        'ownerCard.color',
         'storage.name',
         'storage.description',
         'storage.x',

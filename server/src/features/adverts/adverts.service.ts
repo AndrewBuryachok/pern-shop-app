@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
+import { Brackets, IsNull, Repository, SelectQueryBuilder } from 'typeorm';
 import { Advert } from './advert.entity';
 import { Task } from '../tasks/task.entity';
 import { CardsService } from '../cards/cards.service';
@@ -37,8 +37,8 @@ export class AdvertsService {
 
   async getMyAdverts(myId: number, req: Request): Promise<Response<Advert>> {
     const [result, count] = await this.getAdvertsQueryBuilder(req)
-      .innerJoin('ownerCard.users', 'ownerUsers')
-      .andWhere('ownerUsers.id = :myId', { myId })
+      .innerJoin('ownerAccount.cards', 'ownerCards')
+      .andWhere('ownerCards.userId = :myId', { myId })
       .getManyAndCount();
     return { result, count };
   }
@@ -115,13 +115,13 @@ export class AdvertsService {
     hasRole: boolean,
   ): Promise<Advert> {
     const advert = await this.advertsRepository.findOne({
-      relations: ['card', 'card.users'],
-      where: { id },
+      relations: ['card', 'card.account', 'card.account.cards'],
+      where: { id, card: { account: { cards: { completedAt: IsNull() } } } },
     });
-    if (
-      !advert.card.users.map((user) => user.id).includes(userId) &&
-      !hasRole
-    ) {
+    const card = advert.card.account.cards.find(
+      (card) => card.userId === userId,
+    );
+    if (!card && !hasRole) {
       throw new AppException(AdvertError.NOT_OWNER);
     }
     return advert;
@@ -185,6 +185,7 @@ export class AdvertsService {
     return this.advertsRepository
       .createQueryBuilder('advert')
       .innerJoin('advert.card', 'ownerCard')
+      .innerJoin('ownerCard.account', 'ownerAccount')
       .innerJoin('ownerCard.user', 'ownerUser')
       .where(
         new Brackets((qb) =>
@@ -248,11 +249,12 @@ export class AdvertsService {
       .select([
         'advert.id',
         'ownerCard.id',
+        'ownerAccount.id',
+        'ownerAccount.name',
+        'ownerAccount.color',
         'ownerUser.id',
         'ownerUser.nick',
         'ownerUser.avatar',
-        'ownerCard.name',
-        'ownerCard.color',
         'advert.activity',
         'advert.text',
         'advert.price',

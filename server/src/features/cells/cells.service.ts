@@ -35,8 +35,8 @@ export class CellsService {
 
   async getMyCells(myId: number, req: Request): Promise<Response<Cell>> {
     const [result, count] = await this.getCellsQueryBuilder(req)
-      .innerJoin('ownerCard.users', 'ownerUsers')
-      .andWhere('ownerUsers.id = :myId', { myId })
+      .innerJoin('ownerAccount.cards', 'ownerCards')
+      .andWhere('ownerCards.userId = :myId', { myId })
       .getManyAndCount();
     return { result, count };
   }
@@ -204,6 +204,7 @@ export class CellsService {
       .createQueryBuilder('cell')
       .innerJoin('cell.storage', 'storage')
       .innerJoin('storage.card', 'ownerCard')
+      .innerJoin('ownerCard.account', 'ownerAccount')
       .innerJoin('ownerCard.user', 'ownerUser')
       .innerJoin('cell.storageTag', 'storageTag')
       .where(
@@ -288,11 +289,12 @@ export class CellsService {
         'cell.id',
         'storage.id',
         'ownerCard.id',
+        'ownerAccount.id',
+        'ownerAccount.name',
+        'ownerAccount.color',
         'ownerUser.id',
         'ownerUser.nick',
         'ownerUser.avatar',
-        'ownerCard.name',
-        'ownerCard.color',
         'storage.name',
         'storage.x',
         'storage.y',

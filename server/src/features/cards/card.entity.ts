@@ -3,17 +3,23 @@ import {
   CreateDateColumn,
   Entity,
   JoinColumn,
-  JoinTable,
-  ManyToMany,
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { Account } from './account.entity';
 import { User } from '../users/user.entity';
 
 @Entity('cards')
 export class Card {
   @PrimaryGeneratedColumn()
   id: number;
+
+  @Column({ name: 'account_id' })
+  accountId: number;
+
+  @ManyToOne(() => Account, { nullable: false })
+  @JoinColumn({ name: 'account_id' })
+  account: Account;
 
   @Column({ name: 'user_id' })
   userId: number;
@@ -22,23 +28,9 @@ export class Card {
   @JoinColumn({ name: 'user_id' })
   user: User;
 
-  @Column()
-  name: string;
-
-  @Column()
-  color: number;
-
-  @Column({ default: 0 })
-  balance: number;
-
   @CreateDateColumn({ type: 'timestamptz', name: 'created_at' })
   createdAt: Date;
 
-  @ManyToMany(() => User)
-  @JoinTable({
-    name: 'cards_users',
-    joinColumn: { name: 'card_id' },
-    inverseJoinColumn: { name: 'user_id' },
-  })
-  users: User[];
+  @Column({ type: 'timestamptz', name: 'completed_at', nullable: true })
+  completedAt?: Date;
 }

@@ -24,15 +24,8 @@ export class ExchangesService {
     req: Request,
   ): Promise<Response<Exchange>> {
     const [result, count] = await this.getExchangesQueryBuilder(req)
-      .innerJoin('customerCard.users', 'customerUsers')
-      .andWhere(
-        new Brackets((qb) =>
-          qb
-            .where('executorUser.id = :myId')
-            .orWhere('customerUsers.id = :myId'),
-        ),
-        { myId },
-      )
+      .innerJoin('customerAccount.cards', 'customerCards')
+      .andWhere('customerCards.userId = :myId', { myId })
       .getManyAndCount();
     return { result, count };
   }
@@ -106,6 +99,7 @@ export class ExchangesService {
       .createQueryBuilder('exchange')
       .innerJoin('exchange.executorUser', 'executorUser')
       .innerJoin('exchange.customerCard', 'customerCard')
+      .innerJoin('customerCard.account', 'customerAccount')
       .innerJoin('customerCard.user', 'customerUser')
       .where(
         new Brackets((qb) =>
@@ -188,11 +182,12 @@ export class ExchangesService {
         'executorUser.nick',
         'executorUser.avatar',
         'customerCard.id',
+        'customerAccount.id',
+        'customerAccount.name',
+        'customerAccount.color',
         'customerUser.id',
         'customerUser.nick',
         'customerUser.avatar',
-        'customerCard.name',
-        'customerCard.color',
         'exchange.type',
         'exchange.sum',
         'exchange.createdAt',

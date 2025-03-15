@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
+import { Brackets, IsNull, Repository, SelectQueryBuilder } from 'typeorm';
 import { Task } from './task.entity';
 import { CardsService } from '../cards/cards.service';
 import { PaymentsService } from '../payments/payments.service';
@@ -39,16 +39,16 @@ export class TasksService {
 
   async getMyTasks(myId: number, req: Request): Promise<Response<Task>> {
     const [result, count] = await this.getTasksQueryBuilder(req)
-      .innerJoin('customerCard.users', 'customerUsers')
-      .andWhere('customerUsers.id = :myId', { myId })
+      .innerJoin('customerAccount.cards', 'customerCards')
+      .andWhere('customerCards.userId = :myId', { myId })
       .getManyAndCount();
     return { result, count };
   }
 
   async getTakenTasks(myId: number, req: Request): Promise<Response<Task>> {
     const [result, count] = await this.getTasksQueryBuilder(req)
-      .leftJoin('executorCard.users', 'executorUsers')
-      .andWhere('executorUsers.id = :myId', { myId })
+      .leftJoin('executorAccount.cards', 'executorCards')
+      .andWhere('executorCards.userId = :myId', { myId })
       .getManyAndCount();
     return { result, count };
   }
@@ -228,13 +228,21 @@ export class TasksService {
     hasRole: boolean,
   ): Promise<Task> {
     const task = await this.tasksRepository.findOne({
-      relations: ['customerCard', 'customerCard.users', 'executorCard'],
-      where: { id },
+      relations: [
+        'customerCard',
+        'customerCard.account',
+        'customerCard.account.cards',
+        'executorCard',
+      ],
+      where: {
+        id,
+        customerCard: { account: { cards: { completedAt: IsNull() } } },
+      },
     });
-    if (
-      !task.customerCard.users.map((user) => user.id).includes(userId) &&
-      !hasRole
-    ) {
+    const card = task.customerCard.account.cards.find(
+      (card) => card.userId === userId,
+    );
+    if (!card && !hasRole) {
       throw new AppException(TaskError.NOT_CUSTOMER);
     }
     return task;
@@ -246,13 +254,21 @@ export class TasksService {
     hasRole: boolean,
   ): Promise<Task> {
     const task = await this.tasksRepository.findOne({
-      relations: ['executorCard', 'executorCard.users', 'customerCard'],
-      where: { id },
+      relations: [
+        'executorCard',
+        'executorCard.account',
+        'executorCard.account.cards',
+        'customerCard',
+      ],
+      where: {
+        id,
+        executorCard: { account: { cards: { completedAt: IsNull() } } },
+      },
     });
-    if (
-      !task.executorCard.users.map((user) => user.id).includes(userId) &&
-      !hasRole
-    ) {
+    const card = task.executorCard.account.cards.find(
+      (card) => card.userId === userId,
+    );
+    if (!card && !hasRole) {
       throw new AppException(TaskError.NOT_EXECUTOR);
     }
     return task;
@@ -354,8 +370,10 @@ export class TasksService {
     return this.tasksRepository
       .createQueryBuilder('task')
       .innerJoin('task.customerCard', 'customerCard')
+      .innerJoin('customerCard.account', 'customerAccount')
       .innerJoin('customerCard.user', 'customerUser')
       .leftJoin('task.executorCard', 'executorCard')
+      .leftJoin('executorCard.account', 'executorAccount')
       .leftJoin('executorCard.user', 'executorUser')
       .where(
         new Brackets((qb) =>
@@ -475,21 +493,23 @@ export class TasksService {
       .select([
         'task.id',
         'customerCard.id',
+        'customerAccount.id',
+        'customerAccount.name',
+        'customerAccount.color',
         'customerUser.id',
         'customerUser.nick',
         'customerUser.avatar',
-        'customerCard.name',
-        'customerCard.color',
         'task.activity',
         'task.text',
         'task.price',
         'task.status',
         'executorCard.id',
+        'executorAccount.id',
+        'executorAccount.name',
+        'executorAccount.color',
         'executorUser.id',
         'executorUser.nick',
         'executorUser.avatar',
-        'executorCard.name',
-        'executorCard.color',
         'task.createdAt',
         'task.completedAt',
         'task.rate',

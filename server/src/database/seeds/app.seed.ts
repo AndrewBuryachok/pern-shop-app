@@ -14,6 +14,7 @@ import { Poll } from '../../features/polls/poll.entity';
 import { PollView } from '../../features/polls/poll-view.entity';
 import { PollLike } from '../../features/polls/poll-like.entity';
 import { PollComment } from '../../features/polls/comment.entity';
+import { Account } from '../../features/cards/account.entity';
 import { Card } from '../../features/cards/card.entity';
 import { Exchange } from '../../features/exchanges/exchange.entity';
 import { Payment } from '../../features/payments/payment.entity';
@@ -181,25 +182,36 @@ export default class AppSeed implements Seeder {
         return comment;
       })
       .createMany(40);
-    const cards = await factory(Card)()
-      .map(async (card) => {
-        const count = Math.floor(Math.random() * 2) + 1;
-        const shuffled = users.sort(() => 0.5 - Math.random());
-        card.users = shuffled.slice(0, count);
-        card.user = card.users[0];
-        return card;
+    const accounts = await factory(Account)()
+      .map(async (account) => {
+        account.user = faker.helpers.arrayElement(users);
+        return account;
       })
       .makeMany(40);
+    let cardId = 0;
+    const cards = await factory(Card)()
+      .map(async (card) => {
+        card.account = accounts[Math.floor(cardId / 2)];
+        card.user =
+          cardId % 2 === 0
+            ? card.account.user
+            : faker.helpers.arrayElement(users);
+        cardId++;
+        return card;
+      })
+      .makeMany(80);
     const exchanges = await factory(Exchange)()
       .map(async (exchange) => {
         exchange.executorUser = faker.helpers.arrayElement(users);
         exchange.customerCard = faker.helpers.arrayElement(
-          cards.filter((card) => exchange.type || card.balance >= exchange.sum),
+          cards.filter(
+            (card) => exchange.type || card.account.balance >= exchange.sum,
+          ),
         );
         if (exchange.type) {
-          exchange.customerCard.balance += exchange.sum;
+          exchange.customerCard.account.balance += exchange.sum;
         } else {
-          exchange.customerCard.balance -= exchange.sum;
+          exchange.customerCard.account.balance -= exchange.sum;
         }
         return exchange;
       })
@@ -207,11 +219,11 @@ export default class AppSeed implements Seeder {
     const payments = await factory(Payment)()
       .map(async (payment) => {
         payment.senderCard = faker.helpers.arrayElement(
-          cards.filter((card) => card.balance >= payment.sum),
+          cards.filter((card) => card.account.balance >= payment.sum),
         );
         payment.receiverCard = faker.helpers.arrayElement(cards);
-        payment.senderCard.balance -= payment.sum;
-        payment.receiverCard.balance += payment.sum;
+        payment.senderCard.account.balance -= payment.sum;
+        payment.receiverCard.account.balance += payment.sum;
         return payment;
       })
       .makeMany(40);
@@ -221,7 +233,7 @@ export default class AppSeed implements Seeder {
         invoice.receiverUser = faker.helpers.arrayElement(users);
         if (invoice.completedAt) {
           invoice.receiverCard = faker.helpers.arrayElement(
-            cards.filter((card) => card.balance >= invoice.sum),
+            cards.filter((card) => card.account.balance >= invoice.sum),
           );
           invoice.receiverUser = invoice.receiverCard.user;
           const payment = await factory(Payment)().make({
@@ -231,8 +243,8 @@ export default class AppSeed implements Seeder {
             description: '',
           });
           payments.push(payment);
-          invoice.receiverCard.balance -= invoice.sum;
-          invoice.senderCard.balance += invoice.sum;
+          invoice.receiverCard.account.balance -= invoice.sum;
+          invoice.senderCard.account.balance += invoice.sum;
         }
         return invoice;
       })
@@ -352,7 +364,9 @@ export default class AppSeed implements Seeder {
         );
         rent.stall.reservedUntil = getDateWeekAfter();
         rent.card = faker.helpers.arrayElement(
-          cards.filter((card) => card.balance >= rent.stall.marketTag.price),
+          cards.filter(
+            (card) => card.account.balance >= rent.stall.marketTag.price,
+          ),
         );
         rent.sum = rent.stall.marketTag.price;
         const payment = await factory(Payment)().make({
@@ -362,8 +376,8 @@ export default class AppSeed implements Seeder {
           description: '',
         });
         payments.push(payment);
-        rent.card.balance -= rent.stall.marketTag.price;
-        rent.stall.market.card.balance += rent.stall.marketTag.price;
+        rent.card.account.balance -= rent.stall.marketTag.price;
+        rent.stall.market.card.account.balance += rent.stall.marketTag.price;
         return rent;
       })
       .makeMany(10);
@@ -374,7 +388,9 @@ export default class AppSeed implements Seeder {
         );
         lease.cell.reservedUntil = getDateWeekAfter();
         lease.card = faker.helpers.arrayElement(
-          cards.filter((card) => card.balance >= lease.cell.storageTag.price),
+          cards.filter(
+            (card) => card.account.balance >= lease.cell.storageTag.price,
+          ),
         );
         lease.sum = lease.cell.storageTag.price;
         const payment = await factory(Payment)().make({
@@ -384,8 +400,8 @@ export default class AppSeed implements Seeder {
           description: '',
         });
         payments.push(payment);
-        lease.card.balance -= lease.cell.storageTag.price;
-        lease.cell.storage.card.balance += lease.cell.storageTag.price;
+        lease.card.account.balance -= lease.cell.storageTag.price;
+        lease.cell.storage.card.account.balance += lease.cell.storageTag.price;
         return lease;
       })
       .makeMany(10);
@@ -396,7 +412,9 @@ export default class AppSeed implements Seeder {
         );
         hire.box.reservedUntil = getDateWeekAfter();
         hire.card = faker.helpers.arrayElement(
-          cards.filter((card) => card.balance >= hire.box.station.price),
+          cards.filter(
+            (card) => card.account.balance >= hire.box.station.price,
+          ),
         );
         hire.sum = hire.box.station.price;
         const payment = await factory(Payment)().make({
@@ -406,8 +424,8 @@ export default class AppSeed implements Seeder {
           description: '',
         });
         payments.push(payment);
-        hire.card.balance -= hire.box.station.price;
-        hire.box.station.card.balance += hire.box.station.price;
+        hire.card.account.balance -= hire.box.station.price;
+        hire.box.station.card.account.balance += hire.box.station.price;
         return hire;
       })
       .makeMany(60);
@@ -444,14 +462,14 @@ export default class AppSeed implements Seeder {
           goods.filter((good) => good.amount),
         );
         purchase.card = faker.helpers.arrayElement(
-          cards.filter((card) => card.balance >= purchase.good.price),
+          cards.filter((card) => card.account.balance >= purchase.good.price),
         );
         purchase.amount =
           Math.floor(
             Math.random() *
               Math.min(
                 purchase.good.amount,
-                Math.floor(purchase.card.balance / purchase.good.price),
+                Math.floor(purchase.card.account.balance / purchase.good.price),
               ),
           ) + 1;
         purchase.good.amount -= purchase.amount;
@@ -462,8 +480,9 @@ export default class AppSeed implements Seeder {
           description: '',
         });
         payments.push(payment);
-        purchase.card.balance -= purchase.amount * purchase.good.price;
-        purchase.good.card.balance += purchase.amount * purchase.good.price;
+        purchase.card.account.balance -= purchase.amount * purchase.good.price;
+        purchase.good.card.account.balance +=
+          purchase.amount * purchase.good.price;
         return purchase;
       })
       .makeMany(60);
@@ -473,7 +492,7 @@ export default class AppSeed implements Seeder {
       .map(async (delivery) => {
         delivery.purchase = purchases[purchaseId++];
         delivery.hire = hires[hireId++];
-        delivery.hire.card.balance -= delivery.price;
+        delivery.hire.card.account.balance -= delivery.price;
         if (delivery.status !== Status.CREATED) {
           delivery.executorCard = faker.helpers.arrayElement(cards);
         }
@@ -485,7 +504,7 @@ export default class AppSeed implements Seeder {
             description: '',
           });
           payments.push(payment);
-          delivery.executorCard.balance += delivery.price;
+          delivery.executorCard.account.balance += delivery.price;
         }
         return delivery;
       })
@@ -493,7 +512,7 @@ export default class AppSeed implements Seeder {
     const orders = await factory(Order)()
       .map(async (order) => {
         order.hire = hires[hireId++];
-        order.hire.card.balance -= order.price;
+        order.hire.card.account.balance -= order.price;
         if (order.status !== Status.CREATED) {
           order.executorCard = faker.helpers.arrayElement(cards);
         }
@@ -505,7 +524,7 @@ export default class AppSeed implements Seeder {
             description: '',
           });
           payments.push(payment);
-          order.executorCard.balance += order.price;
+          order.executorCard.account.balance += order.price;
         }
         return order;
       })
@@ -514,7 +533,7 @@ export default class AppSeed implements Seeder {
       .map(async (haulage) => {
         haulage.fromHire = hires[hireId++];
         haulage.toHire = hires[hireId++];
-        haulage.fromHire.card.balance -= haulage.price;
+        haulage.fromHire.card.account.balance -= haulage.price;
         if (haulage.status !== Status.CREATED) {
           haulage.executorCard = faker.helpers.arrayElement(cards);
         }
@@ -526,7 +545,7 @@ export default class AppSeed implements Seeder {
             description: '',
           });
           payments.push(payment);
-          haulage.executorCard.balance += haulage.price;
+          haulage.executorCard.account.balance += haulage.price;
         }
         return haulage;
       })
@@ -534,9 +553,9 @@ export default class AppSeed implements Seeder {
     const tasks = await factory(Task)()
       .map(async (task) => {
         task.customerCard = faker.helpers.arrayElement(
-          cards.filter((card) => card.balance >= task.price),
+          cards.filter((card) => card.account.balance >= task.price),
         );
-        task.customerCard.balance -= task.price;
+        task.customerCard.account.balance -= task.price;
         if (task.status !== Status.CREATED) {
           task.executorCard = faker.helpers.arrayElement(cards);
         }
@@ -548,7 +567,7 @@ export default class AppSeed implements Seeder {
             description: '',
           });
           payments.push(payment);
-          task.executorCard.balance += task.price;
+          task.executorCard.account.balance += task.price;
         }
         return task;
       })
@@ -578,6 +597,10 @@ export default class AppSeed implements Seeder {
       })
       .createMany(80);
     let id = 0;
+    await factory(Account)()
+      .map(async () => accounts[id++])
+      .createMany(accounts.length);
+    id = 0;
     await factory(Card)()
       .map(async () => cards[id++])
       .createMany(cards.length);

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
+import { Brackets, IsNull, Repository, SelectQueryBuilder } from 'typeorm';
 import { Market } from './market.entity';
 import { CardsService } from '../cards/cards.service';
 import { MqttService } from '../mqtt/mqtt.service';
@@ -28,8 +28,8 @@ export class MarketsService {
 
   async getMyMarkets(myId: number, req: Request): Promise<Response<Market>> {
     const [result, count] = await this.getMarketsQueryBuilder(req)
-      .innerJoin('ownerCard.users', 'ownerUsers')
-      .andWhere('ownerUsers.id = :myId', { myId })
+      .innerJoin('ownerAccount.cards', 'ownerCards')
+      .andWhere('ownerCards.userId = :myId', { myId })
       .getManyAndCount();
     return { result, count };
   }
@@ -48,9 +48,10 @@ export class MarketsService {
   selectMyMarkets(myId: number): Promise<Market[]> {
     return this.selectMarketsQueryBuilder()
       .innerJoin('market.card', 'ownerCard')
-      .innerJoin('ownerCard.users', 'ownerUsers')
+      .innerJoin('ownerCard.account', 'ownerAccount')
+      .innerJoin('ownerAccount.cards', 'ownerCards')
       .loadRelationCountAndMap('market.stalls', 'market.stalls')
-      .where('ownerUsers.id = :myId', { myId })
+      .where('ownerCards.userId = :myId', { myId })
       .getMany();
   }
 
@@ -96,13 +97,13 @@ export class MarketsService {
     hasRole: boolean,
   ): Promise<Market> {
     const market = await this.marketsRepository.findOne({
-      relations: ['card', 'card.users'],
-      where: { id },
+      relations: ['card', 'card.account', 'card.account.cards'],
+      where: { id, card: { account: { cards: { completedAt: IsNull() } } } },
     });
-    if (
-      !market.card.users.map((user) => user.id).includes(userId) &&
-      !hasRole
-    ) {
+    const card = market.card.account.cards.find(
+      (card) => card.userId === userId,
+    );
+    if (!card && !hasRole) {
       throw new AppException(MarketError.NOT_OWNER);
     }
     return market;
@@ -165,6 +166,7 @@ export class MarketsService {
     return this.marketsRepository
       .createQueryBuilder('market')
       .innerJoin('market.card', 'ownerCard')
+      .innerJoin('ownerCard.account', 'ownerAccount')
       .innerJoin('ownerCard.user', 'ownerUser')
       .loadRelationCountAndMap('market.tags', 'market.tags')
       .loadRelationCountAndMap('market.stalls', 'market.stalls')
@@ -200,11 +202,12 @@ export class MarketsService {
       .select([
         'market.id',
         'ownerCard.id',
+        'ownerAccount.id',
+        'ownerAccount.name',
+        'ownerAccount.color',
         'ownerUser.id',
         'ownerUser.nick',
         'ownerUser.avatar',
-        'ownerCard.name',
-        'ownerCard.color',
         'market.name',
         'market.description',
         'market.x',

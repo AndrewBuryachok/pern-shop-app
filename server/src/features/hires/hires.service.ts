@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
+import { Brackets, IsNull, Repository, SelectQueryBuilder } from 'typeorm';
 import { InjectSchedule, Schedule } from 'nest-schedule';
 import { Hire } from './hire.entity';
 import { Thing } from '../things/thing.entity';
@@ -54,16 +54,16 @@ export class HiresService {
 
   async getMyHires(myId: number, req: Request): Promise<Response<Hire>> {
     const [result, count] = await this.getHiresQueryBuilder(req)
-      .innerJoin('tenantCard.users', 'tenantUsers')
-      .andWhere('tenantUsers.id = :myId', { myId })
+      .innerJoin('tenantAccount.cards', 'tenantCards')
+      .andWhere('tenantCards.userId = :myId', { myId })
       .getManyAndCount();
     return { result, count };
   }
 
   async getReceivedHires(myId: number, req: Request): Promise<Response<Hire>> {
     const [result, count] = await this.getHiresQueryBuilder(req)
-      .innerJoin('ownerCard.users', 'ownerUsers')
-      .andWhere('ownerUsers.id = :myId', { myId })
+      .innerJoin('ownerAccount.cards', 'ownerCards')
+      .andWhere('ownerCards.userId = :myId', { myId })
       .getManyAndCount();
     return { result, count };
   }
@@ -188,10 +188,11 @@ export class HiresService {
     hasRole: boolean,
   ): Promise<Hire> {
     const hire = await this.hiresRepository.findOne({
-      relations: ['card', 'card.users'],
-      where: { id },
+      relations: ['card', 'card.account', 'card.account.cards'],
+      where: { id, card: { account: { cards: { completedAt: IsNull() } } } },
     });
-    if (!hire.card.users.map((user) => user.id).includes(userId) && !hasRole) {
+    const card = hire.card.account.cards.find((card) => card.userId === userId);
+    if (!card && !hasRole) {
       throw new AppException(HireError.NOT_OWNER);
     }
     if (hire.completedAt < new Date()) {
@@ -264,8 +265,10 @@ export class HiresService {
       .innerJoin('hire.box', 'box')
       .innerJoin('box.station', 'station')
       .innerJoin('station.card', 'ownerCard')
+      .innerJoin('ownerCard.account', 'ownerAccount')
       .innerJoin('ownerCard.user', 'ownerUser')
       .innerJoin('hire.card', 'tenantCard')
+      .innerJoin('tenantCard.account', 'tenantAccount')
       .innerJoin('tenantCard.user', 'tenantUser')
       .loadRelationCountAndMap('hire.orders', 'hire.orders')
       .loadRelationCountAndMap('hire.fromHaulages', 'hire.fromHaulages')
@@ -382,21 +385,23 @@ export class HiresService {
         'box.id',
         'station.id',
         'ownerCard.id',
+        'ownerAccount.id',
+        'ownerAccount.name',
+        'ownerAccount.color',
         'ownerUser.id',
         'ownerUser.nick',
         'ownerUser.avatar',
-        'ownerCard.name',
-        'ownerCard.color',
         'station.name',
         'station.x',
         'station.y',
         'box.name',
         'tenantCard.id',
+        'tenantAccount.id',
+        'tenantAccount.name',
+        'tenantAccount.color',
         'tenantUser.id',
         'tenantUser.nick',
         'tenantUser.avatar',
-        'tenantCard.name',
-        'tenantCard.color',
         'hire.sum',
         'hire.createdAt',
         'hire.completedAt',

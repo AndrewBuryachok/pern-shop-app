@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
+import { Brackets, IsNull, Repository, SelectQueryBuilder } from 'typeorm';
 import { Station } from './station.entity';
 import { StationState } from './station-state.entity';
 import { CardsService } from '../cards/cards.service';
@@ -31,8 +31,8 @@ export class StationsService {
 
   async getMyStations(myId: number, req: Request): Promise<Response<Station>> {
     const [result, count] = await this.getStationsQueryBuilder(req)
-      .innerJoin('ownerCard.users', 'ownerUsers')
-      .andWhere('ownerUsers.id = :myId', { myId })
+      .innerJoin('ownerAccount.cards', 'ownerCards')
+      .andWhere('ownerCards.userId = :myId', { myId })
       .getManyAndCount();
     return { result, count };
   }
@@ -51,9 +51,10 @@ export class StationsService {
   selectMyStations(myId: number): Promise<Station[]> {
     return this.selectStationsQueryBuilder()
       .innerJoin('station.card', 'ownerCard')
-      .innerJoin('ownerCard.users', 'ownerUsers')
+      .innerJoin('ownerCard.account', 'ownerAccount')
+      .innerJoin('ownerAccount.cards', 'ownerCards')
       .loadRelationCountAndMap('station.boxes', 'station.boxes')
-      .where('ownerUsers.id = :myId', { myId })
+      .where('ownerCards.userId = :myId', { myId })
       .getMany();
   }
 
@@ -128,13 +129,13 @@ export class StationsService {
     hasRole: boolean,
   ): Promise<Station> {
     const station = await this.stationsRepository.findOne({
-      relations: ['card', 'card.users'],
-      where: { id },
+      relations: ['card', 'card.account', 'card.account.cards'],
+      where: { id, card: { account: { cards: { completedAt: IsNull() } } } },
     });
-    if (
-      !station.card.users.map((user) => user.id).includes(userId) &&
-      !hasRole
-    ) {
+    const card = station.card.account.cards.find(
+      (card) => card.userId === userId,
+    );
+    if (!card && !hasRole) {
       throw new AppException(StationError.NOT_OWNER);
     }
     return station;
@@ -212,6 +213,7 @@ export class StationsService {
     return this.stationsRepository
       .createQueryBuilder('station')
       .innerJoin('station.card', 'ownerCard')
+      .innerJoin('ownerCard.account', 'ownerAccount')
       .innerJoin('ownerCard.user', 'ownerUser')
       .loadRelationCountAndMap('station.boxes', 'station.boxes')
       .where(
@@ -260,11 +262,12 @@ export class StationsService {
       .select([
         'station.id',
         'ownerCard.id',
+        'ownerAccount.id',
+        'ownerAccount.name',
+        'ownerAccount.color',
         'ownerUser.id',
         'ownerUser.nick',
         'ownerUser.avatar',
-        'ownerCard.name',
-        'ownerCard.color',
         'station.name',
         'station.description',
         'station.x',

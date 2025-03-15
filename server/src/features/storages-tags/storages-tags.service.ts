@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
+import { Brackets, IsNull, Repository, SelectQueryBuilder } from 'typeorm';
 import { StorageTag } from './storage-tag.entity';
 import { StorageTagState } from './storage-tag-state.entity';
 import { StoragesService } from '../storages/storages.service';
@@ -34,8 +34,8 @@ export class StoragesTagsService {
     req: Request,
   ): Promise<Response<StorageTag>> {
     const [result, count] = await this.getStoragesTagsQueryBuilder(req)
-      .innerJoin('ownerCard.users', 'ownerUsers')
-      .andWhere('ownerUsers.id = :myId', { myId })
+      .innerJoin('ownerAccount.cards', 'ownerCards')
+      .andWhere('ownerCards.userId = :myId', { myId })
       .getManyAndCount();
     return { result, count };
   }
@@ -106,13 +106,21 @@ export class StoragesTagsService {
     hasRole: boolean,
   ): Promise<StorageTag> {
     const storageTag = await this.storagesTagsRepository.findOne({
-      relations: ['storage', 'storage.card', 'storage.card.users'],
-      where: { id },
+      relations: [
+        'storage',
+        'storage.card',
+        'storage.card.account',
+        'storage.card.account.cards',
+      ],
+      where: {
+        id,
+        storage: { card: { account: { cards: { completedAt: IsNull() } } } },
+      },
     });
-    if (
-      !storageTag.storage.card.users.map((user) => user.id).includes(userId) &&
-      !hasRole
-    ) {
+    const card = storageTag.storage.card.account.cards.find(
+      (card) => card.userId === userId,
+    );
+    if (!card && !hasRole) {
       throw new AppException(StorageTagError.NOT_OWNER);
     }
     return storageTag;
@@ -186,6 +194,7 @@ export class StoragesTagsService {
       .createQueryBuilder('storageTag')
       .innerJoin('storageTag.storage', 'storage')
       .innerJoin('storage.card', 'ownerCard')
+      .innerJoin('ownerCard.account', 'ownerAccount')
       .innerJoin('ownerCard.user', 'ownerUser')
       .loadRelationCountAndMap('storageTag.cells', 'storageTag.cells')
       .where(
@@ -248,11 +257,12 @@ export class StoragesTagsService {
         'storageTag.id',
         'storage.id',
         'ownerCard.id',
+        'ownerAccount.id',
+        'ownerAccount.name',
+        'ownerAccount.color',
         'ownerUser.id',
         'ownerUser.nick',
         'ownerUser.avatar',
-        'ownerCard.name',
-        'ownerCard.color',
         'storage.name',
         'storage.x',
         'storage.y',

@@ -35,8 +35,8 @@ export class BoxesService {
 
   async getMyBoxes(myId: number, req: Request): Promise<Response<Box>> {
     const [result, count] = await this.getBoxesQueryBuilder(req)
-      .innerJoin('ownerCard.users', 'ownerUsers')
-      .andWhere('ownerUsers.id = :myId', { myId })
+      .innerJoin('ownerAccount.cards', 'ownerCards')
+      .andWhere('ownerCards.userId = :myId', { myId })
       .getManyAndCount();
     return { result, count };
   }
@@ -197,6 +197,7 @@ export class BoxesService {
       .createQueryBuilder('box')
       .innerJoin('box.station', 'station')
       .innerJoin('station.card', 'ownerCard')
+      .innerJoin('ownerCard.account', 'ownerAccount')
       .innerJoin('ownerCard.user', 'ownerUser')
       .where(
         new Brackets((qb) =>
@@ -267,11 +268,12 @@ export class BoxesService {
         'box.id',
         'station.id',
         'ownerCard.id',
+        'ownerAccount.id',
+        'ownerAccount.name',
+        'ownerAccount.color',
         'ownerUser.id',
         'ownerUser.nick',
         'ownerUser.avatar',
-        'ownerCard.name',
-        'ownerCard.color',
         'station.name',
         'station.x',
         'station.y',

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
+import { Brackets, IsNull, Repository, SelectQueryBuilder } from 'typeorm';
 import { Order } from './order.entity';
 import { HiresService } from '../hires/hires.service';
 import { CardsService } from '../cards/cards.service';
@@ -42,24 +42,24 @@ export class OrdersService {
 
   async getMyOrders(myId: number, req: Request): Promise<Response<Order>> {
     const [result, count] = await this.getOrdersQueryBuilder(req)
-      .innerJoin('customerCard.users', 'customerUsers')
-      .andWhere('customerUsers.id = :myId', { myId })
+      .innerJoin('customerAccount.cards', 'customerCards')
+      .andWhere('customerCards.userId = :myId', { myId })
       .getManyAndCount();
     return { result, count };
   }
 
   async getTakenOrders(myId: number, req: Request): Promise<Response<Order>> {
     const [result, count] = await this.getOrdersQueryBuilder(req)
-      .leftJoin('executorCard.users', 'executorUsers')
-      .andWhere('executorUsers.id = :myId', { myId })
+      .leftJoin('executorAccount.cards', 'executorCards')
+      .andWhere('executorCards.userId = :myId', { myId })
       .getManyAndCount();
     return { result, count };
   }
 
   async getPlacedOrders(myId: number, req: Request): Promise<Response<Order>> {
     const [result, count] = await this.getOrdersQueryBuilder(req)
-      .innerJoin('ownerCard.users', 'ownerUsers')
-      .andWhere('ownerUsers.id = :myId', { myId })
+      .innerJoin('ownerAccount.cards', 'ownerCards')
+      .andWhere('ownerCards.userId = :myId', { myId })
       .getManyAndCount();
     return { result, count };
   }
@@ -248,13 +248,22 @@ export class OrdersService {
     hasRole: boolean,
   ): Promise<Order> {
     const order = await this.ordersRepository.findOne({
-      relations: ['hire', 'hire.card', 'hire.card.users', 'executorCard'],
-      where: { id },
+      relations: [
+        'hire',
+        'hire.card',
+        'hire.card.account',
+        'hire.card.account.cards',
+        'executorCard',
+      ],
+      where: {
+        id,
+        hire: { card: { account: { cards: { completedAt: IsNull() } } } },
+      },
     });
-    if (
-      !order.hire.card.users.map((user) => user.id).includes(userId) &&
-      !hasRole
-    ) {
+    const card = order.hire.card.account.cards.find(
+      (card) => card.userId === userId,
+    );
+    if (!card && !hasRole) {
       throw new AppException(OrderError.NOT_CUSTOMER);
     }
     return order;
@@ -266,13 +275,22 @@ export class OrdersService {
     hasRole: boolean,
   ): Promise<Order> {
     const order = await this.ordersRepository.findOne({
-      relations: ['executorCard', 'executorCard.users', 'hire', 'hire.card'],
-      where: { id },
+      relations: [
+        'executorCard',
+        'executorCard.account',
+        'executorCard.account.cards',
+        'hire',
+        'hire.card',
+      ],
+      where: {
+        id,
+        executorCard: { account: { cards: { completedAt: IsNull() } } },
+      },
     });
-    if (
-      !order.executorCard.users.map((user) => user.id).includes(userId) &&
-      !hasRole
-    ) {
+    const card = order.executorCard.account.cards.find(
+      (card) => card.userId === userId,
+    );
+    if (!card && !hasRole) {
       throw new AppException(OrderError.NOT_EXECUTOR);
     }
     return order;
@@ -383,10 +401,13 @@ export class OrdersService {
       .innerJoin('hire.box', 'box')
       .innerJoin('box.station', 'station')
       .innerJoin('station.card', 'ownerCard')
+      .innerJoin('ownerCard.account', 'ownerAccount')
       .innerJoin('ownerCard.user', 'ownerUser')
       .innerJoin('hire.card', 'customerCard')
+      .innerJoin('customerCard.account', 'customerAccount')
       .innerJoin('customerCard.user', 'customerUser')
       .leftJoin('order.executorCard', 'executorCard')
+      .leftJoin('executorCard.account', 'executorAccount')
       .leftJoin('executorCard.user', 'executorUser')
       .where(
         new Brackets((qb) =>
@@ -584,21 +605,23 @@ export class OrdersService {
         'box.id',
         'station.id',
         'ownerCard.id',
+        'ownerAccount.id',
+        'ownerAccount.name',
+        'ownerAccount.color',
         'ownerUser.id',
         'ownerUser.nick',
         'ownerUser.avatar',
-        'ownerCard.name',
-        'ownerCard.color',
         'station.name',
         'station.x',
         'station.y',
         'box.name',
         'customerCard.id',
+        'customerAccount.id',
+        'customerAccount.name',
+        'customerAccount.color',
         'customerUser.id',
         'customerUser.nick',
         'customerUser.avatar',
-        'customerCard.name',
-        'customerCard.color',
         'order.item',
         'order.description',
         'order.amount',
@@ -607,11 +630,12 @@ export class OrdersService {
         'order.price',
         'order.status',
         'executorCard.id',
+        'executorAccount.id',
+        'executorAccount.name',
+        'executorAccount.color',
         'executorUser.id',
         'executorUser.nick',
         'executorUser.avatar',
-        'executorCard.name',
-        'executorCard.color',
         'order.createdAt',
         'order.completedAt',
         'order.rate',

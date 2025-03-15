@@ -21,13 +21,13 @@ export class PaymentsService {
 
   async getMyPayments(myId: number, req: Request): Promise<Response<Payment>> {
     const [result, count] = await this.getPaymentsQueryBuilder(req)
-      .innerJoin('senderCard.users', 'senderUsers')
-      .innerJoin('receiverCard.users', 'receiverUsers')
+      .innerJoin('senderAccount.cards', 'senderCards')
+      .innerJoin('receiverAccount.cards', 'receiverCards')
       .andWhere(
         new Brackets((qb) =>
           qb
-            .where('senderUsers.id = :myId')
-            .orWhere('receiverUsers.id = :myId'),
+            .where('senderCards.userId = :myId')
+            .orWhere('receiverCards.userId = :myId'),
         ),
         { myId },
       )
@@ -111,8 +111,10 @@ export class PaymentsService {
     return this.paymentsRepository
       .createQueryBuilder('payment')
       .innerJoin('payment.senderCard', 'senderCard')
+      .innerJoin('senderCard.account', 'senderAccount')
       .innerJoin('senderCard.user', 'senderUser')
       .innerJoin('payment.receiverCard', 'receiverCard')
+      .innerJoin('receiverCard.account', 'receiverAccount')
       .innerJoin('receiverCard.user', 'receiverUser')
       .where(
         new Brackets((qb) =>
@@ -204,17 +206,19 @@ export class PaymentsService {
       .select([
         'payment.id',
         'senderCard.id',
+        'senderAccount.id',
+        'senderAccount.name',
+        'senderAccount.color',
         'senderUser.id',
         'senderUser.nick',
         'senderUser.avatar',
-        'senderCard.name',
-        'senderCard.color',
         'receiverCard.id',
+        'receiverAccount.id',
+        'receiverAccount.name',
+        'receiverAccount.color',
         'receiverUser.id',
         'receiverUser.nick',
         'receiverUser.avatar',
-        'receiverCard.name',
-        'receiverCard.color',
         'payment.sum',
         'payment.description',
         'payment.createdAt',

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
+import { Brackets, IsNull, Repository, SelectQueryBuilder } from 'typeorm';
 import { Haulage } from './haulage.entity';
 import { HiresService } from '../hires/hires.service';
 import { CardsService } from '../cards/cards.service';
@@ -43,8 +43,8 @@ export class HaulagesService {
 
   async getMyHaulages(myId: number, req: Request): Promise<Response<Haulage>> {
     const [result, count] = await this.getHaulagesQueryBuilder(req)
-      .innerJoin('customerCard.users', 'customerUsers')
-      .andWhere('customerUsers.id = :myId', { myId })
+      .innerJoin('customerAccount.cards', 'customerCards')
+      .andWhere('customerCards.userId = :myId', { myId })
       .getManyAndCount();
     return { result, count };
   }
@@ -54,8 +54,8 @@ export class HaulagesService {
     req: Request,
   ): Promise<Response<Haulage>> {
     const [result, count] = await this.getHaulagesQueryBuilder(req)
-      .leftJoin('executorCard.users', 'executorUsers')
-      .andWhere('executorUsers.id = :myId', { myId })
+      .leftJoin('executorAccount.cards', 'executorCards')
+      .andWhere('executorCards.userId = :myId', { myId })
       .getManyAndCount();
     return { result, count };
   }
@@ -65,13 +65,13 @@ export class HaulagesService {
     req: Request,
   ): Promise<Response<Haulage>> {
     const [result, count] = await this.getHaulagesQueryBuilder(req)
-      .innerJoin('fromOwnerCard.users', 'fromOwnerUsers')
-      .innerJoin('toOwnerCard.users', 'toOwnerUsers')
+      .innerJoin('fromOwnerAccount.cards', 'fromOwnerCards')
+      .innerJoin('toOwnerAccount.cards', 'toOwnerCards')
       .andWhere(
         new Brackets((qb) =>
           qb
-            .where('fromOwnerUsers.id = :myId')
-            .orWhere('toOwnerUsers.id = :myId'),
+            .where('fromOwnerCards.userId = :myId')
+            .orWhere('toOwnerCards.userId = :myId'),
         ),
         { myId },
       )
@@ -302,15 +302,19 @@ export class HaulagesService {
       relations: [
         'fromHire',
         'fromHire.card',
-        'fromHire.card.users',
+        'fromHire.card.account',
+        'fromHire.card.account.cards',
         'executorCard',
       ],
-      where: { id },
+      where: {
+        id,
+        fromHire: { card: { account: { cards: { completedAt: IsNull() } } } },
+      },
     });
-    if (
-      !haulage.fromHire.card.users.map((user) => user.id).includes(userId) &&
-      !hasRole
-    ) {
+    const card = haulage.fromHire.card.account.cards.find(
+      (card) => card.userId === userId,
+    );
+    if (!card && !hasRole) {
       throw new AppException(HaulageError.NOT_CUSTOMER);
     }
     return haulage;
@@ -324,16 +328,20 @@ export class HaulagesService {
     const haulage = await this.haulagesRepository.findOne({
       relations: [
         'executorCard',
-        'executorCard.users',
+        'executorCard.account',
+        'executorCard.account.cards',
         'fromHire',
         'fromHire.card',
       ],
-      where: { id },
+      where: {
+        id,
+        executorCard: { account: { cards: { completedAt: IsNull() } } },
+      },
     });
-    if (
-      !haulage.executorCard.users.map((user) => user.id).includes(userId) &&
-      !hasRole
-    ) {
+    const card = haulage.executorCard.account.cards.find(
+      (card) => card.userId === userId,
+    );
+    if (!card && !hasRole) {
       throw new AppException(HaulageError.NOT_EXECUTOR);
     }
     return haulage;
@@ -445,15 +453,19 @@ export class HaulagesService {
       .innerJoin('fromHire.box', 'fromBox')
       .innerJoin('fromBox.station', 'fromStation')
       .innerJoin('fromStation.card', 'fromOwnerCard')
+      .innerJoin('fromOwnerCard.account', 'fromOwnerAccount')
       .innerJoin('fromOwnerCard.user', 'fromOwnerUser')
       .innerJoin('haulage.toHire', 'toHire')
       .innerJoin('toHire.box', 'toBox')
       .innerJoin('toBox.station', 'toStation')
       .innerJoin('toStation.card', 'toOwnerCard')
+      .innerJoin('toOwnerCard.account', 'toOwnerAccount')
       .innerJoin('toOwnerCard.user', 'toOwnerUser')
       .innerJoin('fromHire.card', 'customerCard')
+      .innerJoin('customerCard.account', 'customerAccount')
       .innerJoin('customerCard.user', 'customerUser')
       .leftJoin('haulage.executorCard', 'executorCard')
+      .leftJoin('executorCard.account', 'executorAccount')
       .leftJoin('executorCard.user', 'executorUser')
       .where(
         new Brackets((qb) =>
@@ -669,11 +681,12 @@ export class HaulagesService {
         'fromBox.id',
         'fromStation.id',
         'fromOwnerCard.id',
+        'fromOwnerAccount.id',
+        'fromOwnerAccount.name',
+        'fromOwnerAccount.color',
         'fromOwnerUser.id',
         'fromOwnerUser.nick',
         'fromOwnerUser.avatar',
-        'fromOwnerCard.name',
-        'fromOwnerCard.color',
         'fromStation.name',
         'fromStation.x',
         'fromStation.y',
@@ -682,21 +695,23 @@ export class HaulagesService {
         'toBox.id',
         'toStation.id',
         'toOwnerCard.id',
+        'toOwnerAccount.id',
+        'toOwnerAccount.name',
+        'toOwnerAccount.color',
         'toOwnerUser.id',
         'toOwnerUser.nick',
         'toOwnerUser.avatar',
-        'toOwnerCard.name',
-        'toOwnerCard.color',
         'toStation.name',
         'toStation.x',
         'toStation.y',
         'toBox.name',
         'customerCard.id',
+        'customerAccount.id',
+        'customerAccount.name',
+        'customerAccount.color',
         'customerUser.id',
         'customerUser.nick',
         'customerUser.avatar',
-        'customerCard.name',
-        'customerCard.color',
         'haulage.item',
         'haulage.description',
         'haulage.amount',
@@ -705,11 +720,12 @@ export class HaulagesService {
         'haulage.price',
         'haulage.status',
         'executorCard.id',
+        'executorAccount.id',
+        'executorAccount.name',
+        'executorAccount.color',
         'executorUser.id',
         'executorUser.nick',
         'executorUser.avatar',
-        'executorCard.name',
-        'executorCard.color',
         'haulage.createdAt',
         'haulage.completedAt',
         'haulage.rate',

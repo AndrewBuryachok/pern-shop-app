@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
+import { Brackets, IsNull, Repository, SelectQueryBuilder } from 'typeorm';
 import { Invoice } from './invoice.entity';
 import { CardsService } from '../cards/cards.service';
 import { PaymentsService } from '../payments/payments.service';
@@ -27,8 +27,8 @@ export class InvoicesService {
 
   async getMyInvoices(myId: number, req: Request): Promise<Response<Invoice>> {
     const [result, count] = await this.getInvoicesQueryBuilder(req)
-      .innerJoin('senderCard.users', 'senderUsers')
-      .andWhere('senderUsers.id = :myId', { myId })
+      .innerJoin('senderAccount.cards', 'senderCards')
+      .andWhere('senderCards.userId = :myId', { myId })
       .getManyAndCount();
     return { result, count };
   }
@@ -38,15 +38,7 @@ export class InvoicesService {
     req: Request,
   ): Promise<Response<Invoice>> {
     const [result, count] = await this.getInvoicesQueryBuilder(req)
-      .leftJoin('receiverCard.users', 'receiverUsers')
-      .andWhere(
-        new Brackets((qb) =>
-          qb
-            .where('receiverUser.id = :myId')
-            .orWhere('receiverUsers.id = :myId'),
-        ),
-        { myId },
-      )
+      .andWhere('receiverUser.id = :myId', { myId })
       .getManyAndCount();
     return { result, count };
   }
@@ -132,13 +124,20 @@ export class InvoicesService {
     hasRole: boolean,
   ): Promise<Invoice> {
     const invoice = await this.invoicesRepository.findOne({
-      relations: ['senderCard', 'senderCard.users'],
-      where: { id },
+      relations: [
+        'senderCard',
+        'senderCard.account',
+        'senderCard.account.cards',
+      ],
+      where: {
+        id,
+        senderCard: { account: { cards: { completedAt: IsNull() } } },
+      },
     });
-    if (
-      !invoice.senderCard.users.map((user) => user.id).includes(userId) &&
-      !hasRole
-    ) {
+    const card = invoice.senderCard.account.cards.find(
+      (card) => card.userId === userId,
+    );
+    if (!card && !hasRole) {
       throw new AppException(InvoiceError.NOT_SENDER);
     }
     return invoice;
@@ -196,9 +195,11 @@ export class InvoicesService {
     return this.invoicesRepository
       .createQueryBuilder('invoice')
       .innerJoin('invoice.senderCard', 'senderCard')
+      .innerJoin('senderCard.account', 'senderAccount')
       .innerJoin('senderCard.user', 'senderUser')
       .innerJoin('invoice.receiverUser', 'receiverUser')
       .leftJoin('invoice.receiverCard', 'receiverCard')
+      .leftJoin('receiverCard.account', 'account')
       .leftJoin('receiverCard.user', 'user')
       .where(
         new Brackets((qb) =>
@@ -304,20 +305,22 @@ export class InvoicesService {
       .select([
         'invoice.id',
         'senderCard.id',
+        'senderAccount.id',
+        'senderAccount.name',
+        'senderAccount.color',
         'senderUser.id',
         'senderUser.nick',
         'senderUser.avatar',
-        'senderCard.name',
-        'senderCard.color',
         'receiverUser.id',
         'receiverUser.nick',
         'receiverUser.avatar',
         'receiverCard.id',
+        'account.id',
+        'account.name',
+        'account.color',
         'user.id',
         'user.nick',
         'user.avatar',
-        'receiverCard.name',
-        'receiverCard.color',
         'invoice.sum',
         'invoice.description',
         'invoice.createdAt',

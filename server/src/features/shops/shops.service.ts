@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
+import { Brackets, IsNull, Repository, SelectQueryBuilder } from 'typeorm';
 import { Shop } from './shop.entity';
 import { Good } from '../goods/good.entity';
 import { CardsService } from '../cards/cards.service';
@@ -29,8 +29,8 @@ export class ShopsService {
 
   async getMyShops(myId: number, req: Request): Promise<Response<Shop>> {
     const [result, count] = await this.getShopsQueryBuilder(req)
-      .innerJoin('ownerCard.users', 'ownerUsers')
-      .andWhere('ownerUsers.id = :myId', { myId })
+      .innerJoin('ownerAccount.cards', 'ownerCards')
+      .andWhere('ownerCards.userId = :myId', { myId })
       .getManyAndCount();
     return { result, count };
   }
@@ -49,8 +49,9 @@ export class ShopsService {
   selectMyShops(myId: number): Promise<Shop[]> {
     return this.selectShopsQueryBuilder()
       .innerJoin('shop.card', 'ownerCard')
-      .innerJoin('ownerCard.users', 'ownerUsers')
-      .where('ownerUsers.id = :myId', { myId })
+      .innerJoin('ownerCard.account', 'ownerAccount')
+      .innerJoin('ownerAccount.cards', 'ownerCards')
+      .where('ownerCards.userId = :myId', { myId })
       .getMany();
   }
 
@@ -104,10 +105,11 @@ export class ShopsService {
     hasRole: boolean,
   ): Promise<Shop> {
     const shop = await this.shopsRepository.findOne({
-      relations: ['card', 'card.users'],
-      where: { id },
+      relations: ['card', 'card.account', 'card.account.cards'],
+      where: { id, card: { account: { cards: { completedAt: IsNull() } } } },
     });
-    if (!shop.card.users.map((user) => user.id).includes(userId) && !hasRole) {
+    const card = shop.card.account.cards.find((card) => card.userId === userId);
+    if (!card && !hasRole) {
       throw new AppException(ShopError.NOT_OWNER);
     }
     return shop;
@@ -170,6 +172,7 @@ export class ShopsService {
     return this.shopsRepository
       .createQueryBuilder('shop')
       .innerJoin('shop.card', 'ownerCard')
+      .innerJoin('ownerCard.account', 'ownerAccount')
       .innerJoin('ownerCard.user', 'ownerUser')
       .loadRelationCountAndMap('shop.goods', 'shop.goods', 'good', (qb) =>
         qb.where('good.amount > 0'),
@@ -206,11 +209,12 @@ export class ShopsService {
       .select([
         'shop.id',
         'ownerCard.id',
+        'ownerAccount.id',
+        'ownerAccount.name',
+        'ownerAccount.color',
         'ownerUser.id',
         'ownerUser.nick',
         'ownerUser.avatar',
-        'ownerCard.name',
-        'ownerCard.color',
         'shop.name',
         'shop.description',
         'shop.x',

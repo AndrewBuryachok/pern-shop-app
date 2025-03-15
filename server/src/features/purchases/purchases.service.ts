@@ -1,6 +1,6 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
+import { Brackets, IsNull, Repository, SelectQueryBuilder } from 'typeorm';
 import { Purchase } from './purchase.entity';
 import { DeliveriesService } from '../deliveries/deliveries.service';
 import { GoodsService } from '../goods/goods.service';
@@ -27,8 +27,8 @@ export class PurchasesService {
     req: Request,
   ): Promise<Response<Purchase>> {
     const [result, count] = await this.getPurchasesQueryBuilder(req)
-      .innerJoin('buyerCard.users', 'buyerUsers')
-      .andWhere('buyerUsers.id = :myId', { myId })
+      .innerJoin('buyerAccount.cards', 'buyerCards')
+      .andWhere('buyerCards.userId = :myId', { myId })
       .getManyAndCount();
     return { result, count };
   }
@@ -38,8 +38,8 @@ export class PurchasesService {
     req: Request,
   ): Promise<Response<Purchase>> {
     const [result, count] = await this.getPurchasesQueryBuilder(req)
-      .innerJoin('sellerCard.users', 'sellerUsers')
-      .andWhere('sellerUsers.id = :myId', { myId })
+      .innerJoin('sellerAccount.cards', 'sellerCards')
+      .andWhere('sellerCards.userId = :myId', { myId })
       .getManyAndCount();
     return { result, count };
   }
@@ -49,15 +49,15 @@ export class PurchasesService {
     req: Request,
   ): Promise<Response<Purchase>> {
     const [result, count] = await this.getPurchasesQueryBuilder(req)
-      .leftJoin('shopCard.users', 'shopUsers')
-      .leftJoin('marketCard.users', 'marketUsers')
-      .leftJoin('storageCard.users', 'storageUsers')
+      .leftJoin('shopAccount.cards', 'shopCards')
+      .leftJoin('marketAccount.cards', 'marketCards')
+      .leftJoin('storageAccount.cards', 'storageCards')
       .andWhere(
         new Brackets((qb) =>
           qb
-            .where('shopUsers.id = :myId')
-            .orWhere('marketUsers.id = :myId')
-            .orWhere('storageUsers.id = :myId'),
+            .where('shopCards.userId = :myId')
+            .orWhere('marketCards.userId = :myId')
+            .orWhere('storageCards.userId = :myId'),
         ),
         { myId },
       )
@@ -75,9 +75,10 @@ export class PurchasesService {
   selectUserPurchases(userId: number): Promise<Purchase[]> {
     return this.selectPurchasesQueryBuilder()
       .innerJoin('purchase.card', 'card')
-      .leftJoin('card.users', 'users')
+      .innerJoin('card.account', 'account')
+      .innerJoin('account.cards', 'cards')
       .leftJoinAndMapOne('delivery', 'purchase.deliveries', 'delivery')
-      .where('users.id = :userId', { userId })
+      .where('cards.userId = :userId', { userId })
       .andWhere('delivery.id IS NULL')
       .getMany();
   }
@@ -134,13 +135,19 @@ export class PurchasesService {
     hasRole: boolean,
   ): Promise<Purchase> {
     const purchase = await this.purchasesRepository.findOne({
-      relations: ['card', 'card.users', 'good', 'good.card'],
-      where: { id },
+      relations: [
+        'card',
+        'card.account',
+        'card.account.cards',
+        'good',
+        'good.card',
+      ],
+      where: { id, card: { account: { cards: { completedAt: IsNull() } } } },
     });
-    if (
-      !purchase.card.users.map((user) => user.id).includes(userId) &&
-      !hasRole
-    ) {
+    const card = purchase.card.account.cards.find(
+      (card) => card.userId === userId,
+    );
+    if (!card && !hasRole) {
       throw new AppException(PurchaseError.NOT_OWNER);
     }
     return purchase;
@@ -206,21 +213,26 @@ export class PurchasesService {
       .createQueryBuilder('purchase')
       .innerJoin('purchase.good', 'good')
       .innerJoin('good.card', 'sellerCard')
+      .innerJoin('sellerCard.account', 'sellerAccount')
       .innerJoin('sellerCard.user', 'sellerUser')
       .leftJoin('good.shop', 'shop')
       .leftJoin('shop.card', 'shopCard')
+      .leftJoin('shopCard.account', 'shopAccount')
       .leftJoin('shopCard.user', 'shopUser')
       .leftJoin('good.rent', 'rent')
       .leftJoin('rent.stall', 'stall')
       .leftJoin('stall.market', 'market')
       .leftJoin('market.card', 'marketCard')
+      .leftJoin('marketCard.account', 'marketAccount')
       .leftJoin('marketCard.user', 'marketUser')
       .leftJoin('good.lease', 'lease')
       .leftJoin('lease.cell', 'cell')
       .leftJoin('cell.storage', 'storage')
       .leftJoin('storage.card', 'storageCard')
+      .leftJoin('storageCard.account', 'storageAccount')
       .leftJoin('storageCard.user', 'storageUser')
       .innerJoin('purchase.card', 'buyerCard')
+      .innerJoin('buyerCard.account', 'buyerAccount')
       .innerJoin('buyerCard.user', 'buyerUser')
       .leftJoin('good.states', 'state', 'state.createdAt < purchase.createdAt')
       .leftJoin(
@@ -438,18 +450,20 @@ export class PurchasesService {
         'purchase.id',
         'good.id',
         'sellerCard.id',
+        'sellerAccount.id',
+        'sellerAccount.name',
+        'sellerAccount.color',
         'sellerUser.id',
         'sellerUser.nick',
         'sellerUser.avatar',
-        'sellerCard.name',
-        'sellerCard.color',
         'shop.id',
         'shopCard.id',
+        'shopAccount.id',
+        'shopAccount.name',
+        'shopAccount.color',
         'shopUser.id',
         'shopUser.nick',
         'shopUser.avatar',
-        'shopCard.name',
-        'shopCard.color',
         'shop.name',
         'shop.x',
         'shop.y',
@@ -457,11 +471,12 @@ export class PurchasesService {
         'stall.id',
         'market.id',
         'marketCard.id',
+        'marketAccount.id',
+        'marketAccount.name',
+        'marketAccount.color',
         'marketUser.id',
         'marketUser.nick',
         'marketUser.avatar',
-        'marketCard.name',
-        'marketCard.color',
         'market.name',
         'market.x',
         'market.y',
@@ -470,11 +485,12 @@ export class PurchasesService {
         'cell.id',
         'storage.id',
         'storageCard.id',
+        'storageAccount.id',
+        'storageAccount.name',
+        'storageAccount.color',
         'storageUser.id',
         'storageUser.nick',
         'storageUser.avatar',
-        'storageCard.name',
-        'storageCard.color',
         'storage.name',
         'storage.x',
         'storage.y',
@@ -485,11 +501,12 @@ export class PurchasesService {
         'good.kit',
         'state.price',
         'buyerCard.id',
+        'buyerAccount.id',
+        'buyerAccount.name',
+        'buyerAccount.color',
         'buyerUser.id',
         'buyerUser.nick',
         'buyerUser.avatar',
-        'buyerCard.name',
-        'buyerCard.color',
         'purchase.amount',
         'purchase.createdAt',
         'purchase.rate',

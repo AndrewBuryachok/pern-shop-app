@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
+import { Brackets, IsNull, Repository, SelectQueryBuilder } from 'typeorm';
 import { InjectSchedule, Schedule } from 'nest-schedule';
 import { Rent } from './rent.entity';
 import { Thing } from '../things/thing.entity';
@@ -54,16 +54,16 @@ export class RentsService {
 
   async getMyRents(myId: number, req: Request): Promise<Response<Rent>> {
     const [result, count] = await this.getRentsQueryBuilder(req)
-      .innerJoin('tenantCard.users', 'tenantUsers')
-      .andWhere('tenantUsers.id = :myId', { myId })
+      .innerJoin('tenantAccount.cards', 'tenantCards')
+      .andWhere('tenantCards.userId = :myId', { myId })
       .getManyAndCount();
     return { result, count };
   }
 
   async getReceivedRents(myId: number, req: Request): Promise<Response<Rent>> {
     const [result, count] = await this.getRentsQueryBuilder(req)
-      .innerJoin('ownerCard.users', 'ownerUsers')
-      .andWhere('ownerUsers.id = :myId', { myId })
+      .innerJoin('ownerAccount.cards', 'ownerCards')
+      .andWhere('ownerCards.userId = :myId', { myId })
       .getManyAndCount();
     return { result, count };
   }
@@ -82,8 +82,9 @@ export class RentsService {
   selectMyRents(myId: number): Promise<Rent[]> {
     return this.selectRentsQueryBuilder()
       .innerJoin('rent.card', 'tenantCard')
-      .innerJoin('tenantCard.users', 'tenantUsers')
-      .andWhere('tenantUsers.id = :myId', { myId })
+      .innerJoin('tenantCard.account', 'tenantAccount')
+      .innerJoin('tenantAccount.cards', 'tenantCards')
+      .andWhere('tenantCards.userId = :myId', { myId })
       .getMany();
   }
 
@@ -160,10 +161,11 @@ export class RentsService {
     hasRole: boolean,
   ): Promise<Rent> {
     const rent = await this.rentsRepository.findOne({
-      relations: ['card', 'card.users'],
-      where: { id },
+      relations: ['card', 'card.account', 'card.account.cards'],
+      where: { id, card: { account: { cards: { completedAt: IsNull() } } } },
     });
-    if (!rent.card.users.map((user) => user.id).includes(userId) && !hasRole) {
+    const card = rent.card.account.cards.find((card) => card.userId === userId);
+    if (!card && !hasRole) {
       throw new AppException(RentError.NOT_OWNER);
     }
     if (rent.completedAt < new Date()) {
@@ -255,8 +257,10 @@ export class RentsService {
       .innerJoin('stall.marketTag', 'marketTag')
       .innerJoin('stall.market', 'market')
       .innerJoin('market.card', 'ownerCard')
+      .innerJoin('ownerCard.account', 'ownerAccount')
       .innerJoin('ownerCard.user', 'ownerUser')
       .innerJoin('rent.card', 'tenantCard')
+      .innerJoin('tenantCard.account', 'tenantAccount')
       .innerJoin('tenantCard.user', 'tenantUser')
       .loadRelationCountAndMap('rent.things', 'rent.goods', 'good', (qb) =>
         qb.where('good.amount > 0'),
@@ -379,21 +383,23 @@ export class RentsService {
         'stall.id',
         'market.id',
         'ownerCard.id',
+        'ownerAccount.id',
+        'ownerAccount.name',
+        'ownerAccount.color',
         'ownerUser.id',
         'ownerUser.nick',
         'ownerUser.avatar',
-        'ownerCard.name',
-        'ownerCard.color',
         'market.name',
         'market.x',
         'market.y',
         'stall.name',
         'tenantCard.id',
+        'tenantAccount.id',
+        'tenantAccount.name',
+        'tenantAccount.color',
         'tenantUser.id',
         'tenantUser.nick',
         'tenantUser.avatar',
-        'tenantCard.name',
-        'tenantCard.color',
         'rent.sum',
         'rent.createdAt',
         'rent.completedAt',
