@@ -87,10 +87,12 @@ export default function BuyGoodModal({ data: good, hasRole }: Props) {
 
   const user = users?.find((user) => user.id === +form.values.user);
   const card = cards?.find((card) => card.id === +form.values.card);
-  myCard.balance = card?.balance || 0;
+  myCard.balance = card?.account.balance || 0;
   const maxAmount =
     card &&
-    Math.floor((card.balance - station.price - form.values.price) / good.price);
+    Math.floor(
+      (card.account.balance - station.price - form.values.price) / good.price,
+    );
   station.price =
     stations?.find((station) => station.id === +form.values.station)?.price ||
     0;
@@ -209,7 +211,7 @@ export default function BuyGoodModal({ data: good, hasRole }: Props) {
             min={1}
             max={customMin(
               MAX_PRICE_VALUE,
-              (card?.balance || 0) -
+              (card?.account.balance || 0) -
                 form.values.amount * good.price -
                 station.price,
             )}

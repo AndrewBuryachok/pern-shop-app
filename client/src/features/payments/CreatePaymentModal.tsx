@@ -78,7 +78,7 @@ export default function CreatePaymentModal({ hasRole }: Props) {
     (user) => user.id === +form.values.receiverUser,
   );
   const card = senderCards?.find((card) => card.id === +form.values.senderCard);
-  const maxSum = card?.balance;
+  const maxSum = card?.account.balance;
 
   const [createPayment, { isLoading }] = useCreatePaymentMutation();
 

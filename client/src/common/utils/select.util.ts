@@ -1,6 +1,6 @@
 import { t } from 'i18next';
 import { SmUser } from '../../features/users/user.model';
-import { MdCard, MdCardWithBalance } from '../../features/cards/card.model';
+import { LgCard, LgCardWithBalance } from '../../features/cards/card.model';
 import { SmTown } from '../../features/towns/town.model';
 import { SmFarm } from '../../features/farms/farm.model';
 import { SmShop } from '../../features/shops/shop.model';
@@ -37,26 +37,26 @@ export const selectUsers = (users?: SmUser[]) =>
     label: user.nick,
   })) || [];
 
-export const selectCards = (cards?: MdCard[]) =>
-  cards?.map(({ user, ...card }) => ({
-    ...card,
+export const selectCards = (cards?: LgCard[]) =>
+  cards?.map(({ account: { user, ...account }, ...card }) => ({
+    ...account,
     userid: user.id,
     nick: user.nick,
     avatar: user.avatar,
-    color: `${card.color}`,
+    color: `${account.color}`,
     value: `${card.id}`,
-    label: card.name,
+    label: account.name,
   })) || [];
 
-export const selectCardsWithBalance = (cards?: MdCardWithBalance[]) =>
-  cards?.map(({ user, ...card }) => ({
-    ...card,
+export const selectCardsWithBalance = (cards?: LgCardWithBalance[]) =>
+  cards?.map(({ account: { user, ...account }, ...card }) => ({
+    ...account,
     userid: user.id,
     nick: user.nick,
     avatar: user.avatar,
-    color: `${card.color}`,
+    color: `${account.color}`,
     value: `${card.id}`,
-    label: `${card.name} ${card.balance} ${t('constants.currency')}`,
+    label: `${account.name} ${account.balance} ${t('constants.currency')}`,
   })) || [];
 
 export const selectTowns = (towns?: SmTown[]) =>

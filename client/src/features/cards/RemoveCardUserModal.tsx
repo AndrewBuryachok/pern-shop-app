@@ -46,14 +46,16 @@ export default function RemoveCardUserModal({ data: card }: Props) {
       isLoading={isLoading}
       text={t('actions.remove') + ' ' + t('modals.users')}
     >
-      <TextInput label={t('columns.card')} value={card.name} readOnly />
+      <TextInput label={t('columns.card')} value={card.account.name} readOnly />
       <Select
         label={t('columns.user')}
         placeholder={t('columns.user')}
         icon={user && <CustomAvatar {...user} />}
         iconWidth={48}
         itemComponent={UsersItem}
-        data={selectUsers(cardUsers).filter((user) => user.id !== card.user.id)}
+        data={selectUsers(cardUsers).filter(
+          (user) => user.id !== card.account.user.id,
+        )}
         limit={20}
         searchable
         required
@@ -71,7 +73,9 @@ export const removeCardUserFactory = (hasRole: boolean) => ({
     }),
   disable: (card: Card) => {
     const user = getCurrentUser()!;
-    return (card.user.id !== user.id && !hasRole) || card.users === 1;
+    return (
+      (card.account.user.id !== user.id && !hasRole) || card.account.users === 1
+    );
   },
   color: Color.RED,
 });

@@ -1,21 +1,24 @@
+import { Account, LgAccount, MdAccount, SmAccount } from './account.model';
 import { SmUser } from '../users/user.model';
 
 export interface SmCard {
   id: number;
-  name: string;
-  color: number;
 }
 
 export interface MdCard extends SmCard {
+  account: SmAccount;
   user: SmUser;
 }
 
-export interface MdCardWithBalance extends MdCard {
-  balance: number;
+export interface LgCard extends SmCard {
+  account: MdAccount;
 }
 
-export interface Card extends MdCard {
-  balance: number;
+export interface LgCardWithBalance extends SmCard {
+  account: LgAccount;
+}
+
+export interface Card extends SmCard {
+  account: Account;
   createdAt: Date;
-  users: number;
 }

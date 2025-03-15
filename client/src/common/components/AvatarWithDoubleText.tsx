@@ -12,8 +12,8 @@ export default function AvatarWithDoubleText(props: Props) {
       <div>
         <DoubleText
           text={props.user.nick}
-          subtext={props.name}
-          color={props.color}
+          subtext={props.account.name}
+          color={props.account.color}
           bold
         />
       </div>

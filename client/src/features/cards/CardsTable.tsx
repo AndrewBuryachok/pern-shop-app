@@ -22,17 +22,17 @@ export default function CardsTable({ actions = [], ...props }: Props) {
       {props.data?.result.map((card) => (
         <tr key={card.id}>
           <td>
-            <AvatarWithSingleText {...card.user} />
+            <AvatarWithSingleText {...card.account.user} />
           </td>
           <td>
-            <SingleText text={card.name} color={card.color} />
+            <SingleText text={card.account.name} color={card.account.color} />
           </td>
           <td>
-            <PriceText price={card.balance} />
+            <PriceText price={card.account.balance} />
           </td>
           <td>
             <CustomAnchor
-              text={`${card.users}`}
+              text={`${card.account.users}`}
               open={() => openViewCardUsersAction(card)}
             />
           </td>

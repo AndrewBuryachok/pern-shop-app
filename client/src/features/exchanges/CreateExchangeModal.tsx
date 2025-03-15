@@ -65,8 +65,8 @@ export default function CreateExchangeModal({ hasRole }: Props) {
 
   const user = users?.find((user) => user.id === +form.values.user);
   const card = cards?.find((card) => card.id === +form.values.card);
-  myCard.balance = card?.balance || 0;
-  const maxSum = !+form.values.type ? card?.balance : undefined;
+  myCard.balance = card?.account.balance || 0;
+  const maxSum = !+form.values.type ? card?.account.balance : undefined;
 
   const [createExchange, { isLoading }] = useCreateExchangeMutation();
 

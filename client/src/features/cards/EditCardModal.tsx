@@ -25,8 +25,8 @@ export default function EditCardModal({ data: card }: Props) {
   const form = useForm({
     initialValues: {
       cardId: card.id,
-      name: card.name,
-      color: `${card.color}`,
+      name: card.account.name,
+      color: `${card.account.color}`,
     },
     transformValues: ({ color, ...rest }) => ({ ...rest, color: +color }),
   });
@@ -73,7 +73,7 @@ export const editCardFactory = (hasRole: boolean) => ({
     }),
   disable: (card: Card) => {
     const user = getCurrentUser()!;
-    return card.user.id !== user.id && !hasRole;
+    return card.account.user.id !== user.id && !hasRole;
   },
   color: Color.YELLOW,
 });

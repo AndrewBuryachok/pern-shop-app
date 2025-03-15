@@ -102,7 +102,7 @@ export default function CreateHaulageModal({ hasRole }: Props) {
     stations?.find((station) => station.id === +form.values.toStation)?.price ||
     0;
   myCard.balance =
-    cards?.find((card) => card.id === +form.values.card)?.balance || 0;
+    cards?.find((card) => card.id === +form.values.card)?.account.balance || 0;
 
   const [createHaulage, { isLoading }] = useCreateHaulageMutation();
 

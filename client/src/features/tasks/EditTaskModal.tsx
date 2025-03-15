@@ -51,7 +51,7 @@ export default function EditTaskModal({ data: task, hasRole }: Props) {
     : useSelectMyCardsQuery();
 
   myCard.balance =
-    cards?.find((card) => card.id === +form.values.card)?.balance || 0;
+    cards?.find((card) => card.id === +form.values.card)?.account.balance || 0;
 
   const [editTask, { isLoading }] = useEditTaskMutation();
 

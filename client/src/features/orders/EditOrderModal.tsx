@@ -66,7 +66,7 @@ export default function EditOrderModal({ data: order, hasRole }: Props) {
     : useSelectMyCardsQuery();
 
   myCard.balance =
-    cards?.find((card) => card.id === +form.values.card)?.balance || 0;
+    cards?.find((card) => card.id === +form.values.card)?.account.balance || 0;
 
   const [editOrder, { isLoading }] = useEditOrderMutation();
 

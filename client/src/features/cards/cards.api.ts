@@ -1,6 +1,6 @@
 import { emptyApi } from '../../app/empty.api';
 import { IRequest, IResponse } from '../../common/interfaces';
-import { Card, MdCard, MdCardWithBalance } from './card.model';
+import { Card, LgCard, LgCardWithBalance } from './card.model';
 import { SmUser } from '../users/user.model';
 import {
   CreateCardDto,
@@ -24,19 +24,19 @@ export const cardsApi = emptyApi.injectEndpoints({
       }),
       providesTags: ['Auth', 'Card'],
     }),
-    selectMyCards: build.query<MdCardWithBalance[], void>({
+    selectMyCards: build.query<LgCardWithBalance[], void>({
       query: () => ({
         url: '/cards/my/select',
       }),
       providesTags: ['Auth', 'Card'],
     }),
-    selectUserCards: build.query<MdCard[], number>({
+    selectUserCards: build.query<LgCard[], number>({
       query: (userId) => ({
         url: `/cards/${userId}/select`,
       }),
       providesTags: ['Card'],
     }),
-    selectUserCardsWithBalance: build.query<MdCardWithBalance[], number>({
+    selectUserCardsWithBalance: build.query<LgCardWithBalance[], number>({
       query: (userId) => ({
         url: `/cards/${userId}/ext-select`,
       }),

@@ -18,20 +18,20 @@ export default function ViewCardModal({ data: card }: Props) {
       <TextInput label={t('columns.id')} value={card.id} readOnly />
       <TextInput
         label={t('columns.owner')}
-        icon={<CustomAvatar {...card.user} />}
+        icon={<CustomAvatar {...card.account.user} />}
         iconWidth={48}
-        value={card.user.nick}
+        value={card.account.user.nick}
         readOnly
       />
-      <TextInput label={t('columns.card')} value={card.name} readOnly />
+      <TextInput label={t('columns.card')} value={card.account.name} readOnly />
       <TextInput
         label={t('columns.color')}
-        value={t(`constants.colors.${colors[card.color - 1]}`)}
+        value={t(`constants.colors.${colors[card.account.color - 1]}`)}
         readOnly
       />
       <TextInput
         label={t('columns.balance')}
-        value={`${card.balance} ${t('constants.currency')}`}
+        value={`${card.account.balance} ${t('constants.currency')}`}
         readOnly
       />
       <TextInput

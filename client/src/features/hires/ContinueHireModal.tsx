@@ -52,7 +52,7 @@ export default function ContinueHireModal({ data: hire, hasRole }: Props) {
     : useSelectMyCardsQuery();
 
   myCard.balance =
-    cards?.find((card) => card.id === +form.values.card)?.balance || 0;
+    cards?.find((card) => card.id === +form.values.card)?.account.balance || 0;
 
   const [continueHire, { isLoading }] = useContinueHireMutation();
 

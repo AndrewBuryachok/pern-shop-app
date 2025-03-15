@@ -47,7 +47,7 @@ export default function AddCardUserModal({ data: card }: Props) {
       isLoading={isLoading}
       text={t('actions.add') + ' ' + t('modals.users')}
     >
-      <TextInput label={t('columns.card')} value={card.name} readOnly />
+      <TextInput label={t('columns.card')} value={card.account.name} readOnly />
       <Select
         label={t('columns.user')}
         placeholder={t('columns.user')}
@@ -76,7 +76,7 @@ export const addCardUserFactory = (hasRole: boolean) => ({
     }),
   disable: (card: Card) => {
     const user = getCurrentUser()!;
-    return card.user.id !== user.id && !hasRole;
+    return card.account.user.id !== user.id && !hasRole;
   },
   color: Color.GREEN,
 });

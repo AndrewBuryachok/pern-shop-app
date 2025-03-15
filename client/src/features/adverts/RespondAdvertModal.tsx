@@ -68,7 +68,7 @@ export default function RespondAdvertModal({ data: advert, hasRole }: Props) {
   const user = users?.find((user) => user.id === +form.values.user);
 
   myCard.balance =
-    cards?.find((card) => card.id === +form.values.card)?.balance || 0;
+    cards?.find((card) => card.id === +form.values.card)?.account.balance || 0;
 
   const [respondAdvert, { isLoading }] = useRespondAdvertMutation();
 

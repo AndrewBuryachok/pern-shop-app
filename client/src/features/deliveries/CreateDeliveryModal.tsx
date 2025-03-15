@@ -92,7 +92,7 @@ export default function CreateDeliveryModal({ hasRole }: Props) {
     stations?.find((station) => station.id === +form.values.station)?.price ||
     0;
   myCard.balance =
-    cards?.find((card) => card.id === +form.values.card)?.balance || 0;
+    cards?.find((card) => card.id === +form.values.card)?.account.balance || 0;
 
   const [createDelivery, { isLoading }] = useCreateDeliveryMutation();
 
