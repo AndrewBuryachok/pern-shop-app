@@ -185,6 +185,7 @@
   "components": {
     "submit": "Підтвердити",
     "search": "Пошук",
+    "refetch": "Оновити",
     "new": "Нові",
     "pagination": {
       "from": "Показано з ",
@@ -283,6 +284,7 @@
     "newpassword": "Новий Пароль",
     "rent": "Оренда",
     "lease": "Прокат",
+    "reviews": "Відгуки",
     "views": "Перегляди",
     "likes": "Вподобання",
     "comments": "Коментарі",

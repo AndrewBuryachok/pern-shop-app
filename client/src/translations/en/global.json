@@ -185,6 +185,7 @@
   "components": {
     "submit": "Submit",
     "search": "Search",
+    "refetch": "Refetch",
     "new": "New",
     "pagination": {
       "from": "Showing from ",
@@ -283,6 +284,7 @@
     "newpassword": "New Password",
     "rent": "Rent",
     "lease": "Lease",
+    "reviews": "Reviews",
     "views": "Views",
     "likes": "Likes",
     "comments": "Comments",

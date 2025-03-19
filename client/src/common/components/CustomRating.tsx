@@ -1,7 +1,7 @@
 import { Rating } from '@mantine/core';
 
 type Props = {
-  value?: number;
+  value: number;
 };
 
 export default function CustomRating(props: Props) {

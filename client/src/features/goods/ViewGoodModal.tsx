@@ -1,6 +1,7 @@
 import { t } from 'i18next';
 import { useTranslation } from 'react-i18next';
 import {
+  Group,
   Input,
   Rating,
   Select,
@@ -37,7 +38,7 @@ export default function ViewGoodModal({ data: good }: Props) {
   const [t] = useTranslation();
 
   const { data: states, ...statesResponse } = useSelectGoodStatesQuery(good.id);
-  const { data: rating } = useSelectGoodRatingQuery(good.id);
+  const { data: rating, ...ratingResponse } = useSelectGoodRatingQuery(good.id);
 
   return (
     <Stack spacing={8}>
@@ -134,7 +135,10 @@ export default function ViewGoodModal({ data: good }: Props) {
         readOnly
       />
       <Input.Wrapper label={t('columns.rate')}>
-        <Rating value={rating?.rate} readOnly />
+        <Group spacing={8}>
+          <Rating value={rating?.rate} readOnly />
+          <RefetchAction {...ratingResponse} />
+        </Group>
       </Input.Wrapper>
     </Stack>
   );

@@ -26,4 +26,12 @@ export interface Good extends LgThing {
   lease?: SmLease;
   states: number;
   purchases: number;
+  reviews: number;
+}
+
+export interface GoodReview {
+  id: number;
+  card: MdCard;
+  rate: number;
+  createdAt: Date;
 }

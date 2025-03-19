@@ -6,9 +6,11 @@ import ThingImageWithText from '../../common/components/ThingImageWithText';
 import SingleText from '../../common/components/SingleText';
 import PriceText from '../../common/components/PriceText';
 import PlaceWithDoubleAvatar from '../../common/components/PlaceWithDoubleAvatar';
+import CustomAnchor from '../../common/components/CustomAnchor';
 import DateText from '../../common/components/DateText';
 import CustomActions from '../../common/components/CustomActions';
 import { viewGoodAction } from './ViewGoodModal';
+import { openViewGoodReviewsModal } from './ViewGoodReviewsModal';
 import { parseThingAmount } from '../../common/utils';
 
 type Props = ITableWithActions<Good>;
@@ -23,6 +25,7 @@ export default function GoodsTable({ actions = [], ...props }: Props) {
         'amount',
         'price',
         'place',
+        'reviews',
         'created',
         'action',
       ]}
@@ -56,6 +59,12 @@ export default function GoodsTable({ actions = [], ...props }: Props) {
                 container={good.lease.cell.name}
               />
             )}
+          </td>
+          <td>
+            <CustomAnchor
+              text={`${good.reviews}`}
+              open={() => openViewGoodReviewsModal(good)}
+            />
           </td>
           <td>
             <DateText date={good.createdAt} />
