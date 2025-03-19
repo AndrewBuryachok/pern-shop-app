@@ -2,10 +2,10 @@ import { emptyApi } from '../../app/empty.api';
 import { IRequest, IResponse } from '../../common/interfaces';
 import { Haulage } from './haulage.model';
 import {
+  CompleteHaulageDto,
   CreateHaulageDto,
   EditHaulageDto,
   HaulageIdDto,
-  RateHaulageDto,
   TakeHaulageDto,
 } from './haulage.dto';
 import { getQuery } from '../../common/utils';
@@ -80,10 +80,11 @@ export const haulagesApi = emptyApi.injectEndpoints({
       }),
       invalidatesTags: ['Haulage'],
     }),
-    completeHaulage: build.mutation<void, HaulageIdDto>({
-      query: ({ haulageId }) => ({
+    completeHaulage: build.mutation<void, CompleteHaulageDto>({
+      query: ({ haulageId, ...dto }) => ({
         url: `/haulages/${haulageId}`,
         method: 'POST',
+        body: dto,
       }),
       invalidatesTags: ['Haulage', 'Payment', 'Card'],
     }),
@@ -93,14 +94,6 @@ export const haulagesApi = emptyApi.injectEndpoints({
         method: 'DELETE',
       }),
       invalidatesTags: ['Haulage', 'Card'],
-    }),
-    rateHaulage: build.mutation<void, RateHaulageDto>({
-      query: ({ haulageId, ...dto }) => ({
-        url: `/haulages/${haulageId}/rate`,
-        method: 'PATCH',
-        body: dto,
-      }),
-      invalidatesTags: ['Haulage'],
     }),
   }),
 });
@@ -118,5 +111,4 @@ export const {
   useExecuteHaulageMutation,
   useCompleteHaulageMutation,
   useDeleteHaulageMutation,
-  useRateHaulageMutation,
 } = haulagesApi;

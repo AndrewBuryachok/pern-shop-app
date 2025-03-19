@@ -7,7 +7,6 @@ import {
   useGetSoldPurchasesQuery,
 } from '../../features/purchases/purchases.api';
 import PurchasesTable from '../../features/purchases/PurchasesTable';
-import { ratePurchaseAction } from '../../features/purchases/RatePurchaseModal';
 import { deletePurchaseAction } from '../../features/purchases/DeletePurchaseModal';
 
 export default function PurchasesPage() {
@@ -48,10 +47,7 @@ export default function PurchasesPage() {
     all: useGetAllPurchasesQuery,
   }[tab]!(search);
 
-  const actions = {
-    my: [ratePurchaseAction],
-    all: [ratePurchaseAction, deletePurchaseAction],
-  }[tab];
+  const actions = { all: [deletePurchaseAction] }[tab];
 
   return <PurchasesTable {...response} search={search} actions={actions} />;
 }

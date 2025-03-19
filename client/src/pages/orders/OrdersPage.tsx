@@ -24,7 +24,6 @@ import { executeOrderAction } from '../../features/orders/ExecuteOrderModal';
 import { completeOrderAction } from '../../features/orders/CompleteOrderModal';
 import { untakeOrderAction } from '../../features/orders/UntakeOrderModal';
 import { deleteOrderAction } from '../../features/orders/DeleteOrderModal';
-import { rateOrderAction } from '../../features/orders/RateOrderModal';
 
 export default function OrdersPage() {
   const tab = useLocation().pathname.split('/')[2] || 'main';
@@ -72,12 +71,7 @@ export default function OrdersPage() {
 
   const actions = {
     main: [takeMyOrderAction],
-    my: [
-      editMyOrderAction,
-      completeOrderAction,
-      deleteOrderAction,
-      rateOrderAction,
-    ],
+    my: [editMyOrderAction, completeOrderAction, deleteOrderAction],
     taken: [executeOrderAction, untakeOrderAction],
     all: [
       editUserOrderAction,
@@ -86,7 +80,6 @@ export default function OrdersPage() {
       completeOrderAction,
       untakeOrderAction,
       deleteOrderAction,
-      rateOrderAction,
     ],
   }[tab];
 

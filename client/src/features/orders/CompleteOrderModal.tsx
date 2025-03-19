@@ -1,12 +1,19 @@
 import { t } from 'i18next';
 import { useTranslation } from 'react-i18next';
-import { Textarea, TextInput } from '@mantine/core';
+import {
+  CloseButton,
+  Group,
+  Input,
+  Rating,
+  Textarea,
+  TextInput,
+} from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { Order } from './order.model';
 import { useCompleteOrderMutation } from './orders.api';
-import { OrderIdDto } from './order.dto';
+import { CompleteOrderDto } from './order.dto';
 import CustomForm from '../../common/components/CustomForm';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import ThingImage from '../../common/components/ThingImage';
@@ -21,12 +28,13 @@ export default function CompleteOrderModal({ data: order }: Props) {
   const form = useForm({
     initialValues: {
       orderId: order.id,
+      rate: 0,
     },
   });
 
   const [completeOrder, { isLoading }] = useCompleteOrderMutation();
 
-  const handleSubmit = async (dto: OrderIdDto) => {
+  const handleSubmit = async (dto: CompleteOrderDto) => {
     await completeOrder(dto);
   };
 
@@ -65,6 +73,16 @@ export default function CompleteOrderModal({ data: order }: Props) {
         value={`${order.price} ${t('constants.currency')}`}
         readOnly
       />
+      <Input.Wrapper label={t('columns.rate')}>
+        <Group spacing={8}>
+          <Rating {...form.getInputProps('rate')} />
+          <CloseButton
+            size={24}
+            iconSize={16}
+            onClick={() => form.setFieldValue('rate', 0)}
+          />
+        </Group>
+      </Input.Wrapper>
     </CustomForm>
   );
 }

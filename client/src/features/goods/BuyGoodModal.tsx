@@ -1,7 +1,16 @@
 import { t } from 'i18next';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { NumberInput, Select, Textarea, TextInput } from '@mantine/core';
+import {
+  CloseButton,
+  Group,
+  Input,
+  NumberInput,
+  Rating,
+  Select,
+  Textarea,
+  TextInput,
+} from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
@@ -47,6 +56,7 @@ export default function BuyGoodModal({ data: good, hasRole }: Props) {
       user: '',
       card: '',
       amount: 1,
+      rate: 0,
       delivery: '0',
       station: '',
       price: 0,
@@ -182,6 +192,16 @@ export default function BuyGoodModal({ data: good, hasRole }: Props) {
         max={customMin(good.amount, maxAmount)}
         {...form.getInputProps('amount')}
       />
+      <Input.Wrapper label={t('columns.rate')}>
+        <Group spacing={8}>
+          <Rating {...form.getInputProps('rate')} />
+          <CloseButton
+            size={24}
+            iconSize={16}
+            onClick={() => form.setFieldValue('rate', 0)}
+          />
+        </Group>
+      </Input.Wrapper>
       <Select
         label={t('columns.delivery')}
         placeholder={t('columns.delivery')}

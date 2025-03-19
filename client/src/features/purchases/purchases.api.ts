@@ -1,11 +1,7 @@
 import { emptyApi } from '../../app/empty.api';
 import { IRequest, IResponse } from '../../common/interfaces';
 import { Purchase, SmPurchaseWithPrice } from './purchase.model';
-import {
-  CreatePurchaseDto,
-  PurchaseIdDto,
-  RatePurchaseDto,
-} from './purchase.dto';
+import { CreatePurchaseDto, PurchaseIdDto } from './purchase.dto';
 import { getQuery } from '../../common/utils';
 
 export const purchasesApi = emptyApi.injectEndpoints({
@@ -54,14 +50,6 @@ export const purchasesApi = emptyApi.injectEndpoints({
       }),
       invalidatesTags: ['Purchase', 'Good', 'Payment', 'Card'],
     }),
-    ratePurchase: build.mutation<void, RatePurchaseDto>({
-      query: ({ purchaseId, ...dto }) => ({
-        url: `/purchases/${purchaseId}/rate`,
-        method: 'PATCH',
-        body: dto,
-      }),
-      invalidatesTags: ['Purchase'],
-    }),
     deletePurchase: build.mutation<void, PurchaseIdDto>({
       query: ({ purchaseId }) => ({
         url: `/purchases/${purchaseId}`,
@@ -80,6 +68,5 @@ export const {
   useSelectMyPurchasesQuery,
   useSelectUserPurchasesQuery,
   useCreatePurchaseMutation,
-  useRatePurchaseMutation,
   useDeletePurchaseMutation,
 } = purchasesApi;

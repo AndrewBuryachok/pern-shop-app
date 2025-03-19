@@ -2,10 +2,10 @@ import { emptyApi } from '../../app/empty.api';
 import { IRequest, IResponse } from '../../common/interfaces';
 import { Order } from './order.model';
 import {
+  CompleteOrderDto,
   CreateOrderDto,
   EditOrderDto,
   OrderIdDto,
-  RateOrderDto,
   TakeOrderDto,
 } from './order.dto';
 import { getQuery } from '../../common/utils';
@@ -80,10 +80,11 @@ export const ordersApi = emptyApi.injectEndpoints({
       }),
       invalidatesTags: ['Order'],
     }),
-    completeOrder: build.mutation<void, OrderIdDto>({
-      query: ({ orderId }) => ({
+    completeOrder: build.mutation<void, CompleteOrderDto>({
+      query: ({ orderId, ...dto }) => ({
         url: `/orders/${orderId}`,
         method: 'POST',
+        body: dto,
       }),
       invalidatesTags: ['Order', 'Payment', 'Card'],
     }),
@@ -93,14 +94,6 @@ export const ordersApi = emptyApi.injectEndpoints({
         method: 'DELETE',
       }),
       invalidatesTags: ['Order', 'Card'],
-    }),
-    rateOrder: build.mutation<void, RateOrderDto>({
-      query: ({ orderId, ...dto }) => ({
-        url: `/orders/${orderId}/rate`,
-        method: 'PATCH',
-        body: dto,
-      }),
-      invalidatesTags: ['Order'],
     }),
   }),
 });
@@ -118,5 +111,4 @@ export const {
   useExecuteOrderMutation,
   useCompleteOrderMutation,
   useDeleteOrderMutation,
-  useRateOrderMutation,
 } = ordersApi;

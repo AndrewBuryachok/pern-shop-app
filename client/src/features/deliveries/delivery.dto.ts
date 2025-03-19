@@ -1,6 +1,6 @@
 import { EditStateDto } from '../states/state.dto';
 import {
-  RateTransportationDto,
+  CompleteTransportationDto,
   TakeTransportationDto,
 } from '../transportations/transportation.dto';
 
@@ -22,6 +22,6 @@ export interface DeliveryIdDto {
   deliveryId: number;
 }
 
-export interface RateDeliveryDto extends RateTransportationDto {
+export interface CompleteDeliveryDto extends CompleteTransportationDto {
   deliveryId: number;
 }

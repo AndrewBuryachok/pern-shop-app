@@ -1,6 +1,6 @@
 import { CreateServiceDto, EditServiceDto } from '../services/service.dto';
 import {
-  RateTransportationDto,
+  CompleteTransportationDto,
   TakeTransportationDto,
 } from '../transportations/transportation.dto';
 
@@ -18,6 +18,6 @@ export interface TaskIdDto {
   taskId: number;
 }
 
-export interface RateTaskDto extends RateTransportationDto {
+export interface CompleteTaskDto extends CompleteTransportationDto {
   taskId: number;
 }

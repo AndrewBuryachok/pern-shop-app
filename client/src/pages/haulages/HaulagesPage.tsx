@@ -24,7 +24,6 @@ import { executeHaulageAction } from '../../features/haulages/ExecuteHaulageModa
 import { completeHaulageAction } from '../../features/haulages/CompleteHaulageModal';
 import { untakeHaulageAction } from '../../features/haulages/UntakeHaulageModal';
 import { deleteHaulageAction } from '../../features/haulages/DeleteHaulageModal';
-import { rateHaulageAction } from '../../features/haulages/RateHaulageModal';
 
 export default function HaulagesPage() {
   const tab = useLocation().pathname.split('/')[2] || 'main';
@@ -72,12 +71,7 @@ export default function HaulagesPage() {
 
   const actions = {
     main: [takeMyHaulageAction],
-    my: [
-      editMyHaulageAction,
-      completeHaulageAction,
-      deleteHaulageAction,
-      rateHaulageAction,
-    ],
+    my: [editMyHaulageAction, completeHaulageAction, deleteHaulageAction],
     taken: [executeHaulageAction, untakeHaulageAction],
     all: [
       editUserHaulageAction,
@@ -86,7 +80,6 @@ export default function HaulagesPage() {
       completeHaulageAction,
       untakeHaulageAction,
       deleteHaulageAction,
-      rateHaulageAction,
     ],
   }[tab];
 

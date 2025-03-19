@@ -24,7 +24,6 @@ import { executeDeliveryAction } from '../../features/deliveries/ExecuteDelivery
 import { completeDeliveryAction } from '../../features/deliveries/CompleteDeliveryModal';
 import { untakeDeliveryAction } from '../../features/deliveries/UntakeDeliveryModal';
 import { deleteDeliveryAction } from '../../features/deliveries/DeleteDeliveryModal';
-import { rateDeliveryAction } from '../../features/deliveries/RateDeliveryModal';
 
 export default function DeliveriesPage() {
   const tab = useLocation().pathname.split('/')[2] || 'main';
@@ -77,12 +76,7 @@ export default function DeliveriesPage() {
 
   const actions = {
     main: [takeMyDeliveryAction],
-    my: [
-      editMyDeliveryAction,
-      completeDeliveryAction,
-      deleteDeliveryAction,
-      rateDeliveryAction,
-    ],
+    my: [editMyDeliveryAction, completeDeliveryAction, deleteDeliveryAction],
     taken: [executeDeliveryAction, untakeDeliveryAction],
     all: [
       editUserDeliveryAction,
@@ -91,7 +85,6 @@ export default function DeliveriesPage() {
       completeDeliveryAction,
       untakeDeliveryAction,
       deleteDeliveryAction,
-      rateDeliveryAction,
     ],
   }[tab];
 

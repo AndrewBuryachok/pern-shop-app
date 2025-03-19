@@ -8,6 +8,6 @@ export interface TakeTransportationDto {
   cardId: number;
 }
 
-export interface RateTransportationDto {
+export interface CompleteTransportationDto {
   rate: number;
 }

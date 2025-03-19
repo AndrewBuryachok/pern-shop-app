@@ -23,7 +23,6 @@ import { executeTaskAction } from '../../features/tasks/ExecuteTaskModal';
 import { completeTaskAction } from '../../features/tasks/CompleteTaskModal';
 import { untakeTaskAction } from '../../features/tasks/UntakeTaskModal';
 import { deleteTaskAction } from '../../features/tasks/DeleteTaskModal';
-import { rateTaskAction } from '../../features/tasks/RateTaskModal';
 
 export default function TasksPage() {
   const tab = useLocation().pathname.split('/')[2] || 'main';
@@ -62,12 +61,7 @@ export default function TasksPage() {
 
   const actions = {
     main: [takeMyTaskAction],
-    my: [
-      editMyTaskAction,
-      completeTaskAction,
-      deleteTaskAction,
-      rateTaskAction,
-    ],
+    my: [editMyTaskAction, completeTaskAction, deleteTaskAction],
     taken: [executeTaskAction, untakeTaskAction],
     all: [
       editUserTaskAction,
@@ -76,7 +70,6 @@ export default function TasksPage() {
       completeTaskAction,
       untakeTaskAction,
       deleteTaskAction,
-      rateTaskAction,
     ],
   }[tab];
 

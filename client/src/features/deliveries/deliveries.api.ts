@@ -2,10 +2,10 @@ import { emptyApi } from '../../app/empty.api';
 import { IRequest, IResponse } from '../../common/interfaces';
 import { Delivery } from './delivery.model';
 import {
+  CompleteDeliveryDto,
   CreateDeliveryDto,
   DeliveryIdDto,
   EditDeliveryDto,
-  RateDeliveryDto,
   TakeDeliveryDto,
 } from './delivery.dto';
 import { getQuery } from '../../common/utils';
@@ -80,10 +80,11 @@ export const deliveriesApi = emptyApi.injectEndpoints({
       }),
       invalidatesTags: ['Delivery'],
     }),
-    completeDelivery: build.mutation<void, DeliveryIdDto>({
-      query: ({ deliveryId }) => ({
+    completeDelivery: build.mutation<void, CompleteDeliveryDto>({
+      query: ({ deliveryId, ...dto }) => ({
         url: `/deliveries/${deliveryId}`,
         method: 'POST',
+        body: dto,
       }),
       invalidatesTags: ['Delivery', 'Payment', 'Card'],
     }),
@@ -93,14 +94,6 @@ export const deliveriesApi = emptyApi.injectEndpoints({
         method: 'DELETE',
       }),
       invalidatesTags: ['Delivery', 'Card'],
-    }),
-    rateDelivery: build.mutation<void, RateDeliveryDto>({
-      query: ({ deliveryId, ...dto }) => ({
-        url: `/deliveries/${deliveryId}/rate`,
-        method: 'PATCH',
-        body: dto,
-      }),
-      invalidatesTags: ['Delivery'],
     }),
   }),
 });
@@ -118,5 +111,4 @@ export const {
   useExecuteDeliveryMutation,
   useCompleteDeliveryMutation,
   useDeleteDeliveryMutation,
-  useRateDeliveryMutation,
 } = deliveriesApi;

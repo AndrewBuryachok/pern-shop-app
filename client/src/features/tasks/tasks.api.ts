@@ -5,8 +5,8 @@ import {
   CreateTaskDto,
   EditTaskDto,
   TaskIdDto,
-  RateTaskDto,
   TakeTaskDto,
+  CompleteTaskDto,
 } from './task.dto';
 import { getQuery } from '../../common/utils';
 
@@ -74,10 +74,11 @@ export const tasksApi = emptyApi.injectEndpoints({
       }),
       invalidatesTags: ['Task'],
     }),
-    completeTask: build.mutation<void, TaskIdDto>({
-      query: ({ taskId }) => ({
+    completeTask: build.mutation<void, CompleteTaskDto>({
+      query: ({ taskId, ...dto }) => ({
         url: `/tasks/${taskId}`,
         method: 'POST',
+        body: dto,
       }),
       invalidatesTags: ['Task', 'Payment', 'Card'],
     }),
@@ -87,14 +88,6 @@ export const tasksApi = emptyApi.injectEndpoints({
         method: 'DELETE',
       }),
       invalidatesTags: ['Task', 'Card'],
-    }),
-    rateTask: build.mutation<void, RateTaskDto>({
-      query: ({ taskId, ...dto }) => ({
-        url: `/tasks/${taskId}/rate`,
-        method: 'PATCH',
-        body: dto,
-      }),
-      invalidatesTags: ['Task'],
     }),
   }),
 });
@@ -111,5 +104,4 @@ export const {
   useExecuteTaskMutation,
   useCompleteTaskMutation,
   useDeleteTaskMutation,
-  useRateTaskMutation,
 } = tasksApi;
