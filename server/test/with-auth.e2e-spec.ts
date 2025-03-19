@@ -2775,6 +2775,12 @@ describe('With Auth', () => {
         .get(`/goods/${shopGoodsId[0]}/rating`)
         .expect((res) => expect(res.body.rate).toBeGreaterThan(0));
     });
+
+    it('GET /goods/:goodId/reviews', async () => {
+      return request(app.getHttpServer())
+        .get(`/goods/${shopGoodsId[0]}/reviews`)
+        .expect((res) => expect(res.body.length).toBeGreaterThan(0));
+    });
   });
 
   describe('Markets Purchases', () => {
@@ -2825,6 +2831,12 @@ describe('With Auth', () => {
       return request(app.getHttpServer())
         .get(`/goods/${marketGoodsId[0]}/rating`)
         .expect((res) => expect(res.body.rate).toBeGreaterThan(0));
+    });
+
+    it('GET /goods/:goodId/reviews', async () => {
+      return request(app.getHttpServer())
+        .get(`/goods/${marketGoodsId[0]}/reviews`)
+        .expect((res) => expect(res.body.length).toBeGreaterThan(0));
     });
   });
 
@@ -2878,6 +2890,12 @@ describe('With Auth', () => {
       return request(app.getHttpServer())
         .get(`/goods/${storageGoodsId[0]}/rating`)
         .expect((res) => expect(res.body.rate).toBeGreaterThan(0));
+    });
+
+    it('GET /goods/:goodId/reviews', async () => {
+      return request(app.getHttpServer())
+        .get(`/goods/${storageGoodsId[0]}/reviews`)
+        .expect((res) => expect(res.body.length).toBeGreaterThan(0));
     });
   });
 

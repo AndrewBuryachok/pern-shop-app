@@ -12,6 +12,7 @@ import { ApiTags } from '@nestjs/swagger';
 import { GoodsService } from './goods.service';
 import { Good } from './good.entity';
 import { GoodState } from './good-state.entity';
+import { Purchase } from '../purchases/purchase.entity';
 import {
   CreateMarketGoodDto,
   CreateShopGoodDto,
@@ -67,6 +68,12 @@ export class GoodsController {
   @Get(':goodId/rating')
   selectGoodRating(@Param() { goodId }: GoodIdDto): Promise<{ rate: number }> {
     return this.goodsService.selectGoodRating(goodId);
+  }
+
+  @Public()
+  @Get(':goodId/reviews')
+  selectGoodReviews(@Param() { goodId }: GoodIdDto): Promise<Purchase[]> {
+    return this.goodsService.selectGoodReviews(goodId);
   }
 
   @Post('shops')

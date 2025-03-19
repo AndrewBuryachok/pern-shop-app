@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, IsNull, Repository, SelectQueryBuilder } from 'typeorm';
 import { Good } from './good.entity';
 import { GoodState } from './good-state.entity';
+import { Purchase } from '../purchases/purchase.entity';
 import { ShopsService } from '../shops/shops.service';
 import { RentsService } from '../rents/rents.service';
 import { LeasesService } from '../leases/leases.service';
@@ -101,6 +102,32 @@ export class GoodsService {
       .select('AVG(purchase.rate)', 'rate')
       .getRawOne();
     return { rate: +good.rate };
+  }
+
+  async selectGoodReviews(goodId: number): Promise<Purchase[]> {
+    const good = await this.goodsRepository
+      .createQueryBuilder('good')
+      .leftJoin('good.purchases', 'purchase', 'purchase.rate IS NOT NULL')
+      .leftJoin('purchase.card', 'card')
+      .leftJoin('card.account', 'account')
+      .leftJoin('card.user', 'user')
+      .where('good.id = :goodId', { goodId })
+      .orderBy('purchase.id', 'DESC')
+      .select([
+        'good.id',
+        'purchase.id',
+        'card.id',
+        'account.id',
+        'account.name',
+        'account.color',
+        'user.id',
+        'user.nick',
+        'user.avatar',
+        'purchase.rate',
+        'purchase.createdAt',
+      ])
+      .getOne();
+    return good.purchases;
   }
 
   async createShopGood(
@@ -467,6 +494,12 @@ export class GoodsService {
       .leftJoin('storageCard.user', 'storageUser')
       .loadRelationCountAndMap('good.states', 'good.states')
       .loadRelationCountAndMap('good.purchases', 'good.purchases')
+      .loadRelationCountAndMap(
+        'good.reviews',
+        'good.purchases',
+        'purchase',
+        (qb) => qb.where('purchase.rate IS NOT NULL'),
+      )
       .where('good.completedAt IS NULL')
       .andWhere(
         new Brackets((qb) =>
