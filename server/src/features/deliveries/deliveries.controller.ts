@@ -12,10 +12,10 @@ import { ApiTags } from '@nestjs/swagger';
 import { DeliveriesService } from './deliveries.service';
 import { Delivery } from './delivery.entity';
 import {
+  CompleteDeliveryDto,
   CreateDeliveryDto,
   DeliveryIdDto,
   EditDeliveryDto,
-  RateDeliveryDto,
   TakeDeliveryDto,
 } from './delivery.dto';
 import { Request, Response } from '../../common/interfaces';
@@ -146,8 +146,10 @@ export class DeliveriesController {
     @MyNick() nick: string,
     @HasRole(Role.MERCHANT) hasRole: boolean,
     @Param() { deliveryId }: DeliveryIdDto,
+    @Body() dto: CompleteDeliveryDto,
   ): Promise<void> {
     return this.deliveriesService.completeDelivery({
+      ...dto,
       deliveryId,
       myId,
       nick,
@@ -163,23 +165,6 @@ export class DeliveriesController {
     @Param() { deliveryId }: DeliveryIdDto,
   ): Promise<void> {
     return this.deliveriesService.deleteDelivery({
-      deliveryId,
-      myId,
-      nick,
-      hasRole,
-    });
-  }
-
-  @Patch(':deliveryId/rate')
-  rateDelivery(
-    @MyId() myId: number,
-    @MyNick() nick: string,
-    @HasRole(Role.MERCHANT) hasRole: boolean,
-    @Param() { deliveryId }: DeliveryIdDto,
-    @Body() dto: RateDeliveryDto,
-  ): Promise<void> {
-    return this.deliveriesService.rateDelivery({
-      ...dto,
       deliveryId,
       myId,
       nick,

@@ -12,10 +12,10 @@ import { ApiTags } from '@nestjs/swagger';
 import { OrdersService } from './orders.service';
 import { Order } from './order.entity';
 import {
+  CompleteOrderDto,
   CreateOrderDto,
   EditOrderDto,
   OrderIdDto,
-  RateOrderDto,
   TakeOrderDto,
 } from './order.dto';
 import { Request, Response } from '../../common/interfaces';
@@ -131,8 +131,15 @@ export class OrdersController {
     @MyNick() nick: string,
     @HasRole(Role.MERCHANT) hasRole: boolean,
     @Param() { orderId }: OrderIdDto,
+    @Body() dto: CompleteOrderDto,
   ): Promise<void> {
-    return this.ordersService.completeOrder({ orderId, myId, nick, hasRole });
+    return this.ordersService.completeOrder({
+      ...dto,
+      orderId,
+      myId,
+      nick,
+      hasRole,
+    });
   }
 
   @Delete(':orderId')
@@ -143,22 +150,5 @@ export class OrdersController {
     @Param() { orderId }: OrderIdDto,
   ): Promise<void> {
     return this.ordersService.deleteOrder({ orderId, myId, nick, hasRole });
-  }
-
-  @Patch(':orderId/rate')
-  rateOrder(
-    @MyId() myId: number,
-    @MyNick() nick: string,
-    @HasRole(Role.MERCHANT) hasRole: boolean,
-    @Param() { orderId }: OrderIdDto,
-    @Body() dto: RateOrderDto,
-  ): Promise<void> {
-    return this.ordersService.rateOrder({
-      ...dto,
-      orderId,
-      myId,
-      nick,
-      hasRole,
-    });
   }
 }

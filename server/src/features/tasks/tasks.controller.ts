@@ -15,8 +15,8 @@ import {
   CreateTaskDto,
   EditTaskDto,
   TaskIdDto,
-  RateTaskDto,
   TakeTaskDto,
+  CompleteTaskDto,
 } from './task.dto';
 import { Request, Response } from '../../common/interfaces';
 import { HasRole, MyId, MyNick, Public, Roles } from '../../common/decorators';
@@ -123,8 +123,15 @@ export class TasksController {
     @MyNick() nick: string,
     @HasRole(Role.MERCHANT) hasRole: boolean,
     @Param() { taskId }: TaskIdDto,
+    @Body() dto: CompleteTaskDto,
   ): Promise<void> {
-    return this.tasksService.completeTask({ taskId, myId, nick, hasRole });
+    return this.tasksService.completeTask({
+      ...dto,
+      taskId,
+      myId,
+      nick,
+      hasRole,
+    });
   }
 
   @Delete(':taskId')
@@ -135,22 +142,5 @@ export class TasksController {
     @Param() { taskId }: TaskIdDto,
   ): Promise<void> {
     return this.tasksService.deleteTask({ taskId, myId, nick, hasRole });
-  }
-
-  @Patch(':taskId/rate')
-  rateTask(
-    @MyId() myId: number,
-    @MyNick() nick: string,
-    @HasRole(Role.MERCHANT) hasRole: boolean,
-    @Param() { taskId }: TaskIdDto,
-    @Body() dto: RateTaskDto,
-  ): Promise<void> {
-    return this.tasksService.rateTask({
-      ...dto,
-      taskId,
-      myId,
-      nick,
-      hasRole,
-    });
   }
 }

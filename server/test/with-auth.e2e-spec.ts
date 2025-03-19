@@ -2433,6 +2433,7 @@ describe('With Auth', () => {
           goodId: shopGoodsId[0],
           cardId,
           amount: 1,
+          rate: 5,
           stationId,
           price: 10,
         })
@@ -2447,6 +2448,7 @@ describe('With Auth', () => {
           goodId: shopGoodsId[0],
           cardId,
           amount: 1,
+          rate: 5,
           stationId: 0,
           price: 0,
         })
@@ -2534,6 +2536,7 @@ describe('With Auth', () => {
           goodId: marketGoodsId[0],
           cardId,
           amount: 1,
+          rate: 5,
           stationId,
           price: 10,
         })
@@ -2548,6 +2551,7 @@ describe('With Auth', () => {
           goodId: marketGoodsId[0],
           cardId,
           amount: 1,
+          rate: 5,
           stationId: 0,
           price: 0,
         })
@@ -2649,6 +2653,7 @@ describe('With Auth', () => {
           goodId: storageGoodsId[0],
           cardId,
           amount: 1,
+          rate: 5,
           stationId,
           price: 10,
         })
@@ -2663,6 +2668,7 @@ describe('With Auth', () => {
           goodId: storageGoodsId[0],
           cardId,
           amount: 1,
+          rate: 5,
           stationId: 0,
           price: 0,
         })
@@ -2764,14 +2770,6 @@ describe('With Auth', () => {
         .expect((res) => expect(res.body.length).toBeGreaterThan(0));
     });
 
-    it('PATCH /purchases/:purchaseId/rate', async () => {
-      return request(app.getHttpServer())
-        .patch(`/purchases/${shopsPurchasesId[0]}/rate`)
-        .set('Authorization', `Bearer ${user.access}`)
-        .send({ rate: 5 })
-        .expect('');
-    });
-
     it('GET /goods/:goodId/rating', async () => {
       return request(app.getHttpServer())
         .get(`/goods/${shopGoodsId[0]}/rating`)
@@ -2821,14 +2819,6 @@ describe('With Auth', () => {
         .get(`/purchases/${user.id}/select`)
         .set('Authorization', `Bearer ${merchant.access}`)
         .expect((res) => expect(res.body.length).toBeGreaterThan(0));
-    });
-
-    it('PATCH /purchases/:purchaseId/rate', async () => {
-      return request(app.getHttpServer())
-        .patch(`/purchases/${marketsPurchasesId[0]}/rate`)
-        .set('Authorization', `Bearer ${user.access}`)
-        .send({ rate: 5 })
-        .expect('');
     });
 
     it('GET /goods/:goodId/rating', async () => {
@@ -2882,14 +2872,6 @@ describe('With Auth', () => {
         .get(`/purchases/${user.id}/select`)
         .set('Authorization', `Bearer ${merchant.access}`)
         .expect((res) => expect(res.body.length).toBeGreaterThan(0));
-    });
-
-    it('PATCH /purchases/:purchaseId/rate', async () => {
-      return request(app.getHttpServer())
-        .patch(`/purchases/${storagesPurchasesId[0]}/rate`)
-        .set('Authorization', `Bearer ${user.access}`)
-        .send({ rate: 5 })
-        .expect('');
     });
 
     it('GET /goods/:goodId/rating', async () => {
@@ -2969,13 +2951,6 @@ describe('With Auth', () => {
     it('POST /deliveries/:deliveryId', async () => {
       return request(app.getHttpServer())
         .post(`/deliveries/${shopsDeliveriesId[0]}`)
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect('');
-    });
-
-    it('PATCH /deliveries/:deliveryId/rate', async () => {
-      return request(app.getHttpServer())
-        .patch(`/deliveries/${shopsDeliveriesId[0]}/rate`)
         .set('Authorization', `Bearer ${user.access}`)
         .send({ rate: 5 })
         .expect('');
@@ -3089,13 +3064,6 @@ describe('With Auth', () => {
       return request(app.getHttpServer())
         .post(`/deliveries/${marketsDeliveriesId[0]}`)
         .set('Authorization', `Bearer ${user.access}`)
-        .expect('');
-    });
-
-    it('PATCH /deliveries/:deliveryId/rate', async () => {
-      return request(app.getHttpServer())
-        .patch(`/deliveries/${marketsDeliveriesId[0]}/rate`)
-        .set('Authorization', `Bearer ${user.access}`)
         .send({ rate: 5 })
         .expect('');
     });
@@ -3207,13 +3175,6 @@ describe('With Auth', () => {
     it('POST /deliveries/:storageDeliveryId', async () => {
       return request(app.getHttpServer())
         .post(`/deliveries/${storagesDeliveriesId[0]}`)
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect('');
-    });
-
-    it('PATCH /deliveries/:storageDeliveryId/rate', async () => {
-      return request(app.getHttpServer())
-        .patch(`/deliveries/${storagesDeliveriesId[0]}/rate`)
         .set('Authorization', `Bearer ${user.access}`)
         .send({ rate: 5 })
         .expect('');
@@ -3353,13 +3314,6 @@ describe('With Auth', () => {
       return request(app.getHttpServer())
         .post(`/orders/${ordersId[0]}`)
         .set('Authorization', `Bearer ${user.access}`)
-        .expect('');
-    });
-
-    it('PATCH /orders/:orderId/rate', async () => {
-      return request(app.getHttpServer())
-        .patch(`/orders/${ordersId[0]}/rate`)
-        .set('Authorization', `Bearer ${user.access}`)
         .send({ rate: 5 })
         .expect('');
     });
@@ -3492,13 +3446,6 @@ describe('With Auth', () => {
     it('POST /haulages/:haulageId', async () => {
       return request(app.getHttpServer())
         .post(`/haulages/${haulagesId[0]}`)
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect('');
-    });
-
-    it('PATCH /haulages/:haulageId/rate', async () => {
-      return request(app.getHttpServer())
-        .patch(`/haulages/${haulagesId[0]}/rate`)
         .set('Authorization', `Bearer ${user.access}`)
         .send({ rate: 5 })
         .expect('');
@@ -3687,13 +3634,6 @@ describe('With Auth', () => {
     it('POST /tasks/:taskId', async () => {
       return request(app.getHttpServer())
         .post(`/tasks/${tasksId[0]}`)
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect('');
-    });
-
-    it('PATCH /tasks/:taskId/rate', async () => {
-      return request(app.getHttpServer())
-        .patch(`/tasks/${tasksId[0]}/rate`)
         .set('Authorization', `Bearer ${user.access}`)
         .send({ rate: 5 })
         .expect('');

@@ -4,8 +4,8 @@ import { Type } from 'class-transformer';
 import { IsId } from '../../common/decorators';
 import { IsHaulageExists, IsStationExists } from '../../common/constraints';
 import {
+  CompleteTransportationDto,
   CreateTransportationDto,
-  RateTransportationDto,
   TakeTransportationDto,
 } from '../transportations/transportation.dto';
 import { CreateThingDto } from '../things/thing.dto';
@@ -56,9 +56,9 @@ export class ExtTakeHaulageDto extends TakeHaulageDto {
   hasRole: boolean;
 }
 
-export class RateHaulageDto extends RateTransportationDto {}
+export class CompleteHaulageDto extends CompleteTransportationDto {}
 
-export class ExtRateHaulageDto extends RateHaulageDto {
+export class ExtCompleteHaulageDto extends CompleteHaulageDto {
   haulageId: number;
   myId: number;
   hasRole: boolean;

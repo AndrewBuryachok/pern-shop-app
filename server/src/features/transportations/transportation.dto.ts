@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Validate } from 'class-validator';
+import { Validate, ValidateIf } from 'class-validator';
 import { IsId, IsRate } from '../../common/decorators';
 import { IsCardExists } from '../../common/constraints';
 import { CreateThingDto } from '../things/thing.dto';
@@ -18,8 +18,9 @@ export abstract class TakeTransportationDto {
   cardId: number;
 }
 
-export abstract class RateTransportationDto {
+export abstract class CompleteTransportationDto {
   @ApiProperty()
+  @ValidateIf((_, value) => value !== 0)
   @IsRate()
   rate: number;
 }

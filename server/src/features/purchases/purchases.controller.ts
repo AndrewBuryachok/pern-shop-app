@@ -4,18 +4,13 @@ import {
   Delete,
   Get,
   Param,
-  Patch,
   Post,
   Query,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { PurchasesService } from './purchases.service';
 import { Purchase } from './purchase.entity';
-import {
-  CreatePurchaseDto,
-  PurchaseIdDto,
-  RatePurchaseDto,
-} from './purchase.dto';
+import { CreatePurchaseDto, PurchaseIdDto } from './purchase.dto';
 import { UserIdDto } from '../users/user.dto';
 import { Request, Response } from '../../common/interfaces';
 import { HasRole, MyId, MyNick, Roles } from '../../common/decorators';
@@ -76,23 +71,6 @@ export class PurchasesController {
   ): Promise<void> {
     return this.purchasesService.createPurchase({
       ...dto,
-      myId,
-      nick,
-      hasRole,
-    });
-  }
-
-  @Patch(':purchaseId/rate')
-  ratePurchase(
-    @MyId() myId: number,
-    @MyNick() nick: string,
-    @HasRole(Role.MERCHANT) hasRole: boolean,
-    @Param() { purchaseId }: PurchaseIdDto,
-    @Body() dto: RatePurchaseDto,
-  ): Promise<void> {
-    return this.purchasesService.ratePurchase({
-      ...dto,
-      purchaseId,
       myId,
       nick,
       hasRole,

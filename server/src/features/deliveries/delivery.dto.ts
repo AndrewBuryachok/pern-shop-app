@@ -10,7 +10,7 @@ import {
 } from '../../common/constraints';
 import { EditStateDto } from '../states/state.dto';
 import {
-  RateTransportationDto,
+  CompleteTransportationDto,
   TakeTransportationDto,
 } from '../transportations/transportation.dto';
 
@@ -65,9 +65,9 @@ export class ExtTakeDeliveryDto extends TakeDeliveryDto {
   hasRole: boolean;
 }
 
-export class RateDeliveryDto extends RateTransportationDto {}
+export class CompleteDeliveryDto extends CompleteTransportationDto {}
 
-export class ExtRateDeliveryDto extends RateDeliveryDto {
+export class ExtCompleteDeliveryDto extends CompleteDeliveryDto {
   deliveryId: number;
   myId: number;
   hasRole: boolean;

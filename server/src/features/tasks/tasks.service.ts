@@ -9,8 +9,8 @@ import {
   ExtCreateTaskDto,
   ExtEditTaskDto,
   ExtTaskIdDto,
-  ExtRateTaskDto,
   ExtTakeTaskDto,
+  ExtCompleteTaskDto,
 } from './task.dto';
 import { Request, Response } from '../../common/interfaces';
 import { AppException } from '../../common/exceptions';
@@ -151,7 +151,9 @@ export class TasksService {
     );
   }
 
-  async completeTask(dto: ExtTaskIdDto & { nick: string }): Promise<void> {
+  async completeTask(
+    dto: ExtCompleteTaskDto & { nick: string },
+  ): Promise<void> {
     const task = await this.checkTaskCustomer(
       dto.taskId,
       dto.myId,
@@ -173,7 +175,7 @@ export class TasksService {
       sum: task.price,
       description: 'выполнение заказа',
     });
-    await this.complete(task);
+    await this.complete(task, dto.rate);
     this.unpublishNotification(dto.taskId, dto.nick);
     this.mqttService.publishNotification(
       dto.taskId,
@@ -181,6 +183,14 @@ export class TasksService {
       dto.nick,
       Notification.COMPLETED_TASK,
     );
+    if (dto.rate) {
+      this.mqttService.publishNotification(
+        dto.taskId,
+        task.executorCard.userId,
+        dto.nick,
+        Notification.RATED_TASK,
+      );
+    }
   }
 
   async deleteTask(dto: ExtTaskIdDto & { nick: string }): Promise<void> {
@@ -198,24 +208,6 @@ export class TasksService {
     });
     await this.delete(task);
     this.unpublishNotification(dto.taskId, dto.nick);
-  }
-
-  async rateTask(dto: ExtRateTaskDto & { nick: string }): Promise<void> {
-    const task = await this.checkTaskCustomer(
-      dto.taskId,
-      dto.myId,
-      dto.hasRole,
-    );
-    if (task.status !== Status.COMPLETED) {
-      throw new AppException(TaskError.NOT_COMPLETED);
-    }
-    await this.rate(task, dto.rate);
-    this.mqttService.publishNotification(
-      dto.taskId,
-      task.executorCard.userId,
-      dto.nick,
-      Notification.RATED_TASK,
-    );
   }
 
   async checkTaskExists(id: number): Promise<void> {
@@ -330,10 +322,11 @@ export class TasksService {
     }
   }
 
-  private async complete(task: Task): Promise<void> {
+  private async complete(task: Task, rate: number): Promise<void> {
     try {
       task.completedAt = new Date();
       task.status = Status.COMPLETED;
+      task.rate = rate || null;
       await this.tasksRepository.save(task);
     } catch (error) {
       throw new AppException(TaskError.COMPLETE_FAILED);
@@ -345,15 +338,6 @@ export class TasksService {
       await this.tasksRepository.remove(task);
     } catch (error) {
       throw new AppException(TaskError.DELETE_FAILED);
-    }
-  }
-
-  private async rate(task: Task, rate: number): Promise<void> {
-    try {
-      task.rate = rate;
-      await this.tasksRepository.save(task);
-    } catch (error) {
-      throw new AppException(TaskError.RATE_FAILED);
     }
   }
 

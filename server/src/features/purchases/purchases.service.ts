@@ -5,7 +5,7 @@ import { Purchase } from './purchase.entity';
 import { DeliveriesService } from '../deliveries/deliveries.service';
 import { GoodsService } from '../goods/goods.service';
 import { MqttService } from '../mqtt/mqtt.service';
-import { ExtCreatePurchaseDto, ExtRatePurchaseDto } from './purchase.dto';
+import { ExtCreatePurchaseDto } from './purchase.dto';
 import { Request, Response } from '../../common/interfaces';
 import { AppException } from '../../common/exceptions';
 import { PurchaseError } from './purchase-error.enum';
@@ -94,29 +94,20 @@ export class PurchasesService {
       dto.nick,
       Notification.CREATED_PURCHASE,
     );
+    if (dto.rate) {
+      this.mqttService.publishNotification(
+        purchase.id,
+        good.card.userId,
+        dto.nick,
+        Notification.RATED_PURCHASE,
+      );
+    }
     if (dto.stationId && dto.price) {
       await this.deliveriesService.createDelivery({
         ...dto,
         purchaseId: purchase.id,
       });
     }
-  }
-
-  async ratePurchase(
-    dto: ExtRatePurchaseDto & { nick: string },
-  ): Promise<void> {
-    const purchase = await this.checkPurchaseOwner(
-      dto.purchaseId,
-      dto.myId,
-      dto.hasRole,
-    );
-    await this.rate(purchase, dto.rate);
-    this.mqttService.publishNotification(
-      dto.purchaseId,
-      purchase.good.card.userId,
-      dto.nick,
-      Notification.RATED_PURCHASE,
-    );
   }
 
   async deletePurchase(id: number): Promise<void> {
@@ -135,13 +126,7 @@ export class PurchasesService {
     hasRole: boolean,
   ): Promise<Purchase> {
     const purchase = await this.purchasesRepository.findOne({
-      relations: [
-        'card',
-        'card.account',
-        'card.account.cards',
-        'good',
-        'good.card',
-      ],
+      relations: ['card', 'card.account', 'card.account.cards'],
       where: { id, card: { account: { cards: { completedAt: IsNull() } } } },
     });
     const card = purchase.card.account.cards.find(
@@ -159,20 +144,12 @@ export class PurchasesService {
         goodId: dto.goodId,
         cardId: dto.cardId,
         amount: dto.amount,
+        rate: dto.rate || null,
       });
       await this.purchasesRepository.save(purchase);
       return purchase;
     } catch (error) {
       throw new AppException(PurchaseError.CREATE_FAILED);
-    }
-  }
-
-  private async rate(purchase: Purchase, rate: number): Promise<void> {
-    try {
-      purchase.rate = rate;
-      await this.purchasesRepository.save(purchase);
-    } catch (error) {
-      throw new AppException(PurchaseError.RATE_FAILED);
     }
   }
 

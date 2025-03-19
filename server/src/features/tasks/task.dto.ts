@@ -5,7 +5,7 @@ import { IsId } from '../../common/decorators';
 import { IsTaskExists } from '../../common/constraints';
 import { CreateServiceDto, EditServiceDto } from '../services/service.dto';
 import {
-  RateTransportationDto,
+  CompleteTransportationDto,
   TakeTransportationDto,
 } from '../transportations/transportation.dto';
 
@@ -45,9 +45,9 @@ export class ExtTakeTaskDto extends TakeTaskDto {
   hasRole: boolean;
 }
 
-export class RateTaskDto extends RateTransportationDto {}
+export class CompleteTaskDto extends CompleteTransportationDto {}
 
-export class ExtRateTaskDto extends RateTaskDto {
+export class ExtCompleteTaskDto extends CompleteTaskDto {
   taskId: number;
   myId: number;
   hasRole: boolean;

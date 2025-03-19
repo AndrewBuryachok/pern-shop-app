@@ -4,8 +4,8 @@ import { Type } from 'class-transformer';
 import { IsId } from '../../common/decorators';
 import { IsOrderExists, IsStationExists } from '../../common/constraints';
 import {
+  CompleteTransportationDto,
   CreateTransportationDto,
-  RateTransportationDto,
   TakeTransportationDto,
 } from '../transportations/transportation.dto';
 import { CreateThingDto } from '../things/thing.dto';
@@ -51,9 +51,9 @@ export class ExtTakeOrderDto extends TakeOrderDto {
   hasRole: boolean;
 }
 
-export class RateOrderDto extends RateTransportationDto {}
+export class CompleteOrderDto extends CompleteTransportationDto {}
 
-export class ExtRateOrderDto extends RateOrderDto {
+export class ExtCompleteOrderDto extends CompleteOrderDto {
   orderId: number;
   myId: number;
   hasRole: boolean;

@@ -34,6 +34,11 @@ export class CreatePurchaseDto {
 
   @ApiProperty()
   @ValidateIf((_, value) => value !== 0)
+  @IsRate()
+  rate: number;
+
+  @ApiProperty()
+  @ValidateIf((_, value) => value !== 0)
   @IsId()
   @Validate(IsStationExists)
   stationId: number;
@@ -45,18 +50,6 @@ export class CreatePurchaseDto {
 }
 
 export class ExtCreatePurchaseDto extends CreatePurchaseDto {
-  myId: number;
-  hasRole: boolean;
-}
-
-export class RatePurchaseDto {
-  @ApiProperty()
-  @IsRate()
-  rate: number;
-}
-
-export class ExtRatePurchaseDto extends RatePurchaseDto {
-  purchaseId: number;
   myId: number;
   hasRole: boolean;
 }

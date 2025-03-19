@@ -7,10 +7,10 @@ import { CardsService } from '../cards/cards.service';
 import { PaymentsService } from '../payments/payments.service';
 import { MqttService } from '../mqtt/mqtt.service';
 import {
+  ExtCompleteOrderDto,
   ExtCreateOrderDto,
   ExtEditOrderDto,
   ExtOrderIdDto,
-  ExtRateOrderDto,
   ExtTakeOrderDto,
 } from './order.dto';
 import { Request, Response } from '../../common/interfaces';
@@ -165,7 +165,9 @@ export class OrdersService {
     );
   }
 
-  async completeOrder(dto: ExtOrderIdDto & { nick: string }): Promise<void> {
+  async completeOrder(
+    dto: ExtCompleteOrderDto & { nick: string },
+  ): Promise<void> {
     const order = await this.checkOrderCustomer(
       dto.orderId,
       dto.myId,
@@ -190,7 +192,7 @@ export class OrdersService {
     try {
       await this.hiresService.completeHire({ ...dto, hireId: order.hireId });
     } catch (error) {}
-    await this.complete(order);
+    await this.complete(order, dto.rate);
     this.unpublishNotification(dto.orderId, dto.nick);
     this.mqttService.publishNotification(
       dto.orderId,
@@ -198,6 +200,14 @@ export class OrdersService {
       dto.nick,
       Notification.COMPLETED_ORDER,
     );
+    if (dto.rate) {
+      this.mqttService.publishNotification(
+        dto.orderId,
+        order.executorCard.userId,
+        dto.nick,
+        Notification.RATED_ORDER,
+      );
+    }
   }
 
   async deleteOrder(dto: ExtOrderIdDto & { nick: string }): Promise<void> {
@@ -218,24 +228,6 @@ export class OrdersService {
     } catch (error) {}
     await this.delete(order);
     this.unpublishNotification(dto.orderId, dto.nick);
-  }
-
-  async rateOrder(dto: ExtRateOrderDto & { nick: string }): Promise<void> {
-    const order = await this.checkOrderCustomer(
-      dto.orderId,
-      dto.myId,
-      dto.hasRole,
-    );
-    if (order.status !== Status.COMPLETED) {
-      throw new AppException(OrderError.NOT_COMPLETED);
-    }
-    await this.rate(order, dto.rate);
-    this.mqttService.publishNotification(
-      dto.orderId,
-      order.executorCard.userId,
-      dto.nick,
-      Notification.RATED_ORDER,
-    );
   }
 
   async checkOrderExists(id: number): Promise<void> {
@@ -358,10 +350,11 @@ export class OrdersService {
     }
   }
 
-  private async complete(order: Order): Promise<void> {
+  private async complete(order: Order, rate: number): Promise<void> {
     try {
       order.completedAt = new Date();
       order.status = Status.COMPLETED;
+      order.rate = rate || null;
       await this.ordersRepository.save(order);
     } catch (error) {
       throw new AppException(OrderError.COMPLETE_FAILED);
@@ -373,15 +366,6 @@ export class OrdersService {
       await this.ordersRepository.remove(order);
     } catch (error) {
       throw new AppException(OrderError.DELETE_FAILED);
-    }
-  }
-
-  private async rate(order: Order, rate: number): Promise<void> {
-    try {
-      order.rate = rate;
-      await this.ordersRepository.save(order);
-    } catch (error) {
-      throw new AppException(OrderError.RATE_FAILED);
     }
   }
 

@@ -7,10 +7,10 @@ import { CardsService } from '../cards/cards.service';
 import { PaymentsService } from '../payments/payments.service';
 import { MqttService } from '../mqtt/mqtt.service';
 import {
+  ExtCompleteHaulageDto,
   ExtCreateHaulageDto,
   ExtEditHaulageDto,
   ExtHaulageIdDto,
-  ExtRateHaulageDto,
   ExtTakeHaulageDto,
 } from './haulage.dto';
 import { Request, Response } from '../../common/interfaces';
@@ -197,7 +197,7 @@ export class HaulagesService {
   }
 
   async completeHaulage(
-    dto: ExtHaulageIdDto & { nick: string },
+    dto: ExtCompleteHaulageDto & { nick: string },
   ): Promise<void> {
     const haulage = await this.checkHaulageCustomer(
       dto.haulageId,
@@ -232,7 +232,7 @@ export class HaulagesService {
         hireId: haulage.toHireId,
       });
     } catch (error) {}
-    await this.complete(haulage);
+    await this.complete(haulage, dto.rate);
     this.unpublishNotification(dto.haulageId, dto.nick);
     this.mqttService.publishNotification(
       dto.haulageId,
@@ -240,6 +240,14 @@ export class HaulagesService {
       dto.nick,
       Notification.COMPLETED_HAULAGE,
     );
+    if (dto.rate) {
+      this.mqttService.publishNotification(
+        dto.haulageId,
+        haulage.executorCard.userId,
+        dto.nick,
+        Notification.RATED_HAULAGE,
+      );
+    }
   }
 
   async deleteHaulage(dto: ExtHaulageIdDto & { nick: string }): Promise<void> {
@@ -269,24 +277,6 @@ export class HaulagesService {
     } catch (error) {}
     await this.delete(haulage);
     this.unpublishNotification(dto.haulageId, dto.nick);
-  }
-
-  async rateHaulage(dto: ExtRateHaulageDto & { nick: string }): Promise<void> {
-    const haulage = await this.checkHaulageCustomer(
-      dto.haulageId,
-      dto.myId,
-      dto.hasRole,
-    );
-    if (haulage.status !== Status.COMPLETED) {
-      throw new AppException(HaulageError.NOT_COMPLETED);
-    }
-    await this.rate(haulage, dto.rate);
-    this.mqttService.publishNotification(
-      dto.haulageId,
-      haulage.executorCard.userId,
-      dto.nick,
-      Notification.RATED_HAULAGE,
-    );
   }
 
   async checkHaulageExists(id: number): Promise<void> {
@@ -410,10 +400,11 @@ export class HaulagesService {
     }
   }
 
-  private async complete(haulage: Haulage): Promise<void> {
+  private async complete(haulage: Haulage, rate: number): Promise<void> {
     try {
       haulage.completedAt = new Date();
       haulage.status = Status.COMPLETED;
+      haulage.rate = rate || null;
       await this.haulagesRepository.save(haulage);
     } catch (error) {
       throw new AppException(HaulageError.COMPLETE_FAILED);
@@ -425,15 +416,6 @@ export class HaulagesService {
       await this.haulagesRepository.remove(haulage);
     } catch (error) {
       throw new AppException(HaulageError.DELETE_FAILED);
-    }
-  }
-
-  private async rate(haulage: Haulage, rate: number): Promise<void> {
-    try {
-      haulage.rate = rate;
-      await this.haulagesRepository.save(haulage);
-    } catch (error) {
-      throw new AppException(HaulageError.RATE_FAILED);
     }
   }
 

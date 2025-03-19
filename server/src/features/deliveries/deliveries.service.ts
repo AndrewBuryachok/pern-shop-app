@@ -8,10 +8,10 @@ import { CardsService } from '../cards/cards.service';
 import { PaymentsService } from '../payments/payments.service';
 import { MqttService } from '../mqtt/mqtt.service';
 import {
+  ExtCompleteDeliveryDto,
   ExtCreateDeliveryDto,
   ExtDeliveryIdDto,
   ExtEditDeliveryDto,
-  ExtRateDeliveryDto,
   ExtTakeDeliveryDto,
 } from './delivery.dto';
 import { Request, Response } from '../../common/interfaces';
@@ -209,7 +209,7 @@ export class DeliveriesService {
   }
 
   async completeDelivery(
-    dto: ExtDeliveryIdDto & { nick: string },
+    dto: ExtCompleteDeliveryDto & { nick: string },
   ): Promise<void> {
     const delivery = await this.checkDeliveryCustomer(
       dto.deliveryId,
@@ -238,7 +238,7 @@ export class DeliveriesService {
         hireId: delivery.hireId,
       });
     } catch (error) {}
-    await this.complete(delivery);
+    await this.complete(delivery, dto.rate);
     this.unpublishNotification(dto.deliveryId, dto.nick);
     this.mqttService.publishNotification(
       dto.deliveryId,
@@ -246,6 +246,14 @@ export class DeliveriesService {
       dto.nick,
       Notification.COMPLETED_DELIVERY,
     );
+    if (dto.rate) {
+      this.mqttService.publishNotification(
+        dto.deliveryId,
+        delivery.executorCard.userId,
+        dto.nick,
+        Notification.RATED_DELIVERY,
+      );
+    }
   }
 
   async deleteDelivery(
@@ -271,26 +279,6 @@ export class DeliveriesService {
     } catch (error) {}
     await this.delete(delivery);
     this.unpublishNotification(dto.deliveryId, dto.nick);
-  }
-
-  async rateDelivery(
-    dto: ExtRateDeliveryDto & { nick: string },
-  ): Promise<void> {
-    const delivery = await this.checkDeliveryCustomer(
-      dto.deliveryId,
-      dto.myId,
-      dto.hasRole,
-    );
-    if (delivery.status !== Status.COMPLETED) {
-      throw new AppException(DeliveryError.NOT_COMPLETED);
-    }
-    await this.rate(delivery, dto.rate);
-    this.mqttService.publishNotification(
-      dto.deliveryId,
-      delivery.executorCard.userId,
-      dto.nick,
-      Notification.RATED_DELIVERY,
-    );
   }
 
   async checkDeliveryExists(id: number): Promise<void> {
@@ -410,10 +398,11 @@ export class DeliveriesService {
     }
   }
 
-  private async complete(delivery: Delivery): Promise<void> {
+  private async complete(delivery: Delivery, rate: number): Promise<void> {
     try {
       delivery.completedAt = new Date();
       delivery.status = Status.COMPLETED;
+      delivery.rate = rate || null;
       await this.deliveriesRepository.save(delivery);
     } catch (error) {
       throw new AppException(DeliveryError.COMPLETE_FAILED);
@@ -425,15 +414,6 @@ export class DeliveriesService {
       await this.deliveriesRepository.remove(delivery);
     } catch (error) {
       throw new AppException(DeliveryError.DELETE_FAILED);
-    }
-  }
-
-  private async rate(delivery: Delivery, rate: number): Promise<void> {
-    try {
-      delivery.rate = rate;
-      await this.deliveriesRepository.save(delivery);
-    } catch (error) {
-      throw new AppException(DeliveryError.RATE_FAILED);
     }
   }
 

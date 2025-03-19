@@ -3,7 +3,6 @@ export enum OrderError {
   ALREADY_TAKEN = '400: Order already taken',
   NOT_TAKEN = '400: Order is not taken',
   NOT_EXECUTED = '400: Order is not executed',
-  NOT_COMPLETED = '400: Order is not completed',
   NOT_CUSTOMER = '403: You are not order customer',
   NOT_EXECUTOR = '403: You are not order executor',
   CREATE_FAILED = '500: Failed to create order',
@@ -13,5 +12,4 @@ export enum OrderError {
   EXECUTE_FAILED = '500: Failed to execute order',
   COMPLETE_FAILED = '500: Failed to complete order',
   DELETE_FAILED = '500: Failed to delete order',
-  RATE_FAILED = '500: Failed to rate order',
 }
