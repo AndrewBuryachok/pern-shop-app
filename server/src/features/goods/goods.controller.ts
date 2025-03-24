@@ -36,6 +36,12 @@ export class GoodsController {
     return this.goodsService.getMainGoods(req);
   }
 
+  @Public()
+  @Get('top')
+  getTopGoods(@Query() req: Request): Promise<Response<Good>> {
+    return this.goodsService.getTopGoods(req);
+  }
+
   @Get('my')
   getMyGoods(
     @MyId() myId: number,

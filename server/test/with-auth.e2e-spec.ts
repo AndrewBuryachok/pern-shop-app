@@ -2397,6 +2397,12 @@ describe('With Auth', () => {
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
 
+    it('GET /goods/top', async () => {
+      return request(app.getHttpServer())
+        .get('/goods/top')
+        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
+    });
+
     it('GET /goods/my', async () => {
       return request(app.getHttpServer())
         .get(`/goods/my?shop=${shopId}`)
@@ -2503,6 +2509,12 @@ describe('With Auth', () => {
     it('GET /goods', async () => {
       return request(app.getHttpServer())
         .get('/goods')
+        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
+    });
+
+    it('GET /goods/top', async () => {
+      return request(app.getHttpServer())
+        .get('/goods/top')
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
 
@@ -2620,6 +2632,12 @@ describe('With Auth', () => {
     it('GET /goods', async () => {
       return request(app.getHttpServer())
         .get('/goods')
+        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
+    });
+
+    it('GET /goods/top', async () => {
+      return request(app.getHttpServer())
+        .get('/goods/top')
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
 
