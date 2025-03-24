@@ -18,6 +18,12 @@ export const goodsApi = emptyApi.injectEndpoints({
       query: (req) => ({
         url: `/goods?${getQuery(req)}`,
       }),
+      providesTags: ['Good', 'Purchase'],
+    }),
+    getTopGoods: build.query<IResponse<Good>, IRequest>({
+      query: (req) => ({
+        url: `/goods/top?${getQuery(req)}`,
+      }),
       providesTags: ['Good'],
     }),
     getMyGoods: build.query<IResponse<Good>, IRequest>({
@@ -115,6 +121,7 @@ export const goodsApi = emptyApi.injectEndpoints({
 
 export const {
   useGetMainGoodsQuery,
+  useGetTopGoodsQuery,
   useGetMyGoodsQuery,
   useGetPlacedGoodsQuery,
   useGetAllGoodsQuery,

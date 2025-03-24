@@ -297,6 +297,7 @@ export const pages = [
     element: GoodsPage,
     nested: [
       { index: true },
+      { path: 'top' },
       { path: 'my' },
       { path: 'placed' },
       { path: 'all', role: Role.MERCHANT },

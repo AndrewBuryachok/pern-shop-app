@@ -5,6 +5,7 @@ import {
   useGetMainGoodsQuery,
   useGetMyGoodsQuery,
   useGetPlacedGoodsQuery,
+  useGetTopGoodsQuery,
 } from '../../features/goods/goods.api';
 import GoodsTable from '../../features/goods/GoodsTable';
 import {
@@ -52,6 +53,7 @@ export default function GoodsPage() {
 
   const response = {
     main: useGetMainGoodsQuery,
+    top: useGetTopGoodsQuery,
     my: useGetMyGoodsQuery,
     placed: useGetPlacedGoodsQuery,
     all: useGetAllGoodsQuery,
@@ -59,12 +61,14 @@ export default function GoodsPage() {
 
   const button = {
     main: createMyGoodButton,
+    top: createMyGoodButton,
     my: createMyGoodButton,
     all: createUserGoodButton,
   }[tab];
 
   const actions = {
     main: [buyMyGoodAction],
+    top: [buyMyGoodAction],
     my: [
       editGoodAction,
       updateGoodAction,
