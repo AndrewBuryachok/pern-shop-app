@@ -9,7 +9,7 @@ export const handleUserEvent = (json: string) => {
     usersApi.util.updateQueryData('selectAllUsers', undefined, (draft) => {
       const user = draft.find((user) => user.id === body.id);
       if (!user) {
-        draft.unshift(body);
+        draft.splice(store.getState().mqtt.users.length, 0, body);
       } else {
         user.nick = body.nick;
         user.avatar = body.avatar;

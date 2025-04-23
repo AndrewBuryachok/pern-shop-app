@@ -7,6 +7,7 @@ import { useAppSelector } from '../../app/hooks';
 import { handleEvent } from './events.handler';
 import { INotification } from '../../common/interfaces';
 import { Event } from '../../common/enums';
+import { usersApi } from '../users/users.api';
 
 const audio = new Audio('/sound.mp3');
 
@@ -27,8 +28,39 @@ client.on('message', (topic, message, packet) => {
     case 'users':
       if (payload) {
         store.dispatch(addOnlineUser(userId));
+        if (!packet.retain) {
+          store.dispatch(
+            usersApi.util.updateQueryData(
+              'selectAllUsers',
+              undefined,
+              (draft) => {
+                draft.sort((a, b) =>
+                  a.id === userId ? -1 : b.id === userId ? 1 : 0,
+                );
+              },
+            ),
+          );
+        }
       } else {
         store.dispatch(removeOnlineUser(userId));
+        const users = store.getState().mqtt.users;
+        store.dispatch(
+          usersApi.util.updateQueryData(
+            'selectAllUsers',
+            undefined,
+            (draft) => {
+              draft.sort((a, b) =>
+                [a.id, b.id].every((id) => users.includes(id))
+                  ? 0
+                  : users.includes(a.id)
+                  ? -1
+                  : users.includes(b.id)
+                  ? 1
+                  : 0,
+              );
+            },
+          ),
+        );
         if (store.getState().auth.user?.id === userId) {
           store.dispatch(publishOnline(userId));
         }

@@ -22,9 +22,9 @@ export default function CustomAside(props: Props) {
 
   const online = getOnlineUsers();
 
-  const onlineUsers = users?.filter((user) => online.includes(user.id));
+  const onlineUsers = users?.slice(0, online.length);
 
-  const offlineUsers = users?.filter((user) => !online.includes(user.id));
+  const offlineUsers = users?.slice(online.length);
 
   return (
     <>
