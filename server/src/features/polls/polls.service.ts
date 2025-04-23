@@ -202,12 +202,14 @@ export class PollsService {
     }
     if (notify) {
       const poll = await this.findPollById(dto.pollId);
-      this.mqttService.publishNotification(
-        dto.pollId,
-        poll.userId,
-        dto.nick,
-        Notification.REACTED_POLL,
-      );
+      if (poll.userId !== dto.myId) {
+        this.mqttService.publishNotification(
+          dto.pollId,
+          poll.userId,
+          dto.nick,
+          Notification.REACTED_POLL,
+        );
+      }
     }
   }
 

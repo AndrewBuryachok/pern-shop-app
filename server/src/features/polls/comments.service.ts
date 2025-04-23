@@ -33,12 +33,14 @@ export class CommentsService {
   ): Promise<void> {
     const { id } = await this.create(dto);
     const poll = await this.pollsService.findPollById(dto.pollId);
-    this.mqttService.publishNotification(
-      dto.pollId,
-      poll.userId,
-      dto.nick,
-      Notification.COMMENTED_POLL,
-    );
+    if (poll.userId !== dto.myId) {
+      this.mqttService.publishNotification(
+        dto.pollId,
+        poll.userId,
+        dto.nick,
+        Notification.COMMENTED_POLL,
+      );
+    }
     if (dto.commentId) {
       const reply = await this.commentsRepository.findOneBy({
         id: dto.commentId,

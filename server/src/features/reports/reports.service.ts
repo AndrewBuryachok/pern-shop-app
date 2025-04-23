@@ -164,12 +164,14 @@ export class ReportsService {
     }
     if (notify) {
       const report = await this.findReportById(dto.reportId);
-      this.mqttService.publishNotification(
-        dto.reportId,
-        report.userId,
-        dto.nick,
-        Notification.REACTED_REPORT,
-      );
+      if (report.userId !== dto.myId) {
+        this.mqttService.publishNotification(
+          dto.reportId,
+          report.userId,
+          dto.nick,
+          Notification.REACTED_REPORT,
+        );
+      }
     }
   }
 

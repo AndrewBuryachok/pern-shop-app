@@ -219,12 +219,14 @@ export class ArticlesService {
     }
     if (notify) {
       const article = await this.findArticleById(dto.articleId);
-      this.mqttService.publishNotification(
-        dto.articleId,
-        article.userId,
-        dto.nick,
-        Notification.REACTED_ARTICLE,
-      );
+      if (article.userId !== dto.myId) {
+        this.mqttService.publishNotification(
+          dto.articleId,
+          article.userId,
+          dto.nick,
+          Notification.REACTED_ARTICLE,
+        );
+      }
     }
   }
 
