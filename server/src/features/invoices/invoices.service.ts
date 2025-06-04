@@ -50,10 +50,8 @@ export class InvoicesService {
     return { result, count };
   }
 
-  async createInvoice(
-    dto: ExtCreateInvoiceDto & { nick: string },
-  ): Promise<void> {
-    await this.cardsService.checkCardUser(
+  async createInvoice(dto: ExtCreateInvoiceDto): Promise<void> {
+    const card = await this.cardsService.checkCardUser(
       dto.senderCardId,
       dto.myId,
       dto.hasRole,
@@ -62,14 +60,12 @@ export class InvoicesService {
     this.mqttService.publishNotification(
       invoice.id,
       dto.receiverUserId,
-      dto.nick,
+      card.userId,
       Notification.CREATED_INVOICE,
     );
   }
 
-  async completeInvoice(
-    dto: ExtCompleteInvoiceDto & { nick: string },
-  ): Promise<void> {
+  async completeInvoice(dto: ExtCompleteInvoiceDto): Promise<void> {
     const invoice = await this.checkInvoiceReceiver(
       dto.invoiceId,
       dto.myId,
@@ -80,7 +76,6 @@ export class InvoicesService {
     }
     await this.paymentsService.createPayment({
       myId: dto.myId,
-      nick: dto.nick,
       hasRole: dto.hasRole,
       senderCardId: dto.cardId,
       receiverCardId: invoice.senderCardId,
@@ -91,12 +86,12 @@ export class InvoicesService {
     this.mqttService.publishNotification(
       dto.invoiceId,
       invoice.senderCard.userId,
-      dto.nick,
+      invoice.receiverUserId,
       Notification.COMPLETED_INVOICE,
     );
   }
 
-  async deleteInvoice(dto: DeleteInvoiceDto & { nick: string }): Promise<void> {
+  async deleteInvoice(dto: DeleteInvoiceDto): Promise<void> {
     const invoice = await this.checkInvoiceSender(
       dto.invoiceId,
       dto.myId,
@@ -109,7 +104,7 @@ export class InvoicesService {
     this.mqttService.publishNotification(
       dto.invoiceId,
       invoice.receiverUserId,
-      dto.nick,
+      invoice.senderCard.userId,
       Notification.DELETED_INVOICE,
     );
   }

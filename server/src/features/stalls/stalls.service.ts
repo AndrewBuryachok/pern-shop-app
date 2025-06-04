@@ -80,11 +80,10 @@ export class StallsService {
     await this.create({ ...dto, marketId, name });
   }
 
-  async reserveStall(dto: ReserveStallDto & { nick: string }): Promise<Stall> {
+  async reserveStall(dto: ReserveStallDto): Promise<[Stall, number]> {
     const stall = await this.findFreeStall(dto.stallId);
-    await this.paymentsService.createPayment({
+    const userId = await this.paymentsService.createPaymentWithReturn({
       myId: dto.myId,
-      nick: dto.nick,
       hasRole: dto.hasRole,
       senderCardId: dto.cardId,
       receiverCardId: stall.market.cardId,
@@ -92,17 +91,16 @@ export class StallsService {
       description: '',
     });
     await this.reserve(stall);
-    return stall;
+    return [stall, userId];
   }
 
-  async continueStall(dto: ReserveStallDto & { nick: string }): Promise<Stall> {
+  async continueStall(dto: ReserveStallDto): Promise<Stall> {
     const stall = await this.stallsRepository.findOne({
       relations: ['market', 'market.card', 'marketTag'],
       where: { id: dto.stallId },
     });
     await this.paymentsService.createPayment({
       myId: dto.myId,
-      nick: dto.nick,
       hasRole: dto.hasRole,
       senderCardId: dto.cardId,
       receiverCardId: stall.market.cardId,

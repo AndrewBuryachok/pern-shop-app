@@ -71,14 +71,17 @@ export class OrdersService {
     return { result, count };
   }
 
-  async createOrder(dto: ExtCreateOrderDto & { nick: string }): Promise<void> {
+  async createOrder(dto: ExtCreateOrderDto): Promise<void> {
     const hireId = await this.hiresService.createHire(dto);
-    await this.cardsService.decreaseCardBalance({ ...dto, sum: dto.price });
+    const card = await this.cardsService.decreaseCardBalance({
+      ...dto,
+      sum: dto.price,
+    });
     const order = await this.create({ ...dto, stationId: hireId });
     this.mqttService.publishNotification(
       order.id,
       0,
-      dto.nick,
+      card.userId,
       Notification.CREATED_ORDER,
     );
   }
@@ -108,8 +111,12 @@ export class OrdersService {
     await this.edit(order, dto);
   }
 
-  async takeOrder(dto: ExtTakeOrderDto & { nick: string }): Promise<void> {
-    await this.cardsService.checkCardUser(dto.cardId, dto.myId, dto.hasRole);
+  async takeOrder(dto: ExtTakeOrderDto): Promise<void> {
+    const card = await this.cardsService.checkCardUser(
+      dto.cardId,
+      dto.myId,
+      dto.hasRole,
+    );
     const order = await this.ordersRepository.findOne({
       relations: ['hire', 'hire.card'],
       where: { id: dto.orderId },
@@ -124,12 +131,12 @@ export class OrdersService {
     this.mqttService.publishNotification(
       dto.orderId,
       order.hire.card.userId,
-      dto.nick,
+      card.userId,
       Notification.TAKEN_ORDER,
     );
   }
 
-  async untakeOrder(dto: ExtOrderIdDto & { nick: string }): Promise<void> {
+  async untakeOrder(dto: ExtOrderIdDto): Promise<void> {
     const order = await this.checkOrderExecutor(
       dto.orderId,
       dto.myId,
@@ -138,16 +145,17 @@ export class OrdersService {
     if (order.status !== Status.TAKEN) {
       throw new AppException(OrderError.NOT_TAKEN);
     }
+    const userId = order.executorCard.userId;
     await this.untake(order);
     this.mqttService.publishNotification(
       dto.orderId,
       order.hire.card.userId,
-      dto.nick,
+      userId,
       Notification.UNTAKEN_ORDER,
     );
   }
 
-  async executeOrder(dto: ExtOrderIdDto & { nick: string }): Promise<void> {
+  async executeOrder(dto: ExtOrderIdDto): Promise<void> {
     const order = await this.checkOrderExecutor(
       dto.orderId,
       dto.myId,
@@ -160,14 +168,12 @@ export class OrdersService {
     this.mqttService.publishNotification(
       dto.orderId,
       order.hire.card.userId,
-      dto.nick,
+      order.executorCard.userId,
       Notification.EXECUTED_ORDER,
     );
   }
 
-  async completeOrder(
-    dto: ExtCompleteOrderDto & { nick: string },
-  ): Promise<void> {
+  async completeOrder(dto: ExtCompleteOrderDto): Promise<void> {
     const order = await this.checkOrderCustomer(
       dto.orderId,
       dto.myId,
@@ -182,7 +188,6 @@ export class OrdersService {
     });
     await this.paymentsService.createPayment({
       myId: dto.myId,
-      nick: dto.nick,
       hasRole: dto.hasRole,
       senderCardId: order.hire.cardId,
       receiverCardId: order.executorCardId,
@@ -193,24 +198,24 @@ export class OrdersService {
       await this.hiresService.completeHire({ ...dto, hireId: order.hireId });
     } catch (error) {}
     await this.complete(order, dto.rate);
-    this.unpublishNotification(dto.orderId, dto.nick);
+    this.unpublishNotification(dto.orderId, order.hire.card.userId);
     this.mqttService.publishNotification(
       dto.orderId,
       order.executorCard.userId,
-      dto.nick,
+      order.hire.card.userId,
       Notification.COMPLETED_ORDER,
     );
     if (dto.rate) {
       this.mqttService.publishNotification(
         dto.orderId,
         order.executorCard.userId,
-        dto.nick,
+        order.hire.card.userId,
         Notification.RATED_ORDER,
       );
     }
   }
 
-  async deleteOrder(dto: ExtOrderIdDto & { nick: string }): Promise<void> {
+  async deleteOrder(dto: ExtOrderIdDto): Promise<void> {
     const order = await this.checkOrderCustomer(
       dto.orderId,
       dto.myId,
@@ -227,7 +232,7 @@ export class OrdersService {
       await this.hiresService.completeHire({ ...dto, hireId: order.hireId });
     } catch (error) {}
     await this.delete(order);
-    this.unpublishNotification(dto.orderId, dto.nick);
+    this.unpublishNotification(dto.orderId, order.hire.card.userId);
   }
 
   async checkOrderExists(id: number): Promise<void> {
@@ -369,11 +374,11 @@ export class OrdersService {
     }
   }
 
-  private unpublishNotification(id: number, nick: string): void {
+  private unpublishNotification(id: number, userId: number): void {
     this.mqttService.unpublishNotification(
       id,
       0,
-      nick,
+      userId,
       Notification.CREATED_ORDER,
     );
   }

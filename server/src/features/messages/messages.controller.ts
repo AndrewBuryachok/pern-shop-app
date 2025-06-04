@@ -12,7 +12,7 @@ import { MessagesService } from './messages.service';
 import { Message } from './message.entity';
 import { MessageIdDto, CreateMessageDto, EditMessageDto } from './message.dto';
 import { UserIdDto } from '../users/user.dto';
-import { MyId, MyNick } from '../../common/decorators';
+import { MyId } from '../../common/decorators';
 
 @ApiTags('messages')
 @Controller('messages')
@@ -35,10 +35,9 @@ export class MessagesController {
   @Post()
   createMessage(
     @MyId() myId: number,
-    @MyNick() nick: string,
     @Body() dto: CreateMessageDto,
   ): Promise<void> {
-    return this.messagesService.createMessage({ ...dto, myId, nick });
+    return this.messagesService.createMessage({ ...dto, myId });
   }
 
   @Patch(':messageId')

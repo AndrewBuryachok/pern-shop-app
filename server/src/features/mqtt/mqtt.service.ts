@@ -103,13 +103,13 @@ export class MqttService {
 
   publishNotification(
     id: number,
-    userId: number,
-    nick: string,
+    toUserId: number,
+    fromUserId: number,
     message: string,
   ): void {
     const [action, page] = message.split(' ');
     this.publishMessage(
-      `notifications/${userId}/${nick}/${action}/${page}/${id}`,
+      `notifications/${toUserId}/${page}/${id}/${action}/${fromUserId}`,
       new Date().toISOString(),
       true,
     );
@@ -117,13 +117,13 @@ export class MqttService {
 
   unpublishNotification(
     id: number,
-    userId: number,
-    nick: string,
+    toUserId: number,
+    fromUserId: number,
     message: string,
   ): void {
     const [action, page] = message.split(' ');
     this.publishMessage(
-      `notifications/${userId}/${nick}/${action}/${page}/${id}`,
+      `notifications/${toUserId}/${page}/${id}/${action}/${fromUserId}`,
       '',
       true,
     );

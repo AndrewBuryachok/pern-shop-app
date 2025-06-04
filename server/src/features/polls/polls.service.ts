@@ -105,12 +105,12 @@ export class PollsService {
       .getMany();
   }
 
-  async createPoll(dto: ExtCreatePollDto & { nick: string }): Promise<void> {
+  async createPoll(dto: ExtCreatePollDto): Promise<void> {
     const poll = await this.create(dto);
     this.mqttService.publishNotification(
       poll.id,
       0,
-      dto.nick,
+      dto.userId,
       Notification.CREATED_POLL,
     );
   }
@@ -120,26 +120,24 @@ export class PollsService {
     await this.edit(poll, dto);
   }
 
-  async completePoll(
-    dto: ExtCompletePollDto & { nick: string },
-  ): Promise<void> {
+  async completePoll(dto: ExtCompletePollDto): Promise<void> {
     const poll = await this.checkPollNotCompleted(dto.pollId);
     await this.complete(poll, dto);
     this.mqttService.publishNotification(
       dto.pollId,
       poll.userId,
-      dto.nick,
+      dto.myId,
       Notification.COMPLETED_POLL,
     );
   }
 
-  async deletePoll(dto: DeletePollDto & { nick: string }): Promise<void> {
+  async deletePoll(dto: DeletePollDto): Promise<void> {
     const poll = await this.checkPollOwner(dto.pollId, dto.myId, dto.hasRole);
     await this.delete(poll);
     this.mqttService.unpublishNotification(
       dto.pollId,
       0,
-      dto.nick,
+      poll.userId,
       Notification.CREATED_POLL,
     );
   }
@@ -164,7 +162,7 @@ export class PollsService {
     );
   }
 
-  async likePoll(dto: ExtLikePollDto & { nick: string }): Promise<void> {
+  async likePoll(dto: ExtLikePollDto): Promise<void> {
     const like = await this.likesRepository.findOneBy({
       pollId: dto.pollId,
       userId: dto.myId,
@@ -206,7 +204,7 @@ export class PollsService {
         this.mqttService.publishNotification(
           dto.pollId,
           poll.userId,
-          dto.nick,
+          dto.myId,
           Notification.REACTED_POLL,
         );
       }

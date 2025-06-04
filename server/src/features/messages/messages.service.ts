@@ -63,14 +63,12 @@ export class MessagesService {
       .getMany();
   }
 
-  async createMessage(
-    dto: ExtCreateMessageDto & { nick: string },
-  ): Promise<void> {
+  async createMessage(dto: ExtCreateMessageDto): Promise<void> {
     const { id } = await this.create(dto);
     this.mqttService.publishNotification(
       dto.myId,
       dto.userId,
-      dto.nick,
+      dto.myId,
       Notification.MESSAGED_USER,
     );
     const body = await this.selectMessagesQueryBuilder()

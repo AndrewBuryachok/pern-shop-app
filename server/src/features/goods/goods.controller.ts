@@ -22,7 +22,7 @@ import {
   UpdateGoodDto,
 } from './good.dto';
 import { Request, Response } from '../../common/interfaces';
-import { HasRole, MyId, MyNick, Public, Roles } from '../../common/decorators';
+import { HasRole, MyId, Public, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
 
 @ApiTags('goods')
@@ -85,31 +85,28 @@ export class GoodsController {
   @Post('shops')
   createShopGood(
     @MyId() myId: number,
-    @MyNick() nick: string,
     @HasRole(Role.MERCHANT) hasRole: boolean,
     @Body() dto: CreateShopGoodDto,
   ): Promise<void> {
-    return this.goodsService.createShopGood({ ...dto, myId, nick, hasRole });
+    return this.goodsService.createShopGood({ ...dto, myId, hasRole });
   }
 
   @Post('markets')
   createMarketGood(
     @MyId() myId: number,
-    @MyNick() nick: string,
     @HasRole(Role.MERCHANT) hasRole: boolean,
     @Body() dto: CreateMarketGoodDto,
   ): Promise<void> {
-    return this.goodsService.createMarketGood({ ...dto, myId, nick, hasRole });
+    return this.goodsService.createMarketGood({ ...dto, myId, hasRole });
   }
 
   @Post('storages')
   createStorageGood(
     @MyId() myId: number,
-    @MyNick() nick: string,
     @HasRole(Role.MERCHANT) hasRole: boolean,
     @Body() dto: CreateStorageGoodDto,
   ): Promise<void> {
-    return this.goodsService.createStorageGood({ ...dto, myId, nick, hasRole });
+    return this.goodsService.createStorageGood({ ...dto, myId, hasRole });
   }
 
   @Patch(':goodId')
@@ -135,20 +132,18 @@ export class GoodsController {
   @Post(':goodId')
   completeGood(
     @MyId() myId: number,
-    @MyNick() nick: string,
     @HasRole(Role.MERCHANT) hasRole: boolean,
     @Param() { goodId }: GoodIdDto,
   ): Promise<void> {
-    return this.goodsService.completeGood({ goodId, myId, nick, hasRole });
+    return this.goodsService.completeGood({ goodId, myId, hasRole });
   }
 
   @Delete(':goodId')
   deleteGood(
     @MyId() myId: number,
-    @MyNick() nick: string,
     @HasRole(Role.MERCHANT) hasRole: boolean,
     @Param() { goodId }: GoodIdDto,
   ): Promise<void> {
-    return this.goodsService.deleteGood({ goodId, myId, nick, hasRole });
+    return this.goodsService.deleteGood({ goodId, myId, hasRole });
   }
 }

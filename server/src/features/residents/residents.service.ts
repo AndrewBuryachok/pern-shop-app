@@ -110,9 +110,7 @@ export class ResidentsService {
     return { result, count };
   }
 
-  async deleteResident(
-    dto: UpdateResidentByUserDto & { nick: string },
-  ): Promise<void> {
+  async deleteResident(dto: UpdateResidentByUserDto): Promise<void> {
     const town =
       dto.userId === dto.myId
         ? await this.townsService.checkInTown(dto.userId)
@@ -128,22 +126,20 @@ export class ResidentsService {
       this.mqttService.publishNotification(
         dto.userId,
         town.userId,
-        dto.nick,
+        dto.myId,
         Notification.LEFT_RESIDENT,
       );
     } else {
       this.mqttService.publishNotification(
         dto.userId,
         dto.userId,
-        dto.nick,
+        dto.myId,
         Notification.DELETED_RESIDENT,
       );
     }
   }
 
-  async createResidentInvitation(
-    dto: UpdateResidentByUserDto & { nick: string },
-  ): Promise<void> {
+  async createResidentInvitation(dto: UpdateResidentByUserDto): Promise<void> {
     const town = await this.townsService.checkHaveTown(dto.myId);
     await this.townsService.checkNotInTown(dto.userId);
     await this.checkInvitationNotExist(town.id, dto.userId);
@@ -151,28 +147,24 @@ export class ResidentsService {
     this.mqttService.publishNotification(
       town.id,
       dto.userId,
-      dto.nick,
+      dto.myId,
       Notification.CREATED_INVITATION,
     );
   }
 
-  async cancelResidentInvitation(
-    dto: UpdateResidentByUserDto & { nick: string },
-  ): Promise<void> {
+  async cancelResidentInvitation(dto: UpdateResidentByUserDto): Promise<void> {
     const town = await this.townsService.checkHaveTown(dto.myId);
     const invitation = await this.checkInvitationExist(town.id, dto.userId);
     await this.deleteInvitation(invitation);
     this.mqttService.publishNotification(
       town.id,
       dto.userId,
-      dto.nick,
+      dto.myId,
       Notification.CANCELED_INVITATION,
     );
   }
 
-  async acceptResidentInvitation(
-    dto: UpdateResidentByTownDto & { nick: string },
-  ): Promise<void> {
+  async acceptResidentInvitation(dto: UpdateResidentByTownDto): Promise<void> {
     const invitation = await this.checkInvitationExist(dto.townId, dto.myId);
     await this.usersService.addUserTown({
       userId: dto.myId,
@@ -182,29 +174,25 @@ export class ResidentsService {
     this.mqttService.publishNotification(
       dto.myId,
       userId,
-      dto.nick,
+      dto.myId,
       Notification.ACCEPTED_INVITATION,
     );
     await this.deleteInvitation(invitation);
   }
 
-  async rejectResidentInvitation(
-    dto: UpdateResidentByTownDto & { nick: string },
-  ): Promise<void> {
+  async rejectResidentInvitation(dto: UpdateResidentByTownDto): Promise<void> {
     const invitation = await this.checkInvitationExist(dto.townId, dto.myId);
     await this.deleteInvitation(invitation);
     const userId = await this.townsService.findTownUserIdById(dto.townId);
     this.mqttService.publishNotification(
       dto.myId,
       userId,
-      dto.nick,
+      dto.myId,
       Notification.REJECTED_INVITATION,
     );
   }
 
-  async createResidentApplication(
-    dto: UpdateResidentByTownDto & { nick: string },
-  ): Promise<void> {
+  async createResidentApplication(dto: UpdateResidentByTownDto): Promise<void> {
     await this.townsService.checkNotInTown(dto.myId);
     await this.checkApplicationNotExist(dto.townId, dto.myId);
     await this.createApplication(dto);
@@ -212,28 +200,24 @@ export class ResidentsService {
     this.mqttService.publishNotification(
       dto.myId,
       userId,
-      dto.nick,
+      dto.myId,
       Notification.CREATED_INVITATION,
     );
   }
 
-  async cancelResidentApplication(
-    dto: UpdateResidentByTownDto & { nick: string },
-  ): Promise<void> {
+  async cancelResidentApplication(dto: UpdateResidentByTownDto): Promise<void> {
     const application = await this.checkApplicationExist(dto.townId, dto.myId);
     await this.deleteApplication(application);
     const userId = await this.townsService.findTownUserIdById(dto.townId);
     this.mqttService.publishNotification(
       dto.myId,
       userId,
-      dto.nick,
+      dto.myId,
       Notification.CREATED_INVITATION,
     );
   }
 
-  async acceptResidentApplication(
-    dto: UpdateResidentByUserDto & { nick: string },
-  ): Promise<void> {
+  async acceptResidentApplication(dto: UpdateResidentByUserDto): Promise<void> {
     const town = await this.townsService.checkHaveTown(dto.myId);
     const application = await this.checkApplicationExist(town.id, dto.userId);
     await this.usersService.addUserTown({
@@ -243,22 +227,20 @@ export class ResidentsService {
     this.mqttService.publishNotification(
       town.id,
       dto.userId,
-      dto.nick,
+      dto.myId,
       Notification.ACCEPTED_APPLICATION,
     );
     await this.deleteApplication(application);
   }
 
-  async rejectResidentApplication(
-    dto: UpdateResidentByUserDto & { nick: string },
-  ): Promise<void> {
+  async rejectResidentApplication(dto: UpdateResidentByUserDto): Promise<void> {
     const town = await this.townsService.checkHaveTown(dto.myId);
     const application = await this.checkApplicationExist(town.id, dto.userId);
     await this.deleteApplication(application);
     this.mqttService.publishNotification(
       town.id,
       dto.userId,
-      dto.nick,
+      dto.myId,
       Notification.REJECTED_APPLICATION,
     );
   }

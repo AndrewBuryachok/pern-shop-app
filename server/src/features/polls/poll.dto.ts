@@ -50,6 +50,7 @@ export class CompletePollDto extends CreateReactionDto {}
 
 export class ExtCompletePollDto extends CompletePollDto {
   pollId: number;
+  myId: number;
 }
 
 export class DeletePollDto extends PollIdDto {

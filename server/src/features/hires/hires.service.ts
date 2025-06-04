@@ -131,8 +131,8 @@ export class HiresService {
     ];
   }
 
-  async createHire(dto: ExtCreateHireDto & { nick: string }): Promise<number> {
-    const box = await this.boxesService.reserveBox(dto);
+  async createHire(dto: ExtCreateHireDto): Promise<number> {
+    const [box, userId] = await this.boxesService.reserveBox(dto);
     const hire = await this.create(
       { ...dto, stationId: box.id },
       box.station.price,
@@ -140,14 +140,14 @@ export class HiresService {
     this.mqttService.publishNotification(
       hire.id,
       box.station.card.userId,
-      dto.nick,
+      userId,
       Notification.CREATED_HIRE,
     );
     this.addTimeout(hire.id, dto.myId, hire.completedAt);
     return hire.id;
   }
 
-  async continueHire(dto: ExtHireIdDto & { nick: string }): Promise<void> {
+  async continueHire(dto: ExtHireIdDto): Promise<void> {
     const hire = await this.checkHireOwner(dto.hireId, dto.myId, dto.hasRole);
     const box = await this.boxesService.continueBox({
       ...dto,
@@ -158,21 +158,21 @@ export class HiresService {
     this.mqttService.publishNotification(
       dto.hireId,
       box.station.card.userId,
-      dto.nick,
+      hire.card.userId,
       Notification.CONTINUED_HIRE,
     );
     this.removeTimeout(hire.id);
     this.addTimeout(hire.id, dto.myId, hire.completedAt);
   }
 
-  async completeHire(dto: ExtHireIdDto & { nick: string }): Promise<void> {
+  async completeHire(dto: ExtHireIdDto): Promise<void> {
     const hire = await this.checkHireOwner(dto.hireId, dto.myId, dto.hasRole);
     const box = await this.boxesService.unreserveBox(hire.boxId);
     await this.complete(hire);
     this.mqttService.publishNotification(
       dto.hireId,
       box.station.card.userId,
-      dto.nick,
+      hire.card.userId,
       Notification.COMPLETED_HIRE,
     );
     this.removeTimeout(hire.id);
@@ -207,7 +207,7 @@ export class HiresService {
     const diffA = date.getTime() - new Date().getTime();
     const diffB = before.getTime() - new Date().getTime();
     const callbackFactory = (message: string) => () => {
-      this.mqttService.publishNotification(id, userId, '🔔', message);
+      this.mqttService.publishNotification(id, userId, 0, message);
       return true;
     };
     const callbackA = callbackFactory(Notification.ENDED_HIRE);

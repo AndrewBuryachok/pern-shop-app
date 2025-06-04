@@ -93,17 +93,19 @@ export class StationsService {
     return station.states;
   }
 
-  async createStation(
-    dto: ExtCreateStationDto & { nick: string },
-  ): Promise<void> {
-    await this.cardsService.checkCardUser(dto.cardId, dto.myId, dto.hasRole);
+  async createStation(dto: ExtCreateStationDto): Promise<void> {
+    const card = await this.cardsService.checkCardUser(
+      dto.cardId,
+      dto.myId,
+      dto.hasRole,
+    );
     await this.checkNameNotUsed(dto.name);
     await this.checkCoordinatesNotUsed(dto.x, dto.y);
     const station = await this.create(dto);
     this.mqttService.publishNotification(
       station.id,
       0,
-      dto.nick,
+      card.userId,
       Notification.CREATED_STATION,
     );
   }

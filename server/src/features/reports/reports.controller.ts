@@ -20,7 +20,7 @@ import {
   ReportIdDto,
 } from './report.dto';
 import { Request, Response } from '../../common/interfaces';
-import { HasRole, MyId, MyNick, Public, Roles } from '../../common/decorators';
+import { HasRole, MyId, Public, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
 import { Mark } from './mark.enum';
 
@@ -99,13 +99,11 @@ export class ReportsController {
   @Post('server')
   createServerReport(
     @MyId() myId: number,
-    @MyNick() nick: string,
     @Body() dto: CreateReportDto,
   ): Promise<void> {
     return this.reportsService.createReport({
       ...dto,
       myId,
-      nick,
       mark: Mark.SERVER,
     });
   }
@@ -114,27 +112,19 @@ export class ReportsController {
   @Post('site')
   createSiteReport(
     @MyId() myId: number,
-    @MyNick() nick: string,
     @Body() dto: CreateReportDto,
   ): Promise<void> {
-    return this.reportsService.createReport({
-      ...dto,
-      myId,
-      nick,
-      mark: Mark.SITE,
-    });
+    return this.reportsService.createReport({ ...dto, myId, mark: Mark.SITE });
   }
 
   @Post('events')
   createEventsReport(
     @MyId() myId: number,
-    @MyNick() nick: string,
     @Body() dto: CreateReportDto,
   ): Promise<void> {
     return this.reportsService.createReport({
       ...dto,
       myId,
-      nick,
       mark: Mark.EVENTS,
     });
   }
@@ -143,45 +133,27 @@ export class ReportsController {
   @Post('spawn')
   createSpawnReport(
     @MyId() myId: number,
-    @MyNick() nick: string,
     @Body() dto: CreateReportDto,
   ): Promise<void> {
-    return this.reportsService.createReport({
-      ...dto,
-      myId,
-      nick,
-      mark: Mark.SPAWN,
-    });
+    return this.reportsService.createReport({ ...dto, myId, mark: Mark.SPAWN });
   }
 
   @Roles(Role.HUB)
   @Post('hub')
   createHubReport(
     @MyId() myId: number,
-    @MyNick() nick: string,
     @Body() dto: CreateReportDto,
   ): Promise<void> {
-    return this.reportsService.createReport({
-      ...dto,
-      myId,
-      nick,
-      mark: Mark.HUB,
-    });
+    return this.reportsService.createReport({ ...dto, myId, mark: Mark.HUB });
   }
 
   @Roles(Role.END)
   @Post('end')
   createEndReport(
     @MyId() myId: number,
-    @MyNick() nick: string,
     @Body() dto: CreateReportDto,
   ): Promise<void> {
-    return this.reportsService.createReport({
-      ...dto,
-      myId,
-      nick,
-      mark: Mark.END,
-    });
+    return this.reportsService.createReport({ ...dto, myId, mark: Mark.END });
   }
 
   @Patch(':reportId')
@@ -197,11 +169,10 @@ export class ReportsController {
   @Delete(':reportId')
   deleteReport(
     @MyId() myId: number,
-    @MyNick() nick: string,
     @HasRole(Role.INSPECTOR) hasRole: boolean,
     @Param() { reportId }: ReportIdDto,
   ): Promise<void> {
-    return this.reportsService.deleteReport({ reportId, myId, nick, hasRole });
+    return this.reportsService.deleteReport({ reportId, myId, hasRole });
   }
 
   @Post(':reportId/views')
@@ -215,10 +186,9 @@ export class ReportsController {
   @Post(':reportId/likes')
   likeReport(
     @MyId() myId: number,
-    @MyNick() nick: string,
     @Param() { reportId }: ReportIdDto,
     @Body() dto: LikeReportDto,
   ): Promise<void> {
-    return this.reportsService.likeReport({ ...dto, reportId, myId, nick });
+    return this.reportsService.likeReport({ ...dto, reportId, myId });
   }
 }

@@ -75,15 +75,19 @@ export class ShopsService {
     return shop.goods;
   }
 
-  async createShop(dto: ExtCreateShopDto & { nick: string }): Promise<void> {
-    await this.cardsService.checkCardUser(dto.cardId, dto.myId, dto.hasRole);
+  async createShop(dto: ExtCreateShopDto): Promise<void> {
+    const card = await this.cardsService.checkCardUser(
+      dto.cardId,
+      dto.myId,
+      dto.hasRole,
+    );
     await this.checkNameNotUsed(dto.name);
     await this.checkCoordinatesNotUsed(dto.x, dto.y);
     const shop = await this.create(dto);
     this.mqttService.publishNotification(
       shop.id,
       0,
-      dto.nick,
+      card.userId,
       Notification.CREATED_SHOP,
     );
   }

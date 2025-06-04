@@ -125,14 +125,12 @@ export class ArticlesService {
       .getMany();
   }
 
-  async createArticle(
-    dto: ExtCreateArticleDto & { nick: string },
-  ): Promise<void> {
+  async createArticle(dto: ExtCreateArticleDto): Promise<void> {
     const article = await this.create(dto);
     this.mqttService.publishNotification(
       article.id,
       0,
-      dto.nick,
+      dto.userId,
       Notification.CREATED_ARTICLE,
     );
   }
@@ -146,7 +144,7 @@ export class ArticlesService {
     await this.edit(article, dto);
   }
 
-  async deleteArticle(dto: DeleteArticleDto & { nick: string }): Promise<void> {
+  async deleteArticle(dto: DeleteArticleDto): Promise<void> {
     const article = await this.checkArticleOwner(
       dto.articleId,
       dto.myId,
@@ -156,7 +154,7 @@ export class ArticlesService {
     this.mqttService.unpublishNotification(
       dto.articleId,
       0,
-      dto.nick,
+      article.userId,
       Notification.CREATED_ARTICLE,
     );
   }
@@ -181,7 +179,7 @@ export class ArticlesService {
     );
   }
 
-  async likeArticle(dto: ExtLikeArticleDto & { nick: string }): Promise<void> {
+  async likeArticle(dto: ExtLikeArticleDto): Promise<void> {
     const like = await this.likesRepository.findOneBy({
       articleId: dto.articleId,
       userId: dto.myId,
@@ -223,7 +221,7 @@ export class ArticlesService {
         this.mqttService.publishNotification(
           dto.articleId,
           article.userId,
-          dto.nick,
+          dto.myId,
           Notification.REACTED_ARTICLE,
         );
       }

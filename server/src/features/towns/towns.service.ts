@@ -67,7 +67,7 @@ export class TownsService {
     return town.users;
   }
 
-  async createTown(dto: ExtCreateTownDto & { nick: string }): Promise<void> {
+  async createTown(dto: ExtCreateTownDto): Promise<void> {
     await this.checkNotInTown(dto.userId);
     await this.checkNameNotUsed(dto.name);
     await this.checkCoordinatesNotUsed(dto.x, dto.y);
@@ -75,7 +75,7 @@ export class TownsService {
     this.mqttService.publishNotification(
       town.id,
       0,
-      dto.nick,
+      dto.userId,
       Notification.CREATED_TOWN,
     );
   }
@@ -87,14 +87,14 @@ export class TownsService {
     await this.edit(town, dto);
   }
 
-  async deleteTown(dto: DeleteTownDto & { nick: string }): Promise<void> {
+  async deleteTown(dto: DeleteTownDto): Promise<void> {
     const town = await this.checkTownOwner(dto.townId, dto.myId, dto.hasRole);
     await this.delete(town);
     town.users.forEach((user) =>
       this.mqttService.publishNotification(
         dto.townId,
         user.id,
-        dto.nick,
+        town.userId,
         Notification.DELETED_TOWN,
       ),
     );

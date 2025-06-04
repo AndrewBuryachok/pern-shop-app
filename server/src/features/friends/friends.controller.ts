@@ -4,7 +4,7 @@ import { FriendsService } from './friends.service';
 import { User } from '../users/user.entity';
 import { UserIdDto } from '../users/user.dto';
 import { Request, Response } from '../../common/interfaces';
-import { MyId, MyNick } from '../../common/decorators';
+import { MyId } from '../../common/decorators';
 
 @ApiTags('friends')
 @Controller('friends')
@@ -38,18 +38,16 @@ export class FriendsController {
   @Post(':userId')
   addFriend(
     @MyId() myId: number,
-    @MyNick() nick: string,
     @Param() { userId }: UserIdDto,
   ): Promise<void> {
-    return this.friendsService.addFriend({ userId, myId, nick });
+    return this.friendsService.addFriend({ userId, myId });
   }
 
   @Delete(':userId')
   removeFriend(
     @MyId() myId: number,
-    @MyNick() nick: string,
     @Param() { userId }: UserIdDto,
   ): Promise<void> {
-    return this.friendsService.removeFriend({ userId, myId, nick });
+    return this.friendsService.removeFriend({ userId, myId });
   }
 }

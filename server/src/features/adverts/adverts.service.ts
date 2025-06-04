@@ -50,15 +50,17 @@ export class AdvertsService {
     return { result, count };
   }
 
-  async createAdvert(
-    dto: ExtCreateAdvertDto & { nick: string },
-  ): Promise<void> {
-    await this.cardsService.checkCardUser(dto.cardId, dto.myId, dto.hasRole);
+  async createAdvert(dto: ExtCreateAdvertDto): Promise<void> {
+    const card = await this.cardsService.checkCardUser(
+      dto.cardId,
+      dto.myId,
+      dto.hasRole,
+    );
     const advert = await this.create(dto);
     this.mqttService.publishNotification(
       advert.id,
       0,
-      dto.nick,
+      card.userId,
       Notification.CREATED_ADVERT,
     );
   }
@@ -72,7 +74,7 @@ export class AdvertsService {
     await this.edit(advert, dto);
   }
 
-  async deleteAdvert(dto: DeleteAdvertDto & { nick: string }): Promise<void> {
+  async deleteAdvert(dto: DeleteAdvertDto): Promise<void> {
     const advert = await this.checkAdvertOwner(
       dto.advertId,
       dto.myId,
@@ -82,15 +84,17 @@ export class AdvertsService {
     this.mqttService.unpublishNotification(
       dto.advertId,
       0,
-      dto.nick,
+      advert.card.userId,
       Notification.CREATED_ADVERT,
     );
   }
 
-  async respondAdvert(
-    dto: ExtRespondAdvertDto & { nick: string },
-  ): Promise<void> {
-    await this.cardsService.checkCardUser(dto.cardId, dto.myId, dto.hasRole);
+  async respondAdvert(dto: ExtRespondAdvertDto): Promise<void> {
+    const card = await this.cardsService.checkCardUser(
+      dto.cardId,
+      dto.myId,
+      dto.hasRole,
+    );
     await this.cardsService.decreaseCardBalance({ ...dto, sum: dto.price });
     const advert = await this.advertsRepository.findOne({
       relations: ['card'],
@@ -100,7 +104,7 @@ export class AdvertsService {
     this.mqttService.publishNotification(
       task.id,
       advert.card.userId,
-      dto.nick,
+      card.userId,
       Notification.RESPONDED_ADVERT,
     );
   }

@@ -12,7 +12,7 @@ import { StoragesService } from './storages.service';
 import { Storage } from './storage.entity';
 import { CreateStorageDto, EditStorageDto, StorageIdDto } from './storage.dto';
 import { Request, Response } from '../../common/interfaces';
-import { HasRole, MyId, MyNick, Public, Roles } from '../../common/decorators';
+import { HasRole, MyId, Public, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
 
 @ApiTags('storages')
@@ -60,11 +60,10 @@ export class StoragesController {
   @Post()
   createStorage(
     @MyId() myId: number,
-    @MyNick() nick: string,
     @HasRole(Role.MERCHANT) hasRole: boolean,
     @Body() dto: CreateStorageDto,
   ): Promise<void> {
-    return this.storagesService.createStorage({ ...dto, myId, nick, hasRole });
+    return this.storagesService.createStorage({ ...dto, myId, hasRole });
   }
 
   @Patch(':storageId')

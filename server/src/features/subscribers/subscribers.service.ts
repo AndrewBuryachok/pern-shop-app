@@ -48,9 +48,7 @@ export class SubscribersService {
     return this.usersService.selectMySubscribers(myId);
   }
 
-  async addSubscriber(
-    dto: UpdateSubscriberDto & { nick: string },
-  ): Promise<void> {
+  async addSubscriber(dto: UpdateSubscriberDto): Promise<void> {
     await this.usersService.addUserSubscriber({
       senderUserId: dto.myId,
       receiverUserId: dto.userId,
@@ -58,14 +56,12 @@ export class SubscribersService {
     this.mqttService.publishNotification(
       dto.myId,
       dto.userId,
-      dto.nick,
+      dto.myId,
       Notification.ADDED_SUBSCRIBER,
     );
   }
 
-  async removeSubscriber(
-    dto: UpdateSubscriberDto & { nick: string },
-  ): Promise<void> {
+  async removeSubscriber(dto: UpdateSubscriberDto): Promise<void> {
     await this.usersService.removeUserSubscriber({
       senderUserId: dto.myId,
       receiverUserId: dto.userId,
@@ -73,7 +69,7 @@ export class SubscribersService {
     this.mqttService.publishNotification(
       dto.myId,
       dto.userId,
-      dto.nick,
+      dto.myId,
       Notification.REMOVED_SUBSCRIBER,
     );
   }

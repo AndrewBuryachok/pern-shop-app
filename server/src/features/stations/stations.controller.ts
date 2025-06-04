@@ -13,7 +13,7 @@ import { Station } from './station.entity';
 import { StationState } from './station-state.entity';
 import { CreateStationDto, EditStationDto, StationIdDto } from './station.dto';
 import { Request, Response } from '../../common/interfaces';
-import { HasRole, MyId, MyNick, Public, Roles } from '../../common/decorators';
+import { HasRole, MyId, Public, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
 
 @ApiTags('stations')
@@ -75,11 +75,10 @@ export class StationsController {
   @Post()
   createStation(
     @MyId() myId: number,
-    @MyNick() nick: string,
     @HasRole(Role.MERCHANT) hasRole: boolean,
     @Body() dto: CreateStationDto,
   ): Promise<void> {
-    return this.stationsService.createStation({ ...dto, myId, nick, hasRole });
+    return this.stationsService.createStation({ ...dto, myId, hasRole });
   }
 
   @Patch(':stationId')

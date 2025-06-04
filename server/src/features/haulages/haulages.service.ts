@@ -86,9 +86,7 @@ export class HaulagesService {
     return { result, count };
   }
 
-  async createHaulage(
-    dto: ExtCreateHaulageDto & { nick: string },
-  ): Promise<void> {
+  async createHaulage(dto: ExtCreateHaulageDto): Promise<void> {
     const fromHireId = await this.hiresService.createHire({
       ...dto,
       stationId: dto.fromStationId,
@@ -97,7 +95,10 @@ export class HaulagesService {
       ...dto,
       stationId: dto.toStationId,
     });
-    await this.cardsService.decreaseCardBalance({ ...dto, sum: dto.price });
+    const card = await this.cardsService.decreaseCardBalance({
+      ...dto,
+      sum: dto.price,
+    });
     const haulage = await this.create({
       ...dto,
       fromStationId: fromHireId,
@@ -106,7 +107,7 @@ export class HaulagesService {
     this.mqttService.publishNotification(
       haulage.id,
       0,
-      dto.nick,
+      card.userId,
       Notification.CREATED_HAULAGE,
     );
   }
@@ -136,8 +137,12 @@ export class HaulagesService {
     await this.edit(haulage, dto);
   }
 
-  async takeHaulage(dto: ExtTakeHaulageDto & { nick: string }): Promise<void> {
-    await this.cardsService.checkCardUser(dto.cardId, dto.myId, dto.hasRole);
+  async takeHaulage(dto: ExtTakeHaulageDto): Promise<void> {
+    const card = await this.cardsService.checkCardUser(
+      dto.cardId,
+      dto.myId,
+      dto.hasRole,
+    );
     const haulage = await this.haulagesRepository.findOne({
       relations: ['fromHire', 'fromHire.card', 'toHire'],
       where: { id: dto.haulageId },
@@ -155,12 +160,12 @@ export class HaulagesService {
     this.mqttService.publishNotification(
       dto.haulageId,
       haulage.fromHire.card.userId,
-      dto.nick,
+      card.userId,
       Notification.TAKEN_HAULAGE,
     );
   }
 
-  async untakeHaulage(dto: ExtHaulageIdDto & { nick: string }): Promise<void> {
+  async untakeHaulage(dto: ExtHaulageIdDto): Promise<void> {
     const haulage = await this.checkHaulageExecutor(
       dto.haulageId,
       dto.myId,
@@ -169,16 +174,17 @@ export class HaulagesService {
     if (haulage.status !== Status.TAKEN) {
       throw new AppException(HaulageError.NOT_TAKEN);
     }
+    const userId = haulage.executorCard.userId;
     await this.untake(haulage);
     this.mqttService.publishNotification(
       dto.haulageId,
       haulage.fromHire.card.userId,
-      dto.nick,
+      userId,
       Notification.UNTAKEN_HAULAGE,
     );
   }
 
-  async executeHaulage(dto: ExtHaulageIdDto & { nick: string }): Promise<void> {
+  async executeHaulage(dto: ExtHaulageIdDto): Promise<void> {
     const haulage = await this.checkHaulageExecutor(
       dto.haulageId,
       dto.myId,
@@ -191,14 +197,12 @@ export class HaulagesService {
     this.mqttService.publishNotification(
       dto.haulageId,
       haulage.fromHire.card.userId,
-      dto.nick,
+      haulage.executorCard.userId,
       Notification.EXECUTED_HAULAGE,
     );
   }
 
-  async completeHaulage(
-    dto: ExtCompleteHaulageDto & { nick: string },
-  ): Promise<void> {
+  async completeHaulage(dto: ExtCompleteHaulageDto): Promise<void> {
     const haulage = await this.checkHaulageCustomer(
       dto.haulageId,
       dto.myId,
@@ -213,7 +217,6 @@ export class HaulagesService {
     });
     await this.paymentsService.createPayment({
       myId: dto.myId,
-      nick: dto.nick,
       hasRole: dto.hasRole,
       senderCardId: haulage.fromHire.cardId,
       receiverCardId: haulage.executorCardId,
@@ -233,24 +236,24 @@ export class HaulagesService {
       });
     } catch (error) {}
     await this.complete(haulage, dto.rate);
-    this.unpublishNotification(dto.haulageId, dto.nick);
+    this.unpublishNotification(dto.haulageId, haulage.fromHire.card.userId);
     this.mqttService.publishNotification(
       dto.haulageId,
       haulage.executorCard.userId,
-      dto.nick,
+      haulage.fromHire.card.userId,
       Notification.COMPLETED_HAULAGE,
     );
     if (dto.rate) {
       this.mqttService.publishNotification(
         dto.haulageId,
         haulage.executorCard.userId,
-        dto.nick,
+        haulage.fromHire.card.userId,
         Notification.RATED_HAULAGE,
       );
     }
   }
 
-  async deleteHaulage(dto: ExtHaulageIdDto & { nick: string }): Promise<void> {
+  async deleteHaulage(dto: ExtHaulageIdDto): Promise<void> {
     const haulage = await this.checkHaulageCustomer(
       dto.haulageId,
       dto.myId,
@@ -276,7 +279,7 @@ export class HaulagesService {
       });
     } catch (error) {}
     await this.delete(haulage);
-    this.unpublishNotification(dto.haulageId, dto.nick);
+    this.unpublishNotification(dto.haulageId, haulage.fromHire.card.userId);
   }
 
   async checkHaulageExists(id: number): Promise<void> {
@@ -419,11 +422,11 @@ export class HaulagesService {
     }
   }
 
-  private unpublishNotification(id: number, nick: string): void {
+  private unpublishNotification(id: number, userId: number): void {
     this.mqttService.unpublishNotification(
       id,
       0,
-      nick,
+      userId,
       Notification.CREATED_HAULAGE,
     );
   }

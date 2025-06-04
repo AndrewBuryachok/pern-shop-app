@@ -42,29 +42,32 @@ export class PaymentsService {
     return { result, count };
   }
 
-  async createPayment(
-    dto: ExtCreatePaymentDto & { nick: string },
-  ): Promise<void> {
+  async createPayment(dto: ExtCreatePaymentDto): Promise<void> {
+    await this.createPaymentWithReturn(dto);
+  }
+
+  async createPaymentWithReturn(dto: ExtCreatePaymentDto): Promise<number> {
     await this.cardsService.checkCardUser(
       dto.senderCardId,
       dto.myId,
       dto.hasRole,
     );
-    await this.cardsService.decreaseCardBalance({
+    const senderCard = await this.cardsService.decreaseCardBalance({
       ...dto,
       cardId: dto.senderCardId,
     });
-    const card = await this.cardsService.increaseCardBalance({
+    const receiverCard = await this.cardsService.increaseCardBalance({
       ...dto,
       cardId: dto.receiverCardId,
     });
     const payment = await this.create(dto);
     this.mqttService.publishNotification(
       payment.id,
-      card.userId,
-      dto.nick,
+      receiverCard.userId,
+      senderCard.userId,
       Notification.CREATED_PAYMENT,
     );
+    return senderCard.userId;
   }
 
   async deletePayment(id: number): Promise<void> {

@@ -207,12 +207,6 @@ export class UsersService {
     );
   }
 
-  selectSingleUser(nick: string): Promise<User> {
-    return this.selectUsersQueryBuilder()
-      .where('user.nick = :nick', { nick })
-      .getOne();
-  }
-
   selectMySubscribers(myId: number): Promise<User[]> {
     return this.selectUsersQueryBuilder()
       .innerJoinAndMapOne(

@@ -22,7 +22,7 @@ import {
   PollIdDto,
 } from './poll.dto';
 import { Request, Response } from '../../common/interfaces';
-import { HasRole, MyId, MyNick, Public, Roles } from '../../common/decorators';
+import { HasRole, MyId, Public, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
 
 @ApiTags('polls')
@@ -93,19 +93,15 @@ export class PollsController {
   @Post()
   createMyPoll(
     @MyId() myId: number,
-    @MyNick() nick: string,
     @Body() dto: CreatePollDto,
   ): Promise<void> {
-    return this.pollsService.createPoll({ ...dto, userId: myId, nick });
+    return this.pollsService.createPoll({ ...dto, userId: myId });
   }
 
   @Roles(Role.INSPECTOR)
   @Post('all')
-  createUserPoll(
-    @MyNick() nick: string,
-    @Body() dto: ExtCreatePollDto,
-  ): Promise<void> {
-    return this.pollsService.createPoll({ ...dto, nick });
+  createUserPoll(@Body() dto: ExtCreatePollDto): Promise<void> {
+    return this.pollsService.createPoll(dto);
   }
 
   @Patch(':pollId')
@@ -121,21 +117,20 @@ export class PollsController {
   @Roles(Role.INSPECTOR)
   @Post(':pollId')
   completePoll(
-    @MyNick() nick: string,
+    @MyId() myId: number,
     @Param() { pollId }: PollIdDto,
     @Body() dto: CompletePollDto,
   ): Promise<void> {
-    return this.pollsService.completePoll({ ...dto, pollId, nick });
+    return this.pollsService.completePoll({ ...dto, pollId, myId });
   }
 
   @Delete(':pollId')
   deletePoll(
     @MyId() myId: number,
-    @MyNick() nick: string,
     @HasRole(Role.INSPECTOR) hasRole: boolean,
     @Param() { pollId }: PollIdDto,
   ): Promise<void> {
-    return this.pollsService.deletePoll({ pollId, myId, nick, hasRole });
+    return this.pollsService.deletePoll({ pollId, myId, hasRole });
   }
 
   @Post(':pollId/views')
@@ -149,10 +144,9 @@ export class PollsController {
   @Post(':pollId/likes')
   likePoll(
     @MyId() myId: number,
-    @MyNick() nick: string,
     @Param() { pollId }: PollIdDto,
     @Body() dto: LikePollDto,
   ): Promise<void> {
-    return this.pollsService.likePoll({ ...dto, pollId, myId, nick });
+    return this.pollsService.likePoll({ ...dto, pollId, myId });
   }
 }

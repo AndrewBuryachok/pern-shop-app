@@ -80,11 +80,10 @@ export class CellsService {
     await this.create({ ...dto, storageId, name });
   }
 
-  async reserveCell(dto: ReserveCellDto & { nick: string }): Promise<Cell> {
+  async reserveCell(dto: ReserveCellDto): Promise<[Cell, number]> {
     const cell = await this.findFreeCell(dto.cellId);
-    await this.paymentsService.createPayment({
+    const userId = await this.paymentsService.createPaymentWithReturn({
       myId: dto.myId,
-      nick: dto.nick,
       hasRole: dto.hasRole,
       senderCardId: dto.cardId,
       receiverCardId: cell.storage.cardId,
@@ -92,17 +91,16 @@ export class CellsService {
       description: '',
     });
     await this.reserve(cell);
-    return cell;
+    return [cell, userId];
   }
 
-  async continueCell(dto: ReserveCellDto & { nick: string }): Promise<Cell> {
+  async continueCell(dto: ReserveCellDto): Promise<Cell> {
     const cell = await this.cellsRepository.findOne({
       relations: ['storage', 'storage.card', 'storageTag'],
       where: { id: dto.cellId },
     });
     await this.paymentsService.createPayment({
       myId: dto.myId,
-      nick: dto.nick,
       hasRole: dto.hasRole,
       senderCardId: dto.cardId,
       receiverCardId: cell.storage.cardId,

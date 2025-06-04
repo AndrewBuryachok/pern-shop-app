@@ -37,33 +37,39 @@ export class ExchangesService {
     return { result, count };
   }
 
-  async createExchange(
-    dto: ExtCreateExchangeDto & { nick: string },
-  ): Promise<void> {
-    await this.cardsService.checkCardUser(dto.cardId, dto.myId, dto.hasRole);
-    const card = dto.type
-      ? await this.cardsService.increaseCardBalance(dto)
-      : await this.cardsService.decreaseCardBalance(dto);
+  async createExchange(dto: ExtCreateExchangeDto): Promise<void> {
+    const card = await this.cardsService.checkCardUser(
+      dto.cardId,
+      dto.myId,
+      dto.hasRole,
+    );
+    if (dto.type) {
+      await this.cardsService.increaseCardBalance({ ...dto, cardId: card.id });
+    } else {
+      await this.cardsService.decreaseCardBalance({ ...dto, cardId: card.id });
+    }
     const exchange = await this.create(dto);
     this.mqttService.publishNotification(
       exchange.id,
       card.userId,
-      dto.nick,
+      dto.myId,
       Notification.CREATED_EXCHANGE,
     );
   }
 
   async deleteExchange(id: number): Promise<void> {
     const exchange = await this.exchangesRepository.findOneBy({ id });
-    exchange.type
-      ? await this.cardsService.decreaseCardBalance({
-          ...exchange,
-          cardId: exchange.customerCardId,
-        })
-      : await this.cardsService.increaseCardBalance({
-          ...exchange,
-          cardId: exchange.customerCardId,
-        });
+    if (exchange.type) {
+      await this.cardsService.decreaseCardBalance({
+        ...exchange,
+        cardId: exchange.customerCardId,
+      });
+    } else {
+      await this.cardsService.increaseCardBalance({
+        ...exchange,
+        cardId: exchange.customerCardId,
+      });
+    }
     await this.delete(exchange);
   }
 

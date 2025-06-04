@@ -5,7 +5,7 @@ import { Hire } from './hire.entity';
 import { Thing } from '../things/thing.entity';
 import { HireIdDto } from './hire.dto';
 import { Request, Response } from '../../common/interfaces';
-import { HasRole, MyId, MyNick, Public, Roles } from '../../common/decorators';
+import { HasRole, MyId, Public, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
 
 @ApiTags('hires')
@@ -56,20 +56,18 @@ export class HiresController {
   @Post(':hireId/continue')
   continueHire(
     @MyId() myId: number,
-    @MyNick() nick: string,
     @HasRole(Role.MERCHANT) hasRole: boolean,
     @Param() { hireId }: HireIdDto,
   ): Promise<void> {
-    return this.hiresService.continueHire({ hireId, myId, nick, hasRole });
+    return this.hiresService.continueHire({ hireId, myId, hasRole });
   }
 
   @Post(':hireId')
   completeHire(
     @MyId() myId: number,
-    @MyNick() nick: string,
     @HasRole(Role.MERCHANT) hasRole: boolean,
     @Param() { hireId }: HireIdDto,
   ): Promise<void> {
-    return this.hiresService.completeHire({ hireId, myId, nick, hasRole });
+    return this.hiresService.completeHire({ hireId, myId, hasRole });
   }
 }

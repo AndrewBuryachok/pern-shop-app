@@ -6,7 +6,7 @@ import { Town } from '../towns/town.entity';
 import { UserIdDto } from '../users/user.dto';
 import { TownIdDto } from '../towns/town.dto';
 import { Request, Response } from '../../common/interfaces';
-import { MyId, MyNick } from '../../common/decorators';
+import { MyId } from '../../common/decorators';
 
 @ApiTags('applications')
 @Controller('applications')
@@ -32,52 +32,32 @@ export class ApplicationsController {
   @Post('sent/:townId')
   createResidentApplication(
     @MyId() myId: number,
-    @MyNick() nick: string,
     @Param() { townId }: TownIdDto,
   ): Promise<void> {
-    return this.residentsService.createResidentApplication({
-      townId,
-      myId,
-      nick,
-    });
+    return this.residentsService.createResidentApplication({ townId, myId });
   }
 
   @Delete('sent/:townId')
   cancelResidentApplication(
     @MyId() myId: number,
-    @MyNick() nick: string,
     @Param() { townId }: TownIdDto,
   ): Promise<void> {
-    return this.residentsService.cancelResidentApplication({
-      townId,
-      myId,
-      nick,
-    });
+    return this.residentsService.cancelResidentApplication({ townId, myId });
   }
 
   @Post('received/:userId')
   acceptResidentApplication(
     @MyId() myId: number,
-    @MyNick() nick: string,
     @Param() { userId }: UserIdDto,
   ): Promise<void> {
-    return this.residentsService.acceptResidentApplication({
-      userId,
-      myId,
-      nick,
-    });
+    return this.residentsService.acceptResidentApplication({ userId, myId });
   }
 
   @Delete('received/:userId')
   rejectResidentApplication(
     @MyId() myId: number,
-    @MyNick() nick: string,
     @Param() { userId }: UserIdDto,
   ): Promise<void> {
-    return this.residentsService.rejectResidentApplication({
-      userId,
-      myId,
-      nick,
-    });
+    return this.residentsService.rejectResidentApplication({ userId, myId });
   }
 }

@@ -21,7 +21,7 @@ import {
   LikeArticleDto,
 } from './article.dto';
 import { Request, Response } from '../../common/interfaces';
-import { HasRole, MyId, MyNick, Public, Roles } from '../../common/decorators';
+import { HasRole, MyId, Public, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
 
 @ApiTags('articles')
@@ -104,19 +104,15 @@ export class ArticlesController {
   @Post()
   createMyArticle(
     @MyId() myId: number,
-    @MyNick() nick: string,
     @Body() dto: CreateArticleDto,
   ): Promise<void> {
-    return this.articlesService.createArticle({ ...dto, userId: myId, nick });
+    return this.articlesService.createArticle({ ...dto, userId: myId });
   }
 
   @Roles(Role.INSPECTOR)
   @Post('all')
-  createUserArticle(
-    @MyNick() nick: string,
-    @Body() dto: ExtCreateArticleDto,
-  ): Promise<void> {
-    return this.articlesService.createArticle({ ...dto, nick });
+  createUserArticle(@Body() dto: ExtCreateArticleDto): Promise<void> {
+    return this.articlesService.createArticle(dto);
   }
 
   @Patch(':articleId')
@@ -137,16 +133,10 @@ export class ArticlesController {
   @Delete(':articleId')
   deleteArticle(
     @MyId() myId: number,
-    @MyNick() nick: string,
     @HasRole(Role.INSPECTOR) hasRole: boolean,
     @Param() { articleId }: ArticleIdDto,
   ): Promise<void> {
-    return this.articlesService.deleteArticle({
-      articleId,
-      myId,
-      nick,
-      hasRole,
-    });
+    return this.articlesService.deleteArticle({ articleId, myId, hasRole });
   }
 
   @Post(':articleId/views')
@@ -160,10 +150,9 @@ export class ArticlesController {
   @Post(':articleId/likes')
   likeArticle(
     @MyId() myId: number,
-    @MyNick() nick: string,
     @Param() { articleId }: ArticleIdDto,
     @Body() dto: LikeArticleDto,
   ): Promise<void> {
-    return this.articlesService.likeArticle({ ...dto, articleId, myId, nick });
+    return this.articlesService.likeArticle({ ...dto, articleId, myId });
   }
 }

@@ -4,7 +4,7 @@ import { ResidentsService } from './residents.service';
 import { User } from '../users/user.entity';
 import { UserIdDto } from '../users/user.dto';
 import { Request, Response } from '../../common/interfaces';
-import { MyId, MyNick } from '../../common/decorators';
+import { MyId } from '../../common/decorators';
 
 @ApiTags('residents')
 @Controller('residents')
@@ -22,13 +22,8 @@ export class ResidentsController {
   @Delete(':userId')
   deleteResident(
     @MyId() myId: number,
-    @MyNick() nick: string,
     @Param() { userId }: UserIdDto,
   ): Promise<void> {
-    return this.residentsService.deleteResident({
-      userId,
-      myId,
-      nick,
-    });
+    return this.residentsService.deleteResident({ userId, myId });
   }
 }

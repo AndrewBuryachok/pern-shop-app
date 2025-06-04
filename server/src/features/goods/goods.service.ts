@@ -155,9 +155,7 @@ export class GoodsService {
     return good.purchases;
   }
 
-  async createShopGood(
-    dto: ExtCreateShopGoodDto & { nick: string },
-  ): Promise<void> {
+  async createShopGood(dto: ExtCreateShopGoodDto): Promise<void> {
     const shop = await this.shopsService.checkShopOwner(
       dto.shopId,
       dto.myId,
@@ -167,12 +165,10 @@ export class GoodsService {
       ? shop.card
       : shop.card.account.cards.find((card) => card.userId === dto.myId);
     const good = await this.createShop(dto, card.id);
-    this.publishCreateGoodNotification(good.id, dto.nick);
+    this.publishCreateGoodNotification(good.id, card.userId);
   }
 
-  async createMarketGood(
-    dto: ExtCreateMarketGoodDto & { nick: string },
-  ): Promise<void> {
+  async createMarketGood(dto: ExtCreateMarketGoodDto): Promise<void> {
     const rent = await this.rentsService.checkRentOwner(
       dto.rentId,
       dto.myId,
@@ -182,12 +178,10 @@ export class GoodsService {
       ? rent.card
       : rent.card.account.cards.find((card) => card.userId === dto.myId);
     const good = await this.createMarket(dto, card.id);
-    this.publishCreateGoodNotification(good.id, dto.nick);
+    this.publishCreateGoodNotification(good.id, card.userId);
   }
 
-  async createStorageGood(
-    dto: ExtCreateStorageGoodDto & { nick: string },
-  ): Promise<void> {
+  async createStorageGood(dto: ExtCreateStorageGoodDto): Promise<void> {
     const lease = await this.leasesService.checkLeaseOwner(
       dto.leaseId,
       dto.myId,
@@ -197,14 +191,14 @@ export class GoodsService {
       ? lease.card
       : lease.card.account.cards.find((card) => card.userId === dto.myId);
     const good = await this.createStorage(dto, card.id);
-    this.publishCreateGoodNotification(good.id, dto.nick);
+    this.publishCreateGoodNotification(good.id, card.userId);
   }
 
-  private publishCreateGoodNotification(id: number, nick: string): void {
+  private publishCreateGoodNotification(id: number, userId: number): void {
     this.mqttService.publishNotification(
       id,
       0,
-      nick,
+      userId,
       Notification.CREATED_GOOD,
     );
   }
@@ -221,21 +215,21 @@ export class GoodsService {
     await this.update(good, dto);
   }
 
-  async completeGood(dto: ExtGoodIdDto & { nick: string }): Promise<void> {
+  async completeGood(dto: ExtGoodIdDto): Promise<void> {
     const good = await this.checkGoodOwner(dto.goodId, dto.myId, dto.hasRole);
     await this.checkGoodBought(dto.goodId);
     await this.complete(good);
-    this.unpublishNotification(dto.goodId, dto.nick);
+    this.unpublishNotification(dto.goodId, good.card.userId);
   }
 
-  async deleteGood(dto: ExtGoodIdDto & { nick: string }): Promise<void> {
+  async deleteGood(dto: ExtGoodIdDto): Promise<void> {
     const good = await this.checkGoodOwner(dto.goodId, dto.myId, dto.hasRole);
     await this.checkGoodNotBought(dto.goodId);
     await this.delete(good);
-    this.unpublishNotification(dto.goodId, dto.nick);
+    this.unpublishNotification(dto.goodId, good.card.userId);
   }
 
-  async buyGood(dto: BuyGoodDto & { nick: string }): Promise<Good> {
+  async buyGood(dto: BuyGoodDto): Promise<[Good, number]> {
     const good = await this.goodsRepository.findOne({
       relations: ['card', 'rent', 'lease'],
       where: { id: dto.goodId },
@@ -250,9 +244,8 @@ export class GoodsService {
     ) {
       throw new AppException(GoodError.ALREADY_EXPIRED);
     }
-    await this.paymentsService.createPayment({
+    const userId = await this.paymentsService.createPaymentWithReturn({
       myId: dto.myId,
-      nick: dto.nick,
       hasRole: dto.hasRole,
       senderCardId: dto.cardId,
       receiverCardId: good.cardId,
@@ -264,11 +257,11 @@ export class GoodsService {
       this.mqttService.publishNotification(
         good.id,
         good.card.userId,
-        '🔔',
+        0,
         Notification.ENDED_GOOD,
       );
     }
-    return good;
+    return [good, userId];
   }
 
   async unbuyGood(id: number, amount: number): Promise<void> {
@@ -486,11 +479,11 @@ export class GoodsService {
     }
   }
 
-  private unpublishNotification(id: number, nick: string): void {
+  private unpublishNotification(id: number, userId: number): void {
     this.mqttService.unpublishNotification(
       id,
       0,
-      nick,
+      userId,
       Notification.CREATED_GOOD,
     );
   }

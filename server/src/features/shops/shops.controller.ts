@@ -13,7 +13,7 @@ import { Shop } from './shop.entity';
 import { Good } from '../goods/good.entity';
 import { CreateShopDto, EditShopDto, ShopIdDto } from './shop.dto';
 import { Request, Response } from '../../common/interfaces';
-import { HasRole, MyId, MyNick, Public, Roles } from '../../common/decorators';
+import { HasRole, MyId, Public, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
 
 @ApiTags('shops')
@@ -61,11 +61,10 @@ export class ShopsController {
   @Post()
   createShop(
     @MyId() myId: number,
-    @MyNick() nick: string,
     @HasRole(Role.MERCHANT) hasRole: boolean,
     @Body() dto: CreateShopDto,
   ): Promise<void> {
-    return this.shopsService.createShop({ ...dto, myId, nick, hasRole });
+    return this.shopsService.createShop({ ...dto, myId, hasRole });
   }
 
   @Patch(':shopId')

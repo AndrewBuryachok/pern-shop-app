@@ -60,14 +60,18 @@ export class TasksService {
     return { result, count };
   }
 
-  async createTask(dto: ExtCreateTaskDto & { nick: string }): Promise<void> {
-    await this.cardsService.checkCardUser(dto.cardId, dto.myId, dto.hasRole);
+  async createTask(dto: ExtCreateTaskDto): Promise<void> {
+    const card = await this.cardsService.checkCardUser(
+      dto.cardId,
+      dto.myId,
+      dto.hasRole,
+    );
     await this.cardsService.decreaseCardBalance({ ...dto, sum: dto.price });
     const task = await this.create(dto);
     this.mqttService.publishNotification(
       task.id,
       0,
-      dto.nick,
+      card.userId,
       Notification.CREATED_TASK,
     );
   }
@@ -97,8 +101,12 @@ export class TasksService {
     await this.edit(task, dto);
   }
 
-  async takeTask(dto: ExtTakeTaskDto & { nick: string }): Promise<void> {
-    await this.cardsService.checkCardUser(dto.cardId, dto.myId, dto.hasRole);
+  async takeTask(dto: ExtTakeTaskDto): Promise<void> {
+    const card = await this.cardsService.checkCardUser(
+      dto.cardId,
+      dto.myId,
+      dto.hasRole,
+    );
     const task = await this.tasksRepository.findOne({
       relations: ['customerCard'],
       where: { id: dto.taskId },
@@ -110,12 +118,12 @@ export class TasksService {
     this.mqttService.publishNotification(
       dto.taskId,
       task.customerCard.userId,
-      dto.nick,
+      card.userId,
       Notification.TAKEN_TASK,
     );
   }
 
-  async untakeTask(dto: ExtTaskIdDto & { nick: string }): Promise<void> {
+  async untakeTask(dto: ExtTaskIdDto): Promise<void> {
     const task = await this.checkTaskExecutor(
       dto.taskId,
       dto.myId,
@@ -124,16 +132,17 @@ export class TasksService {
     if (task.status !== Status.TAKEN) {
       throw new AppException(TaskError.NOT_TAKEN);
     }
+    const userId = task.executorCard.userId;
     await this.untake(task);
     this.mqttService.publishNotification(
       dto.taskId,
       task.customerCard.userId,
-      dto.nick,
+      userId,
       Notification.UNTAKEN_TASK,
     );
   }
 
-  async executeTask(dto: ExtTaskIdDto & { nick: string }): Promise<void> {
+  async executeTask(dto: ExtTaskIdDto): Promise<void> {
     const task = await this.checkTaskExecutor(
       dto.taskId,
       dto.myId,
@@ -146,14 +155,12 @@ export class TasksService {
     this.mqttService.publishNotification(
       dto.taskId,
       task.customerCard.userId,
-      dto.nick,
+      task.executorCard.userId,
       Notification.EXECUTED_TASK,
     );
   }
 
-  async completeTask(
-    dto: ExtCompleteTaskDto & { nick: string },
-  ): Promise<void> {
+  async completeTask(dto: ExtCompleteTaskDto): Promise<void> {
     const task = await this.checkTaskCustomer(
       dto.taskId,
       dto.myId,
@@ -168,32 +175,31 @@ export class TasksService {
     });
     await this.paymentsService.createPayment({
       myId: dto.myId,
-      nick: dto.nick,
       hasRole: dto.hasRole,
       senderCardId: task.customerCardId,
       receiverCardId: task.executorCardId,
       sum: task.price,
-      description: 'выполнение заказа',
+      description: '',
     });
     await this.complete(task, dto.rate);
-    this.unpublishNotification(dto.taskId, dto.nick);
+    this.unpublishNotification(dto.taskId, task.customerCard.userId);
     this.mqttService.publishNotification(
       dto.taskId,
       task.executorCard.userId,
-      dto.nick,
+      task.customerCard.userId,
       Notification.COMPLETED_TASK,
     );
     if (dto.rate) {
       this.mqttService.publishNotification(
         dto.taskId,
         task.executorCard.userId,
-        dto.nick,
+        task.customerCard.userId,
         Notification.RATED_TASK,
       );
     }
   }
 
-  async deleteTask(dto: ExtTaskIdDto & { nick: string }): Promise<void> {
+  async deleteTask(dto: ExtTaskIdDto): Promise<void> {
     const task = await this.checkTaskCustomer(
       dto.taskId,
       dto.myId,
@@ -207,7 +213,7 @@ export class TasksService {
       sum: task.price,
     });
     await this.delete(task);
-    this.unpublishNotification(dto.taskId, dto.nick);
+    this.unpublishNotification(dto.taskId, task.customerCard.userId);
   }
 
   async checkTaskExists(id: number): Promise<void> {
@@ -341,11 +347,11 @@ export class TasksService {
     }
   }
 
-  private unpublishNotification(id: number, nick: string): void {
+  private unpublishNotification(id: number, userId: number): void {
     this.mqttService.unpublishNotification(
       id,
       0,
-      nick,
+      userId,
       Notification.CREATED_TASK,
     );
   }

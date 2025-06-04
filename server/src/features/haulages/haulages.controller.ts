@@ -19,7 +19,7 @@ import {
   TakeHaulageDto,
 } from './haulage.dto';
 import { Request, Response } from '../../common/interfaces';
-import { HasRole, MyId, MyNick, Public, Roles } from '../../common/decorators';
+import { HasRole, MyId, Public, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
 
 @ApiTags('haulages')
@@ -66,16 +66,10 @@ export class HaulagesController {
   @Post()
   createHaulage(
     @MyId() myId: number,
-    @MyNick() nick: string,
     @HasRole(Role.MERCHANT) hasRole: boolean,
     @Body() dto: CreateHaulageDto,
   ): Promise<void> {
-    return this.haulagesService.createHaulage({
-      ...dto,
-      myId,
-      nick,
-      hasRole,
-    });
+    return this.haulagesService.createHaulage({ ...dto, myId, hasRole });
   }
 
   @Patch(':haulageId')
@@ -96,7 +90,6 @@ export class HaulagesController {
   @Post(':haulageId/take')
   takeHaulage(
     @MyId() myId: number,
-    @MyNick() nick: string,
     @HasRole(Role.MERCHANT) hasRole: boolean,
     @Param() { haulageId }: HaulageIdDto,
     @Body() dto: TakeHaulageDto,
@@ -105,7 +98,6 @@ export class HaulagesController {
       ...dto,
       haulageId,
       myId,
-      nick,
       hasRole,
     });
   }
@@ -113,37 +105,24 @@ export class HaulagesController {
   @Delete(':haulageId/take')
   untakeHaulage(
     @MyId() myId: number,
-    @MyNick() nick: string,
     @HasRole(Role.MERCHANT) hasRole: boolean,
     @Param() { haulageId }: HaulageIdDto,
   ): Promise<void> {
-    return this.haulagesService.untakeHaulage({
-      haulageId,
-      myId,
-      nick,
-      hasRole,
-    });
+    return this.haulagesService.untakeHaulage({ haulageId, myId, hasRole });
   }
 
   @Post(':haulageId/execute')
   executeHaulage(
     @MyId() myId: number,
-    @MyNick() nick: string,
     @HasRole(Role.MERCHANT) hasRole: boolean,
     @Param() { haulageId }: HaulageIdDto,
   ): Promise<void> {
-    return this.haulagesService.executeHaulage({
-      haulageId,
-      myId,
-      nick,
-      hasRole,
-    });
+    return this.haulagesService.executeHaulage({ haulageId, myId, hasRole });
   }
 
   @Post(':haulageId')
   completeHaulage(
     @MyId() myId: number,
-    @MyNick() nick: string,
     @HasRole(Role.MERCHANT) hasRole: boolean,
     @Param() { haulageId }: HaulageIdDto,
     @Body() dto: CompleteHaulageDto,
@@ -152,7 +131,6 @@ export class HaulagesController {
       ...dto,
       haulageId,
       myId,
-      nick,
       hasRole,
     });
   }
@@ -160,15 +138,9 @@ export class HaulagesController {
   @Delete(':haulageId')
   deleteHaulage(
     @MyId() myId: number,
-    @MyNick() nick: string,
     @HasRole(Role.MERCHANT) hasRole: boolean,
     @Param() { haulageId }: HaulageIdDto,
   ): Promise<void> {
-    return this.haulagesService.deleteHaulage({
-      haulageId,
-      myId,
-      nick,
-      hasRole,
-    });
+    return this.haulagesService.deleteHaulage({ haulageId, myId, hasRole });
   }
 }

@@ -60,7 +60,7 @@ export class FriendsService {
     return { result, count };
   }
 
-  async addFriend(dto: UpdateFriendDto & { nick: string }): Promise<void> {
+  async addFriend(dto: UpdateFriendDto): Promise<void> {
     const offer1 = await this.offersRepository.findOneBy({
       senderUserId: dto.myId,
       receiverUserId: dto.userId,
@@ -78,7 +78,7 @@ export class FriendsService {
       this.mqttService.publishNotification(
         dto.myId,
         dto.userId,
-        dto.nick,
+        dto.myId,
         Notification.OFFERED_FRIEND,
       );
     } else {
@@ -96,13 +96,13 @@ export class FriendsService {
       this.mqttService.publishNotification(
         dto.myId,
         dto.userId,
-        dto.nick,
+        dto.myId,
         Notification.ACCEPTED_FRIEND,
       );
     }
   }
 
-  async removeFriend(dto: UpdateFriendDto & { nick: string }): Promise<void> {
+  async removeFriend(dto: UpdateFriendDto): Promise<void> {
     const offer1 = await this.offersRepository.findOneBy({
       senderUserId: dto.myId,
       receiverUserId: dto.userId,
@@ -116,7 +116,7 @@ export class FriendsService {
       this.mqttService.publishNotification(
         dto.myId,
         dto.userId,
-        dto.nick,
+        dto.myId,
         Notification.CANCELED_FRIEND,
       );
     } else if (offer2) {
@@ -124,7 +124,7 @@ export class FriendsService {
       this.mqttService.publishNotification(
         dto.myId,
         dto.userId,
-        dto.nick,
+        dto.myId,
         Notification.REJECTED_FRIEND,
       );
     } else {
@@ -141,7 +141,7 @@ export class FriendsService {
       this.mqttService.publishNotification(
         dto.myId,
         dto.userId,
-        dto.nick,
+        dto.myId,
         Notification.DELETED_FRIEND,
       );
     }

@@ -83,22 +83,20 @@ export class PurchasesService {
       .getMany();
   }
 
-  async createPurchase(
-    dto: ExtCreatePurchaseDto & { nick: string },
-  ): Promise<void> {
-    const good = await this.goodsService.buyGood(dto);
+  async createPurchase(dto: ExtCreatePurchaseDto): Promise<void> {
+    const [good, userId] = await this.goodsService.buyGood(dto);
     const purchase = await this.create(dto);
     this.mqttService.publishNotification(
       purchase.id,
       good.card.userId,
-      dto.nick,
+      userId,
       Notification.CREATED_PURCHASE,
     );
     if (dto.rate) {
       this.mqttService.publishNotification(
         purchase.id,
         good.card.userId,
-        dto.nick,
+        userId,
         Notification.RATED_PURCHASE,
       );
     }

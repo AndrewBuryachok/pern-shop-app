@@ -12,7 +12,7 @@ import { CommentsService } from './comments.service';
 import { ReportComment } from './comment.entity';
 import { CommentIdDto, CreateCommentDto, EditCommentDto } from './comment.dto';
 import { ReportIdDto } from './report.dto';
-import { HasRole, MyId, MyNick, Public } from '../../common/decorators';
+import { HasRole, MyId, Public } from '../../common/decorators';
 import { Role } from '../users/role.enum';
 
 @ApiTags('reports-comments')
@@ -31,10 +31,9 @@ export class CommentsController {
   @Post()
   createComment(
     @MyId() myId: number,
-    @MyNick() nick: string,
     @Body() dto: CreateCommentDto,
   ): Promise<void> {
-    return this.commentsService.createComment({ ...dto, myId, nick });
+    return this.commentsService.createComment({ ...dto, myId });
   }
 
   @Patch(':commentId')

@@ -82,9 +82,7 @@ export class CardsService {
     await this.edit(card.account, dto);
   }
 
-  async addCardUser(
-    dto: ExtUpdateCardUserDto & { nick: string },
-  ): Promise<void> {
+  async addCardUser(dto: ExtUpdateCardUserDto): Promise<void> {
     const card = await this.checkCardOwner(dto.cardId, dto.myId, dto.hasRole);
     if (card.account.cards.find((card) => card.userId === dto.userId)) {
       throw new AppException(CardError.ALREADY_IN_CARD);
@@ -93,14 +91,12 @@ export class CardsService {
     this.mqttService.publishNotification(
       subCard.id,
       dto.userId,
-      dto.nick,
+      card.account.userId,
       Notification.ADDED_CARD,
     );
   }
 
-  async removeCardUser(
-    dto: ExtUpdateCardUserDto & { nick: string },
-  ): Promise<void> {
+  async removeCardUser(dto: ExtUpdateCardUserDto): Promise<void> {
     const card = await this.checkCardOwner(dto.cardId, dto.myId, dto.hasRole);
     if (dto.userId === dto.myId) {
       throw new AppException(CardError.OWNER);
@@ -115,7 +111,7 @@ export class CardsService {
     this.mqttService.publishNotification(
       subCard.id,
       dto.userId,
-      dto.nick,
+      card.account.userId,
       Notification.REMOVED_CARD,
     );
   }

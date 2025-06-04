@@ -13,7 +13,7 @@ import { Purchase } from './purchase.entity';
 import { CreatePurchaseDto, PurchaseIdDto } from './purchase.dto';
 import { UserIdDto } from '../users/user.dto';
 import { Request, Response } from '../../common/interfaces';
-import { HasRole, MyId, MyNick, Roles } from '../../common/decorators';
+import { HasRole, MyId, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
 
 @ApiTags('purchases')
@@ -65,16 +65,10 @@ export class PurchasesController {
   @Post()
   createPurchase(
     @MyId() myId: number,
-    @MyNick() nick: string,
     @HasRole(Role.MERCHANT) hasRole: boolean,
     @Body() dto: CreatePurchaseDto,
   ): Promise<void> {
-    return this.purchasesService.createPurchase({
-      ...dto,
-      myId,
-      nick,
-      hasRole,
-    });
+    return this.purchasesService.createPurchase({ ...dto, myId, hasRole });
   }
 
   @Roles(Role.MERCHANT)

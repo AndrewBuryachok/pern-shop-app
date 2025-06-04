@@ -8,9 +8,16 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.enableCors();
   morgan.token('user', (req) => req.user?.nick);
+  morgan.token('body', (req) => {
+    const body = { ...req.body };
+    delete body.password;
+    delete body.oldPassword;
+    delete body.newPassword;
+    return JSON.stringify(body);
+  });
   app.use(
     morgan(
-      ':user :method :url :status :res[content-length] - :response-time ms',
+      ':user :method :url :status :res[content-length] - :response-time ms :body',
     ),
   );
   appConfig(app);

@@ -20,7 +20,7 @@ import {
   UpdateFarmUserDto,
 } from './farm.dto';
 import { Request, Response } from '../../common/interfaces';
-import { HasRole, MyId, MyNick, Public, Roles } from '../../common/decorators';
+import { HasRole, MyId, Public, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
 
 @ApiTags('farms')
@@ -63,19 +63,15 @@ export class FarmsController {
   @Post()
   createMyFarm(
     @MyId() myId: number,
-    @MyNick() nick: string,
     @Body() dto: CreateFarmDto,
   ): Promise<void> {
-    return this.farmsService.createFarm({ ...dto, userId: myId, nick });
+    return this.farmsService.createFarm({ ...dto, userId: myId });
   }
 
   @Roles(Role.INSPECTOR)
   @Post('all')
-  createUserFarm(
-    @MyNick() nick: string,
-    @Body() dto: ExtCreateFarmDto,
-  ): Promise<void> {
-    return this.farmsService.createFarm({ ...dto, nick });
+  createUserFarm(@Body() dto: ExtCreateFarmDto): Promise<void> {
+    return this.farmsService.createFarm(dto);
   }
 
   @Patch(':farmId')
@@ -91,34 +87,20 @@ export class FarmsController {
   @Post(':farmId/users')
   addFarmUser(
     @MyId() myId: number,
-    @MyNick() nick: string,
     @HasRole(Role.INSPECTOR) hasRole: boolean,
     @Param() { farmId }: FarmIdDto,
     @Body() dto: UpdateFarmUserDto,
   ): Promise<void> {
-    return this.farmsService.addFarmUser({
-      ...dto,
-      farmId,
-      myId,
-      nick,
-      hasRole,
-    });
+    return this.farmsService.addFarmUser({ ...dto, farmId, myId, hasRole });
   }
 
   @Delete(':farmId/users')
   removeFarmUser(
     @MyId() myId: number,
-    @MyNick() nick: string,
     @HasRole(Role.INSPECTOR) hasRole: boolean,
     @Param() { farmId }: FarmIdDto,
     @Body() dto: UpdateFarmUserDto,
   ): Promise<void> {
-    return this.farmsService.removeFarmUser({
-      ...dto,
-      farmId,
-      myId,
-      nick,
-      hasRole,
-    });
+    return this.farmsService.removeFarmUser({ ...dto, farmId, myId, hasRole });
   }
 }

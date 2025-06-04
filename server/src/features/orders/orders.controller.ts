@@ -19,7 +19,7 @@ import {
   TakeOrderDto,
 } from './order.dto';
 import { Request, Response } from '../../common/interfaces';
-import { HasRole, MyId, MyNick, Public, Roles } from '../../common/decorators';
+import { HasRole, MyId, Public, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
 
 @ApiTags('orders')
@@ -66,11 +66,10 @@ export class OrdersController {
   @Post()
   createOrder(
     @MyId() myId: number,
-    @MyNick() nick: string,
     @HasRole(Role.MERCHANT) hasRole: boolean,
     @Body() dto: CreateOrderDto,
   ): Promise<void> {
-    return this.ordersService.createOrder({ ...dto, myId, nick, hasRole });
+    return this.ordersService.createOrder({ ...dto, myId, hasRole });
   }
 
   @Patch(':orderId')
@@ -80,75 +79,53 @@ export class OrdersController {
     @Param() { orderId }: OrderIdDto,
     @Body() dto: EditOrderDto,
   ): Promise<void> {
-    return this.ordersService.editOrder({
-      ...dto,
-      orderId,
-      myId,
-      hasRole,
-    });
+    return this.ordersService.editOrder({ ...dto, orderId, myId, hasRole });
   }
 
   @Post(':orderId/take')
   takeOrder(
     @MyId() myId: number,
-    @MyNick() nick: string,
     @HasRole(Role.MERCHANT) hasRole: boolean,
     @Param() { orderId }: OrderIdDto,
     @Body() dto: TakeOrderDto,
   ): Promise<void> {
-    return this.ordersService.takeOrder({
-      ...dto,
-      orderId,
-      myId,
-      nick,
-      hasRole,
-    });
+    return this.ordersService.takeOrder({ ...dto, orderId, myId, hasRole });
   }
 
   @Delete(':orderId/take')
   untakeOrder(
     @MyId() myId: number,
-    @MyNick() nick: string,
     @HasRole(Role.MERCHANT) hasRole: boolean,
     @Param() { orderId }: OrderIdDto,
   ): Promise<void> {
-    return this.ordersService.untakeOrder({ orderId, myId, nick, hasRole });
+    return this.ordersService.untakeOrder({ orderId, myId, hasRole });
   }
 
   @Post(':orderId/execute')
   executeOrder(
     @MyId() myId: number,
-    @MyNick() nick: string,
     @HasRole(Role.MERCHANT) hasRole: boolean,
     @Param() { orderId }: OrderIdDto,
   ): Promise<void> {
-    return this.ordersService.executeOrder({ orderId, myId, nick, hasRole });
+    return this.ordersService.executeOrder({ orderId, myId, hasRole });
   }
 
   @Post(':orderId')
   completeOrder(
     @MyId() myId: number,
-    @MyNick() nick: string,
     @HasRole(Role.MERCHANT) hasRole: boolean,
     @Param() { orderId }: OrderIdDto,
     @Body() dto: CompleteOrderDto,
   ): Promise<void> {
-    return this.ordersService.completeOrder({
-      ...dto,
-      orderId,
-      myId,
-      nick,
-      hasRole,
-    });
+    return this.ordersService.completeOrder({ ...dto, orderId, myId, hasRole });
   }
 
   @Delete(':orderId')
   deleteOrder(
     @MyId() myId: number,
-    @MyNick() nick: string,
     @HasRole(Role.MERCHANT) hasRole: boolean,
     @Param() { orderId }: OrderIdDto,
   ): Promise<void> {
-    return this.ordersService.deleteOrder({ orderId, myId, nick, hasRole });
+    return this.ordersService.deleteOrder({ orderId, myId, hasRole });
   }
 }

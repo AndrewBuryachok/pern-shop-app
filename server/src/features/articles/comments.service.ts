@@ -28,16 +28,14 @@ export class CommentsService {
       .getMany();
   }
 
-  async createComment(
-    dto: ExtCreateCommentDto & { nick: string },
-  ): Promise<void> {
+  async createComment(dto: ExtCreateCommentDto): Promise<void> {
     const { id } = await this.create(dto);
     const article = await this.articlesService.findArticleById(dto.articleId);
     if (article.userId !== dto.myId) {
       this.mqttService.publishNotification(
         dto.articleId,
         article.userId,
-        dto.nick,
+        dto.myId,
         Notification.COMMENTED_ARTICLE,
       );
     }
@@ -48,7 +46,7 @@ export class CommentsService {
       this.mqttService.publishNotification(
         dto.articleId,
         reply.userId,
-        dto.nick,
+        dto.myId,
         Notification.REPLIED_ARTICLE_COMMENT,
       );
     }

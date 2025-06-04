@@ -18,7 +18,7 @@ import {
   RatingIdDto,
 } from './rating.dto';
 import { Request, Response } from '../../common/interfaces';
-import { HasRole, MyId, MyNick, Roles } from '../../common/decorators';
+import { HasRole, MyId, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
 
 @ApiTags('ratings')
@@ -51,49 +51,33 @@ export class RatingsController {
   @Post()
   createMyRating(
     @MyId() myId: number,
-    @MyNick() nick: string,
     @Body() dto: CreateRatingDto,
   ): Promise<void> {
-    return this.ratingsService.createRating({
-      ...dto,
-      senderUserId: myId,
-      nick,
-    });
+    return this.ratingsService.createRating({ ...dto, senderUserId: myId });
   }
 
   @Roles(Role.INSPECTOR)
   @Post('all')
-  createUserRating(
-    @MyNick() nick: string,
-    @Body() dto: ExtCreateRatingDto,
-  ): Promise<void> {
-    return this.ratingsService.createRating({ ...dto, nick });
+  createUserRating(@Body() dto: ExtCreateRatingDto): Promise<void> {
+    return this.ratingsService.createRating(dto);
   }
 
   @Patch(':ratingId')
   editRating(
     @MyId() myId: number,
-    @MyNick() nick: string,
     @HasRole(Role.INSPECTOR) hasRole: boolean,
     @Param() { ratingId }: RatingIdDto,
     @Body() dto: EditRatingDto,
   ): Promise<void> {
-    return this.ratingsService.editRating({
-      ...dto,
-      ratingId,
-      myId,
-      nick,
-      hasRole,
-    });
+    return this.ratingsService.editRating({ ...dto, ratingId, myId, hasRole });
   }
 
   @Delete(':ratingId')
   deleteRating(
     @MyId() myId: number,
-    @MyNick() nick: string,
     @HasRole(Role.INSPECTOR) hasRole: boolean,
     @Param() { ratingId }: RatingIdDto,
   ): Promise<void> {
-    return this.ratingsService.deleteRating({ ratingId, myId, nick, hasRole });
+    return this.ratingsService.deleteRating({ ratingId, myId, hasRole });
   }
 }

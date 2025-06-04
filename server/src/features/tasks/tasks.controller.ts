@@ -19,7 +19,7 @@ import {
   CompleteTaskDto,
 } from './task.dto';
 import { Request, Response } from '../../common/interfaces';
-import { HasRole, MyId, MyNick, Public, Roles } from '../../common/decorators';
+import { HasRole, MyId, Public, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
 
 @ApiTags('tasks')
@@ -58,11 +58,10 @@ export class TasksController {
   @Post()
   createTask(
     @MyId() myId: number,
-    @MyNick() nick: string,
     @HasRole(Role.MERCHANT) hasRole: boolean,
     @Body() dto: CreateTaskDto,
   ): Promise<void> {
-    return this.tasksService.createTask({ ...dto, myId, nick, hasRole });
+    return this.tasksService.createTask({ ...dto, myId, hasRole });
   }
 
   @Patch(':taskId')
@@ -83,64 +82,47 @@ export class TasksController {
   @Post(':taskId/take')
   takeTask(
     @MyId() myId: number,
-    @MyNick() nick: string,
     @HasRole(Role.MERCHANT) hasRole: boolean,
     @Param() { taskId }: TaskIdDto,
     @Body() dto: TakeTaskDto,
   ): Promise<void> {
-    return this.tasksService.takeTask({
-      ...dto,
-      taskId,
-      myId,
-      nick,
-      hasRole,
-    });
+    return this.tasksService.takeTask({ ...dto, taskId, myId, hasRole });
   }
 
   @Delete(':taskId/take')
   untakeTask(
     @MyId() myId: number,
-    @MyNick() nick: string,
     @HasRole(Role.MERCHANT) hasRole: boolean,
     @Param() { taskId }: TaskIdDto,
   ): Promise<void> {
-    return this.tasksService.untakeTask({ taskId, myId, nick, hasRole });
+    return this.tasksService.untakeTask({ taskId, myId, hasRole });
   }
 
   @Post(':taskId/execute')
   executeTask(
     @MyId() myId: number,
-    @MyNick() nick: string,
     @HasRole(Role.MERCHANT) hasRole: boolean,
     @Param() { taskId }: TaskIdDto,
   ): Promise<void> {
-    return this.tasksService.executeTask({ taskId, myId, nick, hasRole });
+    return this.tasksService.executeTask({ taskId, myId, hasRole });
   }
 
   @Post(':taskId')
   completeTask(
     @MyId() myId: number,
-    @MyNick() nick: string,
     @HasRole(Role.MERCHANT) hasRole: boolean,
     @Param() { taskId }: TaskIdDto,
     @Body() dto: CompleteTaskDto,
   ): Promise<void> {
-    return this.tasksService.completeTask({
-      ...dto,
-      taskId,
-      myId,
-      nick,
-      hasRole,
-    });
+    return this.tasksService.completeTask({ ...dto, taskId, myId, hasRole });
   }
 
   @Delete(':taskId')
   deleteTask(
     @MyId() myId: number,
-    @MyNick() nick: string,
     @HasRole(Role.MERCHANT) hasRole: boolean,
     @Param() { taskId }: TaskIdDto,
   ): Promise<void> {
-    return this.tasksService.deleteTask({ taskId, myId, nick, hasRole });
+    return this.tasksService.deleteTask({ taskId, myId, hasRole });
   }
 }

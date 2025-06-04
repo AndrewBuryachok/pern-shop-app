@@ -111,19 +111,19 @@ export class LeasesService {
     return lease.goods;
   }
 
-  async createLease(dto: ExtCreateLeaseDto & { nick: string }): Promise<void> {
-    const cell = await this.cellsService.reserveCell(dto);
+  async createLease(dto: ExtCreateLeaseDto): Promise<void> {
+    const [cell, userId] = await this.cellsService.reserveCell(dto);
     const lease = await this.create(dto, cell.storageTag.price);
     this.mqttService.publishNotification(
       lease.id,
       cell.storage.card.userId,
-      dto.nick,
+      userId,
       Notification.CREATED_LEASE,
     );
     this.addTimeout(lease.id, dto.myId, lease.completedAt);
   }
 
-  async continueLease(dto: ExtLeaseIdDto & { nick: string }): Promise<void> {
+  async continueLease(dto: ExtLeaseIdDto): Promise<void> {
     const lease = await this.checkLeaseOwner(
       dto.leaseId,
       dto.myId,
@@ -138,14 +138,14 @@ export class LeasesService {
     this.mqttService.publishNotification(
       dto.leaseId,
       cell.storage.card.userId,
-      dto.nick,
+      lease.card.userId,
       Notification.CONTINUED_LEASE,
     );
     this.removeTimeout(lease.id);
     this.addTimeout(lease.id, dto.myId, lease.completedAt);
   }
 
-  async completeLease(dto: ExtLeaseIdDto & { nick: string }): Promise<void> {
+  async completeLease(dto: ExtLeaseIdDto): Promise<void> {
     const lease = await this.checkLeaseOwner(
       dto.leaseId,
       dto.myId,
@@ -156,7 +156,7 @@ export class LeasesService {
     this.mqttService.publishNotification(
       dto.leaseId,
       cell.storage.card.userId,
-      dto.nick,
+      lease.card.userId,
       Notification.COMPLETED_LEASE,
     );
     this.removeTimeout(lease.id);
@@ -193,7 +193,7 @@ export class LeasesService {
     const diffA = date.getTime() - new Date().getTime();
     const diffB = before.getTime() - new Date().getTime();
     const callbackFactory = (message: string) => () => {
-      this.mqttService.publishNotification(id, userId, '🔔', message);
+      this.mqttService.publishNotification(id, userId, 0, message);
       return true;
     };
     const callbackA = callbackFactory(Notification.ENDED_LEASE);

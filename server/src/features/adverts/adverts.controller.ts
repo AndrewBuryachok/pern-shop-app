@@ -18,7 +18,7 @@ import {
   RespondAdvertDto,
 } from './advert.dto';
 import { Request, Response } from '../../common/interfaces';
-import { HasRole, MyId, MyNick, Public, Roles } from '../../common/decorators';
+import { HasRole, MyId, Public, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
 
 @ApiTags('adverts')
@@ -49,11 +49,10 @@ export class AdvertsController {
   @Post()
   createAdvert(
     @MyId() myId: number,
-    @MyNick() nick: string,
     @HasRole(Role.MERCHANT) hasRole: boolean,
     @Body() dto: CreateAdvertDto,
   ): Promise<void> {
-    return this.advertsService.createAdvert({ ...dto, myId, nick, hasRole });
+    return this.advertsService.createAdvert({ ...dto, myId, hasRole });
   }
 
   @Patch(':advertId')
@@ -69,17 +68,15 @@ export class AdvertsController {
   @Delete(':advertId')
   deleteAdvert(
     @MyId() myId: number,
-    @MyNick() nick: string,
     @HasRole(Role.MERCHANT) hasRole: boolean,
     @Param() { advertId }: AdvertIdDto,
   ): Promise<void> {
-    return this.advertsService.deleteAdvert({ advertId, myId, nick, hasRole });
+    return this.advertsService.deleteAdvert({ advertId, myId, hasRole });
   }
 
   @Post(':advertId')
   respondAdvert(
     @MyId() myId: number,
-    @MyNick() nick: string,
     @HasRole(Role.MERCHANT) hasRole: boolean,
     @Param() { advertId }: AdvertIdDto,
     @Body() dto: RespondAdvertDto,
@@ -88,7 +85,6 @@ export class AdvertsController {
       ...dto,
       advertId,
       myId,
-      nick,
       hasRole,
     });
   }

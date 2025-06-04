@@ -4,7 +4,7 @@ import { SubscribersService } from './subscribers.service';
 import { User } from '../users/user.entity';
 import { UserIdDto } from '../users/user.dto';
 import { Request, Response } from '../../common/interfaces';
-import { MyId, MyNick } from '../../common/decorators';
+import { MyId } from '../../common/decorators';
 
 @ApiTags('subscribers')
 @Controller('subscribers')
@@ -35,18 +35,16 @@ export class SubscribersController {
   @Post(':userId')
   addSubscriber(
     @MyId() myId: number,
-    @MyNick() nick: string,
     @Param() { userId }: UserIdDto,
   ): Promise<void> {
-    return this.subscribersService.addSubscriber({ userId, myId, nick });
+    return this.subscribersService.addSubscriber({ userId, myId });
   }
 
   @Delete(':userId')
   removeSubscriber(
     @MyId() myId: number,
-    @MyNick() nick: string,
     @Param() { userId }: UserIdDto,
   ): Promise<void> {
-    return this.subscribersService.removeSubscriber({ userId, myId, nick });
+    return this.subscribersService.removeSubscriber({ userId, myId });
   }
 }

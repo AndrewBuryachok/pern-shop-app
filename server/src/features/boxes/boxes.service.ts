@@ -74,11 +74,10 @@ export class BoxesService {
     await this.create({ ...dto, name });
   }
 
-  async reserveBox(dto: ReserveBoxDto & { nick: string }): Promise<Box> {
+  async reserveBox(dto: ReserveBoxDto): Promise<[Box, number]> {
     const box = await this.findFreeBox(dto.stationId);
-    await this.paymentsService.createPayment({
+    const userId = await this.paymentsService.createPaymentWithReturn({
       myId: dto.myId,
-      nick: dto.nick,
       hasRole: dto.hasRole,
       senderCardId: dto.cardId,
       receiverCardId: box.station.cardId,
@@ -86,17 +85,16 @@ export class BoxesService {
       description: '',
     });
     await this.reserve(box);
-    return box;
+    return [box, userId];
   }
 
-  async continueBox(dto: ReserveBoxDto & { nick: string }): Promise<Box> {
+  async continueBox(dto: ReserveBoxDto): Promise<Box> {
     const box = await this.boxesRepository.findOne({
       relations: ['station', 'station.card'],
       where: { id: dto.stationId },
     });
     await this.paymentsService.createPayment({
       myId: dto.myId,
-      nick: dto.nick,
       hasRole: dto.hasRole,
       senderCardId: dto.cardId,
       receiverCardId: box.station.cardId,

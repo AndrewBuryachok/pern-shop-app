@@ -95,9 +95,7 @@ export class DeliveriesService {
     return { result, count };
   }
 
-  async createDelivery(
-    dto: ExtCreateDeliveryDto & { nick: string },
-  ): Promise<void> {
+  async createDelivery(dto: ExtCreateDeliveryDto): Promise<void> {
     await this.purchasesService.checkPurchaseOwner(
       dto.purchaseId,
       dto.myId,
@@ -110,12 +108,15 @@ export class DeliveriesService {
       throw new AppException(DeliveryError.ALREADY_EXISTS);
     }
     const hireId = await this.hiresService.createHire(dto);
-    await this.cardsService.decreaseCardBalance({ ...dto, sum: dto.price });
+    const card = await this.cardsService.decreaseCardBalance({
+      ...dto,
+      sum: dto.price,
+    });
     const result = await this.create(dto, hireId);
     this.mqttService.publishNotification(
       result.id,
       0,
-      dto.nick,
+      card.userId,
       Notification.CREATED_DELIVERY,
     );
   }
@@ -145,10 +146,12 @@ export class DeliveriesService {
     await this.edit(delivery, dto);
   }
 
-  async takeDelivery(
-    dto: ExtTakeDeliveryDto & { nick: string },
-  ): Promise<void> {
-    await this.cardsService.checkCardUser(dto.cardId, dto.myId, dto.hasRole);
+  async takeDelivery(dto: ExtTakeDeliveryDto): Promise<void> {
+    const card = await this.cardsService.checkCardUser(
+      dto.cardId,
+      dto.myId,
+      dto.hasRole,
+    );
     const delivery = await this.deliveriesRepository.findOne({
       relations: ['hire', 'hire.card'],
       where: { id: dto.deliveryId },
@@ -163,14 +166,12 @@ export class DeliveriesService {
     this.mqttService.publishNotification(
       dto.deliveryId,
       delivery.hire.card.userId,
-      dto.nick,
+      card.userId,
       Notification.TAKEN_DELIVERY,
     );
   }
 
-  async untakeDelivery(
-    dto: ExtDeliveryIdDto & { nick: string },
-  ): Promise<void> {
+  async untakeDelivery(dto: ExtDeliveryIdDto): Promise<void> {
     const delivery = await this.checkDeliveryExecutor(
       dto.deliveryId,
       dto.myId,
@@ -179,18 +180,17 @@ export class DeliveriesService {
     if (delivery.status !== Status.TAKEN) {
       throw new AppException(DeliveryError.NOT_TAKEN);
     }
+    const userId = delivery.executorCard.userId;
     await this.untake(delivery);
     this.mqttService.publishNotification(
       dto.deliveryId,
       delivery.hire.card.userId,
-      dto.nick,
+      userId,
       Notification.UNTAKEN_DELIVERY,
     );
   }
 
-  async executeDelivery(
-    dto: ExtDeliveryIdDto & { nick: string },
-  ): Promise<void> {
+  async executeDelivery(dto: ExtDeliveryIdDto): Promise<void> {
     const delivery = await this.checkDeliveryExecutor(
       dto.deliveryId,
       dto.myId,
@@ -203,14 +203,12 @@ export class DeliveriesService {
     this.mqttService.publishNotification(
       dto.deliveryId,
       delivery.hire.card.userId,
-      dto.nick,
+      delivery.executorCard.userId,
       Notification.EXECUTED_DELIVERY,
     );
   }
 
-  async completeDelivery(
-    dto: ExtCompleteDeliveryDto & { nick: string },
-  ): Promise<void> {
+  async completeDelivery(dto: ExtCompleteDeliveryDto): Promise<void> {
     const delivery = await this.checkDeliveryCustomer(
       dto.deliveryId,
       dto.myId,
@@ -225,7 +223,6 @@ export class DeliveriesService {
     });
     await this.paymentsService.createPayment({
       myId: dto.myId,
-      nick: dto.nick,
       hasRole: dto.hasRole,
       senderCardId: delivery.hire.cardId,
       receiverCardId: delivery.executorCardId,
@@ -239,26 +236,24 @@ export class DeliveriesService {
       });
     } catch (error) {}
     await this.complete(delivery, dto.rate);
-    this.unpublishNotification(dto.deliveryId, dto.nick);
+    this.unpublishNotification(dto.deliveryId, delivery.hire.card.userId);
     this.mqttService.publishNotification(
       dto.deliveryId,
       delivery.executorCard.userId,
-      dto.nick,
+      delivery.hire.card.userId,
       Notification.COMPLETED_DELIVERY,
     );
     if (dto.rate) {
       this.mqttService.publishNotification(
         dto.deliveryId,
         delivery.executorCard.userId,
-        dto.nick,
+        delivery.hire.card.userId,
         Notification.RATED_DELIVERY,
       );
     }
   }
 
-  async deleteDelivery(
-    dto: ExtDeliveryIdDto & { nick: string },
-  ): Promise<void> {
+  async deleteDelivery(dto: ExtDeliveryIdDto): Promise<void> {
     const delivery = await this.checkDeliveryCustomer(
       dto.deliveryId,
       dto.myId,
@@ -278,7 +273,7 @@ export class DeliveriesService {
       });
     } catch (error) {}
     await this.delete(delivery);
-    this.unpublishNotification(dto.deliveryId, dto.nick);
+    this.unpublishNotification(dto.deliveryId, delivery.hire.card.userId);
   }
 
   async checkDeliveryExists(id: number): Promise<void> {
@@ -417,11 +412,11 @@ export class DeliveriesService {
     }
   }
 
-  private unpublishNotification(id: number, nick: string): void {
+  private unpublishNotification(id: number, userId: number): void {
     this.mqttService.unpublishNotification(
       id,
       0,
-      nick,
+      userId,
       Notification.CREATED_DELIVERY,
     );
   }

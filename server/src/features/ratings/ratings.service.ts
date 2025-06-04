@@ -45,9 +45,7 @@ export class RatingsService {
     return { result, count };
   }
 
-  async createRating(
-    dto: ExtCreateRatingDto & { nick: string },
-  ): Promise<void> {
+  async createRating(dto: ExtCreateRatingDto): Promise<void> {
     if (dto.senderUserId === dto.receiverUserId) {
       throw new AppException(RatingError.SENDER);
     }
@@ -62,12 +60,12 @@ export class RatingsService {
     this.mqttService.publishNotification(
       result.id,
       dto.receiverUserId,
-      dto.nick,
+      dto.senderUserId,
       Notification.CREATED_RATING,
     );
   }
 
-  async editRating(dto: ExtEditRatingDto & { nick: string }): Promise<void> {
+  async editRating(dto: ExtEditRatingDto): Promise<void> {
     const rating = await this.checkRatingSender(
       dto.ratingId,
       dto.myId,
@@ -77,12 +75,12 @@ export class RatingsService {
     this.mqttService.publishNotification(
       dto.ratingId,
       rating.receiverUserId,
-      dto.nick,
+      rating.senderUserId,
       Notification.EDITED_RATING,
     );
   }
 
-  async deleteRating(dto: DeleteRatingDto & { nick: string }): Promise<void> {
+  async deleteRating(dto: DeleteRatingDto): Promise<void> {
     const rating = await this.checkRatingSender(
       dto.ratingId,
       dto.myId,
@@ -92,7 +90,7 @@ export class RatingsService {
     this.mqttService.publishNotification(
       dto.ratingId,
       rating.receiverUserId,
-      dto.nick,
+      rating.senderUserId,
       Notification.DELETED_RATING,
     );
   }

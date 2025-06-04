@@ -61,17 +61,19 @@ export class MarketsService {
       .getMany();
   }
 
-  async createMarket(
-    dto: ExtCreateMarketDto & { nick: string },
-  ): Promise<void> {
-    await this.cardsService.checkCardUser(dto.cardId, dto.myId, dto.hasRole);
+  async createMarket(dto: ExtCreateMarketDto): Promise<void> {
+    const card = await this.cardsService.checkCardUser(
+      dto.cardId,
+      dto.myId,
+      dto.hasRole,
+    );
     await this.checkNameNotUsed(dto.name);
     await this.checkCoordinatesNotUsed(dto.x, dto.y);
     const market = await this.create(dto);
     this.mqttService.publishNotification(
       market.id,
       0,
-      dto.nick,
+      card.userId,
       Notification.CREATED_MARKET,
     );
   }

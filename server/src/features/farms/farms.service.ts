@@ -61,14 +61,14 @@ export class FarmsService {
     return farm.users;
   }
 
-  async createFarm(dto: ExtCreateFarmDto & { nick: string }): Promise<void> {
+  async createFarm(dto: ExtCreateFarmDto): Promise<void> {
     await this.checkNameNotUsed(dto.name);
     await this.checkCoordinatesNotUsed(dto.x, dto.y);
     const farm = await this.create(dto);
     this.mqttService.publishNotification(
       farm.id,
       0,
-      dto.nick,
+      dto.userId,
       Notification.CREATED_FARM,
     );
   }
@@ -80,9 +80,7 @@ export class FarmsService {
     await this.edit(farm, dto);
   }
 
-  async addFarmUser(
-    dto: ExtUpdateFarmUserDto & { nick: string },
-  ): Promise<void> {
+  async addFarmUser(dto: ExtUpdateFarmUserDto): Promise<void> {
     const farm = await this.checkFarmOwner(dto.farmId, dto.myId, dto.hasRole);
     if (farm.users.map((user) => user.id).includes(dto.userId)) {
       throw new AppException(FarmError.ALREADY_IN_FARM);
@@ -91,14 +89,12 @@ export class FarmsService {
     this.mqttService.publishNotification(
       dto.farmId,
       dto.userId,
-      dto.nick,
+      farm.userId,
       Notification.ADDED_FARM,
     );
   }
 
-  async removeFarmUser(
-    dto: ExtUpdateFarmUserDto & { nick: string },
-  ): Promise<void> {
+  async removeFarmUser(dto: ExtUpdateFarmUserDto): Promise<void> {
     const farm = await this.checkFarmOwner(dto.farmId, dto.myId, dto.hasRole);
     if (dto.userId === dto.myId) {
       throw new AppException(FarmError.OWNER);
@@ -110,7 +106,7 @@ export class FarmsService {
     this.mqttService.publishNotification(
       dto.farmId,
       dto.userId,
-      dto.nick,
+      farm.userId,
       Notification.REMOVED_FARM,
     );
   }

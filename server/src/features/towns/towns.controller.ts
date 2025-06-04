@@ -19,7 +19,7 @@ import {
   TownIdDto,
 } from './town.dto';
 import { Request, Response } from '../../common/interfaces';
-import { HasRole, MyId, MyNick, Public, Roles } from '../../common/decorators';
+import { HasRole, MyId, Public, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
 
 @ApiTags('towns')
@@ -67,19 +67,15 @@ export class TownsController {
   @Post()
   createMyTown(
     @MyId() myId: number,
-    @MyNick() nick: string,
     @Body() dto: CreateTownDto,
   ): Promise<void> {
-    return this.townsService.createTown({ ...dto, userId: myId, nick });
+    return this.townsService.createTown({ ...dto, userId: myId });
   }
 
   @Roles(Role.INSPECTOR)
   @Post('all')
-  createUserTown(
-    @MyNick() nick: string,
-    @Body() dto: ExtCreateTownDto,
-  ): Promise<void> {
-    return this.townsService.createTown({ ...dto, nick });
+  createUserTown(@Body() dto: ExtCreateTownDto): Promise<void> {
+    return this.townsService.createTown(dto);
   }
 
   @Patch(':townId')
@@ -95,15 +91,9 @@ export class TownsController {
   @Delete(':townId')
   deleteTown(
     @MyId() myId: number,
-    @MyNick() nick: string,
     @HasRole(Role.INSPECTOR) hasRole: boolean,
     @Param() { townId }: TownIdDto,
   ): Promise<void> {
-    return this.townsService.deleteTown({
-      townId,
-      myId,
-      nick,
-      hasRole,
-    });
+    return this.townsService.deleteTown({ townId, myId, hasRole });
   }
 }

@@ -108,19 +108,19 @@ export class RentsService {
     return rent.goods;
   }
 
-  async createRent(dto: ExtCreateRentDto & { nick: string }): Promise<void> {
-    const stall = await this.stallsService.reserveStall(dto);
+  async createRent(dto: ExtCreateRentDto): Promise<void> {
+    const [stall, userId] = await this.stallsService.reserveStall(dto);
     const rent = await this.create(dto, stall.marketTag.price);
     this.mqttService.publishNotification(
       rent.id,
       stall.market.card.userId,
-      dto.nick,
+      userId,
       Notification.CREATED_RENT,
     );
     this.addTimeout(rent.id, dto.myId, rent.completedAt);
   }
 
-  async continueRent(dto: ExtRentIdDto & { nick: string }): Promise<void> {
+  async continueRent(dto: ExtRentIdDto): Promise<void> {
     const rent = await this.checkRentOwner(dto.rentId, dto.myId, dto.hasRole);
     const stall = await this.stallsService.continueStall({
       ...dto,
@@ -131,21 +131,21 @@ export class RentsService {
     this.mqttService.publishNotification(
       dto.rentId,
       stall.market.card.userId,
-      dto.nick,
+      rent.card.userId,
       Notification.CONTINUED_RENT,
     );
     this.removeTimeout(rent.id);
     this.addTimeout(rent.id, dto.myId, rent.completedAt);
   }
 
-  async completeRent(dto: ExtRentIdDto & { nick: string }): Promise<void> {
+  async completeRent(dto: ExtRentIdDto): Promise<void> {
     const rent = await this.checkRentOwner(dto.rentId, dto.myId, dto.hasRole);
     const stall = await this.stallsService.unreserveStall(rent.stallId);
     await this.complete(rent);
     this.mqttService.publishNotification(
       dto.rentId,
       stall.market.card.userId,
-      dto.nick,
+      rent.card.userId,
       Notification.COMPLETED_RENT,
     );
     this.removeTimeout(rent.id);
@@ -180,7 +180,7 @@ export class RentsService {
     const diffA = date.getTime() - new Date().getTime();
     const diffB = before.getTime() - new Date().getTime();
     const callbackFactory = (message: string) => () => {
-      this.mqttService.publishNotification(id, userId, '🔔', message);
+      this.mqttService.publishNotification(id, userId, 0, message);
       return true;
     };
     const callbackA = callbackFactory(Notification.ENDED_RENT);

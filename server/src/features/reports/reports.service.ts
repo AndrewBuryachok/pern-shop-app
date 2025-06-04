@@ -70,14 +70,12 @@ export class ReportsService {
       .getMany();
   }
 
-  async createReport(
-    dto: ExtCreateReportDto & { nick: string },
-  ): Promise<void> {
+  async createReport(dto: ExtCreateReportDto): Promise<void> {
     const report = await this.create(dto);
     this.mqttService.publishNotification(
       report.id,
       0,
-      dto.nick,
+      dto.myId,
       Notification.CREATED_REPORT,
     );
   }
@@ -91,7 +89,7 @@ export class ReportsService {
     await this.edit(report, dto);
   }
 
-  async deleteReport(dto: DeleteReportDto & { nick: string }): Promise<void> {
+  async deleteReport(dto: DeleteReportDto): Promise<void> {
     const report = await this.checkReportOwner(
       dto.reportId,
       dto.myId,
@@ -101,7 +99,7 @@ export class ReportsService {
     this.mqttService.unpublishNotification(
       dto.reportId,
       0,
-      dto.nick,
+      report.userId,
       Notification.CREATED_REPORT,
     );
   }
@@ -126,7 +124,7 @@ export class ReportsService {
     );
   }
 
-  async likeReport(dto: ExtLikeReportDto & { nick: string }): Promise<void> {
+  async likeReport(dto: ExtLikeReportDto): Promise<void> {
     const like = await this.likesRepository.findOneBy({
       reportId: dto.reportId,
       userId: dto.myId,
@@ -168,7 +166,7 @@ export class ReportsService {
         this.mqttService.publishNotification(
           dto.reportId,
           report.userId,
-          dto.nick,
+          dto.myId,
           Notification.REACTED_REPORT,
         );
       }
