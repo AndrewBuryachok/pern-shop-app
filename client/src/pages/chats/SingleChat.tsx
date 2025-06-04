@@ -18,7 +18,7 @@ import {
 import { useForm } from '@mantine/form';
 import { IconChevronLeft, IconRefresh, IconSend } from '@tabler/icons';
 import { Reply } from '../../features/replies/reply.model';
-import { useSelectSingleUserQuery } from '../../features/users/users.api';
+import { useSelectAllUsersQuery } from '../../features/users/users.api';
 import {
   useCreateMessageMutation,
   useSelectUserMessagesQuery,
@@ -34,9 +34,9 @@ import { MAX_TEXT_LENGTH } from '../../common/constants';
 export default function SingleChat() {
   const [t] = useTranslation();
 
-  const { nick } = useParams();
+  const { userId } = useParams();
 
-  useDocumentTitle(t('navbar.chat') + ' ' + nick);
+  useDocumentTitle(t('navbar.chat'));
 
   const { ref, height } = useElementSize();
 
@@ -45,15 +45,17 @@ export default function SingleChat() {
 
   const form = useForm({
     initialValues: {
-      userId: 0,
+      userId: +(userId || 0),
       messageId: 0,
       text: '',
     },
   });
 
-  const { data: user } = useSelectSingleUserQuery(nick!);
+  const user = useSelectAllUsersQuery().data?.find(
+    (user) => user.id === form.values.userId,
+  );
 
-  const response = useSelectUserMessagesQuery(user?.id || 0, { skip: !user });
+  const response = useSelectUserMessagesQuery(form.values.userId);
 
   useEffect(() => {
     if (!response.isFetching) {
@@ -68,7 +70,7 @@ export default function SingleChat() {
   const [createMessage, { isLoading }] = useCreateMessageMutation();
 
   const handleSubmit = async (dto: CreateMessageDto) => {
-    await createMessage({ ...dto, userId: user?.id || 0 });
+    await createMessage(dto);
     form.reset();
   };
 

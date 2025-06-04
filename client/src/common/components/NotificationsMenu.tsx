@@ -41,8 +41,8 @@ export default function NotificationsMenu() {
   );
 
   const notificationsByTabs = {
-    main: notifications.filter((notification) => !notification.userId),
-    my: notifications.filter((notification) => notification.userId),
+    main: notifications.filter((notification) => !notification.toUserId),
+    my: notifications.filter((notification) => notification.toUserId),
   };
 
   const notificationsByDates = tabs.map((tab) =>
@@ -131,14 +131,19 @@ export default function NotificationsMenu() {
                     ([date, notifications]) => (
                       <Fragment key={date}>
                         <Divider label={date} labelPosition='center' />
-                        {/* <SingleText text={date} dimmed /> */}
                         {notifications.map((notification) => (
                           <Fragment key={notification.key}>
                             <Group spacing={8}>
-                              <NotificationAvatar nick={notification.nick} />
+                              <NotificationAvatar user={notification.user} />
                               <div>
                                 <Group spacing={8}>
-                                  <SingleText text={notification.nick} bold />
+                                  <SingleText
+                                    text={
+                                      notification.user?.nick ||
+                                      t('notifications.title')
+                                    }
+                                    bold
+                                  />
                                   <SingleText
                                     text={parseDate(notification.date).time}
                                     dimmed

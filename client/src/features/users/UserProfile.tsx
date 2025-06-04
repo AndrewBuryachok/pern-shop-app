@@ -183,7 +183,7 @@ export default function UserProfile({ data: user }: Props) {
                     </Button>
                   ),
               )}
-              <Button component={Link} to={`/chats/${user.nick}`} compact>
+              <Button component={Link} to={`/chats/${user.id}`} compact>
                 {t('actions.message')}
               </Button>
               <Button

@@ -71,7 +71,7 @@ export const pages = [
   {
     path: 'chats',
     element: ChatsPage,
-    nested: [{ path: 'my' }, { path: ':nick' }],
+    nested: [{ path: 'my' }, { path: ':userId' }],
   },
   {
     path: 'friends',

@@ -71,11 +71,17 @@ client.on('message', (topic, message, packet) => {
       if (payload) {
         store.dispatch(addNotification([notification, payload]));
         if (!packet.retain) {
-          const [nick, action, page] = topic.split('/').slice(3);
+          const page = topic.split('/')[3];
+          const action = topic.split('/')[5];
+          const fromUserId = +topic.split('/')[6];
+          const user = usersApi.endpoints.selectAllUsers
+            .select(undefined)(store.getState())
+            .data?.find((user) => user.id === fromUserId);
           showNotificationWithAvatar({
             id: notification,
-            title: nick,
+            title: user?.nick || t('notifications.title'),
             message: t(`notifications.${page}.${action}`),
+            user,
           });
           if (!store.getState().mqtt.mute) {
             audio.play();
@@ -246,12 +252,15 @@ export const getActiveNotifications = (): INotification[] =>
       )
       .map(([notification, date]) => ({
         key: notification,
-        userId: +notification.split('/')[0],
-        nick: notification.split('/')[1],
-        action: notification.split('/')[2],
-        page: notification.split('/')[3],
-        id: +notification.split('/')[4],
+        toUserId: +notification.split('/')[0],
+        page: notification.split('/')[1],
+        id: +notification.split('/')[2],
+        action: notification.split('/')[3],
+        fromUserId: +notification.split('/')[4],
         date: new Date(date),
+        user: usersApi.endpoints.selectAllUsers
+          .select(undefined)(store.getState())
+          .data?.find((user) => user.id === +notification.split('/')[4]),
       })),
   );
 

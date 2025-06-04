@@ -1,12 +1,12 @@
-import { Skeleton, ThemeIcon } from '@mantine/core';
+import { ThemeIcon } from '@mantine/core';
 import { IconBell } from '@tabler/icons';
-import { useSelectAllUsersQuery } from '../../features/users/users.api';
+import { SmUser } from '../../features/users/user.model';
 import LinkedAvatar from './LinkedAvatar';
 
-type Props = { nick: string };
+type Props = { user?: SmUser };
 
 export default function NotificationAvatar(props: Props) {
-  if (props.nick === '🔔') {
+  if (!props.user) {
     return (
       <ThemeIcon size={32}>
         <IconBell size={24} />
@@ -14,9 +14,5 @@ export default function NotificationAvatar(props: Props) {
     );
   }
 
-  const { data: users } = useSelectAllUsersQuery();
-
-  const user = users?.find((user) => user.nick === props.nick);
-
-  return user ? <LinkedAvatar {...user} /> : <Skeleton w={32} h={32} />;
+  return <LinkedAvatar {...props.user} />;
 }

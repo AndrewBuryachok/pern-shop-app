@@ -3,7 +3,7 @@ import { notifications } from '../enums';
 
 export const notificationToLink = (notification: INotification) =>
   notification.page === 'chats'
-    ? `/${notification.page}/${notification.nick}`
+    ? `/${notification.page}/${notification.fromUserId}`
     : `/${notification.page}/${
         notifications
           .find((n) =>

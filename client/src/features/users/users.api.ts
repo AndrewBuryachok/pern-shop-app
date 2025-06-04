@@ -88,12 +88,6 @@ export const usersApi = emptyApi.injectEndpoints({
       }),
       providesTags: ['User'],
     }),
-    selectSingleUser: build.query<SmUser, string>({
-      query: (nick) => ({
-        url: `/users/${nick}/select`,
-      }),
-      providesTags: ['User'],
-    }),
     getSingleUser: build.query<ExtUser, string>({
       query: (nick) => ({
         url: `/users/${nick}`,
@@ -148,7 +142,6 @@ export const {
   useSelectNotSubscribedUsersQuery,
   useSelectNotRatedUsersQuery,
   useSelectTwitchUsersQuery,
-  useSelectSingleUserQuery,
   useGetSingleUserQuery,
   useEditUserProfileMutation,
   useEditUserPasswordMutation,

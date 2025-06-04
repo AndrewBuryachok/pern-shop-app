@@ -46,10 +46,7 @@ export default function ChatsList() {
           placeholder={t('columns.user')}
           rightSection={<RefetchAction {...usersResponse} />}
           itemComponent={UsersItem}
-          data={selectUsers(users).map((user) => ({
-            ...user,
-            value: user.nick,
-          }))}
+          data={selectUsers(users)}
           limit={20}
           searchable
           readOnly={usersResponse.isFetching}
@@ -62,7 +59,7 @@ export default function ChatsList() {
                 key={chat.id}
                 p={8}
                 component={Link}
-                to={`/chats/${chat.user.nick}`}
+                to={`/chats/${chat.user.id}`}
               >
                 <ReplyAvatarWithText {...chat} />
               </Paper>
