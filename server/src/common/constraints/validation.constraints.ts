@@ -36,7 +36,6 @@ import { OrdersService } from '../../features/orders/orders.service';
 import { HaulagesService } from '../../features/haulages/haulages.service';
 import { TasksService } from '../../features/tasks/tasks.service';
 import { AdvertsService } from '../../features/adverts/adverts.service';
-import { RatingsService } from '../../features/ratings/ratings.service';
 
 @Injectable()
 @ValidatorConstraint({ name: 'isUserExists', async: true })
@@ -662,24 +661,5 @@ export class IsAdvertExists implements ValidatorConstraintInterface {
 
   defaultMessage(): string {
     return 'Unknown advert';
-  }
-}
-
-@Injectable()
-@ValidatorConstraint({ name: 'isRatingExists', async: true })
-export class IsRatingExists implements ValidatorConstraintInterface {
-  constructor(private ratingsService: RatingsService) {}
-
-  async validate(value: number): Promise<boolean> {
-    try {
-      await this.ratingsService.checkRatingExists(value);
-    } catch (error) {
-      return false;
-    }
-    return true;
-  }
-
-  defaultMessage(): string {
-    return 'Unknown rating';
   }
 }

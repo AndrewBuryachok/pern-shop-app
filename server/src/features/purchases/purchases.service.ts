@@ -405,17 +405,17 @@ export class PurchasesService {
       .andWhere(
         new Brackets((qb) =>
           qb
-            .where(`${!req.rate}`)
-            .orWhere('purchase.rate = :rate', { rate: req.rate }),
+            .where(`${!req.maxDate}`)
+            .orWhere('purchase.createdAt <= :maxDate', {
+              maxDate: req.maxDate,
+            }),
         ),
       )
       .andWhere(
         new Brackets((qb) =>
           qb
-            .where(`${!req.maxDate}`)
-            .orWhere('purchase.createdAt <= :maxDate', {
-              maxDate: req.maxDate,
-            }),
+            .where(`${!req.rate}`)
+            .orWhere('purchase.rate = :rate', { rate: req.rate }),
         ),
       )
       .orderBy('purchase.id', 'DESC')

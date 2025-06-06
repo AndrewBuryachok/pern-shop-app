@@ -93,7 +93,4 @@ export enum Notification {
   RATED_TASK = 'rated tasks',
   RESPONDED_ADVERT = 'responded tasks',
   CREATED_ADVERT = 'created adverts',
-  CREATED_RATING = 'created ratings',
-  EDITED_RATING = 'edited ratings',
-  DELETED_RATING = 'deleted ratings',
 }

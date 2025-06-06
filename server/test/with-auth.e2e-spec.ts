@@ -62,7 +62,6 @@ describe('With Auth', () => {
   let haulagesId: number[];
   let tasksId: number[];
   let advertId: number;
-  let ratingId: number;
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -246,12 +245,6 @@ describe('With Auth', () => {
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
 
-    it('GET /users/ratings', async () => {
-      return request(app.getHttpServer())
-        .get('/users/ratings')
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
-    });
-
     it('GET /users/my', async () => {
       return request(app.getHttpServer())
         .get('/users/my')
@@ -288,13 +281,6 @@ describe('With Auth', () => {
     it('GET /users/not-subscribed/select', async () => {
       return request(app.getHttpServer())
         .get('/users/not-subscribed/select')
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect((res) => expect(res.body.length).toBeGreaterThan(0));
-    });
-
-    it('GET /users/not-rated/select', async () => {
-      return request(app.getHttpServer())
-        .get('/users/not-rated/select')
         .set('Authorization', `Bearer ${user.access}`)
         .expect((res) => expect(res.body.length).toBeGreaterThan(0));
     });
@@ -3761,53 +3747,6 @@ describe('With Auth', () => {
     it('DELETE /adverts/:advertId', async () => {
       return request(app.getHttpServer())
         .delete(`/adverts/${advertId}`)
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect('');
-    });
-  });
-
-  describe('Ratings', () => {
-    it('POST /ratings', async () => {
-      return request(app.getHttpServer())
-        .post('/ratings')
-        .set('Authorization', `Bearer ${user.access}`)
-        .send({ receiverUserId: admin.id, rate: 5 })
-        .expect('');
-    });
-
-    it('GET /ratings/my', async () => {
-      return request(app.getHttpServer())
-        .get('/ratings/my')
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0))
-        .then((res) => (ratingId = res.body.result[0].id));
-    });
-
-    it('GET /ratings/received', async () => {
-      return request(app.getHttpServer())
-        .get('/ratings/received')
-        .set('Authorization', `Bearer ${admin.access}`)
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
-    });
-
-    it('GET /ratings/all', async () => {
-      return request(app.getHttpServer())
-        .get('/ratings/all')
-        .set('Authorization', `Bearer ${admin.access}`)
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
-    });
-
-    it('PATCH /ratings/:ratingId', async () => {
-      return request(app.getHttpServer())
-        .patch(`/ratings/${ratingId}`)
-        .set('Authorization', `Bearer ${user.access}`)
-        .send({ rate: 5 })
-        .expect('');
-    });
-
-    it('DELETE /ratings/:ratingId', async () => {
-      return request(app.getHttpServer())
-        .delete(`/ratings/${ratingId}`)
         .set('Authorization', `Bearer ${user.access}`)
         .expect('');
     });

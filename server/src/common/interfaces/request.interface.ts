@@ -222,12 +222,6 @@ export class Request {
 
   @ApiProperty({ required: false })
   @IsOptional()
-  @IsInt()
-  @Type(() => Number)
-  rate?: number;
-
-  @ApiProperty({ required: false })
-  @IsOptional()
   @IsDate()
   @Type(() => Date)
   minDate?: Date;
@@ -243,4 +237,10 @@ export class Request {
   @IsInt()
   @Type(() => Number)
   completed?: number;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsInt()
+  @Type(() => Number)
+  rate?: number;
 }

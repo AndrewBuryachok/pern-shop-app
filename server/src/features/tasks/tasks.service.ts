@@ -445,13 +445,6 @@ export class TasksService {
       .andWhere(
         new Brackets((qb) =>
           qb
-            .where(`${!req.rate}`)
-            .orWhere('task.rate = :rate', { rate: req.rate }),
-        ),
-      )
-      .andWhere(
-        new Brackets((qb) =>
-          qb
             .where(`${!req.minDate}`)
             .orWhere('task.createdAt >= :minDate', { minDate: req.minDate }),
         ),
@@ -475,6 +468,13 @@ export class TasksService {
           qb
             .where(`${req.completed !== -1}`)
             .orWhere('task.completedAt IS NULL'),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.rate}`)
+            .orWhere('task.rate = :rate', { rate: req.rate }),
         ),
       )
       .orderBy('task.id', 'DESC')

@@ -37,7 +37,6 @@ import { OrdersModule } from './features/orders/orders.module';
 import { HaulagesModule } from './features/haulages/haulages.module';
 import { TasksModule } from './features/tasks/tasks.module';
 import { AdvertsModule } from './features/adverts/adverts.module';
-import { RatingsModule } from './features/ratings/ratings.module';
 import { LoggerModule } from './features/logger/logger.module';
 
 @Module({
@@ -100,7 +99,6 @@ import { LoggerModule } from './features/logger/logger.module';
     HaulagesModule,
     TasksModule,
     AdvertsModule,
-    RatingsModule,
     LoggerModule,
   ],
 })

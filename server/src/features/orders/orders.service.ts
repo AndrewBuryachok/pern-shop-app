@@ -546,13 +546,6 @@ export class OrdersService {
       .andWhere(
         new Brackets((qb) =>
           qb
-            .where(`${!req.rate}`)
-            .orWhere('order.rate = :rate', { rate: req.rate }),
-        ),
-      )
-      .andWhere(
-        new Brackets((qb) =>
-          qb
             .where(`${!req.minDate}`)
             .orWhere('order.createdAt >= :minDate', { minDate: req.minDate }),
         ),
@@ -583,6 +576,13 @@ export class OrdersService {
                   .andWhere('hire.completedAt > NOW()'),
               ),
             ),
+        ),
+      )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(`${!req.rate}`)
+            .orWhere('order.rate = :rate', { rate: req.rate }),
         ),
       )
       .orderBy('order.id', 'DESC')

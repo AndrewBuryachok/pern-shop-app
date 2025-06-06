@@ -12,7 +12,6 @@ import {
 import { Role } from './role.enum';
 import { Town } from '../towns/town.entity';
 import { Card } from '../cards/card.entity';
-import { Rating } from '../ratings/rating.entity';
 
 @Entity('users')
 export class User {
@@ -91,10 +90,4 @@ export class User {
 
   @OneToMany(() => Card, (card) => card.user)
   cards: Card[];
-
-  @OneToMany(() => Rating, (rating) => rating.senderUser)
-  sentRatings: Rating[];
-
-  @OneToMany(() => Rating, (rating) => rating.receiverUser)
-  receivedRatings: Rating[];
 }

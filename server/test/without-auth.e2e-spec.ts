@@ -76,12 +76,6 @@ describe('Without Auth', () => {
         .get('/users/not-subscribed/select')
         .expect(401);
     });
-
-    it('GET /users/not-rated/select', async () => {
-      return request(app.getHttpServer())
-        .get('/users/not-rated/select')
-        .expect(401);
-    });
   });
 
   describe('Messages', () => {
@@ -687,23 +681,6 @@ describe('Without Auth', () => {
     it('GET /adverts/all', async () => {
       return request(app.getHttpServer())
         .get('/adverts/all')
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect(403);
-    });
-  });
-
-  describe('Ratings', () => {
-    it('GET /ratings/my', async () => {
-      return request(app.getHttpServer()).get('/ratings/my').expect(401);
-    });
-
-    it('GET /ratings/received', async () => {
-      return request(app.getHttpServer()).get('/ratings/received').expect(401);
-    });
-
-    it('GET /ratings/all', async () => {
-      return request(app.getHttpServer())
-        .get('/ratings/all')
         .set('Authorization', `Bearer ${user.access}`)
         .expect(403);
     });

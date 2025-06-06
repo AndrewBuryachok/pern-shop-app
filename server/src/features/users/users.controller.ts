@@ -51,12 +51,6 @@ export class UsersController {
     return this.usersService.getSubscribersUsers(req);
   }
 
-  @Public()
-  @Get('ratings')
-  getRatingsUsers(@Query() req: Request): Promise<Response<User>> {
-    return this.usersService.getRatingsUsers(req);
-  }
-
   @Get('my')
   getMyUsers(
     @MyId() myId: number,
@@ -91,11 +85,6 @@ export class UsersController {
   @Get('not-subscribed/select')
   selectNotSubscribedUsers(@MyId() myId: number): Promise<User[]> {
     return this.usersService.selectNotSubscribedUsers(myId);
-  }
-
-  @Get('not-rated/select')
-  selectNotRatedUsers(@MyId() myId: number): Promise<User[]> {
-    return this.usersService.selectNotRatedUsers(myId);
   }
 
   @Public()

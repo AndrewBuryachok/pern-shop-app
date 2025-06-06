@@ -44,7 +44,6 @@ import { Order } from '../../features/orders/order.entity';
 import { Haulage } from '../../features/haulages/haulage.entity';
 import { Task } from '../../features/tasks/task.entity';
 import { Advert } from '../../features/adverts/advert.entity';
-import { Rating } from '../../features/ratings/rating.entity';
 import { Status } from '../../features/transportations/status.enum';
 import { getDateWeekAfter, hashData } from '../../common/utils';
 
@@ -578,24 +577,6 @@ export default class AppSeed implements Seeder {
         return advert;
       })
       .makeMany(10);
-    const allRatings = users.reduce(
-      (prev, senderUser) => [
-        ...prev,
-        ...users.map((receiverUser) => ({ senderUser, receiverUser })),
-      ],
-      [],
-    );
-    const randomRatings = [...Array(allRatings.length).keys()];
-    randomRatings.sort(() => Math.random() - 0.5);
-    let ratingId = 0;
-    const ratings = await factory(Rating)()
-      .map(async (rating) => {
-        rating.senderUser = allRatings[randomRatings[ratingId]].senderUser;
-        rating.receiverUser = allRatings[randomRatings[ratingId]].receiverUser;
-        ratingId++;
-        return rating;
-      })
-      .createMany(80);
     let id = 0;
     await factory(Account)()
       .map(async () => accounts[id++])
