@@ -44,7 +44,6 @@ import { openAuthModal } from '../auth/AuthModal';
 import { editUserProfileAction } from './EditUserProfileModal';
 import { openViewUserFriendsModal } from './ViewUserFriendsModal';
 import { openViewUserSubscribersModal } from './ViewUserSubscribersModal';
-import { openViewUserRatersModal } from './ViewUserRatersModal';
 import { colors } from '../../common/constants';
 
 type Props = {
@@ -100,7 +99,6 @@ export default function UserProfile({ data: user }: Props) {
       users: user.subscribers,
       open: openViewUserSubscribersModal,
     },
-    { label: 'raters', users: user.raters, open: openViewUserRatersModal },
   ];
 
   const stats = [
@@ -243,12 +241,6 @@ export default function UserProfile({ data: user }: Props) {
                   {t('columns.roles')}
                 </Text>
                 <RolesBadge roles={user.roles} />
-              </div>
-              <div>
-                <Text size='sm' weight='bold'>
-                  {t('columns.rating')}
-                </Text>
-                <CustomRating value={user.rating} />
               </div>
               <div>
                 <Text size='sm' weight='bold'>

@@ -35,7 +35,6 @@ import {
   IconReportMoney,
   IconScript,
   IconShoppingBag,
-  IconStar,
   IconTir,
   IconTrolley,
   IconTruck,
@@ -171,11 +170,6 @@ export default function Home() {
     {
       title: 'hires',
       icon: IconScript,
-    },
-    {
-      title: 'ratings',
-      icon: IconStar,
-      sub: '/top',
     },
   ];
 

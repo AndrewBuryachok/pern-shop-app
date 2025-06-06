@@ -35,8 +35,8 @@ export interface ISearch {
   status?: string | null;
   mark?: string | null;
   result?: string | null;
-  rate?: number | null;
   minDate?: string | null;
   maxDate?: string | null;
   completed?: string | null;
+  rate?: number | null;
 }

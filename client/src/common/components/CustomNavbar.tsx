@@ -16,7 +16,6 @@ import {
   IconMap,
   IconMessages,
   IconNews,
-  IconStar,
   IconUsers,
   IconWallet,
 } from '@tabler/icons';
@@ -136,11 +135,6 @@ export default function CustomNavbar(props: Props) {
         { label: 'invitations', sub: '/sent' },
         { label: 'applications', sub: '/sent' },
       ],
-    },
-    {
-      label: 'ratings',
-      icon: IconStar,
-      sub: '/top',
     },
     {
       label: 'users',

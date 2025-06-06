@@ -639,18 +639,6 @@ export default function SearchModal(props: Props) {
           {...form.getInputProps('result')}
         />
       )}
-      {props.search.rate !== undefined && (
-        <Input.Wrapper label={t('columns.rate')}>
-          <Group spacing={8}>
-            <Rating {...form.getInputProps('rate')} />
-            <CloseButton
-              size={24}
-              iconSize={16}
-              onClick={() => form.setFieldValue('rate', null)}
-            />
-          </Group>
-        </Input.Wrapper>
-      )}
       {props.search.minDate !== undefined && (
         <DatePicker
           label={t('columns.created') + ' ' + t('columns.after')}
@@ -686,6 +674,18 @@ export default function SearchModal(props: Props) {
             onClick={() => form.setFieldValue('completed', null)}
           />
         </Radio.Group>
+      )}
+      {props.search.rate !== undefined && (
+        <Input.Wrapper label={t('columns.rate')}>
+          <Group spacing={8}>
+            <Rating {...form.getInputProps('rate')} />
+            <CloseButton
+              size={24}
+              iconSize={16}
+              onClick={() => form.setFieldValue('rate', null)}
+            />
+          </Group>
+        </Input.Wrapper>
       )}
     </CustomForm>
   );

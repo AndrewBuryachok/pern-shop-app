@@ -103,9 +103,6 @@ export const getQuery = (req: IRequest) => {
   if (req?.result) {
     query.append('result', req.result);
   }
-  if (req?.rate) {
-    query.append('rate', `${req.rate}`);
-  }
   if (req?.minDate) {
     query.append('minDate', req.minDate);
   }
@@ -114,6 +111,9 @@ export const getQuery = (req: IRequest) => {
   }
   if (req?.completed) {
     query.append('completed', req.completed);
+  }
+  if (req?.rate) {
+    query.append('rate', `${req.rate}`);
   }
   return query.toString();
 };

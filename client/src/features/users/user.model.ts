@@ -21,7 +21,6 @@ export interface User extends MdUser {
   time?: number;
   friendsCount?: number;
   subscribersCount?: number;
-  ratersCount?: number;
 }
 
 export interface ExtUser extends User {
@@ -32,8 +31,6 @@ export interface ExtUser extends User {
   youtube: string;
   friends: SmUser[];
   subscribers: SmUser[];
-  raters: SmUser[];
-  rating: number;
   articles: number;
   articlesLikes: number;
   polls: number;

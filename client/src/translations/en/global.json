@@ -77,8 +77,7 @@
     "haulages": "Haulages",
     "services": "Services",
     "tasks": "Tasks",
-    "adverts": "Adverts",
-    "ratings": "Ratings"
+    "adverts": "Adverts"
   },
   "aside": {
     "live": "Live",
@@ -120,7 +119,6 @@
     "haulages": "View haulages; create, take, execute, complete, rate haulages",
     "tasks": "View tasks; create, take, execute, complete, rate tasks",
     "adverts": "View adverts; create, edit, delete, respond to adverts",
-    "ratings": "View ratings; create, edit, delete ratings",
     "increase": "Will be added to card",
     "decrease": "Will be removed from card"
   },
@@ -165,7 +163,6 @@
     "execute": "Execute",
     "respond": "Respond to",
     "edit": "Edit",
-    "rate": "Rate",
     "update": "Update", 
     "delete": "Delete",
     "remove": "Remove",
@@ -206,8 +203,6 @@
     "time": "Hours",
     "friends": "Friends",
     "subscribers": "Subscribers",
-    "raters": "Raters",
-    "rating": "Rating",
     "created": "Created",
     "online": "Online",
     "after": "After",
@@ -334,8 +329,7 @@
     "orders": "Order",
     "haulages": "Haulage",
     "tasks": "Task",
-    "adverts": "Advert",
-    "ratings": "Rating"
+    "adverts": "Advert"
   },
   "errors": {
     "incorrect_nick": "Incorrect nick",
@@ -495,11 +489,6 @@
     },
     "adverts": {
       "created": "created advert"
-    },
-    "ratings": {
-      "created": "created rating to you",
-      "edited": "edited rating to you",
-      "deleted": "deleted rating to you"
     }
   },
   "constants": {
