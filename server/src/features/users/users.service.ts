@@ -10,7 +10,6 @@ import {
   ExtEditUserProfileDto,
   ExtUpdateUserRoleDto,
   UpdateUserFriendDto,
-  UpdateUserSubscriberDto,
   UpdateUserTokenDto,
   UpdateUserTownDto,
 } from './user.dto';
@@ -63,21 +62,6 @@ export class UsersService {
     return { result, count };
   }
 
-  async getSubscribersUsers(req: Request): Promise<Response<User>> {
-    const [result, count] = await this.getSubscribersQueryBuilder(req)
-      .leftJoin('user.receivedSubscribers', 'subscriber')
-      .groupBy('user.id')
-      .addGroupBy('town.id')
-      .addGroupBy('ownerUser.id')
-      .orderBy('user_subscribers', 'DESC', 'NULLS LAST')
-      .addOrderBy('user.type', 'DESC')
-      .addOrderBy('user.onlineAt', 'DESC')
-      .addOrderBy('user.id', 'DESC')
-      .addSelect('COUNT(subscriber.id)', 'user_subscribers')
-      .getManyAndCount();
-    return { result, count };
-  }
-
   async getMyUsers(myId: number, req: Request): Promise<Response<User>> {
     const [result, count] = await this.getExtUsersQueryBuilder(req)
       .leftJoin('town.users', 'townUsers')
@@ -97,13 +81,6 @@ export class UsersService {
     return this.getUsersQueryBuilder(req).loadRelationCountAndMap(
       'user.friendsCount',
       'user.friends',
-    );
-  }
-
-  getSubscribersQueryBuilder(req: Request): SelectQueryBuilder<User> {
-    return this.getUsersQueryBuilder(req).loadRelationCountAndMap(
-      'user.subscribersCount',
-      'user.receivedSubscribers',
     );
   }
 
@@ -147,17 +124,6 @@ export class UsersService {
     );
   }
 
-  async selectNotSubscribedUsers(myId: number): Promise<User[]> {
-    const subscribers = (
-      await this.usersRepository.findOne({
-        relations: ['sentSubscribers'],
-        where: { id: myId },
-      })
-    ).sentSubscribers.map((subscriber) => subscriber.id);
-    const users = await this.selectUsersQueryBuilder().getMany();
-    return users.filter((user) => !subscribers.includes(user.id));
-  }
-
   async selectTwitchUsers(): Promise<User[]> {
     const users = await this.selectUsersQueryBuilder()
       .where(':role = ANY(user.roles)', { role: Role.STREAMER })
@@ -169,18 +135,6 @@ export class UsersService {
     return users.filter((user) =>
       streamers.includes(user.twitch.toLowerCase()),
     );
-  }
-
-  selectMySubscribers(myId: number): Promise<User[]> {
-    return this.selectUsersQueryBuilder()
-      .innerJoinAndMapOne(
-        'subscriber',
-        'user.receivedSubscribers',
-        'subscriber',
-        'subscriber.id = :myId',
-        { myId },
-      )
-      .getMany();
   }
 
   async getSingleUser(nick: string): Promise<User> {
@@ -310,36 +264,6 @@ export class UsersService {
       throw new AppException(UserError.NOT_HAS_FRIEND);
     }
     await this.removeFriend(user, dto.receiverUserId);
-  }
-
-  async addUserSubscriber(dto: UpdateUserSubscriberDto): Promise<void> {
-    const user = await this.usersRepository.findOne({
-      relations: ['sentSubscribers'],
-      where: { id: dto.senderUserId },
-    });
-    if (
-      user.sentSubscribers.find(
-        (subscriber) => subscriber.id === dto.receiverUserId,
-      )
-    ) {
-      throw new AppException(UserError.ALREADY_HAS_SUBSCRIBER);
-    }
-    await this.addSubscriber(user, dto.receiverUserId);
-  }
-
-  async removeUserSubscriber(dto: UpdateUserSubscriberDto): Promise<void> {
-    const user = await this.usersRepository.findOne({
-      relations: ['sentSubscribers'],
-      where: { id: dto.senderUserId },
-    });
-    if (
-      !user.sentSubscribers.find(
-        (subscriber) => subscriber.id === dto.receiverUserId,
-      )
-    ) {
-      throw new AppException(UserError.NOT_HAS_SUBSCRIBER);
-    }
-    await this.removeSubscriber(user, dto.receiverUserId);
   }
 
   async checkUserExists(id: number): Promise<void> {
@@ -510,28 +434,6 @@ export class UsersService {
     }
   }
 
-  private async addSubscriber(user: User, userId: number): Promise<void> {
-    try {
-      const subscriber = new User();
-      subscriber.id = userId;
-      user.sentSubscribers.push(subscriber);
-      await this.usersRepository.save(user);
-    } catch (error) {
-      throw new AppException(UserError.ADD_SUBSCRIBER_FAILED);
-    }
-  }
-
-  private async removeSubscriber(user: User, userId: number): Promise<void> {
-    try {
-      user.sentSubscribers = user.sentSubscribers.filter(
-        (user) => user.id !== userId,
-      );
-      await this.usersRepository.save(user);
-    } catch (error) {
-      throw new AppException(UserError.REMOVE_SUBSCRIBER_FAILED);
-    }
-  }
-
   private selectUsersQueryBuilder(): SelectQueryBuilder<User> {
     return this.usersRepository
       .createQueryBuilder('user')
@@ -640,15 +542,6 @@ export class UsersService {
         'user.friends',
         'friend',
         'friend.id = :userId',
-        { userId: user.id },
-      )
-      .getMany();
-    user['subscribers'] = await this.selectUsersQueryBuilder()
-      .innerJoinAndMapOne(
-        'subscriber',
-        'user.sentSubscribers',
-        'subscriber',
-        'subscriber.id = :userId',
         { userId: user.id },
       )
       .getMany();

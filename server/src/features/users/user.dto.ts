@@ -91,8 +91,3 @@ export class UpdateUserFriendDto {
   senderUserId: number;
   receiverUserId: number;
 }
-
-export class UpdateUserSubscriberDto {
-  senderUserId: number;
-  receiverUserId: number;
-}

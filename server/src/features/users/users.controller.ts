@@ -45,12 +45,6 @@ export class UsersController {
     return this.usersService.getFriendsUsers(req);
   }
 
-  @Public()
-  @Get('subscribers')
-  getSubscribersUsers(@Query() req: Request): Promise<Response<User>> {
-    return this.usersService.getSubscribersUsers(req);
-  }
-
   @Get('my')
   getMyUsers(
     @MyId() myId: number,
@@ -80,11 +74,6 @@ export class UsersController {
   @Get('not-friends/select')
   selectNotFriendsUsers(@MyId() myId: number): Promise<User[]> {
     return this.usersService.selectNotFriendsUsers(myId);
-  }
-
-  @Get('not-subscribed/select')
-  selectNotSubscribedUsers(@MyId() myId: number): Promise<User[]> {
-    return this.usersService.selectNotSubscribedUsers(myId);
   }
 
   @Public()

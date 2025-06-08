@@ -239,12 +239,6 @@ describe('With Auth', () => {
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
 
-    it('GET /users/subscribers', async () => {
-      return request(app.getHttpServer())
-        .get('/users/subscribers')
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
-    });
-
     it('GET /users/my', async () => {
       return request(app.getHttpServer())
         .get('/users/my')
@@ -274,13 +268,6 @@ describe('With Auth', () => {
     it('GET /users/not-friends/select', async () => {
       return request(app.getHttpServer())
         .get('/users/not-friends/select')
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect((res) => expect(res.body.length).toBeGreaterThan(0));
-    });
-
-    it('GET /users/not-subscribed/select', async () => {
-      return request(app.getHttpServer())
-        .get('/users/not-subscribed/select')
         .set('Authorization', `Bearer ${user.access}`)
         .expect((res) => expect(res.body.length).toBeGreaterThan(0));
     });
@@ -401,78 +388,6 @@ describe('With Auth', () => {
     it('DELETE /friends/:friendId', async () => {
       return request(app.getHttpServer())
         .delete(`/friends/${user.id}`)
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect('');
-    });
-  });
-
-  describe('Subscribers', () => {
-    it('POST /subscribers/:subscriberId', async () => {
-      return request(app.getHttpServer())
-        .post(`/subscribers/${user.id}`)
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect('');
-    });
-
-    it('GET /subscribers/my', async () => {
-      return request(app.getHttpServer())
-        .get('/subscribers/my')
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
-    });
-
-    it('GET /subscribers/received', async () => {
-      return request(app.getHttpServer())
-        .get('/subscribers/received')
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
-    });
-
-    it('GET /subscribers/my/select', async () => {
-      return request(app.getHttpServer())
-        .get('/subscribers/my/select')
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect((res) => expect(res.body.length).toBeGreaterThan(0));
-    });
-
-    it('POST /articles', async () => {
-      return request(app.getHttpServer())
-        .post('/articles')
-        .set('Authorization', `Bearer ${user.access}`)
-        .send({
-          text: 'article text',
-          image1: '',
-          image2: '',
-          image3: '',
-          video: '',
-        })
-        .expect('');
-    });
-
-    it('POST /articles', async () => {
-      return request(app.getHttpServer())
-        .post('/articles')
-        .set('Authorization', `Bearer ${user.access}`)
-        .send({
-          text: 'article text',
-          image1: '',
-          image2: '',
-          image3: '',
-          video: '',
-        })
-        .expect('');
-    });
-
-    it('GET /articles/subscribed', async () => {
-      return request(app.getHttpServer())
-        .get('/articles/subscribed')
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
-    });
-
-    it('DELETE /subscribers/:subscriberId', async () => {
-      return request(app.getHttpServer())
-        .delete(`/subscribers/${user.id}`)
         .set('Authorization', `Bearer ${user.access}`)
         .expect('');
     });
@@ -716,6 +631,34 @@ describe('With Auth', () => {
   });
 
   describe('Articles', () => {
+    it('POST /articles', async () => {
+      return request(app.getHttpServer())
+        .post('/articles')
+        .set('Authorization', `Bearer ${user.access}`)
+        .send({
+          text: 'article text',
+          image1: '',
+          image2: '',
+          image3: '',
+          video: '',
+        })
+        .expect('');
+    });
+
+    it('POST /articles', async () => {
+      return request(app.getHttpServer())
+        .post('/articles')
+        .set('Authorization', `Bearer ${user.access}`)
+        .send({
+          text: 'article text',
+          image1: '',
+          image2: '',
+          image3: '',
+          video: '',
+        })
+        .expect('');
+    });
+
     it('GET /articles', async () => {
       return request(app.getHttpServer())
         .get('/articles')

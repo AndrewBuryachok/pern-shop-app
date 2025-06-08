@@ -72,22 +72,6 @@ export class User {
   })
   friends: User[];
 
-  @ManyToMany(() => User)
-  @JoinTable({
-    name: 'subscribers',
-    joinColumn: { name: 'sender_user_id' },
-    inverseJoinColumn: { name: 'receiver_user_id' },
-  })
-  sentSubscribers: User[];
-
-  @ManyToMany(() => User)
-  @JoinTable({
-    name: 'subscribers',
-    joinColumn: { name: 'receiver_user_id' },
-    inverseJoinColumn: { name: 'sender_user_id' },
-  })
-  receivedSubscribers: User[];
-
   @OneToMany(() => Card, (card) => card.user)
   cards: Card[];
 }

@@ -7,7 +7,6 @@ import { AuthModule } from './features/auth/auth.module';
 import { UsersModule } from './features/users/users.module';
 import { MessagesModule } from './features/messages/messages.module';
 import { FriendsModule } from './features/friends/friends.module';
-import { SubscribersModule } from './features/subscribers/subscribers.module';
 import { ReportsModule } from './features/reports/reports.module';
 import { ArticlesModule } from './features/articles/articles.module';
 import { PollsModule } from './features/polls/polls.module';
@@ -69,7 +68,6 @@ import { LoggerModule } from './features/logger/logger.module';
     UsersModule,
     MessagesModule,
     FriendsModule,
-    SubscribersModule,
     ReportsModule,
     ArticlesModule,
     PollsModule,

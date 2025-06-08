@@ -43,22 +43,6 @@ export class ArticlesService {
     return { result, count };
   }
 
-  async getSubscribedArticles(
-    myId: number,
-    req: Request,
-  ): Promise<Response<Article>> {
-    const [result, count] = await this.getArticlesQueryBuilder(req)
-      .innerJoinAndMapOne(
-        'subscriber',
-        'ownerUser.receivedSubscribers',
-        'subscriber',
-        'subscriber.id = :myId',
-        { myId },
-      )
-      .getManyAndCount();
-    return { result, count };
-  }
-
   async getLikedArticles(
     myId: number,
     req: Request,

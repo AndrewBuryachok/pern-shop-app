@@ -6,8 +6,6 @@ export enum UserError {
   NOT_IN_TOWN = '400: User not in town',
   ALREADY_HAS_FRIEND = '400: User already has friend',
   NOT_HAS_FRIEND = '400: User has not friend',
-  ALREADY_HAS_SUBSCRIBER = '400: User already has subscriber',
-  NOT_HAS_SUBSCRIBER = '400: User has not subscriber',
   NOT_OWNER = '403: You are not profile owner',
   UNKNOWN = '404: Unknown user',
   CREATE_FAILED = '500: Failed to create user',
@@ -23,6 +21,4 @@ export enum UserError {
   REMOVE_TOWN_FAILED = '500: Failed to remove user town',
   ADD_FRIEND_FAILED = '500: Failed to add user friend',
   REMOVE_FRIEND_FAILED = '500: Failed to remove user friend',
-  ADD_SUBSCRIBER_FAILED = '500: Failed to add user subscriber',
-  REMOVE_SUBSCRIBER_FAILED = '500: Failed to remove user subscriber',
 }
