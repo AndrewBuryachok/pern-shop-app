@@ -5,7 +5,6 @@ import {
   useSelectLikedArticlesQuery,
   useSelectViewedArticlesQuery,
 } from './articles.api';
-import { useSelectMySubscribersQuery } from '../subscribers/subscribers.api';
 import CustomList from '../../common/components/CustomList';
 import ArticlePaper from './ArticlePaper';
 
@@ -13,9 +12,6 @@ type Props = ITableWithActions<Article>;
 
 export default function ArticlesList({ actions = [], ...props }: Props) {
   const user = getCurrentUser();
-
-  const { data: subscribers, ...subscribersResponse } =
-    useSelectMySubscribersQuery(undefined, { skip: !user });
 
   const { data: viewedArticles, ...viewedArticlesResponse } =
     useSelectViewedArticlesQuery(undefined, { skip: !user });
@@ -28,9 +24,6 @@ export default function ArticlesList({ actions = [], ...props }: Props) {
       {props.data?.result
         .map((article) => ({
           ...article,
-          subscribed: !!subscribers?.find(
-            (subscriber) => subscriber.id === article.user.id,
-          ),
           viewed: !!viewedArticles?.includes(article.id),
           upLiked: !!likedArticles?.up.includes(article.id),
           downLiked: !!likedArticles?.down.includes(article.id),
@@ -39,7 +32,6 @@ export default function ArticlesList({ actions = [], ...props }: Props) {
           <ArticlePaper
             key={article.id}
             article={article}
-            isSubscribersLoading={subscribersResponse.isFetching}
             isViewedLoading={viewedArticlesResponse.isFetching}
             isLikedLoading={likedArticlesResponse.isFetching}
             actions={actions}

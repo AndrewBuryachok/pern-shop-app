@@ -27,12 +27,6 @@ export const articlesApi = emptyApi.injectEndpoints({
       }),
       providesTags: ['Auth', 'Article'],
     }),
-    getSubscribedArticles: build.query<IResponse<Article>, IRequest>({
-      query: (req) => ({
-        url: `/articles/subscribed?${getQuery(req)}`,
-      }),
-      providesTags: ['Auth', 'Article', 'Subscriber'],
-    }),
     getLikedArticles: build.query<IResponse<Article>, IRequest>({
       query: (req) => ({
         url: `/articles/liked?${getQuery(req)}`,
@@ -163,7 +157,6 @@ export const articlesApi = emptyApi.injectEndpoints({
 export const {
   useGetMainArticlesQuery,
   useGetMyArticlesQuery,
-  useGetSubscribedArticlesQuery,
   useGetLikedArticlesQuery,
   useGetCommentedArticlesQuery,
   useGetAllArticlesQuery,

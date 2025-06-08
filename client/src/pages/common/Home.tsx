@@ -28,7 +28,6 @@ import {
   IconExchange,
   IconFileDollar,
   IconFriends,
-  IconMail,
   IconMailbox,
   IconMap,
   IconNews,
@@ -54,11 +53,6 @@ export default function Home() {
     {
       title: 'friends',
       icon: IconFriends,
-      sub: '/top',
-    },
-    {
-      title: 'subscribers',
-      icon: IconMail,
       sub: '/top',
     },
     {

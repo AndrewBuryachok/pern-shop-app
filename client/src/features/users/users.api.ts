@@ -28,12 +28,6 @@ export const usersApi = emptyApi.injectEndpoints({
       }),
       providesTags: ['User', 'Friend'],
     }),
-    getSubscribersUsers: build.query<IResponse<User>, IRequest>({
-      query: (req) => ({
-        url: `/users/subscribers?${getQuery(req)}`,
-      }),
-      providesTags: ['User', 'Subscriber'],
-    }),
     getMyUsers: build.query<IResponse<User>, IRequest>({
       query: (req) => ({
         url: `/users/my?${getQuery(req)}`,
@@ -63,12 +57,6 @@ export const usersApi = emptyApi.injectEndpoints({
         url: '/users/not-friends/select',
       }),
       providesTags: ['Auth', 'User', 'Friend'],
-    }),
-    selectNotSubscribedUsers: build.query<SmUser[], void>({
-      query: () => ({
-        url: '/users/not-subscribed/select',
-      }),
-      providesTags: ['Auth', 'User', 'Subscriber'],
     }),
     selectTwitchUsers: build.query<TwitchUser[], void>({
       query: () => ({
@@ -120,13 +108,11 @@ export const {
   useGetMainUsersQuery,
   useGetTopUsersQuery,
   useGetFriendsUsersQuery,
-  useGetSubscribersUsersQuery,
   useGetMyUsersQuery,
   useGetAllUsersQuery,
   useSelectAllUsersQuery,
   useSelectNotCitizensUsersQuery,
   useSelectNotFriendsUsersQuery,
-  useSelectNotSubscribedUsersQuery,
   useSelectTwitchUsersQuery,
   useGetSingleUserQuery,
   useEditUserProfileMutation,

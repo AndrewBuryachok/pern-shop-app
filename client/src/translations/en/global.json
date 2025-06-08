@@ -40,7 +40,6 @@
     "chat": "Chat",
     "chats": "Chats",
     "friends": "Friends",
-    "subscribers": "Subscribers",
     "reports": "Reports",
     "articles": "Articles",
     "polls": "Polls",
@@ -87,7 +86,6 @@
   "information": {
     "users": "View users; add, remove roles; edit password",
     "friends": "View friends; create, add, remove friends",
-    "subscribers": "View subscribers; add, remove subscribers",
     "reports": "View reports; create, edit, delete reports; like, comment reports",
     "articles": "View articles; create, edit, delete articles; like, comment articles",
     "polls": "View polls; create, edit, complete, delete polls; like, comment polls",
@@ -145,7 +143,6 @@
     "spawn": "Spawn",
     "hub": "Hub",
     "end": "End",
-    "subscribed": "Subscribed",
     "liked": "Liked",
     "commented": "Commented",
     "placed": "Placed",
@@ -171,8 +168,6 @@
     "reply": "Reply",
     "friend": "Add to Friends",
     "unfriend": "Remove from Friends",
-    "subscribe": "Subscribe",
-    "unsubscribe": "Unsubscribe",
     "cancel": "Cancel",
     "accept": "Accept",
     "reject": "Reject",
@@ -202,7 +197,6 @@
     "town": "Town",
     "time": "Hours",
     "friends": "Friends",
-    "subscribers": "Subscribers",
     "created": "Created",
     "online": "Online",
     "after": "After",
@@ -298,7 +292,6 @@
     "users": "User",
     "messages": "Message",
     "friends": "Friend",
-    "subscribers": "Subscriber",
     "reports": "Report",
     "articles": "Article",
     "polls": "Poll",
@@ -344,10 +337,6 @@
       "canceled": "canceled your friendship",
       "rejected": "rejected your friendship",
       "deleted": "deleted you from friends"
-    },
-    "subscribers": {
-      "added": "subscribed on you",
-      "removed": "unsubscribed from you"
     },
     "chats": {
       "messaged": "надістав вам повідомлення"

@@ -20,7 +20,6 @@ export interface User extends MdUser {
   town?: MdTown;
   time?: number;
   friendsCount?: number;
-  subscribersCount?: number;
 }
 
 export interface ExtUser extends User {
@@ -30,7 +29,6 @@ export interface ExtUser extends User {
   twitch: string;
   youtube: string;
   friends: SmUser[];
-  subscribers: SmUser[];
   articles: number;
   articlesLikes: number;
   polls: number;

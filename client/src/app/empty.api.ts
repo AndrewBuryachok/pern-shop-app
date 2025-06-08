@@ -8,7 +8,6 @@ export const emptyApi = createApi({
     'User',
     'Message',
     'Friend',
-    'Subscriber',
     'Report',
     'ReportView',
     'ReportLike',

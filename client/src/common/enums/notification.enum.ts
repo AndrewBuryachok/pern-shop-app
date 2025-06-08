@@ -5,8 +5,6 @@ export const notifications = [
   'canceled friends received',
   'rejected friends sent',
   'deleted friends my',
-  'added subscribers received',
-  'removed subscribers received',
   'created reports main',
   'reacted reports main',
   'commented reports main',

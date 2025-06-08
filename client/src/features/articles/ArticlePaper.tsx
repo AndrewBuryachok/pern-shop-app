@@ -1,10 +1,7 @@
 import { useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
-import { Button, Group, HoverCard, Paper, Stack, Tooltip } from '@mantine/core';
+import { Button, Group, HoverCard, Paper, Stack } from '@mantine/core';
 import { useIntersection } from '@mantine/hooks';
 import {
-  IconBell,
-  IconBellOff,
   IconEye,
   IconMessage,
   IconThumbDown,
@@ -15,11 +12,6 @@ import { Article } from './article.model';
 import { getCurrentUser } from '../auth/auth.slice';
 import { useLikeArticleMutation, useViewArticleMutation } from './articles.api';
 import { LikeArticleDto, ViewArticleDto } from './article.dto';
-import {
-  useAddSubscriberMutation,
-  useRemoveSubscriberMutation,
-} from '../subscribers/subscribers.api';
-import { UpdateSubscriberDto } from '../subscribers/subscriber.dto';
 import AvatarWithDateText from '../../common/components/AvatarWithDateText';
 import CustomHighlight from '../../common/components/CustomHighlight';
 import CustomImage from '../../common/components/CustomImage';
@@ -34,33 +26,17 @@ import { openViewArticleViewsModal } from './ViewArticleViewsModal';
 
 type Props = {
   article: Article & {
-    subscribed: boolean;
     viewed: boolean;
     upLiked: boolean;
     downLiked: boolean;
   };
-  isSubscribersLoading: boolean;
   isViewedLoading: boolean;
   isLikedLoading: boolean;
   actions: IAction<Article>[];
 };
 
 export default function ArticlePaper({ article, ...props }: Props) {
-  const [t] = useTranslation();
-
   const user = getCurrentUser();
-
-  const [addSubscriber] = useAddSubscriberMutation();
-
-  const handleSubscribeSubmit = async (dto: UpdateSubscriberDto) => {
-    await addSubscriber(dto);
-  };
-
-  const [removeSubscriber] = useRemoveSubscriberMutation();
-
-  const handleUnsubscribeSubmit = async (dto: UpdateSubscriberDto) => {
-    await removeSubscriber(dto);
-  };
 
   const [viewArticle] = useViewArticleMutation();
 
@@ -91,37 +67,7 @@ export default function ArticlePaper({ article, ...props }: Props) {
     <Paper p='md'>
       <Stack spacing={8}>
         <Group spacing={0} position='apart'>
-          <Group spacing={8}>
-            <AvatarWithDateText {...article} />
-            <Tooltip
-              label={
-                article.subscribed
-                  ? t('actions.unsubscribe')
-                  : t('actions.subscribe')
-              }
-              withArrow
-            >
-              <Button
-                color={article.subscribed ? 'gray' : undefined}
-                loading={props.isSubscribersLoading}
-                loaderPosition='center'
-                onClick={() =>
-                  user
-                    ? article.subscribed
-                      ? handleUnsubscribeSubmit({ userId: article.user.id })
-                      : handleSubscribeSubmit({ userId: article.user.id })
-                    : openAuthModal()
-                }
-                compact
-              >
-                {article.subscribed ? (
-                  <IconBellOff size={16} />
-                ) : (
-                  <IconBell size={16} />
-                )}
-              </Button>
-            </Tooltip>
-          </Group>
+          <AvatarWithDateText {...article} />
           <CustomActions
             data={article}
             actions={[viewArticleAction, ...props.actions]}

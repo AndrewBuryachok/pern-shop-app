@@ -28,10 +28,6 @@ import {
   useAddFriendMutation,
   useRemoveFriendMutation,
 } from '../friends/friends.api';
-import {
-  useAddSubscriberMutation,
-  useRemoveSubscriberMutation,
-} from '../subscribers/subscribers.api';
 import ProfileAvatar from '../../common/components/ProfileAvatar';
 import LinkedAvatar from '../../common/components/LinkedAvatar';
 import RolesBadge from '../../common/components/RolesBadge';
@@ -43,7 +39,6 @@ import CustomAnchor from '../../common/components/CustomAnchor';
 import { openAuthModal } from '../auth/AuthModal';
 import { editUserProfileAction } from './EditUserProfileModal';
 import { openViewUserFriendsModal } from './ViewUserFriendsModal';
-import { openViewUserSubscribersModal } from './ViewUserSubscribersModal';
 import { colors } from '../../common/constants';
 
 type Props = {
@@ -67,18 +62,6 @@ export default function UserProfile({ data: user }: Props) {
     await removeFriend({ userId: user.id });
   };
 
-  const [addSubscriber] = useAddSubscriberMutation();
-
-  const handleSubscribe = async () => {
-    await addSubscriber({ userId: user.id });
-  };
-
-  const [removeSubscriber] = useRemoveSubscriberMutation();
-
-  const handleUnsubscribe = async () => {
-    await removeSubscriber({ userId: user.id });
-  };
-
   const contacts = [
     {
       icon: IconBrandTwitch,
@@ -94,11 +77,6 @@ export default function UserProfile({ data: user }: Props) {
 
   const socials = [
     { label: 'friends', users: user.friends, open: openViewUserFriendsModal },
-    {
-      label: 'subscribers',
-      users: user.subscribers,
-      open: openViewUserSubscribersModal,
-    },
   ];
 
   const stats = [
@@ -198,21 +176,6 @@ export default function UserProfile({ data: user }: Props) {
                 {user.friends.find((u) => u.id === me?.id)
                   ? t('actions.unfriend')
                   : t('actions.friend')}
-              </Button>
-              <Button
-                onClick={
-                  me
-                    ? user.subscribers.find((u) => u.id === me.id)
-                      ? handleUnsubscribe
-                      : handleSubscribe
-                    : openAuthModal
-                }
-                color={user.subscribers.find((u) => u.id === me?.id) && 'gray'}
-                compact
-              >
-                {user.subscribers.find((u) => u.id === me?.id)
-                  ? t('actions.unsubscribe')
-                  : t('actions.subscribe')}
               </Button>
             </Stack>
           </Paper>

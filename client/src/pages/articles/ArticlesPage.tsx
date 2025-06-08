@@ -5,7 +5,6 @@ import {
   useGetLikedArticlesQuery,
   useGetMainArticlesQuery,
   useGetMyArticlesQuery,
-  useGetSubscribedArticlesQuery,
 } from '../../features/articles/articles.api';
 import ArticlesList from '../../features/articles/ArticlesList';
 import {
@@ -31,7 +30,6 @@ export default function ArticlesPage() {
   const response = {
     main: useGetMainArticlesQuery,
     my: useGetMyArticlesQuery,
-    subscribed: useGetSubscribedArticlesQuery,
     liked: useGetLikedArticlesQuery,
     commented: useGetCommentedArticlesQuery,
     all: useGetAllArticlesQuery,
