@@ -15,7 +15,9 @@ export default function CustomHead(props: Props) {
 
   const page = t(`navbar.${active[1]}`);
 
-  useDocumentTitle(t(`pages.${active[2] || 'main'}`) + ' ' + page);
+  const tab = t(`pages.${active[2] || 'main'}`);
+
+  useDocumentTitle(tab + ' ' + page);
 
   return (
     <Group spacing={0} position='apart'>

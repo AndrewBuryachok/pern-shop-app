@@ -11,6 +11,7 @@ import {
 } from '@mantine/core';
 import { useDocumentTitle } from '@mantine/hooks';
 import {
+  IconAd,
   IconArchive,
   IconArticle,
   IconBasket,
@@ -24,12 +25,14 @@ import {
   IconBusinessplan,
   IconCashBanknote,
   IconChartBar,
+  IconChecklist,
   IconCreditCard,
   IconExchange,
   IconFileDollar,
   IconFriends,
   IconMailbox,
   IconMap,
+  IconMessages,
   IconNews,
   IconReportMoney,
   IconScript,
@@ -57,7 +60,7 @@ export default function Home() {
     },
     {
       title: 'chats',
-      icon: IconMailbox,
+      icon: IconMessages,
       sub: '/my',
     },
     {
@@ -78,13 +81,13 @@ export default function Home() {
       sub: '/my',
     },
     {
-      title: 'payments',
-      icon: IconCashBanknote,
+      title: 'exchanges',
+      icon: IconExchange,
       sub: '/my',
     },
     {
-      title: 'exchanges',
-      icon: IconExchange,
+      title: 'payments',
+      icon: IconCashBanknote,
       sub: '/my',
     },
     {
@@ -164,6 +167,14 @@ export default function Home() {
     {
       title: 'hires',
       icon: IconScript,
+    },
+    {
+      title: 'adverts',
+      icon: IconAd,
+    },
+    {
+      title: 'tasks',
+      icon: IconChecklist,
     },
   ];
 

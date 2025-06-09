@@ -6,6 +6,7 @@ import {
   IconLock,
   IconLogin,
   IconLogout,
+  IconMessages,
   IconUser,
 } from '@tabler/icons';
 import { useAppDispatch } from '../../app/hooks';
@@ -42,7 +43,10 @@ export default function AccountMenu() {
     dispatch(unsubscribe(user!.id));
   };
 
-  const links = [{ label: 'friends', icon: IconFriends }];
+  const links = [
+    { label: 'friends', icon: IconFriends },
+    { label: 'chats', icon: IconMessages },
+  ];
 
   return (
     <Menu offset={4} position='bottom-end'>

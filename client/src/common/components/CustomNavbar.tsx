@@ -14,7 +14,6 @@ import {
   IconHome,
   IconMailbox,
   IconMap,
-  IconMessages,
   IconNews,
   IconUsers,
   IconWallet,
@@ -55,11 +54,6 @@ export default function CustomNavbar(props: Props) {
       icon: IconChartBar,
     },
     {
-      label: 'chats',
-      icon: IconMessages,
-      sub: '/my',
-    },
-    {
       label: 'wallet',
       icon: IconWallet,
       nested: [
@@ -76,30 +70,6 @@ export default function CustomNavbar(props: Props) {
         { label: 'goods' },
         { label: 'purchases', sub: '/my' },
         { label: 'deliveries' },
-      ],
-    },
-    {
-      label: 'shops',
-      icon: IconBuildingStore,
-    },
-    {
-      label: 'markets',
-      icon: IconBuildingCircus,
-      nested: [
-        { label: 'rents' },
-        { label: 'stalls' },
-        { label: 'markets-tags' },
-        { label: 'markets' },
-      ],
-    },
-    {
-      label: 'storages',
-      icon: IconBuildingWarehouse,
-      nested: [
-        { label: 'leases' },
-        { label: 'cells' },
-        { label: 'storages-tags' },
-        { label: 'storages' },
       ],
     },
     {
@@ -123,10 +93,6 @@ export default function CustomNavbar(props: Props) {
       icon: IconMap,
     },
     {
-      label: 'farms',
-      icon: IconBuildingCottage,
-    },
-    {
       label: 'towns',
       icon: IconBuildingSkyscraper,
       nested: [
@@ -134,6 +100,34 @@ export default function CustomNavbar(props: Props) {
         { label: 'residents', sub: '/my' },
         { label: 'invitations', sub: '/sent' },
         { label: 'applications', sub: '/sent' },
+      ],
+    },
+    {
+      label: 'farms',
+      icon: IconBuildingCottage,
+    },
+    {
+      label: 'shops',
+      icon: IconBuildingStore,
+    },
+    {
+      label: 'markets',
+      icon: IconBuildingCircus,
+      nested: [
+        { label: 'rents' },
+        { label: 'stalls' },
+        { label: 'markets-tags' },
+        { label: 'markets' },
+      ],
+    },
+    {
+      label: 'storages',
+      icon: IconBuildingWarehouse,
+      nested: [
+        { label: 'leases' },
+        { label: 'cells' },
+        { label: 'storages-tags' },
+        { label: 'storages' },
       ],
     },
     {
@@ -207,9 +201,7 @@ export default function CustomNavbar(props: Props) {
                     />
                   }
                   component={Link}
-                  to={`/${link.label === 'home' ? '' : link.label}${
-                    link.sub || ''
-                  }`}
+                  to={`/${link.label === 'home' ? '' : link.label}`}
                   active={link.label === active}
                   onClick={() =>
                     notifications
