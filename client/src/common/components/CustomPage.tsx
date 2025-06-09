@@ -1,4 +1,6 @@
+import { useEffect } from 'react';
 import { Container, Stack } from '@mantine/core';
+import { useScrollIntoView } from '@mantine/hooks';
 import { IPage } from '../interfaces';
 import CustomNav from './CustomNav';
 import CustomHead from './CustomHead';
@@ -7,8 +9,17 @@ import CustomPagination from './CustomPagination';
 type Props<T> = IPage<T> & { size: 'sm' | 'lg' };
 
 export default function CustomPage<T>(props: Props<T>) {
+  const { scrollIntoView, targetRef } = useScrollIntoView<HTMLDivElement>({
+    duration: 0,
+    offset: 84,
+  });
+
+  useEffect(() => {
+    scrollIntoView();
+  }, [props.search.page]);
+
   return (
-    <Container size={props.size} px={0}>
+    <Container ref={targetRef} size={props.size} px={0}>
       <Stack spacing={8}>
         <CustomNav {...props} />
         <CustomHead {...props} />
