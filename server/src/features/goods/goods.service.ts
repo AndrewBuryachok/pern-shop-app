@@ -119,20 +119,10 @@ export class GoodsService {
     return good.states;
   }
 
-  async selectGoodRating(goodId: number): Promise<{ rate: number }> {
+  async selectGoodPurchases(goodId: number): Promise<Purchase[]> {
     const good = await this.goodsRepository
       .createQueryBuilder('good')
       .leftJoin('good.purchases', 'purchase')
-      .where('good.id = :goodId', { goodId })
-      .select('AVG(purchase.rate)', 'rate')
-      .getRawOne();
-    return { rate: +good.rate };
-  }
-
-  async selectGoodReviews(goodId: number): Promise<Purchase[]> {
-    const good = await this.goodsRepository
-      .createQueryBuilder('good')
-      .leftJoin('good.purchases', 'purchase', 'purchase.rate IS NOT NULL')
       .leftJoin('purchase.card', 'card')
       .leftJoin('card.account', 'account')
       .leftJoin('card.user', 'user')
@@ -148,7 +138,7 @@ export class GoodsService {
         'user.id',
         'user.nick',
         'user.avatar',
-        'purchase.rate',
+        'purchase.amount',
         'purchase.createdAt',
       ])
       .getOne();
@@ -512,12 +502,6 @@ export class GoodsService {
       .leftJoin('storageCard.user', 'storageUser')
       .loadRelationCountAndMap('good.states', 'good.states')
       .loadRelationCountAndMap('good.purchases', 'good.purchases')
-      .loadRelationCountAndMap(
-        'good.reviews',
-        'good.purchases',
-        'purchase',
-        (qb) => qb.where('purchase.rate IS NOT NULL'),
-      )
       .where('good.completedAt IS NULL')
       .andWhere(
         new Brackets((qb) =>

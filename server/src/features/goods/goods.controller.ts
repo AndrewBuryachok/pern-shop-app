@@ -71,15 +71,9 @@ export class GoodsController {
   }
 
   @Public()
-  @Get(':goodId/rating')
-  selectGoodRating(@Param() { goodId }: GoodIdDto): Promise<{ rate: number }> {
-    return this.goodsService.selectGoodRating(goodId);
-  }
-
-  @Public()
-  @Get(':goodId/reviews')
-  selectGoodReviews(@Param() { goodId }: GoodIdDto): Promise<Purchase[]> {
-    return this.goodsService.selectGoodReviews(goodId);
+  @Get(':goodId/purchases')
+  selectGoodPurchases(@Param() { goodId }: GoodIdDto): Promise<Purchase[]> {
+    return this.goodsService.selectGoodPurchases(goodId);
   }
 
   @Post('shops')
