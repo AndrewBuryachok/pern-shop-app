@@ -1,7 +1,8 @@
 import { emptyApi } from '../../app/empty.api';
 import { IRequest, IResponse } from '../../common/interfaces';
-import { Good, GoodReview } from './good.model';
+import { Good } from './good.model';
 import { State } from '../states/state.model';
+import { MdPurchase } from '../purchases/purchase.model';
 import {
   CreateMarketGoodDto,
   CreateShopGoodDto,
@@ -50,15 +51,9 @@ export const goodsApi = emptyApi.injectEndpoints({
       }),
       providesTags: ['Good'],
     }),
-    selectGoodRating: build.query<{ rate: number }, number>({
+    selectGoodPurchases: build.query<MdPurchase[], number>({
       query: (goodId) => ({
-        url: `/goods/${goodId}/rating`,
-      }),
-      providesTags: ['Purchase'],
-    }),
-    selectGoodReviews: build.query<GoodReview[], number>({
-      query: (goodId) => ({
-        url: `/goods/${goodId}/reviews`,
+        url: `/goods/${goodId}/purchases`,
       }),
       providesTags: ['Purchase'],
     }),
@@ -126,8 +121,7 @@ export const {
   useGetPlacedGoodsQuery,
   useGetAllGoodsQuery,
   useSelectGoodStatesQuery,
-  useSelectGoodRatingQuery,
-  useSelectGoodReviewsQuery,
+  useSelectGoodPurchasesQuery,
   useCreateShopGoodMutation,
   useCreateMarketGoodMutation,
   useCreateStorageGoodMutation,

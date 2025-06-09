@@ -10,7 +10,7 @@ import CustomAnchor from '../../common/components/CustomAnchor';
 import DateText from '../../common/components/DateText';
 import CustomActions from '../../common/components/CustomActions';
 import { viewGoodAction } from './ViewGoodModal';
-import { openViewGoodReviewsModal } from './ViewGoodReviewsModal';
+import { openViewGoodPurchasesModal } from './ViewGoodPurchasesModal';
 import { parseThingAmount } from '../../common/utils';
 
 type Props = ITableWithActions<Good>;
@@ -25,7 +25,7 @@ export default function GoodsTable({ actions = [], ...props }: Props) {
         'amount',
         'price',
         'place',
-        'reviews',
+        'purchases',
         'created',
         'action',
       ]}
@@ -62,8 +62,8 @@ export default function GoodsTable({ actions = [], ...props }: Props) {
           </td>
           <td>
             <CustomAnchor
-              text={`${good.reviews}`}
-              open={() => openViewGoodReviewsModal(good)}
+              text={`${good.purchases}`}
+              open={() => openViewGoodPurchasesModal(good)}
             />
           </td>
           <td>

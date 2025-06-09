@@ -14,9 +14,12 @@ export interface SmPurchaseWithPrice extends SmPurchase {
   good: SmGood;
 }
 
-export interface Purchase extends SmPurchase {
-  good: MdGood;
+export interface MdPurchase extends SmPurchase {
   card: MdCard;
   createdAt: Date;
+}
+
+export interface Purchase extends MdPurchase {
+  good: MdGood;
   rate?: number;
 }

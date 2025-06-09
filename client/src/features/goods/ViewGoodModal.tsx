@@ -1,21 +1,10 @@
 import { t } from 'i18next';
 import { useTranslation } from 'react-i18next';
-import {
-  Group,
-  Input,
-  Rating,
-  Select,
-  Stack,
-  Textarea,
-  TextInput,
-} from '@mantine/core';
+import { Select, Stack, Textarea, TextInput } from '@mantine/core';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { Good } from './good.model';
-import {
-  useSelectGoodRatingQuery,
-  useSelectGoodStatesQuery,
-} from './goods.api';
+import { useSelectGoodStatesQuery } from './goods.api';
 import RefetchAction from '../../common/components/RefetchAction';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import ThingImage from '../../common/components/ThingImage';
@@ -38,7 +27,6 @@ export default function ViewGoodModal({ data: good }: Props) {
   const [t] = useTranslation();
 
   const { data: states, ...statesResponse } = useSelectGoodStatesQuery(good.id);
-  const { data: rating, ...ratingResponse } = useSelectGoodRatingQuery(good.id);
 
   return (
     <Stack spacing={8}>
@@ -134,12 +122,6 @@ export default function ViewGoodModal({ data: good }: Props) {
         value={parseTime(good.createdAt)}
         readOnly
       />
-      <Input.Wrapper label={t('columns.rate')}>
-        <Group spacing={8}>
-          <Rating value={rating?.rate} readOnly />
-          <RefetchAction {...ratingResponse} />
-        </Group>
-      </Input.Wrapper>
     </Stack>
   );
 }
