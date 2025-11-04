@@ -4,6 +4,7 @@ import * as request from 'supertest';
 import { AppModule } from '../src/app.module';
 import { appConfig } from '../src/config/app.config';
 import { Tokens } from '../src/features/auth/auth.interface';
+import { Item } from '../src/features/things/item.enum';
 
 jest.mock('mqtt', () => ({
   connect: jest.fn(() => ({
@@ -2164,7 +2165,7 @@ describe('With Auth', () => {
         .set('Authorization', `Bearer ${user.access}`)
         .send({
           rentId,
-          item: 1,
+          item: Item.STONE,
           description: '',
           amount: 2,
           intake: 1,
@@ -2180,7 +2181,7 @@ describe('With Auth', () => {
         .set('Authorization', `Bearer ${user.access}`)
         .send({
           rentId,
-          item: 1,
+          item: Item.STONE,
           description: '',
           amount: 2,
           intake: 1,
@@ -2254,7 +2255,7 @@ describe('With Auth', () => {
         .set('Authorization', `Bearer ${user.access}`)
         .send({
           leaseId,
-          item: 1,
+          item: Item.STONE,
           description: '',
           amount: 2,
           intake: 1,
@@ -2270,7 +2271,7 @@ describe('With Auth', () => {
         .set('Authorization', `Bearer ${user.access}`)
         .send({
           leaseId,
-          item: 1,
+          item: Item.STONE,
           description: '',
           amount: 2,
           intake: 1,
@@ -2294,7 +2295,7 @@ describe('With Auth', () => {
         .set('Authorization', `Bearer ${user.access}`)
         .send({
           shopId,
-          item: 1,
+          item: Item.STONE,
           description: '',
           amount: 2,
           intake: 1,
@@ -2310,7 +2311,7 @@ describe('With Auth', () => {
         .set('Authorization', `Bearer ${user.access}`)
         .send({
           shopId,
-          item: 1,
+          item: Item.STONE,
           description: '',
           amount: 2,
           intake: 1,
@@ -2395,7 +2396,7 @@ describe('With Auth', () => {
         .patch(`/goods/${shopGoodsId[1]}`)
         .set('Authorization', `Bearer ${user.access}`)
         .send({
-          item: 1,
+          item: Item.STONE,
           description: '',
           amount: 2,
           intake: 1,
@@ -2504,7 +2505,7 @@ describe('With Auth', () => {
         .patch(`/goods/${marketGoodsId[1]}`)
         .set('Authorization', `Bearer ${user.access}`)
         .send({
-          item: 1,
+          item: Item.STONE,
           description: '',
           amount: 2,
           intake: 1,
@@ -2627,7 +2628,7 @@ describe('With Auth', () => {
         .patch(`/goods/${storageGoodsId[1]}`)
         .set('Authorization', `Bearer ${user.access}`)
         .send({
-          item: 1,
+          item: Item.STONE,
           description: '',
           amount: 2,
           intake: 1,
@@ -3165,7 +3166,7 @@ describe('With Auth', () => {
         .send({
           stationId,
           cardId,
-          item: 1,
+          item: Item.STONE,
           description: '',
           amount: 1,
           intake: 1,
@@ -3182,7 +3183,7 @@ describe('With Auth', () => {
         .send({
           stationId,
           cardId,
-          item: 1,
+          item: Item.STONE,
           description: '',
           amount: 1,
           intake: 1,
@@ -3211,7 +3212,7 @@ describe('With Auth', () => {
         .patch(`/orders/${ordersId[0]}`)
         .set('Authorization', `Bearer ${user.access}`)
         .send({
-          item: 1,
+          item: Item.STONE,
           description: '',
           amount: 1,
           intake: 1,
@@ -3297,7 +3298,7 @@ describe('With Auth', () => {
           fromStationId: stationId,
           toStationId: stationId,
           cardId,
-          item: 1,
+          item: Item.STONE,
           description: '',
           amount: 1,
           intake: 1,
@@ -3315,7 +3316,7 @@ describe('With Auth', () => {
           fromStationId: stationId,
           toStationId: stationId,
           cardId,
-          item: 1,
+          item: Item.STONE,
           description: '',
           amount: 1,
           intake: 1,
@@ -3344,7 +3345,7 @@ describe('With Auth', () => {
         .patch(`/haulages/${haulagesId[0]}`)
         .set('Authorization', `Bearer ${user.access}`)
         .send({
-          item: 1,
+          item: Item.STONE,
           description: '',
           amount: 1,
           intake: 1,
@@ -3437,7 +3438,7 @@ describe('With Auth', () => {
         .send({
           stationId,
           cardId,
-          item: 1,
+          item: Item.STONE,
           description: '',
           amount: 1,
           intake: 1,

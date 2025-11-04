@@ -7,11 +7,12 @@ import {
   IsKit,
   IsDescription,
 } from '../../common/decorators';
+import { Item } from './item.enum';
 
 export abstract class CreateThingDto {
   @ApiProperty()
   @IsItem()
-  item: number;
+  item: Item;
 
   @ApiProperty()
   @IsDescription()

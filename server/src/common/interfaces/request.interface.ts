@@ -9,6 +9,7 @@ import {
 } from 'class-validator';
 import { Transform, Type } from 'class-transformer';
 import { Role } from '../../features/users/role.enum';
+import { Item } from '../../features/things/item.enum';
 import { Status } from '../../features/transportations/status.enum';
 import { Mark } from '../../features/polls/mark.enum';
 import { Result } from '../../features/polls/result.enum';
@@ -126,9 +127,8 @@ export class Request {
 
   @ApiProperty({ required: false })
   @IsOptional()
-  @IsInt()
-  @Type(() => Number)
-  item?: number;
+  @IsEnum(Item)
+  item?: Item;
 
   @ApiProperty({ required: false })
   @IsOptional()

@@ -1,5 +1,6 @@
 import {
   IsBoolean,
+  IsEnum,
   IsInt,
   IsNotEmpty,
   IsPositive,
@@ -22,7 +23,6 @@ import {
   MAX_DESCRIPTION_LENGTH,
   MAX_ID_VALUE,
   MAX_INTAKE_VALUE,
-  MAX_ITEM_VALUE,
   MAX_KIT_VALUE,
   MAX_LINK_LENGTH,
   MAX_MARK_VALUE,
@@ -39,6 +39,7 @@ import {
   MIN_NICK_LENGTH,
   MIN_PASSWORD_LENGTH,
 } from '../constants';
+import { Item } from '../../features/things/item.enum';
 
 export const IsNick = () => (target: object, key: string) => {
   IsNotEmpty()(target, key);
@@ -161,9 +162,7 @@ export const IsColor = () => (target: object, key: string) => {
 
 export const IsItem = () => (target: object, key: string) => {
   IsNotEmpty()(target, key);
-  IsInt()(target, key);
-  IsPositive()(target, key);
-  Max(MAX_ITEM_VALUE)(target, key);
+  IsEnum(Item)(target, key);
 };
 
 export const IsKit = () => (target: object, key: string) => {

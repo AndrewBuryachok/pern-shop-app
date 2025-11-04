@@ -1,16 +1,16 @@
-import { Faker } from '@faker-js/faker';
+import { faker } from '@faker-js/faker';
 import { define } from 'typeorm-seeding';
 import { Good } from '../../features/goods/good.entity';
 import {
   MAX_AMOUNT_VALUE,
   MAX_INTAKE_VALUE,
-  MAX_ITEM_VALUE,
   MAX_KIT_VALUE,
 } from '../../common/constants';
+import { Item } from '../../features/things/item.enum';
 
-define(Good, (faker: Faker) => {
+define(Good, () => {
   const good = new Good();
-  good.item = Math.floor(Math.random() * MAX_ITEM_VALUE) + 1;
+  good.item = faker.helpers.arrayElement(Object.values(Item));
   good.description = '';
   good.amount = Math.floor(Math.random() * MAX_AMOUNT_VALUE) + 1;
   good.intake = Math.floor(Math.random() * MAX_INTAKE_VALUE) + 1;

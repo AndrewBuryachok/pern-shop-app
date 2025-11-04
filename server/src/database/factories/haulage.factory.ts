@@ -1,18 +1,18 @@
-import { Faker } from '@faker-js/faker';
+import { faker } from '@faker-js/faker';
 import { define } from 'typeorm-seeding';
 import { Haulage } from '../../features/haulages/haulage.entity';
 import { Status } from '../../features/transportations/status.enum';
 import {
   MAX_AMOUNT_VALUE,
   MAX_INTAKE_VALUE,
-  MAX_ITEM_VALUE,
   MAX_KIT_VALUE,
   MAX_RATE_VALUE,
 } from '../../common/constants';
+import { Item } from '../../features/things/item.enum';
 
-define(Haulage, (faker: Faker) => {
+define(Haulage, () => {
   const haulage = new Haulage();
-  haulage.item = Math.floor(Math.random() * MAX_ITEM_VALUE) + 1;
+  haulage.item = faker.helpers.arrayElement(Object.values(Item));
   haulage.description = '';
   haulage.amount = Math.floor(Math.random() * MAX_AMOUNT_VALUE) + 1;
   haulage.intake = Math.floor(Math.random() * MAX_INTAKE_VALUE) + 1;
