@@ -5,7 +5,7 @@ import DoubleText from './DoubleText';
 import { parseItem } from '../utils';
 
 type Props = {
-  item: number;
+  item: string;
   description?: string;
 };
 

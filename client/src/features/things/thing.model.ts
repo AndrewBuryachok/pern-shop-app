@@ -1,6 +1,6 @@
 export interface SmThingWithoutPrice {
   id: number;
-  item: number;
+  item: string;
   description: string;
   intake: number;
   kit: number;

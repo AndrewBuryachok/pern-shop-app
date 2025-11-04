@@ -1,5 +1,5 @@
 export interface CreateThingDto {
-  item: number;
+  item: string;
   description: string;
   amount: number;
   intake: number;

@@ -47,11 +47,7 @@ export default function EditHaulageModal({ data: haulage, hasRole }: Props) {
       price: haulage.price,
       card: `${haulage.fromHire.card.id}`,
     },
-    transformValues: ({ item, kit, card, ...rest }) => ({
-      ...rest,
-      item: +item,
-      kit: +kit,
-    }),
+    transformValues: ({ kit, card, ...rest }) => ({ ...rest, kit: +kit }),
     validate: {
       card: (_, values) =>
         haulage.price < values.price &&
@@ -84,7 +80,7 @@ export default function EditHaulageModal({ data: haulage, hasRole }: Props) {
       <Select
         label={t('columns.item')}
         placeholder={t('columns.item')}
-        icon={form.values.item && <ThingImage item={+form.values.item} />}
+        icon={form.values.item && <ThingImage item={form.values.item} />}
         iconWidth={48}
         itemComponent={ThingsItem}
         data={selectItems()}

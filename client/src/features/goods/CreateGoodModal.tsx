@@ -62,12 +62,11 @@ export default function CreateGoodModal({ hasRole }: Props) {
       kit: '',
       price: 1,
     },
-    transformValues: ({ shop, rent, lease, item, kit, ...rest }) => ({
+    transformValues: ({ shop, rent, lease, kit, ...rest }) => ({
       ...rest,
       shopId: +shop,
       rentId: +rent,
       leaseId: +lease,
-      item: +item,
       kit: +kit,
     }),
   });
@@ -166,7 +165,7 @@ export default function CreateGoodModal({ hasRole }: Props) {
       <Select
         label={t('columns.item')}
         placeholder={t('columns.item')}
-        icon={form.values.item && <ThingImage item={+form.values.item} />}
+        icon={form.values.item && <ThingImage item={form.values.item} />}
         iconWidth={48}
         itemComponent={ThingsItem}
         data={selectItems()}

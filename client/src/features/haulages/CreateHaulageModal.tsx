@@ -62,7 +62,6 @@ export default function CreateHaulageModal({ hasRole }: Props) {
       toStation,
       user,
       card,
-      item,
       kit,
       ...rest
     }) => ({
@@ -70,7 +69,6 @@ export default function CreateHaulageModal({ hasRole }: Props) {
       fromStationId: +fromStation,
       toStationId: +toStation,
       cardId: +card,
-      item: +item,
       kit: +kit,
     }),
     validate: {
@@ -179,7 +177,7 @@ export default function CreateHaulageModal({ hasRole }: Props) {
       <Select
         label={t('columns.item')}
         placeholder={t('columns.item')}
-        icon={form.values.item && <ThingImage item={+form.values.item} />}
+        icon={form.values.item && <ThingImage item={form.values.item} />}
         iconWidth={48}
         itemComponent={ThingsItem}
         data={selectItems()}

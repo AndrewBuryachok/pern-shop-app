@@ -488,7 +488,7 @@ export default function SearchModal(props: Props) {
         <Select
           label={t('columns.item')}
           placeholder={t('columns.item')}
-          icon={form.values.item && <ThingImage item={+form.values.item} />}
+          icon={form.values.item && <ThingImage item={form.values.item} />}
           iconWidth={48}
           itemComponent={ThingsItem}
           data={selectItems()}

@@ -35,11 +35,7 @@ export default function EditGoodModal({ data: good }: Props) {
       kit: `${good.kit}`,
       price: good.price,
     },
-    transformValues: ({ item, kit, ...rest }) => ({
-      ...rest,
-      item: +item,
-      kit: +kit,
-    }),
+    transformValues: ({ kit, ...rest }) => ({ ...rest, kit: +kit }),
   });
 
   const [editGood, { isLoading }] = useEditGoodMutation();
@@ -65,7 +61,7 @@ export default function EditGoodModal({ data: good }: Props) {
       <Select
         label={t('columns.item')}
         placeholder={t('columns.item')}
-        icon={form.values.item && <ThingImage item={+form.values.item} />}
+        icon={form.values.item && <ThingImage item={form.values.item} />}
         iconWidth={48}
         itemComponent={ThingsItem}
         data={selectItems()}

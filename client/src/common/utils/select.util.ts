@@ -191,9 +191,9 @@ export const selectPollTypes = () =>
   }));
 
 export const selectItems = () =>
-  items.map((item, index) => ({
-    item: index + 1,
-    value: `${index + 1}`,
+  items.map((item) => ({
+    item: item,
+    value: item,
     label: t(`constants.items.${item}`),
   }));
 

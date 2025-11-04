@@ -6,7 +6,7 @@ import PriceText from './PriceText';
 import { parseThingAmount } from '../utils';
 
 interface Props extends React.ComponentPropsWithoutRef<'div'> {
-  item: number;
+  item: string;
   description?: string;
   amount: number;
   intake: number;

@@ -2,7 +2,7 @@ import { forwardRef } from 'react';
 import ThingImageWithText from './ThingImageWithText';
 
 interface Props extends React.ComponentPropsWithoutRef<'div'> {
-  item: number;
+  item: string;
   description?: string;
 }
 

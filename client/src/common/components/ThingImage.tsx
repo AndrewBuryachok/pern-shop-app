@@ -1,10 +1,13 @@
+import { items } from '../constants';
+
 type Props = {
-  item: number;
+  item: string;
 };
 
 export default function ThingImage(props: Props) {
-  const x = -32 * ((props.item - 1) % 30);
-  const y = -32 * Math.floor((props.item - 1) / 30);
+  const index = items.indexOf(props.item);
+  const x = -32 * (index % 30);
+  const y = -32 * Math.floor(index / 30);
 
   return (
     <div

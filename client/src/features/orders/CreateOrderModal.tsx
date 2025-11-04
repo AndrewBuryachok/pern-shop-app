@@ -55,11 +55,10 @@ export default function CreateOrderModal({ hasRole }: Props) {
       kit: '',
       price: 1,
     },
-    transformValues: ({ station, user, card, item, kit, ...rest }) => ({
+    transformValues: ({ station, user, card, kit, ...rest }) => ({
       ...rest,
       stationId: +station,
       cardId: +card,
-      item: +item,
       kit: +kit,
     }),
     validate: {
@@ -153,7 +152,7 @@ export default function CreateOrderModal({ hasRole }: Props) {
       <Select
         label={t('columns.item')}
         placeholder={t('columns.item')}
-        icon={form.values.item && <ThingImage item={+form.values.item} />}
+        icon={form.values.item && <ThingImage item={form.values.item} />}
         iconWidth={48}
         itemComponent={ThingsItem}
         data={selectItems()}

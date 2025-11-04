@@ -5,7 +5,7 @@ import { MdStall } from '../../features/stalls/stall.model';
 import { MdCell } from '../../features/cells/cell.model';
 import { MdBox } from '../../features/boxes/box.model';
 import { SmPurchaseWithoutPrice } from '../../features/purchases/purchase.model';
-import { Color, items, kits, statuses } from '../constants';
+import { Color, kits, statuses } from '../constants';
 
 type Coordinates = {
   x: number;
@@ -47,8 +47,7 @@ export const parseCell = (cell: MdCell) =>
 export const parseBox = (box: MdBox) =>
   `${parsePlace(box.station)} #${box.name}`;
 
-export const parseItem = (item: number) =>
-  t(`constants.items.${items[item - 1]}`);
+export const parseItem = (item: string) => t(`constants.items.${item}`);
 
 export const parseThingAmount = (data: {
   amount: number;
