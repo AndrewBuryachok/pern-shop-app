@@ -1,9 +1,10 @@
-import { Faker } from '@faker-js/faker';
+import { faker } from '@faker-js/faker';
 import { define } from 'typeorm-seeding';
 import { User } from '../../features/users/user.entity';
-import { MAX_BACKGROUND_VALUE, MAX_ROLE_VALUE } from '../../common/constants';
+import { Role } from '../../features/users/role.enum';
+import { MAX_BACKGROUND_VALUE } from '../../common/constants';
 
-define(User, (faker: Faker) => {
+define(User, () => {
   const user = new User();
   user.nick = faker.name.firstName();
   user.avatar = '';
@@ -17,6 +18,6 @@ define(User, (faker: Faker) => {
   if (!!Math.floor(Math.random() * 2)) {
     user.youtube = faker.name.firstName();
   }
-  user.roles = [Math.floor(Math.random() * MAX_ROLE_VALUE) + 1];
+  user.roles = [faker.helpers.arrayElement(Object.values(Role))];
   return user;
 });

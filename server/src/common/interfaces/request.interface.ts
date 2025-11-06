@@ -56,7 +56,7 @@ export class Request {
   @ApiProperty({ required: false })
   @IsOptional()
   @IsEnum(Role, { each: true })
-  @Transform(({ value }) => value?.split(',').map((e) => +e))
+  @Transform(({ value }) => value?.split(','))
   roles?: Role[];
 
   @ApiProperty({ required: false })

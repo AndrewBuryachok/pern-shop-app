@@ -31,7 +31,6 @@ import {
   MAX_PASSWORD_LENGTH,
   MAX_PRICE_VALUE,
   MAX_RATE_VALUE,
-  MAX_ROLE_VALUE,
   MAX_SUM_VALUE,
   MAX_TEXT_LENGTH,
   MIN_COORDINATE_VALUE,
@@ -39,6 +38,7 @@ import {
   MIN_NICK_LENGTH,
   MIN_PASSWORD_LENGTH,
 } from '../constants';
+import { Role } from '../../features/users/role.enum';
 import { Item } from '../../features/things/item.enum';
 
 export const IsNick = () => (target: object, key: string) => {
@@ -148,9 +148,7 @@ export const IsBackground = () => (target: object, key: string) => {
 
 export const IsRole = () => (target: object, key: string) => {
   IsNotEmpty()(target, key);
-  IsInt()(target, key);
-  IsPositive()(target, key);
-  Max(MAX_ROLE_VALUE)(target, key);
+  IsEnum(Role)(target, key);
 };
 
 export const IsColor = () => (target: object, key: string) => {

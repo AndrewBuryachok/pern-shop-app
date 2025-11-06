@@ -4,6 +4,7 @@ import * as request from 'supertest';
 import { AppModule } from '../src/app.module';
 import { appConfig } from '../src/config/app.config';
 import { Tokens } from '../src/features/auth/auth.interface';
+import { Role } from '../src/features/users/role.enum';
 import { Item } from '../src/features/things/item.enum';
 
 jest.mock('mqtt', () => ({
@@ -300,7 +301,7 @@ describe('With Auth', () => {
       return request(app.getHttpServer())
         .post(`/users/${user.id}/roles`)
         .set('Authorization', `Bearer ${admin.access}`)
-        .send({ userId: user.id, role: 1 })
+        .send({ role: Role.ADMIN })
         .expect('');
     });
 
@@ -308,7 +309,7 @@ describe('With Auth', () => {
       return request(app.getHttpServer())
         .delete(`/users/${user.id}/roles`)
         .set('Authorization', `Bearer ${admin.access}`)
-        .send({ userId: user.id, role: 1 })
+        .send({ role: Role.ADMIN })
         .expect('');
     });
   });

@@ -10,6 +10,7 @@ import {
   IsRole,
 } from '../../common/decorators';
 import { IsUserExists } from '../../common/constraints';
+import { Role } from './role.enum';
 
 export class UserIdDto {
   @ApiProperty()
@@ -76,7 +77,7 @@ export class UpdateUserTokenDto extends UserIdDto {
 export class UpdateUserRoleDto {
   @ApiProperty()
   @IsRole()
-  role: number;
+  role: Role;
 }
 
 export class ExtUpdateUserRoleDto extends UpdateUserRoleDto {
