@@ -23,7 +23,6 @@ export default function RemoveUserRoleModal({ data: user }: Props) {
       userId: user.id,
       role: '',
     },
-    transformValues: ({ role, ...rest }) => ({ ...rest, role: +role }),
   });
 
   const [removeUserRole, { isLoading }] = useRemoveUserRoleMutation();
@@ -49,7 +48,7 @@ export default function RemoveUserRoleModal({ data: user }: Props) {
         label={t('columns.role')}
         placeholder={t('columns.role')}
         itemComponent={RolesItem}
-        data={selectRoles().filter((role) => user.roles.includes(+role.value))}
+        data={selectRoles().filter((role) => user.roles.includes(role.value))}
         searchable
         required
         {...form.getInputProps('role')}

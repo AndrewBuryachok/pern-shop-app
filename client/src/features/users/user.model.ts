@@ -11,7 +11,7 @@ export interface TwitchUser extends SmUser {
 }
 
 export interface MdUser extends SmUser {
-  roles: number[];
+  roles: string[];
 }
 
 export interface User extends MdUser {

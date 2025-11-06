@@ -24,7 +24,7 @@ import {
   marks,
   results,
   resultsToColors,
-  roles,
+  Role,
   statuses,
 } from '../constants';
 
@@ -152,9 +152,9 @@ export const selectBackgrounds = () =>
   }));
 
 export const selectRoles = () =>
-  roles.map((role, index) => ({
-    role: `${index + 1}`,
-    value: `${index + 1}`,
+  Object.values(Role).map((role) => ({
+    role,
+    value: role,
     label: t(`constants.roles.${role}`),
   }));
 

@@ -1,9 +1,9 @@
 import { useTranslation } from 'react-i18next';
 import { Badge, Group } from '@mantine/core';
-import { roles, rolesToColors } from '../constants';
+import { Role, rolesToColors } from '../constants';
 
 type Props = {
-  roles: number[];
+  roles: string[];
 };
 
 export default function RolesBadge(props: Props) {
@@ -12,8 +12,12 @@ export default function RolesBadge(props: Props) {
   return (
     <Group spacing={4}>
       {props.roles.map((role) => (
-        <Badge key={role} size='sm' color={rolesToColors[role - 1]}>
-          {t(`constants.roles.${roles[role - 1]}`)}
+        <Badge
+          key={role}
+          size='sm'
+          color={rolesToColors[Object.values(Role).indexOf(role as Role)]}
+        >
+          {t(`constants.roles.${role}`)}
         </Badge>
       ))}
       {!props.roles.length && (

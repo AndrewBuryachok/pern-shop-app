@@ -1,24 +1,13 @@
 export enum Role {
-  ADMIN = 1,
-  INSPECTOR = 2,
-  MERCHANT = 3,
-  BANKER = 4,
-  SPAWN = 5,
-  HUB = 6,
-  END = 7,
-  STREAMER = 8,
+  ADMIN = 'admin',
+  INSPECTOR = 'inspector',
+  MERCHANT = 'merchant',
+  BANKER = 'banker',
+  SPAWN = 'spawn',
+  HUB = 'hub',
+  END = 'end',
+  STREAMER = 'streamer',
 }
-
-export const roles = [
-  'admin',
-  'inspector',
-  'merchant',
-  'banker',
-  'spawn',
-  'hub',
-  'end',
-  'streamer',
-];
 
 export const rolesToColors = [
   'red',

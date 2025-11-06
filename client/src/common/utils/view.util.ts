@@ -4,14 +4,13 @@ import { SmTag } from '../../features/tags/tag.model';
 import { Container } from '../../features/containers/container.model';
 import { MdThing } from '../../features/things/thing.model';
 import { State } from '../../features/states/state.model';
-import { Role, roles as allRoles } from '../constants';
 import { parseItem } from './parse.util';
 
-export const viewRoles = (roles: Role[]) =>
+export const viewRoles = (roles: string[]) =>
   roles.map((role) => ({
-    role: `${role}`,
-    value: `${role}`,
-    label: t(`constants.roles.${allRoles[role - 1]}`),
+    role,
+    value: role,
+    label: t(`constants.roles.${role}`),
     disabled: true,
   }));
 

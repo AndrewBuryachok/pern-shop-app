@@ -11,7 +11,7 @@ import CustomForm from '../../common/components/CustomForm';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import { RolesItem } from '../../common/components/RolesItem';
 import { selectRoles } from '../../common/utils';
-import { Color, roles } from '../../common/constants';
+import { Color, Role } from '../../common/constants';
 
 type Props = IModal<User>;
 
@@ -23,7 +23,6 @@ export default function AddUserRoleModal({ data: user }: Props) {
       userId: user.id,
       role: '',
     },
-    transformValues: ({ role, ...rest }) => ({ ...rest, role: +role }),
   });
 
   const [addUserRole, { isLoading }] = useAddUserRoleMutation();
@@ -49,7 +48,7 @@ export default function AddUserRoleModal({ data: user }: Props) {
         label={t('columns.role')}
         placeholder={t('columns.role')}
         itemComponent={RolesItem}
-        data={selectRoles().filter((role) => !user.roles.includes(+role.value))}
+        data={selectRoles().filter((role) => !user.roles.includes(role.value))}
         searchable
         required
         {...form.getInputProps('role')}
@@ -64,6 +63,6 @@ export const addUserRoleAction = {
       title: t('actions.add') + ' ' + t('columns.role'),
       children: <AddUserRoleModal data={user} />,
     }),
-  disable: (user: User) => user.roles.length === roles.length,
+  disable: (user: User) => user.roles.length === Object.values(Role).length,
   color: Color.GREEN,
 };

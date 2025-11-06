@@ -16,5 +16,5 @@ export interface EditUserPasswordDto extends UserIdDto {
 }
 
 export interface UpdateUserRoleDto extends UserIdDto {
-  role: number;
+  role: string;
 }
