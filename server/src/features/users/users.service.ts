@@ -27,6 +27,7 @@ export class UsersService {
     private usersRepository: Repository<User>,
     @Inject(forwardRef(() => MqttService))
     private mqttService: MqttService,
+    @Inject(forwardRef(() => TwitchService))
     private twitchService: TwitchService,
   ) {}
 
@@ -124,19 +125,6 @@ export class UsersService {
     );
   }
 
-  async selectTwitchUsers(): Promise<User[]> {
-    const users = await this.selectUsersQueryBuilder()
-      .where(':role = ANY(user.roles)', { role: Role.STREAMER })
-      .andWhere("user.twitch != ''")
-      .addSelect('user.twitch')
-      .getMany();
-    const nicks = users.map((user) => user.twitch.toLowerCase());
-    const streamers = await this.twitchService.getStreams(nicks);
-    return users.filter((user) =>
-      streamers.includes(user.twitch.toLowerCase()),
-    );
-  }
-
   async getSingleUser(nick: string): Promise<User> {
     const profile = await this.getUserProfile(nick);
     const stats = await this.getUserStatsAndRates(profile.id);
@@ -190,6 +178,20 @@ export class UsersService {
     if (user.nick !== dto.nick) {
       await this.checkNickNotUsed(dto.nick);
     }
+    if (
+      user.roles.includes(Role.STREAMER) &&
+      user.twitch &&
+      user.twitch !== dto.twitch
+    ) {
+      await this.twitchService.unfollow(user.twitch);
+    }
+    if (
+      user.roles.includes(Role.STREAMER) &&
+      dto.twitch &&
+      dto.twitch !== user.twitch
+    ) {
+      await this.twitchService.follow(dto.twitch);
+    }
     await this.editProfile(user, dto);
     const body = await this.selectUsersQueryBuilder()
       .where('user.id = :id', { id: user.id })
@@ -217,6 +219,9 @@ export class UsersService {
     if (user.roles.includes(dto.role)) {
       throw new AppException(UserError.ALREADY_HAS_ROLE);
     }
+    if (dto.role === Role.STREAMER && user.twitch) {
+      await this.twitchService.follow(user.twitch);
+    }
     await this.addRole(user, dto.role);
   }
 
@@ -224,6 +229,9 @@ export class UsersService {
     const user = await this.usersRepository.findOneBy({ id: dto.userId });
     if (!user.roles.includes(dto.role)) {
       throw new AppException(UserError.NOT_HAS_ROLE);
+    }
+    if (dto.role === Role.STREAMER && user.twitch) {
+      await this.twitchService.unfollow(user.twitch);
     }
     await this.removeRole(user, dto.role);
   }
@@ -290,6 +298,10 @@ export class UsersService {
 
   findUserByNick(nick: string): Promise<User> {
     return this.usersRepository.findOneBy({ nick });
+  }
+
+  findUserByTwitch(twitch: string): Promise<User> {
+    return this.usersRepository.findOneBy({ twitch });
   }
 
   private async checkNickNotUsed(nick: string): Promise<void> {

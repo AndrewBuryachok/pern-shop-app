@@ -101,6 +101,14 @@ export class MqttService {
     return result;
   }
 
+  publishStreamer(id: number, twitch: string): void {
+    this.publishMessage(`streamers/${id}`, twitch, true);
+  }
+
+  unpublishStreamer(id: number): void {
+    this.publishMessage(`streamers/${id}`, '', true);
+  }
+
   publishNotification(
     id: number,
     toUserId: number,

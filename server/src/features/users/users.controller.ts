@@ -77,12 +77,6 @@ export class UsersController {
   }
 
   @Public()
-  @Get('twitch/select')
-  selectTwitchUsers(): Promise<User[]> {
-    return this.usersService.selectTwitchUsers();
-  }
-
-  @Public()
   @Get(':nick')
   getSingleUser(@Param() { nick }: UserNickDto): Promise<User> {
     return this.usersService.getSingleUser(nick);

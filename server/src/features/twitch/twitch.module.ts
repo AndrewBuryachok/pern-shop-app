@@ -1,9 +1,12 @@
-import { Module } from '@nestjs/common';
-import { HttpModule } from '@nestjs/axios';
+import { forwardRef, Module } from '@nestjs/common';
+import { MqttModule } from '../mqtt/mqtt.module';
+import { UsersModule } from '../users/users.module';
+import { TwitchController } from './twitch.controller';
 import { TwitchService } from './twitch.service';
 
 @Module({
-  imports: [HttpModule],
+  imports: [forwardRef(() => MqttModule), forwardRef(() => UsersModule)],
+  controllers: [TwitchController],
   providers: [TwitchService],
   exports: [TwitchService],
 })

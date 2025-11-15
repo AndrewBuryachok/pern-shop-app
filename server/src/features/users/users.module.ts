@@ -11,7 +11,7 @@ import { IsUserExists } from '../../common/constraints';
   imports: [
     TypeOrmModule.forFeature([User]),
     forwardRef(() => MqttModule),
-    TwitchModule,
+    forwardRef(() => TwitchModule),
   ],
   controllers: [UsersController],
   providers: [UsersService, IsUserExists],
