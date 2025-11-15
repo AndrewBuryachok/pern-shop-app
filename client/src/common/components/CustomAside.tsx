@@ -1,10 +1,10 @@
 import { useTranslation } from 'react-i18next';
 import { Aside, ScrollArea, Skeleton, Stack, Title } from '@mantine/core';
+import { useSelectAllUsersQuery } from '../../features/users/users.api';
 import {
-  useSelectAllUsersQuery,
-  useSelectTwitchUsersQuery,
-} from '../../features/users/users.api';
-import { getOnlineUsers } from '../../features/mqtt/mqtt.slice';
+  getOnlineStreamers,
+  getOnlineUsers,
+} from '../../features/mqtt/mqtt.slice';
 import CustomStream from './CustomStream';
 import AvatarWithSingleText from './AvatarWithSingleText';
 
@@ -15,10 +15,11 @@ type Props = {
 export default function CustomAside(props: Props) {
   const [t] = useTranslation();
 
-  const { data: streamers, isLoading: isStreamersLoading } =
-    useSelectTwitchUsersQuery();
-
   const { data: users, isLoading: isUsersLoading } = useSelectAllUsersQuery();
+
+  const live = getOnlineStreamers();
+
+  const liveUsers = users?.filter((user) => live[user.id]);
 
   const online = getOnlineUsers();
 
@@ -38,17 +39,17 @@ export default function CustomAside(props: Props) {
         >
           <Aside.Section component={ScrollArea} grow>
             <Stack spacing={8}>
-              {(!!streamers?.length || isStreamersLoading) && (
+              {(!!liveUsers?.length || isUsersLoading) && (
                 <Title order={5}>
-                  {t('aside.live')} - {streamers?.length || 0}
+                  {t('aside.live')} - {liveUsers?.length || 0}
                 </Title>
               )}
-              {isStreamersLoading &&
+              {isUsersLoading &&
                 [...Array(5).keys()].map((key) => (
                   <Skeleton key={key} height={32} />
                 ))}
-              {streamers?.map((user) => (
-                <CustomStream key={user.id} {...user} />
+              {liveUsers?.map((user) => (
+                <CustomStream key={user.id} {...user} twitch={live[user.id]} />
               ))}
               {(!!onlineUsers?.length || isUsersLoading) && (
                 <Title order={5}>

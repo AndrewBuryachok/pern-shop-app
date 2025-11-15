@@ -1,6 +1,6 @@
 import { emptyApi } from '../../app/empty.api';
 import { IRequest, IResponse } from '../../common/interfaces';
-import { ExtUser, SmUser, TwitchUser, User } from './user.model';
+import { ExtUser, SmUser, User } from './user.model';
 import {
   EditUserPasswordDto,
   EditUserProfileDto,
@@ -58,12 +58,6 @@ export const usersApi = emptyApi.injectEndpoints({
       }),
       providesTags: ['Auth', 'User', 'Friend'],
     }),
-    selectTwitchUsers: build.query<TwitchUser[], void>({
-      query: () => ({
-        url: '/users/twitch/select',
-      }),
-      providesTags: ['User'],
-    }),
     getSingleUser: build.query<ExtUser, string>({
       query: (nick) => ({
         url: `/users/${nick}`,
@@ -113,7 +107,6 @@ export const {
   useSelectAllUsersQuery,
   useSelectNotCitizensUsersQuery,
   useSelectNotFriendsUsersQuery,
-  useSelectTwitchUsersQuery,
   useGetSingleUserQuery,
   useEditUserProfileMutation,
   useEditUserPasswordMutation,

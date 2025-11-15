@@ -15,6 +15,7 @@ const client = connect(import.meta.env.VITE_BROKER_URL);
 
 client.on('connect', () =>
   client.subscribe([
+    import.meta.env.VITE_BROKER_TOPIC + 'streamers/#',
     import.meta.env.VITE_BROKER_TOPIC + 'users/#',
     import.meta.env.VITE_BROKER_TOPIC + 'notifications/0/#',
     import.meta.env.VITE_BROKER_TOPIC + 'events/0/#',
@@ -25,9 +26,16 @@ client.on('message', (topic, message, packet) => {
   const userId = +topic.split('/')[2];
   const payload = message.toString();
   switch (topic.split('/')[1]) {
+    case 'streamers':
+      if (payload) {
+        store.dispatch(addStreamer([userId, payload]));
+      } else {
+        store.dispatch(removeStreamer(userId));
+      }
+      break;
     case 'users':
       if (payload) {
-        store.dispatch(addOnlineUser(userId));
+        store.dispatch(addUser(userId));
         if (!packet.retain) {
           store.dispatch(
             usersApi.util.updateQueryData(
@@ -42,7 +50,7 @@ client.on('message', (topic, message, packet) => {
           );
         }
       } else {
-        store.dispatch(removeOnlineUser(userId));
+        store.dispatch(removeUser(userId));
         const users = store.getState().mqtt.users;
         store.dispatch(
           usersApi.util.updateQueryData(
@@ -108,6 +116,7 @@ client.on('message', (topic, message, packet) => {
 });
 
 const initialState = {
+  streamers: {} as { [key: number]: string },
   users: [] as number[],
   notifications: {} as { [key: string]: string },
   unnotifications: {} as { [key: string]: string },
@@ -118,10 +127,16 @@ export const mqttSlice = createSlice({
   name: 'mqtt',
   initialState,
   reducers: {
-    addOnlineUser: (state, action: PayloadAction<number>) => {
+    addStreamer: (state, action: PayloadAction<[number, string]>) => {
+      state.streamers[action.payload[0]] = action.payload[1];
+    },
+    removeStreamer: (state, action: PayloadAction<number>) => {
+      delete state.streamers[action.payload];
+    },
+    addUser: (state, action: PayloadAction<number>) => {
       !state.users.includes(action.payload) && state.users.push(action.payload);
     },
-    removeOnlineUser: (state, action: PayloadAction<number>) => {
+    removeUser: (state, action: PayloadAction<number>) => {
       state.users = state.users.filter((user) => user !== action.payload);
     },
     addNotification: (state, action: PayloadAction<[string, string]>) => {
@@ -218,8 +233,10 @@ export const mqttSlice = createSlice({
 export default mqttSlice.reducer;
 
 export const {
-  addOnlineUser,
-  removeOnlineUser,
+  addStreamer,
+  removeStreamer,
+  addUser,
+  removeUser,
   addNotification,
   removeNotification,
   addUnnotification,
@@ -238,6 +255,9 @@ export const publishNotificationWithUser =
     dispatch(
       publishNotification([notification, getState().auth.user?.id || 0]),
     );
+
+export const getOnlineStreamers = () =>
+  useAppSelector((state) => state.mqtt.streamers);
 
 export const getOnlineUsers = () => useAppSelector((state) => state.mqtt.users);
 
