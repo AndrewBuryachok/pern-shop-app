@@ -8,7 +8,6 @@ export const MAX_CONTACT_LENGTH = 24;
 export const MAX_DESCRIPTION_LENGTH = 32;
 export const MAX_ACTIVITY_LENGTH = 24;
 export const MAX_TEXT_LENGTH = 1000;
-export const MAX_LINK_LENGTH = 256;
 export const MAX_SUM_VALUE = 30000;
 export const MIN_COORDINATE_VALUE = -1000;
 export const MAX_COORDINATE_VALUE = 1000;

@@ -1,9 +1,10 @@
 import { t } from 'i18next';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Select, Textarea } from '@mantine/core';
-import { useDebouncedValue } from '@mantine/hooks';
+import { FileInput, Select, Textarea } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
+import { IconPhoto } from '@tabler/icons';
 import {
   useCreateMyArticleMutation,
   useCreateUserArticleMutation,
@@ -15,13 +16,16 @@ import RefetchAction from '../../common/components/RefetchAction';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import CustomImage from '../../common/components/CustomImage';
 import { UsersItem } from '../../common/components/UsersItem';
-import { selectUsers } from '../../common/utils';
-import { MAX_LINK_LENGTH, MAX_TEXT_LENGTH } from '../../common/constants';
+import { selectUsers, uploadImage } from '../../common/utils';
+import { MAX_TEXT_LENGTH } from '../../common/constants';
 
 type Props = { hasRole: boolean };
 
 export default function CreateArticleModal({ hasRole }: Props) {
   const [t] = useTranslation();
+
+  const [image, setImage] = useState<File | null>(null);
+  const [imageError, setImageError] = useState<string | null>(null);
 
   const form = useForm({
     initialValues: {
@@ -34,15 +38,23 @@ export default function CreateArticleModal({ hasRole }: Props) {
     transformValues: ({ user, ...rest }) => ({ ...rest, userId: +user }),
   });
 
+  useEffect(() => {
+    if (image) {
+      uploadImage(image).then((link) =>
+        link
+          ? form.setFieldValue('image1', link)
+          : setImageError(t('errors.failed_upload_image')),
+      );
+    } else {
+      setImageError(null);
+    }
+  }, [image]);
+
   const { data: users, ...usersResponse } = useSelectAllUsersQuery(undefined, {
     skip: !hasRole,
   });
 
   const user = users?.find((user) => user.id === +form.values.user);
-
-  const [image1] = useDebouncedValue(form.values.image1, 500);
-  const [image2] = useDebouncedValue(form.values.image2, 500);
-  const [image3] = useDebouncedValue(form.values.image3, 500);
 
   const [createArticle, { isLoading }] = hasRole
     ? useCreateUserArticleMutation()
@@ -82,34 +94,17 @@ export default function CreateArticleModal({ hasRole }: Props) {
         maxLength={MAX_TEXT_LENGTH}
         {...form.getInputProps('text')}
       />
-      <Textarea
+      <FileInput
         label={t('columns.image')}
         placeholder={t('columns.image')}
-        autosize
-        maxLength={MAX_LINK_LENGTH}
-        {...form.getInputProps('image1')}
+        icon={<IconPhoto size={16} />}
+        value={image}
+        onChange={setImage}
+        error={imageError}
+        clearable
+        accept='image/jpeg,image/jpg,image/gif,image/png'
       />
-      {image1 && <CustomImage image={image1} />}
-      {image1 && (
-        <Textarea
-          label={t('columns.image')}
-          placeholder={t('columns.image')}
-          autosize
-          maxLength={MAX_LINK_LENGTH}
-          {...form.getInputProps('image2')}
-        />
-      )}
-      {image2 && <CustomImage image={image2} />}
-      {image2 && (
-        <Textarea
-          label={t('columns.image')}
-          placeholder={t('columns.image')}
-          autosize
-          maxLength={MAX_LINK_LENGTH}
-          {...form.getInputProps('image3')}
-        />
-      )}
-      {image3 && <CustomImage image={image3} />}
+      {form.values.image1 && <CustomImage image={form.values.image1} />}
     </CustomForm>
   );
 }

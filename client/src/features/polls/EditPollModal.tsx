@@ -1,7 +1,6 @@
 import { t } from 'i18next';
 import { useTranslation } from 'react-i18next';
-import { Select, Textarea, TextInput } from '@mantine/core';
-import { useDebouncedValue } from '@mantine/hooks';
+import { Input, Select, Textarea, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
@@ -13,12 +12,7 @@ import CustomForm from '../../common/components/CustomForm';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import CustomImage from '../../common/components/CustomImage';
 import { isUserNotHasRole, selectMarks } from '../../common/utils';
-import {
-  Color,
-  MAX_LINK_LENGTH,
-  MAX_TEXT_LENGTH,
-  Role,
-} from '../../common/constants';
+import { Color, MAX_TEXT_LENGTH, Role } from '../../common/constants';
 
 type Props = IModal<Poll>;
 
@@ -34,8 +28,6 @@ export default function EditPollModal({ data: poll }: Props) {
     },
     transformValues: ({ mark, ...rest }) => ({ ...rest, mark: +mark }),
   });
-
-  const [image] = useDebouncedValue(form.values.image, 500);
 
   const [editPoll, { isLoading }] = useEditPollMutation();
 
@@ -73,14 +65,11 @@ export default function EditPollModal({ data: poll }: Props) {
         required
         {...form.getInputProps('mark')}
       />
-      <Textarea
-        label={t('columns.image')}
-        placeholder={t('columns.image')}
-        autosize
-        maxLength={MAX_LINK_LENGTH}
-        {...form.getInputProps('image')}
-      />
-      {image && <CustomImage image={image} />}
+      {poll.image && (
+        <Input.Wrapper label={t('columns.image')}>
+          <CustomImage image={poll.image} />
+        </Input.Wrapper>
+      )}
     </CustomForm>
   );
 }

@@ -1,7 +1,6 @@
 import { t } from 'i18next';
 import { useTranslation } from 'react-i18next';
-import { Textarea, TextInput } from '@mantine/core';
-import { useDebouncedValue } from '@mantine/hooks';
+import { Input, Textarea, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
@@ -13,12 +12,7 @@ import CustomForm from '../../common/components/CustomForm';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import CustomImage from '../../common/components/CustomImage';
 import { isUserNotHasRole } from '../../common/utils';
-import {
-  Color,
-  MAX_LINK_LENGTH,
-  MAX_TEXT_LENGTH,
-  Role,
-} from '../../common/constants';
+import { Color, MAX_TEXT_LENGTH, Role } from '../../common/constants';
 
 type Props = IModal<Article>;
 
@@ -34,10 +28,6 @@ export default function EditArticleModal({ data: article }: Props) {
       image3: article.image3,
     },
   });
-
-  const [image1] = useDebouncedValue(form.values.image1, 500);
-  const [image2] = useDebouncedValue(form.values.image2, 500);
-  const [image3] = useDebouncedValue(form.values.image3, 500);
 
   const [editArticle, { isLoading }] = useEditArticleMutation();
 
@@ -67,34 +57,21 @@ export default function EditArticleModal({ data: article }: Props) {
         maxLength={MAX_TEXT_LENGTH}
         {...form.getInputProps('text')}
       />
-      <Textarea
-        label={t('columns.image')}
-        placeholder={t('columns.image')}
-        autosize
-        maxLength={MAX_LINK_LENGTH}
-        {...form.getInputProps('image1')}
-      />
-      {image1 && <CustomImage image={image1} />}
-      {image1 && (
-        <Textarea
-          label={t('columns.image')}
-          placeholder={t('columns.image')}
-          autosize
-          maxLength={MAX_LINK_LENGTH}
-          {...form.getInputProps('image2')}
-        />
+      {article.image1 && (
+        <Input.Wrapper label={t('columns.image')}>
+          <CustomImage image={article.image1} />
+        </Input.Wrapper>
       )}
-      {image2 && <CustomImage image={image2} />}
-      {image2 && (
-        <Textarea
-          label={t('columns.image')}
-          placeholder={t('columns.image')}
-          autosize
-          maxLength={MAX_LINK_LENGTH}
-          {...form.getInputProps('image3')}
-        />
+      {article.image2 && (
+        <Input.Wrapper label={t('columns.image')}>
+          <CustomImage image={article.image2} />
+        </Input.Wrapper>
       )}
-      {image3 && <CustomImage image={image3} />}
+      {article.image3 && (
+        <Input.Wrapper label={t('columns.image')}>
+          <CustomImage image={article.image3} />
+        </Input.Wrapper>
+      )}
     </CustomForm>
   );
 }

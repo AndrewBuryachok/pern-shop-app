@@ -325,7 +325,8 @@
   },
   "errors": {
     "incorrect_nick": "Incorrect nick",
-    "not_enough_balance": "Not enough balance"
+    "not_enough_balance": "Not enough balance",
+    "failed_upload_image": "Failed to upload image"
   },
   "notifications": {
     "title": "System",

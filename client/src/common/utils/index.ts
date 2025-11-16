@@ -7,6 +7,7 @@ export * from './view.util';
 export * from './select.util';
 export * from './scale.util';
 export * from './notification.util';
+export * from './upload.util';
 
 export const customMin = (required: number, optional?: number) =>
   optional === undefined ? required : Math.min(required, optional);

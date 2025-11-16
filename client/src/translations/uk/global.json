@@ -325,7 +325,8 @@
   },
   "errors": {
     "incorrect_nick": "Неправильний нік",
-    "not_enough_balance": "Не вистачає балансу"
+    "not_enough_balance": "Не вистачає балансу",
+    "failed_upload_image": "Не вдалося завантажити зображення"
   },
   "notifications": {
     "title": "Система",
