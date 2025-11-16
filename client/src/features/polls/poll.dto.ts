@@ -3,7 +3,7 @@ import { CreateReactionDto } from '../reactions/reaction.dto';
 export interface CreatePollDto {
   text: string;
   mark: number;
-  image: string;
+  images: string[];
 }
 
 export interface ExtCreatePollDto extends CreatePollDto {

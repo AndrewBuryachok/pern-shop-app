@@ -6,7 +6,7 @@ export interface Poll {
   user: SmUser;
   text: string;
   mark: number;
-  image: string;
+  images: string[];
   result: number;
   createdAt: Date;
   completedAt?: Date;

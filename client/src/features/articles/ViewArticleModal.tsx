@@ -5,7 +5,7 @@ import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { Article } from './article.model';
 import CustomAvatar from '../../common/components/CustomAvatar';
-import CustomImage from '../../common/components/CustomImage';
+import CustomCarousel from '../../common/components/CustomCarousel';
 import { parseTime } from '../../common/utils';
 import { Color } from '../../common/constants';
 
@@ -30,19 +30,9 @@ export default function ViewArticleModal({ data: article }: Props) {
         autosize
         readOnly
       />
-      {article.image1 && (
+      {!!article.images.length && (
         <Input.Wrapper label={t('columns.image')}>
-          <CustomImage image={article.image1} />
-        </Input.Wrapper>
-      )}
-      {article.image2 && (
-        <Input.Wrapper label={t('columns.image')}>
-          <CustomImage image={article.image2} />
-        </Input.Wrapper>
-      )}
-      {article.image3 && (
-        <Input.Wrapper label={t('columns.image')}>
-          <CustomImage image={article.image3} />
+          <CustomCarousel images={article.images} />
         </Input.Wrapper>
       )}
       <TextInput

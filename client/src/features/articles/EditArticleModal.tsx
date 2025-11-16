@@ -1,6 +1,6 @@
 import { t } from 'i18next';
 import { useTranslation } from 'react-i18next';
-import { Input, Textarea, TextInput } from '@mantine/core';
+import { Textarea, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
@@ -10,7 +10,6 @@ import { useEditArticleMutation } from './articles.api';
 import { EditArticleDto } from './article.dto';
 import CustomForm from '../../common/components/CustomForm';
 import CustomAvatar from '../../common/components/CustomAvatar';
-import CustomImage from '../../common/components/CustomImage';
 import { isUserNotHasRole } from '../../common/utils';
 import { Color, MAX_TEXT_LENGTH, Role } from '../../common/constants';
 
@@ -23,9 +22,7 @@ export default function EditArticleModal({ data: article }: Props) {
     initialValues: {
       articleId: article.id,
       text: article.text,
-      image1: article.image1,
-      image2: article.image2,
-      image3: article.image3,
+      images: article.images,
     },
   });
 
@@ -57,21 +54,6 @@ export default function EditArticleModal({ data: article }: Props) {
         maxLength={MAX_TEXT_LENGTH}
         {...form.getInputProps('text')}
       />
-      {article.image1 && (
-        <Input.Wrapper label={t('columns.image')}>
-          <CustomImage image={article.image1} />
-        </Input.Wrapper>
-      )}
-      {article.image2 && (
-        <Input.Wrapper label={t('columns.image')}>
-          <CustomImage image={article.image2} />
-        </Input.Wrapper>
-      )}
-      {article.image3 && (
-        <Input.Wrapper label={t('columns.image')}>
-          <CustomImage image={article.image3} />
-        </Input.Wrapper>
-      )}
     </CustomForm>
   );
 }

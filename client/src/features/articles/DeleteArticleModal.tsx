@@ -10,7 +10,7 @@ import { useDeleteArticleMutation } from './articles.api';
 import { DeleteArticleDto } from './article.dto';
 import CustomForm from '../../common/components/CustomForm';
 import CustomAvatar from '../../common/components/CustomAvatar';
-import CustomImage from '../../common/components/CustomImage';
+import CustomCarousel from '../../common/components/CustomCarousel';
 import { isUserNotHasRole } from '../../common/utils';
 import { Color, Role } from '../../common/constants';
 
@@ -50,19 +50,9 @@ export default function DeleteArticleModal({ data: article }: Props) {
         autosize
         readOnly
       />
-      {article.image1 && (
+      {!!article.images.length && (
         <Input.Wrapper label={t('columns.image')}>
-          <CustomImage image={article.image1} />
-        </Input.Wrapper>
-      )}
-      {article.image2 && (
-        <Input.Wrapper label={t('columns.image')}>
-          <CustomImage image={article.image2} />
-        </Input.Wrapper>
-      )}
-      {article.image3 && (
-        <Input.Wrapper label={t('columns.image')}>
-          <CustomImage image={article.image3} />
+          <CustomCarousel images={article.images} />
         </Input.Wrapper>
       )}
     </CustomForm>

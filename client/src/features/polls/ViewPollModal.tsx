@@ -5,7 +5,7 @@ import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { Poll } from './poll.model';
 import CustomAvatar from '../../common/components/CustomAvatar';
-import CustomImage from '../../common/components/CustomImage';
+import CustomCarousel from '../../common/components/CustomCarousel';
 import { parseTime } from '../../common/utils';
 import { Color, marks, results } from '../../common/constants';
 
@@ -35,9 +35,9 @@ export default function ViewPollModal({ data: poll }: Props) {
         value={t(`constants.results.${results[poll.result - 1]}`)}
         readOnly
       />
-      {poll.image && (
+      {!!poll.images.length && (
         <Input.Wrapper label={t('columns.image')}>
-          <CustomImage image={poll.image} />
+          <CustomCarousel images={poll.images} />
         </Input.Wrapper>
       )}
       <TextInput

@@ -10,7 +10,7 @@ import { useDeletePollMutation } from './polls.api';
 import { DeletePollDto } from './poll.dto';
 import CustomForm from '../../common/components/CustomForm';
 import CustomAvatar from '../../common/components/CustomAvatar';
-import CustomImage from '../../common/components/CustomImage';
+import CustomCarousel from '../../common/components/CustomCarousel';
 import { isUserNotHasRole } from '../../common/utils';
 import { Color, marks, Role } from '../../common/constants';
 
@@ -50,9 +50,9 @@ export default function DeletePollModal({ data: poll }: Props) {
         value={t(`constants.marks.${marks[poll.mark - 1]}`)}
         readOnly
       />
-      {poll.image && (
+      {!!poll.images.length && (
         <Input.Wrapper label={t('columns.image')}>
-          <CustomImage image={poll.image} />
+          <CustomCarousel images={poll.images} />
         </Input.Wrapper>
       )}
     </CustomForm>

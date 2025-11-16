@@ -1,6 +1,6 @@
 import { t } from 'i18next';
 import { useTranslation } from 'react-i18next';
-import { Input, Select, Textarea, TextInput } from '@mantine/core';
+import { Select, Textarea, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
@@ -10,7 +10,6 @@ import { useEditPollMutation } from './polls.api';
 import { EditPollDto } from './poll.dto';
 import CustomForm from '../../common/components/CustomForm';
 import CustomAvatar from '../../common/components/CustomAvatar';
-import CustomImage from '../../common/components/CustomImage';
 import { isUserNotHasRole, selectMarks } from '../../common/utils';
 import { Color, MAX_TEXT_LENGTH, Role } from '../../common/constants';
 
@@ -24,7 +23,7 @@ export default function EditPollModal({ data: poll }: Props) {
       pollId: poll.id,
       text: poll.text,
       mark: `${poll.mark}`,
-      image: poll.image,
+      images: poll.images,
     },
     transformValues: ({ mark, ...rest }) => ({ ...rest, mark: +mark }),
   });
@@ -65,11 +64,6 @@ export default function EditPollModal({ data: poll }: Props) {
         required
         {...form.getInputProps('mark')}
       />
-      {poll.image && (
-        <Input.Wrapper label={t('columns.image')}>
-          <CustomImage image={poll.image} />
-        </Input.Wrapper>
-      )}
     </CustomForm>
   );
 }

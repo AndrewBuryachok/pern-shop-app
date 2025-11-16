@@ -1,7 +1,14 @@
 import { t } from 'i18next';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FileInput, Select, Textarea } from '@mantine/core';
+import {
+  CloseButton,
+  FileInput,
+  Group,
+  Input,
+  Select,
+  Textarea,
+} from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { IconPhoto } from '@tabler/icons';
@@ -14,10 +21,10 @@ import { ExtCreatePollDto } from './poll.dto';
 import CustomForm from '../../common/components/CustomForm';
 import RefetchAction from '../../common/components/RefetchAction';
 import CustomAvatar from '../../common/components/CustomAvatar';
-import CustomImage from '../../common/components/CustomImage';
+import CustomCarousel from '../../common/components/CustomCarousel';
 import { UsersItem } from '../../common/components/UsersItem';
 import { selectMarks, selectUsers, uploadImage } from '../../common/utils';
-import { MAX_TEXT_LENGTH } from '../../common/constants';
+import { MAX_IMAGES_LENGTH, MAX_TEXT_LENGTH } from '../../common/constants';
 
 type Props = { hasRole: boolean };
 
@@ -32,7 +39,7 @@ export default function CreatePollModal({ hasRole }: Props) {
       user: '',
       text: '',
       mark: '',
-      image: '',
+      images: [] as string[],
     },
     transformValues: ({ user, mark, ...rest }) => ({
       ...rest,
@@ -45,13 +52,17 @@ export default function CreatePollModal({ hasRole }: Props) {
     if (image) {
       uploadImage(image).then((link) =>
         link
-          ? form.setFieldValue('image1', link)
+          ? form.setFieldValue('images', [...form.values.images, link])
           : setImageError(t('errors.failed_upload_image')),
       );
     } else {
       setImageError(null);
     }
   }, [image]);
+
+  useEffect(() => {
+    setImage(null);
+  }, [form.values.images]);
 
   const { data: users, ...usersResponse } = useSelectAllUsersQuery(undefined, {
     skip: !hasRole,
@@ -105,17 +116,39 @@ export default function CreatePollModal({ hasRole }: Props) {
         required
         {...form.getInputProps('mark')}
       />
-      <FileInput
-        label={t('columns.image')}
-        placeholder={t('columns.image')}
-        icon={<IconPhoto size={16} />}
-        value={image}
-        onChange={setImage}
-        error={imageError}
-        clearable
-        accept='image/jpeg,image/jpg,image/gif,image/png'
-      />
-      {form.values.image && <CustomImage image={form.values.image} />}
+      {!!form.values.images.length && (
+        <Input.Wrapper label={t('columns.image')}>
+          <CustomCarousel images={form.values.images} />
+        </Input.Wrapper>
+      )}
+      {!!form.values.images.length && (
+        <Group spacing={8} position='center'>
+          {form.values.images.map((image) => (
+            <CloseButton
+              key={image}
+              size={24}
+              iconSize={16}
+              onClick={() =>
+                form.setFieldValue(
+                  'images',
+                  form.values.images.filter((i) => i !== image),
+                )
+              }
+            />
+          ))}
+        </Group>
+      )}
+      {form.values.images.length < MAX_IMAGES_LENGTH && (
+        <FileInput
+          label={t('columns.image')}
+          placeholder={t('columns.image')}
+          icon={<IconPhoto size={16} />}
+          value={image}
+          onChange={setImage}
+          error={imageError}
+          accept='image/jpeg,image/jpg,image/gif,image/png'
+        />
+      )}
     </CustomForm>
   );
 }

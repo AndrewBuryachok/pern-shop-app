@@ -14,7 +14,7 @@ import { useLikeArticleMutation, useViewArticleMutation } from './articles.api';
 import { LikeArticleDto, ViewArticleDto } from './article.dto';
 import AvatarWithDateText from '../../common/components/AvatarWithDateText';
 import CustomHighlight from '../../common/components/CustomHighlight';
-import CustomImage from '../../common/components/CustomImage';
+import CustomCarousel from '../../common/components/CustomCarousel';
 import CustomActions from '../../common/components/CustomActions';
 import ViewArticleViewsMenu from './ViewArticleViewsMenu';
 import ViewArticleLikesMenu from './ViewArticleLikesMenu';
@@ -73,9 +73,7 @@ export default function ArticlePaper({ article, ...props }: Props) {
           />
         </Group>
         <CustomHighlight text={article.text} />
-        {article.image1 && <CustomImage image={article.image1} />}
-        {article.image2 && <CustomImage image={article.image2} />}
-        {article.image3 && <CustomImage image={article.image3} />}
+        {!!article.images.length && <CustomCarousel images={article.images} />}
         <Group spacing={0} position='apart'>
           <Group spacing={8}>
             <HoverCard zIndex={100} offset={4} position='top-start' withArrow>

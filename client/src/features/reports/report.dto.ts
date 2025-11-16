@@ -2,9 +2,7 @@ import { CreateReactionDto } from '../reactions/reaction.dto';
 
 export interface CreateReportDto {
   text: string;
-  image1: string;
-  image2: string;
-  image3: string;
+  images: string[];
 }
 
 export interface EditReportDto extends CreateReportDto {

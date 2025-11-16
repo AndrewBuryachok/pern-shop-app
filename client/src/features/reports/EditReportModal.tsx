@@ -1,6 +1,6 @@
 import { t } from 'i18next';
 import { useTranslation } from 'react-i18next';
-import { Input, Textarea, TextInput } from '@mantine/core';
+import { Textarea, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
@@ -10,7 +10,6 @@ import { useEditReportMutation } from './reports.api';
 import { EditReportDto } from './report.dto';
 import CustomForm from '../../common/components/CustomForm';
 import CustomAvatar from '../../common/components/CustomAvatar';
-import CustomImage from '../../common/components/CustomImage';
 import { isUserNotHasRole } from '../../common/utils';
 import { Color, MAX_TEXT_LENGTH, Role } from '../../common/constants';
 
@@ -23,9 +22,7 @@ export default function EditReportModal({ data: report }: Props) {
     initialValues: {
       reportId: report.id,
       text: report.text,
-      image1: report.image1,
-      image2: report.image2,
-      image3: report.image3,
+      images: report.images,
     },
   });
 
@@ -57,21 +54,6 @@ export default function EditReportModal({ data: report }: Props) {
         maxLength={MAX_TEXT_LENGTH}
         {...form.getInputProps('text')}
       />
-      {report.image1 && (
-        <Input.Wrapper label={t('columns.image')}>
-          <CustomImage image={report.image1} />
-        </Input.Wrapper>
-      )}
-      {report.image2 && (
-        <Input.Wrapper label={t('columns.image')}>
-          <CustomImage image={report.image2} />
-        </Input.Wrapper>
-      )}
-      {report.image3 && (
-        <Input.Wrapper label={t('columns.image')}>
-          <CustomImage image={report.image3} />
-        </Input.Wrapper>
-      )}
     </CustomForm>
   );
 }

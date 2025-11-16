@@ -5,9 +5,7 @@ export interface Report {
   id: number;
   user: SmUser;
   text: string;
-  image1: string;
-  image2: string;
-  image3: string;
+  images: string[];
   createdAt: Date;
   views: number;
   upLikes: number;

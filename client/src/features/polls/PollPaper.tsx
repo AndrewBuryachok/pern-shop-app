@@ -16,7 +16,7 @@ import AvatarWithDateText from '../../common/components/AvatarWithDateText';
 import CustomHighlight from '../../common/components/CustomHighlight';
 import MarkBadge from '../../common/components/MarkBadge';
 import ResultBadge from '../../common/components/ResultBadge';
-import CustomImage from '../../common/components/CustomImage';
+import CustomCarousel from '../../common/components/CustomCarousel';
 import CustomActions from '../../common/components/CustomActions';
 import ViewPollViewsMenu from './ViewPollViewsMenu';
 import ViewPollLikesMenu from './ViewPollLikesMenu';
@@ -79,7 +79,7 @@ export default function PollPaper({ poll, ...props }: Props) {
           <MarkBadge {...poll} />
           <ResultBadge {...poll} />
         </Group>
-        {poll.image && <CustomImage image={poll.image} />}
+        {!!poll.images.length && <CustomCarousel images={poll.images} />}
         <Group spacing={0} position='apart'>
           <Group spacing={8}>
             <HoverCard zIndex={100} offset={4} position='top-start' withArrow>
