@@ -5,7 +5,6 @@ export interface CreateReportDto {
   image1: string;
   image2: string;
   image3: string;
-  video: string;
 }
 
 export interface EditReportDto extends CreateReportDto {

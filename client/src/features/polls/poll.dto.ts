@@ -4,7 +4,6 @@ export interface CreatePollDto {
   text: string;
   mark: number;
   image: string;
-  video: string;
 }
 
 export interface ExtCreatePollDto extends CreatePollDto {

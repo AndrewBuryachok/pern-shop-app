@@ -7,7 +7,6 @@ export interface Poll {
   text: string;
   mark: number;
   image: string;
-  video: string;
   result: number;
   createdAt: Date;
   completedAt?: Date;

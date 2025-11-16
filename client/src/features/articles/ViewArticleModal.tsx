@@ -6,7 +6,6 @@ import { IModal } from '../../common/interfaces';
 import { Article } from './article.model';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import CustomImage from '../../common/components/CustomImage';
-import CustomVideo from '../../common/components/CustomVideo';
 import { parseTime } from '../../common/utils';
 import { Color } from '../../common/constants';
 
@@ -44,11 +43,6 @@ export default function ViewArticleModal({ data: article }: Props) {
       {article.image3 && (
         <Input.Wrapper label={t('columns.image')}>
           <CustomImage image={article.image3} />
-        </Input.Wrapper>
-      )}
-      {article.video && (
-        <Input.Wrapper label={t('columns.video')}>
-          <CustomVideo video={article.video} />
         </Input.Wrapper>
       )}
       <TextInput

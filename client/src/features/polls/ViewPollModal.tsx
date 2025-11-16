@@ -6,7 +6,6 @@ import { IModal } from '../../common/interfaces';
 import { Poll } from './poll.model';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import CustomImage from '../../common/components/CustomImage';
-import CustomVideo from '../../common/components/CustomVideo';
 import { parseTime } from '../../common/utils';
 import { Color, marks, results } from '../../common/constants';
 
@@ -39,11 +38,6 @@ export default function ViewPollModal({ data: poll }: Props) {
       {poll.image && (
         <Input.Wrapper label={t('columns.image')}>
           <CustomImage image={poll.image} />
-        </Input.Wrapper>
-      )}
-      {poll.video && (
-        <Input.Wrapper label={t('columns.video')}>
-          <CustomVideo video={poll.video} />
         </Input.Wrapper>
       )}
       <TextInput

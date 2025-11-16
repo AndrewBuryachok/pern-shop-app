@@ -14,7 +14,6 @@ import CustomForm from '../../common/components/CustomForm';
 import RefetchAction from '../../common/components/RefetchAction';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import CustomImage from '../../common/components/CustomImage';
-import CustomVideo from '../../common/components/CustomVideo';
 import { UsersItem } from '../../common/components/UsersItem';
 import { selectMarks, selectUsers } from '../../common/utils';
 import { MAX_LINK_LENGTH, MAX_TEXT_LENGTH } from '../../common/constants';
@@ -30,7 +29,6 @@ export default function CreatePollModal({ hasRole }: Props) {
       text: '',
       mark: '',
       image: '',
-      video: '',
     },
     transformValues: ({ user, mark, ...rest }) => ({
       ...rest,
@@ -40,7 +38,6 @@ export default function CreatePollModal({ hasRole }: Props) {
   });
 
   const [image] = useDebouncedValue(form.values.image, 500);
-  const [video] = useDebouncedValue(form.values.video, 500);
 
   const { data: users, ...usersResponse } = useSelectAllUsersQuery(undefined, {
     skip: !hasRole,
@@ -102,14 +99,6 @@ export default function CreatePollModal({ hasRole }: Props) {
         {...form.getInputProps('image')}
       />
       {image && <CustomImage image={image} />}
-      <Textarea
-        label={t('columns.video')}
-        placeholder={t('columns.video')}
-        autosize
-        maxLength={MAX_LINK_LENGTH}
-        {...form.getInputProps('video')}
-      />
-      {video && <CustomVideo video={video} />}
     </CustomForm>
   );
 }

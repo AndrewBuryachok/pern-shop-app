@@ -15,7 +15,6 @@ import { LikeReportDto, ViewReportDto } from './report.dto';
 import AvatarWithDateText from '../../common/components/AvatarWithDateText';
 import CustomHighlight from '../../common/components/CustomHighlight';
 import CustomImage from '../../common/components/CustomImage';
-import CustomVideo from '../../common/components/CustomVideo';
 import CustomActions from '../../common/components/CustomActions';
 import ViewReportViewsMenu from './ViewReportViewsMenu';
 import ViewReportLikesMenu from './ViewReportLikesMenu';
@@ -77,7 +76,6 @@ export default function ReportPaper({ report, ...props }: Props) {
         {report.image1 && <CustomImage image={report.image1} />}
         {report.image2 && <CustomImage image={report.image2} />}
         {report.image3 && <CustomImage image={report.image3} />}
-        {report.video && <CustomVideo video={report.video} />}
         <Group spacing={0} position='apart'>
           <Group spacing={8}>
             <HoverCard zIndex={100} offset={4} position='top-start' withArrow>

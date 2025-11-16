@@ -12,7 +12,6 @@ import { EditReportDto } from './report.dto';
 import CustomForm from '../../common/components/CustomForm';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import CustomImage from '../../common/components/CustomImage';
-import CustomVideo from '../../common/components/CustomVideo';
 import { isUserNotHasRole } from '../../common/utils';
 import {
   Color,
@@ -33,14 +32,12 @@ export default function EditReportModal({ data: report }: Props) {
       image1: report.image1,
       image2: report.image2,
       image3: report.image3,
-      video: report.video,
     },
   });
 
   const [image1] = useDebouncedValue(form.values.image1, 500);
   const [image2] = useDebouncedValue(form.values.image2, 500);
   const [image3] = useDebouncedValue(form.values.image3, 500);
-  const [video] = useDebouncedValue(form.values.video, 500);
 
   const [editReport, { isLoading }] = useEditReportMutation();
 
@@ -98,14 +95,6 @@ export default function EditReportModal({ data: report }: Props) {
         />
       )}
       {image3 && <CustomImage image={image3} />}
-      <Textarea
-        label={t('columns.video')}
-        placeholder={t('columns.video')}
-        autosize
-        maxLength={MAX_LINK_LENGTH}
-        {...form.getInputProps('video')}
-      />
-      {video && <CustomVideo video={video} />}
     </CustomForm>
   );
 }

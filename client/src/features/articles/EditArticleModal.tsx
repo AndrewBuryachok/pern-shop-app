@@ -12,7 +12,6 @@ import { EditArticleDto } from './article.dto';
 import CustomForm from '../../common/components/CustomForm';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import CustomImage from '../../common/components/CustomImage';
-import CustomVideo from '../../common/components/CustomVideo';
 import { isUserNotHasRole } from '../../common/utils';
 import {
   Color,
@@ -33,14 +32,12 @@ export default function EditArticleModal({ data: article }: Props) {
       image1: article.image1,
       image2: article.image2,
       image3: article.image3,
-      video: article.video,
     },
   });
 
   const [image1] = useDebouncedValue(form.values.image1, 500);
   const [image2] = useDebouncedValue(form.values.image2, 500);
   const [image3] = useDebouncedValue(form.values.image3, 500);
-  const [video] = useDebouncedValue(form.values.video, 500);
 
   const [editArticle, { isLoading }] = useEditArticleMutation();
 
@@ -98,14 +95,6 @@ export default function EditArticleModal({ data: article }: Props) {
         />
       )}
       {image3 && <CustomImage image={image3} />}
-      <Textarea
-        label={t('columns.video')}
-        placeholder={t('columns.video')}
-        autosize
-        maxLength={MAX_LINK_LENGTH}
-        {...form.getInputProps('video')}
-      />
-      {video && <CustomVideo video={video} />}
     </CustomForm>
   );
 }

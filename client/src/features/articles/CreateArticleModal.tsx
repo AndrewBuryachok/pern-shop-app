@@ -14,7 +14,6 @@ import CustomForm from '../../common/components/CustomForm';
 import RefetchAction from '../../common/components/RefetchAction';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import CustomImage from '../../common/components/CustomImage';
-import CustomVideo from '../../common/components/CustomVideo';
 import { UsersItem } from '../../common/components/UsersItem';
 import { selectUsers } from '../../common/utils';
 import { MAX_LINK_LENGTH, MAX_TEXT_LENGTH } from '../../common/constants';
@@ -31,7 +30,6 @@ export default function CreateArticleModal({ hasRole }: Props) {
       image1: '',
       image2: '',
       image3: '',
-      video: '',
     },
     transformValues: ({ user, ...rest }) => ({ ...rest, userId: +user }),
   });
@@ -45,7 +43,6 @@ export default function CreateArticleModal({ hasRole }: Props) {
   const [image1] = useDebouncedValue(form.values.image1, 500);
   const [image2] = useDebouncedValue(form.values.image2, 500);
   const [image3] = useDebouncedValue(form.values.image3, 500);
-  const [video] = useDebouncedValue(form.values.video, 500);
 
   const [createArticle, { isLoading }] = hasRole
     ? useCreateUserArticleMutation()
@@ -113,14 +110,6 @@ export default function CreateArticleModal({ hasRole }: Props) {
         />
       )}
       {image3 && <CustomImage image={image3} />}
-      <Textarea
-        label={t('columns.video')}
-        placeholder={t('columns.video')}
-        autosize
-        maxLength={MAX_LINK_LENGTH}
-        {...form.getInputProps('video')}
-      />
-      {video && <CustomVideo video={video} />}
     </CustomForm>
   );
 }

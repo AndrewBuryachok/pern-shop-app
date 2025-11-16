@@ -8,7 +8,6 @@ export interface Article {
   image1: string;
   image2: string;
   image3: string;
-  video: string;
   createdAt: Date;
   views: number;
   upLikes: number;

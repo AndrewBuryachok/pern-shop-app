@@ -10,7 +10,6 @@ import { CompletePollDto } from './poll.dto';
 import CustomForm from '../../common/components/CustomForm';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import CustomImage from '../../common/components/CustomImage';
-import CustomVideo from '../../common/components/CustomVideo';
 import { ColorsItem } from '../../common/components/ColorsItem';
 import { selectPollTypes } from '../../common/utils';
 import { Color, marks } from '../../common/constants';
@@ -58,9 +57,6 @@ export default function CompletePollModal({ data: poll }: Props) {
       />
       <Input.Wrapper label={t('columns.image')}>
         <CustomImage image={poll.image} />
-      </Input.Wrapper>
-      <Input.Wrapper label={t('columns.video')}>
-        <CustomVideo video={poll.video} />
       </Input.Wrapper>
       <Select
         label={t('columns.result')}

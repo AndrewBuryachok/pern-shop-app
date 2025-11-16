@@ -11,7 +11,6 @@ import { DeleteArticleDto } from './article.dto';
 import CustomForm from '../../common/components/CustomForm';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import CustomImage from '../../common/components/CustomImage';
-import CustomVideo from '../../common/components/CustomVideo';
 import { isUserNotHasRole } from '../../common/utils';
 import { Color, Role } from '../../common/constants';
 
@@ -64,11 +63,6 @@ export default function DeleteArticleModal({ data: article }: Props) {
       {article.image3 && (
         <Input.Wrapper label={t('columns.image')}>
           <CustomImage image={article.image3} />
-        </Input.Wrapper>
-      )}
-      {article.video && (
-        <Input.Wrapper label={t('columns.video')}>
-          <CustomVideo video={article.video} />
         </Input.Wrapper>
       )}
     </CustomForm>

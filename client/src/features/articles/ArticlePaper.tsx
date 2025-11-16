@@ -15,7 +15,6 @@ import { LikeArticleDto, ViewArticleDto } from './article.dto';
 import AvatarWithDateText from '../../common/components/AvatarWithDateText';
 import CustomHighlight from '../../common/components/CustomHighlight';
 import CustomImage from '../../common/components/CustomImage';
-import CustomVideo from '../../common/components/CustomVideo';
 import CustomActions from '../../common/components/CustomActions';
 import ViewArticleViewsMenu from './ViewArticleViewsMenu';
 import ViewArticleLikesMenu from './ViewArticleLikesMenu';
@@ -77,7 +76,6 @@ export default function ArticlePaper({ article, ...props }: Props) {
         {article.image1 && <CustomImage image={article.image1} />}
         {article.image2 && <CustomImage image={article.image2} />}
         {article.image3 && <CustomImage image={article.image3} />}
-        {article.video && <CustomVideo video={article.video} />}
         <Group spacing={0} position='apart'>
           <Group spacing={8}>
             <HoverCard zIndex={100} offset={4} position='top-start' withArrow>

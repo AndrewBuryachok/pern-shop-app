@@ -12,7 +12,6 @@ import { EditPollDto } from './poll.dto';
 import CustomForm from '../../common/components/CustomForm';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import CustomImage from '../../common/components/CustomImage';
-import CustomVideo from '../../common/components/CustomVideo';
 import { isUserNotHasRole, selectMarks } from '../../common/utils';
 import {
   Color,
@@ -32,13 +31,11 @@ export default function EditPollModal({ data: poll }: Props) {
       text: poll.text,
       mark: `${poll.mark}`,
       image: poll.image,
-      video: poll.video,
     },
     transformValues: ({ mark, ...rest }) => ({ ...rest, mark: +mark }),
   });
 
   const [image] = useDebouncedValue(form.values.image, 500);
-  const [video] = useDebouncedValue(form.values.video, 500);
 
   const [editPoll, { isLoading }] = useEditPollMutation();
 
@@ -84,14 +81,6 @@ export default function EditPollModal({ data: poll }: Props) {
         {...form.getInputProps('image')}
       />
       {image && <CustomImage image={image} />}
-      <Textarea
-        label={t('columns.video')}
-        placeholder={t('columns.video')}
-        autosize
-        maxLength={MAX_LINK_LENGTH}
-        {...form.getInputProps('video')}
-      />
-      {video && <CustomVideo video={video} />}
     </CustomForm>
   );
 }

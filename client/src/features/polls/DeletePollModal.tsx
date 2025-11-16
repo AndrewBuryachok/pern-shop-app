@@ -11,7 +11,6 @@ import { DeletePollDto } from './poll.dto';
 import CustomForm from '../../common/components/CustomForm';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import CustomImage from '../../common/components/CustomImage';
-import CustomVideo from '../../common/components/CustomVideo';
 import { isUserNotHasRole } from '../../common/utils';
 import { Color, marks, Role } from '../../common/constants';
 
@@ -54,11 +53,6 @@ export default function DeletePollModal({ data: poll }: Props) {
       {poll.image && (
         <Input.Wrapper label={t('columns.image')}>
           <CustomImage image={poll.image} />
-        </Input.Wrapper>
-      )}
-      {poll.video && (
-        <Input.Wrapper label={t('columns.video')}>
-          <CustomVideo video={poll.video} />
         </Input.Wrapper>
       )}
     </CustomForm>

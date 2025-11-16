@@ -11,7 +11,6 @@ import { DeleteReportDto } from './report.dto';
 import CustomForm from '../../common/components/CustomForm';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import CustomImage from '../../common/components/CustomImage';
-import CustomVideo from '../../common/components/CustomVideo';
 import { isUserNotHasRole } from '../../common/utils';
 import { Color, Role } from '../../common/constants';
 
@@ -64,11 +63,6 @@ export default function DeleteReportModal({ data: report }: Props) {
       {report.image3 && (
         <Input.Wrapper label={t('columns.image')}>
           <CustomImage image={report.image3} />
-        </Input.Wrapper>
-      )}
-      {report.video && (
-        <Input.Wrapper label={t('columns.video')}>
-          <CustomVideo video={report.video} />
         </Input.Wrapper>
       )}
     </CustomForm>
