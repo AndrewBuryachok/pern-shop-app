@@ -37,9 +37,6 @@ export class Report {
   @Column()
   image3: string;
 
-  @Column()
-  video: string;
-
   @Column({
     type: 'enum',
     enum: Mark,

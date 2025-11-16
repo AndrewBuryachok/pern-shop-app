@@ -201,7 +201,6 @@ export class ReportsService {
         image1: dto.image1,
         image2: dto.image2,
         image3: dto.image3,
-        video: dto.video,
         mark: dto.mark,
       });
       await this.reportsRepository.save(report);
@@ -217,7 +216,6 @@ export class ReportsService {
       report.image1 = dto.image1;
       report.image2 = dto.image2;
       report.image3 = dto.image3;
-      report.video = dto.video;
       await this.reportsRepository.save(report);
     } catch (error) {
       throw new AppException(ReportError.EDIT_FAILED);
@@ -371,7 +369,6 @@ export class ReportsService {
         'report.image1',
         'report.image2',
         'report.image3',
-        'report.video',
         'comment.id',
         'commenter.id',
         'commenter.nick',

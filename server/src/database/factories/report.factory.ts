@@ -8,7 +8,6 @@ define(Report, (faker: Faker) => {
   report.image1 = `https://picsum.photos/seed/${faker.lorem.word()}/960/480`;
   report.image2 = '';
   report.image3 = '';
-  report.video = '';
   report.mark = Math.floor(Math.random() * 6) + 1;
   return report;
 });

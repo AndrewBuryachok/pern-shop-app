@@ -405,7 +405,6 @@ describe('With Auth', () => {
           image1: '',
           image2: '',
           image3: '',
-          video: '',
         })
         .expect('');
     });
@@ -419,7 +418,6 @@ describe('With Auth', () => {
           image1: '',
           image2: '',
           image3: '',
-          video: '',
         })
         .expect('');
     });
@@ -433,7 +431,6 @@ describe('With Auth', () => {
           image1: '',
           image2: '',
           image3: '',
-          video: '',
         })
         .expect('');
     });
@@ -447,7 +444,6 @@ describe('With Auth', () => {
           image1: '',
           image2: '',
           image3: '',
-          video: '',
         })
         .expect('');
     });
@@ -461,7 +457,6 @@ describe('With Auth', () => {
           image1: '',
           image2: '',
           image3: '',
-          video: '',
         })
         .expect('');
     });
@@ -475,7 +470,6 @@ describe('With Auth', () => {
           image1: '',
           image2: '',
           image3: '',
-          video: '',
         })
         .expect('');
     });
@@ -602,7 +596,6 @@ describe('With Auth', () => {
           image1: '',
           image2: '',
           image3: '',
-          video: '',
         })
         .expect('');
     });
@@ -642,7 +635,6 @@ describe('With Auth', () => {
           image1: '',
           image2: '',
           image3: '',
-          video: '',
         })
         .expect('');
     });
@@ -656,7 +648,6 @@ describe('With Auth', () => {
           image1: '',
           image2: '',
           image3: '',
-          video: '',
         })
         .expect('');
     });
@@ -771,7 +762,6 @@ describe('With Auth', () => {
           image1: '',
           image2: '',
           image3: '',
-          video: '',
         })
         .expect('');
     });
@@ -806,7 +796,7 @@ describe('With Auth', () => {
       return request(app.getHttpServer())
         .post('/polls')
         .set('Authorization', `Bearer ${user.access}`)
-        .send({ text: 'poll text', mark: 1, image: '', video: '' })
+        .send({ text: 'poll text', mark: 1, image: '' })
         .expect('');
     });
 
@@ -814,7 +804,7 @@ describe('With Auth', () => {
       return request(app.getHttpServer())
         .post('/polls')
         .set('Authorization', `Bearer ${user.access}`)
-        .send({ text: 'poll text', mark: 2, image: '', video: '' })
+        .send({ text: 'poll text', mark: 2, image: '' })
         .expect('');
     });
 
@@ -836,7 +826,7 @@ describe('With Auth', () => {
       return request(app.getHttpServer())
         .patch(`/polls/${pollsId[0]}`)
         .set('Authorization', `Bearer ${user.access}`)
-        .send({ text: 'poll text', mark: 1, image: '', video: '' })
+        .send({ text: 'poll text', mark: 1, image: '' })
         .expect('');
     });
 

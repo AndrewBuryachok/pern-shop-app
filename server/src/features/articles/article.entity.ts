@@ -36,9 +36,6 @@ export class Article {
   @Column()
   image3: string;
 
-  @Column()
-  video: string;
-
   @CreateDateColumn({ type: 'timestamptz', name: 'created_at' })
   createdAt: Date;
 

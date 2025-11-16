@@ -29,10 +29,6 @@ export class CreateReportDto {
   @ApiProperty()
   @IsLink()
   image3: string;
-
-  @ApiProperty()
-  @IsLink()
-  video: string;
 }
 
 export class ExtCreateReportDto extends CreateReportDto {

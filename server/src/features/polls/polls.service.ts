@@ -249,7 +249,6 @@ export class PollsService {
         text: dto.text,
         mark: dto.mark,
         image: dto.image,
-        video: dto.video,
       });
       await this.pollsRepository.save(poll);
       return poll;
@@ -263,7 +262,6 @@ export class PollsService {
       poll.text = dto.text;
       poll.mark = dto.mark;
       poll.image = dto.image;
-      poll.video = dto.video;
       await this.pollsRepository.save(poll);
     } catch (error) {
       throw new AppException(PollError.EDIT_FAILED);
@@ -448,7 +446,6 @@ export class PollsService {
         'poll.text',
         'poll.mark',
         'poll.image',
-        'poll.video',
         'poll.result',
         'comment.id',
         'commenter.id',

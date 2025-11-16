@@ -9,7 +9,6 @@ define(Poll, (faker: Faker) => {
   poll.text = faker.lorem.sentence(7);
   poll.mark = Math.floor(Math.random() * MAX_MARK_VALUE) + 1;
   poll.image = `https://picsum.photos/seed/${faker.lorem.word()}/960/480`;
-  poll.video = '';
   const completed = !!Math.floor(Math.random() * 2);
   if (completed) {
     poll.result = !!Math.floor(Math.random() * 2)

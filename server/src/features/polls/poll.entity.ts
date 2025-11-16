@@ -39,9 +39,6 @@ export class Poll {
   @Column()
   image: string;
 
-  @Column()
-  video: string;
-
   @Column({
     type: 'enum',
     enum: Result,

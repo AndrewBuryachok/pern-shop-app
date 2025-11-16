@@ -25,10 +25,6 @@ export class CreatePollDto {
   @ApiProperty()
   @IsLink()
   image: string;
-
-  @ApiProperty()
-  @IsLink()
-  video: string;
 }
 
 export class ExtCreatePollDto extends CreatePollDto {
