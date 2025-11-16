@@ -59,10 +59,10 @@ export default function AccountMenu() {
             user &&
             `${import.meta.env.VITE_AVATAR_URL}${
               import.meta.env.VITE_HEAD_ROUTE
-            }${user.avatar || user.nick}`
+            }${user.avatar || user.nick}/8`
           }
           alt={user?.nick}
-          style={{ cursor: 'pointer' }}
+          style={{ cursor: 'pointer', imageRendering: 'pixelated' }}
         >
           {user?.nick.toUpperCase().slice(0, 2)}
         </Avatar>

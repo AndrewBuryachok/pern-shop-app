@@ -12,8 +12,10 @@ export default function LinkedAvatarWithoutIndicator(props: Props) {
       size={32}
       src={`${import.meta.env.VITE_AVATAR_URL}${
         import.meta.env.VITE_HEAD_ROUTE
-      }${props.avatar || props.nick}`}
+      }${props.avatar || props.nick}/8`}
       alt={props.nick}
+      style={{ imageRendering: 'pixelated' }}
+      imageProps={{ loading: 'lazy' }}
     >
       {props.nick.toUpperCase().slice(0, 2)}
     </Avatar>

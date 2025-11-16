@@ -10,18 +10,22 @@ export default function ProfileAvatar(props: Props) {
     <Stack spacing={0} align='center'>
       <CustomIndicator {...props}>
         <Avatar
+          radius='md'
+          size={248}
+          src={`${import.meta.env.VITE_AVATAR_URL}${
+            import.meta.env.VITE_BUST_ROUTE
+          }${props.avatar || props.nick}/16`}
+          alt={props.nick}
           px={8}
           pt={16}
           bg={`url(https://minecraft.wiki/images/${
             backgrounds[props.background - 1]
           }.png)`}
-          style={{ backgroundPosition: 'center', backgroundSize: 496 }}
-          radius='md'
-          size={248}
-          src={`${import.meta.env.VITE_AVATAR_URL}${
-            import.meta.env.VITE_BUST_ROUTE
-          }${props.avatar || props.nick}`}
-          alt={props.nick}
+          style={{
+            backgroundPosition: 'center',
+            backgroundSize: 496,
+            imageRendering: 'pixelated',
+          }}
         >
           {props.nick.toUpperCase().slice(0, 2)}
         </Avatar>
