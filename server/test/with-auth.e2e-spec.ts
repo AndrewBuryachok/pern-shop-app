@@ -400,12 +400,7 @@ describe('With Auth', () => {
       return request(app.getHttpServer())
         .post('/reports/server')
         .set('Authorization', `Bearer ${inspector.access}`)
-        .send({
-          text: 'report text',
-          image1: '',
-          image2: '',
-          image3: '',
-        })
+        .send({ text: 'report text', images: [] })
         .expect('');
     });
 
@@ -413,12 +408,7 @@ describe('With Auth', () => {
       return request(app.getHttpServer())
         .post('/reports/site')
         .set('Authorization', `Bearer ${inspector.access}`)
-        .send({
-          text: 'report text',
-          image1: '',
-          image2: '',
-          image3: '',
-        })
+        .send({ text: 'report text', images: [] })
         .expect('');
     });
 
@@ -426,12 +416,7 @@ describe('With Auth', () => {
       return request(app.getHttpServer())
         .post('/reports/events')
         .set('Authorization', `Bearer ${inspector.access}`)
-        .send({
-          text: 'report text',
-          image1: '',
-          image2: '',
-          image3: '',
-        })
+        .send({ text: 'report text', images: [] })
         .expect('');
     });
 
@@ -439,12 +424,7 @@ describe('With Auth', () => {
       return request(app.getHttpServer())
         .post('/reports/spawn')
         .set('Authorization', `Bearer ${spawn.access}`)
-        .send({
-          text: 'report text',
-          image1: '',
-          image2: '',
-          image3: '',
-        })
+        .send({ text: 'report text', images: [] })
         .expect('');
     });
 
@@ -452,12 +432,7 @@ describe('With Auth', () => {
       return request(app.getHttpServer())
         .post('/reports/hub')
         .set('Authorization', `Bearer ${hub.access}`)
-        .send({
-          text: 'report text',
-          image1: '',
-          image2: '',
-          image3: '',
-        })
+        .send({ text: 'report text', images: [] })
         .expect('');
     });
 
@@ -465,12 +440,7 @@ describe('With Auth', () => {
       return request(app.getHttpServer())
         .post('/reports/end')
         .set('Authorization', `Bearer ${end.access}`)
-        .send({
-          text: 'report text',
-          image1: '',
-          image2: '',
-          image3: '',
-        })
+        .send({ text: 'report text', images: [] })
         .expect('');
     });
 
@@ -591,12 +561,7 @@ describe('With Auth', () => {
       return request(app.getHttpServer())
         .patch(`/reports/${reportsId[0]}`)
         .set('Authorization', `Bearer ${admin.access}`)
-        .send({
-          text: 'report text',
-          image1: '',
-          image2: '',
-          image3: '',
-        })
+        .send({ text: 'report text', images: [] })
         .expect('');
     });
 
@@ -630,12 +595,7 @@ describe('With Auth', () => {
       return request(app.getHttpServer())
         .post('/articles')
         .set('Authorization', `Bearer ${user.access}`)
-        .send({
-          text: 'article text',
-          image1: '',
-          image2: '',
-          image3: '',
-        })
+        .send({ text: 'article text', images: [] })
         .expect('');
     });
 
@@ -643,12 +603,7 @@ describe('With Auth', () => {
       return request(app.getHttpServer())
         .post('/articles')
         .set('Authorization', `Bearer ${user.access}`)
-        .send({
-          text: 'article text',
-          image1: '',
-          image2: '',
-          image3: '',
-        })
+        .send({ text: 'article text', images: [] })
         .expect('');
     });
 
@@ -757,12 +712,7 @@ describe('With Auth', () => {
       return request(app.getHttpServer())
         .patch(`/articles/${articlesId[0]}`)
         .set('Authorization', `Bearer ${user.access}`)
-        .send({
-          text: 'article text',
-          image1: '',
-          image2: '',
-          image3: '',
-        })
+        .send({ text: 'article text', images: [] })
         .expect('');
     });
 
@@ -796,7 +746,7 @@ describe('With Auth', () => {
       return request(app.getHttpServer())
         .post('/polls')
         .set('Authorization', `Bearer ${user.access}`)
-        .send({ text: 'poll text', mark: 1, image: '' })
+        .send({ text: 'poll text', mark: 1, images: [] })
         .expect('');
     });
 
@@ -804,7 +754,7 @@ describe('With Auth', () => {
       return request(app.getHttpServer())
         .post('/polls')
         .set('Authorization', `Bearer ${user.access}`)
-        .send({ text: 'poll text', mark: 2, image: '' })
+        .send({ text: 'poll text', mark: 2, images: [] })
         .expect('');
     });
 
@@ -826,7 +776,7 @@ describe('With Auth', () => {
       return request(app.getHttpServer())
         .patch(`/polls/${pollsId[0]}`)
         .set('Authorization', `Bearer ${user.access}`)
-        .send({ text: 'poll text', mark: 1, image: '' })
+        .send({ text: 'poll text', mark: 1, images: [] })
         .expect('');
     });
 

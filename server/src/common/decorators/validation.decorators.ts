@@ -1,11 +1,12 @@
 import {
+  ArrayMaxSize,
+  IsArray,
   IsBoolean,
   IsEnum,
   IsInt,
   IsNotEmpty,
   IsPositive,
   IsString,
-  IsUrl,
   Matches,
   Max,
   MaxLength,
@@ -22,6 +23,7 @@ import {
   MAX_COORDINATE_VALUE,
   MAX_DESCRIPTION_LENGTH,
   MAX_ID_VALUE,
+  MAX_IMAGES_LENGTH,
   MAX_INTAKE_VALUE,
   MAX_KIT_VALUE,
   MAX_LINK_LENGTH,
@@ -89,12 +91,12 @@ export const IsText = () => (target: object, key: string) => {
   MaxLength(MAX_TEXT_LENGTH)(target, key);
 };
 
-export const IsLink = () => (target: object, key: string) => {
-  ValidateIf((_, value) => value !== '')(target, key);
+export const IsImages = () => (target: object, key: string) => {
   IsNotEmpty()(target, key);
-  IsString()(target, key);
-  IsUrl()(target, key);
-  MaxLength(MAX_LINK_LENGTH)(target, key);
+  IsArray()(target, key);
+  IsString({ each: true })(target, key);
+  ArrayMaxSize(MAX_IMAGES_LENGTH)(target, key);
+  MaxLength(MAX_LINK_LENGTH, { each: true })(target, key);
 };
 
 export const IsId = () => (target: object, key: string) => {

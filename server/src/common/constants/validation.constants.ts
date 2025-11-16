@@ -8,6 +8,7 @@ export const MAX_CONTACT_LENGTH = 24;
 export const MAX_DESCRIPTION_LENGTH = 32;
 export const MAX_ACTIVITY_LENGTH = 24;
 export const MAX_TEXT_LENGTH = 1000;
+export const MAX_IMAGES_LENGTH = 5;
 export const MAX_LINK_LENGTH = 256;
 export const MAX_ID_VALUE = 32767;
 export const MAX_SUM_VALUE = 30000;

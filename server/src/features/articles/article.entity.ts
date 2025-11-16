@@ -27,14 +27,8 @@ export class Article {
   @Column()
   text: string;
 
-  @Column()
-  image1: string;
-
-  @Column()
-  image2: string;
-
-  @Column()
-  image3: string;
+  @Column({ type: 'text', array: true, default: [] })
+  images: string[];
 
   @CreateDateColumn({ type: 'timestamptz', name: 'created_at' })
   createdAt: Date;

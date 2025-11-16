@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Validate } from 'class-validator';
 import { Type } from 'class-transformer';
-import { IsId, IsLink, IsMark, IsText } from '../../common/decorators';
+import { IsId, IsImages, IsMark, IsText } from '../../common/decorators';
 import { IsPollExists, IsUserExists } from '../../common/constraints';
 import { CreateReactionDto } from '../reactions/reaction.dto';
 
@@ -23,8 +23,8 @@ export class CreatePollDto {
   mark: number;
 
   @ApiProperty()
-  @IsLink()
-  image: string;
+  @IsImages()
+  images: string[];
 }
 
 export class ExtCreatePollDto extends CreatePollDto {

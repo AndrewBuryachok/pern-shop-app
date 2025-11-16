@@ -237,9 +237,7 @@ export class ArticlesService {
       const article = this.articlesRepository.create({
         userId: dto.userId,
         text: dto.text,
-        image1: dto.image1,
-        image2: dto.image2,
-        image3: dto.image3,
+        images: dto.images,
       });
       await this.articlesRepository.save(article);
       return article;
@@ -251,9 +249,7 @@ export class ArticlesService {
   private async edit(article: Article, dto: ExtEditArticleDto): Promise<void> {
     try {
       article.text = dto.text;
-      article.image1 = dto.image1;
-      article.image2 = dto.image2;
-      article.image3 = dto.image3;
+      article.images = dto.images;
       await this.articlesRepository.save(article);
     } catch (error) {
       throw new AppException(ArticleError.EDIT_FAILED);
@@ -404,9 +400,7 @@ export class ArticlesService {
         'ownerUser.nick',
         'ownerUser.avatar',
         'article.text',
-        'article.image1',
-        'article.image2',
-        'article.image3',
+        'article.images',
         'comment.id',
         'commenter.id',
         'commenter.nick',

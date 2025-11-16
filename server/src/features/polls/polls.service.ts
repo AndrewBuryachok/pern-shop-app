@@ -248,7 +248,7 @@ export class PollsService {
         userId: dto.userId,
         text: dto.text,
         mark: dto.mark,
-        image: dto.image,
+        images: dto.images,
       });
       await this.pollsRepository.save(poll);
       return poll;
@@ -261,7 +261,7 @@ export class PollsService {
     try {
       poll.text = dto.text;
       poll.mark = dto.mark;
-      poll.image = dto.image;
+      poll.images = dto.images;
       await this.pollsRepository.save(poll);
     } catch (error) {
       throw new AppException(PollError.EDIT_FAILED);
@@ -445,7 +445,7 @@ export class PollsService {
         'ownerUser.avatar',
         'poll.text',
         'poll.mark',
-        'poll.image',
+        'poll.images',
         'poll.result',
         'comment.id',
         'commenter.id',

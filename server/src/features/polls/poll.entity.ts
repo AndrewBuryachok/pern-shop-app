@@ -36,8 +36,8 @@ export class Poll {
   })
   mark: Mark;
 
-  @Column()
-  image: string;
+  @Column({ type: 'text', array: true, default: [] })
+  images: string[];
 
   @Column({
     type: 'enum',

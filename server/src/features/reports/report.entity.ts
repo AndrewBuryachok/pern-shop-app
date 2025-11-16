@@ -28,21 +28,15 @@ export class Report {
   @Column()
   text: string;
 
-  @Column()
-  image1: string;
-
-  @Column()
-  image2: string;
-
-  @Column()
-  image3: string;
-
   @Column({
     type: 'enum',
     enum: Mark,
     default: Mark.SERVER,
   })
   mark: Mark;
+
+  @Column({ type: 'text', array: true, default: [] })
+  images: string[];
 
   @CreateDateColumn({ type: 'timestamptz', name: 'created_at' })
   createdAt: Date;

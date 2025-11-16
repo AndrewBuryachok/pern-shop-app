@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Validate } from 'class-validator';
 import { Type } from 'class-transformer';
-import { IsId, IsLink, IsText } from '../../common/decorators';
+import { IsId, IsImages, IsText } from '../../common/decorators';
 import { IsArticleExists, IsUserExists } from '../../common/constraints';
 import { CreateReactionDto } from '../reactions/reaction.dto';
 
@@ -19,16 +19,8 @@ export class CreateArticleDto {
   text: string;
 
   @ApiProperty()
-  @IsLink()
-  image1: string;
-
-  @ApiProperty()
-  @IsLink()
-  image2: string;
-
-  @ApiProperty()
-  @IsLink()
-  image3: string;
+  @IsImages()
+  images: string[];
 }
 
 export class ExtCreateArticleDto extends CreateArticleDto {

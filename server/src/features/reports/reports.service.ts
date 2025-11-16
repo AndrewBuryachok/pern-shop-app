@@ -198,10 +198,8 @@ export class ReportsService {
       const report = this.reportsRepository.create({
         userId: dto.myId,
         text: dto.text,
-        image1: dto.image1,
-        image2: dto.image2,
-        image3: dto.image3,
         mark: dto.mark,
+        images: dto.images,
       });
       await this.reportsRepository.save(report);
       return report;
@@ -213,9 +211,7 @@ export class ReportsService {
   private async edit(report: Report, dto: ExtEditReportDto): Promise<void> {
     try {
       report.text = dto.text;
-      report.image1 = dto.image1;
-      report.image2 = dto.image2;
-      report.image3 = dto.image3;
+      report.images = dto.images;
       await this.reportsRepository.save(report);
     } catch (error) {
       throw new AppException(ReportError.EDIT_FAILED);
@@ -366,9 +362,7 @@ export class ReportsService {
         'ownerUser.nick',
         'ownerUser.avatar',
         'report.text',
-        'report.image1',
-        'report.image2',
-        'report.image3',
+        'report.images',
         'comment.id',
         'commenter.id',
         'commenter.nick',
