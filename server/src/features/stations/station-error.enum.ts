@@ -1,7 +1,7 @@
 export enum StationError {
-  NAME_ALREADY_USED = '400: Station name already used',
-  COORDINATES_ALREADY_USED = '400: Station coordinates already used',
-  NOT_OWNER = '403: You are not station owner',
-  CREATE_FAILED = '500: Failed to create station',
-  EDIT_FAILED = '500: Failed to edit station',
+  NAME_ALREADY_USED = '400: Назва поштомату вже використовується',
+  COORDINATES_ALREADY_USED = '400: Координати поштомату вже використовується',
+  NOT_OWNER = '403: Ви не власник поштомату',
+  CREATE_FAILED = '500: Не вдалося створити поштомат',
+  EDIT_FAILED = '500: Не вдалося редагувати поштомат',
 }

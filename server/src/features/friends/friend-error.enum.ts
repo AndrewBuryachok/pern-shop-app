@@ -1,5 +1,5 @@
 export enum FriendError {
-  ALREADY_OFFERED = '400: You already offered friendship',
-  CREATE_FAILED = '500: Failed to create offer',
-  DELETE_FAILED = '500: Failed to delete offer',
+  ALREADY_OFFERED = '400: Ви вже надіслали запит на дружбу',
+  CREATE_FAILED = '500: Не вдалося створити запит на дружбу',
+  DELETE_FAILED = '500: Не вдалося видалити запит на дружбу',
 }

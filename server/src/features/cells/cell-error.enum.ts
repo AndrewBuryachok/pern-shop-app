@@ -1,7 +1,7 @@
 export enum CellError {
-  NOT_FREE = '400: Cell is not free',
-  CREATE_FAILED = '500: Failed to create cell',
-  RESERVE_FAILED = '500: Failed to reserve cell',
-  CONTINUE_FAILED = '500: Failed to continue cell',
-  UNRESERVE_FAILED = '500: Failed to unreserve cell',
+  NOT_FREE = '400: Комірка вже зайнята',
+  CREATE_FAILED = '500: Не вдалося створити комірку',
+  RESERVE_FAILED = '500: Не вдалося зайняти комірку',
+  CONTINUE_FAILED = '500: Не вдалося продовжити бронювання комірки',
+  UNRESERVE_FAILED = '500: Не вдалося завершити бронювання комірки',
 }

@@ -1,6 +1,6 @@
 export enum InvitationError {
-  ALREADY_EXIST = '400: Invitation already exist',
-  NOT_EXIST = '400: Invitation not exist',
-  CREATE_FAILED = '500: Failed to create invitation',
-  DELETE_FAILED = '500: Failed to delete invitation',
+  ALREADY_EXIST = '400: Запрошення вже існує',
+  NOT_EXIST = '400: Запрошення не існує',
+  CREATE_FAILED = '500: Не вдалося створити запрошення',
+  DELETE_FAILED = '500: Не вдалося видалити запрошення',
 }

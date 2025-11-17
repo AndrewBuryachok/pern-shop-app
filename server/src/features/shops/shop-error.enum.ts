@@ -1,7 +1,7 @@
 export enum ShopError {
-  NAME_ALREADY_USED = '400: Shop name already used',
-  COORDINATES_ALREADY_USED = '400: Shop coordinates already used',
-  NOT_OWNER = '403: You are not shop owner',
-  CREATE_FAILED = '500: Failed to create shop',
-  EDIT_FAILED = '500: Failed to edit shop',
+  NAME_ALREADY_USED = '400: Назва магазину вже використовується',
+  COORDINATES_ALREADY_USED = '400: Координати магазину вже використовується',
+  NOT_OWNER = '403: Ви не власник магазину',
+  CREATE_FAILED = '500: Не вдалося створити магазин',
+  EDIT_FAILED = '500: Не вдалося редагувати магазин',
 }

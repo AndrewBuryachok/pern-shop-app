@@ -1,7 +1,7 @@
 export enum MarketError {
-  NAME_ALREADY_USED = '400: Market name already used',
-  COORDINATES_ALREADY_USED = '400: Market coordinates already used',
-  NOT_OWNER = '403: You are not market owner',
-  CREATE_FAILED = '500: Failed to create market',
-  EDIT_FAILED = '500: Failed to edit market',
+  NAME_ALREADY_USED = '400: Назва ринку вже використовується',
+  COORDINATES_ALREADY_USED = '400: Координати ринку вже використовується',
+  NOT_OWNER = '403: Ви не власник ринку',
+  CREATE_FAILED = '500: Не вдалося створити ринок',
+  EDIT_FAILED = '500: Не вдалося редагувати ринок',
 }

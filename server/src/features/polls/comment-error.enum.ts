@@ -1,6 +1,6 @@
 export enum CommentError {
-  NOT_OWNER = '403: You are not comment owner',
-  CREATE_FAILED = '500: Failed to create comment',
-  EDIT_FAILED = '500: Failed to edit comment',
-  DELETE_FAILED = '500: Failed to delete comment',
+  NOT_OWNER = '403: Ви не власник коментаря',
+  CREATE_FAILED = '500: Не вдалося створити коментар',
+  EDIT_FAILED = '500: Не вдалося редагувати коментар',
+  DELETE_FAILED = '500: Не вдалося видалити коментар',
 }

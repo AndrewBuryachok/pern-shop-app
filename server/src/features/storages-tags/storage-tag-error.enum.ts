@@ -1,6 +1,6 @@
 export enum StorageTagError {
-  NAME_ALREADY_USED = '400: Storage tag name already used',
-  NOT_OWNER = '403: You are not storage tag owner',
-  CREATE_FAILED = '500: Failed to create storage tag',
-  EDIT_FAILED = '500: Failed to edit storage tag',
+  NAME_ALREADY_USED = '400: Назва цінника вже використовується',
+  NOT_OWNER = '403: Ви не власник цінника',
+  CREATE_FAILED = '500: Не вдалося створити цінник',
+  EDIT_FAILED = '500: Не вдалося редагувати цінник',
 }

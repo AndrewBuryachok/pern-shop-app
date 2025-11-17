@@ -1,5 +1,5 @@
 export enum AuthError {
-  INVALID_CREDENTIALS = '400: Invalid credentials',
-  INVALID_ACCESS_TOKEN = '401: Invalid access token',
-  INVALID_REFRESH_TOKEN = '401: Invalid refresh token',
+  INVALID_CREDENTIALS = '400: Недійсні облікові дані',
+  INVALID_ACCESS_TOKEN = '401: Недійсний access токен',
+  INVALID_REFRESH_TOKEN = '401: Недійсний refresh токен',
 }

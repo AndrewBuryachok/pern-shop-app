@@ -1,7 +1,7 @@
 export enum StallError {
-  NOT_FREE = '400: Stall is not free',
-  CREATE_FAILED = '500: Failed to create stall',
-  RESERVE_FAILED = '500: Failed to reserve stall',
-  CONTINUE_FAILED = '500: Failed to continue stall',
-  UNRESERVE_FAILED = '500: Failed to unreserve stall',
+  NOT_FREE = '400: Палатка вже зайнята',
+  CREATE_FAILED = '500: Не вдалося створити палатку',
+  RESERVE_FAILED = '500: Не вдалося зайняти палатку',
+  CONTINUE_FAILED = '500: Не вдалося продовжити бронювання палатки',
+  UNRESERVE_FAILED = '500: Не вдалося завершити бронювання палатки',
 }

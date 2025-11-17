@@ -1,3 +1,3 @@
 export enum ResidentError {
-  OWNER = '400: User is town owner',
+  OWNER = '400: Користувач є власником міста',
 }
