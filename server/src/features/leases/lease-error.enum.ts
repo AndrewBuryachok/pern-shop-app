@@ -1,7 +1,7 @@
 export enum LeaseError {
-  ALREADY_COMPLETED = '400: Прокат вже завершено',
-  NOT_OWNER = '403: Ви не власник прокату',
-  CREATE_FAILED = '500: Не вдалося створити прокат',
-  CONTINUE_FAILED = '500: Не вдалося продовжити прокат',
-  COMPLETE_FAILED = '500: Не вдалося завершити прокат',
+  ALREADY_COMPLETED = '400: Оренду вже завершено',
+  NOT_OWNER = '403: Ви не власник оренди',
+  CREATE_FAILED = '500: Не вдалося створити оренду',
+  CONTINUE_FAILED = '500: Не вдалося продовжити оренду',
+  COMPLETE_FAILED = '500: Не вдалося завершити оренду',
 }

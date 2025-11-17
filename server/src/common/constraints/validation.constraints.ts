@@ -90,7 +90,7 @@ export class IsReportExists implements ValidatorConstraintInterface {
   }
 
   defaultMessage(): string {
-    return 'Невідомий звіт';
+    return 'Невідома новина';
   }
 }
 
@@ -128,7 +128,7 @@ export class IsArticleExists implements ValidatorConstraintInterface {
   }
 
   defaultMessage(): string {
-    return 'Невідома стаття';
+    return 'Невідома публікація';
   }
 }
 
@@ -166,7 +166,7 @@ export class IsPollExists implements ValidatorConstraintInterface {
   }
 
   defaultMessage(): string {
-    return 'Невідоме опитування';
+    return 'Невідома ідея';
   }
 }
 
@@ -223,7 +223,7 @@ export class IsExchangeExists implements ValidatorConstraintInterface {
   }
 
   defaultMessage(): string {
-    return 'Невідомий обмін';
+    return 'Невідома транзакція';
   }
 }
 
@@ -261,7 +261,7 @@ export class IsInvoiceExists implements ValidatorConstraintInterface {
   }
 
   defaultMessage(): string {
-    return 'Невідома накладна';
+    return 'Невідомий штраф';
   }
 }
 
@@ -508,7 +508,7 @@ export class IsLeaseExists implements ValidatorConstraintInterface {
   }
 
   defaultMessage(): string {
-    return 'Невідомий прокат';
+    return 'Невідома оренда';
   }
 }
 
@@ -527,7 +527,7 @@ export class IsHireExists implements ValidatorConstraintInterface {
   }
 
   defaultMessage(): string {
-    return 'Невідомий найм';
+    return 'Невідома оренда';
   }
 }
 

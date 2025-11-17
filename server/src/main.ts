@@ -22,7 +22,7 @@ async function bootstrap() {
   );
   appConfig(app);
   const config = new DocumentBuilder()
-    .setTitle('Shop API')
+    .setTitle('Forum API')
     .setVersion('1.0')
     .build();
   const document = SwaggerModule.createDocument(app, config);
