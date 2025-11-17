@@ -13,7 +13,7 @@ i18next.use(initReactI18next).init({
   defaultNS: 'global',
   interpolation: { escapeValue: false },
   lng: localStorage.getItem('lang') || navigator.language.split('-')[0],
-  fallbackLng: 'en',
+  fallbackLng: 'uk',
   resources: { en: { global: globalEN }, uk: { global: globalUK } },
 });
 
