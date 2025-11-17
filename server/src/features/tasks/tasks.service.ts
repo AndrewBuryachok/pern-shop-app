@@ -179,7 +179,7 @@ export class TasksService {
       senderCardId: task.customerCardId,
       receiverCardId: task.executorCardId,
       sum: task.price,
-      description: '',
+      description: `виконання завдання ${task.id}`,
     });
     await this.complete(task, dto.rate);
     this.unpublishNotification(dto.taskId, task.customerCard.userId);

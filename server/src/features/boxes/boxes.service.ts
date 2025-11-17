@@ -82,7 +82,7 @@ export class BoxesService {
       senderCardId: dto.cardId,
       receiverCardId: box.station.cardId,
       sum: box.station.price,
-      description: '',
+      description: `оренда ящика ${box.id}`,
     });
     await this.reserve(box);
     return [box, userId];
@@ -99,7 +99,7 @@ export class BoxesService {
       senderCardId: dto.cardId,
       receiverCardId: box.station.cardId,
       sum: box.station.price,
-      description: '',
+      description: `продовження оренди ящика ${box.id}`,
     });
     await this.continue(box);
     return box;

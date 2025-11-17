@@ -221,7 +221,7 @@ export class HaulagesService {
       senderCardId: haulage.fromHire.cardId,
       receiverCardId: haulage.executorCardId,
       sum: haulage.price,
-      description: '',
+      description: `виконання перевезення ${haulage.id}`,
     });
     try {
       await this.hiresService.completeHire({

@@ -192,7 +192,7 @@ export class OrdersService {
       senderCardId: order.hire.cardId,
       receiverCardId: order.executorCardId,
       sum: order.price,
-      description: '',
+      description: `виконання замовлення ${order.id}`,
     });
     try {
       await this.hiresService.completeHire({ ...dto, hireId: order.hireId });

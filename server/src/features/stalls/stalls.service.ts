@@ -88,7 +88,7 @@ export class StallsService {
       senderCardId: dto.cardId,
       receiverCardId: stall.market.cardId,
       sum: stall.marketTag.price,
-      description: '',
+      description: `оренда палатки ${stall.id}`,
     });
     await this.reserve(stall);
     return [stall, userId];
@@ -105,7 +105,7 @@ export class StallsService {
       senderCardId: dto.cardId,
       receiverCardId: stall.market.cardId,
       sum: stall.marketTag.price,
-      description: '',
+      description: `продовження оренди палатки ${stall.id}`,
     });
     await this.continue(stall);
     return stall;

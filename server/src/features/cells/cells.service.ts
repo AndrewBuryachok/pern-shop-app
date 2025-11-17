@@ -88,7 +88,7 @@ export class CellsService {
       senderCardId: dto.cardId,
       receiverCardId: cell.storage.cardId,
       sum: cell.storageTag.price,
-      description: '',
+      description: `оренда комірки ${cell.id}`,
     });
     await this.reserve(cell);
     return [cell, userId];
@@ -105,7 +105,7 @@ export class CellsService {
       senderCardId: dto.cardId,
       receiverCardId: cell.storage.cardId,
       sum: cell.storageTag.price,
-      description: '',
+      description: `продовження оренди комірки ${cell.id}`,
     });
     await this.continue(cell);
     return cell;

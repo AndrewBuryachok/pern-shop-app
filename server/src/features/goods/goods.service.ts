@@ -240,7 +240,7 @@ export class GoodsService {
       senderCardId: dto.cardId,
       receiverCardId: good.cardId,
       sum: dto.amount * good.price,
-      description: '',
+      description: `купівля товару ${good.id}`,
     });
     await this.buy(good, dto.amount);
     if (!good.amount) {
