@@ -1,10 +1,10 @@
 {
   "header": {
-    "title": "Shop",
+    "title": "Forum",
     "menu": {
       "settings": {
         "title": "Settings",
-        "language": "Language EN",
+        "language": "Language en-US",
         "theme": {
           "light": "Light theme",
           "dark": "Dark theme"
@@ -121,7 +121,7 @@
     "decrease": "Will be removed from card"
   },
   "home": {
-    "title": "Online shop",
+    "title": "Online forum",
     "text": "Learn more ",
     "anchor": "here"
   },
@@ -481,7 +481,7 @@
     }
   },
   "constants": {
-    "currency": "DO",
+    "currency": "diam",
     "increase": "Increase",
     "decrease": "Decrease",
     "up": "Thumb up",
