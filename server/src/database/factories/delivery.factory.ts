@@ -6,7 +6,6 @@ import { MAX_RATE_VALUE } from '../../common/constants';
 
 define(Delivery, (faker: Faker) => {
   const delivery = new Delivery();
-  delivery.price = Math.floor(Math.random() * 200) + 1;
   delivery.status = Math.floor(Math.random() * 4) + 1;
   if (delivery.status === Status.COMPLETED) {
     delivery.completedAt = new Date();

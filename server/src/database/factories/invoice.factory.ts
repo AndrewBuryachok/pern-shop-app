@@ -5,7 +5,7 @@ import { Invoice } from '../../features/invoices/invoice.entity';
 define(Invoice, (faker: Faker) => {
   const invoice = new Invoice();
   invoice.sum = Math.floor(Math.random() * 400) + 1;
-  invoice.description = faker.finance.transactionType();
+  invoice.description = faker.lorem.words(2);
   if (Math.random() > 0.5) {
     invoice.completedAt = new Date();
   }

@@ -1,4 +1,4 @@
-import { Faker } from '@faker-js/faker';
+import { faker } from '@faker-js/faker/locale/uk';
 import { define } from 'typeorm-seeding';
 import { Station } from '../../features/stations/station.entity';
 import {
@@ -6,9 +6,9 @@ import {
   MIN_COORDINATE_VALUE,
 } from '../../common/constants';
 
-define(Station, (faker: Faker) => {
+define(Station, () => {
   const station = new Station();
-  station.name = faker.address.city();
+  station.name = `Поштомат ${faker.address.cityName()}`;
   station.description = '';
   station.x =
     Math.floor(
