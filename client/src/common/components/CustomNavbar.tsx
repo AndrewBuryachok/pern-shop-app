@@ -11,7 +11,6 @@ import {
   IconBuildingWarehouse,
   IconChartBar,
   IconChecklist,
-  IconHome,
   IconMailbox,
   IconMap,
   IconNews,
@@ -37,10 +36,6 @@ export default function CustomNavbar(props: Props) {
   const notifications = getActiveNotifications();
 
   const links = [
-    {
-      label: 'home',
-      icon: IconHome,
-    },
     {
       label: 'reports',
       icon: IconNews,
@@ -136,7 +131,7 @@ export default function CustomNavbar(props: Props) {
     },
   ];
 
-  const active = useLocation().pathname.split('/')[1] || 'home';
+  const active = useLocation().pathname.split('/')[1];
 
   return (
     <>
@@ -201,7 +196,7 @@ export default function CustomNavbar(props: Props) {
                     />
                   }
                   component={Link}
-                  to={`/${link.label === 'home' ? '' : link.label}`}
+                  to={`/${link.label}`}
                   active={link.label === active}
                   onClick={() =>
                     notifications

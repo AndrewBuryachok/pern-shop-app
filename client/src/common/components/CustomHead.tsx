@@ -1,8 +1,8 @@
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
-import { Button, Group, Popover, Text, ThemeIcon, Title } from '@mantine/core';
+import { Button, Group, Title } from '@mantine/core';
 import { useDocumentTitle } from '@mantine/hooks';
-import { IconInfoCircle, IconRefresh, IconSearch } from '@tabler/icons';
+import { IconRefresh, IconSearch } from '@tabler/icons';
 import { IHead } from '../interfaces';
 import { openSearchModal } from './SearchModal';
 
@@ -21,19 +21,7 @@ export default function CustomHead(props: Props) {
 
   return (
     <Group spacing={0} position='apart'>
-      <Group spacing={8}>
-        <Title order={3}>{page}</Title>
-        <Popover offset={4} width={220} withArrow>
-          <Popover.Target>
-            <ThemeIcon size={20}>
-              <IconInfoCircle size={16} />
-            </ThemeIcon>
-          </Popover.Target>
-          <Popover.Dropdown p={8}>
-            <Text size='sm'>{t(`information.${active[1]}`)}</Text>
-          </Popover.Dropdown>
-        </Popover>
-      </Group>
+      <Title order={3}>{page}</Title>
       <Group spacing={8}>
         <Button
           loading={props.isFetching}

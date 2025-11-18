@@ -1,5 +1,5 @@
 import { Suspense, useEffect } from 'react';
-import { Route, Routes } from 'react-router-dom';
+import { Navigate, Route, Routes } from 'react-router-dom';
 import {
   AppShell,
   ColorScheme,
@@ -128,6 +128,7 @@ export default function App() {
             >
               <Suspense fallback={<CustomLoader />}>
                 <Routes>
+                  <Route index element={<Navigate to='/articles' replace />} />
                   {pages.map((page) =>
                     page.nested ? (
                       <Route key={page.path} path={page.path}>
@@ -149,8 +150,8 @@ export default function App() {
                       </Route>
                     ) : (
                       <Route
-                        key={page.path || 'home'}
-                        {...page}
+                        key={page.path}
+                        path={page.path}
                         element={<page.element />}
                       />
                     ),
