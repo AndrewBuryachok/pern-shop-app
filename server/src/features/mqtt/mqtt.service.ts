@@ -22,18 +22,18 @@ export class MqttService {
         process.env.BROKER_TOPIC + 'unnotifications/#',
       ]),
     );
-    this.client.on('message', async (topic, message) => {
+    this.client.on('message', async (topic, message, packet) => {
       const userId = +topic.split('/')[2];
       const payload = message.toString();
       switch (topic.split('/')[1]) {
         case 'users':
           if (payload) {
-            if (!this.users.has(userId)) {
+            if (!this.users.has(userId) && !packet.retain) {
               await this.usersService.addUserOnline(userId);
             }
             this.users.set(userId, new Date());
           } else {
-            if (this.users.has(userId)) {
+            if (this.users.has(userId) && !packet.retain) {
               await this.usersService.removeUserOnline(userId);
             }
             this.users.delete(userId);
