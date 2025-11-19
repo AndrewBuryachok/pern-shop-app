@@ -39,7 +39,6 @@
     "chat": "Chat",
     "chats": "Chats",
     "friends": "Friends",
-    "reports": "Reports",
     "articles": "Articles",
     "polls": "Polls",
     "likes": "Likes",
@@ -98,12 +97,6 @@
     "all": "All",
     "sent": "Sent",
     "received": "Received",
-    "server": "Server",
-    "site": "Site",
-    "events": "Events",
-    "spawn": "Spawn",
-    "hub": "Hub",
-    "end": "End",
     "liked": "Liked",
     "commented": "Commented",
     "placed": "Placed",
@@ -252,7 +245,6 @@
     "users": "User",
     "messages": "Message",
     "friends": "Friend",
-    "reports": "Report",
     "articles": "Article",
     "polls": "Poll",
     "comments": "Comment",
@@ -301,12 +293,6 @@
     },
     "chats": {
       "messaged": "надістав вам повідомлення"
-    },
-    "reports": {
-      "created": "created report",
-      "reacted": "reacted to your report",
-      "commented": "commented your report",
-      "replied": "replied to your comment"
     },
     "articles": {
       "created": "created article",

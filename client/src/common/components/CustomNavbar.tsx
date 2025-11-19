@@ -13,7 +13,6 @@ import {
   IconChecklist,
   IconMailbox,
   IconMap,
-  IconNews,
   IconUsers,
   IconWallet,
 } from '@tabler/icons';
@@ -36,10 +35,6 @@ export default function CustomNavbar(props: Props) {
   const notifications = getActiveNotifications();
 
   const links = [
-    {
-      label: 'reports',
-      icon: IconNews,
-    },
     {
       label: 'articles',
       icon: IconArticle,

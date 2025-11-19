@@ -5,7 +5,6 @@ const UsersPage = lazy(() => import('../pages/users/UsersPage'));
 const SingleUser = lazy(() => import('../pages/users/SingleUser'));
 const ChatsPage = lazy(() => import('../pages/chats/ChatsPage'));
 const FriendsPage = lazy(() => import('../pages/friends/FriendsPage'));
-const ReportsPage = lazy(() => import('../pages/reports/ReportsPage'));
 const ArticlesPage = lazy(() => import('../pages/articles/ArticlesPage'));
 const PollsPage = lazy(() => import('../pages/polls/PollsPage'));
 const CardsPage = lazy(() => import('../pages/cards/CardsPage'));
@@ -46,7 +45,7 @@ const TasksPage = lazy(() => import('../pages/tasks/TasksPage'));
 const AdvertsPage = lazy(() => import('../pages/adverts/AdvertsPage'));
 import { Role } from '../common/constants';
 
-export const tabs = ['top', 'server', 'site', 'events', 'spawn', 'hub', 'end'];
+export const tabs = ['top'];
 
 export const pages = [
   { path: 'map', element: Map },
@@ -73,19 +72,6 @@ export const pages = [
       { path: 'my' },
       { path: 'sent' },
       { path: 'received' },
-    ],
-  },
-  {
-    path: 'reports',
-    element: ReportsPage,
-    nested: [
-      { index: true },
-      { path: 'server' },
-      { path: 'site' },
-      { path: 'events' },
-      { path: 'spawn' },
-      { path: 'hub' },
-      { path: 'end' },
     ],
   },
   {

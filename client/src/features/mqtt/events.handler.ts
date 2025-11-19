@@ -1,8 +1,5 @@
 import { handleUserEvent } from '../users/users-events.handler';
 import { handleMessageEvent } from '../messages/messages-events.handler';
-import { handleReportCommentEvent } from '../reports/comments-events.handler';
-import { handleReportLikeEvent } from '../reports/likes-events.handler';
-import { handleReportViewEvent } from '../reports/views-events.handler';
 import { handleArticleCommentEvent } from '../articles/comments-events.handler';
 import { handleArticleLikeEvent } from '../articles/likes-events.handler';
 import { handleArticleViewEvent } from '../articles/views-events.handler';
@@ -18,15 +15,6 @@ export const handleEvent = (page: Event, id: number, json: string) => {
       break;
     case Event.MESSAGES:
       handleMessageEvent(id, json);
-      break;
-    case Event.REPORTS_COMMENTS:
-      handleReportCommentEvent(id, json);
-      break;
-    case Event.REPORTS_LIKES:
-      handleReportLikeEvent(id, json);
-      break;
-    case Event.REPORTS_VIEWS:
-      handleReportViewEvent(id, json);
       break;
     case Event.ARTICLES_COMMENTS:
       handleArticleCommentEvent(id, json);
