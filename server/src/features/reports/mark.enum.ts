@@ -1,8 +1,0 @@
-export enum Mark {
-  SERVER = 1,
-  SITE = 2,
-  EVENTS = 3,
-  SPAWN = 4,
-  HUB = 5,
-  END = 6,
-}

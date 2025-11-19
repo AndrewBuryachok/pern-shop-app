@@ -5,8 +5,6 @@ import {
 } from 'class-validator';
 import { UsersService } from '../../features/users/users.service';
 import { MessagesService } from '../../features/messages/messages.service';
-import { ReportsService } from '../../features/reports/reports.service';
-import { CommentsService as ReportsCommentsService } from '../../features/reports/comments.service';
 import { ArticlesService } from '../../features/articles/articles.service';
 import { CommentsService as ArticlesCommentsService } from '../../features/articles/comments.service';
 import { PollsService } from '../../features/polls/polls.service';
@@ -72,44 +70,6 @@ export class IsMessageExists implements ValidatorConstraintInterface {
 
   defaultMessage(): string {
     return 'Невідоме повідомлення';
-  }
-}
-
-@Injectable()
-@ValidatorConstraint({ name: 'isReportExists', async: true })
-export class IsReportExists implements ValidatorConstraintInterface {
-  constructor(private reportsService: ReportsService) {}
-
-  async validate(value: number): Promise<boolean> {
-    try {
-      await this.reportsService.checkReportExists(value);
-    } catch (error) {
-      return false;
-    }
-    return true;
-  }
-
-  defaultMessage(): string {
-    return 'Невідома новина';
-  }
-}
-
-@Injectable()
-@ValidatorConstraint({ name: 'isReportCommentExists', async: true })
-export class IsReportCommentExists implements ValidatorConstraintInterface {
-  constructor(private commentsService: ReportsCommentsService) {}
-
-  async validate(value: number): Promise<boolean> {
-    try {
-      await this.commentsService.checkCommentExists(value);
-    } catch (error) {
-      return false;
-    }
-    return true;
-  }
-
-  defaultMessage(): string {
-    return 'Невідомий коментар';
   }
 }
 

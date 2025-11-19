@@ -94,14 +94,6 @@ describe('Without Auth', () => {
     });
   });
 
-  describe('Reports', () => {
-    it('GET /reports/liked/select', async () => {
-      return request(app.getHttpServer())
-        .get('/reports/liked/select')
-        .expect(401);
-    });
-  });
-
   describe('Articles', () => {
     it('GET /articles/my', async () => {
       return request(app.getHttpServer()).get('/articles/my').expect(401);

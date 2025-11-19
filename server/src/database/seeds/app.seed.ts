@@ -2,10 +2,6 @@ import { faker } from '@faker-js/faker';
 import { Factory, Seeder } from 'typeorm-seeding';
 import { User } from '../../features/users/user.entity';
 import { Message } from '../../features/messages/message.entity';
-import { Report } from '../../features/reports/report.entity';
-import { ReportView } from '../../features/reports/report-view.entity';
-import { ReportLike } from '../../features/reports/report-like.entity';
-import { ReportComment } from '../../features/reports/comment.entity';
 import { Article } from '../../features/articles/article.entity';
 import { ArticleView } from '../../features/articles/article-view.entity';
 import { ArticleLike } from '../../features/articles/article-like.entity';
@@ -60,45 +56,6 @@ export default class AppSeed implements Seeder {
         message.chat = faker.helpers.arrayElement(users);
         message.user = faker.helpers.arrayElement(users);
         return message;
-      })
-      .createMany(40);
-    const reports = await factory(Report)()
-      .map(async (report) => {
-        report.user = faker.helpers.arrayElement(users);
-        return report;
-      })
-      .createMany(20);
-    const reportsUsers = reports.reduce(
-      (prev, report) => [...prev, ...users.map((user) => ({ report, user }))],
-      [],
-    );
-    const randomReportsViews = [...Array(reportsUsers.length).keys()];
-    randomReportsViews.sort(() => Math.random() - 0.5);
-    let reportViewId = 0;
-    await factory(ReportView)()
-      .map(async (view) => {
-        view.report = reportsUsers[randomReportsViews[reportViewId]].report;
-        view.user = reportsUsers[randomReportsViews[reportViewId]].user;
-        reportViewId++;
-        return view;
-      })
-      .createMany(80);
-    const randomReportsLikes = [...Array(reportsUsers.length).keys()];
-    randomReportsLikes.sort(() => Math.random() - 0.5);
-    let reportLikeId = 0;
-    const reportsLikes = await factory(ReportLike)()
-      .map(async (like) => {
-        like.report = reportsUsers[randomReportsLikes[reportLikeId]].report;
-        like.user = reportsUsers[randomReportsLikes[reportLikeId]].user;
-        reportLikeId++;
-        return like;
-      })
-      .createMany(80);
-    const reportsComments = await factory(ReportComment)()
-      .map(async (comment) => {
-        comment.report = faker.helpers.arrayElement(reports);
-        comment.user = faker.helpers.arrayElement(users);
-        return comment;
       })
       .createMany(40);
     const articles = await factory(Article)()
