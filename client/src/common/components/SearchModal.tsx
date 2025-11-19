@@ -14,7 +14,6 @@ import {
   Select,
   Slider,
   Textarea,
-  TextInput,
 } from '@mantine/core';
 import { DatePicker } from '@mantine/dates';
 import { useForm } from '@mantine/form';
@@ -81,7 +80,6 @@ import {
   unscaleMinSum,
 } from '../../common/utils';
 import {
-  MAX_ACTIVITY_LENGTH,
   MAX_AMOUNT_VALUE,
   MAX_DESCRIPTION_LENGTH,
   MAX_INTAKE_VALUE,
@@ -483,14 +481,6 @@ export default function SearchModal(props: Props) {
           placeholder={t('columns.description')}
           maxLength={MAX_DESCRIPTION_LENGTH}
           {...form.getInputProps('description')}
-        />
-      )}
-      {props.search.activity !== undefined && (
-        <TextInput
-          label={t('columns.activity')}
-          placeholder={t('columns.activity')}
-          maxLength={MAX_ACTIVITY_LENGTH}
-          {...form.getInputProps('activity')}
         />
       )}
       {props.search.type !== undefined && (

@@ -71,11 +71,4 @@ export const notifications = [
   'executed haulages my',
   'completed haulages taken',
   'rated haulages taken',
-  'created tasks main',
-  'taken tasks my',
-  'untaken tasks my',
-  'executed tasks my',
-  'completed tasks taken',
-  'rated tasks taken',
-  'responded tasks taken',
 ];

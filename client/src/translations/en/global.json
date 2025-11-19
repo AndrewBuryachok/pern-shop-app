@@ -69,9 +69,7 @@
     "deliveries": "Deliveries",
     "mail": "Mail",
     "orders": "Orders",
-    "haulages": "Haulages",
-    "services": "Services",
-    "tasks": "Tasks"
+    "haulages": "Haulages"
   },
   "aside": {
     "live": "Live",
@@ -109,7 +107,6 @@
     "buy": "Buy",
     "take": "Take",
     "execute": "Execute",
-    "respond": "Respond to",
     "edit": "Edit",
     "update": "Update", 
     "delete": "Delete",
@@ -160,7 +157,6 @@
     "receiver": "Receiver",
     "sum": "Sum",
     "description": "Description",
-    "activity": "Activity",
     "text": "Text",
     "executor": "Executor",
     "customer": "Customer",
@@ -264,8 +260,7 @@
     "purchases": "Purchase",
     "deliveries": "Delivery",
     "orders": "Order",
-    "haulages": "Haulage",
-    "tasks": "Task"
+    "haulages": "Haulage"
   },
   "errors": {
     "incorrect_nick": "Incorrect nick",
@@ -392,15 +387,6 @@
       "executed": "executed your haulage",
       "completed": "completed your haulage",
       "rated": "rated your haulage"
-    },
-    "tasks": {
-      "created": "created task",
-      "taken": "taken your task",
-      "untaken": "untaken your task",
-      "executed": "executed your task",
-      "completed": "completed your task",
-      "rated": "rated your task",
-      "responded": "responded to your advert"
     }
   },
   "constants": {

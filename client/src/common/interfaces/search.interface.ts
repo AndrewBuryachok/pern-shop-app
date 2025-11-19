@@ -20,7 +20,6 @@ export interface ISearch {
   box?: string | null;
   item?: string | null;
   description?: string;
-  activity?: string;
   type?: string | null;
   minSum?: number | null;
   maxSum?: number | null;

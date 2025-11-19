@@ -39,7 +39,6 @@ const PurchasesPage = lazy(() => import('../pages/purchases/PurchasesPage'));
 const DeliveriesPage = lazy(() => import('../pages/deliveries/DeliveriesPage'));
 const OrdersPage = lazy(() => import('../pages/orders/OrdersPage'));
 const HaulagesPage = lazy(() => import('../pages/haulages/HaulagesPage'));
-const TasksPage = lazy(() => import('../pages/tasks/TasksPage'));
 import { Role } from '../common/constants';
 
 export const tabs = ['top'];
@@ -292,16 +291,6 @@ export const pages = [
       { path: 'my' },
       { path: 'taken' },
       { path: 'placed' },
-      { path: 'all', role: Role.MERCHANT },
-    ],
-  },
-  {
-    path: 'tasks',
-    element: TasksPage,
-    nested: [
-      { index: true },
-      { path: 'my' },
-      { path: 'taken' },
       { path: 'all', role: Role.MERCHANT },
     ],
   },

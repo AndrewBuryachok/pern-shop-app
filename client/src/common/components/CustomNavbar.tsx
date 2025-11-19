@@ -8,7 +8,6 @@ import {
   IconBuildingSkyscraper,
   IconBuildingStore,
   IconBuildingWarehouse,
-  IconChecklist,
   IconMailbox,
   IconMap,
   IconUsers,
@@ -66,11 +65,6 @@ export default function CustomNavbar(props: Props) {
         { label: 'boxes' },
         { label: 'stations' },
       ],
-    },
-    {
-      label: 'services',
-      icon: IconChecklist,
-      nested: [{ label: 'tasks' }],
     },
     {
       label: 'map',
