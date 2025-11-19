@@ -31,7 +31,6 @@
     "react-redux": "^8.0.5",
     "react-router-dom": "^6.6.2",
     "react-zoom-pan-pinch": "^3.4.4",
-    "recharts": "^2.12.7",
     "showdown": "^2.1.0"
   },
   "devDependencies": {
