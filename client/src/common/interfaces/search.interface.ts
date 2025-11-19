@@ -33,8 +33,6 @@ export interface ISearch {
   minPrice?: number | null;
   maxPrice?: number | null;
   status?: string | null;
-  mark?: string | null;
-  result?: string | null;
   minDate?: string | null;
   maxDate?: string | null;
   completed?: string | null;

@@ -16,17 +16,7 @@ import { SelectRent } from '../../features/rents/rent.model';
 import { SelectLease } from '../../features/leases/lease.model';
 import { SmPurchaseWithPrice } from '../../features/purchases/purchase.model';
 import { parseItem, parsePlace } from './parse.util';
-import {
-  backgrounds,
-  colors,
-  items,
-  kits,
-  marks,
-  results,
-  resultsToColors,
-  Role,
-  statuses,
-} from '../constants';
+import { backgrounds, colors, items, kits, Role, statuses } from '../constants';
 
 export const selectUsers = (users?: SmUser[]) =>
   users?.map((user) => ({
@@ -182,14 +172,6 @@ export const selectExchangeTypes = () =>
     label: t(`constants.${type}`),
   }));
 
-export const selectPollTypes = () =>
-  ['rejected', 'accepted'].map((type, index) => ({
-    text: t(`constants.results.${type}`),
-    color: `${index * 2 + 1}`,
-    value: `${index}`,
-    label: t(`constants.results.${type}`),
-  }));
-
 export const selectItems = () =>
   items.map((item) => ({
     item: item,
@@ -215,18 +197,4 @@ export const selectDeliveries = () =>
   ['without', 'with'].map((delivery, index) => ({
     value: `${index}`,
     label: t(`constants.deliveries.${delivery}`),
-  }));
-
-export const selectMarks = () =>
-  marks.map((mark, index) => ({
-    value: `${index + 1}`,
-    label: t(`constants.marks.${mark}`),
-  }));
-
-export const selectResults = () =>
-  results.map((result, index) => ({
-    text: t(`constants.results.${result}`),
-    color: `${resultsToColors[index]}`,
-    value: `${index + 1}`,
-    label: t(`constants.results.${result}`),
   }));

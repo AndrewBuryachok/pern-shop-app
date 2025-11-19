@@ -29,10 +29,6 @@ export interface ExtUser extends User {
   twitch: string;
   youtube: string;
   friends: SmUser[];
-  articles: number;
-  articlesLikes: number;
-  polls: number;
-  pollsLikes: number;
   goodsCount: number;
   ordersCount: number;
   haulagesCount: number;

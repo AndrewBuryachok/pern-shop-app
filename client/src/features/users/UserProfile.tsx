@@ -80,10 +80,6 @@ export default function UserProfile({ data: user }: Props) {
   ];
 
   const stats = [
-    { label: 'articles', count: user.articles },
-    { label: 'likes', count: user.articlesLikes },
-    { label: 'polls', count: user.polls },
-    { label: 'likes', count: user.pollsLikes },
     { label: 'goods', count: user.goodsCount, rate: user.goodsRate },
     { label: 'orders', count: user.ordersCount, rate: user.ordersRate },
     { label: 'haulages', count: user.haulagesCount, rate: user.haulagesRate },
@@ -262,11 +258,9 @@ export default function UserProfile({ data: user }: Props) {
                     {t(`navbar.${stat.label}`)}
                   </Text>
                   <Text size='lg' weight='bold'>
-                    {stat.count || 0}
+                    {stat.count}
                   </Text>
-                  {stat.rate !== undefined && (
-                    <CustomRating value={stat.rate} />
-                  )}
+                  <CustomRating value={stat.rate} />
                 </Stack>
               </Paper>
             ))}

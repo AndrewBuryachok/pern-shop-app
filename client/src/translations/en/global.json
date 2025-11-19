@@ -40,7 +40,6 @@
     "chats": "Chats",
     "friends": "Friends",
     "articles": "Articles",
-    "polls": "Polls",
     "likes": "Likes",
     "wallet": "Wallet",
     "cards": "Cards",
@@ -203,8 +202,6 @@
     "status": "Status",
     "delivery": "Delivery",
     "purchase": "Purchase",
-    "mark": "Mark",
-    "result": "Result",
     "rate": "Rate",
     "action": "Action",
     "things": "Things",
@@ -246,7 +243,6 @@
     "messages": "Message",
     "friends": "Friend",
     "articles": "Article",
-    "polls": "Poll",
     "comments": "Comment",
     "cards": "Card",
     "exchanges": "Exchange",
@@ -298,13 +294,6 @@
       "created": "created article",
       "reacted": "reacted to your article",
       "commented": "commented your article",
-      "replied": "replied to your comment"
-    },
-    "polls": {
-      "created": "created poll",
-      "reacted": "reacted to your poll",
-      "commented": "commented your poll",
-      "completed": "completed your poll",
       "replied": "replied to your comment"
     },
     "cards": {
@@ -478,15 +467,6 @@
     "deliveries": {
       "without": "Without Delivery",
       "with": "With Delivery"
-    },
-    "marks": {
-      "site": "Site",
-      "server": "Server"
-    },
-    "results": {
-      "progress": "In progress",
-      "accepted": "Accepted",
-      "rejected": "Rejected"
     },
     "items": {
       "stone": "Stone",

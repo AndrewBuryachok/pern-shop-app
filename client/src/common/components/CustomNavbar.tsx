@@ -9,7 +9,6 @@ import {
   IconBuildingSkyscraper,
   IconBuildingStore,
   IconBuildingWarehouse,
-  IconChartBar,
   IconChecklist,
   IconMailbox,
   IconMap,
@@ -38,10 +37,6 @@ export default function CustomNavbar(props: Props) {
     {
       label: 'articles',
       icon: IconArticle,
-    },
-    {
-      label: 'polls',
-      icon: IconChartBar,
     },
     {
       label: 'wallet',

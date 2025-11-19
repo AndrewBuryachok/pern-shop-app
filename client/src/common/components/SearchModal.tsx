@@ -66,8 +66,6 @@ import {
   selectItems,
   selectKits,
   selectMarkets,
-  selectMarks,
-  selectResults,
   selectRoles,
   selectShops,
   selectStations,
@@ -616,27 +614,6 @@ export default function SearchModal(props: Props) {
           searchable
           allowDeselect
           {...form.getInputProps('status')}
-        />
-      )}
-      {props.search.mark !== undefined && (
-        <Select
-          label={t('columns.mark')}
-          placeholder={t('columns.mark')}
-          data={selectMarks()}
-          searchable
-          allowDeselect
-          {...form.getInputProps('mark')}
-        />
-      )}
-      {props.search.result !== undefined && (
-        <Select
-          label={t('columns.result')}
-          placeholder={t('columns.result')}
-          itemComponent={ColorsItem}
-          data={selectResults()}
-          searchable
-          allowDeselect
-          {...form.getInputProps('result')}
         />
       )}
       {props.search.minDate !== undefined && (

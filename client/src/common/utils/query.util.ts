@@ -97,12 +97,6 @@ export const getQuery = (req: IRequest) => {
   if (req?.status) {
     query.append('status', req.status);
   }
-  if (req?.mark) {
-    query.append('mark', req.mark);
-  }
-  if (req?.result) {
-    query.append('result', req.result);
-  }
   if (req?.minDate) {
     query.append('minDate', req.minDate);
   }
