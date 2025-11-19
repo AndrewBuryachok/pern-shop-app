@@ -237,19 +237,6 @@ describe('Without Auth', () => {
     });
   });
 
-  describe('Farms', () => {
-    it('GET /farms/my', async () => {
-      return request(app.getHttpServer()).get('/farms/my').expect(401);
-    });
-
-    it('GET /farms/all', async () => {
-      return request(app.getHttpServer())
-        .get('/farms/all')
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect(403);
-    });
-  });
-
   describe('Shops', () => {
     it('GET /shops/my', async () => {
       return request(app.getHttpServer()).get('/shops/my').expect(401);

@@ -12,7 +12,6 @@ import { ExchangesService } from '../../features/exchanges/exchanges.service';
 import { PaymentsService } from '../../features/payments/payments.service';
 import { InvoicesService } from '../../features/invoices/invoices.service';
 import { TownsService } from '../../features/towns/towns.service';
-import { FarmsService } from '../../features/farms/farms.service';
 import { ShopsService } from '../../features/shops/shops.service';
 import { MarketsService } from '../../features/markets/markets.service';
 import { StoragesService } from '../../features/storages/storages.service';
@@ -201,25 +200,6 @@ export class IsTownExists implements ValidatorConstraintInterface {
 
   defaultMessage(): string {
     return 'Невідоме місто';
-  }
-}
-
-@Injectable()
-@ValidatorConstraint({ name: 'isFarmExists', async: true })
-export class IsFarmExists implements ValidatorConstraintInterface {
-  constructor(private farmsService: FarmsService) {}
-
-  async validate(value: number): Promise<boolean> {
-    try {
-      await this.farmsService.checkFarmExists(value);
-    } catch (error) {
-      return false;
-    }
-    return true;
-  }
-
-  defaultMessage(): string {
-    return 'Невідома ферма';
   }
 }
 

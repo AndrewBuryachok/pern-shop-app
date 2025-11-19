@@ -13,7 +13,6 @@ import { PaymentsModule } from './features/payments/payments.module';
 import { InvoicesModule } from './features/invoices/invoices.module';
 import { TownsModule } from './features/towns/towns.module';
 import { ResidentsModule } from './features/residents/residents.module';
-import { FarmsModule } from './features/farms/farms.module';
 import { ShopsModule } from './features/shops/shops.module';
 import { MarketsModule } from './features/markets/markets.module';
 import { StoragesModule } from './features/storages/storages.module';
@@ -64,7 +63,6 @@ import { AdvertsModule } from './features/adverts/adverts.module';
     InvoicesModule,
     TownsModule,
     ResidentsModule,
-    FarmsModule,
     ShopsModule,
     MarketsModule,
     StoragesModule,

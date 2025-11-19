@@ -67,12 +67,6 @@ export class Request {
   @IsOptional()
   @IsInt()
   @Type(() => Number)
-  farm?: number;
-
-  @ApiProperty({ required: false })
-  @IsOptional()
-  @IsInt()
-  @Type(() => Number)
   shop?: number;
 
   @ApiProperty({ required: false })
