@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { RedisModule } from '@liaoliaots/nestjs-redis';
 import { ScheduleModule } from 'nest-schedule';
 import { AuthModule } from './features/auth/auth.module';
 import { UsersModule } from './features/users/users.module';
@@ -36,7 +35,6 @@ import { OrdersModule } from './features/orders/orders.module';
 import { HaulagesModule } from './features/haulages/haulages.module';
 import { TasksModule } from './features/tasks/tasks.module';
 import { AdvertsModule } from './features/adverts/adverts.module';
-import { LoggerModule } from './features/logger/logger.module';
 
 @Module({
   imports: [
@@ -54,13 +52,6 @@ import { LoggerModule } from './features/logger/logger.module';
         entities: [],
         synchronize: true,
         autoLoadEntities: true,
-      }),
-    }),
-    RedisModule.forRootAsync({
-      imports: [ConfigModule],
-      inject: [ConfigService],
-      useFactory: (configService: ConfigService) => ({
-        config: { url: configService.get('REDIS_URL') },
       }),
     }),
     ScheduleModule.register(),
@@ -97,7 +88,6 @@ import { LoggerModule } from './features/logger/logger.module';
     HaulagesModule,
     TasksModule,
     AdvertsModule,
-    LoggerModule,
   ],
 })
 export class AppModule {}

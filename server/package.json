@@ -23,7 +23,6 @@
     "seed:run": "ts-node ./node_modules/typeorm-seeding/dist/cli.js seed -n src/config/typeorm.config.ts"
   },
   "dependencies": {
-    "@liaoliaots/nestjs-redis": "^9.0.5",
     "@nestjs/axios": "^3.0.2",
     "@nestjs/common": "^8.0.0",
     "@nestjs/config": "^2.2.0",
@@ -38,7 +37,6 @@
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.0",
     "faker": "^6.6.6",
-    "ioredis": "^5.4.1",
     "morgan": "^1.10.0",
     "mqtt": "^5.1.4",
     "nest-schedule": "^0.6.4",
