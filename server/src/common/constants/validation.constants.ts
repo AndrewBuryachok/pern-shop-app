@@ -20,5 +20,4 @@ export const MAX_PRICE_VALUE = 1000;
 export const MAX_BACKGROUND_VALUE = 12;
 export const MAX_COLOR_VALUE = 4;
 export const MAX_KIT_VALUE = 3;
-export const MAX_MARK_VALUE = 2;
 export const MAX_RATE_VALUE = 5;

@@ -7,7 +7,6 @@ import { UsersModule } from './features/users/users.module';
 import { MessagesModule } from './features/messages/messages.module';
 import { FriendsModule } from './features/friends/friends.module';
 import { ArticlesModule } from './features/articles/articles.module';
-import { PollsModule } from './features/polls/polls.module';
 import { CardsModule } from './features/cards/cards.module';
 import { ExchangesModule } from './features/exchanges/exchanges.module';
 import { PaymentsModule } from './features/payments/payments.module';
@@ -59,7 +58,6 @@ import { AdvertsModule } from './features/adverts/adverts.module';
     MessagesModule,
     FriendsModule,
     ArticlesModule,
-    PollsModule,
     CardsModule,
     ExchangesModule,
     PaymentsModule,

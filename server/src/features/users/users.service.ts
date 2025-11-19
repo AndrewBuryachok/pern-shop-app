@@ -561,50 +561,6 @@ export class UsersService {
   }
 
   private async getUserStatsAndRates(userId: number): Promise<User> {
-    const articles = await this.usersRepository
-      .createQueryBuilder('user')
-      .leftJoinAndMapMany(
-        'user.articles',
-        'articles',
-        'article',
-        'article.userId = user.id',
-      )
-      .where('user.id = :userId', { userId })
-      .select('COUNT(article.id)', 'articles')
-      .getRawOne();
-    const articlesLikes = await this.usersRepository
-      .createQueryBuilder('user')
-      .leftJoinAndMapMany(
-        'user.articlesLikes',
-        'articles_likes',
-        'like',
-        'like.userId = user.id',
-      )
-      .where('user.id = :userId', { userId })
-      .select('COUNT(like.id)', 'articlesLikes')
-      .getRawOne();
-    const polls = await this.usersRepository
-      .createQueryBuilder('user')
-      .leftJoinAndMapMany(
-        'user.polls',
-        'polls',
-        'poll',
-        'poll.userId = user.id',
-      )
-      .where('user.id = :userId', { userId })
-      .select('COUNT(poll.id)', 'polls')
-      .getRawOne();
-    const pollsLikes = await this.usersRepository
-      .createQueryBuilder('user')
-      .leftJoinAndMapMany(
-        'user.pollsLikes',
-        'polls_likes',
-        'like',
-        'like.userId = user.id',
-      )
-      .where('user.id = :userId', { userId })
-      .select('COUNT(like.id)', 'pollsLikes')
-      .getRawOne();
     const goodsCount = await this.usersRepository
       .createQueryBuilder('user')
       .leftJoin('user.cards', 'card')
@@ -703,10 +659,6 @@ export class UsersService {
       .select('AVG(haulage.rate)', 'haulagesRate')
       .getRawOne();
     const user = {
-      ...articles,
-      ...articlesLikes,
-      ...polls,
-      ...pollsLikes,
       ...goodsCount,
       ...deliveriesCount,
       ...ordersCount,

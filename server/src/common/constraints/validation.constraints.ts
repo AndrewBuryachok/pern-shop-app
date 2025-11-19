@@ -7,8 +7,6 @@ import { UsersService } from '../../features/users/users.service';
 import { MessagesService } from '../../features/messages/messages.service';
 import { ArticlesService } from '../../features/articles/articles.service';
 import { CommentsService as ArticlesCommentsService } from '../../features/articles/comments.service';
-import { PollsService } from '../../features/polls/polls.service';
-import { CommentsService as PollsCommentsService } from '../../features/polls/comments.service';
 import { CardsService } from '../../features/cards/cards.service';
 import { ExchangesService } from '../../features/exchanges/exchanges.service';
 import { PaymentsService } from '../../features/payments/payments.service';
@@ -96,44 +94,6 @@ export class IsArticleExists implements ValidatorConstraintInterface {
 @ValidatorConstraint({ name: 'isArticleCommentExists', async: true })
 export class IsArticleCommentExists implements ValidatorConstraintInterface {
   constructor(private commentsService: ArticlesCommentsService) {}
-
-  async validate(value: number): Promise<boolean> {
-    try {
-      await this.commentsService.checkCommentExists(value);
-    } catch (error) {
-      return false;
-    }
-    return true;
-  }
-
-  defaultMessage(): string {
-    return 'Невідомий коментар';
-  }
-}
-
-@Injectable()
-@ValidatorConstraint({ name: 'isPollExists', async: true })
-export class IsPollExists implements ValidatorConstraintInterface {
-  constructor(private pollsService: PollsService) {}
-
-  async validate(value: number): Promise<boolean> {
-    try {
-      await this.pollsService.checkPollExists(value);
-    } catch (error) {
-      return false;
-    }
-    return true;
-  }
-
-  defaultMessage(): string {
-    return 'Невідома ідея';
-  }
-}
-
-@Injectable()
-@ValidatorConstraint({ name: 'isPollCommentExists', async: true })
-export class IsPollCommentExists implements ValidatorConstraintInterface {
-  constructor(private commentsService: PollsCommentsService) {}
 
   async validate(value: number): Promise<boolean> {
     try {

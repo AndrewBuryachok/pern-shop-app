@@ -27,7 +27,6 @@ import {
   MAX_INTAKE_VALUE,
   MAX_KIT_VALUE,
   MAX_LINK_LENGTH,
-  MAX_MARK_VALUE,
   MAX_NAME_LENGTH,
   MAX_NICK_LENGTH,
   MAX_PASSWORD_LENGTH,
@@ -175,13 +174,6 @@ export const IsKit = () => (target: object, key: string) => {
 export const IsType = () => (target: object, key: string) => {
   IsNotEmpty()(target, key);
   IsBoolean()(target, key);
-};
-
-export const IsMark = () => (target: object, key: string) => {
-  IsNotEmpty()(target, key);
-  IsInt()(target, key);
-  IsPositive()(target, key);
-  Max(MAX_MARK_VALUE)(target, key);
 };
 
 export const IsRate = () => (target: object, key: string) => {
