@@ -48,11 +48,7 @@ export const pages = [
   {
     path: 'users',
     element: UsersPage,
-    nested: [
-      { index: true },
-      { path: 'top' },
-      { path: 'all', role: Role.ADMIN },
-    ],
+    nested: [{ index: true }, { path: 'all', role: Role.ADMIN }],
   },
   { path: 'users/:nick', element: SingleUser },
   {

@@ -2,7 +2,6 @@ import { useLocation, useSearchParams } from 'react-router-dom';
 import {
   useGetAllUsersQuery,
   useGetMainUsersQuery,
-  useGetTopUsersQuery,
 } from '../../features/users/users.api';
 import UsersTable from '../../features/users/UsersTable';
 import { editUserPasswordAction } from '../../features/users/EditUserPasswordModal';
@@ -27,7 +26,6 @@ export default function UsersPage() {
 
   const response = {
     main: useGetMainUsersQuery,
-    top: useGetTopUsersQuery,
     all: useGetAllUsersQuery,
   }[tab]!(search);
 
