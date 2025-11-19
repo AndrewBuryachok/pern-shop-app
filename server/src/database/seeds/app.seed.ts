@@ -33,7 +33,6 @@ import { Purchase } from '../../features/purchases/purchase.entity';
 import { Delivery } from '../../features/deliveries/delivery.entity';
 import { Order } from '../../features/orders/order.entity';
 import { Haulage } from '../../features/haulages/haulage.entity';
-import { Task } from '../../features/tasks/task.entity';
 import { Status } from '../../features/transportations/status.enum';
 import { getDateWeekAfter, hashData } from '../../common/utils';
 
@@ -469,30 +468,6 @@ export default class AppSeed implements Seeder {
         return haulage;
       })
       .makeMany(10);
-    id = 1;
-    const tasks = await factory(Task)()
-      .map(async (task) => {
-        task.customerCard = faker.helpers.arrayElement(
-          cards.filter((card) => card.account.balance >= task.price),
-        );
-        task.customerCard.account.balance -= task.price;
-        if (task.status !== Status.CREATED) {
-          task.executorCard = faker.helpers.arrayElement(cards);
-        }
-        if (task.status === Status.COMPLETED) {
-          const payment = await factory(Payment)().make({
-            senderCard: task.customerCard,
-            receiverCard: task.executorCard,
-            sum: task.price,
-            description: `виконання завдання ${id}`,
-          });
-          payments.push(payment);
-          task.executorCard.account.balance += task.price;
-        }
-        id++;
-        return task;
-      })
-      .makeMany(10);
     id = 0;
     await factory(Account)()
       .map(async () => accounts[id++])
@@ -597,9 +572,5 @@ export default class AppSeed implements Seeder {
     await factory(Haulage)()
       .map(async () => haulages[id++])
       .createMany(haulages.length);
-    id = 0;
-    await factory(Task)()
-      .map(async () => tasks[id++])
-      .createMany(tasks.length);
   }
 }

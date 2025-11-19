@@ -30,7 +30,6 @@ import { PurchasesModule } from './features/purchases/purchases.module';
 import { DeliveriesModule } from './features/deliveries/deliveries.module';
 import { OrdersModule } from './features/orders/orders.module';
 import { HaulagesModule } from './features/haulages/haulages.module';
-import { TasksModule } from './features/tasks/tasks.module';
 
 @Module({
   imports: [
@@ -79,7 +78,6 @@ import { TasksModule } from './features/tasks/tasks.module';
     DeliveriesModule,
     OrdersModule,
     HaulagesModule,
-    TasksModule,
   ],
 })
 export class AppModule {}

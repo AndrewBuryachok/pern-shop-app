@@ -130,12 +130,6 @@ export class Request {
 
   @ApiProperty({ required: false })
   @IsOptional()
-  @IsString()
-  @Transform(({ value }) => value && `%${value}%`)
-  activity?: string;
-
-  @ApiProperty({ required: false })
-  @IsOptional()
   @IsInt()
   @Type(() => Number)
   type?: number;

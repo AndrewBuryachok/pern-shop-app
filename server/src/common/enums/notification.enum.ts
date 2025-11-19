@@ -71,11 +71,4 @@ export enum Notification {
   EXECUTED_HAULAGE = 'executed haulages',
   COMPLETED_HAULAGE = 'completed haulages',
   RATED_HAULAGE = 'rated haulages',
-  CREATED_TASK = 'created tasks',
-  TAKEN_TASK = 'taken tasks',
-  UNTAKEN_TASK = 'untaken tasks',
-  EXECUTED_TASK = 'executed tasks',
-  COMPLETED_TASK = 'completed tasks',
-  RATED_TASK = 'rated tasks',
-  RESPONDED_ADVERT = 'responded tasks',
 }

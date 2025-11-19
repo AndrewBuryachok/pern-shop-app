@@ -577,21 +577,4 @@ describe('Without Auth', () => {
         .expect(403);
     });
   });
-
-  describe('Tasks', () => {
-    it('GET /tasks/my', async () => {
-      return request(app.getHttpServer()).get('/tasks/my').expect(401);
-    });
-
-    it('GET /tasks/taken', async () => {
-      return request(app.getHttpServer()).get('/tasks/taken').expect(401);
-    });
-
-    it('GET /tasks/all', async () => {
-      return request(app.getHttpServer())
-        .get('/tasks/all')
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect(403);
-    });
-  });
 });

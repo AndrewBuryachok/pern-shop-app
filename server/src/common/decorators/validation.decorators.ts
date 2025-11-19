@@ -15,7 +15,6 @@ import {
   ValidateIf,
 } from 'class-validator';
 import {
-  MAX_ACTIVITY_LENGTH,
   MAX_AMOUNT_VALUE,
   MAX_BACKGROUND_VALUE,
   MAX_COLOR_VALUE,
@@ -76,12 +75,6 @@ export const IsDescription = () => (target: object, key: string) => {
   IsNotEmpty()(target, key);
   IsString()(target, key);
   MaxLength(MAX_DESCRIPTION_LENGTH)(target, key);
-};
-
-export const IsActivity = () => (target: Object, key: string) => {
-  IsNotEmpty()(target, key);
-  IsString()(target, key);
-  MaxLength(MAX_ACTIVITY_LENGTH)(target, key);
 };
 
 export const IsText = () => (target: object, key: string) => {
