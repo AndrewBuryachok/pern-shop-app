@@ -48,8 +48,6 @@ export default function ResidentsPage() {
       search={search}
       button={createInvitationButton}
       actions={[cancelInvitationAction]}
-      column='time'
-      callback={(user) => Math.floor(user.time! / 6) / 10}
     />
   ) : (
     <TownsTable

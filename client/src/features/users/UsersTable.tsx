@@ -9,24 +9,13 @@ import DateText from '../../common/components/DateText';
 import CustomActions from '../../common/components/CustomActions';
 import { viewUserAction } from './ViewUserModal';
 
-type Props = ITableWithActions<User> & {
-  column: string;
-  callback: (user: User) => number;
-};
+type Props = ITableWithActions<User>;
 
 export default function UsersTable({ actions = [], ...props }: Props) {
   return (
     <CustomTable
       minWidth={1000}
-      columns={[
-        'user',
-        'roles',
-        'town',
-        props.column,
-        'online',
-        'created',
-        'action',
-      ]}
+      columns={['user', 'roles', 'town', 'time', 'online', 'created', 'action']}
       {...props}
     >
       {props.data?.result.map((user) => (
@@ -45,7 +34,7 @@ export default function UsersTable({ actions = [], ...props }: Props) {
             )}
           </td>
           <td>
-            <SingleText text={`${props.callback(user)}`} />
+            <SingleText text={`${Math.floor(user.time / 6) / 10}`} />
           </td>
           <td>
             <DateText date={user.onlineAt} />

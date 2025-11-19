@@ -18,8 +18,7 @@ export interface User extends MdUser {
   createdAt: Date;
   onlineAt?: Date;
   town?: MdTown;
-  time?: number;
-  friendsCount?: number;
+  time: number;
 }
 
 export interface ExtUser extends User {

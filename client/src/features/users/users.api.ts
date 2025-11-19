@@ -16,12 +16,6 @@ export const usersApi = emptyApi.injectEndpoints({
       }),
       providesTags: ['User'],
     }),
-    getFriendsUsers: build.query<IResponse<User>, IRequest>({
-      query: (req) => ({
-        url: `/users/friends?${getQuery(req)}`,
-      }),
-      providesTags: ['User', 'Friend'],
-    }),
     getMyUsers: build.query<IResponse<User>, IRequest>({
       query: (req) => ({
         url: `/users/my?${getQuery(req)}`,
@@ -94,7 +88,6 @@ export const usersApi = emptyApi.injectEndpoints({
 
 export const {
   useGetMainUsersQuery,
-  useGetFriendsUsersQuery,
   useGetMyUsersQuery,
   useGetAllUsersQuery,
   useSelectAllUsersQuery,

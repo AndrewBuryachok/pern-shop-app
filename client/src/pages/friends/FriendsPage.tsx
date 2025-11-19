@@ -1,5 +1,4 @@
 import { useLocation, useSearchParams } from 'react-router-dom';
-import { useGetFriendsUsersQuery } from '../../features/users/users.api';
 import {
   useGetMyFriendsQuery,
   useGetReceivedFriendsQuery,
@@ -27,14 +26,12 @@ export default function FriendsPage() {
   };
 
   const response = {
-    top: useGetFriendsUsersQuery,
     my: useGetMyFriendsQuery,
     sent: useGetSentFriendsQuery,
     received: useGetReceivedFriendsQuery,
   }[tab]!(search);
 
   const button = {
-    top: createFriendButton,
     my: createFriendButton,
     sent: createFriendButton,
     received: createFriendButton,
@@ -52,8 +49,6 @@ export default function FriendsPage() {
       search={search}
       button={button}
       actions={actions}
-      column='friends'
-      callback={(user) => user.friendsCount!}
     />
   );
 }

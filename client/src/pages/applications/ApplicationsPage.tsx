@@ -47,8 +47,6 @@ export default function ResidentsPage() {
       {...usersResponse}
       search={search}
       actions={[acceptApplicationAction, rejectApplicationAction]}
-      column='time'
-      callback={(user) => Math.floor(user.time! / 6) / 10}
     />
   ) : (
     <TownsTable

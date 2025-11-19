@@ -59,12 +59,7 @@ export const pages = [
   {
     path: 'friends',
     element: FriendsPage,
-    nested: [
-      { path: 'top' },
-      { path: 'my' },
-      { path: 'sent' },
-      { path: 'received' },
-    ],
+    nested: [{ path: 'my' }, { path: 'sent' }, { path: 'received' }],
   },
   {
     path: 'articles',

@@ -27,13 +27,5 @@ export default function ResidentsPage() {
     my: [deleteResidentAction],
   }[tab];
 
-  return (
-    <UsersTable
-      {...response}
-      search={search}
-      actions={actions}
-      column='time'
-      callback={(user) => Math.floor(user.time! / 6) / 10}
-    />
-  );
+  return <UsersTable {...response} search={search} actions={actions} />;
 }

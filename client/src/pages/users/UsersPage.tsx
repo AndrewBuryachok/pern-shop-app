@@ -33,13 +33,5 @@ export default function UsersPage() {
     all: [editUserPasswordAction, addUserRoleAction, removeUserRoleAction],
   }[tab];
 
-  return (
-    <UsersTable
-      {...response}
-      search={search}
-      actions={actions}
-      column='time'
-      callback={(user) => Math.floor(user.time! / 6) / 10}
-    />
-  );
+  return <UsersTable {...response} search={search} actions={actions} />;
 }
