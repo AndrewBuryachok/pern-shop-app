@@ -38,21 +38,6 @@ export class UsersService {
     return { result, count };
   }
 
-  async getFriendsUsers(req: Request): Promise<Response<User>> {
-    const [result, count] = await this.getFriendsQueryBuilder(req)
-      .leftJoin('user.friends', 'friend')
-      .groupBy('user.id')
-      .addGroupBy('town.id')
-      .addGroupBy('ownerUser.id')
-      .orderBy('user_friends', 'DESC', 'NULLS LAST')
-      .addOrderBy('user.type', 'DESC')
-      .addOrderBy('user.onlineAt', 'DESC')
-      .addOrderBy('user.id', 'DESC')
-      .addSelect('COUNT(friend.id)', 'user_friends')
-      .getManyAndCount();
-    return { result, count };
-  }
-
   async getMyUsers(myId: number, req: Request): Promise<Response<User>> {
     const [result, count] = await this.getExtUsersQueryBuilder(req)
       .leftJoin('town.users', 'townUsers')
@@ -69,10 +54,7 @@ export class UsersService {
   }
 
   getFriendsQueryBuilder(req: Request): SelectQueryBuilder<User> {
-    return this.getUsersQueryBuilder(req).loadRelationCountAndMap(
-      'user.friendsCount',
-      'user.friends',
-    );
+    return this.getExtUsersQueryBuilder(req);
   }
 
   getResidentsQueryBuilder(req: Request): SelectQueryBuilder<User> {

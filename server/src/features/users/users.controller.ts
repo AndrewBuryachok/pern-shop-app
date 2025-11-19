@@ -33,12 +33,6 @@ export class UsersController {
     return this.usersService.getMainUsers(req);
   }
 
-  @Public()
-  @Get('friends')
-  getFriendsUsers(@Query() req: Request): Promise<Response<User>> {
-    return this.usersService.getFriendsUsers(req);
-  }
-
   @Get('my')
   getMyUsers(
     @MyId() myId: number,

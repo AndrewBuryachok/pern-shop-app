@@ -222,12 +222,6 @@ describe('With Auth', () => {
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
 
-    it('GET /users/friends', async () => {
-      return request(app.getHttpServer())
-        .get('/users/friends')
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
-    });
-
     it('GET /users/my', async () => {
       return request(app.getHttpServer())
         .get('/users/my')
