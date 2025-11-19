@@ -71,8 +71,7 @@
     "orders": "Orders",
     "haulages": "Haulages",
     "services": "Services",
-    "tasks": "Tasks",
-    "adverts": "Adverts"
+    "tasks": "Tasks"
   },
   "aside": {
     "live": "Live",
@@ -266,8 +265,7 @@
     "deliveries": "Delivery",
     "orders": "Order",
     "haulages": "Haulage",
-    "tasks": "Task",
-    "adverts": "Advert"
+    "tasks": "Task"
   },
   "errors": {
     "incorrect_nick": "Incorrect nick",
@@ -403,9 +401,6 @@
       "completed": "completed your task",
       "rated": "rated your task",
       "responded": "responded to your advert"
-    },
-    "adverts": {
-      "created": "created advert"
     }
   },
   "constants": {

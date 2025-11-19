@@ -78,5 +78,4 @@ export const notifications = [
   'completed tasks taken',
   'rated tasks taken',
   'responded tasks taken',
-  'created adverts main',
 ];

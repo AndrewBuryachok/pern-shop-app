@@ -70,7 +70,7 @@ export default function CustomNavbar(props: Props) {
     {
       label: 'services',
       icon: IconChecklist,
-      nested: [{ label: 'tasks' }, { label: 'adverts' }],
+      nested: [{ label: 'tasks' }],
     },
     {
       label: 'map',
