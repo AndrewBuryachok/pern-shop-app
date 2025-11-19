@@ -38,16 +38,6 @@ export class UsersService {
     return { result, count };
   }
 
-  async getTopUsers(req: Request): Promise<Response<User>> {
-    const [result, count] = await this.getExtUsersQueryBuilder(req)
-      .orderBy('user.time', 'DESC')
-      .addOrderBy('user.type', 'DESC')
-      .addOrderBy('user.onlineAt', 'DESC')
-      .addOrderBy('user.id', 'DESC')
-      .getManyAndCount();
-    return { result, count };
-  }
-
   async getFriendsUsers(req: Request): Promise<Response<User>> {
     const [result, count] = await this.getFriendsQueryBuilder(req)
       .leftJoin('user.friends', 'friend')
