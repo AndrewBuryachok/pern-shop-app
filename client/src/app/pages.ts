@@ -18,7 +18,6 @@ const InvitationsPage = lazy(
 const ApplicationsPage = lazy(
   () => import('../pages/applications/ApplicationsPage'),
 );
-const FarmsPage = lazy(() => import('../pages/farms/FarmsPage'));
 const ShopsPage = lazy(() => import('../pages/shops/ShopsPage'));
 const MarketsPage = lazy(() => import('../pages/markets/MarketsPage'));
 const StoragesPage = lazy(() => import('../pages/storages/StoragesPage'));
@@ -131,15 +130,6 @@ export const pages = [
     path: 'applications',
     element: ApplicationsPage,
     nested: [{ path: 'sent' }, { path: 'received' }],
-  },
-  {
-    path: 'farms',
-    element: FarmsPage,
-    nested: [
-      { index: true },
-      { path: 'my' },
-      { path: 'all', role: Role.INSPECTOR },
-    ],
   },
   {
     path: 'shops',

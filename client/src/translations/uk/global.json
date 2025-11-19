@@ -51,7 +51,6 @@
     "residents": "Жителі",
     "invitations": "Запрошення",
     "applications": "Заявки",
-    "farms": "Ферми",
     "shops": "Магазини",
     "markets": "Ринки",
     "storages": "Склади",
@@ -171,7 +170,6 @@
     "incompleted": "Не Завершено",
     "x": "X",
     "y": "Y",
-    "farm": "Ферма",
     "shop": "Магазин",
     "market": "Ринок",
     "storage": "Склад",
@@ -252,7 +250,6 @@
     "residents": "Жителя",
     "invitations": "Запрошення",
     "applications": "Заявку",
-    "farms": "Ферму",
     "shops": "Магазин",
     "markets": "Ринок",
     "storages": "Склад",
@@ -330,11 +327,6 @@
       "accepted": "прийняв вашу заявку",
       "canceled": "скасував вашу заявку",
       "rejected": "відхилив вашу заявку"
-    },
-    "farms": {
-      "created": "створив ферму",
-      "added": "додав вас в ферму",
-      "removed": "прибрав вас із ферми"
     },
     "shops": {
       "created": "створив магазин",

@@ -51,7 +51,6 @@
     "residents": "Residents",
     "invitations": "Invitations",
     "applications": "Applications",
-    "farms": "Farms",
     "shops": "Shops",
     "markets": "Markets",
     "storages": "Storages",
@@ -171,7 +170,6 @@
     "incompleted": "Incompleted",
     "x": "X",
     "y": "Y",
-    "farm": "Farm",
     "shop": "Shop",
     "market": "Market",
     "storage": "Storage",
@@ -252,7 +250,6 @@
     "residents": "Resident",
     "invitations": "Invitation",
     "applications": "Application",
-    "farms": "Farm",
     "shops": "Shop",
     "markets": "Market",
     "storages": "Storage",
@@ -330,11 +327,6 @@
       "accepted": "accepted your application",
       "canceled": "canceled your application",
       "rejected": "rejected your application"
-    },
-    "farms": {
-      "created": "created farm",
-      "added": "added you in farm",
-      "removed": "removed you from farm"
     },
     "shops": {
       "created": "created shop",

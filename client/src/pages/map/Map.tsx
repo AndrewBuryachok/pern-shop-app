@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next';
 import { useMantineTheme } from '@mantine/core';
 import { useDocumentTitle, useElementSize } from '@mantine/hooks';
 import { useGetMainTownsQuery } from '../../features/towns/towns.api';
-import { useGetMainFarmsQuery } from '../../features/farms/farms.api';
 import { useGetMainShopsQuery } from '../../features/shops/shops.api';
 import { useGetMainMarketsQuery } from '../../features/markets/markets.api';
 import { useGetMainStoragesQuery } from '../../features/storages/storages.api';
@@ -35,48 +34,36 @@ export default function Map() {
     page: 0,
   });
   const {
-    data: farms,
+    data: shops,
     isFetching: isFetching2,
     refetch: refetch2,
-  } = useGetMainFarmsQuery({
-    page: 0,
-  });
-  const {
-    data: shops,
-    isFetching: isFetching3,
-    refetch: refetch3,
   } = useGetMainShopsQuery({
     page: 0,
   });
   const {
     data: markets,
-    isFetching: isFetching4,
-    refetch: refetch4,
+    isFetching: isFetching3,
+    refetch: refetch3,
   } = useGetMainMarketsQuery({
     page: 0,
   });
   const {
     data: storages,
-    isFetching: isFetching5,
-    refetch: refetch5,
+    isFetching: isFetching4,
+    refetch: refetch4,
   } = useGetMainStoragesQuery({
     page: 0,
   });
   const {
     data: stations,
-    isFetching: isFetching6,
-    refetch: refetch6,
+    isFetching: isFetching5,
+    refetch: refetch5,
   } = useGetMainStationsQuery({
     page: 0,
   });
 
   const isFetching =
-    isFetching1 ||
-    isFetching2 ||
-    isFetching3 ||
-    isFetching4 ||
-    isFetching5 ||
-    isFetching6;
+    isFetching1 || isFetching2 || isFetching3 || isFetching4 || isFetching5;
 
   const refetch = () => {
     if (!isFetching) {
@@ -85,7 +72,6 @@ export default function Map() {
       refetch3();
       refetch4();
       refetch5();
-      refetch6();
     }
   };
 
@@ -116,31 +102,27 @@ export default function Map() {
                   ...town,
                   type: 0,
                 })),
-                farms?.result.map((farm) => ({
-                  ...farm,
-                  type: 1,
-                })),
                 shops?.result.map((shop) => ({
                   ...shop,
-                  type: 2,
+                  type: 1,
                   user: shop.card.user,
                   card: shop.card,
                 })),
                 markets?.result.map((market) => ({
                   ...market,
-                  type: 3,
+                  type: 2,
                   user: market.card.user,
                   card: market.card,
                 })),
                 storages?.result.map((storage) => ({
                   ...storage,
-                  type: 4,
+                  type: 3,
                   user: storage.card.user,
                   card: storage.card,
                 })),
                 stations?.result.map((station) => ({
                   ...station,
-                  type: 5,
+                  type: 4,
                   user: station.card.user,
                   card: station.card,
                   price: station.price,

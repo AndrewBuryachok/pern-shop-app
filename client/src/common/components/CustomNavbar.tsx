@@ -5,7 +5,6 @@ import {
   IconArticle,
   IconBasket,
   IconBuildingCircus,
-  IconBuildingCottage,
   IconBuildingSkyscraper,
   IconBuildingStore,
   IconBuildingWarehouse,
@@ -86,10 +85,6 @@ export default function CustomNavbar(props: Props) {
         { label: 'invitations', sub: '/sent' },
         { label: 'applications', sub: '/sent' },
       ],
-    },
-    {
-      label: 'farms',
-      icon: IconBuildingCottage,
     },
     {
       label: 'shops',

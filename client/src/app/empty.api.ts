@@ -20,7 +20,6 @@ export const emptyApi = createApi({
     'Resident',
     'Invitation',
     'Application',
-    'Farm',
     'Shop',
     'Market',
     'Storage',

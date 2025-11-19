@@ -2,7 +2,6 @@ import { t } from 'i18next';
 import { SmUser } from '../../features/users/user.model';
 import { LgCard, LgCardWithBalance } from '../../features/cards/card.model';
 import { SmTown } from '../../features/towns/town.model';
-import { SmFarm } from '../../features/farms/farm.model';
 import { SmShop } from '../../features/shops/shop.model';
 import { SmMarket } from '../../features/markets/market.model';
 import { SmStorage } from '../../features/storages/storage.model';
@@ -54,13 +53,6 @@ export const selectTowns = (towns?: SmTown[]) =>
     ...town,
     value: `${town.id}`,
     label: parsePlace(town),
-  })) || [];
-
-export const selectFarms = (farms?: SmFarm[]) =>
-  farms?.map((farm) => ({
-    ...farm,
-    value: `${farm.id}`,
-    label: parsePlace(farm),
   })) || [];
 
 export const selectShops = (shops?: SmShop[]) =>

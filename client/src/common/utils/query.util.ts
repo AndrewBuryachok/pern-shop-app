@@ -25,9 +25,6 @@ export const getQuery = (req: IRequest) => {
   if (req?.town) {
     query.append('town', req.town);
   }
-  if (req?.farm) {
-    query.append('farm', req.farm);
-  }
   if (req?.shop) {
     query.append('shop', req.shop);
   }
