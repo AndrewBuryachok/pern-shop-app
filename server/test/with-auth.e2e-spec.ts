@@ -58,7 +58,6 @@ describe('With Auth', () => {
   let ordersId: number[];
   let haulagesId: number[];
   let tasksId: number[];
-  let advertId: number;
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -3110,74 +3109,6 @@ describe('With Auth', () => {
     it('DELETE /tasks/:taskId', async () => {
       return request(app.getHttpServer())
         .delete(`/tasks/${tasksId[1]}`)
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect('');
-    });
-  });
-
-  describe('Adverts', () => {
-    it('POST /adverts', async () => {
-      return request(app.getHttpServer())
-        .post('/adverts')
-        .set('Authorization', `Bearer ${user.access}`)
-        .send({
-          cardId,
-          activity: 'activity',
-          text: 'text',
-          price: 5,
-        })
-        .expect('');
-    });
-
-    it('GET /adverts', async () => {
-      return request(app.getHttpServer())
-        .get('/adverts')
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
-    });
-
-    it('GET /adverts/my', async () => {
-      return request(app.getHttpServer())
-        .get('/adverts/my')
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0))
-        .then((res) => (advertId = res.body.result[0].id));
-    });
-
-    it('GET /adverts/all', async () => {
-      return request(app.getHttpServer())
-        .get('/adverts/all')
-        .set('Authorization', `Bearer ${merchant.access}`)
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
-    });
-
-    it('POST /adverts/:advertId', async () => {
-      return request(app.getHttpServer())
-        .post(`/adverts/${advertId}`)
-        .set('Authorization', `Bearer ${user.access}`)
-        .send({
-          cardId,
-          activity: 'activity',
-          text: 'text',
-          price: 10,
-        })
-        .expect('');
-    });
-
-    it('PATCH /adverts/:advertId', async () => {
-      return request(app.getHttpServer())
-        .patch(`/adverts/${advertId}`)
-        .set('Authorization', `Bearer ${user.access}`)
-        .send({
-          activity: 'activity',
-          text: 'text',
-          price: 10,
-        })
-        .expect('');
-    });
-
-    it('DELETE /adverts/:advertId', async () => {
-      return request(app.getHttpServer())
-        .delete(`/adverts/${advertId}`)
         .set('Authorization', `Bearer ${user.access}`)
         .expect('');
     });

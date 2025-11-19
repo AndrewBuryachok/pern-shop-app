@@ -34,7 +34,6 @@ import { Delivery } from '../../features/deliveries/delivery.entity';
 import { Order } from '../../features/orders/order.entity';
 import { Haulage } from '../../features/haulages/haulage.entity';
 import { Task } from '../../features/tasks/task.entity';
-import { Advert } from '../../features/adverts/advert.entity';
 import { Status } from '../../features/transportations/status.enum';
 import { getDateWeekAfter, hashData } from '../../common/utils';
 
@@ -494,12 +493,6 @@ export default class AppSeed implements Seeder {
         return task;
       })
       .makeMany(10);
-    const adverts = await factory(Advert)()
-      .map(async (advert) => {
-        advert.card = faker.helpers.arrayElement(cards);
-        return advert;
-      })
-      .makeMany(10);
     id = 0;
     await factory(Account)()
       .map(async () => accounts[id++])
@@ -608,9 +601,5 @@ export default class AppSeed implements Seeder {
     await factory(Task)()
       .map(async () => tasks[id++])
       .createMany(tasks.length);
-    id = 0;
-    await factory(Advert)()
-      .map(async () => adverts[id++])
-      .createMany(adverts.length);
   }
 }

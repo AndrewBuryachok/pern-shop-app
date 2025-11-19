@@ -31,7 +31,6 @@ import { DeliveriesModule } from './features/deliveries/deliveries.module';
 import { OrdersModule } from './features/orders/orders.module';
 import { HaulagesModule } from './features/haulages/haulages.module';
 import { TasksModule } from './features/tasks/tasks.module';
-import { AdvertsModule } from './features/adverts/adverts.module';
 
 @Module({
   imports: [
@@ -81,7 +80,6 @@ import { AdvertsModule } from './features/adverts/adverts.module';
     OrdersModule,
     HaulagesModule,
     TasksModule,
-    AdvertsModule,
   ],
 })
 export class AppModule {}

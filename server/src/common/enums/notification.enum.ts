@@ -78,5 +78,4 @@ export enum Notification {
   COMPLETED_TASK = 'completed tasks',
   RATED_TASK = 'rated tasks',
   RESPONDED_ADVERT = 'responded tasks',
-  CREATED_ADVERT = 'created adverts',
 }

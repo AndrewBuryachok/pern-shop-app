@@ -594,17 +594,4 @@ describe('Without Auth', () => {
         .expect(403);
     });
   });
-
-  describe('Adverts', () => {
-    it('GET /adverts/my', async () => {
-      return request(app.getHttpServer()).get('/adverts/my').expect(401);
-    });
-
-    it('GET /adverts/all', async () => {
-      return request(app.getHttpServer())
-        .get('/adverts/all')
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect(403);
-    });
-  });
 });

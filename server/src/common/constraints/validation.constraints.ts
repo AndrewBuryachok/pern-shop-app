@@ -30,7 +30,6 @@ import { DeliveriesService } from '../../features/deliveries/deliveries.service'
 import { OrdersService } from '../../features/orders/orders.service';
 import { HaulagesService } from '../../features/haulages/haulages.service';
 import { TasksService } from '../../features/tasks/tasks.service';
-import { AdvertsService } from '../../features/adverts/adverts.service';
 
 @Injectable()
 @ValidatorConstraint({ name: 'isUserExists', async: true })
@@ -542,24 +541,5 @@ export class IsTaskExists implements ValidatorConstraintInterface {
 
   defaultMessage(): string {
     return 'Невідоме завдання';
-  }
-}
-
-@Injectable()
-@ValidatorConstraint({ name: 'isAdvertExists', async: true })
-export class IsAdvertExists implements ValidatorConstraintInterface {
-  constructor(private advertsService: AdvertsService) {}
-
-  async validate(value: number): Promise<boolean> {
-    try {
-      await this.advertsService.checkAdvertExists(value);
-    } catch (error) {
-      return false;
-    }
-    return true;
-  }
-
-  defaultMessage(): string {
-    return 'Невідоме оголошення';
   }
 }
