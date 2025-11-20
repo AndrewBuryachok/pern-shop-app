@@ -33,7 +33,7 @@ export class PurchasesService {
     return { result, count };
   }
 
-  async getSoldPurchases(
+  async getReceivedPurchases(
     myId: number,
     req: Request,
   ): Promise<Response<Purchase>> {

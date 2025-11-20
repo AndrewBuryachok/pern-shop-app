@@ -29,12 +29,12 @@ export class PurchasesController {
     return this.purchasesService.getMyPurchases(myId, req);
   }
 
-  @Get('sold')
-  getSoldPurchases(
+  @Get('received')
+  getReceivedPurchases(
     @MyId() myId: number,
     @Query() req: Request,
   ): Promise<Response<Purchase>> {
-    return this.purchasesService.getSoldPurchases(myId, req);
+    return this.purchasesService.getReceivedPurchases(myId, req);
   }
 
   @Get('placed')
