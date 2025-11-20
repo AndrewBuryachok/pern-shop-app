@@ -41,7 +41,7 @@ export class HiresController {
     return this.hiresService.getReceivedHires(myId, req);
   }
 
-  @Roles(Role.MERCHANT)
+  @Roles(Role.MODER)
   @Get('all')
   getAllHires(@Query() req: Request): Promise<Response<Hire>> {
     return this.hiresService.getAllHires(req);
@@ -56,7 +56,7 @@ export class HiresController {
   @Post(':hireId/continue')
   continueHire(
     @MyId() myId: number,
-    @HasRole(Role.MERCHANT) hasRole: boolean,
+    @HasRole(Role.MODER) hasRole: boolean,
     @Param() { hireId }: HireIdDto,
   ): Promise<void> {
     return this.hiresService.continueHire({ hireId, myId, hasRole });
@@ -65,7 +65,7 @@ export class HiresController {
   @Post(':hireId')
   completeHire(
     @MyId() myId: number,
-    @HasRole(Role.MERCHANT) hasRole: boolean,
+    @HasRole(Role.MODER) hasRole: boolean,
     @Param() { hireId }: HireIdDto,
   ): Promise<void> {
     return this.hiresService.completeHire({ hireId, myId, hasRole });

@@ -28,7 +28,7 @@ export class BoxesController {
     return this.boxesService.getMyBoxes(myId, req);
   }
 
-  @Roles(Role.MERCHANT)
+  @Roles(Role.MODER)
   @Get('all')
   getAllBoxes(@Query() req: Request): Promise<Response<Box>> {
     return this.boxesService.getAllBoxes(req);
@@ -49,7 +49,7 @@ export class BoxesController {
   @Post()
   createBox(
     @MyId() myId: number,
-    @HasRole(Role.MERCHANT) hasRole: boolean,
+    @HasRole(Role.MODER) hasRole: boolean,
     @Body() dto: CreateBoxDto,
   ): Promise<void> {
     return this.boxesService.createBox({ ...dto, myId, hasRole });

@@ -35,7 +35,7 @@ export class StationsController {
     return this.stationsService.getMyStations(myId, req);
   }
 
-  @Roles(Role.MERCHANT)
+  @Roles(Role.MODER)
   @Get('all')
   getAllStations(@Query() req: Request): Promise<Response<Station>> {
     return this.stationsService.getAllStations(req);
@@ -52,7 +52,7 @@ export class StationsController {
     return this.stationsService.selectMyStations(myId);
   }
 
-  @Roles(Role.MERCHANT)
+  @Roles(Role.MODER)
   @Get('all/select')
   selectAllStations(): Promise<Station[]> {
     return this.stationsService.selectAllStations();
@@ -75,7 +75,7 @@ export class StationsController {
   @Post()
   createStation(
     @MyId() myId: number,
-    @HasRole(Role.MERCHANT) hasRole: boolean,
+    @HasRole(Role.MODER) hasRole: boolean,
     @Body() dto: CreateStationDto,
   ): Promise<void> {
     return this.stationsService.createStation({ ...dto, myId, hasRole });
@@ -84,7 +84,7 @@ export class StationsController {
   @Patch(':stationId')
   editStation(
     @MyId() myId: number,
-    @HasRole(Role.MERCHANT) hasRole: boolean,
+    @HasRole(Role.MODER) hasRole: boolean,
     @Param() { stationId }: StationIdDto,
     @Body() dto: EditStationDto,
   ): Promise<void> {

@@ -41,13 +41,13 @@ export class RentsController {
     return this.rentsService.getReceivedRents(myId, req);
   }
 
-  @Roles(Role.MERCHANT)
+  @Roles(Role.MODER)
   @Get('all')
   getAllRents(@Query() req: Request): Promise<Response<Rent>> {
     return this.rentsService.getAllRents(req);
   }
 
-  @Roles(Role.MERCHANT)
+  @Roles(Role.MODER)
   @Get('all/select')
   selectAllRents(): Promise<Rent[]> {
     return this.rentsService.selectAllRents();
@@ -67,7 +67,7 @@ export class RentsController {
   @Post()
   createRent(
     @MyId() myId: number,
-    @HasRole(Role.MERCHANT) hasRole: boolean,
+    @HasRole(Role.MODER) hasRole: boolean,
     @Body() dto: CreateRentDto,
   ): Promise<void> {
     return this.rentsService.createRent({ ...dto, myId, hasRole });
@@ -76,7 +76,7 @@ export class RentsController {
   @Post(':rentId/continue')
   continueRent(
     @MyId() myId: number,
-    @HasRole(Role.MERCHANT) hasRole: boolean,
+    @HasRole(Role.MODER) hasRole: boolean,
     @Param() { rentId }: RentIdDto,
   ): Promise<void> {
     return this.rentsService.continueRent({ rentId, myId, hasRole });
@@ -85,7 +85,7 @@ export class RentsController {
   @Post(':rentId')
   completeRent(
     @MyId() myId: number,
-    @HasRole(Role.MERCHANT) hasRole: boolean,
+    @HasRole(Role.MODER) hasRole: boolean,
     @Param() { rentId }: RentIdDto,
   ): Promise<void> {
     return this.rentsService.completeRent({ rentId, myId, hasRole });

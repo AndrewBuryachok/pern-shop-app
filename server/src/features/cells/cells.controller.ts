@@ -29,7 +29,7 @@ export class CellsController {
     return this.cellsService.getMyCells(myId, req);
   }
 
-  @Roles(Role.MERCHANT)
+  @Roles(Role.MODER)
   @Get('all')
   getAllCells(@Query() req: Request): Promise<Response<Cell>> {
     return this.cellsService.getAllCells(req);
@@ -56,7 +56,7 @@ export class CellsController {
   @Post()
   createCell(
     @MyId() myId: number,
-    @HasRole(Role.MERCHANT) hasRole: boolean,
+    @HasRole(Role.MODER) hasRole: boolean,
     @Body() dto: CreateCellDto,
   ): Promise<void> {
     return this.cellsService.createCell({ ...dto, myId, hasRole });

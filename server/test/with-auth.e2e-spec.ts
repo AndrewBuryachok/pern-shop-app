@@ -22,7 +22,6 @@ describe('With Auth', () => {
   let admin: Tokens;
   let moder: Tokens;
   let banker: Tokens;
-  let merchant: Tokens;
   let spawn: Tokens;
   let hub: Tokens;
   let end: Tokens;
@@ -138,21 +137,6 @@ describe('With Auth', () => {
       return request(app.getHttpServer())
         .post('/auth/logout')
         .set('Authorization', `Bearer ${banker.access}`)
-        .expect(201);
-    });
-
-    it('POST /auth/login as Merchant', async () => {
-      return request(app.getHttpServer())
-        .post('/auth/login')
-        .send({ nick: 'Merchant', password: 'Merchant' })
-        .expect(201)
-        .then((res) => (merchant = res.body));
-    });
-
-    it('POST /auth/logout as Merchant', async () => {
-      return request(app.getHttpServer())
-        .post('/auth/logout')
-        .set('Authorization', `Bearer ${merchant.access}`)
         .expect(201);
     });
 
@@ -983,7 +967,7 @@ describe('With Auth', () => {
     it('GET /shops/all', async () => {
       return request(app.getHttpServer())
         .get('/shops/all')
-        .set('Authorization', `Bearer ${merchant.access}`)
+        .set('Authorization', `Bearer ${moder.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
 
@@ -1046,7 +1030,7 @@ describe('With Auth', () => {
     it('GET /markets/all', async () => {
       return request(app.getHttpServer())
         .get('/markets/all')
-        .set('Authorization', `Bearer ${merchant.access}`)
+        .set('Authorization', `Bearer ${moder.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
 
@@ -1066,7 +1050,7 @@ describe('With Auth', () => {
     it('GET /markets/all/select', async () => {
       return request(app.getHttpServer())
         .get('/markets/all/select')
-        .set('Authorization', `Bearer ${merchant.access}`)
+        .set('Authorization', `Bearer ${moder.access}`)
         .expect((res) => expect(res.body.length).toBeGreaterThan(0));
     });
 
@@ -1116,7 +1100,7 @@ describe('With Auth', () => {
     it('GET /storages/all', async () => {
       return request(app.getHttpServer())
         .get('/storages/all')
-        .set('Authorization', `Bearer ${merchant.access}`)
+        .set('Authorization', `Bearer ${moder.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
 
@@ -1136,7 +1120,7 @@ describe('With Auth', () => {
     it('GET /storages/all/select', async () => {
       return request(app.getHttpServer())
         .get('/storages/all/select')
-        .set('Authorization', `Bearer ${merchant.access}`)
+        .set('Authorization', `Bearer ${moder.access}`)
         .expect((res) => expect(res.body.length).toBeGreaterThan(0));
     });
 
@@ -1187,7 +1171,7 @@ describe('With Auth', () => {
     it('GET /stations/all', async () => {
       return request(app.getHttpServer())
         .get('/stations/all')
-        .set('Authorization', `Bearer ${merchant.access}`)
+        .set('Authorization', `Bearer ${moder.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
 
@@ -1207,7 +1191,7 @@ describe('With Auth', () => {
     it('GET /stations/all/select', async () => {
       return request(app.getHttpServer())
         .get('/stations/all/select')
-        .set('Authorization', `Bearer ${merchant.access}`)
+        .set('Authorization', `Bearer ${moder.access}`)
         .expect((res) => expect(res.body.length).toBeGreaterThan(0));
     });
 
@@ -1262,7 +1246,7 @@ describe('With Auth', () => {
     it('GET /markets-tags/all', async () => {
       return request(app.getHttpServer())
         .get('/markets-tags/all')
-        .set('Authorization', `Bearer ${merchant.access}`)
+        .set('Authorization', `Bearer ${moder.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
 
@@ -1320,7 +1304,7 @@ describe('With Auth', () => {
     it('GET /storages-tags/all', async () => {
       return request(app.getHttpServer())
         .get('/storages-tags/all')
-        .set('Authorization', `Bearer ${merchant.access}`)
+        .set('Authorization', `Bearer ${moder.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
 
@@ -1374,7 +1358,7 @@ describe('With Auth', () => {
     it('GET /stalls/all', async () => {
       return request(app.getHttpServer())
         .get('/stalls/all')
-        .set('Authorization', `Bearer ${merchant.access}`)
+        .set('Authorization', `Bearer ${moder.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
 
@@ -1423,7 +1407,7 @@ describe('With Auth', () => {
     it('GET /cells/all', async () => {
       return request(app.getHttpServer())
         .get('/cells/all')
-        .set('Authorization', `Bearer ${merchant.access}`)
+        .set('Authorization', `Bearer ${moder.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
 
@@ -1576,7 +1560,7 @@ describe('With Auth', () => {
     it('GET /boxes/all', async () => {
       return request(app.getHttpServer())
         .get('/boxes/all')
-        .set('Authorization', `Bearer ${merchant.access}`)
+        .set('Authorization', `Bearer ${moder.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
 
@@ -1632,7 +1616,7 @@ describe('With Auth', () => {
     it('GET /rents/all', async () => {
       return request(app.getHttpServer())
         .get('/rents/all')
-        .set('Authorization', `Bearer ${merchant.access}`)
+        .set('Authorization', `Bearer ${moder.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
 
@@ -1646,7 +1630,7 @@ describe('With Auth', () => {
     it('GET /rents/all/select', async () => {
       return request(app.getHttpServer())
         .get('/rents/all/select')
-        .set('Authorization', `Bearer ${merchant.access}`)
+        .set('Authorization', `Bearer ${moder.access}`)
         .expect((res) => expect(res.body.length).toBeGreaterThan(0));
     });
 
@@ -1722,7 +1706,7 @@ describe('With Auth', () => {
     it('GET /leases/all', async () => {
       return request(app.getHttpServer())
         .get('/leases/all')
-        .set('Authorization', `Bearer ${merchant.access}`)
+        .set('Authorization', `Bearer ${moder.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
 
@@ -1736,7 +1720,7 @@ describe('With Auth', () => {
     it('GET /leases/all/select', async () => {
       return request(app.getHttpServer())
         .get('/leases/all/select')
-        .set('Authorization', `Bearer ${merchant.access}`)
+        .set('Authorization', `Bearer ${moder.access}`)
         .expect((res) => expect(res.body.length).toBeGreaterThan(0));
     });
 
@@ -1836,7 +1820,7 @@ describe('With Auth', () => {
     it('GET /goods/all', async () => {
       return request(app.getHttpServer())
         .get('/goods/all')
-        .set('Authorization', `Bearer ${merchant.access}`)
+        .set('Authorization', `Bearer ${moder.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
 
@@ -1945,7 +1929,7 @@ describe('With Auth', () => {
     it('GET /goods/all', async () => {
       return request(app.getHttpServer())
         .get('/goods/all')
-        .set('Authorization', `Bearer ${merchant.access}`)
+        .set('Authorization', `Bearer ${moder.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
 
@@ -2062,7 +2046,7 @@ describe('With Auth', () => {
     it('GET /goods/all', async () => {
       return request(app.getHttpServer())
         .get('/goods/all')
-        .set('Authorization', `Bearer ${merchant.access}`)
+        .set('Authorization', `Bearer ${moder.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
 
@@ -2173,7 +2157,7 @@ describe('With Auth', () => {
     it('GET /purchases/all', async () => {
       return request(app.getHttpServer())
         .get('/purchases/all')
-        .set('Authorization', `Bearer ${merchant.access}`)
+        .set('Authorization', `Bearer ${moder.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
 
@@ -2187,7 +2171,7 @@ describe('With Auth', () => {
     it('GET /purchases/:userId/select', async () => {
       return request(app.getHttpServer())
         .get(`/purchases/${user.id}/select`)
-        .set('Authorization', `Bearer ${merchant.access}`)
+        .set('Authorization', `Bearer ${moder.access}`)
         .expect((res) => expect(res.body.length).toBeGreaterThan(0));
     });
 
@@ -2224,7 +2208,7 @@ describe('With Auth', () => {
     it('GET /purchases/all', async () => {
       return request(app.getHttpServer())
         .get('/purchases/all')
-        .set('Authorization', `Bearer ${merchant.access}`)
+        .set('Authorization', `Bearer ${moder.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
 
@@ -2238,7 +2222,7 @@ describe('With Auth', () => {
     it('GET /purchases/:userId/select', async () => {
       return request(app.getHttpServer())
         .get(`/purchases/${user.id}/select`)
-        .set('Authorization', `Bearer ${merchant.access}`)
+        .set('Authorization', `Bearer ${moder.access}`)
         .expect((res) => expect(res.body.length).toBeGreaterThan(0));
     });
 
@@ -2277,7 +2261,7 @@ describe('With Auth', () => {
     it('GET /purchases/all', async () => {
       return request(app.getHttpServer())
         .get('/purchases/all')
-        .set('Authorization', `Bearer ${merchant.access}`)
+        .set('Authorization', `Bearer ${moder.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
 
@@ -2291,7 +2275,7 @@ describe('With Auth', () => {
     it('GET /purchases/:userId/select', async () => {
       return request(app.getHttpServer())
         .get(`/purchases/${user.id}/select`)
-        .set('Authorization', `Bearer ${merchant.access}`)
+        .set('Authorization', `Bearer ${moder.access}`)
         .expect((res) => expect(res.body.length).toBeGreaterThan(0));
     });
 
@@ -2358,7 +2342,7 @@ describe('With Auth', () => {
     it('GET /deliveries/all', async () => {
       return request(app.getHttpServer())
         .get('/deliveries/all')
-        .set('Authorization', `Bearer ${merchant.access}`)
+        .set('Authorization', `Bearer ${moder.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
 
@@ -2402,7 +2386,7 @@ describe('With Auth', () => {
     it('DELETE /purchases/:purchaseId', async () => {
       return request(app.getHttpServer())
         .delete(`/purchases/${shopsPurchasesId[1]}`)
-        .set('Authorization', `Bearer ${merchant.access}`)
+        .set('Authorization', `Bearer ${moder.access}`)
         .expect('');
     });
   });
@@ -2470,7 +2454,7 @@ describe('With Auth', () => {
     it('GET /deliveries/all', async () => {
       return request(app.getHttpServer())
         .get('/deliveries/all')
-        .set('Authorization', `Bearer ${merchant.access}`)
+        .set('Authorization', `Bearer ${moder.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
 
@@ -2514,7 +2498,7 @@ describe('With Auth', () => {
     it('DELETE /purchases/:purchaseId', async () => {
       return request(app.getHttpServer())
         .delete(`/purchases/${marketsPurchasesId[1]}`)
-        .set('Authorization', `Bearer ${merchant.access}`)
+        .set('Authorization', `Bearer ${moder.access}`)
         .expect('');
     });
   });
@@ -2582,7 +2566,7 @@ describe('With Auth', () => {
     it('GET /deliveries/all', async () => {
       return request(app.getHttpServer())
         .get('/deliveries/all')
-        .set('Authorization', `Bearer ${merchant.access}`)
+        .set('Authorization', `Bearer ${moder.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
 
@@ -2626,7 +2610,7 @@ describe('With Auth', () => {
     it('DELETE /purchases/:purchaseId', async () => {
       return request(app.getHttpServer())
         .delete(`/purchases/${storagesPurchasesId[1]}`)
-        .set('Authorization', `Bearer ${merchant.access}`)
+        .set('Authorization', `Bearer ${moder.access}`)
         .expect('');
     });
   });
@@ -2720,7 +2704,7 @@ describe('With Auth', () => {
     it('GET /orders/all', async () => {
       return request(app.getHttpServer())
         .get('/orders/all')
-        .set('Authorization', `Bearer ${merchant.access}`)
+        .set('Authorization', `Bearer ${moder.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
 
@@ -2853,7 +2837,7 @@ describe('With Auth', () => {
     it('GET /haulages/all', async () => {
       return request(app.getHttpServer())
         .get('/haulages/all')
-        .set('Authorization', `Bearer ${merchant.access}`)
+        .set('Authorization', `Bearer ${moder.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
 
@@ -2945,7 +2929,7 @@ describe('With Auth', () => {
     it('GET /hires/all', async () => {
       return request(app.getHttpServer())
         .get('/hires/all')
-        .set('Authorization', `Bearer ${merchant.access}`)
+        .set('Authorization', `Bearer ${moder.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
 

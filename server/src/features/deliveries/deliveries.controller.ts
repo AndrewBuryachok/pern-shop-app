@@ -57,7 +57,7 @@ export class DeliveriesController {
     return this.deliveriesService.getPlacedDeliveries(myId, req);
   }
 
-  @Roles(Role.MERCHANT)
+  @Roles(Role.MODER)
   @Get('all')
   getAllDeliveries(@Query() req: Request): Promise<Response<Delivery>> {
     return this.deliveriesService.getAllDeliveries(req);
@@ -66,7 +66,7 @@ export class DeliveriesController {
   @Post()
   createDelivery(
     @MyId() myId: number,
-    @HasRole(Role.MERCHANT) hasRole: boolean,
+    @HasRole(Role.MODER) hasRole: boolean,
     @Body() dto: CreateDeliveryDto,
   ): Promise<void> {
     return this.deliveriesService.createDelivery({ ...dto, myId, hasRole });
@@ -75,7 +75,7 @@ export class DeliveriesController {
   @Patch(':deliveryId')
   editDelivery(
     @MyId() myId: number,
-    @HasRole(Role.MERCHANT) hasRole: boolean,
+    @HasRole(Role.MODER) hasRole: boolean,
     @Param() { deliveryId }: DeliveryIdDto,
     @Body() dto: EditDeliveryDto,
   ): Promise<void> {
@@ -90,7 +90,7 @@ export class DeliveriesController {
   @Post(':deliveryId/take')
   takeDelivery(
     @MyId() myId: number,
-    @HasRole(Role.MERCHANT) hasRole: boolean,
+    @HasRole(Role.MODER) hasRole: boolean,
     @Param() { deliveryId }: DeliveryIdDto,
     @Body() dto: TakeDeliveryDto,
   ): Promise<void> {
@@ -105,7 +105,7 @@ export class DeliveriesController {
   @Delete(':deliveryId/take')
   untakeDelivery(
     @MyId() myId: number,
-    @HasRole(Role.MERCHANT) hasRole: boolean,
+    @HasRole(Role.MODER) hasRole: boolean,
     @Param() { deliveryId }: DeliveryIdDto,
   ): Promise<void> {
     return this.deliveriesService.untakeDelivery({ deliveryId, myId, hasRole });
@@ -114,7 +114,7 @@ export class DeliveriesController {
   @Post(':deliveryId/execute')
   executeDelivery(
     @MyId() myId: number,
-    @HasRole(Role.MERCHANT) hasRole: boolean,
+    @HasRole(Role.MODER) hasRole: boolean,
     @Param() { deliveryId }: DeliveryIdDto,
   ): Promise<void> {
     return this.deliveriesService.executeDelivery({
@@ -127,7 +127,7 @@ export class DeliveriesController {
   @Post(':deliveryId')
   completeDelivery(
     @MyId() myId: number,
-    @HasRole(Role.MERCHANT) hasRole: boolean,
+    @HasRole(Role.MODER) hasRole: boolean,
     @Param() { deliveryId }: DeliveryIdDto,
     @Body() dto: CompleteDeliveryDto,
   ): Promise<void> {
@@ -142,7 +142,7 @@ export class DeliveriesController {
   @Delete(':deliveryId')
   deleteDelivery(
     @MyId() myId: number,
-    @HasRole(Role.MERCHANT) hasRole: boolean,
+    @HasRole(Role.MODER) hasRole: boolean,
     @Param() { deliveryId }: DeliveryIdDto,
   ): Promise<void> {
     return this.deliveriesService.deleteDelivery({ deliveryId, myId, hasRole });

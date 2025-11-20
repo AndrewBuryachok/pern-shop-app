@@ -1,7 +1,6 @@
 export enum Role {
   ADMIN = 'admin',
   MODER = 'moder',
-  MERCHANT = 'merchant',
   BANKER = 'banker',
   SPAWN = 'spawn',
   HUB = 'hub',

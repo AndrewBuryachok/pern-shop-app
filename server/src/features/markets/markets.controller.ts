@@ -34,7 +34,7 @@ export class MarketsController {
     return this.marketsService.getMyMarkets(myId, req);
   }
 
-  @Roles(Role.MERCHANT)
+  @Roles(Role.MODER)
   @Get('all')
   getAllMarkets(@Query() req: Request): Promise<Response<Market>> {
     return this.marketsService.getAllMarkets(req);
@@ -51,7 +51,7 @@ export class MarketsController {
     return this.marketsService.selectMyMarkets(myId);
   }
 
-  @Roles(Role.MERCHANT)
+  @Roles(Role.MODER)
   @Get('all/select')
   selectAllMarkets(): Promise<Market[]> {
     return this.marketsService.selectAllMarkets();
@@ -60,7 +60,7 @@ export class MarketsController {
   @Post()
   createMarket(
     @MyId() myId: number,
-    @HasRole(Role.MERCHANT) hasRole: boolean,
+    @HasRole(Role.MODER) hasRole: boolean,
     @Body() dto: CreateMarketDto,
   ): Promise<void> {
     return this.marketsService.createMarket({ ...dto, myId, hasRole });
@@ -69,7 +69,7 @@ export class MarketsController {
   @Patch(':marketId')
   editMarket(
     @MyId() myId: number,
-    @HasRole(Role.MERCHANT) hasRole: boolean,
+    @HasRole(Role.MODER) hasRole: boolean,
     @Param() { marketId }: MarketIdDto,
     @Body() dto: EditMarketDto,
   ): Promise<void> {

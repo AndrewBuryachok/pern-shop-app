@@ -29,7 +29,7 @@ export class StallsController {
     return this.stallsService.getMyStalls(myId, req);
   }
 
-  @Roles(Role.MERCHANT)
+  @Roles(Role.MODER)
   @Get('all')
   getAllStalls(@Query() req: Request): Promise<Response<Stall>> {
     return this.stallsService.getAllStalls(req);
@@ -56,7 +56,7 @@ export class StallsController {
   @Post()
   createStall(
     @MyId() myId: number,
-    @HasRole(Role.MERCHANT) hasRole: boolean,
+    @HasRole(Role.MODER) hasRole: boolean,
     @Body() dto: CreateStallDto,
   ): Promise<void> {
     return this.stallsService.createStall({ ...dto, myId, hasRole });

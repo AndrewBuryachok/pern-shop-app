@@ -52,7 +52,7 @@ export class GoodsController {
     return this.goodsService.getPlacedGoods(myId, req);
   }
 
-  @Roles(Role.MERCHANT)
+  @Roles(Role.MODER)
   @Get('all')
   getAllGoods(@Query() req: Request): Promise<Response<Good>> {
     return this.goodsService.getAllGoods(req);
@@ -73,7 +73,7 @@ export class GoodsController {
   @Post('shops')
   createShopGood(
     @MyId() myId: number,
-    @HasRole(Role.MERCHANT) hasRole: boolean,
+    @HasRole(Role.MODER) hasRole: boolean,
     @Body() dto: CreateShopGoodDto,
   ): Promise<void> {
     return this.goodsService.createShopGood({ ...dto, myId, hasRole });
@@ -82,7 +82,7 @@ export class GoodsController {
   @Post('markets')
   createMarketGood(
     @MyId() myId: number,
-    @HasRole(Role.MERCHANT) hasRole: boolean,
+    @HasRole(Role.MODER) hasRole: boolean,
     @Body() dto: CreateMarketGoodDto,
   ): Promise<void> {
     return this.goodsService.createMarketGood({ ...dto, myId, hasRole });
@@ -91,7 +91,7 @@ export class GoodsController {
   @Post('storages')
   createStorageGood(
     @MyId() myId: number,
-    @HasRole(Role.MERCHANT) hasRole: boolean,
+    @HasRole(Role.MODER) hasRole: boolean,
     @Body() dto: CreateStorageGoodDto,
   ): Promise<void> {
     return this.goodsService.createStorageGood({ ...dto, myId, hasRole });
@@ -100,7 +100,7 @@ export class GoodsController {
   @Patch(':goodId')
   editGood(
     @MyId() myId: number,
-    @HasRole(Role.MERCHANT) hasRole: boolean,
+    @HasRole(Role.MODER) hasRole: boolean,
     @Param() { goodId }: GoodIdDto,
     @Body() dto: EditGoodDto,
   ): Promise<void> {
@@ -110,7 +110,7 @@ export class GoodsController {
   @Patch(':goodId/states')
   updateGood(
     @MyId() myId: number,
-    @HasRole(Role.MERCHANT) hasRole: boolean,
+    @HasRole(Role.MODER) hasRole: boolean,
     @Param() { goodId }: GoodIdDto,
     @Body() dto: UpdateGoodDto,
   ): Promise<void> {
@@ -120,7 +120,7 @@ export class GoodsController {
   @Post(':goodId')
   completeGood(
     @MyId() myId: number,
-    @HasRole(Role.MERCHANT) hasRole: boolean,
+    @HasRole(Role.MODER) hasRole: boolean,
     @Param() { goodId }: GoodIdDto,
   ): Promise<void> {
     return this.goodsService.completeGood({ goodId, myId, hasRole });
@@ -129,7 +129,7 @@ export class GoodsController {
   @Delete(':goodId')
   deleteGood(
     @MyId() myId: number,
-    @HasRole(Role.MERCHANT) hasRole: boolean,
+    @HasRole(Role.MODER) hasRole: boolean,
     @Param() { goodId }: GoodIdDto,
   ): Promise<void> {
     return this.goodsService.deleteGood({ goodId, myId, hasRole });

@@ -41,13 +41,13 @@ export class LeasesController {
     return this.leasesService.getReceivedLeases(myId, req);
   }
 
-  @Roles(Role.MERCHANT)
+  @Roles(Role.MODER)
   @Get('all')
   getAllLeases(@Query() req: Request): Promise<Response<Lease>> {
     return this.leasesService.getAllLeases(req);
   }
 
-  @Roles(Role.MERCHANT)
+  @Roles(Role.MODER)
   @Get('all/select')
   selectAllLeases(): Promise<Lease[]> {
     return this.leasesService.selectAllLeases();
@@ -67,7 +67,7 @@ export class LeasesController {
   @Post()
   createLease(
     @MyId() myId: number,
-    @HasRole(Role.MERCHANT) hasRole: boolean,
+    @HasRole(Role.MODER) hasRole: boolean,
     @Body() dto: CreateLeaseDto,
   ): Promise<void> {
     return this.leasesService.createLease({ ...dto, myId, hasRole });
@@ -76,7 +76,7 @@ export class LeasesController {
   @Post(':leaseId/continue')
   continueLease(
     @MyId() myId: number,
-    @HasRole(Role.MERCHANT) hasRole: boolean,
+    @HasRole(Role.MODER) hasRole: boolean,
     @Param() { leaseId }: LeaseIdDto,
   ): Promise<void> {
     return this.leasesService.continueLease({ leaseId, myId, hasRole });
@@ -85,7 +85,7 @@ export class LeasesController {
   @Post(':leaseId')
   completeLease(
     @MyId() myId: number,
-    @HasRole(Role.MERCHANT) hasRole: boolean,
+    @HasRole(Role.MODER) hasRole: boolean,
     @Param() { leaseId }: LeaseIdDto,
   ): Promise<void> {
     return this.leasesService.completeLease({ leaseId, myId, hasRole });

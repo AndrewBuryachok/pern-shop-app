@@ -57,7 +57,7 @@ export class HaulagesController {
     return this.haulagesService.getPlacedHaulages(myId, req);
   }
 
-  @Roles(Role.MERCHANT)
+  @Roles(Role.MODER)
   @Get('all')
   getAllHaulages(@Query() req: Request): Promise<Response<Haulage>> {
     return this.haulagesService.getAllHaulages(req);
@@ -66,7 +66,7 @@ export class HaulagesController {
   @Post()
   createHaulage(
     @MyId() myId: number,
-    @HasRole(Role.MERCHANT) hasRole: boolean,
+    @HasRole(Role.MODER) hasRole: boolean,
     @Body() dto: CreateHaulageDto,
   ): Promise<void> {
     return this.haulagesService.createHaulage({ ...dto, myId, hasRole });
@@ -75,7 +75,7 @@ export class HaulagesController {
   @Patch(':haulageId')
   editHaulage(
     @MyId() myId: number,
-    @HasRole(Role.MERCHANT) hasRole: boolean,
+    @HasRole(Role.MODER) hasRole: boolean,
     @Param() { haulageId }: HaulageIdDto,
     @Body() dto: EditHaulageDto,
   ): Promise<void> {
@@ -90,7 +90,7 @@ export class HaulagesController {
   @Post(':haulageId/take')
   takeHaulage(
     @MyId() myId: number,
-    @HasRole(Role.MERCHANT) hasRole: boolean,
+    @HasRole(Role.MODER) hasRole: boolean,
     @Param() { haulageId }: HaulageIdDto,
     @Body() dto: TakeHaulageDto,
   ): Promise<void> {
@@ -105,7 +105,7 @@ export class HaulagesController {
   @Delete(':haulageId/take')
   untakeHaulage(
     @MyId() myId: number,
-    @HasRole(Role.MERCHANT) hasRole: boolean,
+    @HasRole(Role.MODER) hasRole: boolean,
     @Param() { haulageId }: HaulageIdDto,
   ): Promise<void> {
     return this.haulagesService.untakeHaulage({ haulageId, myId, hasRole });
@@ -114,7 +114,7 @@ export class HaulagesController {
   @Post(':haulageId/execute')
   executeHaulage(
     @MyId() myId: number,
-    @HasRole(Role.MERCHANT) hasRole: boolean,
+    @HasRole(Role.MODER) hasRole: boolean,
     @Param() { haulageId }: HaulageIdDto,
   ): Promise<void> {
     return this.haulagesService.executeHaulage({ haulageId, myId, hasRole });
@@ -123,7 +123,7 @@ export class HaulagesController {
   @Post(':haulageId')
   completeHaulage(
     @MyId() myId: number,
-    @HasRole(Role.MERCHANT) hasRole: boolean,
+    @HasRole(Role.MODER) hasRole: boolean,
     @Param() { haulageId }: HaulageIdDto,
     @Body() dto: CompleteHaulageDto,
   ): Promise<void> {
@@ -138,7 +138,7 @@ export class HaulagesController {
   @Delete(':haulageId')
   deleteHaulage(
     @MyId() myId: number,
-    @HasRole(Role.MERCHANT) hasRole: boolean,
+    @HasRole(Role.MODER) hasRole: boolean,
     @Param() { haulageId }: HaulageIdDto,
   ): Promise<void> {
     return this.haulagesService.deleteHaulage({ haulageId, myId, hasRole });

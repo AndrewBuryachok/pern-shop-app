@@ -40,7 +40,7 @@ export class MarketsTagsController {
     return this.marketsTagsService.getMyMarketsTags(myId, req);
   }
 
-  @Roles(Role.MERCHANT)
+  @Roles(Role.MODER)
   @Get('all')
   getAllMarketsTags(@Query() req: Request): Promise<Response<MarketTag>> {
     return this.marketsTagsService.getAllMarketsTags(req);
@@ -63,7 +63,7 @@ export class MarketsTagsController {
   @Post()
   createMarketTag(
     @MyId() myId: number,
-    @HasRole(Role.MERCHANT) hasRole: boolean,
+    @HasRole(Role.MODER) hasRole: boolean,
     @Body() dto: CreateMarketTagDto,
   ): Promise<void> {
     return this.marketsTagsService.createMarketTag({
@@ -76,7 +76,7 @@ export class MarketsTagsController {
   @Patch(':marketTagId')
   editMarketTag(
     @MyId() myId: number,
-    @HasRole(Role.MERCHANT) hasRole: boolean,
+    @HasRole(Role.MODER) hasRole: boolean,
     @Param() { marketTagId }: MarketTagIdDto,
     @Body() dto: EditMarketTagDto,
   ): Promise<void> {

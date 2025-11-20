@@ -45,7 +45,7 @@ export class PurchasesController {
     return this.purchasesService.getPlacedPurchases(myId, req);
   }
 
-  @Roles(Role.MERCHANT)
+  @Roles(Role.MODER)
   @Get('all')
   getAllPurchases(@Query() req: Request): Promise<Response<Purchase>> {
     return this.purchasesService.getAllPurchases(req);
@@ -56,7 +56,7 @@ export class PurchasesController {
     return this.purchasesService.selectUserPurchases(myId);
   }
 
-  @Roles(Role.MERCHANT)
+  @Roles(Role.MODER)
   @Get(':userId/select')
   selectUserPurchases(@Param() { userId }: UserIdDto): Promise<Purchase[]> {
     return this.purchasesService.selectUserPurchases(userId);
@@ -65,13 +65,13 @@ export class PurchasesController {
   @Post()
   createPurchase(
     @MyId() myId: number,
-    @HasRole(Role.MERCHANT) hasRole: boolean,
+    @HasRole(Role.MODER) hasRole: boolean,
     @Body() dto: CreatePurchaseDto,
   ): Promise<void> {
     return this.purchasesService.createPurchase({ ...dto, myId, hasRole });
   }
 
-  @Roles(Role.MERCHANT)
+  @Roles(Role.MODER)
   @Delete(':purchaseId')
   deletePurchase(@Param() { purchaseId }: PurchaseIdDto): Promise<void> {
     return this.purchasesService.deletePurchase(purchaseId);

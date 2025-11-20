@@ -40,7 +40,7 @@ export class StoragesTagsController {
     return this.storagesTagsService.getMyStoragesTags(myId, req);
   }
 
-  @Roles(Role.MERCHANT)
+  @Roles(Role.MODER)
   @Get('all')
   getAllStoragesTags(@Query() req: Request): Promise<Response<StorageTag>> {
     return this.storagesTagsService.getAllStoragesTags(req);
@@ -65,7 +65,7 @@ export class StoragesTagsController {
   @Post()
   createStorageTag(
     @MyId() myId: number,
-    @HasRole(Role.MERCHANT) hasRole: boolean,
+    @HasRole(Role.MODER) hasRole: boolean,
     @Body() dto: CreateStorageTagDto,
   ): Promise<void> {
     return this.storagesTagsService.createStorageTag({
@@ -78,7 +78,7 @@ export class StoragesTagsController {
   @Patch(':storageTagId')
   editStorageTag(
     @MyId() myId: number,
-    @HasRole(Role.MERCHANT) hasRole: boolean,
+    @HasRole(Role.MODER) hasRole: boolean,
     @Param() { storageTagId }: StorageTagIdDto,
     @Body() dto: EditStorageTagDto,
   ): Promise<void> {
