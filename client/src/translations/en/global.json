@@ -411,9 +411,6 @@
     "roles": {
       "admin": "Admin",
       "moder": "Moder",
-      "spawn": "Spawn head",
-      "hub": "Hub head",
-      "end": "End head",
       "streamer": "Streamer",
       "user": "User"
     },
