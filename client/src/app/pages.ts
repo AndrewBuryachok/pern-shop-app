@@ -73,17 +73,17 @@ export const pages = [
   {
     path: 'cards',
     element: CardsPage,
-    nested: [{ path: 'my' }, { path: 'all', role: Role.BANKER }],
+    nested: [{ path: 'my' }, { path: 'all', role: Role.MODER }],
   },
   {
     path: 'exchanges',
     element: ExchangesPage,
-    nested: [{ path: 'my' }, { path: 'all', role: Role.BANKER }],
+    nested: [{ path: 'my' }, { path: 'all', role: Role.MODER }],
   },
   {
     path: 'payments',
     element: PaymentsPage,
-    nested: [{ path: 'my' }, { path: 'all', role: Role.BANKER }],
+    nested: [{ path: 'my' }, { path: 'all', role: Role.MODER }],
   },
   {
     path: 'invoices',
@@ -91,7 +91,7 @@ export const pages = [
     nested: [
       { path: 'my' },
       { path: 'received' },
-      { path: 'all', role: Role.BANKER },
+      { path: 'all', role: Role.MODER },
     ],
   },
   {
