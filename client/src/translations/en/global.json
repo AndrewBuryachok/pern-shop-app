@@ -411,7 +411,6 @@
     "roles": {
       "admin": "Admin",
       "moder": "Moder",
-      "merchant": "Merchant",
       "banker": "Banker",
       "spawn": "Spawn head",
       "hub": "Hub head",
