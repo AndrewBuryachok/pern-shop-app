@@ -4,7 +4,6 @@ import {
   useGetAllOrdersQuery,
   useGetMainOrdersQuery,
   useGetMyOrdersQuery,
-  useGetPlacedOrdersQuery,
   useGetTakenOrdersQuery,
 } from '../../features/orders/orders.api';
 import OrdersTable from '../../features/orders/OrdersTable';
@@ -59,7 +58,6 @@ export default function OrdersPage() {
     main: useGetMainOrdersQuery,
     my: useGetMyOrdersQuery,
     taken: useGetTakenOrdersQuery,
-    placed: useGetPlacedOrdersQuery,
     all: useGetAllOrdersQuery,
   }[tab]!(search);
 

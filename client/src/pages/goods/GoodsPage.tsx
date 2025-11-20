@@ -4,7 +4,6 @@ import {
   useGetAllGoodsQuery,
   useGetMainGoodsQuery,
   useGetMyGoodsQuery,
-  useGetPlacedGoodsQuery,
 } from '../../features/goods/goods.api';
 import GoodsTable from '../../features/goods/GoodsTable';
 import {
@@ -53,7 +52,6 @@ export default function GoodsPage() {
   const response = {
     main: useGetMainGoodsQuery,
     my: useGetMyGoodsQuery,
-    placed: useGetPlacedGoodsQuery,
     all: useGetAllGoodsQuery,
   }[tab]!(search);
 

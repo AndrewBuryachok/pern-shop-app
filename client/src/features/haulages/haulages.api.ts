@@ -30,12 +30,6 @@ export const haulagesApi = emptyApi.injectEndpoints({
       }),
       providesTags: ['Auth', 'Haulage'],
     }),
-    getPlacedHaulages: build.query<IResponse<Haulage>, IRequest>({
-      query: (req) => ({
-        url: `/haulages/placed?${getQuery(req)}`,
-      }),
-      providesTags: ['Auth', 'Haulage'],
-    }),
     getAllHaulages: build.query<IResponse<Haulage>, IRequest>({
       query: (req) => ({
         url: `/haulages/all?${getQuery(req)}`,
@@ -102,7 +96,6 @@ export const {
   useGetMainHaulagesQuery,
   useGetMyHaulagesQuery,
   useGetTakenHaulagesQuery,
-  useGetPlacedHaulagesQuery,
   useGetAllHaulagesQuery,
   useCreateHaulageMutation,
   useEditHaulageMutation,

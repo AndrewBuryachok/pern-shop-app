@@ -30,12 +30,6 @@ export const deliveriesApi = emptyApi.injectEndpoints({
       }),
       providesTags: ['Auth', 'Delivery'],
     }),
-    getPlacedDeliveries: build.query<IResponse<Delivery>, IRequest>({
-      query: (req) => ({
-        url: `/deliveries/placed?${getQuery(req)}`,
-      }),
-      providesTags: ['Auth', 'Delivery'],
-    }),
     getAllDeliveries: build.query<IResponse<Delivery>, IRequest>({
       query: (req) => ({
         url: `/deliveries/all?${getQuery(req)}`,
@@ -102,7 +96,6 @@ export const {
   useGetMainDeliveriesQuery,
   useGetMyDeliveriesQuery,
   useGetTakenDeliveriesQuery,
-  useGetPlacedDeliveriesQuery,
   useGetAllDeliveriesQuery,
   useCreateDeliveryMutation,
   useEditDeliveryMutation,

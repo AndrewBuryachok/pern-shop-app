@@ -4,7 +4,6 @@ import {
   useGetAllDeliveriesQuery,
   useGetMainDeliveriesQuery,
   useGetMyDeliveriesQuery,
-  useGetPlacedDeliveriesQuery,
   useGetTakenDeliveriesQuery,
 } from '../../features/deliveries/deliveries.api';
 import DeliveriesTable from '../../features/deliveries/DeliveriesTable';
@@ -64,7 +63,6 @@ export default function DeliveriesPage() {
     main: useGetMainDeliveriesQuery,
     my: useGetMyDeliveriesQuery,
     taken: useGetTakenDeliveriesQuery,
-    placed: useGetPlacedDeliveriesQuery,
     all: useGetAllDeliveriesQuery,
   }[tab]!(search);
 

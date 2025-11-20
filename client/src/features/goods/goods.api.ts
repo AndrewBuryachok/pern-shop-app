@@ -27,12 +27,6 @@ export const goodsApi = emptyApi.injectEndpoints({
       }),
       providesTags: ['Auth', 'Good'],
     }),
-    getPlacedGoods: build.query<IResponse<Good>, IRequest>({
-      query: (req) => ({
-        url: `/goods/placed?${getQuery(req)}`,
-      }),
-      providesTags: ['Auth', 'Good'],
-    }),
     getAllGoods: build.query<IResponse<Good>, IRequest>({
       query: (req) => ({
         url: `/goods/all?${getQuery(req)}`,
@@ -111,7 +105,6 @@ export const goodsApi = emptyApi.injectEndpoints({
 export const {
   useGetMainGoodsQuery,
   useGetMyGoodsQuery,
-  useGetPlacedGoodsQuery,
   useGetAllGoodsQuery,
   useSelectGoodStatesQuery,
   useSelectGoodPurchasesQuery,

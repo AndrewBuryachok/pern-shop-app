@@ -4,7 +4,6 @@ import {
   useGetAllHaulagesQuery,
   useGetMainHaulagesQuery,
   useGetMyHaulagesQuery,
-  useGetPlacedHaulagesQuery,
   useGetTakenHaulagesQuery,
 } from '../../features/haulages/haulages.api';
 import HaulagesTable from '../../features/haulages/HaulagesTable';
@@ -59,7 +58,6 @@ export default function HaulagesPage() {
     main: useGetMainHaulagesQuery,
     my: useGetMyHaulagesQuery,
     taken: useGetTakenHaulagesQuery,
-    placed: useGetPlacedHaulagesQuery,
     all: useGetAllHaulagesQuery,
   }[tab]!(search);
 

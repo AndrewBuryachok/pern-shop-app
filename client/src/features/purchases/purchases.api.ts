@@ -18,12 +18,6 @@ export const purchasesApi = emptyApi.injectEndpoints({
       }),
       providesTags: ['Auth', 'Purchase'],
     }),
-    getPlacedPurchases: build.query<IResponse<Purchase>, IRequest>({
-      query: (req) => ({
-        url: `/purchases/placed?${getQuery(req)}`,
-      }),
-      providesTags: ['Auth', 'Purchase'],
-    }),
     getAllPurchases: build.query<IResponse<Purchase>, IRequest>({
       query: (req) => ({
         url: `/purchases/all?${getQuery(req)}`,
@@ -63,7 +57,6 @@ export const purchasesApi = emptyApi.injectEndpoints({
 export const {
   useGetMyPurchasesQuery,
   useGetReceivedPurchasesQuery,
-  useGetPlacedPurchasesQuery,
   useGetAllPurchasesQuery,
   useSelectMyPurchasesQuery,
   useSelectUserPurchasesQuery,
