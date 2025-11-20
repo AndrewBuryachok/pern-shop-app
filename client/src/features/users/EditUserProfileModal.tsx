@@ -114,7 +114,7 @@ export const editUserProfileAction = {
     }),
   disable: (user: ExtUser) => {
     const me = getCurrentUser();
-    return isUserNotHasRole(Role.INSPECTOR) && user.id !== me?.id;
+    return isUserNotHasRole(Role.MODER) && user.id !== me?.id;
   },
   color: Color.YELLOW,
 };

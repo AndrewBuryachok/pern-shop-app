@@ -65,7 +65,7 @@ export const editCommentAction = {
     }),
   disable: (comment: ArticleComment) => {
     const user = getCurrentUser();
-    return isUserNotHasRole(Role.INSPECTOR) && comment.user.id !== user?.id;
+    return isUserNotHasRole(Role.MODER) && comment.user.id !== user?.id;
   },
   color: Color.YELLOW,
 };

@@ -410,7 +410,7 @@
     },
     "roles": {
       "admin": "Admin",
-      "inspector": "Inspector",
+      "moder": "Moder",
       "merchant": "Merchant",
       "banker": "Banker",
       "spawn": "Spawn head",

@@ -67,7 +67,7 @@ export const pages = [
       { path: 'my' },
       { path: 'liked' },
       { path: 'commented' },
-      { path: 'all', role: Role.INSPECTOR },
+      { path: 'all', role: Role.MODER },
     ],
   },
   {
@@ -100,7 +100,7 @@ export const pages = [
     nested: [
       { index: true },
       { path: 'my' },
-      { path: 'all', role: Role.INSPECTOR },
+      { path: 'all', role: Role.MODER },
     ],
   },
   {

@@ -66,7 +66,7 @@ export const editArticleAction = {
     }),
   disable: (article: Article) => {
     const user = getCurrentUser();
-    return isUserNotHasRole(Role.INSPECTOR) && article.user.id !== user?.id;
+    return isUserNotHasRole(Role.MODER) && article.user.id !== user?.id;
   },
   color: Color.YELLOW,
 };
