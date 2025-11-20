@@ -28,7 +28,7 @@ export class PaymentsController {
     return this.paymentsService.getMyPayments(myId, req);
   }
 
-  @Roles(Role.BANKER)
+  @Roles(Role.MODER)
   @Get('all')
   getAllPayments(@Query() req: Request): Promise<Response<Payment>> {
     return this.paymentsService.getAllPayments(req);
@@ -37,13 +37,13 @@ export class PaymentsController {
   @Post()
   createPayment(
     @MyId() myId: number,
-    @HasRole(Role.BANKER) hasRole: boolean,
+    @HasRole(Role.MODER) hasRole: boolean,
     @Body() dto: CreatePaymentDto,
   ): Promise<void> {
     return this.paymentsService.createPayment({ ...dto, myId, hasRole });
   }
 
-  @Roles(Role.BANKER)
+  @Roles(Role.MODER)
   @Delete(':paymentId')
   deletePayment(@Param() { paymentId }: PaymentIdDto): Promise<void> {
     return this.paymentsService.deletePayment(paymentId);

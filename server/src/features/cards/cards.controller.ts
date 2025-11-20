@@ -37,7 +37,7 @@ export class CardsController {
     return this.cardsService.getMyCards(myId, req);
   }
 
-  @Roles(Role.BANKER)
+  @Roles(Role.MODER)
   @Get('all')
   getAllCards(@Query() req: Request): Promise<Response<Card>> {
     return this.cardsService.getAllCards(req);
@@ -54,7 +54,7 @@ export class CardsController {
     return this.cardsService.selectUserCards(userId);
   }
 
-  @Roles(Role.MODER, Role.BANKER)
+  @Roles(Role.MODER)
   @Get(':userId/ext-select')
   selectUserCardsWithBalance(@Param() { userId }: UserIdDto): Promise<Card[]> {
     return this.cardsService.selectUserCardsWithBalance(userId);
@@ -74,7 +74,7 @@ export class CardsController {
     return this.cardsService.createCard({ ...dto, userId: myId });
   }
 
-  @Roles(Role.BANKER)
+  @Roles(Role.MODER)
   @Post('all')
   createUserCard(@Body() dto: ExtCreateCardDto): Promise<void> {
     return this.cardsService.createCard(dto);
@@ -83,7 +83,7 @@ export class CardsController {
   @Patch(':cardId')
   editCard(
     @MyId() myId: number,
-    @HasRole(Role.BANKER) hasRole: boolean,
+    @HasRole(Role.MODER) hasRole: boolean,
     @Param() { cardId }: CardIdDto,
     @Body() dto: EditCardDto,
   ): Promise<void> {
@@ -93,7 +93,7 @@ export class CardsController {
   @Post(':cardId/users')
   addCardUser(
     @MyId() myId: number,
-    @HasRole(Role.BANKER) hasRole: boolean,
+    @HasRole(Role.MODER) hasRole: boolean,
     @Param() { cardId }: CardIdDto,
     @Body() dto: UpdateCardUserDto,
   ): Promise<void> {
@@ -103,7 +103,7 @@ export class CardsController {
   @Delete(':cardId/users')
   removeCardUser(
     @MyId() myId: number,
-    @HasRole(Role.BANKER) hasRole: boolean,
+    @HasRole(Role.MODER) hasRole: boolean,
     @Param() { cardId }: CardIdDto,
     @Body() dto: UpdateCardUserDto,
   ): Promise<void> {

@@ -28,7 +28,7 @@ export class ExchangesController {
     return this.exchangesService.getMyExchanges(myId, req);
   }
 
-  @Roles(Role.BANKER)
+  @Roles(Role.MODER)
   @Get('all')
   getAllExchanges(@Query() req: Request): Promise<Response<Exchange>> {
     return this.exchangesService.getAllExchanges(req);
@@ -37,13 +37,13 @@ export class ExchangesController {
   @Post()
   createExchange(
     @MyId() myId: number,
-    @HasRole(Role.BANKER) hasRole: boolean,
+    @HasRole(Role.MODER) hasRole: boolean,
     @Body() dto: CreateExchangeDto,
   ): Promise<void> {
     return this.exchangesService.createExchange({ ...dto, myId, hasRole });
   }
 
-  @Roles(Role.BANKER)
+  @Roles(Role.MODER)
   @Delete(':exchangeId')
   deleteExchange(@Param() { exchangeId }: ExchangeIdDto): Promise<void> {
     return this.exchangesService.deleteExchange(exchangeId);
