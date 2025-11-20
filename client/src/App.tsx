@@ -28,7 +28,7 @@ import CustomNavbar from './common/components/CustomNavbar';
 import CustomAside from './common/components/CustomAside';
 import CustomLoader from './common/components/CustomLoader';
 import Protected from './common/components/Protected';
-import { pages, tabs } from './app/pages';
+import { pages } from './app/pages';
 
 export default function App() {
   const dispatch = useAppDispatch();
@@ -137,7 +137,7 @@ export default function App() {
                             key={`${page.path} ${route.path}`}
                             {...route}
                             element={
-                              route.index || tabs.includes(route.path!) ? (
+                              route.index ? (
                                 <page.element />
                               ) : (
                                 <Protected role={route.role}>

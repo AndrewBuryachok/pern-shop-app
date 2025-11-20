@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { Link, useLocation } from 'react-router-dom';
 import { Button, Group } from '@mantine/core';
 import { IconPlus } from '@tabler/icons';
-import { pages, tabs } from '../../app/pages';
+import { pages } from '../../app/pages';
 import { INav } from '../interfaces';
 import { isUserNotHasRole } from '../utils';
 
@@ -32,11 +32,7 @@ export default function CustomNav(props: Props) {
           component={Link}
           to={`/${active[1]}/${link.path}`.replace('/main', '')}
           color={link.path === tab ? undefined : 'gray'}
-          disabled={
-            link.path !== 'main' &&
-            !tabs.includes(link.path!) &&
-            isUserNotHasRole(link.role)
-          }
+          disabled={link.path !== 'main' && isUserNotHasRole(link.role)}
           compact
         >
           {t(`pages.${link.path}`)}
