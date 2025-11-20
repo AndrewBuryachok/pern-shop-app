@@ -473,10 +473,6 @@ describe('Without Auth', () => {
       return request(app.getHttpServer()).get('/goods/my').expect(401);
     });
 
-    it('GET /goods/placed', async () => {
-      return request(app.getHttpServer()).get('/goods/placed').expect(401);
-    });
-
     it('GET /goods/all', async () => {
       return request(app.getHttpServer())
         .get('/goods/all')
@@ -526,10 +522,6 @@ describe('Without Auth', () => {
       return request(app.getHttpServer()).get('/deliveries/taken').expect(401);
     });
 
-    it('GET /deliveries/placed', async () => {
-      return request(app.getHttpServer()).get('/deliveries/placed').expect(401);
-    });
-
     it('GET /deliveries/all', async () => {
       return request(app.getHttpServer())
         .get('/deliveries/all')
@@ -547,10 +539,6 @@ describe('Without Auth', () => {
       return request(app.getHttpServer()).get('/orders/taken').expect(401);
     });
 
-    it('GET /orders/placed', async () => {
-      return request(app.getHttpServer()).get('/orders/placed').expect(401);
-    });
-
     it('GET /orders/all', async () => {
       return request(app.getHttpServer())
         .get('/orders/all')
@@ -566,10 +554,6 @@ describe('Without Auth', () => {
 
     it('GET /haulages/taken', async () => {
       return request(app.getHttpServer()).get('/haulages/taken').expect(401);
-    });
-
-    it('GET /haulages/placed', async () => {
-      return request(app.getHttpServer()).get('/haulages/placed').expect(401);
     });
 
     it('GET /haulages/all', async () => {

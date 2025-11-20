@@ -49,14 +49,6 @@ export class OrdersController {
     return this.ordersService.getTakenOrders(myId, req);
   }
 
-  @Get('placed')
-  getPlacedOrders(
-    @MyId() myId: number,
-    @Query() req: Request,
-  ): Promise<Response<Order>> {
-    return this.ordersService.getPlacedOrders(myId, req);
-  }
-
   @Roles(Role.MODER)
   @Get('all')
   getAllOrders(@Query() req: Request): Promise<Response<Order>> {

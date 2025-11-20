@@ -37,14 +37,6 @@ export class PurchasesController {
     return this.purchasesService.getReceivedPurchases(myId, req);
   }
 
-  @Get('placed')
-  getPlacedPurchases(
-    @MyId() myId: number,
-    @Query() req: Request,
-  ): Promise<Response<Purchase>> {
-    return this.purchasesService.getPlacedPurchases(myId, req);
-  }
-
   @Roles(Role.MODER)
   @Get('all')
   getAllPurchases(@Query() req: Request): Promise<Response<Purchase>> {

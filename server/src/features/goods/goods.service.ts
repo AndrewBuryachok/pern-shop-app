@@ -52,24 +52,6 @@ export class GoodsService {
     return { result, count };
   }
 
-  async getPlacedGoods(myId: number, req: Request): Promise<Response<Good>> {
-    const [result, count] = await this.getGoodsQueryBuilder(req)
-      .leftJoin('shopAccount.cards', 'shopCards')
-      .leftJoin('marketAccount.cards', 'marketCards')
-      .leftJoin('storageAccount.cards', 'storageCards')
-      .andWhere(
-        new Brackets((qb) =>
-          qb
-            .where('shopCards.userId = :myId')
-            .orWhere('marketCards.userId = :myId')
-            .orWhere('storageCards.userId = :myId'),
-        ),
-        { myId },
-      )
-      .getManyAndCount();
-    return { result, count };
-  }
-
   async getAllGoods(req: Request): Promise<Response<Good>> {
     const [result, count] = await this.getGoodsQueryBuilder(
       req,

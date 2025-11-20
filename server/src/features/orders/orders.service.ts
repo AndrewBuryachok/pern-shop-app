@@ -56,14 +56,6 @@ export class OrdersService {
     return { result, count };
   }
 
-  async getPlacedOrders(myId: number, req: Request): Promise<Response<Order>> {
-    const [result, count] = await this.getOrdersQueryBuilder(req)
-      .innerJoin('ownerAccount.cards', 'ownerCards')
-      .andWhere('ownerCards.userId = :myId', { myId })
-      .getManyAndCount();
-    return { result, count };
-  }
-
   async getAllOrders(req: Request): Promise<Response<Order>> {
     const [result, count] = await this.getOrdersQueryBuilder(
       req,

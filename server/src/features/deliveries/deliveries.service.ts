@@ -65,29 +65,6 @@ export class DeliveriesService {
     return { result, count };
   }
 
-  async getPlacedDeliveries(
-    myId: number,
-    req: Request,
-  ): Promise<Response<Delivery>> {
-    const [result, count] = await this.getDeliveriesQueryBuilder(req)
-      .leftJoin('shopAccount.cards', 'shopCards')
-      .leftJoin('marketAccount.cards', 'marketCards')
-      .leftJoin('storageAccount.cards', 'storageCards')
-      .innerJoin('stationAccount.cards', 'stationCards')
-      .andWhere(
-        new Brackets((qb) =>
-          qb
-            .where('shopCards.userId = :myId')
-            .orWhere('marketCards.userId = :myId')
-            .orWhere('storageCards.userId = :myId')
-            .orWhere('stationCards.userId = :myId'),
-        ),
-        { myId },
-      )
-      .getManyAndCount();
-    return { result, count };
-  }
-
   async getAllDeliveries(req: Request): Promise<Response<Delivery>> {
     const [result, count] = await this.getDeliveriesQueryBuilder(
       req,

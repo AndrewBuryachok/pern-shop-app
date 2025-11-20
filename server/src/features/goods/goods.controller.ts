@@ -44,14 +44,6 @@ export class GoodsController {
     return this.goodsService.getMyGoods(myId, req);
   }
 
-  @Get('placed')
-  getPlacedGoods(
-    @MyId() myId: number,
-    @Query() req: Request,
-  ): Promise<Response<Good>> {
-    return this.goodsService.getPlacedGoods(myId, req);
-  }
-
   @Roles(Role.MODER)
   @Get('all')
   getAllGoods(@Query() req: Request): Promise<Response<Good>> {

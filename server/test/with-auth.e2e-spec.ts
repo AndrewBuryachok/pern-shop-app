@@ -1746,13 +1746,6 @@ describe('With Auth', () => {
         .then((res) => (shopGoodsId = res.body.result.map((g) => g.id)));
     });
 
-    it('GET /goods/placed', async () => {
-      return request(app.getHttpServer())
-        .get('/goods/placed')
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
-    });
-
     it('GET /goods/all', async () => {
       return request(app.getHttpServer())
         .get('/goods/all')
@@ -1853,13 +1846,6 @@ describe('With Auth', () => {
         .set('Authorization', `Bearer ${user.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0))
         .then((res) => (marketGoodsId = res.body.result.map((g) => g.id)));
-    });
-
-    it('GET /goods/placed', async () => {
-      return request(app.getHttpServer())
-        .get('/goods/placed')
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
 
     it('GET /goods/all', async () => {
@@ -1970,13 +1956,6 @@ describe('With Auth', () => {
         .set('Authorization', `Bearer ${user.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0))
         .then((res) => (storageGoodsId = res.body.result.map((g) => g.id)));
-    });
-
-    it('GET /goods/placed', async () => {
-      return request(app.getHttpServer())
-        .get('/goods/placed')
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
 
     it('GET /goods/all', async () => {
@@ -2134,13 +2113,6 @@ describe('With Auth', () => {
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
 
-    it('GET /purchases/placed', async () => {
-      return request(app.getHttpServer())
-        .get('/purchases/placed')
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
-    });
-
     it('GET /purchases/all', async () => {
       return request(app.getHttpServer())
         .get('/purchases/all')
@@ -2183,13 +2155,6 @@ describe('With Auth', () => {
     it('GET /purchases/received', async () => {
       return request(app.getHttpServer())
         .get('/purchases/received')
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
-    });
-
-    it('GET /purchases/placed', async () => {
-      return request(app.getHttpServer())
-        .get('/purchases/placed')
         .set('Authorization', `Bearer ${user.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
@@ -2264,13 +2229,6 @@ describe('With Auth', () => {
     it('GET /deliveries/taken', async () => {
       return request(app.getHttpServer())
         .get('/deliveries/taken')
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
-    });
-
-    it('GET /deliveries/placed', async () => {
-      return request(app.getHttpServer())
-        .get('/deliveries/placed')
         .set('Authorization', `Bearer ${user.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
@@ -2380,13 +2338,6 @@ describe('With Auth', () => {
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
 
-    it('GET /deliveries/placed', async () => {
-      return request(app.getHttpServer())
-        .get('/deliveries/placed')
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
-    });
-
     it('GET /deliveries/all', async () => {
       return request(app.getHttpServer())
         .get('/deliveries/all')
@@ -2488,13 +2439,6 @@ describe('With Auth', () => {
     it('GET /deliveries/taken', async () => {
       return request(app.getHttpServer())
         .get('/deliveries/taken')
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
-    });
-
-    it('GET /deliveries/placed', async () => {
-      return request(app.getHttpServer())
-        .get('/deliveries/placed')
         .set('Authorization', `Bearer ${user.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
@@ -2630,13 +2574,6 @@ describe('With Auth', () => {
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
 
-    it('GET /orders/placed', async () => {
-      return request(app.getHttpServer())
-        .get('/orders/placed')
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
-    });
-
     it('GET /orders/all', async () => {
       return request(app.getHttpServer())
         .get('/orders/all')
@@ -2759,13 +2696,6 @@ describe('With Auth', () => {
     it('GET /haulages/taken', async () => {
       return request(app.getHttpServer())
         .get('/haulages/taken')
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
-    });
-
-    it('GET /haulages/placed', async () => {
-      return request(app.getHttpServer())
-        .get('/haulages/placed')
         .set('Authorization', `Bearer ${user.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });

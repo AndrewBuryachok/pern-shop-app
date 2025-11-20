@@ -44,27 +44,6 @@ export class PurchasesService {
     return { result, count };
   }
 
-  async getPlacedPurchases(
-    myId: number,
-    req: Request,
-  ): Promise<Response<Purchase>> {
-    const [result, count] = await this.getPurchasesQueryBuilder(req)
-      .leftJoin('shopAccount.cards', 'shopCards')
-      .leftJoin('marketAccount.cards', 'marketCards')
-      .leftJoin('storageAccount.cards', 'storageCards')
-      .andWhere(
-        new Brackets((qb) =>
-          qb
-            .where('shopCards.userId = :myId')
-            .orWhere('marketCards.userId = :myId')
-            .orWhere('storageCards.userId = :myId'),
-        ),
-        { myId },
-      )
-      .getManyAndCount();
-    return { result, count };
-  }
-
   async getAllPurchases(req: Request): Promise<Response<Purchase>> {
     const [result, count] = await this.getPurchasesQueryBuilder(
       req,

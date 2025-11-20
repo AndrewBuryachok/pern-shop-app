@@ -49,14 +49,6 @@ export class HaulagesController {
     return this.haulagesService.getTakenHaulages(myId, req);
   }
 
-  @Get('placed')
-  getPlacedHaulages(
-    @MyId() myId: number,
-    @Query() req: Request,
-  ): Promise<Response<Haulage>> {
-    return this.haulagesService.getPlacedHaulages(myId, req);
-  }
-
   @Roles(Role.MODER)
   @Get('all')
   getAllHaulages(@Query() req: Request): Promise<Response<Haulage>> {

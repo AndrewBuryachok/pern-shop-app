@@ -49,14 +49,6 @@ export class DeliveriesController {
     return this.deliveriesService.getTakenDeliveries(myId, req);
   }
 
-  @Get('placed')
-  getPlacedDeliveries(
-    @MyId() myId: number,
-    @Query() req: Request,
-  ): Promise<Response<Delivery>> {
-    return this.deliveriesService.getPlacedDeliveries(myId, req);
-  }
-
   @Roles(Role.MODER)
   @Get('all')
   getAllDeliveries(@Query() req: Request): Promise<Response<Delivery>> {

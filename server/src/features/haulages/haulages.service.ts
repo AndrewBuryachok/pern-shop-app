@@ -60,25 +60,6 @@ export class HaulagesService {
     return { result, count };
   }
 
-  async getPlacedHaulages(
-    myId: number,
-    req: Request,
-  ): Promise<Response<Haulage>> {
-    const [result, count] = await this.getHaulagesQueryBuilder(req)
-      .innerJoin('fromOwnerAccount.cards', 'fromOwnerCards')
-      .innerJoin('toOwnerAccount.cards', 'toOwnerCards')
-      .andWhere(
-        new Brackets((qb) =>
-          qb
-            .where('fromOwnerCards.userId = :myId')
-            .orWhere('toOwnerCards.userId = :myId'),
-        ),
-        { myId },
-      )
-      .getManyAndCount();
-    return { result, count };
-  }
-
   async getAllHaulages(req: Request): Promise<Response<Haulage>> {
     const [result, count] = await this.getHaulagesQueryBuilder(
       req,
