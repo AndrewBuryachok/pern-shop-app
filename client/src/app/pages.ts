@@ -244,7 +244,7 @@ export const pages = [
     element: PurchasesPage,
     nested: [
       { path: 'my' },
-      { path: 'sold' },
+      { path: 'received' },
       { path: 'placed' },
       { path: 'all', role: Role.MODER },
     ],

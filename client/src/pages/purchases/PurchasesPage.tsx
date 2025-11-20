@@ -4,7 +4,7 @@ import {
   useGetAllPurchasesQuery,
   useGetMyPurchasesQuery,
   useGetPlacedPurchasesQuery,
-  useGetSoldPurchasesQuery,
+  useGetReceivedPurchasesQuery,
 } from '../../features/purchases/purchases.api';
 import PurchasesTable from '../../features/purchases/PurchasesTable';
 import { deletePurchaseAction } from '../../features/purchases/DeletePurchaseModal';
@@ -42,7 +42,7 @@ export default function PurchasesPage() {
 
   const response = {
     my: useGetMyPurchasesQuery,
-    sold: useGetSoldPurchasesQuery,
+    received: useGetReceivedPurchasesQuery,
     placed: useGetPlacedPurchasesQuery,
     all: useGetAllPurchasesQuery,
   }[tab]!(search);
