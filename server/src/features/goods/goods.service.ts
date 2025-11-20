@@ -44,31 +44,6 @@ export class GoodsService {
     return { result, count };
   }
 
-  async getTopGoods(req: Request): Promise<Response<Good>> {
-    const [result, count] = await this.getGoodsQueryBuilder(req)
-      .andWhere('good.amount > 0')
-      .orderBy('good_purchases_avg', 'DESC', 'NULLS LAST')
-      .addOrderBy('good_purchases_count', 'DESC', 'NULLS LAST')
-      .addSelect(
-        (qb) =>
-          qb
-            .select('AVG(purchase.rate)', 'good_purchases_avg')
-            .from('purchases', 'purchase')
-            .where('purchase.goodId = good.id'),
-        'good_purchases_avg',
-      )
-      .addSelect(
-        (qb) =>
-          qb
-            .select('COUNT(purchase.id)', 'good_purchases_count')
-            .from('purchases', 'purchase')
-            .where('purchase.goodId = good.id'),
-        'good_purchases_count',
-      )
-      .getManyAndCount();
-    return { result, count };
-  }
-
   async getMyGoods(myId: number, req: Request): Promise<Response<Good>> {
     const [result, count] = await this.getGoodsQueryBuilder(req)
       .innerJoin('sellerAccount.cards', 'sellerCards')
