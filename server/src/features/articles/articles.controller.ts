@@ -59,7 +59,7 @@ export class ArticlesController {
     return this.articlesService.getCommentedArticles(myId, req);
   }
 
-  @Roles(Role.INSPECTOR)
+  @Roles(Role.MODER)
   @Get('all')
   getAllArticles(@Query() req: Request): Promise<Response<Article>> {
     return this.articlesService.getAllArticles(req);
@@ -101,7 +101,7 @@ export class ArticlesController {
     return this.articlesService.createArticle({ ...dto, userId: myId });
   }
 
-  @Roles(Role.INSPECTOR)
+  @Roles(Role.MODER)
   @Post('all')
   createUserArticle(@Body() dto: ExtCreateArticleDto): Promise<void> {
     return this.articlesService.createArticle(dto);
@@ -110,7 +110,7 @@ export class ArticlesController {
   @Patch(':articleId')
   editArticle(
     @MyId() myId: number,
-    @HasRole(Role.INSPECTOR) hasRole: boolean,
+    @HasRole(Role.MODER) hasRole: boolean,
     @Param() { articleId }: ArticleIdDto,
     @Body() dto: EditArticleDto,
   ): Promise<void> {
@@ -125,7 +125,7 @@ export class ArticlesController {
   @Delete(':articleId')
   deleteArticle(
     @MyId() myId: number,
-    @HasRole(Role.INSPECTOR) hasRole: boolean,
+    @HasRole(Role.MODER) hasRole: boolean,
     @Param() { articleId }: ArticleIdDto,
   ): Promise<void> {
     return this.articlesService.deleteArticle({ articleId, myId, hasRole });

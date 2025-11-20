@@ -39,7 +39,7 @@ export class CommentsController {
   @Patch(':commentId')
   editComment(
     @MyId() myId: number,
-    @HasRole(Role.INSPECTOR) hasRole: boolean,
+    @HasRole(Role.MODER) hasRole: boolean,
     @Param() { commentId }: CommentIdDto,
     @Body() dto: EditCommentDto,
   ): Promise<void> {
@@ -54,7 +54,7 @@ export class CommentsController {
   @Delete(':commentId')
   deleteComment(
     @MyId() myId: number,
-    @HasRole(Role.INSPECTOR) hasRole: boolean,
+    @HasRole(Role.MODER) hasRole: boolean,
     @Param() { commentId }: CommentIdDto,
   ): Promise<void> {
     return this.commentsService.deleteComment({ commentId, myId, hasRole });

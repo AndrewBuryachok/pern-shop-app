@@ -73,7 +73,7 @@ export class UsersController {
   @Patch(':userId/profile')
   editUserProfile(
     @MyId() myId: number,
-    @HasRole(Role.INSPECTOR) hasRole: boolean,
+    @HasRole(Role.MODER) hasRole: boolean,
     @Param() { userId }: UserIdDto,
     @Body() dto: EditUserProfileDto,
   ): Promise<void> {

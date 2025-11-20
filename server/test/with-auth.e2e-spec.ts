@@ -20,7 +20,7 @@ describe('With Auth', () => {
   let app: INestApplication;
   let user: Tokens;
   let admin: Tokens;
-  let inspector: Tokens;
+  let moder: Tokens;
   let banker: Tokens;
   let merchant: Tokens;
   let spawn: Tokens;
@@ -111,18 +111,18 @@ describe('With Auth', () => {
         .expect(201);
     });
 
-    it('POST /auth/login as Inspector', async () => {
+    it('POST /auth/login as Moder', async () => {
       return request(app.getHttpServer())
         .post('/auth/login')
-        .send({ nick: 'Inspector', password: 'Inspector' })
+        .send({ nick: 'Moder', password: 'Moder' })
         .expect(201)
-        .then((res) => (inspector = res.body));
+        .then((res) => (moder = res.body));
     });
 
-    it('POST /auth/logout as Inspector', async () => {
+    it('POST /auth/logout as Moder', async () => {
       return request(app.getHttpServer())
         .post('/auth/logout')
-        .set('Authorization', `Bearer ${inspector.access}`)
+        .set('Authorization', `Bearer ${moder.access}`)
         .expect(201);
     });
 
@@ -490,7 +490,7 @@ describe('With Auth', () => {
     it('GET /articles/all', async () => {
       return request(app.getHttpServer())
         .get('/articles/all')
-        .set('Authorization', `Bearer ${inspector.access}`)
+        .set('Authorization', `Bearer ${moder.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
 
@@ -775,7 +775,7 @@ describe('With Auth', () => {
     it('GET /towns/all', async () => {
       return request(app.getHttpServer())
         .get('/towns/all')
-        .set('Authorization', `Bearer ${admin.access}`)
+        .set('Authorization', `Bearer ${moder.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
 
