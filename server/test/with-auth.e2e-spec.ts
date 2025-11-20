@@ -21,9 +21,6 @@ describe('With Auth', () => {
   let user: Tokens;
   let admin: Tokens;
   let moder: Tokens;
-  let spawn: Tokens;
-  let hub: Tokens;
-  let end: Tokens;
   let messageId: number;
   let articlesId: number[];
   let articleCommentId: number;
@@ -121,51 +118,6 @@ describe('With Auth', () => {
       return request(app.getHttpServer())
         .post('/auth/logout')
         .set('Authorization', `Bearer ${moder.access}`)
-        .expect(201);
-    });
-
-    it('POST /auth/login as SpawnHead', async () => {
-      return request(app.getHttpServer())
-        .post('/auth/login')
-        .send({ nick: 'SpawnHead', password: 'SpawnHead' })
-        .expect(201)
-        .then((res) => (spawn = res.body));
-    });
-
-    it('POST /auth/logout as SpawnHead', async () => {
-      return request(app.getHttpServer())
-        .post('/auth/logout')
-        .set('Authorization', `Bearer ${spawn.access}`)
-        .expect(201);
-    });
-
-    it('POST /auth/login as HubHead', async () => {
-      return request(app.getHttpServer())
-        .post('/auth/login')
-        .send({ nick: 'HubHead', password: 'HubHead' })
-        .expect(201)
-        .then((res) => (hub = res.body));
-    });
-
-    it('POST /auth/logout as HubHead', async () => {
-      return request(app.getHttpServer())
-        .post('/auth/logout')
-        .set('Authorization', `Bearer ${hub.access}`)
-        .expect(201);
-    });
-
-    it('POST /auth/login as EndHead', async () => {
-      return request(app.getHttpServer())
-        .post('/auth/login')
-        .send({ nick: 'EndHead', password: 'EndHead' })
-        .expect(201)
-        .then((res) => (end = res.body));
-    });
-
-    it('POST /auth/logout as EndHead', async () => {
-      return request(app.getHttpServer())
-        .post('/auth/logout')
-        .set('Authorization', `Bearer ${end.access}`)
         .expect(201);
     });
   });
