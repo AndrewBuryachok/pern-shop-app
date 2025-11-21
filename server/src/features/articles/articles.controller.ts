@@ -43,14 +43,6 @@ export class ArticlesController {
     return this.articlesService.getMyArticles(myId, req);
   }
 
-  @Get('liked')
-  getLikedArticles(
-    @MyId() myId: number,
-    @Query() req: Request,
-  ): Promise<Response<Article>> {
-    return this.articlesService.getLikedArticles(myId, req);
-  }
-
   @Get('commented')
   getCommentedArticles(
     @MyId() myId: number,
