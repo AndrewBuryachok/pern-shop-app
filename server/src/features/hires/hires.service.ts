@@ -79,8 +79,6 @@ export class HiresService {
     const hire = await this.hiresRepository
       .createQueryBuilder('hire')
       .leftJoin('hire.orders', 'order')
-      .leftJoin('hire.fromHaulages', 'fromHaulage')
-      .leftJoin('hire.toHaulages', 'toHaulage')
       .leftJoin('hire.deliveries', 'delivery')
       .leftJoin('delivery.purchase', 'purchase')
       .leftJoin('purchase.good', 'good')
@@ -94,20 +92,6 @@ export class HiresService {
         'order.intake',
         'order.kit',
         'order.price',
-        'fromHaulage.id',
-        'fromHaulage.item',
-        'fromHaulage.description',
-        'fromHaulage.amount',
-        'fromHaulage.intake',
-        'fromHaulage.kit',
-        'fromHaulage.price',
-        'toHaulage.id',
-        'toHaulage.item',
-        'toHaulage.description',
-        'toHaulage.amount',
-        'toHaulage.intake',
-        'toHaulage.kit',
-        'toHaulage.price',
         'delivery.id',
         'purchase.id',
         'good.id',
@@ -121,8 +105,6 @@ export class HiresService {
       .getOne();
     return [
       ...hire.orders,
-      ...hire.fromHaulages,
-      ...hire.toHaulages,
       ...hire.deliveries.map((delivery) => ({
         ...delivery.purchase.good,
         id: delivery.id,
@@ -271,8 +253,6 @@ export class HiresService {
       .innerJoin('tenantCard.account', 'tenantAccount')
       .innerJoin('tenantCard.user', 'tenantUser')
       .loadRelationCountAndMap('hire.orders', 'hire.orders')
-      .loadRelationCountAndMap('hire.fromHaulages', 'hire.fromHaulages')
-      .loadRelationCountAndMap('hire.toHaulages', 'hire.toHaulages')
       .loadRelationCountAndMap('hire.deliveries', 'hire.deliveries')
       .where(
         new Brackets((qb) =>

@@ -28,7 +28,6 @@ import { GoodsService } from '../../features/goods/goods.service';
 import { PurchasesService } from '../../features/purchases/purchases.service';
 import { DeliveriesService } from '../../features/deliveries/deliveries.service';
 import { OrdersService } from '../../features/orders/orders.service';
-import { HaulagesService } from '../../features/haulages/haulages.service';
 
 @Injectable()
 @ValidatorConstraint({ name: 'isUserExists', async: true })
@@ -502,24 +501,5 @@ export class IsOrderExists implements ValidatorConstraintInterface {
 
   defaultMessage(): string {
     return 'Невідоме замовлення';
-  }
-}
-
-@Injectable()
-@ValidatorConstraint({ name: 'isHaulageExists', async: true })
-export class IsHaulageExists implements ValidatorConstraintInterface {
-  constructor(private haulagesService: HaulagesService) {}
-
-  async validate(value: number): Promise<boolean> {
-    try {
-      await this.haulagesService.checkHaulageExists(value);
-    } catch (error) {
-      return false;
-    }
-    return true;
-  }
-
-  defaultMessage(): string {
-    return 'Невідоме перевезення';
   }
 }

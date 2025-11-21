@@ -29,7 +29,6 @@ import { GoodsModule } from './features/goods/goods.module';
 import { PurchasesModule } from './features/purchases/purchases.module';
 import { DeliveriesModule } from './features/deliveries/deliveries.module';
 import { OrdersModule } from './features/orders/orders.module';
-import { HaulagesModule } from './features/haulages/haulages.module';
 
 @Module({
   imports: [
@@ -77,7 +76,6 @@ import { HaulagesModule } from './features/haulages/haulages.module';
     PurchasesModule,
     DeliveriesModule,
     OrdersModule,
-    HaulagesModule,
   ],
 })
 export class AppModule {}

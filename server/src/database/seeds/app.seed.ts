@@ -32,7 +32,6 @@ import { GoodState } from '../../features/goods/good-state.entity';
 import { Purchase } from '../../features/purchases/purchase.entity';
 import { Delivery } from '../../features/deliveries/delivery.entity';
 import { Order } from '../../features/orders/order.entity';
-import { Haulage } from '../../features/haulages/haulage.entity';
 import { Status } from '../../features/transportations/status.enum';
 import { getDateWeekAfter, hashData } from '../../common/utils';
 
@@ -333,7 +332,7 @@ export default class AppSeed implements Seeder {
         hire.box.station.card.account.balance += hire.box.station.price;
         return hire;
       })
-      .makeMany(60);
+      .makeMany(40);
     const goods = await factory(Good)()
       .map(async (good) => {
         switch (Math.floor(Math.random() * 3)) {
@@ -443,31 +442,6 @@ export default class AppSeed implements Seeder {
         return order;
       })
       .makeMany(10);
-    id = 1;
-    const haulages = await factory(Haulage)()
-      .map(async (haulage) => {
-        haulage.fromHire = hires[hireId++];
-        haulage.toHire = hires[hireId++];
-        const maxPrice = haulage.fromHire.card.account.balance / 2;
-        haulage.price = Math.floor(Math.random() * maxPrice) + 1;
-        haulage.fromHire.card.account.balance -= haulage.price;
-        if (haulage.status !== Status.CREATED) {
-          haulage.executorCard = faker.helpers.arrayElement(cards);
-        }
-        if (haulage.status === Status.COMPLETED) {
-          const payment = await factory(Payment)().make({
-            senderCard: haulage.fromHire.card,
-            receiverCard: haulage.executorCard,
-            sum: haulage.price,
-            description: `виконання перевезення ${id}`,
-          });
-          payments.push(payment);
-          haulage.executorCard.account.balance += haulage.price;
-        }
-        id++;
-        return haulage;
-      })
-      .makeMany(10);
     id = 0;
     await factory(Account)()
       .map(async () => accounts[id++])
@@ -568,9 +542,5 @@ export default class AppSeed implements Seeder {
     await factory(Order)()
       .map(async () => orders[id++])
       .createMany(orders.length);
-    id = 0;
-    await factory(Haulage)()
-      .map(async () => haulages[id++])
-      .createMany(haulages.length);
   }
 }

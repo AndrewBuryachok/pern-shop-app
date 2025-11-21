@@ -545,6 +545,18 @@ export class UsersService {
       .where('user.id = :userId', { userId })
       .select('COUNT(good.id)', 'goodsCount')
       .getRawOne();
+    const purchasesCount = await this.usersRepository
+      .createQueryBuilder('user')
+      .leftJoin('user.cards', 'card')
+      .leftJoinAndMapMany(
+        'card.purchases',
+        'purchases',
+        'purchase',
+        'card.id = purchase.cardId',
+      )
+      .where('user.id = :userId', { userId })
+      .select('COUNT(purchase.id)', 'purchasesCount')
+      .getRawOne();
     const deliveriesCount = await this.usersRepository
       .createQueryBuilder('user')
       .leftJoin('user.cards', 'card')
@@ -569,18 +581,6 @@ export class UsersService {
       .where('user.id = :userId', { userId })
       .select('COUNT(order.id)', 'ordersCount')
       .getRawOne();
-    const haulagesCount = await this.usersRepository
-      .createQueryBuilder('user')
-      .leftJoin('user.cards', 'card')
-      .leftJoinAndMapMany(
-        'card.haulages',
-        'haulages',
-        'haulage',
-        'card.id = haulage.executorCardId',
-      )
-      .where('user.id = :userId', { userId })
-      .select('COUNT(haulage.id)', 'haulagesCount')
-      .getRawOne();
     const goodsRate = await this.usersRepository
       .createQueryBuilder('user')
       .leftJoin('user.cards', 'card')
@@ -593,6 +593,18 @@ export class UsersService {
       .leftJoin('good.purchases', 'purchase')
       .where('user.id = :userId', { userId })
       .select('SUM(purchase.rate)', 'goodsRate')
+      .getRawOne();
+    const purchasesRate = await this.usersRepository
+      .createQueryBuilder('user')
+      .leftJoin('user.cards', 'card')
+      .leftJoinAndMapMany(
+        'card.purchases',
+        'purchases',
+        'purchase',
+        'card.id = purchase.cardId',
+      )
+      .where('user.id = :userId', { userId })
+      .select('SUM(purchase.rate)', 'purchasesRate')
       .getRawOne();
     const deliveriesRate = await this.usersRepository
       .createQueryBuilder('user')
@@ -618,27 +630,15 @@ export class UsersService {
       .where('user.id = :userId', { userId })
       .select('AVG(order.rate)', 'ordersRate')
       .getRawOne();
-    const haulagesRate = await this.usersRepository
-      .createQueryBuilder('user')
-      .leftJoin('user.cards', 'card')
-      .leftJoinAndMapMany(
-        'card.haulages',
-        'haulages',
-        'haulage',
-        'card.id = haulage.executorCardId',
-      )
-      .where('user.id = :userId', { userId })
-      .select('AVG(haulage.rate)', 'haulagesRate')
-      .getRawOne();
     const user = {
       ...goodsCount,
+      ...purchasesCount,
       ...deliveriesCount,
       ...ordersCount,
-      ...haulagesCount,
       ...goodsRate,
+      ...purchasesRate,
       ...deliveriesRate,
       ...ordersRate,
-      ...haulagesRate,
     };
     Object.keys(user).forEach((key) => (user[key] = +user[key]));
     return user;

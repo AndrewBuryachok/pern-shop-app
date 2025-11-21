@@ -536,21 +536,4 @@ describe('Without Auth', () => {
         .expect(403);
     });
   });
-
-  describe('Haulages', () => {
-    it('GET /haulages/my', async () => {
-      return request(app.getHttpServer()).get('/haulages/my').expect(401);
-    });
-
-    it('GET /haulages/taken', async () => {
-      return request(app.getHttpServer()).get('/haulages/taken').expect(401);
-    });
-
-    it('GET /haulages/all', async () => {
-      return request(app.getHttpServer())
-        .get('/haulages/all')
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect(403);
-    });
-  });
 });

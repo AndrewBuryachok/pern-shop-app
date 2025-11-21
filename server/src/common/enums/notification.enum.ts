@@ -65,10 +65,4 @@ export enum Notification {
   EXECUTED_ORDER = 'executed orders',
   COMPLETED_ORDER = 'completed orders',
   RATED_ORDER = 'rated orders',
-  CREATED_HAULAGE = 'created haulages',
-  TAKEN_HAULAGE = 'taken haulages',
-  UNTAKEN_HAULAGE = 'untaken haulages',
-  EXECUTED_HAULAGE = 'executed haulages',
-  COMPLETED_HAULAGE = 'completed haulages',
-  RATED_HAULAGE = 'rated haulages',
 }
