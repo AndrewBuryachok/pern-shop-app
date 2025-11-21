@@ -43,22 +43,6 @@ export class ArticlesService {
     return { result, count };
   }
 
-  async getCommentedArticles(
-    myId: number,
-    req: Request,
-  ): Promise<Response<Article>> {
-    const [result, count] = await this.getArticlesQueryBuilder(req)
-      .innerJoinAndMapOne(
-        'myComment',
-        'article.comments',
-        'myComment',
-        'myComment.userId = :myId',
-        { myId },
-      )
-      .getManyAndCount();
-    return { result, count };
-  }
-
   async getAllArticles(req: Request): Promise<Response<Article>> {
     const [result, count] = await this.getArticlesQueryBuilder(
       req,

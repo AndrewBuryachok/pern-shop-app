@@ -358,13 +358,6 @@ describe('With Auth', () => {
         .expect('');
     });
 
-    it('GET /articles/commented', async () => {
-      return request(app.getHttpServer())
-        .get('/articles/commented')
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
-    });
-
     it('GET /articles/viewed/select', async () => {
       return request(app.getHttpServer())
         .get('/articles/viewed/select')

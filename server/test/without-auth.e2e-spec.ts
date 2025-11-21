@@ -99,12 +99,6 @@ describe('Without Auth', () => {
       return request(app.getHttpServer()).get('/articles/my').expect(401);
     });
 
-    it('GET /articles/commented', async () => {
-      return request(app.getHttpServer())
-        .get('/articles/commented')
-        .expect(401);
-    });
-
     it('GET /articles/liked/select', async () => {
       return request(app.getHttpServer())
         .get('/articles/liked/select')

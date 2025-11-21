@@ -43,14 +43,6 @@ export class ArticlesController {
     return this.articlesService.getMyArticles(myId, req);
   }
 
-  @Get('commented')
-  getCommentedArticles(
-    @MyId() myId: number,
-    @Query() req: Request,
-  ): Promise<Response<Article>> {
-    return this.articlesService.getCommentedArticles(myId, req);
-  }
-
   @Roles(Role.MODER)
   @Get('all')
   getAllArticles(@Query() req: Request): Promise<Response<Article>> {
