@@ -65,7 +65,6 @@ export const pages = [
     nested: [
       { index: true },
       { path: 'my' },
-      { path: 'commented' },
       { path: 'all', role: Role.MODER },
     ],
   },
