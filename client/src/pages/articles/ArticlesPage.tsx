@@ -2,7 +2,6 @@ import { useLocation, useSearchParams } from 'react-router-dom';
 import {
   useGetAllArticlesQuery,
   useGetCommentedArticlesQuery,
-  useGetLikedArticlesQuery,
   useGetMainArticlesQuery,
   useGetMyArticlesQuery,
 } from '../../features/articles/articles.api';
@@ -30,7 +29,6 @@ export default function ArticlesPage() {
   const response = {
     main: useGetMainArticlesQuery,
     my: useGetMyArticlesQuery,
-    liked: useGetLikedArticlesQuery,
     commented: useGetCommentedArticlesQuery,
     all: useGetAllArticlesQuery,
   }[tab]!(search);
