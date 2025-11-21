@@ -19,9 +19,7 @@ export default function ViewHireThingsModal({ data: hire }: Props) {
   return (
     <Select
       label={t('columns.things')}
-      placeholder={`${t('components.total')}: ${
-        hire.orders + hire.fromHaulages + hire.toHaulages + hire.deliveries
-      }`}
+      placeholder={`${t('components.total')}: ${hire.deliveries + hire.orders}`}
       rightSection={<RefetchAction {...thingsResponse} />}
       itemComponent={ThingsItemWithAmount}
       data={viewThings(things || [])}

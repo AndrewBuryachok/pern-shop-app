@@ -49,18 +49,14 @@ export default function CustomNavbar(props: Props) {
     {
       label: 'trading',
       icon: IconBasket,
-      nested: [
-        { label: 'goods' },
-        { label: 'purchases', sub: '/my' },
-        { label: 'deliveries' },
-      ],
+      nested: [{ label: 'goods' }, { label: 'purchases', sub: '/my' }],
     },
     {
       label: 'mail',
       icon: IconMailbox,
       nested: [
+        { label: 'deliveries' },
         { label: 'orders' },
-        { label: 'haulages' },
         { label: 'hires' },
         { label: 'boxes' },
         { label: 'stations' },

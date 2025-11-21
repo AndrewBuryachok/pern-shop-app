@@ -36,7 +36,6 @@ export const emptyApi = createApi({
     'Purchase',
     'Delivery',
     'Order',
-    'Haulage',
   ],
   endpoints: () => ({}),
 });

@@ -29,11 +29,11 @@ export interface ExtUser extends User {
   youtube: string;
   friends: SmUser[];
   goodsCount: number;
+  purchasesCount: number;
   ordersCount: number;
-  haulagesCount: number;
   deliveriesCount: number;
   goodsRate: number;
+  purchasesRate: number;
   ordersRate: number;
-  haulagesRate: number;
   deliveriesRate: number;
 }

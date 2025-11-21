@@ -81,13 +81,17 @@ export default function UserProfile({ data: user }: Props) {
 
   const stats = [
     { label: 'goods', count: user.goodsCount, rate: user.goodsRate },
-    { label: 'orders', count: user.ordersCount, rate: user.ordersRate },
-    { label: 'haulages', count: user.haulagesCount, rate: user.haulagesRate },
+    {
+      label: 'purchases',
+      count: user.purchasesCount,
+      rate: user.purchasesRate,
+    },
     {
       label: 'deliveries',
       count: user.deliveriesCount,
       rate: user.deliveriesRate,
     },
+    { label: 'orders', count: user.ordersCount, rate: user.ordersRate },
   ];
 
   return (

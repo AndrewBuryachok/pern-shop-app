@@ -66,10 +66,9 @@
     "trading": "Trading",
     "goods": "Goods",
     "purchases": "Purchases",
-    "deliveries": "Deliveries",
     "mail": "Mail",
-    "orders": "Orders",
-    "haulages": "Haulages"
+    "deliveries": "Deliveries",
+    "orders": "Orders"
   },
   "aside": {
     "live": "Live",
@@ -254,8 +253,7 @@
     "goods": "Good",
     "purchases": "Purchase",
     "deliveries": "Delivery",
-    "orders": "Order",
-    "haulages": "Haulage"
+    "orders": "Order"
   },
   "errors": {
     "incorrect_nick": "Incorrect nick",
@@ -374,14 +372,6 @@
       "executed": "executed your order",
       "completed": "completed your order",
       "rated": "rated your order"
-    },
-    "haulages": {
-      "created": "created haulage",
-      "taken": "taken your haulage",
-      "untaken": "untaken your haulage",
-      "executed": "executed your haulage",
-      "completed": "completed your haulage",
-      "rated": "rated your haulage"
     }
   },
   "constants": {

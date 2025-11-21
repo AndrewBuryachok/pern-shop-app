@@ -38,7 +38,6 @@ const GoodsPage = lazy(() => import('../pages/goods/GoodsPage'));
 const PurchasesPage = lazy(() => import('../pages/purchases/PurchasesPage'));
 const DeliveriesPage = lazy(() => import('../pages/deliveries/DeliveriesPage'));
 const OrdersPage = lazy(() => import('../pages/orders/OrdersPage'));
-const HaulagesPage = lazy(() => import('../pages/haulages/HaulagesPage'));
 import { Role } from '../common/constants';
 
 export const pages = [
@@ -258,16 +257,6 @@ export const pages = [
   {
     path: 'orders',
     element: OrdersPage,
-    nested: [
-      { index: true },
-      { path: 'my' },
-      { path: 'taken' },
-      { path: 'all', role: Role.MODER },
-    ],
-  },
-  {
-    path: 'haulages',
-    element: HaulagesPage,
     nested: [
       { index: true },
       { path: 'my' },

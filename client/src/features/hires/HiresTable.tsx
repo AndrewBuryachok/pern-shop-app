@@ -47,12 +47,7 @@ export default function HiresTable({ actions = [], ...props }: Props) {
           </td>
           <td>
             <CustomAnchor
-              text={`${
-                hire.orders +
-                hire.fromHaulages +
-                hire.toHaulages +
-                hire.deliveries
-              }`}
+              text={`${hire.deliveries + hire.orders}`}
               open={() => openViewHireThingsAction(hire)}
             />
           </td>
