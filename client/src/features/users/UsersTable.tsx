@@ -15,7 +15,7 @@ export default function UsersTable({ actions = [], ...props }: Props) {
   return (
     <CustomTable
       minWidth={1000}
-      columns={['user', 'roles', 'town', 'time', 'online', 'created', 'action']}
+      columns={['user', 'roles', 'town', 'online', 'created', 'action']}
       {...props}
     >
       {props.data?.result.map((user) => (
@@ -32,9 +32,6 @@ export default function UsersTable({ actions = [], ...props }: Props) {
             ) : (
               <SingleText text='-' />
             )}
-          </td>
-          <td>
-            <SingleText text={`${Math.floor(user.time / 6) / 10}`} />
           </td>
           <td>
             <DateText date={user.onlineAt} />

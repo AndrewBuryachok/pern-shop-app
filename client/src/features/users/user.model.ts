@@ -18,11 +18,9 @@ export interface User extends MdUser {
   createdAt: Date;
   onlineAt?: Date;
   town?: MdTown;
-  time: number;
 }
 
 export interface ExtUser extends User {
-  time: number;
   background: number;
   discord: string;
   twitch: string;
