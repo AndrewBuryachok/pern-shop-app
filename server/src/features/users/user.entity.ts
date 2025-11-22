@@ -54,9 +54,6 @@ export class User {
   @Column({ default: false })
   type: boolean;
 
-  @Column({ default: 0 })
-  time: number;
-
   @Column({ name: 'town_id', nullable: true })
   townId?: number;
 

@@ -32,14 +32,14 @@ export class UsersService {
   ) {}
 
   async getMainUsers(req: Request): Promise<Response<User>> {
-    const [result, count] = await this.getExtUsersQueryBuilder(
+    const [result, count] = await this.getUsersQueryBuilder(
       req,
     ).getManyAndCount();
     return { result, count };
   }
 
   async getMyUsers(myId: number, req: Request): Promise<Response<User>> {
-    const [result, count] = await this.getExtUsersQueryBuilder(req)
+    const [result, count] = await this.getUsersQueryBuilder(req)
       .leftJoin('town.users', 'townUsers')
       .andWhere('townUsers.id = :myId', { myId })
       .getManyAndCount();
@@ -47,18 +47,18 @@ export class UsersService {
   }
 
   async getAllUsers(req: Request): Promise<Response<User>> {
-    const [result, count] = await this.getExtUsersQueryBuilder(
+    const [result, count] = await this.getUsersQueryBuilder(
       req,
     ).getManyAndCount();
     return { result, count };
   }
 
   getFriendsQueryBuilder(req: Request): SelectQueryBuilder<User> {
-    return this.getExtUsersQueryBuilder(req);
+    return this.getUsersQueryBuilder(req);
   }
 
   getResidentsQueryBuilder(req: Request): SelectQueryBuilder<User> {
-    return this.getExtUsersQueryBuilder(req);
+    return this.getUsersQueryBuilder(req);
   }
 
   selectAllUsers(): Promise<User[]> {
@@ -326,8 +326,6 @@ export class UsersService {
 
   private async removeOnline(user: User): Promise<void> {
     try {
-      const diff = (new Date().getTime() - user.onlineAt.getTime()) / 60000;
-      user.time += Math.floor(diff);
       user.type = false;
       user.onlineAt = new Date();
       await this.usersRepository.save(user);
@@ -427,10 +425,6 @@ export class UsersService {
       .select(['user.id', 'user.nick', 'user.avatar']);
   }
 
-  private getExtUsersQueryBuilder(req: Request): SelectQueryBuilder<User> {
-    return this.getUsersQueryBuilder(req).addSelect(['user.time']);
-  }
-
   private getUsersQueryBuilder(req: Request): SelectQueryBuilder<User> {
     return this.usersRepository
       .createQueryBuilder('user')
@@ -510,7 +504,6 @@ export class UsersService {
     const user = await this.getUsersQueryBuilder({})
       .where('user.nick = :nick', { nick })
       .addSelect([
-        'user.time',
         'user.background',
         'user.discord',
         'user.twitch',
