@@ -38,7 +38,7 @@ export interface PlaceWithPrice extends PlaceWithCard {
 }
 
 export interface ExtPlace extends PlaceWithUser {
-  type: number;
+  type: 'towns' | 'shops' | 'markets' | 'storages' | 'stations';
   card?: MdCard;
   price?: number;
 }

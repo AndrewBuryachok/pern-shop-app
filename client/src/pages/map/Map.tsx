@@ -100,29 +100,29 @@ export default function Map() {
               [
                 towns?.result.map((town) => ({
                   ...town,
-                  type: 0,
+                  type: 'towns' as const,
                 })),
                 shops?.result.map((shop) => ({
                   ...shop,
-                  type: 1,
+                  type: 'shops' as const,
                   user: shop.card.user,
                   card: shop.card,
                 })),
                 markets?.result.map((market) => ({
                   ...market,
-                  type: 2,
+                  type: 'markets' as const,
                   user: market.card.user,
                   card: market.card,
                 })),
                 storages?.result.map((storage) => ({
                   ...storage,
-                  type: 3,
+                  type: 'storages' as const,
                   user: storage.card.user,
                   card: storage.card,
                 })),
                 stations?.result.map((station) => ({
                   ...station,
-                  type: 4,
+                  type: 'stations' as const,
                   user: station.card.user,
                   card: station.card,
                   price: station.price,

@@ -30,7 +30,7 @@ export default function PlacePath({ data: place }: Props) {
         stroke={fill}
         strokeWidth={2}
       ></line>
-      {!place.type ? (
+      {place.type === 'towns' ? (
         <circle
           cx={x2}
           cy={y2}
@@ -56,7 +56,7 @@ export default function PlacePath({ data: place }: Props) {
         y={y2}
         fontSize={8}
         textAnchor='middle'
-        transform='translate(0,-4)'
+        transform={`translate(0,${place.y > 0 ? -8 : 12})`}
         fill={theme.colorScheme === 'dark' ? 'white' : 'black'}
       >
         {place.name}

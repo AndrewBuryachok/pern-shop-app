@@ -27,30 +27,30 @@ export default function PlaceModal({ data: place }: Props) {
   const [t] = useTranslation();
 
   const component =
-    place.type === 0 || place.type === 1
+    place.type === 'towns'
       ? UsersItem
-      : place.type === 2
+      : place.type === 'shops'
       ? ThingsItemWithAmount
       : undefined;
 
   const { data: townsUsers, ...townsUsersResponse } = useSelectTownUsersQuery(
     place.id,
-    { skip: place.type !== 0 },
+    { skip: place.type !== 'towns' },
   );
   const { data: goods, ...goodsResponse } = useSelectShopGoodsQuery(place.id, {
-    skip: place.type !== 2,
+    skip: place.type !== 'shops',
   });
   const { data: stalls, ...stallsResponse } = useSelectMarketStallsQuery(
     place.id,
-    { skip: place.type !== 3 },
+    { skip: place.type !== 'markets' },
   );
   const { data: cells, ...cellsResponse } = useSelectStorageCellsQuery(
     place.id,
-    { skip: place.type !== 4 },
+    { skip: place.type !== 'storages' },
   );
   const { data: boxes, ...boxesResponse } = useSelectStationBoxesQuery(
     place.id,
-    { skip: place.type !== 5 },
+    { skip: place.type !== 'stations' },
   );
 
   return (
@@ -83,7 +83,7 @@ export default function PlaceModal({ data: place }: Props) {
         value={parseTime(place.createdAt)}
         readOnly
       />
-      {place.type === 0 && (
+      {place.type === 'towns' && (
         <Select
           label={t('columns.users')}
           placeholder={`${t('components.total')}: ${townsUsers?.length || 0}`}
@@ -94,7 +94,7 @@ export default function PlaceModal({ data: place }: Props) {
           searchable
         />
       )}
-      {place.type === 1 && (
+      {place.type === 'shops' && (
         <Select
           label={t('columns.goods')}
           placeholder={`${t('components.total')}: ${goods?.length || 0}`}
@@ -105,7 +105,7 @@ export default function PlaceModal({ data: place }: Props) {
           searchable
         />
       )}
-      {place.type === 2 && (
+      {place.type === 'markets' && (
         <Select
           label={t('columns.stalls')}
           placeholder={`${t('components.total')}: ${stalls?.length || 0}`}
@@ -116,7 +116,7 @@ export default function PlaceModal({ data: place }: Props) {
           searchable
         />
       )}
-      {place.type === 3 && (
+      {place.type === 'storages' && (
         <Select
           label={t('columns.cells')}
           placeholder={`${t('components.total')}: ${cells?.length || 0}`}
@@ -127,7 +127,7 @@ export default function PlaceModal({ data: place }: Props) {
           searchable
         />
       )}
-      {place.type === 4 && (
+      {place.type === 'stations' && (
         <Select
           label={t('columns.boxes')}
           placeholder={`${t('components.total')}: ${boxes?.length || 0}`}
@@ -144,13 +144,6 @@ export default function PlaceModal({ data: place }: Props) {
 
 export const openPlaceModal = (place: ExtPlace) =>
   openModal({
-    title:
-      t('actions.view') +
-      ' ' +
-      t(
-        `modals.${
-          ['towns', 'shops', 'markets', 'storages', 'stations'][place.type]
-        }`,
-      ),
+    title: t('actions.view') + ' ' + t(`modals.${place.type}`),
     children: <PlaceModal data={place} />,
   });
