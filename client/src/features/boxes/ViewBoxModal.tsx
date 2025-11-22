@@ -46,7 +46,7 @@ export default function ViewBoxModal({ data: box }: Props) {
 export const viewBoxAction = {
   open: (box: Box) =>
     openModal({
-      title: t('actions.view') + ' ' + t('modals.boxs'),
+      title: t('actions.view') + ' ' + t('modals.boxes'),
       children: <ViewBoxModal data={box} />,
     }),
   disable: () => false,
