@@ -20,6 +20,7 @@
     "@reduxjs/toolkit": "^1.9.1",
     "@tabler/icons": "^1.119.0",
     "axios": "^1.13.2",
+    "browser-image-compression": "^2.0.2",
     "dayjs": "^1.11.10",
     "dompurify": "^3.2.3",
     "embla-carousel-react": "^7.0.0",
