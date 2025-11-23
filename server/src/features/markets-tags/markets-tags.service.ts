@@ -33,6 +33,7 @@ export class MarketsTagsService {
     const [result, count] = await this.getMarketsTagsQueryBuilder(req)
       .innerJoin('ownerAccount.cards', 'ownerCards')
       .andWhere('ownerCards.userId = :myId', { myId })
+      .andWhere('ownerCards.completedAt IS NULL')
       .getManyAndCount();
     return { result, count };
   }

@@ -29,6 +29,7 @@ export class PurchasesService {
     const [result, count] = await this.getPurchasesQueryBuilder(req)
       .innerJoin('buyerAccount.cards', 'buyerCards')
       .andWhere('buyerCards.userId = :myId', { myId })
+      .andWhere('buyerCards.completedAt IS NULL')
       .getManyAndCount();
     return { result, count };
   }
@@ -40,6 +41,7 @@ export class PurchasesService {
     const [result, count] = await this.getPurchasesQueryBuilder(req)
       .innerJoin('sellerAccount.cards', 'sellerCards')
       .andWhere('sellerCards.userId = :myId', { myId })
+      .andWhere('sellerCards.completedAt IS NULL')
       .getManyAndCount();
     return { result, count };
   }

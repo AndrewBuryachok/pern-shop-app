@@ -56,6 +56,7 @@ export class RentsService {
     const [result, count] = await this.getRentsQueryBuilder(req)
       .innerJoin('tenantAccount.cards', 'tenantCards')
       .andWhere('tenantCards.userId = :myId', { myId })
+      .andWhere('tenantCards.completedAt IS NULL')
       .getManyAndCount();
     return { result, count };
   }
@@ -64,6 +65,7 @@ export class RentsService {
     const [result, count] = await this.getRentsQueryBuilder(req)
       .innerJoin('ownerAccount.cards', 'ownerCards')
       .andWhere('ownerCards.userId = :myId', { myId })
+      .andWhere('ownerCards.completedAt IS NULL')
       .getManyAndCount();
     return { result, count };
   }
@@ -85,6 +87,7 @@ export class RentsService {
       .innerJoin('tenantCard.account', 'tenantAccount')
       .innerJoin('tenantAccount.cards', 'tenantCards')
       .andWhere('tenantCards.userId = :myId', { myId })
+      .andWhere('tenantCards.completedAt IS NULL')
       .getMany();
   }
 

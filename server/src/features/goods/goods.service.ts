@@ -48,6 +48,7 @@ export class GoodsService {
     const [result, count] = await this.getGoodsQueryBuilder(req)
       .innerJoin('sellerAccount.cards', 'sellerCards')
       .andWhere('sellerCards.userId = :myId', { myId })
+      .andWhere('sellerCards.completedAt IS NULL')
       .getManyAndCount();
     return { result, count };
   }

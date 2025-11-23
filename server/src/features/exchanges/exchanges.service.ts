@@ -26,6 +26,7 @@ export class ExchangesService {
     const [result, count] = await this.getExchangesQueryBuilder(req)
       .innerJoin('customerAccount.cards', 'customerCards')
       .andWhere('customerCards.userId = :myId', { myId })
+      .andWhere('customerCards.completedAt IS NULL')
       .getManyAndCount();
     return { result, count };
   }

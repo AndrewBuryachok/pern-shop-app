@@ -50,6 +50,7 @@ export class DeliveriesService {
     const [result, count] = await this.getDeliveriesQueryBuilder(req)
       .innerJoin('customerAccount.cards', 'customerCards')
       .andWhere('customerCards.userId = :myId', { myId })
+      .andWhere('customerCards.completedAt IS NULL')
       .getManyAndCount();
     return { result, count };
   }
@@ -61,6 +62,7 @@ export class DeliveriesService {
     const [result, count] = await this.getDeliveriesQueryBuilder(req)
       .leftJoin('executorAccount.cards', 'executorCards')
       .andWhere('executorCards.userId = :myId', { myId })
+      .andWhere('executorCards.completedAt IS NULL')
       .getManyAndCount();
     return { result, count };
   }

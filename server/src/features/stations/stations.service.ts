@@ -33,6 +33,7 @@ export class StationsService {
     const [result, count] = await this.getStationsQueryBuilder(req)
       .innerJoin('ownerAccount.cards', 'ownerCards')
       .andWhere('ownerCards.userId = :myId', { myId })
+      .andWhere('ownerCards.completedAt IS NULL')
       .getManyAndCount();
     return { result, count };
   }
@@ -55,6 +56,7 @@ export class StationsService {
       .innerJoin('ownerAccount.cards', 'ownerCards')
       .loadRelationCountAndMap('station.boxes', 'station.boxes')
       .where('ownerCards.userId = :myId', { myId })
+      .andWhere('ownerCards.completedAt IS NULL')
       .getMany();
   }
 

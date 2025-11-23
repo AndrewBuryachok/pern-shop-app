@@ -56,6 +56,7 @@ export class HiresService {
     const [result, count] = await this.getHiresQueryBuilder(req)
       .innerJoin('tenantAccount.cards', 'tenantCards')
       .andWhere('tenantCards.userId = :myId', { myId })
+      .andWhere('tenantCards.completedAt IS NULL')
       .getManyAndCount();
     return { result, count };
   }
@@ -64,6 +65,7 @@ export class HiresService {
     const [result, count] = await this.getHiresQueryBuilder(req)
       .innerJoin('ownerAccount.cards', 'ownerCards')
       .andWhere('ownerCards.userId = :myId', { myId })
+      .andWhere('ownerCards.completedAt IS NULL')
       .getManyAndCount();
     return { result, count };
   }

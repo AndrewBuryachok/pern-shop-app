@@ -36,6 +36,7 @@ export class StoragesTagsService {
     const [result, count] = await this.getStoragesTagsQueryBuilder(req)
       .innerJoin('ownerAccount.cards', 'ownerCards')
       .andWhere('ownerCards.userId = :myId', { myId })
+      .andWhere('ownerCards.completedAt IS NULL')
       .getManyAndCount();
     return { result, count };
   }

@@ -26,8 +26,20 @@ export class PaymentsService {
       .andWhere(
         new Brackets((qb) =>
           qb
-            .where('senderCards.userId = :myId')
-            .orWhere('receiverCards.userId = :myId'),
+            .where(
+              new Brackets((qb) =>
+                qb
+                  .where('senderCards.userId = :myId')
+                  .andWhere('senderCards.completedAt IS NULL'),
+              ),
+            )
+            .orWhere(
+              new Brackets((qb) =>
+                qb
+                  .where('receiverCards.userId = :myId')
+                  .andWhere('receiverCards.completedAt IS NULL'),
+              ),
+            ),
         ),
         { myId },
       )

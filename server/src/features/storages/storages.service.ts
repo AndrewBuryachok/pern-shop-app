@@ -30,6 +30,7 @@ export class StoragesService {
     const [result, count] = await this.getStoragesQueryBuilder(req)
       .innerJoin('ownerAccount.cards', 'ownerCards')
       .andWhere('ownerCards.userId = :myId', { myId })
+      .andWhere('ownerCards.completedAt IS NULL')
       .getManyAndCount();
     return { result, count };
   }
@@ -52,6 +53,7 @@ export class StoragesService {
       .innerJoin('ownerAccount.cards', 'ownerCards')
       .loadRelationCountAndMap('storage.cells', 'storage.cells')
       .where('ownerCards.userId = :myId', { myId })
+      .andWhere('ownerCards.completedAt IS NULL')
       .getMany();
   }
 

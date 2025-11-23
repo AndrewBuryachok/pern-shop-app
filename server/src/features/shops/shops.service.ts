@@ -31,6 +31,7 @@ export class ShopsService {
     const [result, count] = await this.getShopsQueryBuilder(req)
       .innerJoin('ownerAccount.cards', 'ownerCards')
       .andWhere('ownerCards.userId = :myId', { myId })
+      .andWhere('ownerCards.completedAt IS NULL')
       .getManyAndCount();
     return { result, count };
   }
@@ -52,6 +53,7 @@ export class ShopsService {
       .innerJoin('ownerCard.account', 'ownerAccount')
       .innerJoin('ownerAccount.cards', 'ownerCards')
       .where('ownerCards.userId = :myId', { myId })
+      .andWhere('ownerCards.completedAt IS NULL')
       .getMany();
   }
 

@@ -29,6 +29,7 @@ export class InvoicesService {
     const [result, count] = await this.getInvoicesQueryBuilder(req)
       .innerJoin('senderAccount.cards', 'senderCards')
       .andWhere('senderCards.userId = :myId', { myId })
+      .andWhere('senderCards.completedAt IS NULL')
       .getManyAndCount();
     return { result, count };
   }

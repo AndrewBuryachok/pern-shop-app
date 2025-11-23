@@ -30,6 +30,7 @@ export class MarketsService {
     const [result, count] = await this.getMarketsQueryBuilder(req)
       .innerJoin('ownerAccount.cards', 'ownerCards')
       .andWhere('ownerCards.userId = :myId', { myId })
+      .andWhere('ownerCards.completedAt IS NULL')
       .getManyAndCount();
     return { result, count };
   }
@@ -52,6 +53,7 @@ export class MarketsService {
       .innerJoin('ownerAccount.cards', 'ownerCards')
       .loadRelationCountAndMap('market.stalls', 'market.stalls')
       .where('ownerCards.userId = :myId', { myId })
+      .andWhere('ownerCards.completedAt IS NULL')
       .getMany();
   }
 
