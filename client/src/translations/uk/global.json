@@ -2,21 +2,8 @@
   "header": {
     "title": "Форум",
     "menu": {
-      "settings": {
-        "title": "Налаштування",
-        "language": "Мова uk-UA",
-        "theme": {
-          "light": "Світла тема",
-          "dark": "Темна тема"
-        },
-        "fullscreen": {
-          "enter": "Повноекранний",
-          "exit": "Віконний"
-        },
-        "mute": {
-          "on": "Без звуку",
-          "off": "Зі звуком"
-        }
+      "theme": {
+        "title": "Тема"
       },
       "notifications": {
         "title": "Повідомлення",

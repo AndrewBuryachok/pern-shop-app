@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
-import { Avatar, Menu } from '@mantine/core';
+import { Avatar, Menu, Tooltip } from '@mantine/core';
 import {
   IconFriends,
   IconLock,
@@ -51,21 +51,23 @@ export default function AccountMenu() {
   return (
     <Menu offset={4} position='bottom-end'>
       <Menu.Target>
-        <Avatar
-          size={32}
-          variant='filled'
-          color='violet'
-          src={
-            user &&
-            `${import.meta.env.VITE_AVATAR_URL}${
-              import.meta.env.VITE_HEAD_ROUTE
-            }${user.avatar || user.nick}/8`
-          }
-          alt={user?.nick}
-          style={{ cursor: 'pointer', imageRendering: 'pixelated' }}
-        >
-          {user?.nick.toUpperCase().slice(0, 2)}
-        </Avatar>
+        <Tooltip label={t('header.menu.account.title')} withArrow>
+          <Avatar
+            size={32}
+            variant='filled'
+            color='violet'
+            src={
+              user &&
+              `${import.meta.env.VITE_AVATAR_URL}${
+                import.meta.env.VITE_HEAD_ROUTE
+              }${user.avatar || user.nick}/8`
+            }
+            alt={user?.nick}
+            style={{ cursor: 'pointer', imageRendering: 'pixelated' }}
+          >
+            {user?.nick.toUpperCase().slice(0, 2)}
+          </Avatar>
+        </Tooltip>
       </Menu.Target>
       <Menu.Dropdown>
         <Menu.Label>{t('header.menu.account.title')}</Menu.Label>

@@ -6,15 +6,13 @@ import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
 import { store } from './app/store';
 import App from './App';
-import globalEN from './translations/en/global.json';
 import globalUK from './translations/uk/global.json';
 
 i18next.use(initReactI18next).init({
   defaultNS: 'global',
   interpolation: { escapeValue: false },
-  lng: localStorage.getItem('lang') || navigator.language.split('-')[0],
-  fallbackLng: 'uk',
-  resources: { en: { global: globalEN }, uk: { global: globalUK } },
+  lng: 'uk',
+  resources: { uk: { global: globalUK } },
 });
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(

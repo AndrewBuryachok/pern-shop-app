@@ -91,9 +91,7 @@ client.on('message', (topic, message, packet) => {
             message: t(`notifications.${page}.${action}`),
             user,
           });
-          if (!store.getState().mqtt.mute) {
-            audio.play();
-          }
+          audio.play();
         }
       } else {
         store.dispatch(removeNotification(notification));
@@ -120,7 +118,6 @@ const initialState = {
   users: [] as number[],
   notifications: {} as { [key: string]: string },
   unnotifications: {} as { [key: string]: string },
-  mute: false,
 };
 
 export const mqttSlice = createSlice({
@@ -150,14 +147,6 @@ export const mqttSlice = createSlice({
     },
     removeUnnotification: (state, action: PayloadAction<string>) => {
       delete state.unnotifications[action.payload];
-    },
-    toggleMute: (state) => {
-      if (state.mute) {
-        localStorage.removeItem('mute');
-      } else {
-        localStorage.setItem('mute', 'ON');
-      }
-      state.mute = !state.mute;
     },
     publishOnline: (_, action: PayloadAction<number>) => {
       client.publish(
@@ -241,7 +230,6 @@ export const {
   removeNotification,
   addUnnotification,
   removeUnnotification,
-  toggleMute,
   publishOnline,
   publishOffline,
   publishNotification,
@@ -283,5 +271,3 @@ export const getActiveNotifications = (): INotification[] =>
           .data?.find((user) => user.id === +notification.split('/')[4]),
       })),
   );
-
-export const getMute = () => useAppSelector((state) => state.mqtt.mute);

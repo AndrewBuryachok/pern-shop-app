@@ -11,6 +11,7 @@ import {
   ScrollArea,
   Stack,
   Tabs,
+  Tooltip,
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { IconBell } from '@tabler/icons';
@@ -58,18 +59,20 @@ export default function NotificationsMenu() {
 
   return (
     <>
-      <Indicator
-        label={notifications.length}
-        overflowCount={9}
-        showZero={false}
-        dot={false}
-        size={16}
-        color='red'
-      >
-        <ActionIcon size={32} variant='filled' color='violet' onClick={open}>
-          <IconBell size={24} />
-        </ActionIcon>
-      </Indicator>
+      <Tooltip label={t('header.menu.notifications.title')} withArrow>
+        <Indicator
+          label={notifications.length}
+          overflowCount={9}
+          showZero={false}
+          dot={false}
+          size={16}
+          color='red'
+        >
+          <ActionIcon size={32} variant='filled' color='violet' onClick={open}>
+            <IconBell size={24} />
+          </ActionIcon>
+        </Indicator>
+      </Tooltip>
       <Drawer
         opened={opened}
         onClose={close}

@@ -9,9 +9,9 @@ import {
   MediaQuery,
   Title,
   Tooltip,
+  useMantineColorScheme,
 } from '@mantine/core';
-import { IconUser, IconUserOff } from '@tabler/icons';
-import SettingsMenu from './SettingsMenu';
+import { IconMoon, IconSun, IconUser, IconUserOff } from '@tabler/icons';
 import NotificationsMenu from './NotificationsMenu';
 import AccountMenu from './AccountMenu';
 
@@ -24,6 +24,9 @@ type Props = {
 
 export default function CustomHeader(props: Props) {
   const [t] = useTranslation();
+
+  const { colorScheme, toggleColorScheme } = useMantineColorScheme();
+  const dark = colorScheme === 'dark';
 
   return (
     <Header zIndex={200} height={60} px='md'>
@@ -50,7 +53,16 @@ export default function CustomHeader(props: Props) {
               )}
             </ActionIcon>
           </Tooltip>
-          <SettingsMenu />
+          <Tooltip label={t('header.menu.theme.title')} withArrow>
+            <ActionIcon
+              size={32}
+              variant='filled'
+              color='violet'
+              onClick={() => toggleColorScheme()}
+            >
+              {dark ? <IconSun size={24} /> : <IconMoon size={24} />}
+            </ActionIcon>
+          </Tooltip>
           <NotificationsMenu />
           <AccountMenu />
         </Group>
