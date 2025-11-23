@@ -14,9 +14,7 @@ export default function ViewArticleViewsMenu({ data: article }: Props) {
   return (
     <Group spacing={8}>
       {isFetching ? (
-        [...Array(5).keys()].map((key) => (
-          <Skeleton key={key} width={32} h={32} />
-        ))
+        [...Array(5).keys()].map((key) => <Skeleton key={key} w={32} h={32} />)
       ) : (
         <>
           {views?.slice(0, 4).map((view) => (

@@ -1,5 +1,12 @@
 import { useTranslation } from 'react-i18next';
-import { Aside, ScrollArea, Skeleton, Stack, Title } from '@mantine/core';
+import {
+  Aside,
+  Group,
+  ScrollArea,
+  Skeleton,
+  Stack,
+  Title,
+} from '@mantine/core';
 import { useSelectAllUsersQuery } from '../../features/users/users.api';
 import {
   getOnlineStreamers,
@@ -46,7 +53,10 @@ export default function CustomAside(props: Props) {
               )}
               {isUsersLoading &&
                 [...Array(5).keys()].map((key) => (
-                  <Skeleton key={key} height={32} />
+                  <Group key={key} spacing={8}>
+                    <Skeleton w={32} h={32} />
+                    <Skeleton w={128} h={16} />
+                  </Group>
                 ))}
               {liveUsers?.map((user) => (
                 <CustomStream key={user.id} {...user} twitch={live[user.id]} />
@@ -58,7 +68,10 @@ export default function CustomAside(props: Props) {
               )}
               {isUsersLoading &&
                 [...Array(5).keys()].map((key) => (
-                  <Skeleton key={key} height={32} />
+                  <Group key={key} spacing={8}>
+                    <Skeleton w={32} h={32} />
+                    <Skeleton w={128} h={16} />
+                  </Group>
                 ))}
               {onlineUsers?.map((user) => (
                 <AvatarWithSingleText key={user.id} {...user} />
@@ -70,7 +83,10 @@ export default function CustomAside(props: Props) {
               )}
               {isUsersLoading &&
                 [...Array(5).keys()].map((key) => (
-                  <Skeleton key={key} height={32} />
+                  <Group key={key} spacing={8}>
+                    <Skeleton w={32} h={32} />
+                    <Skeleton w={128} h={16} />
+                  </Group>
                 ))}
               {offlineUsers?.map((user) => (
                 <AvatarWithSingleText key={user.id} {...user} />

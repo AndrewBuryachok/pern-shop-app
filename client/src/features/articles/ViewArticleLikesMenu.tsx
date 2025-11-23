@@ -16,9 +16,7 @@ export default function ViewArticleLikesMenu({ data: article, type }: Props) {
   return (
     <Group spacing={8}>
       {isFetching ? (
-        [...Array(5).keys()].map((key) => (
-          <Skeleton key={key} width={32} h={32} />
-        ))
+        [...Array(5).keys()].map((key) => <Skeleton key={key} w={32} h={32} />)
       ) : (
         <>
           {likes?.slice(0, 4).map((like) => (

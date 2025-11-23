@@ -8,9 +8,9 @@ type Props = {
 export default function CustomCarousel(props: Props) {
   return (
     <Carousel withIndicators>
-      {props.images.map((image) => (
+      {props.images.map((image, index) => (
         <Carousel.Slide key={image}>
-          <CustomImage image={image} />
+          <CustomImage image={image} isFirst={!index} />
         </Carousel.Slide>
       ))}
     </Carousel>
