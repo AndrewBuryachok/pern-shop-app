@@ -201,7 +201,7 @@ export class ResidentsService {
       dto.myId,
       userId,
       dto.myId,
-      Notification.CREATED_INVITATION,
+      Notification.CREATED_APPLICATION,
     );
   }
 
@@ -213,7 +213,7 @@ export class ResidentsService {
       dto.myId,
       userId,
       dto.myId,
-      Notification.CREATED_INVITATION,
+      Notification.CREATED_APPLICATION,
     );
   }
 
