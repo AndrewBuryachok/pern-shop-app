@@ -24,7 +24,7 @@ export default function DeliveriesTable({ actions = [], ...props }: Props) {
         'price',
         'status',
         'place',
-        'toStation',
+        'station',
         'action',
       ]}
       {...props}

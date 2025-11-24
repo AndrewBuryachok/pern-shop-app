@@ -142,8 +142,8 @@ export default function CreateDeliveryModal({ hasRole }: Props) {
         {...form.getInputProps('purchase')}
       />
       <Select
-        label={t('columns.toStation')}
-        placeholder={t('columns.toStation')}
+        label={t('columns.station')}
+        placeholder={t('columns.station')}
         rightSection={<RefetchAction {...stationsResponse} />}
         itemComponent={PlacesItem}
         data={selectStationsWithPrice(stations)}

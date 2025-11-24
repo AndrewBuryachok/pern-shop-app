@@ -74,21 +74,21 @@ export default function ViewDeliveryModal({ data: delivery }: Props) {
       />
       {delivery.purchase.good.shop && (
         <TextInput
-          label={t('columns.fromShop')}
+          label={t('columns.shop')}
           value={parsePlace(delivery.purchase.good.shop)}
           readOnly
         />
       )}
       {delivery.purchase.good.rent && (
         <TextInput
-          label={t('columns.fromMarket')}
+          label={t('columns.market')}
           value={parseStall(delivery.purchase.good.rent.stall)}
           readOnly
         />
       )}
       {delivery.purchase.good.lease && (
         <TextInput
-          label={t('columns.fromStorage')}
+          label={t('columns.storage')}
           value={parseCell(delivery.purchase.good.lease.cell)}
           readOnly
         />
@@ -129,7 +129,7 @@ export default function ViewDeliveryModal({ data: delivery }: Props) {
         />
       )}
       <TextInput
-        label={t('columns.toStation')}
+        label={t('columns.station')}
         value={parseBox(delivery.hire.box)}
         readOnly
       />
