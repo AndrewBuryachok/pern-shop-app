@@ -75,7 +75,7 @@ export const pages = [
   {
     path: 'exchanges',
     element: ExchangesPage,
-    nested: [{ path: 'my' }, { path: 'all', role: Role.MODER }],
+    nested: [{ path: 'my' }, { path: 'all', role: Role.BANKER }],
   },
   {
     path: 'payments',
