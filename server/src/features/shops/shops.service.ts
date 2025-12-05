@@ -5,7 +5,7 @@ import { Shop } from './shop.entity';
 import { Good } from '../goods/good.entity';
 import { CardsService } from '../cards/cards.service';
 import { MqttService } from '../mqtt/mqtt.service';
-import { ExtCreateShopDto, ExtEditShopDto } from './shop.dto';
+import { CompleteShopDto, ExtCreateShopDto, ExtEditShopDto } from './shop.dto';
 import { Request, Response } from '../../common/interfaces';
 import { AppException } from '../../common/exceptions';
 import { ShopError } from './shop-error.enum';
@@ -101,6 +101,11 @@ export class ShopsService {
     await this.edit(shop, dto);
   }
 
+  async completeShop(dto: CompleteShopDto): Promise<void> {
+    const shop = await this.checkShopOwner(dto.shopId, dto.myId, dto.hasRole);
+    await this.complete(shop);
+  }
+
   async checkShopExists(id: number): Promise<void> {
     await this.shopsRepository.findOneByOrFail({ id });
   }
@@ -118,11 +123,17 @@ export class ShopsService {
     if (!card && !hasRole) {
       throw new AppException(ShopError.NOT_OWNER);
     }
+    if (shop.completedAt) {
+      throw new AppException(ShopError.ALREADY_COMPLETED);
+    }
     return shop;
   }
 
   private async checkNameNotUsed(name: string, id?: number): Promise<void> {
-    const shop = await this.shopsRepository.findOneBy({ name });
+    const shop = await this.shopsRepository.findOneBy({
+      name,
+      completedAt: IsNull(),
+    });
     if (shop && (!id || shop.id !== id)) {
       throw new AppException(ShopError.NAME_ALREADY_USED);
     }
@@ -133,7 +144,11 @@ export class ShopsService {
     y: number,
     id?: number,
   ): Promise<void> {
-    const shop = await this.shopsRepository.findOneBy({ x, y });
+    const shop = await this.shopsRepository.findOneBy({
+      x,
+      y,
+      completedAt: IsNull(),
+    });
     if (shop && (!id || shop.id !== id)) {
       throw new AppException(ShopError.COORDINATES_ALREADY_USED);
     }
@@ -167,9 +182,19 @@ export class ShopsService {
     }
   }
 
+  private async complete(shop: Shop): Promise<void> {
+    try {
+      shop.completedAt = new Date();
+      await this.shopsRepository.save(shop);
+    } catch (error) {
+      throw new AppException(ShopError.COMPLETE_FAILED);
+    }
+  }
+
   private selectShopsQueryBuilder(): SelectQueryBuilder<Shop> {
     return this.shopsRepository
       .createQueryBuilder('shop')
+      .where('shop.completedAt IS NULL')
       .orderBy('shop.name', 'ASC')
       .select(['shop.id', 'shop.name', 'shop.x', 'shop.y']);
   }
@@ -183,7 +208,8 @@ export class ShopsService {
       .loadRelationCountAndMap('shop.goods', 'shop.goods', 'good', (qb) =>
         qb.where('good.amount > 0'),
       )
-      .where(
+      .where('shop.completedAt IS NULL')
+      .andWhere(
         new Brackets((qb) =>
           qb.where(`${!req.id}`).orWhere('shop.id = :id', { id: req.id }),
         ),

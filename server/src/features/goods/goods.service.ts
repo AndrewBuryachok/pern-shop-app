@@ -179,7 +179,7 @@ export class GoodsService {
 
   async buyGood(dto: BuyGoodDto): Promise<[Good, number]> {
     const good = await this.goodsRepository.findOne({
-      relations: ['card', 'rent', 'lease'],
+      relations: ['card', 'shop', 'rent', 'lease'],
       where: { id: dto.goodId },
     });
     if (good.amount < dto.amount) {
@@ -187,6 +187,7 @@ export class GoodsService {
     }
     if (
       good.completedAt ||
+      good.shop?.completedAt ||
       good.rent?.completedAt < new Date() ||
       good.lease?.completedAt < new Date()
     ) {
@@ -231,6 +232,7 @@ export class GoodsService {
         'card',
         'card.account',
         'card.account.cards',
+        'shop',
         'rent',
         'lease',
       ],
@@ -242,6 +244,7 @@ export class GoodsService {
     }
     if (
       good.completedAt ||
+      good.shop?.completedAt ||
       good.rent?.completedAt < new Date() ||
       good.lease?.completedAt < new Date()
     ) {
@@ -461,6 +464,7 @@ export class GoodsService {
       .loadRelationCountAndMap('good.states', 'good.states')
       .loadRelationCountAndMap('good.purchases', 'good.purchases')
       .where('good.completedAt IS NULL')
+      .andWhere('shop.completedAt IS NULL')
       .andWhere(
         new Brackets((qb) =>
           qb

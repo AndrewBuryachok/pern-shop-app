@@ -27,3 +27,8 @@ export class ExtEditShopDto extends EditShopDto {
   myId: number;
   hasRole: boolean;
 }
+
+export class CompleteShopDto extends ShopIdDto {
+  myId: number;
+  hasRole: boolean;
+}

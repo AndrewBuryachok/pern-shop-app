@@ -76,4 +76,13 @@ export class ShopsController {
   ): Promise<void> {
     return this.shopsService.editShop({ ...dto, shopId, myId, hasRole });
   }
+
+  @Post(':shopId')
+  completeShop(
+    @MyId() myId: number,
+    @HasRole(Role.MODER) hasRole: boolean,
+    @Param() { shopId }: ShopIdDto,
+  ): Promise<void> {
+    return this.shopsService.completeShop({ shopId, myId, hasRole });
+  }
 }
