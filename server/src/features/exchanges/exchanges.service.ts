@@ -39,16 +39,9 @@ export class ExchangesService {
   }
 
   async createExchange(dto: ExtCreateExchangeDto): Promise<void> {
-    const card = await this.cardsService.checkCardUser(
-      dto.cardId,
-      dto.myId,
-      dto.hasRole,
-    );
-    if (dto.type) {
-      await this.cardsService.increaseCardBalance({ ...dto, cardId: card.id });
-    } else {
-      await this.cardsService.decreaseCardBalance({ ...dto, cardId: card.id });
-    }
+    const card = dto.type
+      ? await this.cardsService.increaseCardBalance(dto)
+      : await this.cardsService.decreaseCardBalance(dto);
     const exchange = await this.create(dto);
     this.mqttService.publishNotification(
       exchange.id,

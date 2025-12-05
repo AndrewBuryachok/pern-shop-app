@@ -29,5 +29,4 @@ export class CreateExchangeDto {
 
 export class ExtCreateExchangeDto extends CreateExchangeDto {
   myId: number;
-  hasRole: boolean;
 }
