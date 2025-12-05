@@ -1,5 +1,5 @@
 import { emptyApi } from '../../app/empty.api';
-import { ArticleComment } from './comment.model';
+import { Comment } from './comment.model';
 import {
   CreateCommentDto,
   DeleteCommentDto,
@@ -8,40 +8,40 @@ import {
 
 export const commentsApi = emptyApi.injectEndpoints({
   endpoints: (build) => ({
-    selectArticleComments: build.query<ArticleComment[], number>({
+    selectArticleComments: build.query<Comment[], number>({
       query: (articleId) => ({
-        url: `/articles-comments/${articleId}`,
+        url: `/comments/${articleId}`,
       }),
     }),
-    createArticleComment: build.mutation<void, CreateCommentDto>({
+    createComment: build.mutation<void, CreateCommentDto>({
       query: (dto) => ({
-        url: '/articles-comments',
+        url: '/comments',
         method: 'POST',
         body: dto,
       }),
-      invalidatesTags: ['ArticleComment'],
+      invalidatesTags: ['Comment'],
     }),
-    editArticleComment: build.mutation<void, EditCommentDto>({
+    editComment: build.mutation<void, EditCommentDto>({
       query: ({ commentId, ...dto }) => ({
-        url: `/articles-comments/${commentId}`,
+        url: `/comments/${commentId}`,
         method: 'PATCH',
         body: dto,
       }),
-      invalidatesTags: ['ArticleComment'],
+      invalidatesTags: ['Comment'],
     }),
-    deleteArticleComment: build.mutation<void, DeleteCommentDto>({
+    deleteComment: build.mutation<void, DeleteCommentDto>({
       query: ({ commentId }) => ({
-        url: `/articles-comments/${commentId}`,
+        url: `/comments/${commentId}`,
         method: 'DELETE',
       }),
-      invalidatesTags: ['ArticleComment'],
+      invalidatesTags: ['Comment'],
     }),
   }),
 });
 
 export const {
   useSelectArticleCommentsQuery,
-  useCreateArticleCommentMutation,
-  useEditArticleCommentMutation,
-  useDeleteArticleCommentMutation,
+  useCreateCommentMutation,
+  useEditCommentMutation,
+  useDeleteCommentMutation,
 } = commentsApi;

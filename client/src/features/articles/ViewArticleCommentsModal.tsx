@@ -8,7 +8,7 @@ import { Article } from './article.model';
 import { Reply } from '../replies/reply.model';
 import { getCurrentUser } from '../auth/auth.slice';
 import {
-  useCreateArticleCommentMutation,
+  useCreateCommentMutation,
   useSelectArticleCommentsQuery,
 } from './comments.api';
 import { CreateCommentDto } from './comment.dto';
@@ -37,7 +37,7 @@ export default function ViewArticleCommentsModal({ data: article }: Props) {
 
   const user = getCurrentUser();
 
-  const [createComment, { isLoading }] = useCreateArticleCommentMutation();
+  const [createComment, { isLoading }] = useCreateCommentMutation();
 
   const handleSubmit = async (dto: CreateCommentDto) => {
     await createComment(dto);

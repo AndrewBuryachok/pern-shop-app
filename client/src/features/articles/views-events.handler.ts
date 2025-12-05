@@ -1,9 +1,9 @@
 import { store } from '../../app/store';
-import { ArticleView } from './article-view.model';
+import { View } from './view.model';
 import { articlesApi } from './articles.api';
 
-export const handleArticleViewEvent = (id: number, json: string) => {
-  const body = JSON.parse(json) as ArticleView;
+export const handleViewEvent = (id: number, json: string) => {
+  const body = JSON.parse(json) as View;
   store.dispatch(
     articlesApi.util.updateQueryData('selectArticleViews', id, (draft) => {
       const view = draft.find((view) => view.id === body.id);

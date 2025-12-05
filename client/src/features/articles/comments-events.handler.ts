@@ -1,10 +1,10 @@
 import { store } from '../../app/store';
-import { ArticleComment } from './comment.model';
+import { Comment } from './comment.model';
 import { commentsApi } from './comments.api';
 import { articlesApi } from './articles.api';
 
-export const handleArticleCommentEvent = (id: number, json: string) => {
-  const body = JSON.parse(json) as ArticleComment;
+export const handleCommentEvent = (id: number, json: string) => {
+  const body = JSON.parse(json) as Comment;
   store.dispatch(
     commentsApi.util.updateQueryData('selectArticleComments', id, (draft) => {
       const comment = draft.find((comment) => comment.id === body.id);

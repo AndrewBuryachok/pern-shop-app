@@ -1,8 +1,8 @@
 import { emptyApi } from '../../app/empty.api';
 import { IRequest, IResponse } from '../../common/interfaces';
 import { Article } from './article.model';
-import { ArticleView } from './article-view.model';
-import { ArticleLike } from './article-like.model';
+import { View } from './view.model';
+import { Like } from './like.model';
 import {
   CreateArticleDto,
   DeleteArticleDto,
@@ -45,12 +45,12 @@ export const articlesApi = emptyApi.injectEndpoints({
       }),
       providesTags: ['Auth'],
     }),
-    selectArticleViews: build.query<ArticleView[], number>({
+    selectArticleViews: build.query<View[], number>({
       query: (articleId) => ({
         url: `/articles/${articleId}/views`,
       }),
     }),
-    selectArticleLikes: build.query<ArticleLike[], number>({
+    selectArticleLikes: build.query<Like[], number>({
       query: (articleId) => ({
         url: `/articles/${articleId}/likes`,
       }),
@@ -91,7 +91,7 @@ export const articlesApi = emptyApi.injectEndpoints({
         url: `/articles/${articleId}/views`,
         method: 'POST',
       }),
-      invalidatesTags: ['ArticleView'],
+      invalidatesTags: ['View'],
       onQueryStarted(dto, { dispatch, queryFulfilled }) {
         const patchResult = dispatch(
           articlesApi.util.updateQueryData(
@@ -111,7 +111,7 @@ export const articlesApi = emptyApi.injectEndpoints({
         method: 'POST',
         body: dto,
       }),
-      invalidatesTags: ['ArticleLike'],
+      invalidatesTags: ['Like'],
       onQueryStarted(dto, { dispatch, queryFulfilled }) {
         const patchResult = dispatch(
           articlesApi.util.updateQueryData(

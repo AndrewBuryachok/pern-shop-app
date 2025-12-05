@@ -1,9 +1,9 @@
 import { store } from '../../app/store';
-import { ArticleLike } from './article-like.model';
+import { Like } from './like.model';
 import { articlesApi } from './articles.api';
 
-export const handleArticleLikeEvent = (id: number, json: string) => {
-  const body = JSON.parse(json) as ArticleLike & { toggle: boolean };
+export const handleLikeEvent = (id: number, json: string) => {
+  const body = JSON.parse(json) as Like & { toggle: boolean };
   store.dispatch(
     articlesApi.util.updateQueryData('selectArticleLikes', id, (draft) => {
       const like = draft.find((like) => like.id === body.id);
