@@ -6,10 +6,7 @@ import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { useCreateExchangeMutation } from './exchanges.api';
 import { useSelectAllUsersQuery } from '../users/users.api';
-import {
-  useSelectMyCardsQuery,
-  useSelectUserCardsWithBalanceQuery,
-} from '../cards/cards.api';
+import { useSelectUserCardsWithBalanceQuery } from '../cards/cards.api';
 import { CreateExchangeDto } from './exchange.dto';
 import CustomForm from '../../common/components/CustomForm';
 import RefetchAction from '../../common/components/RefetchAction';
@@ -25,9 +22,7 @@ import {
 } from '../../common/utils';
 import { MAX_SUM_VALUE } from '../../common/constants';
 
-type Props = { hasRole: boolean };
-
-export default function CreateExchangeModal({ hasRole }: Props) {
+export default function CreateExchangeModal() {
   const [t] = useTranslation();
 
   const myCard = { balance: 0 };
@@ -54,14 +49,11 @@ export default function CreateExchangeModal({ hasRole }: Props) {
 
   useEffect(() => form.setFieldValue('card', ''), [form.values.user]);
 
-  const { data: users, ...usersResponse } = useSelectAllUsersQuery(undefined, {
-    skip: !hasRole,
-  });
-  const { data: cards, ...cardsResponse } = hasRole
-    ? useSelectUserCardsWithBalanceQuery(+form.values.user, {
-        skip: !form.values.user,
-      })
-    : useSelectMyCardsQuery();
+  const { data: users, ...usersResponse } = useSelectAllUsersQuery();
+  const { data: cards, ...cardsResponse } = useSelectUserCardsWithBalanceQuery(
+    +form.values.user,
+    { skip: !form.values.user },
+  );
 
   const user = users?.find((user) => user.id === +form.values.user);
   const card = cards?.find((card) => card.id === +form.values.card);
@@ -80,22 +72,20 @@ export default function CreateExchangeModal({ hasRole }: Props) {
       isLoading={isLoading}
       text={t('actions.create') + ' ' + t('modals.exchanges')}
     >
-      {hasRole && (
-        <Select
-          label={t('columns.user')}
-          placeholder={t('columns.user')}
-          icon={user && <CustomAvatar {...user} />}
-          iconWidth={48}
-          rightSection={<RefetchAction {...usersResponse} />}
-          itemComponent={UsersItem}
-          data={selectUsers(users)}
-          limit={20}
-          searchable
-          required
-          readOnly={usersResponse.isFetching}
-          {...form.getInputProps('user')}
-        />
-      )}
+      <Select
+        label={t('columns.user')}
+        placeholder={t('columns.user')}
+        icon={user && <CustomAvatar {...user} />}
+        iconWidth={48}
+        rightSection={<RefetchAction {...usersResponse} />}
+        itemComponent={UsersItem}
+        data={selectUsers(users)}
+        limit={20}
+        searchable
+        required
+        readOnly={usersResponse.isFetching}
+        {...form.getInputProps('user')}
+      />
       <Select
         label={t('columns.card')}
         placeholder={t('columns.card')}
@@ -105,10 +95,7 @@ export default function CreateExchangeModal({ hasRole }: Props) {
             : t('information.decrease')
         } ${form.values.sum} ${t('constants.currency')}`}
         rightSection={
-          <RefetchAction
-            {...cardsResponse}
-            skip={!form.values.user && hasRole}
-          />
+          <RefetchAction {...cardsResponse} skip={!form.values.user} />
         }
         itemComponent={CardsItem}
         data={selectCardsWithBalance(cards)}
@@ -139,15 +126,11 @@ export default function CreateExchangeModal({ hasRole }: Props) {
   );
 }
 
-export const createExchangeFactory = (hasRole: boolean) => ({
+export const createExchangeButton = {
   label: 'create',
   open: () =>
     openModal({
       title: t('actions.create') + ' ' + t('modals.exchanges'),
-      children: <CreateExchangeModal hasRole={hasRole} />,
+      children: <CreateExchangeModal />,
     }),
-});
-
-export const createMyExchangeButton = createExchangeFactory(false);
-
-export const createUserExchangeButton = createExchangeFactory(true);
+};

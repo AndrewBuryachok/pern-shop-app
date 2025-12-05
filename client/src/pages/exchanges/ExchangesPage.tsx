@@ -5,10 +5,7 @@ import {
   useGetMyExchangesQuery,
 } from '../../features/exchanges/exchanges.api';
 import ExchangesTable from '../../features/exchanges/ExchangesTable';
-import {
-  createMyExchangeButton,
-  createUserExchangeButton,
-} from '../../features/exchanges/CreateExchangeModal';
+import { createExchangeButton } from '../../features/exchanges/CreateExchangeModal';
 import { deleteExchangeAction } from '../../features/exchanges/DeleteExchangeModal';
 
 export default function ExchangesPage() {
@@ -35,9 +32,7 @@ export default function ExchangesPage() {
     all: useGetAllExchangesQuery,
   }[tab]!(search);
 
-  const button = { my: createMyExchangeButton, all: createUserExchangeButton }[
-    tab
-  ];
+  const button = { all: createExchangeButton }[tab];
 
   const actions = { all: [deleteExchangeAction] }[tab];
 
