@@ -10,6 +10,7 @@ import {
   createUserShopButton,
 } from '../../features/shops/CreateShopModal';
 import { editShopAction } from '../../features/shops/EditShopModal';
+import { completeShopAction } from '../../features/shops/CompleteShopModal';
 
 export default function ShopsPage() {
   const tab = useLocation().pathname.split('/')[2] || 'main';
@@ -36,7 +37,10 @@ export default function ShopsPage() {
     all: createUserShopButton,
   }[tab];
 
-  const actions = { my: [editShopAction], all: [editShopAction] }[tab];
+  const actions = {
+    my: [editShopAction, completeShopAction],
+    all: [editShopAction, completeShopAction],
+  }[tab];
 
   return (
     <ShopsTable

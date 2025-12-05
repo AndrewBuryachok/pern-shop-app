@@ -2,7 +2,7 @@ import { emptyApi } from '../../app/empty.api';
 import { IRequest, IResponse } from '../../common/interfaces';
 import { Shop, SmShop } from './shop.model';
 import { MdThing } from '../things/thing.model';
-import { CreateShopDto, EditShopDto } from './shop.dto';
+import { CompleteShopDto, CreateShopDto, EditShopDto } from './shop.dto';
 import { getQuery } from '../../common/utils';
 
 export const shopsApi = emptyApi.injectEndpoints({
@@ -59,6 +59,13 @@ export const shopsApi = emptyApi.injectEndpoints({
       }),
       invalidatesTags: ['Shop'],
     }),
+    completeShop: build.mutation<void, CompleteShopDto>({
+      query: ({ shopId }) => ({
+        url: `/shops/${shopId}`,
+        method: 'POST',
+      }),
+      invalidatesTags: ['Shop'],
+    }),
   }),
 });
 
@@ -71,4 +78,5 @@ export const {
   useSelectShopGoodsQuery,
   useCreateShopMutation,
   useEditShopMutation,
+  useCompleteShopMutation,
 } = shopsApi;

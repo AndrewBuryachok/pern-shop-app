@@ -5,3 +5,7 @@ export interface CreateShopDto extends CreatePlaceWithCardDto {}
 export interface EditShopDto extends CreatePlaceDto {
   shopId: number;
 }
+
+export interface CompleteShopDto {
+  shopId: number;
+}
