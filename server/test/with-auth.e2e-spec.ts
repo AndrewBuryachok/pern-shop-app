@@ -21,6 +21,7 @@ describe('With Auth', () => {
   let user: Tokens;
   let admin: Tokens;
   let moder: Tokens;
+  let banker: Tokens;
   let messageId: number;
   let articlesId: number[];
   let articleCommentId: number;
@@ -117,6 +118,21 @@ describe('With Auth', () => {
       return request(app.getHttpServer())
         .post('/auth/logout')
         .set('Authorization', `Bearer ${moder.access}`)
+        .expect(201);
+    });
+
+    it('POST /auth/login as Banker', async () => {
+      return request(app.getHttpServer())
+        .post('/auth/login')
+        .send({ nick: 'Banker', password: 'Banker' })
+        .expect(201)
+        .then((res) => (banker = res.body));
+    });
+
+    it('POST /auth/logout as Banker', async () => {
+      return request(app.getHttpServer())
+        .post('/auth/logout')
+        .set('Authorization', `Bearer ${banker.access}`)
         .expect(201);
     });
   });
@@ -472,7 +488,7 @@ describe('With Auth', () => {
     it('GET /cards/:userId/ext-select', async () => {
       return request(app.getHttpServer())
         .get(`/cards/${user.id}/ext-select`)
-        .set('Authorization', `Bearer ${moder.access}`)
+        .set('Authorization', `Bearer ${banker.access}`)
         .expect((res) => expect(res.body.length).toBeGreaterThan(0));
     });
 
@@ -511,7 +527,7 @@ describe('With Auth', () => {
     it('POST /exchanges', async () => {
       return request(app.getHttpServer())
         .post('/exchanges')
-        .set('Authorization', `Bearer ${moder.access}`)
+        .set('Authorization', `Bearer ${banker.access}`)
         .send({ cardId, type: true, sum: 100 })
         .expect('');
     });
@@ -519,7 +535,7 @@ describe('With Auth', () => {
     it('POST /exchanges', async () => {
       return request(app.getHttpServer())
         .post('/exchanges')
-        .set('Authorization', `Bearer ${moder.access}`)
+        .set('Authorization', `Bearer ${banker.access}`)
         .send({ cardId, type: true, sum: 100 })
         .expect('');
     });
@@ -534,7 +550,7 @@ describe('With Auth', () => {
     it('GET /exchanges/all', async () => {
       return request(app.getHttpServer())
         .get('/exchanges/all')
-        .set('Authorization', `Bearer ${moder.access}`)
+        .set('Authorization', `Bearer ${banker.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0))
         .then((res) => (exchangesId = res.body.result.map((e) => e.id)));
     });
@@ -542,7 +558,7 @@ describe('With Auth', () => {
     it('DELETE /exchanges/:exchangeId', async () => {
       return request(app.getHttpServer())
         .delete(`/exchanges/${exchangesId[0]}`)
-        .set('Authorization', `Bearer ${moder.access}`)
+        .set('Authorization', `Bearer ${banker.access}`)
         .expect('');
     });
   });

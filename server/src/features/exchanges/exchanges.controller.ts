@@ -28,13 +28,13 @@ export class ExchangesController {
     return this.exchangesService.getMyExchanges(myId, req);
   }
 
-  @Roles(Role.MODER)
+  @Roles(Role.BANKER)
   @Get('all')
   getAllExchanges(@Query() req: Request): Promise<Response<Exchange>> {
     return this.exchangesService.getAllExchanges(req);
   }
 
-  @Roles(Role.MODER)
+  @Roles(Role.BANKER)
   @Post()
   createExchange(
     @MyId() myId: number,
@@ -43,7 +43,7 @@ export class ExchangesController {
     return this.exchangesService.createExchange({ ...dto, myId });
   }
 
-  @Roles(Role.MODER)
+  @Roles(Role.BANKER)
   @Delete(':exchangeId')
   deleteExchange(@Param() { exchangeId }: ExchangeIdDto): Promise<void> {
     return this.exchangesService.deleteExchange(exchangeId);
