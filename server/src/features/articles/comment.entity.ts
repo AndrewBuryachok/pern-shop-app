@@ -2,8 +2,8 @@ import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 import { Reply } from '../replies/reply.entity';
 import { Article } from './article.entity';
 
-@Entity('articles_comments')
-export class ArticleComment extends Reply {
+@Entity('comments')
+export class Comment extends Reply {
   @Column({ name: 'article_id' })
   articleId: number;
 
@@ -14,7 +14,7 @@ export class ArticleComment extends Reply {
   @Column({ name: 'reply_id', nullable: true })
   replyId?: number;
 
-  @ManyToOne(() => ArticleComment, { nullable: true, onDelete: 'SET NULL' })
+  @ManyToOne(() => Comment, { nullable: true, onDelete: 'SET NULL' })
   @JoinColumn({ name: 'reply_id' })
-  reply?: ArticleComment;
+  reply?: Comment;
 }

@@ -1,9 +1,9 @@
 import { Faker } from '@faker-js/faker';
 import { define } from 'typeorm-seeding';
-import { ArticleLike } from '../../features/articles/article-like.entity';
+import { Like } from '../../features/articles/like.entity';
 
-define(ArticleLike, (faker: Faker) => {
-  const like = new ArticleLike();
+define(Like, (faker: Faker) => {
+  const like = new Like();
   like.type = !!Math.floor(Math.random() * 2);
   return like;
 });

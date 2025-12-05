@@ -11,8 +11,8 @@ import {
 import { ApiTags } from '@nestjs/swagger';
 import { ArticlesService } from './articles.service';
 import { Article } from './article.entity';
-import { ArticleView } from './article-view.entity';
-import { ArticleLike } from './article-like.entity';
+import { View } from './view.entity';
+import { Like } from './like.entity';
 import {
   ArticleIdDto,
   CreateArticleDto,
@@ -63,17 +63,13 @@ export class ArticlesController {
 
   @Public()
   @Get(':articleId/views')
-  selectArticleViews(
-    @Param() { articleId }: ArticleIdDto,
-  ): Promise<ArticleView[]> {
+  selectArticleViews(@Param() { articleId }: ArticleIdDto): Promise<View[]> {
     return this.articlesService.selectArticleViews(articleId);
   }
 
   @Public()
   @Get(':articleId/likes')
-  selectArticleLikes(
-    @Param() { articleId }: ArticleIdDto,
-  ): Promise<ArticleLike[]> {
+  selectArticleLikes(@Param() { articleId }: ArticleIdDto): Promise<Like[]> {
     return this.articlesService.selectArticleLikes(articleId);
   }
 

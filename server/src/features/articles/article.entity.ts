@@ -8,9 +8,9 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { User } from '../users/user.entity';
-import { ArticleView } from './article-view.entity';
-import { ArticleLike } from './article-like.entity';
-import { ArticleComment } from './comment.entity';
+import { View } from './view.entity';
+import { Like } from './like.entity';
+import { Comment } from './comment.entity';
 
 @Entity('articles')
 export class Article {
@@ -33,12 +33,12 @@ export class Article {
   @CreateDateColumn({ type: 'timestamptz', name: 'created_at' })
   createdAt: Date;
 
-  @OneToMany(() => ArticleView, (view) => view.article)
-  views: ArticleView[];
+  @OneToMany(() => View, (view) => view.article)
+  views: View[];
 
-  @OneToMany(() => ArticleLike, (like) => like.article)
-  likes: ArticleLike[];
+  @OneToMany(() => Like, (like) => like.article)
+  likes: Like[];
 
-  @OneToMany(() => ArticleComment, (comment) => comment.article)
-  comments: ArticleComment[];
+  @OneToMany(() => Comment, (comment) => comment.article)
+  comments: Comment[];
 }

@@ -2,16 +2,13 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Validate, ValidateIf } from 'class-validator';
 import { Type } from 'class-transformer';
 import { IsId } from '../../common/decorators';
-import {
-  IsArticleCommentExists,
-  IsArticleExists,
-} from '../../common/constraints';
+import { IsArticleExists, IsCommentExists } from '../../common/constraints';
 import { CreateReplyDto } from '../replies/reply.dto';
 
 export class CommentIdDto {
   @ApiProperty()
   @IsId()
-  @Validate(IsArticleCommentExists)
+  @Validate(IsCommentExists)
   @Type(() => Number)
   commentId: number;
 }
@@ -33,7 +30,7 @@ export class CreateCommentDto extends EditCommentDto {
   @ApiProperty()
   @ValidateIf((_, value) => value !== 0)
   @IsId()
-  @Validate(IsArticleCommentExists)
+  @Validate(IsCommentExists)
   commentId: number;
 }
 

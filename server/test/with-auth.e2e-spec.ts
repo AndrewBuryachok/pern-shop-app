@@ -24,7 +24,7 @@ describe('With Auth', () => {
   let banker: Tokens;
   let messageId: number;
   let articlesId: number[];
-  let articleCommentId: number;
+  let commentId: number;
   let cardId: number;
   let exchangesId: number;
   let paymentsId: number;
@@ -365,9 +365,9 @@ describe('With Auth', () => {
         .expect('');
     });
 
-    it('POST /articles-comments', async () => {
+    it('POST /comments', async () => {
       return request(app.getHttpServer())
-        .post('/articles-comments')
+        .post('/comments')
         .set('Authorization', `Bearer ${user.access}`)
         .send({ articleId: articlesId[0], commentId: 0, text: 'comment text' })
         .expect('');
@@ -401,11 +401,11 @@ describe('With Auth', () => {
         .expect((res) => expect(res.body.length).toBeGreaterThan(0));
     });
 
-    it('GET /articles-comments/:articleId', async () => {
+    it('GET /comments/:articleId', async () => {
       return request(app.getHttpServer())
-        .get(`/articles-comments/${articlesId[0]}`)
+        .get(`/comments/${articlesId[0]}`)
         .expect((res) => expect(res.body.length).toBeGreaterThan(0))
-        .then((res) => (articleCommentId = res.body[0].id));
+        .then((res) => (commentId = res.body[0].id));
     });
 
     it('GET /articles/all', async () => {
@@ -432,17 +432,17 @@ describe('With Auth', () => {
   });
 
   describe('Articles Comments', () => {
-    it('PATCH /articles-comments/:commentId', async () => {
+    it('PATCH /comments/:commentId', async () => {
       return request(app.getHttpServer())
-        .patch(`/articles-comments/${articleCommentId}`)
+        .patch(`/comments/${commentId}`)
         .set('Authorization', `Bearer ${user.access}`)
         .send({ text: 'comment text' })
         .expect('');
     });
 
-    it('DELETE /articles-comments/:commentId', async () => {
+    it('DELETE /comments/:commentId', async () => {
       return request(app.getHttpServer())
-        .delete(`/articles-comments/${articleCommentId}`)
+        .delete(`/comments/${commentId}`)
         .set('Authorization', `Bearer ${user.access}`)
         .expect('');
     });

@@ -9,14 +9,14 @@ import {
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { CommentsService } from './comments.service';
-import { ArticleComment } from './comment.entity';
+import { Comment } from './comment.entity';
 import { CommentIdDto, CreateCommentDto, EditCommentDto } from './comment.dto';
 import { ArticleIdDto } from './article.dto';
 import { HasRole, MyId, Public } from '../../common/decorators';
 import { Role } from '../users/role.enum';
 
-@ApiTags('articles-comments')
-@Controller('articles-comments')
+@ApiTags('comments')
+@Controller('comments')
 export class CommentsController {
   constructor(private commentsService: CommentsService) {}
 
@@ -24,7 +24,7 @@ export class CommentsController {
   @Get(':articleId')
   selectArticleComments(
     @Param() { articleId }: ArticleIdDto,
-  ): Promise<ArticleComment[]> {
+  ): Promise<Comment[]> {
     return this.commentsService.selectArticleComments(articleId);
   }
 

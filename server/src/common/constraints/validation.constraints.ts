@@ -6,7 +6,7 @@ import {
 import { UsersService } from '../../features/users/users.service';
 import { MessagesService } from '../../features/messages/messages.service';
 import { ArticlesService } from '../../features/articles/articles.service';
-import { CommentsService as ArticlesCommentsService } from '../../features/articles/comments.service';
+import { CommentsService } from '../../features/articles/comments.service';
 import { CardsService } from '../../features/cards/cards.service';
 import { ExchangesService } from '../../features/exchanges/exchanges.service';
 import { PaymentsService } from '../../features/payments/payments.service';
@@ -87,9 +87,9 @@ export class IsArticleExists implements ValidatorConstraintInterface {
 }
 
 @Injectable()
-@ValidatorConstraint({ name: 'isArticleCommentExists', async: true })
-export class IsArticleCommentExists implements ValidatorConstraintInterface {
-  constructor(private commentsService: ArticlesCommentsService) {}
+@ValidatorConstraint({ name: 'isCommentExists', async: true })
+export class IsCommentExists implements ValidatorConstraintInterface {
+  constructor(private commentsService: CommentsService) {}
 
   async validate(value: number): Promise<boolean> {
     try {

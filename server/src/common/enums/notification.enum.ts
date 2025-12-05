@@ -8,7 +8,7 @@ export enum Notification {
   CREATED_ARTICLE = 'created articles',
   REACTED_ARTICLE = 'reacted articles',
   COMMENTED_ARTICLE = 'commented articles',
-  REPLIED_ARTICLE_COMMENT = 'replied articles',
+  REPLIED_COMMENT = 'replied articles',
   ADDED_CARD = 'added cards',
   REMOVED_CARD = 'removed cards',
   CREATED_EXCHANGE = 'created exchanges',

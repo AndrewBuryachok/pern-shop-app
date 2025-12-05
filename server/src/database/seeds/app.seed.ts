@@ -3,9 +3,9 @@ import { Factory, Seeder } from 'typeorm-seeding';
 import { User } from '../../features/users/user.entity';
 import { Message } from '../../features/messages/message.entity';
 import { Article } from '../../features/articles/article.entity';
-import { ArticleView } from '../../features/articles/article-view.entity';
-import { ArticleLike } from '../../features/articles/article-like.entity';
-import { ArticleComment } from '../../features/articles/comment.entity';
+import { View } from '../../features/articles/view.entity';
+import { Like } from '../../features/articles/like.entity';
+import { Comment } from '../../features/articles/comment.entity';
 import { Account } from '../../features/cards/account.entity';
 import { Card } from '../../features/cards/card.entity';
 import { Exchange } from '../../features/exchanges/exchange.entity';
@@ -60,31 +60,29 @@ export default class AppSeed implements Seeder {
       (prev, article) => [...prev, ...users.map((user) => ({ article, user }))],
       [],
     );
-    const randomArticlesViews = [...Array(articlesUsers.length).keys()];
-    randomArticlesViews.sort(() => Math.random() - 0.5);
-    let articleViewId = 0;
-    await factory(ArticleView)()
+    const randomViews = [...Array(articlesUsers.length).keys()];
+    randomViews.sort(() => Math.random() - 0.5);
+    let viewId = 0;
+    const views = await factory(View)()
       .map(async (view) => {
-        view.article =
-          articlesUsers[randomArticlesViews[articleViewId]].article;
-        view.user = articlesUsers[randomArticlesViews[articleViewId]].user;
-        articleViewId++;
+        view.article = articlesUsers[randomViews[viewId]].article;
+        view.user = articlesUsers[randomViews[viewId]].user;
+        viewId++;
         return view;
       })
       .createMany(80);
-    const randomArticlesLikes = [...Array(articlesUsers.length).keys()];
-    randomArticlesLikes.sort(() => Math.random() - 0.5);
-    let articleLikeId = 0;
-    const articlesLikes = await factory(ArticleLike)()
+    const randomLikes = [...Array(articlesUsers.length).keys()];
+    randomLikes.sort(() => Math.random() - 0.5);
+    let likeId = 0;
+    const likes = await factory(Like)()
       .map(async (like) => {
-        like.article =
-          articlesUsers[randomArticlesLikes[articleLikeId]].article;
-        like.user = articlesUsers[randomArticlesLikes[articleLikeId]].user;
-        articleLikeId++;
+        like.article = articlesUsers[randomLikes[likeId]].article;
+        like.user = articlesUsers[randomLikes[likeId]].user;
+        likeId++;
         return like;
       })
       .createMany(80);
-    const articlesComments = await factory(ArticleComment)()
+    const comments = await factory(Comment)()
       .map(async (comment) => {
         comment.article = faker.helpers.arrayElement(articles);
         comment.user = faker.helpers.arrayElement(users);

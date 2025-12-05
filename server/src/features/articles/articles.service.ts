@@ -2,8 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { Article } from './article.entity';
-import { ArticleView } from './article-view.entity';
-import { ArticleLike } from './article-like.entity';
+import { View } from './view.entity';
+import { Like } from './like.entity';
 import { MqttService } from '../mqtt/mqtt.service';
 import {
   DeleteArticleDto,
@@ -22,10 +22,10 @@ export class ArticlesService {
   constructor(
     @InjectRepository(Article)
     private articlesRepository: Repository<Article>,
-    @InjectRepository(ArticleView)
-    private viewsRepository: Repository<ArticleView>,
-    @InjectRepository(ArticleLike)
-    private likesRepository: Repository<ArticleLike>,
+    @InjectRepository(View)
+    private viewsRepository: Repository<View>,
+    @InjectRepository(Like)
+    private likesRepository: Repository<Like>,
     private mqttService: MqttService,
   ) {}
 
@@ -65,13 +65,13 @@ export class ArticlesService {
     };
   }
 
-  selectArticleViews(articleId: number): Promise<ArticleView[]> {
+  selectArticleViews(articleId: number): Promise<View[]> {
     return this.selectViewsQueryBuilder()
       .where('view.articleId = :articleId', { articleId })
       .getMany();
   }
 
-  selectArticleLikes(articleId: number): Promise<ArticleLike[]> {
+  selectArticleLikes(articleId: number): Promise<Like[]> {
     return this.selectLikesQueryBuilder()
       .where('like.articleId = :articleId', { articleId })
       .getMany();
@@ -125,7 +125,7 @@ export class ArticlesService {
       .getOne();
     this.mqttService.publishEvent(
       0,
-      Event.ARTICLES_VIEWS,
+      Event.VIEWS,
       dto.articleId,
       JSON.stringify(body),
     );
@@ -144,7 +144,7 @@ export class ArticlesService {
         .getOne();
       this.mqttService.publishEvent(
         0,
-        Event.ARTICLES_LIKES,
+        Event.LIKES,
         dto.articleId,
         JSON.stringify(body),
       );
@@ -153,7 +153,7 @@ export class ArticlesService {
       const body = { id: like.id, type: like.type, toggle: true };
       this.mqttService.publishEvent(
         0,
-        Event.ARTICLES_LIKES,
+        Event.LIKES,
         dto.articleId,
         JSON.stringify(body),
       );
@@ -162,7 +162,7 @@ export class ArticlesService {
       await this.removeLike(like);
       this.mqttService.publishEvent(
         0,
-        Event.ARTICLES_LIKES,
+        Event.LIKES,
         dto.articleId,
         JSON.stringify(body),
       );
@@ -232,7 +232,7 @@ export class ArticlesService {
     }
   }
 
-  private async addView(dto: ViewArticleDto): Promise<ArticleView> {
+  private async addView(dto: ViewArticleDto): Promise<View> {
     try {
       const view = this.viewsRepository.create({
         articleId: dto.articleId,
@@ -245,7 +245,7 @@ export class ArticlesService {
     }
   }
 
-  private async addLike(dto: ExtLikeArticleDto): Promise<ArticleLike> {
+  private async addLike(dto: ExtLikeArticleDto): Promise<Like> {
     try {
       const like = this.likesRepository.create({
         articleId: dto.articleId,
@@ -259,10 +259,7 @@ export class ArticlesService {
     }
   }
 
-  private async updateLike(
-    like: ArticleLike,
-    dto: ExtLikeArticleDto,
-  ): Promise<void> {
+  private async updateLike(like: Like, dto: ExtLikeArticleDto): Promise<void> {
     try {
       like.type = dto.type;
       await this.likesRepository.save(like);
@@ -271,7 +268,7 @@ export class ArticlesService {
     }
   }
 
-  private async removeLike(like: ArticleLike): Promise<void> {
+  private async removeLike(like: Like): Promise<void> {
     try {
       await this.likesRepository.remove(like);
     } catch (error) {
@@ -279,7 +276,7 @@ export class ArticlesService {
     }
   }
 
-  private selectViewsQueryBuilder(): SelectQueryBuilder<ArticleView> {
+  private selectViewsQueryBuilder(): SelectQueryBuilder<View> {
     return this.viewsRepository
       .createQueryBuilder('view')
       .innerJoin('view.user', 'viewer')
@@ -293,7 +290,7 @@ export class ArticlesService {
       ]);
   }
 
-  private selectLikesQueryBuilder(): SelectQueryBuilder<ArticleLike> {
+  private selectLikesQueryBuilder(): SelectQueryBuilder<Like> {
     return this.likesRepository
       .createQueryBuilder('like')
       .innerJoin('like.user', 'liker')
@@ -330,7 +327,7 @@ export class ArticlesService {
         'article.comment',
         'article.comments',
         'comment',
-        'comment.id = (SELECT MAX(c.id) FROM articles_comments AS c WHERE c.article_id = article.id)',
+        'comment.id = (SELECT MAX(c.id) FROM comments AS c WHERE c.article_id = article.id)',
       )
       .leftJoin('comment.user', 'commenter')
       .where(
