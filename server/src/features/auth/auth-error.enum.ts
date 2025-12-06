@@ -3,4 +3,5 @@ export enum AuthError {
   INVALID_ACCESS_TOKEN = '401: Недійсний access токен',
   INVALID_REFRESH_TOKEN = '401: Недійсний refresh токен',
   BANNED = '403: Акаунт забанено',
+  BLOCKED = '403: Акаунт заблоковано на 15 хвилин',
 }

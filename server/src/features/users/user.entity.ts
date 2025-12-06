@@ -57,6 +57,12 @@ export class User {
   @Column({ default: false })
   type: boolean;
 
+  @Column({ default: 0 })
+  attempts: number;
+
+  @Column({ type: 'timestamptz', name: 'blocked_until', nullable: true })
+  blockedUntil?: Date;
+
   @Column({ name: 'town_id', nullable: true })
   townId?: number;
 

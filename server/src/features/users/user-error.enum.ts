@@ -15,6 +15,8 @@ export enum UserError {
   REMOVE_TOKEN_FAILED = '500: Не вдалося прибрати токен користувача',
   ADD_ONLINE_FAILED = '500: Не вдалося додати онлайн користувача',
   REMOVE_ONLINE_FAILED = '500: Не вдалося прибрати онлайн користувача',
+  ADD_ATTEMPTS_FAILED = '500: Не вдалося додати спроби користувача',
+  REMOVE_ATTEMPTS_FAILED = '500: Не вдалося прибрати спроби користувача',
   EDIT_PROFILE_FAILED = '500: Не вдалося редагувати профіль користувача',
   UPDATE_PASSWORD_FAILED = '500: Не вдалося оновити пароль користувача',
   ADD_BANNED_FAILED = '500: Не вдалося забанити користувача',

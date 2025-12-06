@@ -25,9 +25,16 @@ export class AuthService {
 
   async login(dto: AuthDto): Promise<Tokens> {
     const user = await this.usersService.findUserByNick(dto.nick);
+    if (user?.blockedUntil > new Date()) {
+      throw new AppException(AuthError.BLOCKED);
+    }
     if (!user || !(await compareHash(dto.password, user.password))) {
+      if (user) {
+        await this.usersService.addUserAttempts(user);
+      }
       throw new AppException(AuthError.INVALID_CREDENTIALS);
     }
+    await this.usersService.removeUserAttempts(user);
     return this.signTokens(user);
   }
 

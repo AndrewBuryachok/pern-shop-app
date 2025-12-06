@@ -154,6 +154,14 @@ export class UsersService {
     }
   }
 
+  async addUserAttempts(user: User): Promise<void> {
+    await this.addAttempts(user);
+  }
+
+  async removeUserAttempts(user: User): Promise<void> {
+    await this.removeAttempts(user);
+  }
+
   async editUserProfile(dto: ExtEditUserProfileDto): Promise<void> {
     if (dto.userId !== dto.myId && !dto.hasRole) {
       throw new AppException(UserError.NOT_OWNER);
@@ -359,6 +367,29 @@ export class UsersService {
       await this.usersRepository.save(user);
     } catch (error) {
       throw new AppException(UserError.REMOVE_ONLINE_FAILED);
+    }
+  }
+
+  private async addAttempts(user: User): Promise<void> {
+    try {
+      user.attempts++;
+      if (user.attempts >= 5) {
+        user.attempts = 0;
+        user.blockedUntil = new Date();
+        user.blockedUntil.setMinutes(user.blockedUntil.getMinutes() + 15);
+      }
+      await this.usersRepository.save(user);
+    } catch (error) {
+      throw new AppException(UserError.ADD_ATTEMPTS_FAILED);
+    }
+  }
+
+  private async removeAttempts(user: User): Promise<void> {
+    try {
+      user.attempts = 0;
+      await this.usersRepository.save(user);
+    } catch (error) {
+      throw new AppException(UserError.REMOVE_ATTEMPTS_FAILED);
     }
   }
 
