@@ -164,6 +164,27 @@ describe('With Auth', () => {
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
 
+    it('POST /users/:userId/banned', async () => {
+      return request(app.getHttpServer())
+        .post(`/users/${user.id}/banned`)
+        .set('Authorization', `Bearer ${moder.access}`)
+        .expect('');
+    });
+
+    it('GET /users/banned', async () => {
+      return request(app.getHttpServer())
+        .get('/users/banned')
+        .set('Authorization', `Bearer ${moder.access}`)
+        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
+    });
+
+    it('DELETE /users/:userId/banned', async () => {
+      return request(app.getHttpServer())
+        .delete(`/users/${user.id}/banned`)
+        .set('Authorization', `Bearer ${moder.access}`)
+        .expect('');
+    });
+
     it('GET /users/all', async () => {
       return request(app.getHttpServer())
         .get('/users/all')
@@ -174,6 +195,13 @@ describe('With Auth', () => {
     it('GET /users/all/select', async () => {
       return request(app.getHttpServer())
         .get('/users/all/select')
+        .expect((res) => expect(res.body.length).toBeGreaterThan(0));
+    });
+
+    it('GET /users/not-banned/select', async () => {
+      return request(app.getHttpServer())
+        .get('/users/not-banned/select')
+        .set('Authorization', `Bearer ${moder.access}`)
         .expect((res) => expect(res.body.length).toBeGreaterThan(0));
     });
 

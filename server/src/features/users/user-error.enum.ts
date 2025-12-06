@@ -1,5 +1,7 @@
 export enum UserError {
   NICK_ALREADY_USED = '400: Нік вже використовується',
+  ALREADY_BANNED = '400: Користувач вже забанений',
+  NOT_BANNED = '400: Користувач не забанений',
   ALREADY_HAS_ROLE = '400: Користувач вже має роль',
   NOT_HAS_ROLE = '400: Користувач не має ролі',
   ALREADY_IN_TOWN = '400: Користувач вже в місті',
@@ -15,6 +17,8 @@ export enum UserError {
   REMOVE_ONLINE_FAILED = '500: Не вдалося прибрати онлайн користувача',
   EDIT_PROFILE_FAILED = '500: Не вдалося редагувати профіль користувача',
   UPDATE_PASSWORD_FAILED = '500: Не вдалося оновити пароль користувача',
+  ADD_BANNED_FAILED = '500: Не вдалося забанити користувача',
+  REMOVE_BANNED_FAILED = '500: Не вдалося розбанити користувача',
   ADD_ROLE_FAILED = '500: Не вдалося додати роль користувача',
   REMOVE_ROLE_FAILED = '500: Не вдалося прибрати роль користувача',
   ADD_TOWN_FAILED = '500: Не вдалося додати місто користувача',

@@ -58,9 +58,23 @@ describe('Without Auth', () => {
       return request(app.getHttpServer()).get('/users/my').expect(401);
     });
 
+    it('GET /users/banned', async () => {
+      return request(app.getHttpServer())
+        .get('/users/banned')
+        .set('Authorization', `Bearer ${user.access}`)
+        .expect(403);
+    });
+
     it('GET /users/all', async () => {
       return request(app.getHttpServer())
         .get('/users/all')
+        .set('Authorization', `Bearer ${user.access}`)
+        .expect(403);
+    });
+
+    it('GET /users/not-banned/select', async () => {
+      return request(app.getHttpServer())
+        .get('/users/not-banned/select')
         .set('Authorization', `Bearer ${user.access}`)
         .expect(403);
     });

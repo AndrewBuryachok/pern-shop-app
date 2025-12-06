@@ -42,6 +42,9 @@ export class User {
   @Column({ default: '' })
   youtube: string;
 
+  @Column({ default: false })
+  banned: boolean;
+
   @Column({ type: 'enum', enum: Role, array: true, default: [] })
   roles: Role[];
 

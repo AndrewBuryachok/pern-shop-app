@@ -41,6 +41,12 @@ export class UsersController {
     return this.usersService.getMyUsers(myId, req);
   }
 
+  @Roles(Role.MODER)
+  @Get('banned')
+  getBannedUsers(@Query() req: Request): Promise<Response<User>> {
+    return this.usersService.getBannedUsers(req);
+  }
+
   @Roles(Role.ADMIN)
   @Get('all')
   getAllUsers(@Query() req: Request): Promise<Response<User>> {
@@ -51,6 +57,12 @@ export class UsersController {
   @Get('all/select')
   selectAllUsers(): Promise<User[]> {
     return this.usersService.selectAllUsers();
+  }
+
+  @Roles(Role.MODER)
+  @Get('not-banned/select')
+  selectNotBannedUsers(): Promise<User[]> {
+    return this.usersService.selectNotBannedUsers();
   }
 
   @Public()
@@ -87,6 +99,18 @@ export class UsersController {
     @Body() dto: EditUserPasswordDto,
   ): Promise<void> {
     return this.usersService.editUserPassword({ ...dto, userId });
+  }
+
+  @Roles(Role.MODER)
+  @Post(':userId/banned')
+  addUserBanned(@Param() { userId }: UserIdDto): Promise<void> {
+    return this.usersService.addUserBanned({ userId });
+  }
+
+  @Roles(Role.MODER)
+  @Delete(':userId/banned')
+  removeUserBanned(@Param() { userId }: UserIdDto): Promise<void> {
+    return this.usersService.removeUserBanned({ userId });
   }
 
   @Roles(Role.ADMIN)

@@ -12,6 +12,7 @@ import {
   UpdateUserFriendDto,
   UpdateUserTokenDto,
   UpdateUserTownDto,
+  UserIdDto,
 } from './user.dto';
 import { Request, Response } from '../../common/interfaces';
 import { hashData } from '../../common/utils';
@@ -46,6 +47,13 @@ export class UsersService {
     return { result, count };
   }
 
+  async getBannedUsers(req: Request): Promise<Response<User>> {
+    const [result, count] = await this.getUsersQueryBuilder(req)
+      .andWhere('user.banned')
+      .getManyAndCount();
+    return { result, count };
+  }
+
   async getAllUsers(req: Request): Promise<Response<User>> {
     const [result, count] = await this.getUsersQueryBuilder(
       req,
@@ -63,6 +71,10 @@ export class UsersService {
 
   selectAllUsers(): Promise<User[]> {
     return this.selectUsersQueryBuilder().getMany();
+  }
+
+  selectNotBannedUsers(): Promise<User[]> {
+    return this.selectUsersQueryBuilder().where('NOT user.banned').getMany();
   }
 
   selectNotCitizensUsers(): Promise<User[]> {
@@ -184,6 +196,22 @@ export class UsersService {
     const user = await this.usersRepository.findOneBy({ id: dto.userId });
     const hash = await hashData(dto.password);
     await this.updatePassword(user, hash);
+  }
+
+  async addUserBanned(dto: UserIdDto): Promise<void> {
+    const user = await this.usersRepository.findOneBy({ id: dto.userId });
+    if (user.banned) {
+      throw new AppException(UserError.ALREADY_BANNED);
+    }
+    await this.addBanned(user);
+  }
+
+  async removeUserBanned(dto: UserIdDto): Promise<void> {
+    const user = await this.usersRepository.findOneBy({ id: dto.userId });
+    if (!user.banned) {
+      throw new AppException(UserError.NOT_BANNED);
+    }
+    await this.removeBanned(user);
   }
 
   async addUserRole(dto: ExtUpdateUserRoleDto): Promise<void> {
@@ -360,6 +388,24 @@ export class UsersService {
     }
   }
 
+  private async addBanned(user: User): Promise<void> {
+    try {
+      user.banned = true;
+      await this.usersRepository.save(user);
+    } catch (error) {
+      throw new AppException(UserError.ADD_BANNED_FAILED);
+    }
+  }
+
+  private async removeBanned(user: User): Promise<void> {
+    try {
+      user.banned = false;
+      await this.usersRepository.save(user);
+    } catch (error) {
+      throw new AppException(UserError.REMOVE_BANNED_FAILED);
+    }
+  }
+
   private async addRole(user: User, role: Role): Promise<void> {
     try {
       user.roles = user.roles.concat(role).sort();
@@ -486,6 +532,7 @@ export class UsersService {
         'user.id',
         'user.nick',
         'user.avatar',
+        'user.banned',
         'user.roles',
         'user.createdAt',
         'user.onlineAt',
