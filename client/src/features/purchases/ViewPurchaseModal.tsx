@@ -13,6 +13,7 @@ import {
   parsePlace,
   parsePurchaseAmount,
   parseStall,
+  parseStatus,
   parseTime,
 } from '../../common/utils';
 import { Color } from '../../common/constants';
@@ -63,6 +64,30 @@ export default function ViewPurchaseModal({ data: purchase }: Props) {
         )}`}
         readOnly
       />
+      {purchase.delivery && (
+        <>
+          <TextInput
+            label={t('columns.status')}
+            value={parseStatus(purchase.delivery.status)}
+            readOnly
+          />
+          <TextInput
+            label={t('columns.executor')}
+            icon={
+              purchase.delivery.executorCard && (
+                <CustomAvatar {...purchase.delivery.executorCard.user} />
+              )
+            }
+            iconWidth={48}
+            value={
+              purchase.delivery.executorCard
+                ? parseCard(purchase.delivery.executorCard)
+                : '-'
+            }
+            readOnly
+          />
+        </>
+      )}
       {purchase.good.shop && (
         <TextInput
           label={t('columns.shop')}

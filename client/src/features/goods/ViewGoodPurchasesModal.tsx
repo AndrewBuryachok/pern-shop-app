@@ -6,6 +6,7 @@ import { useSelectGoodPurchasesQuery } from './goods.api';
 import { Button, Group, Skeleton, Stack, Timeline } from '@mantine/core';
 import SingleText from '../../common/components/SingleText';
 import CustomAvatar from '../../common/components/CustomAvatar';
+import StatusBadge from '../../common/components/StatusBadge';
 import { parsePurchaseAmount, parseTime } from '../../common/utils';
 
 type Props = IModal<Good>;
@@ -26,18 +27,33 @@ export default function ViewGoodPurchases({ data: good }: Props) {
                 <Skeleton w={128} h={16} />
               </Timeline.Item>
             ))
-          : purchases?.map((purchase) => (
+          : purchases?.map(({ delivery, ...purchase }) => (
               <Timeline.Item
                 key={purchase.id}
                 title={
                   <Group spacing={8}>
-                    <SingleText text={purchase.card.user.nick} bold />
+                    {delivery?.executorCard ? (
+                      <SingleText text={delivery.executorCard.user.nick} bold />
+                    ) : (
+                      <SingleText text={purchase.card.user.nick} bold />
+                    )}
                     <SingleText text={parseTime(purchase.createdAt)} dimmed />
                   </Group>
                 }
-                bullet={<CustomAvatar {...purchase.card.user} />}
+                bullet={
+                  delivery?.executorCard ? (
+                    <CustomAvatar {...delivery.executorCard.user} />
+                  ) : (
+                    <CustomAvatar {...purchase.card.user} />
+                  )
+                }
               >
-                <SingleText text={parsePurchaseAmount({ ...purchase, good })} />
+                <Group spacing={8}>
+                  <SingleText
+                    text={parsePurchaseAmount({ ...purchase, good })}
+                  />
+                  {delivery && <StatusBadge status={delivery.status} />}
+                </Group>
               </Timeline.Item>
             ))}
       </Timeline>

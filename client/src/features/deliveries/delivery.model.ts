@@ -1,14 +1,17 @@
-import { SmHire } from '../hires/hire.model';
 import { MdCard } from '../cards/card.model';
 import { SmPurchaseWithoutPrice } from '../purchases/purchase.model';
+import { SmHire } from '../hires/hire.model';
 
-export interface Delivery {
+export interface SmDelivery {
   id: number;
-  hire: SmHire;
-  purchase: SmPurchaseWithoutPrice;
-  price: number;
   status: number;
   executorCard?: MdCard;
+}
+
+export interface Delivery extends SmDelivery {
+  purchase: SmPurchaseWithoutPrice;
+  hire: SmHire;
+  price: number;
   createdAt: Date;
   completedAt?: Date;
   rate?: number;
