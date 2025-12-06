@@ -5,6 +5,7 @@ import {
   EditUserPasswordDto,
   EditUserProfileDto,
   UpdateUserRoleDto,
+  UserIdDto,
 } from './user.dto';
 import { getQuery } from '../../common/utils';
 
@@ -22,6 +23,12 @@ export const usersApi = emptyApi.injectEndpoints({
       }),
       providesTags: ['Auth', 'User'],
     }),
+    getBannedUsers: build.query<IResponse<User>, IRequest>({
+      query: (req) => ({
+        url: `/users/banned?${getQuery(req)}`,
+      }),
+      providesTags: ['Auth', 'User'],
+    }),
     getAllUsers: build.query<IResponse<User>, IRequest>({
       query: (req) => ({
         url: `/users/all?${getQuery(req)}`,
@@ -33,6 +40,12 @@ export const usersApi = emptyApi.injectEndpoints({
         url: '/users/all/select',
       }),
       providesTags: ['User'],
+    }),
+    selectNotBannedUsers: build.query<SmUser[], void>({
+      query: () => ({
+        url: '/users/not-banned/select',
+      }),
+      providesTags: ['Auth', 'User'],
     }),
     selectNotCitizensUsers: build.query<SmUser[], void>({
       query: () => ({
@@ -67,6 +80,20 @@ export const usersApi = emptyApi.injectEndpoints({
         body: dto,
       }),
     }),
+    addUserBanned: build.mutation<void, UserIdDto>({
+      query: ({ userId }) => ({
+        url: `/users/${userId}/banned`,
+        method: 'POST',
+      }),
+      invalidatesTags: ['User'],
+    }),
+    removeUserBanned: build.mutation<void, UserIdDto>({
+      query: ({ userId }) => ({
+        url: `/users/${userId}/banned`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: ['User'],
+    }),
     addUserRole: build.mutation<void, UpdateUserRoleDto>({
       query: ({ userId, ...dto }) => ({
         url: `/users/${userId}/roles`,
@@ -89,13 +116,17 @@ export const usersApi = emptyApi.injectEndpoints({
 export const {
   useGetMainUsersQuery,
   useGetMyUsersQuery,
+  useGetBannedUsersQuery,
   useGetAllUsersQuery,
   useSelectAllUsersQuery,
+  useSelectNotBannedUsersQuery,
   useSelectNotCitizensUsersQuery,
   useSelectNotFriendsUsersQuery,
   useGetSingleUserQuery,
   useEditUserProfileMutation,
   useEditUserPasswordMutation,
+  useAddUserBannedMutation,
+  useRemoveUserBannedMutation,
   useAddUserRoleMutation,
   useRemoveUserRoleMutation,
 } = usersApi;

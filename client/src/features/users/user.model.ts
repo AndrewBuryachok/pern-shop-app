@@ -15,6 +15,7 @@ export interface MdUser extends SmUser {
 }
 
 export interface User extends MdUser {
+  banned: boolean;
   createdAt: Date;
   onlineAt?: Date;
   town?: MdTown;

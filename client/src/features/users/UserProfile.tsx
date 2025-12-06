@@ -30,6 +30,7 @@ import {
 } from '../friends/friends.api';
 import ProfileAvatar from '../../common/components/ProfileAvatar';
 import LinkedAvatar from '../../common/components/LinkedAvatar';
+import BannedBadge from '../../common/components/BannedBadge';
 import RolesBadge from '../../common/components/RolesBadge';
 import CustomRating from '../../common/components/CustomRating';
 import SingleText from '../../common/components/SingleText';
@@ -203,7 +204,11 @@ export default function UserProfile({ data: user }: Props) {
                 <Text size='sm' weight='bold'>
                   {t('columns.roles')}
                 </Text>
-                <RolesBadge roles={user.roles} />
+                {user.banned ? (
+                  <BannedBadge />
+                ) : (
+                  <RolesBadge roles={user.roles} />
+                )}
               </div>
               <div>
                 <Text size='sm' weight='bold'>

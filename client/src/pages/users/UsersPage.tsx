@@ -1,9 +1,12 @@
 import { useLocation, useSearchParams } from 'react-router-dom';
 import {
   useGetAllUsersQuery,
+  useGetBannedUsersQuery,
   useGetMainUsersQuery,
 } from '../../features/users/users.api';
 import UsersTable from '../../features/users/UsersTable';
+import { addUserBannedButton } from '../../features/users/AddUserBannedModal';
+import { removeUserBannedAction } from '../../features/users/RemoveUserBannedModal';
 import { editUserPasswordAction } from '../../features/users/EditUserPasswordModal';
 import { addUserRoleAction } from '../../features/users/AddUserRoleModal';
 import { removeUserRoleAction } from '../../features/users/RemoveUserRoleModal';
@@ -26,12 +29,23 @@ export default function UsersPage() {
 
   const response = {
     main: useGetMainUsersQuery,
+    banned: useGetBannedUsersQuery,
     all: useGetAllUsersQuery,
   }[tab]!(search);
 
+  const button = { banned: addUserBannedButton }[tab];
+
   const actions = {
+    banned: [removeUserBannedAction],
     all: [editUserPasswordAction, addUserRoleAction, removeUserRoleAction],
   }[tab];
 
-  return <UsersTable {...response} search={search} actions={actions} />;
+  return (
+    <UsersTable
+      {...response}
+      search={search}
+      button={button}
+      actions={actions}
+    />
+  );
 }

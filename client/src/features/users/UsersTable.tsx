@@ -2,6 +2,7 @@ import { ITableWithActions } from '../../common/interfaces';
 import { User } from './user.model';
 import CustomTable from '../../common/components/CustomTable';
 import AvatarWithSingleText from '../../common/components/AvatarWithSingleText';
+import BannedBadge from '../../common/components/BannedBadge';
 import RolesBadge from '../../common/components/RolesBadge';
 import SingleText from '../../common/components/SingleText';
 import PlaceWithSingleAvatar from '../../common/components/PlaceWithSingleAvatar';
@@ -24,7 +25,7 @@ export default function UsersTable({ actions = [], ...props }: Props) {
             <AvatarWithSingleText {...user} />
           </td>
           <td>
-            <RolesBadge roles={user.roles} />
+            {user.banned ? <BannedBadge /> : <RolesBadge roles={user.roles} />}
           </td>
           <td>
             {user.town ? (
