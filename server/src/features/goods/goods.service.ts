@@ -84,6 +84,10 @@ export class GoodsService {
       .leftJoin('purchase.card', 'card')
       .leftJoin('card.account', 'account')
       .leftJoin('card.user', 'user')
+      .leftJoin('purchase.delivery', 'delivery')
+      .leftJoin('delivery.executorCard', 'executorCard')
+      .leftJoin('executorCard.account', 'executorAccount')
+      .leftJoin('executorCard.user', 'executorUser')
       .where('good.id = :goodId', { goodId })
       .orderBy('purchase.id', 'DESC')
       .select([
@@ -98,6 +102,15 @@ export class GoodsService {
         'user.avatar',
         'purchase.amount',
         'purchase.createdAt',
+        'delivery.id',
+        'delivery.status',
+        'executorCard.id',
+        'executorAccount.id',
+        'executorAccount.name',
+        'executorAccount.color',
+        'executorUser.id',
+        'executorUser.nick',
+        'executorUser.avatar',
       ])
       .getOne();
     return good.purchases;

@@ -4,7 +4,7 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
-  OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Card } from '../cards/card.entity';
@@ -39,6 +39,6 @@ export class Purchase {
   @Column({ nullable: true })
   rate?: number;
 
-  @OneToMany(() => Delivery, (delivery) => delivery.purchase)
-  deliveries: Delivery[];
+  @OneToOne(() => Delivery, (delivery) => delivery.purchase)
+  delivery: Delivery;
 }

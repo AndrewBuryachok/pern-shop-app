@@ -58,7 +58,7 @@ export class PurchasesService {
       .innerJoin('purchase.card', 'card')
       .innerJoin('card.account', 'account')
       .innerJoin('account.cards', 'cards')
-      .leftJoinAndMapOne('delivery', 'purchase.deliveries', 'delivery')
+      .leftJoin('purchase.delivery', 'delivery')
       .where('cards.userId = :userId', { userId })
       .andWhere('delivery.id IS NULL')
       .getMany();
@@ -196,6 +196,10 @@ export class PurchasesService {
         'next',
         'state.createdAt < next.createdAt AND next.createdAt < purchase.createdAt',
       )
+      .leftJoin('purchase.delivery', 'delivery')
+      .leftJoin('delivery.executorCard', 'executorCard')
+      .leftJoin('executorCard.account', 'executorAccount')
+      .leftJoin('executorCard.user', 'executorUser')
       .where('next.id IS NULL')
       .andWhere(
         new Brackets((qb) =>
@@ -466,6 +470,15 @@ export class PurchasesService {
         'purchase.amount',
         'purchase.createdAt',
         'purchase.rate',
+        'delivery.id',
+        'delivery.status',
+        'executorCard.id',
+        'executorAccount.id',
+        'executorAccount.name',
+        'executorAccount.color',
+        'executorUser.id',
+        'executorUser.nick',
+        'executorUser.avatar',
       ]);
   }
 }
