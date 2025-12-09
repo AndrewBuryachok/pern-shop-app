@@ -238,11 +238,7 @@ export const pages = [
   {
     path: 'purchases',
     element: PurchasesPage,
-    nested: [
-      { path: 'my' },
-      { path: 'received' },
-      { path: 'all', role: Role.MODER },
-    ],
+    nested: [{ path: 'my' }, { path: 'all', role: Role.MODER }],
   },
   {
     path: 'deliveries',

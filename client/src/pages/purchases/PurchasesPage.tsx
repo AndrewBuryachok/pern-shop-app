@@ -3,7 +3,6 @@ import { Mode } from '../../common/enums';
 import {
   useGetAllPurchasesQuery,
   useGetMyPurchasesQuery,
-  useGetReceivedPurchasesQuery,
 } from '../../features/purchases/purchases.api';
 import PurchasesTable from '../../features/purchases/PurchasesTable';
 import { deletePurchaseAction } from '../../features/purchases/DeletePurchaseModal';
@@ -41,7 +40,6 @@ export default function PurchasesPage() {
 
   const response = {
     my: useGetMyPurchasesQuery,
-    received: useGetReceivedPurchasesQuery,
     all: useGetAllPurchasesQuery,
   }[tab]!(search);
 
