@@ -35,9 +35,9 @@ export class CardsService {
   }
 
   async getAllCards(req: Request): Promise<Response<Card>> {
-    const [result, count] = await this.getCardsQueryBuilder(
-      req,
-    ).getManyAndCount();
+    const [result, count] = await this.getCardsQueryBuilder(req)
+      .andWhere('card.userId = account.userId')
+      .getManyAndCount();
     return { result, count };
   }
 
@@ -84,7 +84,7 @@ export class CardsService {
 
   async addCardUser(dto: ExtUpdateCardUserDto): Promise<void> {
     const card = await this.checkCardOwner(dto.cardId, dto.myId, dto.hasRole);
-    if (card.account.cards.find((card) => card.userId === dto.userId)) {
+    if (await this.findCardByAccountAndUser(card.accountId, dto.userId)) {
       throw new AppException(CardError.ALREADY_IN_CARD);
     }
     const subCard = await this.addUser(card.accountId, dto.userId);
@@ -101,8 +101,9 @@ export class CardsService {
     if (dto.userId === dto.myId) {
       throw new AppException(CardError.OWNER);
     }
-    const subCard = card.account.cards.find(
-      (card) => card.userId === dto.userId,
+    const subCard = await this.findCardByAccountAndUser(
+      card.accountId,
+      dto.userId,
     );
     if (!subCard) {
       throw new AppException(CardError.NOT_IN_CARD);
@@ -150,8 +151,8 @@ export class CardsService {
     hasRole: boolean,
   ): Promise<Card> {
     const card = await this.cardsRepository.findOne({
-      relations: ['account', 'account.cards'],
-      where: { id, account: { cards: { completedAt: IsNull() } } },
+      relations: ['account'],
+      where: { id },
     });
     if (card.account.userId !== userId && !hasRole) {
       throw new AppException(CardError.NOT_OWNER);
@@ -169,6 +170,17 @@ export class CardsService {
       throw new AppException(CardError.NOT_USER);
     }
     return card;
+  }
+
+  private findCardByAccountAndUser(
+    accountId: number,
+    userId: number,
+  ): Promise<Card> {
+    return this.cardsRepository.findOneBy({
+      accountId,
+      userId,
+      completedAt: IsNull(),
+    });
   }
 
   private async create(dto: ExtCreateCardDto): Promise<Card> {
