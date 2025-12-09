@@ -1,8 +1,8 @@
 import { useMantineTheme } from '@mantine/core';
-import { ExtPlace } from './place.model';
+import { ExtPlace, PlaceType } from './place.model';
 import { openPlaceModal } from './ViewPlaceModal';
 import { parseCoordinates } from '../../common/utils';
-import { Color, colors, MAX_COORDINATE_VALUE } from '../../common/constants';
+import { colors, MAX_COORDINATE_VALUE } from '../../common/constants';
 
 type Props = {
   data: ExtPlace;
@@ -12,7 +12,7 @@ export default function PlacePath({ data: place }: Props) {
   const theme = useMantineTheme();
 
   const color = parseCoordinates(place);
-  const vertical = [Color.GREEN, Color.BLUE].includes(color);
+  const vertical = Math.abs(place.y) > Math.abs(place.x);
   const divider = MAX_COORDINATE_VALUE / 50;
   const x1 = 50 + (vertical ? 0 : place.x / divider) + '%';
   const x2 = 50 + place.x / divider + '%';
@@ -30,7 +30,7 @@ export default function PlacePath({ data: place }: Props) {
         stroke={fill}
         strokeWidth={2}
       ></line>
-      {place.type === 'towns' ? (
+      {place.type === PlaceType.TOWNS ? (
         <circle
           cx={x2}
           cy={y2}

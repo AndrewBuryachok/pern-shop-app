@@ -37,8 +37,16 @@ export interface PlaceWithPrice extends PlaceWithCard {
   price: number;
 }
 
+export enum PlaceType {
+  TOWNS = 'towns',
+  SHOPS = 'shops',
+  MARKETS = 'markets',
+  STORAGES = 'storages',
+  STATIONS = 'stations',
+}
+
 export interface ExtPlace extends PlaceWithUser {
-  type: 'towns' | 'shops' | 'markets' | 'storages' | 'stations';
+  type: PlaceType;
   card?: MdCard;
   price?: number;
 }

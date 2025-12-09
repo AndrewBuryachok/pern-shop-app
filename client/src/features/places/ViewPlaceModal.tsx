@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Select, Stack, Textarea, TextInput } from '@mantine/core';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
-import { ExtPlace } from './place.model';
+import { ExtPlace, PlaceType } from './place.model';
 import { useSelectTownUsersQuery } from '../towns/towns.api';
 import { useSelectShopGoodsQuery } from '../shops/shops.api';
 import { useSelectMarketStallsQuery } from '../stalls/stalls.api';
@@ -27,30 +27,30 @@ export default function PlaceModal({ data: place }: Props) {
   const [t] = useTranslation();
 
   const component =
-    place.type === 'towns'
+    place.type === PlaceType.TOWNS
       ? UsersItem
-      : place.type === 'shops'
+      : place.type === PlaceType.SHOPS
       ? ThingsItemWithAmount
       : undefined;
 
   const { data: townsUsers, ...townsUsersResponse } = useSelectTownUsersQuery(
     place.id,
-    { skip: place.type !== 'towns' },
+    { skip: place.type !== PlaceType.TOWNS },
   );
   const { data: goods, ...goodsResponse } = useSelectShopGoodsQuery(place.id, {
-    skip: place.type !== 'shops',
+    skip: place.type !== PlaceType.SHOPS,
   });
   const { data: stalls, ...stallsResponse } = useSelectMarketStallsQuery(
     place.id,
-    { skip: place.type !== 'markets' },
+    { skip: place.type !== PlaceType.MARKETS },
   );
   const { data: cells, ...cellsResponse } = useSelectStorageCellsQuery(
     place.id,
-    { skip: place.type !== 'storages' },
+    { skip: place.type !== PlaceType.STORAGES },
   );
   const { data: boxes, ...boxesResponse } = useSelectStationBoxesQuery(
     place.id,
-    { skip: place.type !== 'stations' },
+    { skip: place.type !== PlaceType.STATIONS },
   );
 
   return (
@@ -83,7 +83,7 @@ export default function PlaceModal({ data: place }: Props) {
         value={parseTime(place.createdAt)}
         readOnly
       />
-      {place.type === 'towns' && (
+      {place.type === PlaceType.TOWNS && (
         <Select
           label={t('columns.users')}
           placeholder={`${t('components.total')}: ${townsUsers?.length || 0}`}
@@ -94,7 +94,7 @@ export default function PlaceModal({ data: place }: Props) {
           searchable
         />
       )}
-      {place.type === 'shops' && (
+      {place.type === PlaceType.SHOPS && (
         <Select
           label={t('columns.goods')}
           placeholder={`${t('components.total')}: ${goods?.length || 0}`}
@@ -105,7 +105,7 @@ export default function PlaceModal({ data: place }: Props) {
           searchable
         />
       )}
-      {place.type === 'markets' && (
+      {place.type === PlaceType.MARKETS && (
         <Select
           label={t('columns.stalls')}
           placeholder={`${t('components.total')}: ${stalls?.length || 0}`}
@@ -116,7 +116,7 @@ export default function PlaceModal({ data: place }: Props) {
           searchable
         />
       )}
-      {place.type === 'storages' && (
+      {place.type === PlaceType.STORAGES && (
         <Select
           label={t('columns.cells')}
           placeholder={`${t('components.total')}: ${cells?.length || 0}`}
@@ -127,7 +127,7 @@ export default function PlaceModal({ data: place }: Props) {
           searchable
         />
       )}
-      {place.type === 'stations' && (
+      {place.type === PlaceType.STATIONS && (
         <Select
           label={t('columns.boxes')}
           placeholder={`${t('components.total')}: ${boxes?.length || 0}`}

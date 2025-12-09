@@ -1,7 +1,9 @@
-import { TransformComponent, TransformWrapper } from 'react-zoom-pan-pinch';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useMantineTheme } from '@mantine/core';
+import { TransformComponent, TransformWrapper } from 'react-zoom-pan-pinch';
+import { Checkbox, useMantineTheme } from '@mantine/core';
 import { useDocumentTitle, useElementSize } from '@mantine/hooks';
+import { ExtPlace, PlaceType } from '../../features/places/place.model';
 import { useGetMainTownsQuery } from '../../features/towns/towns.api';
 import { useGetMainShopsQuery } from '../../features/shops/shops.api';
 import { useGetMainMarketsQuery } from '../../features/markets/markets.api';
@@ -26,36 +28,40 @@ export default function Map() {
     { x1: '50%', x2: '50%', y1: '50%', y2: '0%' },
   ];
 
+  const allPlaces = Object.values(PlaceType);
+
+  const [places, setPlaces] = useState(allPlaces);
+
   const {
-    data: towns,
+    data: data1,
     isFetching: isFetching1,
     refetch: refetch1,
   } = useGetMainTownsQuery({
     page: 0,
   });
   const {
-    data: shops,
+    data: data2,
     isFetching: isFetching2,
     refetch: refetch2,
   } = useGetMainShopsQuery({
     page: 0,
   });
   const {
-    data: markets,
+    data: data3,
     isFetching: isFetching3,
     refetch: refetch3,
   } = useGetMainMarketsQuery({
     page: 0,
   });
   const {
-    data: storages,
+    data: data4,
     isFetching: isFetching4,
     refetch: refetch4,
   } = useGetMainStoragesQuery({
     page: 0,
   });
   const {
-    data: stations,
+    data: data5,
     isFetching: isFetching5,
     refetch: refetch5,
   } = useGetMainStationsQuery({
@@ -67,17 +73,63 @@ export default function Map() {
 
   const refetch = () => {
     if (!isFetching) {
-      refetch1();
-      refetch2();
-      refetch3();
-      refetch4();
-      refetch5();
+      if (places.includes(PlaceType.TOWNS)) {
+        refetch1();
+      }
+      if (places.includes(PlaceType.SHOPS)) {
+        refetch2();
+      }
+      if (places.includes(PlaceType.MARKETS)) {
+        refetch3();
+      }
+      if (places.includes(PlaceType.STORAGES)) {
+        refetch4();
+      }
+      if (places.includes(PlaceType.STATIONS)) {
+        refetch5();
+      }
     }
   };
 
+  const towns = data1?.result.map(
+    (p) => ({ ...p, type: PlaceType.TOWNS } as ExtPlace),
+  );
+  const shops = data2?.result.map(
+    (p) => ({ ...p, user: p.card.user, type: PlaceType.SHOPS } as ExtPlace),
+  );
+  const markets = data3?.result.map(
+    (p) => ({ ...p, user: p.card.user, type: PlaceType.MARKETS } as ExtPlace),
+  );
+  const storages = data4?.result.map(
+    (p) => ({ ...p, user: p.card.user, type: PlaceType.STORAGES } as ExtPlace),
+  );
+  const stations = data5?.result.map(
+    (p) => ({ ...p, user: p.card.user, type: PlaceType.STATIONS } as ExtPlace),
+  );
+
   return (
-    <div ref={ref} style={{ width: '100%', height: '100%' }}>
+    <div
+      ref={ref}
+      style={{ width: '100%', height: '100%', position: 'relative' }}
+    >
       <TransformWrapper>
+        <div style={{ position: 'absolute', zIndex: 1 }}>
+          <Checkbox.Group
+            value={places}
+            onChange={(places) => setPlaces(places as PlaceType[])}
+            orientation='vertical'
+            offset={0}
+            spacing={0}
+          >
+            {allPlaces.map((place) => (
+              <Checkbox
+                key={place}
+                value={place}
+                label={t(`navbar.${place}`)}
+              />
+            ))}
+          </Checkbox.Group>
+        </div>
         <TransformComponent>
           <svg width={width} height={height}>
             {lines.map((line, index) => (
@@ -97,40 +149,10 @@ export default function Map() {
               onClick={refetch}
             ></circle>
             {!isFetching &&
-              [
-                towns?.result.map((town) => ({
-                  ...town,
-                  type: 'towns' as const,
-                })),
-                shops?.result.map((shop) => ({
-                  ...shop,
-                  type: 'shops' as const,
-                  user: shop.card.user,
-                  card: shop.card,
-                })),
-                markets?.result.map((market) => ({
-                  ...market,
-                  type: 'markets' as const,
-                  user: market.card.user,
-                  card: market.card,
-                })),
-                storages?.result.map((storage) => ({
-                  ...storage,
-                  type: 'storages' as const,
-                  user: storage.card.user,
-                  card: storage.card,
-                })),
-                stations?.result.map((station) => ({
-                  ...station,
-                  type: 'stations' as const,
-                  user: station.card.user,
-                  card: station.card,
-                  price: station.price,
-                })),
-              ].map((allPlaces) =>
-                allPlaces?.map((place) => (
-                  <PlacePath key={place.id} data={place} />
-                )),
+              [towns, shops, markets, storages, stations].map((allPlaces) =>
+                allPlaces
+                  ?.filter((place) => places.includes(place.type))
+                  .map((place) => <PlacePath key={place.id} data={place} />),
               )}
           </svg>
         </TransformComponent>
