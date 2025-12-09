@@ -28,20 +28,27 @@ export class PurchasesService {
   ): Promise<Response<Purchase>> {
     const [result, count] = await this.getPurchasesQueryBuilder(req)
       .innerJoin('buyerAccount.cards', 'buyerCards')
-      .andWhere('buyerCards.userId = :myId', { myId })
-      .andWhere('buyerCards.completedAt IS NULL')
-      .getManyAndCount();
-    return { result, count };
-  }
-
-  async getReceivedPurchases(
-    myId: number,
-    req: Request,
-  ): Promise<Response<Purchase>> {
-    const [result, count] = await this.getPurchasesQueryBuilder(req)
       .innerJoin('sellerAccount.cards', 'sellerCards')
-      .andWhere('sellerCards.userId = :myId', { myId })
-      .andWhere('sellerCards.completedAt IS NULL')
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(
+              new Brackets((qb) =>
+                qb
+                  .where('buyerCards.userId = :myId')
+                  .andWhere('buyerCards.completedAt IS NULL'),
+              ),
+            )
+            .orWhere(
+              new Brackets((qb) =>
+                qb
+                  .where('sellerCards.userId = :myId')
+                  .andWhere('sellerCards.completedAt IS NULL'),
+              ),
+            ),
+        ),
+        { myId },
+      )
       .getManyAndCount();
     return { result, count };
   }
