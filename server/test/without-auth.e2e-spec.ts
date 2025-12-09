@@ -182,10 +182,6 @@ describe('Without Auth', () => {
       return request(app.getHttpServer()).get('/invoices/my').expect(401);
     });
 
-    it('GET /invoices/received', async () => {
-      return request(app.getHttpServer()).get('/invoices/received').expect(401);
-    });
-
     it('GET /invoices/all', async () => {
       return request(app.getHttpServer())
         .get('/invoices/all')

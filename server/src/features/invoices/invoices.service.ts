@@ -1,15 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Brackets, IsNull, Repository, SelectQueryBuilder } from 'typeorm';
+import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { Invoice } from './invoice.entity';
-import { CardsService } from '../cards/cards.service';
 import { PaymentsService } from '../payments/payments.service';
 import { MqttService } from '../mqtt/mqtt.service';
-import {
-  DeleteInvoiceDto,
-  ExtCompleteInvoiceDto,
-  ExtCreateInvoiceDto,
-} from './invoice.dto';
+import { ExtCompleteInvoiceDto, ExtCreateInvoiceDto } from './invoice.dto';
 import { Request, Response } from '../../common/interfaces';
 import { AppException } from '../../common/exceptions';
 import { InvoiceError } from './invoice-error.enum';
@@ -20,7 +15,6 @@ export class InvoicesService {
   constructor(
     @InjectRepository(Invoice)
     private invoicesRepository: Repository<Invoice>,
-    private cardsService: CardsService,
     private paymentsService: PaymentsService,
     private mqttService: MqttService,
   ) {}
@@ -28,18 +22,28 @@ export class InvoicesService {
   async getMyInvoices(myId: number, req: Request): Promise<Response<Invoice>> {
     const [result, count] = await this.getInvoicesQueryBuilder(req)
       .innerJoin('senderAccount.cards', 'senderCards')
-      .andWhere('senderCards.userId = :myId', { myId })
-      .andWhere('senderCards.completedAt IS NULL')
-      .getManyAndCount();
-    return { result, count };
-  }
-
-  async getReceivedInvoices(
-    myId: number,
-    req: Request,
-  ): Promise<Response<Invoice>> {
-    const [result, count] = await this.getInvoicesQueryBuilder(req)
-      .andWhere('receiverUser.id = :myId', { myId })
+      .leftJoin('receiverAccount.cards', 'receiverCards')
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where(
+              new Brackets((qb) =>
+                qb
+                  .where('senderCards.userId = :myId')
+                  .andWhere('senderCards.completedAt IS NULL'),
+              ),
+            )
+            .orWhere('user.id = :myId')
+            .orWhere(
+              new Brackets((qb) =>
+                qb
+                  .where('receiverCards.userId = :myId')
+                  .andWhere('receiverCards.completedAt IS NULL'),
+              ),
+            ),
+        ),
+        { myId },
+      )
       .getManyAndCount();
     return { result, count };
   }
@@ -52,16 +56,11 @@ export class InvoicesService {
   }
 
   async createInvoice(dto: ExtCreateInvoiceDto): Promise<void> {
-    const card = await this.cardsService.checkCardUser(
-      dto.senderCardId,
-      dto.myId,
-      dto.hasRole,
-    );
     const invoice = await this.create(dto);
     this.mqttService.publishNotification(
       invoice.id,
       dto.receiverUserId,
-      card.userId,
+      dto.myId,
       Notification.CREATED_INVOICE,
     );
   }
@@ -92,18 +91,17 @@ export class InvoicesService {
     );
   }
 
-  async deleteInvoice(dto: DeleteInvoiceDto): Promise<void> {
-    const invoice = await this.checkInvoiceSender(
-      dto.invoiceId,
-      dto.myId,
-      dto.hasRole,
-    );
+  async deleteInvoice(id: number): Promise<void> {
+    const invoice = await this.invoicesRepository.findOne({
+      relations: ['senderCard'],
+      where: { id },
+    });
     if (invoice.completedAt) {
       throw new AppException(InvoiceError.ALREADY_COMPLETED);
     }
     await this.delete(invoice);
     this.mqttService.publishNotification(
-      dto.invoiceId,
+      id,
       invoice.receiverUserId,
       invoice.senderCard.userId,
       Notification.DELETED_INVOICE,
@@ -112,31 +110,6 @@ export class InvoicesService {
 
   async checkInvoiceExists(id: number): Promise<void> {
     await this.invoicesRepository.findOneByOrFail({ id });
-  }
-
-  async checkInvoiceSender(
-    id: number,
-    userId: number,
-    hasRole: boolean,
-  ): Promise<Invoice> {
-    const invoice = await this.invoicesRepository.findOne({
-      relations: [
-        'senderCard',
-        'senderCard.account',
-        'senderCard.account.cards',
-      ],
-      where: {
-        id,
-        senderCard: { account: { cards: { completedAt: IsNull() } } },
-      },
-    });
-    const card = invoice.senderCard.account.cards.find(
-      (card) => card.userId === userId,
-    );
-    if (!card && !hasRole) {
-      throw new AppException(InvoiceError.NOT_SENDER);
-    }
-    return invoice;
   }
 
   async checkInvoiceReceiver(
@@ -193,10 +166,10 @@ export class InvoicesService {
       .innerJoin('invoice.senderCard', 'senderCard')
       .innerJoin('senderCard.account', 'senderAccount')
       .innerJoin('senderCard.user', 'senderUser')
-      .innerJoin('invoice.receiverUser', 'receiverUser')
+      .innerJoin('invoice.receiverUser', 'user')
       .leftJoin('invoice.receiverCard', 'receiverCard')
-      .leftJoin('receiverCard.account', 'account')
-      .leftJoin('receiverCard.user', 'user')
+      .leftJoin('receiverCard.account', 'receiverAccount')
+      .leftJoin('receiverCard.user', 'receiverUser')
       .where(
         new Brackets((qb) =>
           qb.where(`${!req.id}`).orWhere('invoice.id = :id', { id: req.id }),
@@ -217,7 +190,7 @@ export class InvoicesService {
               new Brackets((qb) =>
                 qb
                   .where(`${!req.mode || req.mode === Mode.RECEIVER}`)
-                  .andWhere('receiverUser.id = :userId'),
+                  .andWhere('user.id = :userId'),
               ),
             ),
         ),
@@ -307,16 +280,16 @@ export class InvoicesService {
         'senderUser.id',
         'senderUser.nick',
         'senderUser.avatar',
-        'receiverUser.id',
-        'receiverUser.nick',
-        'receiverUser.avatar',
-        'receiverCard.id',
-        'account.id',
-        'account.name',
-        'account.color',
         'user.id',
         'user.nick',
         'user.avatar',
+        'receiverCard.id',
+        'receiverAccount.id',
+        'receiverAccount.name',
+        'receiverAccount.color',
+        'receiverUser.id',
+        'receiverUser.nick',
+        'receiverUser.avatar',
         'invoice.sum',
         'invoice.description',
         'invoice.createdAt',

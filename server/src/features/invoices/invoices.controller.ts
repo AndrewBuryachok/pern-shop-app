@@ -32,27 +32,19 @@ export class InvoicesController {
     return this.invoicesService.getMyInvoices(myId, req);
   }
 
-  @Get('received')
-  getReceivedInvoices(
-    @MyId() myId: number,
-    @Query() req: Request,
-  ): Promise<Response<Invoice>> {
-    return this.invoicesService.getReceivedInvoices(myId, req);
-  }
-
   @Roles(Role.MODER)
   @Get('all')
   getAllInvoices(@Query() req: Request): Promise<Response<Invoice>> {
     return this.invoicesService.getAllInvoices(req);
   }
 
+  @Roles(Role.MODER)
   @Post()
   createInvoice(
     @MyId() myId: number,
-    @HasRole(Role.MODER) hasRole: boolean,
     @Body() dto: CreateInvoiceDto,
   ): Promise<void> {
-    return this.invoicesService.createInvoice({ ...dto, myId, hasRole });
+    return this.invoicesService.createInvoice({ ...dto, myId });
   }
 
   @Post(':invoiceId')
@@ -70,12 +62,9 @@ export class InvoicesController {
     });
   }
 
+  @Roles(Role.MODER)
   @Delete(':invoiceId')
-  deleteInvoice(
-    @MyId() myId: number,
-    @HasRole(Role.MODER) hasRole: boolean,
-    @Param() { invoiceId }: InvoiceIdDto,
-  ): Promise<void> {
-    return this.invoicesService.deleteInvoice({ invoiceId, myId, hasRole });
+  deleteInvoice(@Param() { invoiceId }: InvoiceIdDto): Promise<void> {
+    return this.invoicesService.deleteInvoice(invoiceId);
   }
 }

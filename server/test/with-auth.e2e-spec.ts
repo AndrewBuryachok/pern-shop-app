@@ -645,7 +645,7 @@ describe('With Auth', () => {
     it('POST /invoices', async () => {
       return request(app.getHttpServer())
         .post('/invoices')
-        .set('Authorization', `Bearer ${user.access}`)
+        .set('Authorization', `Bearer ${moder.access}`)
         .send({
           senderCardId: cardId,
           receiverUserId: user.id,
@@ -658,7 +658,7 @@ describe('With Auth', () => {
     it('POST /invoices', async () => {
       return request(app.getHttpServer())
         .post('/invoices')
-        .set('Authorization', `Bearer ${user.access}`)
+        .set('Authorization', `Bearer ${moder.access}`)
         .send({
           senderCardId: cardId,
           receiverUserId: user.id,
@@ -676,13 +676,6 @@ describe('With Auth', () => {
         .then((res) => (invoicesId = res.body.result.map((i) => i.id)));
     });
 
-    it('GET /invoices/received', async () => {
-      return request(app.getHttpServer())
-        .get('/invoices/received')
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
-    });
-
     it('GET /invoices/all', async () => {
       return request(app.getHttpServer())
         .get('/invoices/all')
@@ -693,7 +686,7 @@ describe('With Auth', () => {
     it('DELETE /invoices/:invoiceId', async () => {
       return request(app.getHttpServer())
         .delete(`/invoices/${invoicesId[0]}`)
-        .set('Authorization', `Bearer ${user.access}`)
+        .set('Authorization', `Bearer ${moder.access}`)
         .expect('');
     });
 
