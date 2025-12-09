@@ -89,11 +89,7 @@ export const pages = [
   {
     path: 'invoices',
     element: InvoicesPage,
-    nested: [
-      { path: 'my' },
-      { path: 'received' },
-      { path: 'all', role: Role.MODER },
-    ],
+    nested: [{ path: 'my' }, { path: 'all', role: Role.MODER }],
   },
   {
     path: 'towns',

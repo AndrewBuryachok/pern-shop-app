@@ -3,13 +3,9 @@ import { Mode } from '../../common/enums';
 import {
   useGetAllInvoicesQuery,
   useGetMyInvoicesQuery,
-  useGetReceivedInvoicesQuery,
 } from '../../features/invoices/invoices.api';
 import InvoicesTable from '../../features/invoices/InvoicesTable';
-import {
-  createMyInvoiceButton,
-  createUserInvoiceButton,
-} from '../../features/invoices/CreateInvoiceModal';
+import { createInvoiceButton } from '../../features/invoices/CreateInvoiceModal';
 import {
   completeMyInvoiceAction,
   completeUserInvoiceAction,
@@ -38,17 +34,13 @@ export default function InvoicesPage() {
 
   const response = {
     my: useGetMyInvoicesQuery,
-    received: useGetReceivedInvoicesQuery,
     all: useGetAllInvoicesQuery,
   }[tab]!(search);
 
-  const button = { my: createMyInvoiceButton, all: createUserInvoiceButton }[
-    tab
-  ];
+  const button = { all: createInvoiceButton }[tab];
 
   const actions = {
-    my: [deleteInvoiceAction],
-    received: [completeMyInvoiceAction],
+    my: [completeMyInvoiceAction],
     all: [completeUserInvoiceAction, deleteInvoiceAction],
   }[tab];
 

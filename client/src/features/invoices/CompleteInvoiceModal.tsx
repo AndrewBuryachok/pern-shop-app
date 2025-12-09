@@ -5,6 +5,7 @@ import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { Invoice } from './invoice.model';
+import { getCurrentUser } from '../auth/auth.slice';
 import { useCompleteInvoiceMutation } from './invoices.api';
 import {
   useSelectMyCardsQuery,
@@ -108,7 +109,12 @@ export const completeInvoiceFactory = (hasRole: boolean) => ({
       title: t('actions.complete') + ' ' + t('modals.invoices'),
       children: <CompleteInvoiceModal data={invoice} hasRole={hasRole} />,
     }),
-  disable: (invoice: Invoice) => !!invoice.completedAt,
+  disable: (invoice: Invoice) => {
+    const user = getCurrentUser()!;
+    return (
+      (invoice.receiverUser.id !== user.id && !hasRole) || !!invoice.completedAt
+    );
+  },
   color: Color.GREEN,
 });
 
