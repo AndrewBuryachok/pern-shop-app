@@ -16,7 +16,10 @@ export const isUserHasRole = (roles?: Role[]) => {
   const user = getCurrentUser();
   return (
     user &&
-    (!roles || [...roles, Role.ADMIN].some((role) => user.roles.includes(role)))
+    (!roles ||
+      [...roles, Role.ADMIN, Role.OWNER].some((role) =>
+        user.roles.includes(role),
+      ))
   );
 };
 
