@@ -12,10 +12,10 @@ type Coordinates = {
 export const parseCoordinates = ({ x, y }: Coordinates) =>
   Math.abs(x) <= Math.abs(y)
     ? y >= 0
-      ? Color.GREEN
-      : Color.BLUE
+      ? Color.BLUE
+      : Color.RED
     : x >= 0
-    ? Color.RED
+    ? Color.GREEN
     : Color.YELLOW;
 
 export const parseDate = (date: Date) => ({

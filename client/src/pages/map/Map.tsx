@@ -20,10 +20,10 @@ export default function Map() {
   const theme = useMantineTheme();
 
   const lines = [
-    { x1: '50%', x2: '100%', y1: '50%', y2: '50%' },
-    { x1: '50%', x2: '0%', y1: '50%', y2: '50%' },
-    { x1: '50%', x2: '50%', y1: '50%', y2: '100%' },
     { x1: '50%', x2: '50%', y1: '50%', y2: '0%' },
+    { x1: '50%', x2: '0%', y1: '50%', y2: '50%' },
+    { x1: '50%', x2: '100%', y1: '50%', y2: '50%' },
+    { x1: '50%', x2: '50%', y1: '50%', y2: '100%' },
   ];
 
   const allPlaces = Object.values(PlaceType);
