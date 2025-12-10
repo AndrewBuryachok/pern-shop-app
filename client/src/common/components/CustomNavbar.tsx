@@ -50,6 +50,7 @@ export default function CustomNavbar(props: Props) {
       nested: [
         { label: 'goods' },
         { label: 'purchases', sub: '/my' },
+        { label: 'acquire' },
         { label: 'shops' },
       ],
     },

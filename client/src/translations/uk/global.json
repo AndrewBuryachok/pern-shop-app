@@ -44,7 +44,8 @@
     "purchases": "Покупки",
     "mail": "Пошта",
     "deliveries": "Доставки",
-    "orders": "Замовлення"
+    "orders": "Замовлення",
+    "acquire": "Придбаю"
   },
   "aside": {
     "live": "Наживо",

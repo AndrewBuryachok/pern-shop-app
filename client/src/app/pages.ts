@@ -25,6 +25,7 @@ const GoodsPage = lazy(() => import('../pages/goods/GoodsPage'));
 const PurchasesPage = lazy(() => import('../pages/purchases/PurchasesPage'));
 const DeliveriesPage = lazy(() => import('../pages/deliveries/DeliveriesPage'));
 const OrdersPage = lazy(() => import('../pages/orders/OrdersPage'));
+const AcquirePage = lazy(() => import('../pages/common/AcquirePage'));
 import { Role } from '../common/constants';
 
 export const pages = [
@@ -150,5 +151,6 @@ export const pages = [
       { path: 'all', roles: [Role.MODER] },
     ],
   },
+  { path: 'acquire', element: AcquirePage },
   { path: '*', element: NotFound },
 ];
