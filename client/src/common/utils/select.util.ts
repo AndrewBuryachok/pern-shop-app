@@ -5,10 +5,7 @@ import { SmTown } from '../../features/towns/town.model';
 import { SmShop } from '../../features/shops/shop.model';
 import { SmMarket } from '../../features/markets/market.model';
 import { SmStorage } from '../../features/storages/storage.model';
-import {
-  SmStation,
-  SmStationWithPrice,
-} from '../../features/stations/station.model';
+import { SmStation } from '../../features/stations/station.model';
 import { SmTag } from '../../features/tags/tag.model';
 import { Container } from '../../features/containers/container.model';
 import { SelectRent } from '../../features/rents/rent.model';
@@ -81,14 +78,6 @@ export const selectStations = (stations?: SmStation[]) =>
     ...station,
     value: `${station.id}`,
     label: parsePlace(station),
-  })) || [];
-
-export const selectStationsWithPrice = (stations?: SmStationWithPrice[]) =>
-  stations?.map((station) => ({
-    ...station,
-    value: `${station.id}`,
-    label: `${parsePlace(station)} ${station.price} ${t('constants.currency')}`,
-    group: `${station.price} ${t('constants.currency')}`,
   })) || [];
 
 export const selectTags = (tags?: SmTag[]) =>

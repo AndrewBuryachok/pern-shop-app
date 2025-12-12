@@ -1,5 +1,5 @@
+import { MdStation } from '../stations/station.model';
 import { MdCard } from '../cards/card.model';
-import { SmHire } from '../hires/hire.model';
 
 export interface SmTransportation {
   id: number;
@@ -8,7 +8,8 @@ export interface SmTransportation {
 }
 
 export interface Transportation extends SmTransportation {
-  hire: SmHire;
+  station: MdStation;
+  customerCard: MdCard;
   price: number;
   createdAt: Date;
   completedAt?: Date;

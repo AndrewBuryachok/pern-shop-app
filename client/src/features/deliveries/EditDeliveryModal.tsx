@@ -34,7 +34,7 @@ export default function EditDeliveryModal({ data: delivery, hasRole }: Props) {
     initialValues: {
       deliveryId: delivery.id,
       price: delivery.price,
-      card: `${delivery.hire.card.id}`,
+      card: `${delivery.customerCard.id}`,
     },
     transformValues: ({ card, ...rest }) => ({ ...rest }),
     validate: {
@@ -47,7 +47,7 @@ export default function EditDeliveryModal({ data: delivery, hasRole }: Props) {
   });
 
   const { data: cards, ...cardsResponse } = hasRole
-    ? useSelectUserCardsWithBalanceQuery(delivery.hire.card.user.id)
+    ? useSelectUserCardsWithBalanceQuery(delivery.customerCard.user.id)
     : useSelectMyCardsQuery();
 
   myCard.balance =
@@ -68,9 +68,9 @@ export default function EditDeliveryModal({ data: delivery, hasRole }: Props) {
     >
       <TextInput
         label={t('columns.customer')}
-        icon={<CustomAvatar {...delivery.hire.card.user} />}
+        icon={<CustomAvatar {...delivery.customerCard.user} />}
         iconWidth={48}
-        value={parseCard(delivery.hire.card)}
+        value={parseCard(delivery.customerCard)}
         readOnly
       />
       <TextInput

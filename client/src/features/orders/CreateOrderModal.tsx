@@ -5,7 +5,7 @@ import { NumberInput, Select, Textarea } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { useCreateOrderMutation } from './orders.api';
-import { useSelectFreeStationsQuery } from '../stations/stations.api';
+import { useSelectAllStationsQuery } from '../stations/stations.api';
 import { useSelectAllUsersQuery } from '../users/users.api';
 import {
   useSelectMyCardsQuery,
@@ -25,7 +25,7 @@ import {
   selectCardsWithBalance,
   selectItems,
   selectKits,
-  selectStationsWithPrice,
+  selectStations,
   selectUsers,
 } from '../../common/utils';
 import {
@@ -40,7 +40,6 @@ type Props = { hasRole: boolean };
 export default function CreateOrderModal({ hasRole }: Props) {
   const [t] = useTranslation();
 
-  const station = { price: 0 };
   const myCard = { balance: 0 };
 
   const form = useForm({
@@ -63,15 +62,13 @@ export default function CreateOrderModal({ hasRole }: Props) {
     }),
     validate: {
       card: (_, values) =>
-        myCard.balance < station.price + values.price
-          ? t('errors.not_enough_balance')
-          : null,
+        myCard.balance < values.price ? t('errors.not_enough_balance') : null,
     },
   });
 
   useEffect(() => form.setFieldValue('card', ''), [form.values.user]);
 
-  const { data: stations, ...stationsResponse } = useSelectFreeStationsQuery();
+  const { data: stations, ...stationsResponse } = useSelectAllStationsQuery();
   const { data: users, ...usersResponse } = useSelectAllUsersQuery(undefined, {
     skip: !hasRole,
   });
@@ -83,9 +80,6 @@ export default function CreateOrderModal({ hasRole }: Props) {
 
   const user = users?.find((user) => user.id === +form.values.user);
 
-  station.price =
-    stations?.find((station) => station.id === +form.values.station)?.price ||
-    0;
   myCard.balance =
     cards?.find((card) => card.id === +form.values.card)?.account.balance || 0;
 
@@ -106,7 +100,7 @@ export default function CreateOrderModal({ hasRole }: Props) {
         placeholder={t('columns.station')}
         rightSection={<RefetchAction {...stationsResponse} />}
         itemComponent={PlacesItem}
-        data={selectStationsWithPrice(stations)}
+        data={selectStations(stations)}
         limit={20}
         searchable
         required
@@ -132,9 +126,9 @@ export default function CreateOrderModal({ hasRole }: Props) {
       <Select
         label={t('columns.card')}
         placeholder={t('columns.card')}
-        description={`${t('information.decrease')} ${
-          station.price + form.values.price
-        } ${t('constants.currency')}`}
+        description={`${t('information.decrease')} ${form.values.price} ${t(
+          'constants.currency',
+        )}`}
         rightSection={
           <RefetchAction
             {...cardsResponse}
@@ -196,7 +190,7 @@ export default function CreateOrderModal({ hasRole }: Props) {
         placeholder={t('columns.price')}
         required
         min={1}
-        max={customMin(MAX_PRICE_VALUE, myCard.balance - station.price)}
+        max={customMin(MAX_PRICE_VALUE, myCard.balance)}
         {...form.getInputProps('price')}
       />
     </CustomForm>

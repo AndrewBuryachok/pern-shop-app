@@ -1,11 +1,6 @@
 import { emptyApi } from '../../app/empty.api';
 import { IRequest, IResponse } from '../../common/interfaces';
-import {
-  MyStation,
-  SmStation,
-  SmStationWithPrice,
-  Station,
-} from './station.model';
+import { SmStation, Station } from './station.model';
 import { State } from '../states/state.model';
 import { CreateStationDto, EditStationDto } from './station.dto';
 import { getQuery } from '../../common/utils';
@@ -30,29 +25,11 @@ export const stationsApi = emptyApi.injectEndpoints({
       }),
       providesTags: ['Auth', 'Station'],
     }),
-    selectMainStations: build.query<SmStation[], void>({
-      query: () => ({
-        url: '/stations/main/select',
-      }),
-      providesTags: ['Station'],
-    }),
-    selectMyStations: build.query<MyStation[], void>({
-      query: () => ({
-        url: '/stations/my/select',
-      }),
-      providesTags: ['Auth', 'Station', 'Box'],
-    }),
-    selectAllStations: build.query<MyStation[], void>({
+    selectAllStations: build.query<SmStation[], void>({
       query: () => ({
         url: '/stations/all/select',
       }),
-      providesTags: ['Auth', 'Station', 'Box'],
-    }),
-    selectFreeStations: build.query<SmStationWithPrice[], void>({
-      query: () => ({
-        url: '/stations/free/select',
-      }),
-      providesTags: ['Station', 'Box'],
+      providesTags: ['Station'],
     }),
     selectStationStates: build.query<State[], number>({
       query: (stationId) => ({
@@ -83,10 +60,7 @@ export const {
   useGetMainStationsQuery,
   useGetMyStationsQuery,
   useGetAllStationsQuery,
-  useSelectMainStationsQuery,
-  useSelectMyStationsQuery,
   useSelectAllStationsQuery,
-  useSelectFreeStationsQuery,
   useSelectStationStatesQuery,
   useCreateStationMutation,
   useEditStationMutation,

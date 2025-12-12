@@ -42,7 +42,6 @@ export default function DeliveriesPage() {
     storage: searchParams.get('storage'),
     cell: searchParams.get('cell'),
     station: searchParams.get('station'),
-    box: searchParams.get('box'),
     item: searchParams.get('item'),
     description: searchParams.get('description') || '',
     minAmount: +(searchParams.get('minAmount') || 0) || null,

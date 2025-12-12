@@ -57,8 +57,6 @@ export default function CustomNavbar(props: Props) {
       nested: [
         { label: 'deliveries' },
         { label: 'orders' },
-        { label: 'hires' },
-        { label: 'boxes' },
         { label: 'stations' },
       ],
     },

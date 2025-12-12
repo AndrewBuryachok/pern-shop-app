@@ -41,9 +41,9 @@ export default function DeleteOrderModal({ data: order }: Props) {
         description={`${t('information.increase')} ${order.price} ${t(
           'constants.currency',
         )}`}
-        icon={<CustomAvatar {...order.hire.card.user} />}
+        icon={<CustomAvatar {...order.customerCard.user} />}
         iconWidth={48}
-        value={parseCard(order.hire.card)}
+        value={parseCard(order.customerCard)}
         readOnly
       />
       <TextInput

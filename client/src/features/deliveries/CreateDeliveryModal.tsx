@@ -10,7 +10,7 @@ import {
   useSelectMyPurchasesQuery,
   useSelectUserPurchasesQuery,
 } from '../purchases/purchases.api';
-import { useSelectFreeStationsQuery } from '../stations/stations.api';
+import { useSelectAllStationsQuery } from '../stations/stations.api';
 import {
   useSelectMyCardsQuery,
   useSelectUserCardsWithBalanceQuery,
@@ -28,7 +28,7 @@ import {
   customMin,
   selectCardsWithBalance,
   selectPurchases,
-  selectStationsWithPrice,
+  selectStations,
   selectUsers,
 } from '../../common/utils';
 import { MAX_PRICE_VALUE } from '../../common/constants';
@@ -39,7 +39,6 @@ export default function CreateDeliveryModal({ hasRole }: Props) {
   const [t] = useTranslation();
 
   const myCard = { balance: 0 };
-  const station = { price: 0 };
 
   const form = useForm({
     initialValues: {
@@ -57,9 +56,7 @@ export default function CreateDeliveryModal({ hasRole }: Props) {
     }),
     validate: {
       card: (_, values) =>
-        myCard.balance < station.price + values.price
-          ? t('errors.not_enough_balance')
-          : null,
+        myCard.balance < values.price ? t('errors.not_enough_balance') : null,
     },
   });
 
@@ -76,7 +73,7 @@ export default function CreateDeliveryModal({ hasRole }: Props) {
         skip: !form.values.user,
       })
     : useSelectMyPurchasesQuery();
-  const { data: stations, ...stationsResponse } = useSelectFreeStationsQuery();
+  const { data: stations, ...stationsResponse } = useSelectAllStationsQuery();
   const { data: cards, ...cardsResponse } = hasRole
     ? useSelectUserCardsWithBalanceQuery(+form.values.user, {
         skip: !form.values.user,
@@ -88,9 +85,6 @@ export default function CreateDeliveryModal({ hasRole }: Props) {
     (purchase) => purchase.id === +form.values.purchase,
   );
 
-  station.price =
-    stations?.find((station) => station.id === +form.values.station)?.price ||
-    0;
   myCard.balance =
     cards?.find((card) => card.id === +form.values.card)?.account.balance || 0;
 
@@ -146,7 +140,7 @@ export default function CreateDeliveryModal({ hasRole }: Props) {
         placeholder={t('columns.station')}
         rightSection={<RefetchAction {...stationsResponse} />}
         itemComponent={PlacesItem}
-        data={selectStationsWithPrice(stations)}
+        data={selectStations(stations)}
         limit={20}
         searchable
         required
@@ -156,9 +150,9 @@ export default function CreateDeliveryModal({ hasRole }: Props) {
       <Select
         label={t('columns.card')}
         placeholder={t('columns.card')}
-        description={`${t('information.decrease')} ${
-          station.price + form.values.price
-        } ${t('constants.currency')}`}
+        description={`${t('information.decrease')} ${form.values.price} ${t(
+          'constants.currency',
+        )}`}
         rightSection={
           <RefetchAction
             {...cardsResponse}
@@ -178,7 +172,7 @@ export default function CreateDeliveryModal({ hasRole }: Props) {
         placeholder={t('columns.price')}
         required
         min={1}
-        max={customMin(MAX_PRICE_VALUE, myCard.balance - station.price)}
+        max={customMin(MAX_PRICE_VALUE, myCard.balance)}
         {...form.getInputProps('price')}
       />
     </CustomForm>

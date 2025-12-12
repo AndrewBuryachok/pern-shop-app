@@ -4,11 +4,8 @@ export interface SmReceipt {
   id: number;
 }
 
-export interface MdReceipt extends SmReceipt {
+export interface Receipt extends SmReceipt {
   card: MdCard;
-}
-
-export interface Receipt extends MdReceipt {
   sum: number;
   createdAt: Date;
   completedAt: Date;

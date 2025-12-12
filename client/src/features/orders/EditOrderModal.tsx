@@ -45,7 +45,7 @@ export default function EditOrderModal({ data: order, hasRole }: Props) {
       intake: order.intake,
       kit: `${order.kit}`,
       price: order.price,
-      card: `${order.hire.card.id}`,
+      card: `${order.customerCard.id}`,
     },
     transformValues: ({ kit, card, ...rest }) => ({ ...rest, kit: +kit }),
     validate: {
@@ -58,7 +58,7 @@ export default function EditOrderModal({ data: order, hasRole }: Props) {
   });
 
   const { data: cards, ...cardsResponse } = hasRole
-    ? useSelectUserCardsWithBalanceQuery(order.hire.card.user.id)
+    ? useSelectUserCardsWithBalanceQuery(order.customerCard.user.id)
     : useSelectMyCardsQuery();
 
   myCard.balance =

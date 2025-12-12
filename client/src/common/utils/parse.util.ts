@@ -3,7 +3,6 @@ import { MdCard } from '../../features/cards/card.model';
 import { SmPlace } from '../../features/places/place.model';
 import { MdStall } from '../../features/stalls/stall.model';
 import { MdCell } from '../../features/cells/cell.model';
-import { MdBox } from '../../features/boxes/box.model';
 import { SmPurchaseWithoutPrice } from '../../features/purchases/purchase.model';
 import { Color, kits, statuses } from '../constants';
 
@@ -43,9 +42,6 @@ export const parseStall = (stall: MdStall) =>
 
 export const parseCell = (cell: MdCell) =>
   `${parsePlace(cell.storage)} #${cell.name}`;
-
-export const parseBox = (box: MdBox) =>
-  `${parsePlace(box.station)} #${box.name}`;
 
 export const parseItem = (item: string) => t(`constants.items.${item}`);
 

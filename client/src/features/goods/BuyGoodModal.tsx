@@ -21,7 +21,7 @@ import {
   useSelectMyCardsQuery,
   useSelectUserCardsWithBalanceQuery,
 } from '../cards/cards.api';
-import { useSelectFreeStationsQuery } from '../stations/stations.api';
+import { useSelectAllStationsQuery } from '../stations/stations.api';
 import { CreatePurchaseDto } from '../purchases/purchase.dto';
 import CustomForm from '../../common/components/CustomForm';
 import RefetchAction from '../../common/components/RefetchAction';
@@ -37,7 +37,7 @@ import {
   parseThingAmount,
   selectCardsWithBalance,
   selectDeliveries,
-  selectStationsWithPrice,
+  selectStations,
   selectUsers,
 } from '../../common/utils';
 import { Color, MAX_PRICE_VALUE } from '../../common/constants';
@@ -48,7 +48,6 @@ export default function BuyGoodModal({ data: good, hasRole }: Props) {
   const [t] = useTranslation();
 
   const myCard = { balance: 0 };
-  const station = { price: 0 };
 
   const form = useForm({
     initialValues: {
@@ -68,8 +67,7 @@ export default function BuyGoodModal({ data: good, hasRole }: Props) {
     }),
     validate: {
       card: (_, values) =>
-        myCard.balance <
-        values.amount * good.price + station.price + values.price
+        myCard.balance < values.amount * good.price + values.price
           ? t('errors.not_enough_balance')
           : null,
     },
@@ -90,7 +88,7 @@ export default function BuyGoodModal({ data: good, hasRole }: Props) {
         skip: !form.values.user,
       })
     : useSelectMyCardsQuery();
-  const { data: stations, ...stationsResponse } = useSelectFreeStationsQuery(
+  const { data: stations, ...stationsResponse } = useSelectAllStationsQuery(
     undefined,
     { skip: !+form.values.delivery },
   );
@@ -99,13 +97,7 @@ export default function BuyGoodModal({ data: good, hasRole }: Props) {
   const card = cards?.find((card) => card.id === +form.values.card);
   myCard.balance = card?.account.balance || 0;
   const maxAmount =
-    card &&
-    Math.floor(
-      (card.account.balance - station.price - form.values.price) / good.price,
-    );
-  station.price =
-    stations?.find((station) => station.id === +form.values.station)?.price ||
-    0;
+    card && Math.floor((card.account.balance - form.values.price) / good.price);
 
   const [createPurchase, { isLoading }] = useCreatePurchaseMutation();
 
@@ -168,7 +160,7 @@ export default function BuyGoodModal({ data: good, hasRole }: Props) {
         label={t('columns.card')}
         placeholder={t('columns.card')}
         description={`${t('information.decrease')} ${
-          form.values.amount * good.price + station.price + form.values.price
+          form.values.amount * good.price + form.values.price
         } ${t('constants.currency')}`}
         rightSection={
           <RefetchAction
@@ -217,7 +209,7 @@ export default function BuyGoodModal({ data: good, hasRole }: Props) {
             placeholder={t('columns.station')}
             rightSection={<RefetchAction {...stationsResponse} />}
             itemComponent={PlacesItem}
-            data={selectStationsWithPrice(stations)}
+            data={selectStations(stations)}
             limit={20}
             searchable
             required
@@ -231,9 +223,7 @@ export default function BuyGoodModal({ data: good, hasRole }: Props) {
             min={1}
             max={customMin(
               MAX_PRICE_VALUE,
-              (card?.account.balance || 0) -
-                form.values.amount * good.price -
-                station.price,
+              myCard.balance - form.values.amount * good.price,
             )}
             {...form.getInputProps('price')}
           />

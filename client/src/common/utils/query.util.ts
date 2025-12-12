@@ -49,9 +49,6 @@ export const getQuery = (req: IRequest) => {
   if (req?.cell) {
     query.append('cell', req.cell);
   }
-  if (req?.box) {
-    query.append('box', req.box);
-  }
   if (req?.item) {
     query.append('item', req.item);
   }

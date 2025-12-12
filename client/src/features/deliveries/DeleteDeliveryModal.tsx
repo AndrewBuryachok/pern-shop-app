@@ -41,9 +41,9 @@ export default function DeleteDeliveryModal({ data: delivery }: Props) {
         description={`${t('information.increase')} ${delivery.price} ${t(
           'constants.currency',
         )}`}
-        icon={<CustomAvatar {...delivery.hire.card.user} />}
+        icon={<CustomAvatar {...delivery.customerCard.user} />}
         iconWidth={48}
-        value={parseCard(delivery.hire.card)}
+        value={parseCard(delivery.customerCard)}
         readOnly
       />
       <TextInput

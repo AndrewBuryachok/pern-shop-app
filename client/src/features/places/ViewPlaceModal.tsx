@@ -8,7 +8,6 @@ import { useSelectTownUsersQuery } from '../towns/towns.api';
 import { useSelectShopGoodsQuery } from '../shops/shops.api';
 import { useSelectMarketStallsQuery } from '../stalls/stalls.api';
 import { useSelectStorageCellsQuery } from '../cells/cells.api';
-import { useSelectStationBoxesQuery } from '../boxes/boxes.api';
 import RefetchAction from '../../common/components/RefetchAction';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import { UsersItem } from '../../common/components/UsersItem';
@@ -47,10 +46,6 @@ export default function PlaceModal({ data: place }: Props) {
   const { data: cells, ...cellsResponse } = useSelectStorageCellsQuery(
     place.id,
     { skip: place.type !== PlaceType.STORAGES },
-  );
-  const { data: boxes, ...boxesResponse } = useSelectStationBoxesQuery(
-    place.id,
-    { skip: place.type !== PlaceType.STATIONS },
   );
 
   return (
@@ -123,17 +118,6 @@ export default function PlaceModal({ data: place }: Props) {
           rightSection={<RefetchAction {...cellsResponse} />}
           itemComponent={component}
           data={viewContainers(cells || [])}
-          limit={20}
-          searchable
-        />
-      )}
-      {place.type === PlaceType.STATIONS && (
-        <Select
-          label={t('columns.boxes')}
-          placeholder={`${t('components.total')}: ${boxes?.length || 0}`}
-          rightSection={<RefetchAction {...boxesResponse} />}
-          itemComponent={component}
-          data={viewContainers(boxes || [])}
           limit={20}
           searchable
         />

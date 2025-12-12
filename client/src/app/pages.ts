@@ -30,10 +30,8 @@ const StoragesTagsPage = lazy(
 );
 const StallsPage = lazy(() => import('../pages/stalls/StallsPage'));
 const CellsPage = lazy(() => import('../pages/cells/CellsPage'));
-const BoxesPage = lazy(() => import('../pages/boxes/BoxesPage'));
 const RentsPage = lazy(() => import('../pages/rents/RentsPage'));
 const LeasesPage = lazy(() => import('../pages/leases/LeasesPage'));
-const HiresPage = lazy(() => import('../pages/hires/HiresPage'));
 const GoodsPage = lazy(() => import('../pages/goods/GoodsPage'));
 const PurchasesPage = lazy(() => import('../pages/purchases/PurchasesPage'));
 const DeliveriesPage = lazy(() => import('../pages/deliveries/DeliveriesPage'));
@@ -188,15 +186,6 @@ export const pages = [
     ],
   },
   {
-    path: 'boxes',
-    element: BoxesPage,
-    nested: [
-      { index: true },
-      { path: 'my' },
-      { path: 'all', role: Role.MODER },
-    ],
-  },
-  {
     path: 'rents',
     element: RentsPage,
     nested: [
@@ -209,16 +198,6 @@ export const pages = [
   {
     path: 'leases',
     element: LeasesPage,
-    nested: [
-      { index: true },
-      { path: 'my' },
-      { path: 'received' },
-      { path: 'all', role: Role.MODER },
-    ],
-  },
-  {
-    path: 'hires',
-    element: HiresPage,
     nested: [
       { index: true },
       { path: 'my' },

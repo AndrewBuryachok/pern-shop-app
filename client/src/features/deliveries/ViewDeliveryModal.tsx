@@ -7,7 +7,6 @@ import { Delivery } from './delivery.model';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import ThingImage from '../../common/components/ThingImage';
 import {
-  parseBox,
   parseCard,
   parseCell,
   parseItem,
@@ -29,9 +28,9 @@ export default function ViewDeliveryModal({ data: delivery }: Props) {
       <TextInput label={t('columns.id')} value={delivery.id} readOnly />
       <TextInput
         label={t('columns.customer')}
-        icon={<CustomAvatar {...delivery.hire.card.user} />}
+        icon={<CustomAvatar {...delivery.customerCard.user} />}
         iconWidth={48}
-        value={parseCard(delivery.hire.card)}
+        value={parseCard(delivery.customerCard)}
         readOnly
       />
       <TextInput
@@ -130,14 +129,14 @@ export default function ViewDeliveryModal({ data: delivery }: Props) {
       )}
       <TextInput
         label={t('columns.station')}
-        value={parseBox(delivery.hire.box)}
+        value={parsePlace(delivery.station)}
         readOnly
       />
       <TextInput
         label={t('columns.owner')}
-        icon={<CustomAvatar {...delivery.hire.box.station.card.user} />}
+        icon={<CustomAvatar {...delivery.station.card.user} />}
         iconWidth={48}
-        value={parseCard(delivery.hire.box.station.card)}
+        value={parseCard(delivery.station.card)}
         readOnly
       />
       <TextInput

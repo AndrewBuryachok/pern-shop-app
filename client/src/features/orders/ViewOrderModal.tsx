@@ -7,9 +7,9 @@ import { Order } from './order.model';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import ThingImage from '../../common/components/ThingImage';
 import {
-  parseBox,
   parseCard,
   parseItem,
+  parsePlace,
   parseStatus,
   parseThingAmount,
   parseTime,
@@ -26,9 +26,9 @@ export default function ViewOrderModal({ data: order }: Props) {
       <TextInput label={t('columns.id')} value={order.id} readOnly />
       <TextInput
         label={t('columns.customer')}
-        icon={<CustomAvatar {...order.hire.card.user} />}
+        icon={<CustomAvatar {...order.customerCard.user} />}
         iconWidth={48}
-        value={parseCard(order.hire.card)}
+        value={parseCard(order.customerCard)}
         readOnly
       />
       <TextInput
@@ -69,14 +69,14 @@ export default function ViewOrderModal({ data: order }: Props) {
       />
       <TextInput
         label={t('columns.station')}
-        value={parseBox(order.hire.box)}
+        value={parsePlace(order.station)}
         readOnly
       />
       <TextInput
         label={t('columns.owner')}
-        icon={<CustomAvatar {...order.hire.box.station.card.user} />}
+        icon={<CustomAvatar {...order.station.card.user} />}
         iconWidth={48}
-        value={parseCard(order.hire.box.station.card)}
+        value={parseCard(order.station.card)}
         readOnly
       />
       <TextInput

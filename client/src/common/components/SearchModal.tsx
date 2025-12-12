@@ -25,7 +25,7 @@ import { useSelectAllTownsQuery } from '../../features/towns/towns.api';
 import { useSelectAllShopsQuery } from '../../features/shops/shops.api';
 import { useSelectMainMarketsQuery } from '../../features/markets/markets.api';
 import { useSelectMainStoragesQuery } from '../../features/storages/storages.api';
-import { useSelectMainStationsQuery } from '../../features/stations/stations.api';
+import { useSelectAllStationsQuery } from '../../features/stations/stations.api';
 import { useSelectMarketTagsQuery } from '../../features/markets-tags/markets-tags.api';
 import { useSelectStorageTagsQuery } from '../../features/storages-tags/storages-tags.api';
 import {
@@ -36,7 +36,6 @@ import {
   useSelectStorageCellsQuery,
   useSelectTagCellsQuery,
 } from '../../features/cells/cells.api';
-import { useSelectStationBoxesQuery } from '../../features/boxes/boxes.api';
 import CustomForm from './CustomForm';
 import RefetchAction from './RefetchAction';
 import CustomAvatar from './CustomAvatar';
@@ -168,12 +167,6 @@ export default function SearchModal(props: Props) {
     }
   }, [form.values.storageTag]);
 
-  useEffect(() => {
-    if (form.values.box !== undefined) {
-      form.setFieldValue('box', null);
-    }
-  }, [form.values.station]);
-
   useEffect(form.reset, []);
 
   const { data: users, ...usersResponse } = useSelectAllUsersQuery();
@@ -195,7 +188,7 @@ export default function SearchModal(props: Props) {
     undefined,
     { skip: props.search.storage === undefined },
   );
-  const { data: stations, ...stationsResponse } = useSelectMainStationsQuery(
+  const { data: stations, ...stationsResponse } = useSelectAllStationsQuery(
     undefined,
     { skip: props.search.station === undefined },
   );
@@ -221,10 +214,6 @@ export default function SearchModal(props: Props) {
     : useSelectStorageCellsQuery(+(form.values.storage || ''), {
         skip: props.search.cell === undefined || !form.values.storage,
       });
-  const { data: boxes, ...boxesResponse } = useSelectStationBoxesQuery(
-    +(form.values.station || ''),
-    { skip: props.search.box === undefined || !form.values.station },
-  );
 
   const user = users?.find((user) => user.id === +form.values.user!);
 
@@ -444,21 +433,6 @@ export default function SearchModal(props: Props) {
           allowDeselect
           readOnly={cellsResponse.isFetching}
           {...form.getInputProps('cell')}
-        />
-      )}
-      {props.search.box !== undefined && (
-        <Select
-          label={t('columns.box')}
-          placeholder={`${t('components.total')}: ${boxes?.length || 0}`}
-          rightSection={
-            <RefetchAction {...boxesResponse} skip={!form.values.station} />
-          }
-          data={selectContainers(boxes)}
-          limit={20}
-          searchable
-          allowDeselect
-          readOnly={boxesResponse.isFetching}
-          {...form.getInputProps('box')}
         />
       )}
       {props.search.item !== undefined && (
