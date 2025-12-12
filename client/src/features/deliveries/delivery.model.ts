@@ -1,18 +1,11 @@
-import { MdCard } from '../cards/card.model';
+import {
+  SmTransportation,
+  Transportation,
+} from '../transportations/transportation.model';
 import { SmPurchaseWithoutPrice } from '../purchases/purchase.model';
-import { SmHire } from '../hires/hire.model';
 
-export interface SmDelivery {
-  id: number;
-  status: number;
-  executorCard?: MdCard;
-}
+export interface SmDelivery extends SmTransportation {}
 
-export interface Delivery extends SmDelivery {
+export interface Delivery extends Transportation {
   purchase: SmPurchaseWithoutPrice;
-  hire: SmHire;
-  price: number;
-  createdAt: Date;
-  completedAt?: Date;
-  rate?: number;
 }

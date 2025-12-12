@@ -1,8 +1,8 @@
-import { EditStateDto } from '../states/state.dto';
 import {
   CompleteTransportationDto,
   TakeTransportationDto,
 } from '../transportations/transportation.dto';
+import { EditStateDto } from '../states/state.dto';
 
 export interface CreateDeliveryDto extends EditStateDto {
   purchaseId: number;
