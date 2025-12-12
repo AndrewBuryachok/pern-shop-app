@@ -23,10 +23,8 @@ import { StorageTagState } from '../../features/storages-tags/storage-tag-state.
 import { StationState } from '../../features/stations/station-state.entity';
 import { Stall } from '../../features/stalls/stall.entity';
 import { Cell } from '../../features/cells/cell.entity';
-import { Box } from '../../features/boxes/box.entity';
 import { Rent } from '../../features/rents/rent.entity';
 import { Lease } from '../../features/leases/lease.entity';
-import { Hire } from '../../features/hires/hire.entity';
 import { Good } from '../../features/goods/good.entity';
 import { GoodState } from '../../features/goods/good-state.entity';
 import { Purchase } from '../../features/purchases/purchase.entity';
@@ -190,7 +188,6 @@ export default class AppSeed implements Seeder {
     const stations = await factory(Station)()
       .map(async (station) => {
         station.card = faker.helpers.arrayElement(cards);
-        station.boxes = [];
         return station;
       })
       .makeMany(10);
@@ -248,14 +245,6 @@ export default class AppSeed implements Seeder {
         return cell;
       })
       .makeMany(40);
-    const boxes = await factory(Box)()
-      .map(async (box) => {
-        box.station = faker.helpers.arrayElement(stations);
-        box.station.boxes.push(box);
-        box.name = box.station.boxes.length;
-        return box;
-      })
-      .makeMany(60);
     id = 1;
     const rents = await factory(Rent)()
       .map(async (rent) => {
@@ -306,31 +295,6 @@ export default class AppSeed implements Seeder {
         return lease;
       })
       .makeMany(10);
-    id = 1;
-    const hires = await factory(Hire)()
-      .map(async (hire) => {
-        hire.box = faker.helpers.arrayElement(
-          boxes.filter((box) => !box.reservedUntil),
-        );
-        hire.box.reservedUntil = getDateWeekAfter();
-        hire.card = faker.helpers.arrayElement(
-          cards.filter(
-            (card) => card.account.balance >= hire.box.station.price,
-          ),
-        );
-        hire.sum = hire.box.station.price;
-        const payment = await factory(Payment)().make({
-          senderCard: hire.card,
-          receiverCard: hire.box.station.card,
-          sum: hire.box.station.price,
-          description: `оренда ящика ${id++}`,
-        });
-        payments.push(payment);
-        hire.card.account.balance -= hire.box.station.price;
-        hire.box.station.card.account.balance += hire.box.station.price;
-        return hire;
-      })
-      .makeMany(40);
     const goods = await factory(Good)()
       .map(async (good) => {
         switch (Math.floor(Math.random() * 3)) {
@@ -390,21 +354,21 @@ export default class AppSeed implements Seeder {
       })
       .makeMany(60);
     let purchaseId = 0;
-    let hireId = 0;
     id = 1;
     const deliveries = await factory(Delivery)()
       .map(async (delivery) => {
+        delivery.station = faker.helpers.arrayElement(stations);
+        delivery.customerCard = faker.helpers.arrayElement(cards);
         delivery.purchase = purchases[purchaseId++];
-        delivery.hire = hires[hireId++];
-        const maxPrice = delivery.hire.card.account.balance / 2;
+        const maxPrice = delivery.customerCard.account.balance / 2;
         delivery.price = Math.floor(Math.random() * maxPrice) + 1;
-        delivery.hire.card.account.balance -= delivery.price;
+        delivery.customerCard.account.balance -= delivery.price;
         if (delivery.status !== Status.CREATED) {
           delivery.executorCard = faker.helpers.arrayElement(cards);
         }
         if (delivery.status === Status.COMPLETED) {
           const payment = await factory(Payment)().make({
-            senderCard: delivery.hire.card,
+            senderCard: delivery.customerCard,
             receiverCard: delivery.executorCard,
             sum: delivery.price,
             description: `виконання доставки ${id}`,
@@ -419,16 +383,17 @@ export default class AppSeed implements Seeder {
     id = 1;
     const orders = await factory(Order)()
       .map(async (order) => {
-        order.hire = hires[hireId++];
-        const maxPrice = order.hire.card.account.balance / 2;
+        order.station = faker.helpers.arrayElement(stations);
+        order.customerCard = faker.helpers.arrayElement(cards);
+        const maxPrice = order.customerCard.account.balance / 2;
         order.price = Math.floor(Math.random() * maxPrice) + 1;
-        order.hire.card.account.balance -= order.price;
+        order.customerCard.account.balance -= order.price;
         if (order.status !== Status.CREATED) {
           order.executorCard = faker.helpers.arrayElement(cards);
         }
         if (order.status === Status.COMPLETED) {
           const payment = await factory(Payment)().make({
-            senderCard: order.hire.card,
+            senderCard: order.customerCard,
             receiverCard: order.executorCard,
             sum: order.price,
             description: `виконання замовлення ${id}`,
@@ -505,10 +470,6 @@ export default class AppSeed implements Seeder {
       .map(async () => cells[id++])
       .createMany(cells.length);
     id = 0;
-    await factory(Box)()
-      .map(async () => boxes[id++])
-      .createMany(boxes.length);
-    id = 0;
     await factory(Rent)()
       .map(async () => rents[id++])
       .createMany(rents.length);
@@ -516,10 +477,6 @@ export default class AppSeed implements Seeder {
     await factory(Lease)()
       .map(async () => leases[id++])
       .createMany(leases.length);
-    id = 0;
-    await factory(Hire)()
-      .map(async () => hires[id++])
-      .createMany(hires.length);
     id = 0;
     await factory(Good)()
       .map(async () => goods[id++])

@@ -38,10 +38,8 @@ describe('With Auth', () => {
   let storageTagId: number;
   let stallId: number;
   let cellId: number;
-  let boxId: number;
   let rentId: number;
   let leaseId: number;
-  let hireId: number;
   let shopGoodsId: number[];
   let marketGoodsId: number[];
   let storageGoodsId: number[];
@@ -1133,23 +1131,9 @@ describe('With Auth', () => {
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
 
-    it('GET /stations/main/select', async () => {
-      return request(app.getHttpServer())
-        .get('/stations/main/select')
-        .expect((res) => expect(res.body.length).toBeGreaterThan(0));
-    });
-
-    it('GET /stations/my/select', async () => {
-      return request(app.getHttpServer())
-        .get('/stations/my/select')
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect((res) => expect(res.body.length).toBeGreaterThan(0));
-    });
-
     it('GET /stations/all/select', async () => {
       return request(app.getHttpServer())
         .get('/stations/all/select')
-        .set('Authorization', `Bearer ${moder.access}`)
         .expect((res) => expect(res.body.length).toBeGreaterThan(0));
     });
 
@@ -1385,159 +1369,6 @@ describe('With Auth', () => {
       return request(app.getHttpServer())
         .get(`/cells/${cellId}/tag`)
         .expect((res) => expect(res.body.id).toBeGreaterThan(0));
-    });
-  });
-
-  describe('Boxes', () => {
-    it('POST /boxes', async () => {
-      return request(app.getHttpServer())
-        .post('/boxes')
-        .set('Authorization', `Bearer ${user.access}`)
-        .send({ stationId })
-        .expect('');
-    });
-
-    it('POST /boxes', async () => {
-      return request(app.getHttpServer())
-        .post('/boxes')
-        .set('Authorization', `Bearer ${user.access}`)
-        .send({ stationId })
-        .expect('');
-    });
-
-    it('POST /boxes', async () => {
-      return request(app.getHttpServer())
-        .post('/boxes')
-        .set('Authorization', `Bearer ${user.access}`)
-        .send({ stationId })
-        .expect('');
-    });
-
-    it('POST /boxes', async () => {
-      return request(app.getHttpServer())
-        .post('/boxes')
-        .set('Authorization', `Bearer ${user.access}`)
-        .send({ stationId })
-        .expect('');
-    });
-
-    it('POST /boxes', async () => {
-      return request(app.getHttpServer())
-        .post('/boxes')
-        .set('Authorization', `Bearer ${user.access}`)
-        .send({ stationId })
-        .expect('');
-    });
-
-    it('POST /boxes', async () => {
-      return request(app.getHttpServer())
-        .post('/boxes')
-        .set('Authorization', `Bearer ${user.access}`)
-        .send({ stationId })
-        .expect('');
-    });
-
-    it('POST /boxes', async () => {
-      return request(app.getHttpServer())
-        .post('/boxes')
-        .set('Authorization', `Bearer ${user.access}`)
-        .send({ stationId })
-        .expect('');
-    });
-
-    it('POST /boxes', async () => {
-      return request(app.getHttpServer())
-        .post('/boxes')
-        .set('Authorization', `Bearer ${user.access}`)
-        .send({ stationId })
-        .expect('');
-    });
-
-    it('POST /boxes', async () => {
-      return request(app.getHttpServer())
-        .post('/boxes')
-        .set('Authorization', `Bearer ${user.access}`)
-        .send({ stationId })
-        .expect('');
-    });
-
-    it('POST /boxes', async () => {
-      return request(app.getHttpServer())
-        .post('/boxes')
-        .set('Authorization', `Bearer ${user.access}`)
-        .send({ stationId })
-        .expect('');
-    });
-
-    it('POST /boxes', async () => {
-      return request(app.getHttpServer())
-        .post('/boxes')
-        .set('Authorization', `Bearer ${user.access}`)
-        .send({ stationId })
-        .expect('');
-    });
-
-    it('POST /boxes', async () => {
-      return request(app.getHttpServer())
-        .post('/boxes')
-        .set('Authorization', `Bearer ${user.access}`)
-        .send({ stationId })
-        .expect('');
-    });
-
-    it('POST /boxes', async () => {
-      return request(app.getHttpServer())
-        .post('/boxes')
-        .set('Authorization', `Bearer ${user.access}`)
-        .send({ stationId })
-        .expect('');
-    });
-
-    it('POST /boxes', async () => {
-      return request(app.getHttpServer())
-        .post('/boxes')
-        .set('Authorization', `Bearer ${user.access}`)
-        .send({ stationId })
-        .expect('');
-    });
-
-    it('GET /boxes', async () => {
-      return request(app.getHttpServer())
-        .get('/boxes')
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
-    });
-
-    it('GET /boxes/my', async () => {
-      return request(app.getHttpServer())
-        .get('/boxes/my')
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0))
-        .then((res) => (boxId = res.body.result[0].id));
-    });
-
-    it('GET /boxes/all', async () => {
-      return request(app.getHttpServer())
-        .get('/boxes/all')
-        .set('Authorization', `Bearer ${moder.access}`)
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
-    });
-
-    it('GET /boxes/:stationId/select', async () => {
-      return request(app.getHttpServer())
-        .get(`/boxes/${stationId}/select`)
-        .expect((res) => expect(res.body.length).toBeGreaterThan(0));
-    });
-
-    it('GET /boxes/:boxId/station', async () => {
-      return request(app.getHttpServer())
-        .get(`/boxes/${boxId}/station`)
-        .expect((res) => expect(res.body.id).toBeGreaterThan(0));
-    });
-
-    it('GET /stations/free/select', async () => {
-      return request(app.getHttpServer())
-        .get('/stations/free/select')
-        .expect((res) => expect(res.body.length).toBeGreaterThan(0));
     });
   });
 
@@ -2617,81 +2448,6 @@ describe('With Auth', () => {
         .delete(`/orders/${ordersId[1]}`)
         .set('Authorization', `Bearer ${user.access}`)
         .expect('');
-    });
-  });
-
-  describe('Hires', () => {
-    it('POST /boxes', async () => {
-      return request(app.getHttpServer())
-        .post('/boxes')
-        .set('Authorization', `Bearer ${user.access}`)
-        .send({ stationId })
-        .expect('');
-    });
-
-    it('POST /orders', async () => {
-      return request(app.getHttpServer())
-        .post('/orders')
-        .set('Authorization', `Bearer ${user.access}`)
-        .send({
-          stationId,
-          cardId,
-          item: Item.STONE,
-          description: '',
-          amount: 1,
-          intake: 1,
-          kit: 1,
-          price: 10,
-        })
-        .expect('');
-    });
-
-    it('GET /hires', async () => {
-      return request(app.getHttpServer())
-        .get('/hires')
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
-    });
-
-    it('GET /hires/my', async () => {
-      return request(app.getHttpServer())
-        .get('/hires/my')
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0))
-        .then((res) => (hireId = res.body.result[0].id));
-    });
-
-    it('GET /hires/received', async () => {
-      return request(app.getHttpServer())
-        .get('/hires/received')
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
-    });
-
-    it('GET /hires/all', async () => {
-      return request(app.getHttpServer())
-        .get('/hires/all')
-        .set('Authorization', `Bearer ${moder.access}`)
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
-    });
-
-    it('POST /hires/:hireId/continue', async () => {
-      return request(app.getHttpServer())
-        .post(`/hires/${hireId}/continue`)
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect('');
-    });
-
-    it('POST /hires/:hireId', async () => {
-      return request(app.getHttpServer())
-        .post(`/hires/${hireId}`)
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect('');
-    });
-
-    it('GET /hires/:hireId/things', async () => {
-      return request(app.getHttpServer())
-        .get(`/hires/${hireId}/things`)
-        .expect((res) => expect(res.body.length).toBeGreaterThan(0));
     });
   });
 });

@@ -113,12 +113,6 @@ export class Request {
 
   @ApiProperty({ required: false })
   @IsOptional()
-  @IsInt()
-  @Type(() => Number)
-  box?: number;
-
-  @ApiProperty({ required: false })
-  @IsOptional()
   @IsEnum(Item)
   item?: Item;
 

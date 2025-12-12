@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, IsNull, Repository, SelectQueryBuilder } from 'typeorm';
 import { Order } from './order.entity';
-import { HiresService } from '../hires/hires.service';
 import { CardsService } from '../cards/cards.service';
 import { PaymentsService } from '../payments/payments.service';
 import { MqttService } from '../mqtt/mqtt.service';
@@ -24,7 +23,6 @@ export class OrdersService {
   constructor(
     @InjectRepository(Order)
     private ordersRepository: Repository<Order>,
-    private hiresService: HiresService,
     private cardsService: CardsService,
     private paymentsService: PaymentsService,
     private mqttService: MqttService,
@@ -35,7 +33,6 @@ export class OrdersService {
       .andWhere('order.status = :status', {
         status: Status.CREATED,
       })
-      .andWhere('hire.completedAt > NOW()')
       .getManyAndCount();
     return { result, count };
   }
@@ -66,12 +63,11 @@ export class OrdersService {
   }
 
   async createOrder(dto: ExtCreateOrderDto): Promise<void> {
-    const hireId = await this.hiresService.createHire(dto);
     const card = await this.cardsService.decreaseCardBalance({
       ...dto,
       sum: dto.price,
     });
-    const order = await this.create({ ...dto, stationId: hireId });
+    const order = await this.create(dto);
     this.mqttService.publishNotification(
       order.id,
       0,
@@ -92,12 +88,12 @@ export class OrdersService {
     if (dto.price !== order.price) {
       if (dto.price < order.price) {
         await this.cardsService.increaseCardBalance({
-          cardId: order.hire.cardId,
+          cardId: order.customerCardId,
           sum: order.price - dto.price,
         });
       } else {
         await this.cardsService.decreaseCardBalance({
-          cardId: order.hire.cardId,
+          cardId: order.customerCardId,
           sum: dto.price - order.price,
         });
       }
@@ -112,19 +108,16 @@ export class OrdersService {
       dto.hasRole,
     );
     const order = await this.ordersRepository.findOne({
-      relations: ['hire', 'hire.card'],
+      relations: ['customerCard'],
       where: { id: dto.orderId },
     });
     if (order.status !== Status.CREATED) {
       throw new AppException(OrderError.ALREADY_TAKEN);
     }
-    if (order.hire.completedAt < new Date()) {
-      throw new AppException(OrderError.ALREADY_EXPIRED);
-    }
     await this.take(order, dto.cardId);
     this.mqttService.publishNotification(
       dto.orderId,
-      order.hire.card.userId,
+      order.customerCard.userId,
       card.userId,
       Notification.TAKEN_ORDER,
     );
@@ -143,7 +136,7 @@ export class OrdersService {
     await this.untake(order);
     this.mqttService.publishNotification(
       dto.orderId,
-      order.hire.card.userId,
+      order.customerCard.userId,
       userId,
       Notification.UNTAKEN_ORDER,
     );
@@ -161,7 +154,7 @@ export class OrdersService {
     await this.execute(order);
     this.mqttService.publishNotification(
       dto.orderId,
-      order.hire.card.userId,
+      order.customerCard.userId,
       order.executorCard.userId,
       Notification.EXECUTED_ORDER,
     );
@@ -177,33 +170,30 @@ export class OrdersService {
       throw new AppException(OrderError.NOT_EXECUTED);
     }
     await this.cardsService.increaseCardBalance({
-      cardId: order.hire.cardId,
+      cardId: order.customerCardId,
       sum: order.price,
     });
     await this.paymentsService.createPayment({
       myId: dto.myId,
       hasRole: dto.hasRole,
-      senderCardId: order.hire.cardId,
+      senderCardId: order.customerCardId,
       receiverCardId: order.executorCardId,
       sum: order.price,
       description: `виконання замовлення ${order.id}`,
     });
-    try {
-      await this.hiresService.completeHire({ ...dto, hireId: order.hireId });
-    } catch (error) {}
     await this.complete(order, dto.rate);
-    this.unpublishNotification(dto.orderId, order.hire.card.userId);
+    this.unpublishNotification(dto.orderId, order.customerCard.userId);
     this.mqttService.publishNotification(
       dto.orderId,
       order.executorCard.userId,
-      order.hire.card.userId,
+      order.customerCard.userId,
       Notification.COMPLETED_ORDER,
     );
     if (dto.rate) {
       this.mqttService.publishNotification(
         dto.orderId,
         order.executorCard.userId,
-        order.hire.card.userId,
+        order.customerCard.userId,
         Notification.RATED_ORDER,
       );
     }
@@ -219,14 +209,11 @@ export class OrdersService {
       throw new AppException(OrderError.ALREADY_TAKEN);
     }
     await this.cardsService.increaseCardBalance({
-      cardId: order.hire.cardId,
+      cardId: order.customerCardId,
       sum: order.price,
     });
-    try {
-      await this.hiresService.completeHire({ ...dto, hireId: order.hireId });
-    } catch (error) {}
     await this.delete(order);
-    this.unpublishNotification(dto.orderId, order.hire.card.userId);
+    this.unpublishNotification(dto.orderId, order.customerCard.userId);
   }
 
   async checkOrderExists(id: number): Promise<void> {
@@ -240,18 +227,17 @@ export class OrdersService {
   ): Promise<Order> {
     const order = await this.ordersRepository.findOne({
       relations: [
-        'hire',
-        'hire.card',
-        'hire.card.account',
-        'hire.card.account.cards',
+        'customerCard',
+        'customerCard.account',
+        'customerCard.account.cards',
         'executorCard',
       ],
       where: {
         id,
-        hire: { card: { account: { cards: { completedAt: IsNull() } } } },
+        customerCard: { account: { cards: { completedAt: IsNull() } } },
       },
     });
-    const card = order.hire.card.account.cards.find(
+    const card = order.customerCard.account.cards.find(
       (card) => card.userId === userId,
     );
     if (!card && !hasRole) {
@@ -270,8 +256,7 @@ export class OrdersService {
         'executorCard',
         'executorCard.account',
         'executorCard.account.cards',
-        'hire',
-        'hire.card',
+        'customerCard',
       ],
       where: {
         id,
@@ -290,7 +275,8 @@ export class OrdersService {
   private async create(dto: ExtCreateOrderDto): Promise<Order> {
     try {
       const order = this.ordersRepository.create({
-        hireId: dto.stationId,
+        stationId: dto.stationId,
+        customerCardId: dto.cardId,
         item: dto.item,
         description: dto.description,
         amount: dto.amount,
@@ -380,13 +366,11 @@ export class OrdersService {
   private getOrdersQueryBuilder(req: Request): SelectQueryBuilder<Order> {
     return this.ordersRepository
       .createQueryBuilder('order')
-      .innerJoin('order.hire', 'hire')
-      .innerJoin('hire.box', 'box')
-      .innerJoin('box.station', 'station')
+      .innerJoin('order.station', 'station')
       .innerJoin('station.card', 'ownerCard')
       .innerJoin('ownerCard.account', 'ownerAccount')
       .innerJoin('ownerCard.user', 'ownerUser')
-      .innerJoin('hire.card', 'customerCard')
+      .innerJoin('order.customerCard', 'customerCard')
       .innerJoin('customerCard.account', 'customerAccount')
       .innerJoin('customerCard.user', 'customerUser')
       .leftJoin('order.executorCard', 'executorCard')
@@ -458,13 +442,6 @@ export class OrdersService {
           qb
             .where(`${!req.station}`)
             .orWhere('station.id = :stationId', { stationId: req.station }),
-        ),
-      )
-      .andWhere(
-        new Brackets((qb) =>
-          qb
-            .where(`${!req.box}`)
-            .orWhere('box.id = :boxId', { boxId: req.box }),
         ),
       )
       .andWhere(
@@ -555,21 +532,14 @@ export class OrdersService {
         new Brackets((qb) =>
           qb
             .where(`${req.completed !== 1}`)
-            .orWhere('order.completedAt IS NOT NULL')
-            .orWhere('hire.completedAt < NOW()'),
+            .orWhere('order.completedAt IS NOT NULL'),
         ),
       )
       .andWhere(
         new Brackets((qb) =>
           qb
             .where(`${req.completed !== -1}`)
-            .orWhere(
-              new Brackets((qb) =>
-                qb
-                  .where('order.completedAt IS NULL')
-                  .andWhere('hire.completedAt > NOW()'),
-              ),
-            ),
+            .orWhere('order.completedAt IS NULL'),
         ),
       )
       .andWhere(
@@ -584,8 +554,6 @@ export class OrdersService {
       .take(req.take)
       .select([
         'order.id',
-        'hire.id',
-        'box.id',
         'station.id',
         'ownerCard.id',
         'ownerAccount.id',
@@ -597,7 +565,6 @@ export class OrdersService {
         'station.name',
         'station.x',
         'station.y',
-        'box.name',
         'customerCard.id',
         'customerAccount.id',
         'customerAccount.name',

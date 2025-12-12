@@ -3,7 +3,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, IsNull, Repository, SelectQueryBuilder } from 'typeorm';
 import { Delivery } from './delivery.entity';
 import { PurchasesService } from '../purchases/purchases.service';
-import { HiresService } from '../hires/hires.service';
 import { CardsService } from '../cards/cards.service';
 import { PaymentsService } from '../payments/payments.service';
 import { MqttService } from '../mqtt/mqtt.service';
@@ -27,7 +26,6 @@ export class DeliveriesService {
     private deliveriesRepository: Repository<Delivery>,
     @Inject(forwardRef(() => PurchasesService))
     private purchasesService: PurchasesService,
-    private hiresService: HiresService,
     private cardsService: CardsService,
     private paymentsService: PaymentsService,
     private mqttService: MqttService,
@@ -38,7 +36,6 @@ export class DeliveriesService {
       .andWhere('delivery.status = :status', {
         status: Status.CREATED,
       })
-      .andWhere('hire.completedAt > NOW()')
       .getManyAndCount();
     return { result, count };
   }
@@ -86,12 +83,11 @@ export class DeliveriesService {
     if (delivery) {
       throw new AppException(DeliveryError.ALREADY_EXISTS);
     }
-    const hireId = await this.hiresService.createHire(dto);
     const card = await this.cardsService.decreaseCardBalance({
       ...dto,
       sum: dto.price,
     });
-    const result = await this.create(dto, hireId);
+    const result = await this.create(dto);
     this.mqttService.publishNotification(
       result.id,
       0,
@@ -112,12 +108,12 @@ export class DeliveriesService {
     if (dto.price !== delivery.price) {
       if (dto.price < delivery.price) {
         await this.cardsService.increaseCardBalance({
-          cardId: delivery.hire.cardId,
+          cardId: delivery.customerCardId,
           sum: delivery.price - dto.price,
         });
       } else {
         await this.cardsService.decreaseCardBalance({
-          cardId: delivery.hire.cardId,
+          cardId: delivery.customerCardId,
           sum: dto.price - delivery.price,
         });
       }
@@ -132,19 +128,16 @@ export class DeliveriesService {
       dto.hasRole,
     );
     const delivery = await this.deliveriesRepository.findOne({
-      relations: ['hire', 'hire.card'],
+      relations: ['customerCard'],
       where: { id: dto.deliveryId },
     });
     if (delivery.status !== Status.CREATED) {
       throw new AppException(DeliveryError.ALREADY_TAKEN);
     }
-    if (delivery.hire.completedAt < new Date()) {
-      throw new AppException(DeliveryError.ALREADY_EXPIRED);
-    }
     await this.take(delivery, dto.cardId);
     this.mqttService.publishNotification(
       dto.deliveryId,
-      delivery.hire.card.userId,
+      delivery.customerCard.userId,
       card.userId,
       Notification.TAKEN_DELIVERY,
     );
@@ -163,7 +156,7 @@ export class DeliveriesService {
     await this.untake(delivery);
     this.mqttService.publishNotification(
       dto.deliveryId,
-      delivery.hire.card.userId,
+      delivery.customerCard.userId,
       userId,
       Notification.UNTAKEN_DELIVERY,
     );
@@ -181,7 +174,7 @@ export class DeliveriesService {
     await this.execute(delivery);
     this.mqttService.publishNotification(
       dto.deliveryId,
-      delivery.hire.card.userId,
+      delivery.customerCard.userId,
       delivery.executorCard.userId,
       Notification.EXECUTED_DELIVERY,
     );
@@ -197,36 +190,30 @@ export class DeliveriesService {
       throw new AppException(DeliveryError.NOT_EXECUTED);
     }
     await this.cardsService.increaseCardBalance({
-      cardId: delivery.hire.cardId,
+      cardId: delivery.customerCardId,
       sum: delivery.price,
     });
     await this.paymentsService.createPayment({
       myId: dto.myId,
       hasRole: dto.hasRole,
-      senderCardId: delivery.hire.cardId,
+      senderCardId: delivery.customerCardId,
       receiverCardId: delivery.executorCardId,
       sum: delivery.price,
       description: `виконання доставки ${delivery.id}`,
     });
-    try {
-      await this.hiresService.completeHire({
-        ...dto,
-        hireId: delivery.hireId,
-      });
-    } catch (error) {}
     await this.complete(delivery, dto.rate);
-    this.unpublishNotification(dto.deliveryId, delivery.hire.card.userId);
+    this.unpublishNotification(dto.deliveryId, delivery.customerCard.userId);
     this.mqttService.publishNotification(
       dto.deliveryId,
       delivery.executorCard.userId,
-      delivery.hire.card.userId,
+      delivery.customerCard.userId,
       Notification.COMPLETED_DELIVERY,
     );
     if (dto.rate) {
       this.mqttService.publishNotification(
         dto.deliveryId,
         delivery.executorCard.userId,
-        delivery.hire.card.userId,
+        delivery.customerCard.userId,
         Notification.RATED_DELIVERY,
       );
     }
@@ -242,17 +229,11 @@ export class DeliveriesService {
       throw new AppException(DeliveryError.ALREADY_TAKEN);
     }
     await this.cardsService.increaseCardBalance({
-      cardId: delivery.hire.cardId,
+      cardId: delivery.customerCardId,
       sum: delivery.price,
     });
-    try {
-      await this.hiresService.completeHire({
-        ...dto,
-        hireId: delivery.hireId,
-      });
-    } catch (error) {}
     await this.delete(delivery);
-    this.unpublishNotification(dto.deliveryId, delivery.hire.card.userId);
+    this.unpublishNotification(dto.deliveryId, delivery.customerCard.userId);
   }
 
   async checkDeliveryExists(id: number): Promise<void> {
@@ -266,18 +247,17 @@ export class DeliveriesService {
   ): Promise<Delivery> {
     const delivery = await this.deliveriesRepository.findOne({
       relations: [
-        'hire',
-        'hire.card',
-        'hire.card.account',
-        'hire.card.account.cards',
+        'customerCard',
+        'customerCard.account',
+        'customerCard.account.cards',
         'executorCard',
       ],
       where: {
         id,
-        hire: { card: { account: { cards: { completedAt: IsNull() } } } },
+        customerCard: { account: { cards: { completedAt: IsNull() } } },
       },
     });
-    const card = delivery.hire.card.account.cards.find(
+    const card = delivery.customerCard.account.cards.find(
       (card) => card.userId === userId,
     );
     if (!card && !hasRole) {
@@ -296,8 +276,7 @@ export class DeliveriesService {
         'executorCard',
         'executorCard.account',
         'executorCard.account.cards',
-        'hire',
-        'hire.card',
+        'customerCard',
       ],
       where: {
         id,
@@ -313,14 +292,12 @@ export class DeliveriesService {
     return delivery;
   }
 
-  private async create(
-    dto: ExtCreateDeliveryDto,
-    hireId: number,
-  ): Promise<Delivery> {
+  private async create(dto: ExtCreateDeliveryDto): Promise<Delivery> {
     try {
       const delivery = this.deliveriesRepository.create({
+        stationId: dto.stationId,
+        customerCardId: dto.cardId,
         purchaseId: dto.purchaseId,
-        hireId,
         price: dto.price,
       });
       await this.deliveriesRepository.save(delivery);
@@ -423,13 +400,11 @@ export class DeliveriesService {
       .leftJoin('storage.card', 'storageCard')
       .leftJoin('storageCard.account', 'storageAccount')
       .leftJoin('storageCard.user', 'storageUser')
-      .innerJoin('delivery.hire', 'hire')
-      .innerJoin('hire.box', 'box')
-      .innerJoin('box.station', 'station')
+      .innerJoin('delivery.station', 'station')
       .innerJoin('station.card', 'stationCard')
       .innerJoin('stationCard.account', 'stationAccount')
       .innerJoin('stationCard.user', 'stationUser')
-      .innerJoin('hire.card', 'customerCard')
+      .innerJoin('delivery.customerCard', 'customerCard')
       .innerJoin('customerCard.account', 'customerAccount')
       .innerJoin('customerCard.user', 'customerUser')
       .leftJoin('delivery.executorCard', 'executorCard')
@@ -557,13 +532,6 @@ export class DeliveriesService {
       .andWhere(
         new Brackets((qb) =>
           qb
-            .where(`${!req.box}`)
-            .orWhere('box.id = :boxId', { boxId: req.box }),
-        ),
-      )
-      .andWhere(
-        new Brackets((qb) =>
-          qb
             .where(`${!req.item}`)
             .orWhere('good.item = :item', { item: req.item }),
         ),
@@ -657,21 +625,14 @@ export class DeliveriesService {
         new Brackets((qb) =>
           qb
             .where(`${req.completed !== 1}`)
-            .orWhere('delivery.completedAt IS NOT NULL')
-            .orWhere('hire.completedAt < NOW()'),
+            .orWhere('delivery.completedAt IS NOT NULL'),
         ),
       )
       .andWhere(
         new Brackets((qb) =>
           qb
             .where(`${req.completed !== -1}`)
-            .orWhere(
-              new Brackets((qb) =>
-                qb
-                  .where('delivery.completedAt IS NULL')
-                  .andWhere('hire.completedAt > NOW()'),
-              ),
-            ),
+            .orWhere('delivery.completedAt IS NULL'),
         ),
       )
       .andWhere(
@@ -732,8 +693,6 @@ export class DeliveriesService {
         'good.intake',
         'good.kit',
         'purchase.amount',
-        'hire.id',
-        'box.id',
         'station.id',
         'stationCard.id',
         'stationAccount.id',
@@ -745,7 +704,6 @@ export class DeliveriesService {
         'station.name',
         'station.x',
         'station.y',
-        'box.name',
         'customerCard.id',
         'customerAccount.id',
         'customerAccount.name',

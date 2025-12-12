@@ -45,37 +45,8 @@ export class StationsService {
     return { result, count };
   }
 
-  selectMainStations(): Promise<Station[]> {
-    return this.selectStationsQueryBuilder().getMany();
-  }
-
-  selectMyStations(myId: number): Promise<Station[]> {
-    return this.selectStationsQueryBuilder()
-      .innerJoin('station.card', 'ownerCard')
-      .innerJoin('ownerCard.account', 'ownerAccount')
-      .innerJoin('ownerAccount.cards', 'ownerCards')
-      .loadRelationCountAndMap('station.boxes', 'station.boxes')
-      .where('ownerCards.userId = :myId', { myId })
-      .andWhere('ownerCards.completedAt IS NULL')
-      .getMany();
-  }
-
   selectAllStations(): Promise<Station[]> {
-    return this.selectStationsQueryBuilder()
-      .loadRelationCountAndMap('station.boxes', 'station.boxes')
-      .getMany();
-  }
-
-  selectFreeStations(): Promise<Station[]> {
-    return this.selectStationsQueryBuilder()
-      .innerJoinAndMapOne(
-        'box',
-        'station.boxes',
-        'box',
-        'box.reservedUntil IS NULL OR box.reservedUntil < NOW()',
-      )
-      .addSelect('station.price')
-      .getMany();
+    return this.selectStationsQueryBuilder().getMany();
   }
 
   async selectStationStates(stationId: number): Promise<StationState[]> {
@@ -219,7 +190,6 @@ export class StationsService {
       .innerJoin('station.card', 'ownerCard')
       .innerJoin('ownerCard.account', 'ownerAccount')
       .innerJoin('ownerCard.user', 'ownerUser')
-      .loadRelationCountAndMap('station.boxes', 'station.boxes')
       .where(
         new Brackets((qb) =>
           qb.where(`${!req.id}`).orWhere('station.id = :id', { id: req.id }),

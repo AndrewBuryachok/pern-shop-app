@@ -42,26 +42,9 @@ export class StationsController {
   }
 
   @Public()
-  @Get('main/select')
-  selectMainStations(): Promise<Station[]> {
-    return this.stationsService.selectMainStations();
-  }
-
-  @Get('my/select')
-  selectMyStations(@MyId() myId: number): Promise<Station[]> {
-    return this.stationsService.selectMyStations(myId);
-  }
-
-  @Roles(Role.MODER)
   @Get('all/select')
   selectAllStations(): Promise<Station[]> {
     return this.stationsService.selectAllStations();
-  }
-
-  @Public()
-  @Get('free/select')
-  selectFreeStations(): Promise<Station[]> {
-    return this.stationsService.selectFreeStations();
   }
 
   @Public()

@@ -5,12 +5,27 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { Station } from '../stations/station.entity';
 import { Card } from '../cards/card.entity';
 import { Status } from './status.enum';
 
 export abstract class Transportation {
   @PrimaryGeneratedColumn()
   id: number;
+
+  @Column({ name: 'station_id' })
+  stationId: number;
+
+  @ManyToOne(() => Station, { nullable: false })
+  @JoinColumn({ name: 'station_id' })
+  station: Station;
+
+  @Column({ name: 'customer_card_id' })
+  customerCardId: number;
+
+  @ManyToOne(() => Card, { nullable: false })
+  @JoinColumn({ name: 'customer_card_id' })
+  customerCard: Card;
 
   @Column()
   price: number;

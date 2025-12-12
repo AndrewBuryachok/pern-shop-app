@@ -1,6 +1,5 @@
 export enum DeliveryError {
   ALREADY_EXISTS = '400: Доставка вже існує',
-  ALREADY_EXPIRED = '400: Доставку вже протерміновано',
   ALREADY_TAKEN = '400: Доставку вже взято',
   NOT_TAKEN = '400: Доставку не взято',
   NOT_EXECUTED = '400: Доставку не виконано',

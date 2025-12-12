@@ -16,6 +16,5 @@ import { IsStationExists } from '../../common/constraints';
   ],
   controllers: [StationsController],
   providers: [StationsService, IsStationExists],
-  exports: [StationsService],
 })
 export class StationsModule {}

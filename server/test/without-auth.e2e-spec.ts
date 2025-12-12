@@ -315,19 +315,6 @@ describe('Without Auth', () => {
         .set('Authorization', `Bearer ${user.access}`)
         .expect(403);
     });
-
-    it('GET /stations/my/select', async () => {
-      return request(app.getHttpServer())
-        .get('/stations/my/select')
-        .expect(401);
-    });
-
-    it('GET /stations/all/select', async () => {
-      return request(app.getHttpServer())
-        .get('/stations/all/select')
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect(403);
-    });
   });
 
   describe('Markets Tags', () => {
@@ -377,19 +364,6 @@ describe('Without Auth', () => {
     it('GET /cells/all', async () => {
       return request(app.getHttpServer())
         .get('/cells/all')
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect(403);
-    });
-  });
-
-  describe('Boxes', () => {
-    it('GET /boxes/my', async () => {
-      return request(app.getHttpServer()).get('/boxes/my').expect(401);
-    });
-
-    it('GET /boxes/all', async () => {
-      return request(app.getHttpServer())
-        .get('/boxes/all')
         .set('Authorization', `Bearer ${user.access}`)
         .expect(403);
     });
@@ -446,23 +420,6 @@ describe('Without Auth', () => {
     it('GET /leases/all/select', async () => {
       return request(app.getHttpServer())
         .get('/leases/all/select')
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect(403);
-    });
-  });
-
-  describe('Hires', () => {
-    it('GET /hires/my', async () => {
-      return request(app.getHttpServer()).get('/hires/my').expect(401);
-    });
-
-    it('GET /hires/received', async () => {
-      return request(app.getHttpServer()).get('/hires/received').expect(401);
-    });
-
-    it('GET /hires/all', async () => {
-      return request(app.getHttpServer())
-        .get('/hires/all')
         .set('Authorization', `Bearer ${user.access}`)
         .expect(403);
     });

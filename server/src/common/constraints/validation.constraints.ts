@@ -20,10 +20,8 @@ import { MarketsTagsService } from '../../features/markets-tags/markets-tags.ser
 import { StoragesTagsService } from '../../features/storages-tags/storages-tags.service';
 import { StallsService } from '../../features/stalls/stalls.service';
 import { CellsService } from '../../features/cells/cells.service';
-import { BoxesService } from '../../features/boxes/boxes.service';
 import { RentsService } from '../../features/rents/rents.service';
 import { LeasesService } from '../../features/leases/leases.service';
-import { HiresService } from '../../features/hires/hires.service';
 import { GoodsService } from '../../features/goods/goods.service';
 import { PurchasesService } from '../../features/purchases/purchases.service';
 import { DeliveriesService } from '../../features/deliveries/deliveries.service';
@@ -353,25 +351,6 @@ export class IsCellExists implements ValidatorConstraintInterface {
 }
 
 @Injectable()
-@ValidatorConstraint({ name: 'isBoxExists', async: true })
-export class IsBoxExists implements ValidatorConstraintInterface {
-  constructor(private boxesService: BoxesService) {}
-
-  async validate(value: number): Promise<boolean> {
-    try {
-      await this.boxesService.checkBoxExists(value);
-    } catch (error) {
-      return false;
-    }
-    return true;
-  }
-
-  defaultMessage(): string {
-    return 'Невідомий ящик';
-  }
-}
-
-@Injectable()
 @ValidatorConstraint({ name: 'isRentExists', async: true })
 export class IsRentExists implements ValidatorConstraintInterface {
   constructor(private rentsService: RentsService) {}
@@ -398,25 +377,6 @@ export class IsLeaseExists implements ValidatorConstraintInterface {
   async validate(value: number): Promise<boolean> {
     try {
       await this.leasesService.checkLeaseExists(value);
-    } catch (error) {
-      return false;
-    }
-    return true;
-  }
-
-  defaultMessage(): string {
-    return 'Невідома оренда';
-  }
-}
-
-@Injectable()
-@ValidatorConstraint({ name: 'isHireExists', async: true })
-export class IsHireExists implements ValidatorConstraintInterface {
-  constructor(private hiresService: HiresService) {}
-
-  async validate(value: number): Promise<boolean> {
-    try {
-      await this.hiresService.checkHireExists(value);
     } catch (error) {
       return false;
     }

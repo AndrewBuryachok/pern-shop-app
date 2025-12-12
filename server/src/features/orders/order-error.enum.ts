@@ -1,5 +1,4 @@
 export enum OrderError {
-  ALREADY_EXPIRED = '400: Замовлення вже протерміновано',
   ALREADY_TAKEN = '400: Замовлення вже взято',
   NOT_TAKEN = '400: Замовлення не взято',
   NOT_EXECUTED = '400: Замовлення не виконано',
