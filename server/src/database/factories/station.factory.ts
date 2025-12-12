@@ -18,6 +18,5 @@ define(Station, () => {
     Math.floor(
       Math.random() * (MAX_COORDINATE_VALUE - MIN_COORDINATE_VALUE + 1),
     ) + MIN_COORDINATE_VALUE;
-  station.price = Math.floor(Math.random() * 32) + 1;
   return station;
 });

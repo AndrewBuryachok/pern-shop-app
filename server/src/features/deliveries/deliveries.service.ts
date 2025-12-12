@@ -401,9 +401,7 @@ export class DeliveriesService {
       .leftJoin('storageCard.account', 'storageAccount')
       .leftJoin('storageCard.user', 'storageUser')
       .innerJoin('delivery.station', 'station')
-      .innerJoin('station.card', 'stationCard')
-      .innerJoin('stationCard.account', 'stationAccount')
-      .innerJoin('stationCard.user', 'stationUser')
+      .innerJoin('station.user', 'stationUser')
       .innerJoin('delivery.customerCard', 'customerCard')
       .innerJoin('customerCard.account', 'customerAccount')
       .innerJoin('customerCard.user', 'customerUser')
@@ -478,8 +476,7 @@ export class DeliveriesService {
                       qb
                         .where('shopCard.id = :cardId')
                         .orWhere('marketCard.id = :cardId')
-                        .orWhere('storageCard.id = :cardId')
-                        .orWhere('stationCard.id = :cardId'),
+                        .orWhere('storageCard.id = :cardId'),
                     ),
                   ),
               ),
@@ -694,10 +691,6 @@ export class DeliveriesService {
         'good.kit',
         'purchase.amount',
         'station.id',
-        'stationCard.id',
-        'stationAccount.id',
-        'stationAccount.name',
-        'stationAccount.color',
         'stationUser.id',
         'stationUser.nick',
         'stationUser.avatar',

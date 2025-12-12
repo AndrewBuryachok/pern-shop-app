@@ -10,8 +10,12 @@ import {
 import { ApiTags } from '@nestjs/swagger';
 import { StationsService } from './stations.service';
 import { Station } from './station.entity';
-import { StationState } from './station-state.entity';
-import { CreateStationDto, EditStationDto, StationIdDto } from './station.dto';
+import {
+  CreateStationDto,
+  EditStationDto,
+  ExtCreateStationDto,
+  StationIdDto,
+} from './station.dto';
 import { Request, Response } from '../../common/interfaces';
 import { HasRole, MyId, Public, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
@@ -47,21 +51,18 @@ export class StationsController {
     return this.stationsService.selectAllStations();
   }
 
-  @Public()
-  @Get(':stationId/states')
-  selectStationStates(
-    @Param() { stationId }: StationIdDto,
-  ): Promise<StationState[]> {
-    return this.stationsService.selectStationStates(stationId);
-  }
-
   @Post()
-  createStation(
+  createMyStation(
     @MyId() myId: number,
-    @HasRole(Role.MODER) hasRole: boolean,
     @Body() dto: CreateStationDto,
   ): Promise<void> {
-    return this.stationsService.createStation({ ...dto, myId, hasRole });
+    return this.stationsService.createStation({ ...dto, userId: myId });
+  }
+
+  @Roles(Role.MODER)
+  @Post('all')
+  createUserStation(@Body() dto: ExtCreateStationDto): Promise<void> {
+    return this.stationsService.createStation(dto);
   }
 
   @Patch(':stationId')

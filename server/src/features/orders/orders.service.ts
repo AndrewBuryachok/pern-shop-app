@@ -367,9 +367,7 @@ export class OrdersService {
     return this.ordersRepository
       .createQueryBuilder('order')
       .innerJoin('order.station', 'station')
-      .innerJoin('station.card', 'ownerCard')
-      .innerJoin('ownerCard.account', 'ownerAccount')
-      .innerJoin('ownerCard.user', 'ownerUser')
+      .innerJoin('station.user', 'ownerUser')
       .innerJoin('order.customerCard', 'customerCard')
       .innerJoin('customerCard.account', 'customerAccount')
       .innerJoin('customerCard.user', 'customerUser')
@@ -425,13 +423,6 @@ export class OrdersService {
                 qb
                   .where(`${!req.mode || req.mode === Mode.EXECUTOR}`)
                   .andWhere('executorCard.id = :cardId'),
-              ),
-            )
-            .orWhere(
-              new Brackets((qb) =>
-                qb
-                  .where(`${!req.mode || req.mode === Mode.OWNER}`)
-                  .andWhere('ownerCard.id = :cardId'),
               ),
             ),
         ),
@@ -555,10 +546,6 @@ export class OrdersService {
       .select([
         'order.id',
         'station.id',
-        'ownerCard.id',
-        'ownerAccount.id',
-        'ownerAccount.name',
-        'ownerAccount.color',
         'ownerUser.id',
         'ownerUser.nick',
         'ownerUser.avatar',

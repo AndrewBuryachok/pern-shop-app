@@ -5,7 +5,6 @@ import {
   IsDescription,
   IsId,
   IsName,
-  IsPrice,
 } from '../../common/decorators';
 import { IsCardExists } from '../../common/constraints';
 
@@ -32,16 +31,4 @@ export abstract class CreatePlaceWithCardDto extends CreatePlaceDto {
   @IsId()
   @Validate(IsCardExists)
   cardId: number;
-}
-
-export abstract class CreatePlaceWithPriceDto extends CreatePlaceWithCardDto {
-  @ApiProperty()
-  @IsPrice()
-  price: number;
-}
-
-export abstract class EditPlaceWithPriceDto extends CreatePlaceDto {
-  @ApiProperty()
-  @IsPrice()
-  price: number;
 }

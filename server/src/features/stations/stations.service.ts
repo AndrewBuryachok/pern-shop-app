@@ -2,8 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, IsNull, Repository, SelectQueryBuilder } from 'typeorm';
 import { Station } from './station.entity';
-import { StationState } from './station-state.entity';
-import { CardsService } from '../cards/cards.service';
 import { MqttService } from '../mqtt/mqtt.service';
 import { ExtCreateStationDto, ExtEditStationDto } from './station.dto';
 import { Request, Response } from '../../common/interfaces';
@@ -16,9 +14,6 @@ export class StationsService {
   constructor(
     @InjectRepository(Station)
     private stationsRepository: Repository<Station>,
-    @InjectRepository(StationState)
-    private stationsStatesRepository: Repository<StationState>,
-    private cardsService: CardsService,
     private mqttService: MqttService,
   ) {}
 
@@ -31,9 +26,7 @@ export class StationsService {
 
   async getMyStations(myId: number, req: Request): Promise<Response<Station>> {
     const [result, count] = await this.getStationsQueryBuilder(req)
-      .innerJoin('ownerAccount.cards', 'ownerCards')
-      .andWhere('ownerCards.userId = :myId', { myId })
-      .andWhere('ownerCards.completedAt IS NULL')
+      .andWhere('ownerUser.id = :myId', { myId })
       .getManyAndCount();
     return { result, count };
   }
@@ -49,36 +42,14 @@ export class StationsService {
     return this.selectStationsQueryBuilder().getMany();
   }
 
-  async selectStationStates(stationId: number): Promise<StationState[]> {
-    const station = await this.stationsRepository
-      .createQueryBuilder('station')
-      .leftJoin('station.states', 'state')
-      .where('station.id = :stationId', { stationId })
-      .orderBy('state.id', 'DESC')
-      .select([
-        'station.id',
-        'station.price',
-        'state.id',
-        'state.price',
-        'state.createdAt',
-      ])
-      .getOne();
-    return station.states;
-  }
-
   async createStation(dto: ExtCreateStationDto): Promise<void> {
-    const card = await this.cardsService.checkCardUser(
-      dto.cardId,
-      dto.myId,
-      dto.hasRole,
-    );
     await this.checkNameNotUsed(dto.name);
     await this.checkCoordinatesNotUsed(dto.x, dto.y);
     const station = await this.create(dto);
     this.mqttService.publishNotification(
       station.id,
       0,
-      card.userId,
+      dto.userId,
       Notification.CREATED_STATION,
     );
   }
@@ -103,14 +74,8 @@ export class StationsService {
     userId: number,
     hasRole: boolean,
   ): Promise<Station> {
-    const station = await this.stationsRepository.findOne({
-      relations: ['card', 'card.account', 'card.account.cards'],
-      where: { id, card: { account: { cards: { completedAt: IsNull() } } } },
-    });
-    const card = station.card.account.cards.find(
-      (card) => card.userId === userId,
-    );
-    if (!card && !hasRole) {
+    const station = await this.stationsRepository.findOneBy({ id });
+    if (station.userId !== userId && !hasRole) {
       throw new AppException(StationError.NOT_OWNER);
     }
     return station;
@@ -137,19 +102,13 @@ export class StationsService {
   private async create(dto: ExtCreateStationDto): Promise<Station> {
     try {
       const station = this.stationsRepository.create({
-        cardId: dto.cardId,
+        userId: dto.userId,
         name: dto.name,
         description: dto.description,
         x: dto.x,
         y: dto.y,
-        price: dto.price,
       });
       await this.stationsRepository.save(station);
-      const stationState = this.stationsStatesRepository.create({
-        stationId: station.id,
-        price: station.price,
-      });
-      await this.stationsStatesRepository.save(stationState);
       return station;
     } catch (error) {
       throw new AppException(StationError.CREATE_FAILED);
@@ -158,20 +117,11 @@ export class StationsService {
 
   private async edit(station: Station, dto: ExtEditStationDto): Promise<void> {
     try {
-      const equal = station.price === dto.price;
       station.name = dto.name;
       station.description = dto.description;
       station.x = dto.x;
       station.y = dto.y;
-      station.price = dto.price;
       await this.stationsRepository.save(station);
-      if (!equal) {
-        const stationState = this.stationsStatesRepository.create({
-          stationId: station.id,
-          price: station.price,
-        });
-        await this.stationsStatesRepository.save(stationState);
-      }
     } catch (error) {
       throw new AppException(StationError.EDIT_FAILED);
     }
@@ -187,9 +137,7 @@ export class StationsService {
   private getStationsQueryBuilder(req: Request): SelectQueryBuilder<Station> {
     return this.stationsRepository
       .createQueryBuilder('station')
-      .innerJoin('station.card', 'ownerCard')
-      .innerJoin('ownerCard.account', 'ownerAccount')
-      .innerJoin('ownerCard.user', 'ownerUser')
+      .innerJoin('station.user', 'ownerUser')
       .where(
         new Brackets((qb) =>
           qb.where(`${!req.id}`).orWhere('station.id = :id', { id: req.id }),
@@ -205,29 +153,8 @@ export class StationsService {
       .andWhere(
         new Brackets((qb) =>
           qb
-            .where(`${!req.card}`)
-            .orWhere('ownerCard.id = :cardId', { cardId: req.card }),
-        ),
-      )
-      .andWhere(
-        new Brackets((qb) =>
-          qb
             .where(`${!req.station}`)
             .orWhere('station.id = :stationId', { stationId: req.station }),
-        ),
-      )
-      .andWhere(
-        new Brackets((qb) =>
-          qb
-            .where(`${!req.minPrice}`)
-            .orWhere('station.price >= :minPrice', { minPrice: req.minPrice }),
-        ),
-      )
-      .andWhere(
-        new Brackets((qb) =>
-          qb
-            .where(`${!req.maxPrice}`)
-            .orWhere('station.price <= :maxPrice', { maxPrice: req.maxPrice }),
         ),
       )
       .orderBy('station.id', 'DESC')
@@ -235,10 +162,6 @@ export class StationsService {
       .take(req.take)
       .select([
         'station.id',
-        'ownerCard.id',
-        'ownerAccount.id',
-        'ownerAccount.name',
-        'ownerAccount.color',
         'ownerUser.id',
         'ownerUser.nick',
         'ownerUser.avatar',
@@ -246,7 +169,6 @@ export class StationsService {
         'station.description',
         'station.x',
         'station.y',
-        'station.price',
         'station.createdAt',
       ]);
   }

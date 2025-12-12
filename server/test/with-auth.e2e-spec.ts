@@ -1100,12 +1100,10 @@ describe('With Auth', () => {
         .post('/stations')
         .set('Authorization', `Bearer ${user.access}`)
         .send({
-          cardId,
           name: 'My Station',
           description: '',
           x: -500,
           y: -500,
-          price: 5,
         })
         .expect('');
     });
@@ -1146,15 +1144,8 @@ describe('With Auth', () => {
           description: '',
           x: -500,
           y: -500,
-          price: 10,
         })
         .expect('');
-    });
-
-    it('GET /stations/:stationId/states', async () => {
-      return request(app.getHttpServer())
-        .get(`/stations/${stationId}/states`)
-        .expect((res) => expect(res.body.length).toBeGreaterThan(0));
     });
   });
 
