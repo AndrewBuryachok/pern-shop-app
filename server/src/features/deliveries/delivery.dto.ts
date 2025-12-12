@@ -8,11 +8,11 @@ import {
   IsPurchaseExists,
   IsStationExists,
 } from '../../common/constraints';
-import { EditStateDto } from '../states/state.dto';
 import {
   CompleteTransportationDto,
   TakeTransportationDto,
 } from '../transportations/transportation.dto';
+import { EditStateDto } from '../states/state.dto';
 
 export class DeliveryIdDto {
   @ApiProperty()
@@ -27,15 +27,7 @@ export class ExtDeliveryIdDto extends DeliveryIdDto {
   hasRole: boolean;
 }
 
-export class EditDeliveryDto extends EditStateDto {}
-
-export class ExtEditDeliveryDto extends EditDeliveryDto {
-  deliveryId: number;
-  myId: number;
-  hasRole: boolean;
-}
-
-export class CreateDeliveryDto extends EditDeliveryDto {
+export class CreateDeliveryDto extends EditStateDto {
   @ApiProperty()
   @IsId()
   @Validate(IsPurchaseExists)
@@ -53,6 +45,14 @@ export class CreateDeliveryDto extends EditDeliveryDto {
 }
 
 export class ExtCreateDeliveryDto extends CreateDeliveryDto {
+  myId: number;
+  hasRole: boolean;
+}
+
+export class EditDeliveryDto extends EditStateDto {}
+
+export class ExtEditDeliveryDto extends EditDeliveryDto {
+  deliveryId: number;
   myId: number;
   hasRole: boolean;
 }

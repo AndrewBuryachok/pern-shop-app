@@ -2,10 +2,13 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Validate } from 'class-validator';
 import { Type } from 'class-transformer';
 import { IsId } from '../../common/decorators';
-import { IsOrderExists, IsStationExists } from '../../common/constraints';
+import {
+  IsCardExists,
+  IsOrderExists,
+  IsStationExists,
+} from '../../common/constraints';
 import {
   CompleteTransportationDto,
-  CreateTransportationDto,
   TakeTransportationDto,
 } from '../transportations/transportation.dto';
 import { CreateThingDto } from '../things/thing.dto';
@@ -23,11 +26,16 @@ export class ExtOrderIdDto extends OrderIdDto {
   hasRole: boolean;
 }
 
-export class CreateOrderDto extends CreateTransportationDto {
+export class CreateOrderDto extends CreateThingDto {
   @ApiProperty()
   @IsId()
   @Validate(IsStationExists)
   stationId: number;
+
+  @ApiProperty()
+  @IsId()
+  @Validate(IsCardExists)
+  cardId: number;
 }
 
 export class ExtCreateOrderDto extends CreateOrderDto {
