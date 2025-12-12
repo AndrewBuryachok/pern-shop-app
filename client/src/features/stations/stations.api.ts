@@ -1,7 +1,6 @@
 import { emptyApi } from '../../app/empty.api';
 import { IRequest, IResponse } from '../../common/interfaces';
 import { SmStation, Station } from './station.model';
-import { State } from '../states/state.model';
 import { CreateStationDto, EditStationDto } from './station.dto';
 import { getQuery } from '../../common/utils';
 
@@ -31,12 +30,6 @@ export const stationsApi = emptyApi.injectEndpoints({
       }),
       providesTags: ['Station'],
     }),
-    selectStationStates: build.query<State[], number>({
-      query: (stationId) => ({
-        url: `/stations/${stationId}/states`,
-      }),
-      providesTags: ['Station'],
-    }),
     createStation: build.mutation<void, CreateStationDto>({
       query: (dto) => ({
         url: '/stations',
@@ -61,7 +54,6 @@ export const {
   useGetMyStationsQuery,
   useGetAllStationsQuery,
   useSelectAllStationsQuery,
-  useSelectStationStatesQuery,
   useCreateStationMutation,
   useEditStationMutation,
 } = stationsApi;

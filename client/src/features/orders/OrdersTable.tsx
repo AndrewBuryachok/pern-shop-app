@@ -6,7 +6,7 @@ import ThingImageWithText from '../../common/components/ThingImageWithText';
 import SingleText from '../../common/components/SingleText';
 import PriceText from '../../common/components/PriceText';
 import StatusBadgeWithAvatar from '../../common/components/StatusBadgeWithAvatar';
-import PlaceWithDoubleAvatar from '../../common/components/PlaceWithDoubleAvatar';
+import PlaceWithSingleAvatar from '../../common/components/PlaceWithSingleAvatar';
 import CustomActions from '../../common/components/CustomActions';
 import { viewOrderAction } from './ViewOrderModal';
 import { parseThingAmount } from '../../common/utils';
@@ -46,7 +46,7 @@ export default function OrdersTable({ actions = [], ...props }: Props) {
             <StatusBadgeWithAvatar {...order} />
           </td>
           <td>
-            <PlaceWithDoubleAvatar {...order.station} />
+            <PlaceWithSingleAvatar {...order.station} />
           </td>
           <td>
             <CustomActions

@@ -7,6 +7,7 @@ import SingleText from '../../common/components/SingleText';
 import PriceText from '../../common/components/PriceText';
 import StatusBadgeWithAvatar from '../../common/components/StatusBadgeWithAvatar';
 import PlaceWithDoubleAvatar from '../../common/components/PlaceWithDoubleAvatar';
+import PlaceWithSingleAvatar from '../../common/components/PlaceWithSingleAvatar';
 import CustomActions from '../../common/components/CustomActions';
 import { viewDeliveryAction } from './ViewDeliveryModal';
 import { parsePurchaseAmount } from '../../common/utils';
@@ -64,7 +65,7 @@ export default function DeliveriesTable({ actions = [], ...props }: Props) {
             )}
           </td>
           <td>
-            <PlaceWithDoubleAvatar {...delivery.station} />
+            <PlaceWithSingleAvatar {...delivery.station} />
           </td>
           <td>
             <CustomActions

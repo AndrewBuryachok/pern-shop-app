@@ -13,7 +13,6 @@ import {
   MAX_COORDINATE_VALUE,
   MAX_DESCRIPTION_LENGTH,
   MAX_NAME_LENGTH,
-  MAX_PRICE_VALUE,
   MIN_COORDINATE_VALUE,
   MIN_NAME_LENGTH,
 } from '../../common/constants';
@@ -30,7 +29,6 @@ export default function EditStationModal({ data: station }: Props) {
       description: station.description,
       x: station.x,
       y: station.y,
-      price: station.price,
     },
   });
 
@@ -76,14 +74,6 @@ export default function EditStationModal({ data: station }: Props) {
         min={MIN_COORDINATE_VALUE}
         max={MAX_COORDINATE_VALUE}
         {...form.getInputProps('y')}
-      />
-      <NumberInput
-        label={t('columns.price')}
-        placeholder={t('columns.price')}
-        required
-        min={1}
-        max={MAX_PRICE_VALUE}
-        {...form.getInputProps('price')}
       />
     </CustomForm>
   );

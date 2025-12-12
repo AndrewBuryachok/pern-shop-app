@@ -104,7 +104,7 @@ export default function Map() {
     (p) => ({ ...p, user: p.card.user, type: PlaceType.STORAGES } as ExtPlace),
   );
   const stations = data5?.result.map(
-    (p) => ({ ...p, user: p.card.user, type: PlaceType.STATIONS } as ExtPlace),
+    (p) => ({ ...p, type: PlaceType.STATIONS } as ExtPlace),
   );
 
   return (

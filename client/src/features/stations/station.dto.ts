@@ -1,10 +1,11 @@
-import {
-  CreatePlaceWithPriceDto,
-  EditPlaceWithPriceDto,
-} from '../places/place.dto';
+import { CreatePlaceDto } from '../places/place.dto';
 
-export interface CreateStationDto extends CreatePlaceWithPriceDto {}
+export interface CreateStationDto extends CreatePlaceDto {}
 
-export interface EditStationDto extends EditPlaceWithPriceDto {
+export interface ExtCreateStationDto extends CreateStationDto {
+  userId: number;
+}
+
+export interface EditStationDto extends CreatePlaceDto {
   stationId: number;
 }

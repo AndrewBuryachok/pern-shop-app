@@ -74,9 +74,9 @@ export default function ViewOrderModal({ data: order }: Props) {
       />
       <TextInput
         label={t('columns.owner')}
-        icon={<CustomAvatar {...order.station.card.user} />}
+        icon={<CustomAvatar {...order.station.user} />}
         iconWidth={48}
-        value={parseCard(order.station.card)}
+        value={order.station.user.nick}
         readOnly
       />
       <TextInput

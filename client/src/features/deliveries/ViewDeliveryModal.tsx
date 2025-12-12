@@ -134,9 +134,9 @@ export default function ViewDeliveryModal({ data: delivery }: Props) {
       />
       <TextInput
         label={t('columns.owner')}
-        icon={<CustomAvatar {...delivery.station.card.user} />}
+        icon={<CustomAvatar {...delivery.station.user} />}
         iconWidth={48}
-        value={parseCard(delivery.station.card)}
+        value={delivery.station.user.nick}
         readOnly
       />
       <TextInput

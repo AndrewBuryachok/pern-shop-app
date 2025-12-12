@@ -1,11 +1,7 @@
-import {
-  PlaceWithPrice,
-  SmPlace,
-  SmPlaceWithCard,
-} from '../places/place.model';
+import { PlaceWithUser, SmPlace, SmPlaceWithUser } from '../places/place.model';
 
 export interface SmStation extends SmPlace {}
 
-export interface MdStation extends SmPlaceWithCard {}
+export interface MdStation extends SmPlaceWithUser {}
 
-export interface Station extends PlaceWithPrice {}
+export interface Station extends PlaceWithUser {}
