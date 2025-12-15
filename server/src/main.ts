@@ -7,7 +7,13 @@ import { appConfig } from './config/app.config';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.enableCors();
+  const projects = process.env.APP_PROJECTS.split(',');
+  const names = process.env.APP_NAMES.split(',');
+  morgan.token('serv', (req) => names[projects.indexOf(req.url.split('/')[1])]);
   morgan.token('user', (req) => req.user?.nick);
+  morgan.token('curl', (req) =>
+    projects.reduce((acc, cur) => acc.replace('/' + cur, ''), req.url),
+  );
   morgan.token('body', (req) => {
     const body = { ...req.body };
     delete body.password;
@@ -17,7 +23,7 @@ async function bootstrap() {
   });
   app.use(
     morgan(
-      ':user :method :url :status :res[content-length] - :response-time ms :body',
+      ':serv :user :method :curl :status :res[content-length] - :response-time ms :body',
     ),
   );
   appConfig(app);

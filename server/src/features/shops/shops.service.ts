@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, IsNull, Repository, SelectQueryBuilder } from 'typeorm';
+import { Database } from '../../database.enum';
 import { Shop } from './shop.entity';
 import { Good } from '../goods/good.entity';
 import { CardsService } from '../cards/cards.service';
@@ -13,22 +14,40 @@ import { Notification } from '../../common/enums';
 
 @Injectable()
 export class ShopsService {
+  private shopsRepositoryMap: Map<string, Repository<Shop>>;
+
   constructor(
-    @InjectRepository(Shop)
-    private shopsRepository: Repository<Shop>,
+    @InjectRepository(Shop, Database.DB1)
+    private shops1Repository: Repository<Shop>,
+    @InjectRepository(Shop, Database.DB2)
+    private shops2Repository: Repository<Shop>,
     private cardsService: CardsService,
     private mqttService: MqttService,
-  ) {}
+  ) {
+    this.shopsRepositoryMap = new Map(
+      [this.shops1Repository, this.shops2Repository].map(
+        (repository, index) => [
+          process.env.APP_PROJECTS.split(',')[index],
+          repository,
+        ],
+      ),
+    );
+  }
 
-  async getMainShops(req: Request): Promise<Response<Shop>> {
+  async getMainShops(project: string, req: Request): Promise<Response<Shop>> {
     const [result, count] = await this.getShopsQueryBuilder(
+      project,
       req,
     ).getManyAndCount();
     return { result, count };
   }
 
-  async getMyShops(myId: number, req: Request): Promise<Response<Shop>> {
-    const [result, count] = await this.getShopsQueryBuilder(req)
+  async getMyShops(
+    project: string,
+    myId: number,
+    req: Request,
+  ): Promise<Response<Shop>> {
+    const [result, count] = await this.getShopsQueryBuilder(project, req)
       .innerJoin('ownerAccount.cards', 'ownerCards')
       .andWhere('ownerCards.userId = :myId', { myId })
       .andWhere('ownerCards.completedAt IS NULL')
@@ -36,19 +55,20 @@ export class ShopsService {
     return { result, count };
   }
 
-  async getAllShops(req: Request): Promise<Response<Shop>> {
+  async getAllShops(project: string, req: Request): Promise<Response<Shop>> {
     const [result, count] = await this.getShopsQueryBuilder(
+      project,
       req,
     ).getManyAndCount();
     return { result, count };
   }
 
-  selectAllShops(): Promise<Shop[]> {
-    return this.selectShopsQueryBuilder().getMany();
+  selectAllShops(project: string): Promise<Shop[]> {
+    return this.selectShopsQueryBuilder(project).getMany();
   }
 
-  selectMyShops(myId: number): Promise<Shop[]> {
-    return this.selectShopsQueryBuilder()
+  selectMyShops(project: string, myId: number): Promise<Shop[]> {
+    return this.selectShopsQueryBuilder(project)
       .innerJoin('shop.card', 'ownerCard')
       .innerJoin('ownerCard.account', 'ownerAccount')
       .innerJoin('ownerAccount.cards', 'ownerCards')
@@ -57,8 +77,9 @@ export class ShopsService {
       .getMany();
   }
 
-  async selectShopGoods(shopId: number): Promise<Good[]> {
-    const shop = await this.shopsRepository
+  async selectShopGoods(project: string, shopId: number): Promise<Good[]> {
+    const shop = await this.shopsRepositoryMap
+      .get(project)
       .createQueryBuilder('shop')
       .leftJoin('shop.goods', 'good', 'good.amount > 0')
       .where('shop.id = :shopId', { shopId })
@@ -77,16 +98,18 @@ export class ShopsService {
     return shop.goods;
   }
 
-  async createShop(dto: ExtCreateShopDto): Promise<void> {
+  async createShop(project: string, dto: ExtCreateShopDto): Promise<void> {
     const card = await this.cardsService.checkCardUser(
+      project,
       dto.cardId,
       dto.myId,
       dto.hasRole,
     );
-    await this.checkNameNotUsed(dto.name);
-    await this.checkCoordinatesNotUsed(dto.x, dto.y);
-    const shop = await this.create(dto);
+    await this.checkNameNotUsed(project, dto.name);
+    await this.checkCoordinatesNotUsed(project, dto.x, dto.y);
+    const shop = await this.create(project, dto);
     this.mqttService.publishNotification(
+      project,
       shop.id,
       0,
       card.userId,
@@ -94,28 +117,39 @@ export class ShopsService {
     );
   }
 
-  async editShop(dto: ExtEditShopDto): Promise<void> {
-    const shop = await this.checkShopOwner(dto.shopId, dto.myId, dto.hasRole);
-    await this.checkNameNotUsed(dto.name, dto.shopId);
-    await this.checkCoordinatesNotUsed(dto.x, dto.y, dto.shopId);
-    await this.edit(shop, dto);
+  async editShop(project: string, dto: ExtEditShopDto): Promise<void> {
+    const shop = await this.checkShopOwner(
+      project,
+      dto.shopId,
+      dto.myId,
+      dto.hasRole,
+    );
+    await this.checkNameNotUsed(project, dto.name, dto.shopId);
+    await this.checkCoordinatesNotUsed(project, dto.x, dto.y, dto.shopId);
+    await this.edit(project, shop, dto);
   }
 
-  async completeShop(dto: CompleteShopDto): Promise<void> {
-    const shop = await this.checkShopOwner(dto.shopId, dto.myId, dto.hasRole);
-    await this.complete(shop);
+  async completeShop(project: string, dto: CompleteShopDto): Promise<void> {
+    const shop = await this.checkShopOwner(
+      project,
+      dto.shopId,
+      dto.myId,
+      dto.hasRole,
+    );
+    await this.complete(project, shop);
   }
 
-  async checkShopExists(id: number): Promise<void> {
-    await this.shopsRepository.findOneByOrFail({ id });
+  async checkShopExists(project: string, id: number): Promise<void> {
+    await this.shopsRepositoryMap.get(project).findOneByOrFail({ id });
   }
 
   async checkShopOwner(
+    project: string,
     id: number,
     userId: number,
     hasRole: boolean,
   ): Promise<Shop> {
-    const shop = await this.shopsRepository.findOne({
+    const shop = await this.shopsRepositoryMap.get(project).findOne({
       relations: ['card', 'card.account', 'card.account.cards'],
       where: { id, card: { account: { cards: { completedAt: IsNull() } } } },
     });
@@ -129,8 +163,12 @@ export class ShopsService {
     return shop;
   }
 
-  private async checkNameNotUsed(name: string, id?: number): Promise<void> {
-    const shop = await this.shopsRepository.findOneBy({
+  private async checkNameNotUsed(
+    project: string,
+    name: string,
+    id?: number,
+  ): Promise<void> {
+    const shop = await this.shopsRepositoryMap.get(project).findOneBy({
       name,
       completedAt: IsNull(),
     });
@@ -140,11 +178,12 @@ export class ShopsService {
   }
 
   private async checkCoordinatesNotUsed(
+    project: string,
     x: number,
     y: number,
     id?: number,
   ): Promise<void> {
-    const shop = await this.shopsRepository.findOneBy({
+    const shop = await this.shopsRepositoryMap.get(project).findOneBy({
       x,
       y,
       completedAt: IsNull(),
@@ -154,53 +193,62 @@ export class ShopsService {
     }
   }
 
-  private async create(dto: ExtCreateShopDto): Promise<Shop> {
+  private async create(project: string, dto: ExtCreateShopDto): Promise<Shop> {
     try {
-      const shop = this.shopsRepository.create({
+      const shop = this.shopsRepositoryMap.get(project).create({
         cardId: dto.cardId,
         name: dto.name,
         description: dto.description,
         x: dto.x,
         y: dto.y,
       });
-      await this.shopsRepository.save(shop);
+      await this.shopsRepositoryMap.get(project).save(shop);
       return shop;
     } catch (error) {
       throw new AppException(ShopError.CREATE_FAILED);
     }
   }
 
-  private async edit(shop: Shop, dto: ExtEditShopDto): Promise<void> {
+  private async edit(
+    project: string,
+    shop: Shop,
+    dto: ExtEditShopDto,
+  ): Promise<void> {
     try {
       shop.name = dto.name;
       shop.description = dto.description;
       shop.x = dto.x;
       shop.y = dto.y;
-      await this.shopsRepository.save(shop);
+      await this.shopsRepositoryMap.get(project).save(shop);
     } catch (error) {
       throw new AppException(ShopError.EDIT_FAILED);
     }
   }
 
-  private async complete(shop: Shop): Promise<void> {
+  private async complete(project: string, shop: Shop): Promise<void> {
     try {
       shop.completedAt = new Date();
-      await this.shopsRepository.save(shop);
+      await this.shopsRepositoryMap.get(project).save(shop);
     } catch (error) {
       throw new AppException(ShopError.COMPLETE_FAILED);
     }
   }
 
-  private selectShopsQueryBuilder(): SelectQueryBuilder<Shop> {
-    return this.shopsRepository
+  private selectShopsQueryBuilder(project: string): SelectQueryBuilder<Shop> {
+    return this.shopsRepositoryMap
+      .get(project)
       .createQueryBuilder('shop')
       .where('shop.completedAt IS NULL')
       .orderBy('shop.name', 'ASC')
       .select(['shop.id', 'shop.name', 'shop.x', 'shop.y']);
   }
 
-  private getShopsQueryBuilder(req: Request): SelectQueryBuilder<Shop> {
-    return this.shopsRepository
+  private getShopsQueryBuilder(
+    project: string,
+    req: Request,
+  ): SelectQueryBuilder<Shop> {
+    return this.shopsRepositoryMap
+      .get(project)
       .createQueryBuilder('shop')
       .innerJoin('shop.card', 'ownerCard')
       .innerJoin('ownerCard.account', 'ownerAccount')

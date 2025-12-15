@@ -1,6 +1,7 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, IsNull, Repository, SelectQueryBuilder } from 'typeorm';
+import { Database } from '../../database.enum';
 import { Purchase } from './purchase.entity';
 import { DeliveriesService } from '../deliveries/deliveries.service';
 import { GoodsService } from '../goods/goods.service';
@@ -13,20 +14,34 @@ import { Mode, Notification } from '../../common/enums';
 
 @Injectable()
 export class PurchasesService {
+  private purchasesRepositoryMap: Map<string, Repository<Purchase>>;
+
   constructor(
-    @InjectRepository(Purchase)
-    private purchasesRepository: Repository<Purchase>,
+    @InjectRepository(Purchase, Database.DB1)
+    private purchases1Repository: Repository<Purchase>,
+    @InjectRepository(Purchase, Database.DB2)
+    private purchases2Repository: Repository<Purchase>,
     @Inject(forwardRef(() => DeliveriesService))
     private deliveriesService: DeliveriesService,
     private goodsService: GoodsService,
     private mqttService: MqttService,
-  ) {}
+  ) {
+    this.purchasesRepositoryMap = new Map(
+      [this.purchases1Repository, this.purchases2Repository].map(
+        (repository, index) => [
+          process.env.APP_PROJECTS.split(',')[index],
+          repository,
+        ],
+      ),
+    );
+  }
 
   async getMyPurchases(
+    project: string,
     myId: number,
     req: Request,
   ): Promise<Response<Purchase>> {
-    const [result, count] = await this.getPurchasesQueryBuilder(req)
+    const [result, count] = await this.getPurchasesQueryBuilder(project, req)
       .innerJoin('buyerAccount.cards', 'buyerCards')
       .innerJoin('sellerAccount.cards', 'sellerCards')
       .andWhere(
@@ -53,15 +68,19 @@ export class PurchasesService {
     return { result, count };
   }
 
-  async getAllPurchases(req: Request): Promise<Response<Purchase>> {
+  async getAllPurchases(
+    project: string,
+    req: Request,
+  ): Promise<Response<Purchase>> {
     const [result, count] = await this.getPurchasesQueryBuilder(
+      project,
       req,
     ).getManyAndCount();
     return { result, count };
   }
 
-  selectUserPurchases(userId: number): Promise<Purchase[]> {
-    return this.selectPurchasesQueryBuilder()
+  selectUserPurchases(project: string, userId: number): Promise<Purchase[]> {
+    return this.selectPurchasesQueryBuilder(project)
       .innerJoin('purchase.card', 'card')
       .innerJoin('card.account', 'account')
       .innerJoin('account.cards', 'cards')
@@ -71,10 +90,14 @@ export class PurchasesService {
       .getMany();
   }
 
-  async createPurchase(dto: ExtCreatePurchaseDto): Promise<void> {
-    const [good, userId] = await this.goodsService.buyGood(dto);
-    const purchase = await this.create(dto);
+  async createPurchase(
+    project: string,
+    dto: ExtCreatePurchaseDto,
+  ): Promise<void> {
+    const [good, userId] = await this.goodsService.buyGood(project, dto);
+    const purchase = await this.create(project, dto);
     this.mqttService.publishNotification(
+      project,
       purchase.id,
       good.card.userId,
       userId,
@@ -82,6 +105,7 @@ export class PurchasesService {
     );
     if (dto.rate) {
       this.mqttService.publishNotification(
+        project,
         purchase.id,
         good.card.userId,
         userId,
@@ -89,29 +113,36 @@ export class PurchasesService {
       );
     }
     if (dto.stationId && dto.sum) {
-      await this.deliveriesService.createDelivery({
+      await this.deliveriesService.createDelivery(project, {
         ...dto,
         purchaseId: purchase.id,
       });
     }
   }
 
-  async deletePurchase(id: number): Promise<void> {
-    const purchase = await this.purchasesRepository.findOneBy({ id });
-    await this.goodsService.unbuyGood(purchase.goodId, purchase.amount);
-    await this.delete(purchase);
+  async deletePurchase(project: string, id: number): Promise<void> {
+    const purchase = await this.purchasesRepositoryMap
+      .get(project)
+      .findOneBy({ id });
+    await this.goodsService.unbuyGood(
+      project,
+      purchase.goodId,
+      purchase.amount,
+    );
+    await this.delete(project, purchase);
   }
 
-  async checkPurchaseExists(id: number): Promise<void> {
-    await this.purchasesRepository.findOneByOrFail({ id });
+  async checkPurchaseExists(project: string, id: number): Promise<void> {
+    await this.purchasesRepositoryMap.get(project).findOneByOrFail({ id });
   }
 
   async checkPurchaseOwner(
+    project: string,
     id: number,
     userId: number,
     hasRole: boolean,
   ): Promise<Purchase> {
-    const purchase = await this.purchasesRepository.findOne({
+    const purchase = await this.purchasesRepositoryMap.get(project).findOne({
       relations: ['card', 'card.account', 'card.account.cards', 'good'],
       where: { id, card: { account: { cards: { completedAt: IsNull() } } } },
     });
@@ -124,31 +155,37 @@ export class PurchasesService {
     return purchase;
   }
 
-  private async create(dto: ExtCreatePurchaseDto): Promise<Purchase> {
+  private async create(
+    project: string,
+    dto: ExtCreatePurchaseDto,
+  ): Promise<Purchase> {
     try {
-      const purchase = this.purchasesRepository.create({
+      const purchase = this.purchasesRepositoryMap.get(project).create({
         goodId: dto.goodId,
         cardId: dto.cardId,
         amount: dto.amount,
         rate: dto.rate || null,
       });
-      await this.purchasesRepository.save(purchase);
+      await this.purchasesRepositoryMap.get(project).save(purchase);
       return purchase;
     } catch (error) {
       throw new AppException(PurchaseError.CREATE_FAILED);
     }
   }
 
-  private async delete(purchase: Purchase): Promise<void> {
+  private async delete(project: string, purchase: Purchase): Promise<void> {
     try {
-      await this.purchasesRepository.remove(purchase);
+      await this.purchasesRepositoryMap.get(project).remove(purchase);
     } catch (error) {
       throw new AppException(PurchaseError.DELETE_FAILED);
     }
   }
 
-  private selectPurchasesQueryBuilder(): SelectQueryBuilder<Purchase> {
-    return this.purchasesRepository
+  private selectPurchasesQueryBuilder(
+    project: string,
+  ): SelectQueryBuilder<Purchase> {
+    return this.purchasesRepositoryMap
+      .get(project)
       .createQueryBuilder('purchase')
       .innerJoin('purchase.good', 'good')
       .leftJoin('good.states', 'state', 'state.createdAt < purchase.createdAt')
@@ -171,8 +208,12 @@ export class PurchasesService {
       ]);
   }
 
-  private getPurchasesQueryBuilder(req: Request): SelectQueryBuilder<Purchase> {
-    return this.purchasesRepository
+  private getPurchasesQueryBuilder(
+    project: string,
+    req: Request,
+  ): SelectQueryBuilder<Purchase> {
+    return this.purchasesRepositoryMap
+      .get(project)
       .createQueryBuilder('purchase')
       .innerJoin('purchase.good', 'good')
       .innerJoin('good.card', 'sellerCard')

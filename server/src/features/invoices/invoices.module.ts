@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { Database } from '../../database.enum';
 import { Invoice } from './invoice.entity';
 import { CardsModule } from '../cards/cards.module';
 import { TransactionsModule } from '../transactions/transactions.module';
@@ -10,7 +11,9 @@ import { IsInvoiceExists } from '../../common/constraints';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Invoice]),
+    ...Object.values(Database).map((db) =>
+      TypeOrmModule.forFeature([Invoice], db),
+    ),
     CardsModule,
     TransactionsModule,
     MqttModule,

@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
+import { Database } from '../../database.enum';
 import { Invoice } from './invoice.entity';
 import { CardsService } from '../cards/cards.service';
 import { TransactionsService } from '../transactions/transactions.service';
@@ -18,16 +19,33 @@ import { Mode, Notification } from '../../common/enums';
 
 @Injectable()
 export class InvoicesService {
+  private invoicesRepositoryMap: Map<string, Repository<Invoice>>;
+
   constructor(
-    @InjectRepository(Invoice)
-    private invoicesRepository: Repository<Invoice>,
+    @InjectRepository(Invoice, Database.DB1)
+    private invoices1Repository: Repository<Invoice>,
+    @InjectRepository(Invoice, Database.DB2)
+    private invoices2Repository: Repository<Invoice>,
     private cardsService: CardsService,
     private transactionsService: TransactionsService,
     private mqttService: MqttService,
-  ) {}
+  ) {
+    this.invoicesRepositoryMap = new Map(
+      [this.invoices1Repository, this.invoices2Repository].map(
+        (repository, index) => [
+          process.env.APP_PROJECTS.split(',')[index],
+          repository,
+        ],
+      ),
+    );
+  }
 
-  async getMyInvoices(myId: number, req: Request): Promise<Response<Invoice>> {
-    const [result, count] = await this.getInvoicesQueryBuilder(req)
+  async getMyInvoices(
+    project: string,
+    myId: number,
+    req: Request,
+  ): Promise<Response<Invoice>> {
+    const [result, count] = await this.getInvoicesQueryBuilder(project, req)
       .innerJoin('senderAccount.cards', 'senderCards')
       .leftJoin('receiverAccount.cards', 'receiverCards')
       .andWhere(
@@ -55,21 +73,30 @@ export class InvoicesService {
     return { result, count };
   }
 
-  async getAllInvoices(req: Request): Promise<Response<Invoice>> {
+  async getAllInvoices(
+    project: string,
+    req: Request,
+  ): Promise<Response<Invoice>> {
     const [result, count] = await this.getInvoicesQueryBuilder(
+      project,
       req,
     ).getManyAndCount();
     return { result, count };
   }
 
-  async createInvoice(dto: ExtCreateInvoiceDto): Promise<void> {
+  async createInvoice(
+    project: string,
+    dto: ExtCreateInvoiceDto,
+  ): Promise<void> {
     const card = await this.cardsService.checkCardUser(
+      project,
       dto.senderCardId,
       dto.myId,
       dto.hasRole,
     );
-    const invoice = await this.create(dto);
+    const invoice = await this.create(project, dto);
     this.mqttService.publishNotification(
+      project,
       invoice.id,
       dto.receiverUserId,
       card.userId,
@@ -77,22 +104,27 @@ export class InvoicesService {
     );
   }
 
-  async editInvoice(dto: ExtEditInvoiceDto): Promise<void> {
+  async editInvoice(project: string, dto: ExtEditInvoiceDto): Promise<void> {
     const invoice = await this.checkInvoiceSender(
+      project,
       dto.invoiceId,
       dto.myId,
       dto.hasRole,
     );
-    await this.edit(invoice, dto);
+    await this.edit(project, invoice, dto);
   }
 
-  async completeInvoice(dto: ExtCompleteInvoiceDto): Promise<void> {
+  async completeInvoice(
+    project: string,
+    dto: ExtCompleteInvoiceDto,
+  ): Promise<void> {
     const invoice = await this.checkInvoiceReceiver(
+      project,
       dto.invoiceId,
       dto.myId,
       dto.hasRole,
     );
-    await this.transactionsService.createTransfer({
+    await this.transactionsService.createTransfer(project, {
       myId: dto.myId,
       hasRole: dto.hasRole,
       senderCardId: dto.cardId,
@@ -100,8 +132,9 @@ export class InvoicesService {
       sum: invoice.sum,
       description: invoice.description,
     });
-    await this.complete(invoice, dto.cardId);
+    await this.complete(project, invoice, dto.cardId);
     this.mqttService.publishNotification(
+      project,
       dto.invoiceId,
       invoice.senderCard.userId,
       invoice.receiverUserId,
@@ -109,14 +142,16 @@ export class InvoicesService {
     );
   }
 
-  async deleteInvoice(dto: DeleteInvoiceDto): Promise<void> {
+  async deleteInvoice(project: string, dto: DeleteInvoiceDto): Promise<void> {
     const invoice = await this.checkInvoiceSender(
+      project,
       dto.invoiceId,
       dto.myId,
       dto.hasRole,
     );
-    await this.delete(invoice);
+    await this.delete(project, invoice);
     this.mqttService.publishNotification(
+      project,
       dto.invoiceId,
       invoice.receiverUserId,
       invoice.senderCard.userId,
@@ -124,16 +159,17 @@ export class InvoicesService {
     );
   }
 
-  async checkInvoiceExists(id: number): Promise<void> {
-    await this.invoicesRepository.findOneByOrFail({ id });
+  async checkInvoiceExists(project: string, id: number): Promise<void> {
+    await this.invoicesRepositoryMap.get(project).findOneByOrFail({ id });
   }
 
   async checkInvoiceSender(
+    project: string,
     id: number,
     userId: number,
     hasRole: boolean,
   ): Promise<Invoice> {
-    const invoice = await this.invoicesRepository.findOne({
+    const invoice = await this.invoicesRepositoryMap.get(project).findOne({
       relations: ['senderCard'],
       where: { id },
     });
@@ -145,11 +181,12 @@ export class InvoicesService {
   }
 
   async checkInvoiceReceiver(
+    project: string,
     id: number,
     userId: number,
     hasRole: boolean,
   ): Promise<Invoice> {
-    const invoice = await this.invoicesRepository.findOne({
+    const invoice = await this.invoicesRepositoryMap.get(project).findOne({
       relations: ['senderCard'],
       where: { id },
     });
@@ -166,51 +203,66 @@ export class InvoicesService {
     }
   }
 
-  private async create(dto: ExtCreateInvoiceDto): Promise<Invoice> {
+  private async create(
+    project: string,
+    dto: ExtCreateInvoiceDto,
+  ): Promise<Invoice> {
     try {
-      const invoice = this.invoicesRepository.create({
+      const invoice = this.invoicesRepositoryMap.get(project).create({
         senderCardId: dto.senderCardId,
         receiverUserId: dto.receiverUserId,
         sum: dto.sum,
         description: dto.description,
       });
-      await this.invoicesRepository.save(invoice);
+      await this.invoicesRepositoryMap.get(project).save(invoice);
       return invoice;
     } catch (error) {
       throw new AppException(InvoiceError.CREATE_FAILED);
     }
   }
 
-  private async edit(invoice: Invoice, dto: ExtEditInvoiceDto): Promise<void> {
+  private async edit(
+    project: string,
+    invoice: Invoice,
+    dto: ExtEditInvoiceDto,
+  ): Promise<void> {
     try {
       invoice.sum = dto.sum;
       invoice.description = dto.description;
-      await this.invoicesRepository.save(invoice);
+      await this.invoicesRepositoryMap.get(project).save(invoice);
     } catch (error) {
       throw new AppException(InvoiceError.EDIT_FAILED);
     }
   }
 
-  private async complete(invoice: Invoice, cardId: number): Promise<void> {
+  private async complete(
+    project: string,
+    invoice: Invoice,
+    cardId: number,
+  ): Promise<void> {
     try {
       invoice.receiverCardId = cardId;
       invoice.completedAt = new Date();
-      await this.invoicesRepository.save(invoice);
+      await this.invoicesRepositoryMap.get(project).save(invoice);
     } catch (error) {
       throw new AppException(InvoiceError.COMPLETE_FAILED);
     }
   }
 
-  private async delete(invoice: Invoice): Promise<void> {
+  private async delete(project: string, invoice: Invoice): Promise<void> {
     try {
-      await this.invoicesRepository.remove(invoice);
+      await this.invoicesRepositoryMap.get(project).remove(invoice);
     } catch (error) {
       throw new AppException(InvoiceError.DELETE_FAILED);
     }
   }
 
-  private getInvoicesQueryBuilder(req: Request): SelectQueryBuilder<Invoice> {
-    return this.invoicesRepository
+  private getInvoicesQueryBuilder(
+    project: string,
+    req: Request,
+  ): SelectQueryBuilder<Invoice> {
+    return this.invoicesRepositoryMap
+      .get(project)
       .createQueryBuilder('invoice')
       .innerJoin('invoice.senderCard', 'senderCard')
       .innerJoin('senderCard.account', 'senderAccount')

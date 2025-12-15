@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
+import { Database } from '../../database.enum';
 import { Article } from './article.entity';
 import { View } from './view.entity';
 import { Like } from './like.entity';
@@ -19,42 +20,94 @@ import { Event, Notification } from '../../common/enums';
 
 @Injectable()
 export class ArticlesService {
-  constructor(
-    @InjectRepository(Article)
-    private articlesRepository: Repository<Article>,
-    @InjectRepository(View)
-    private viewsRepository: Repository<View>,
-    @InjectRepository(Like)
-    private likesRepository: Repository<Like>,
-    private mqttService: MqttService,
-  ) {}
+  private articlesRepositoryMap: Map<string, Repository<Article>>;
+  private viewsRepositoryMap: Map<string, Repository<View>>;
+  private likesRepositoryMap: Map<string, Repository<Like>>;
 
-  async getMainArticles(req: Request): Promise<Response<Article>> {
+  constructor(
+    @InjectRepository(Article, Database.DB1)
+    private articles1Repository: Repository<Article>,
+    @InjectRepository(Article, Database.DB2)
+    private articles2Repository: Repository<Article>,
+    @InjectRepository(View, Database.DB1)
+    private views1Repository: Repository<View>,
+    @InjectRepository(View, Database.DB2)
+    private views2Repository: Repository<View>,
+    @InjectRepository(Like, Database.DB1)
+    private likes1Repository: Repository<Like>,
+    @InjectRepository(Like, Database.DB2)
+    private likes2Repository: Repository<Like>,
+    private mqttService: MqttService,
+  ) {
+    this.articlesRepositoryMap = new Map(
+      [this.articles1Repository, this.articles2Repository].map(
+        (repository, index) => [
+          process.env.APP_PROJECTS.split(',')[index],
+          repository,
+        ],
+      ),
+    );
+    this.viewsRepositoryMap = new Map(
+      [this.views1Repository, this.views2Repository].map(
+        (repository, index) => [
+          process.env.APP_PROJECTS.split(',')[index],
+          repository,
+        ],
+      ),
+    );
+    this.likesRepositoryMap = new Map(
+      [this.likes1Repository, this.likes2Repository].map(
+        (repository, index) => [
+          process.env.APP_PROJECTS.split(',')[index],
+          repository,
+        ],
+      ),
+    );
+  }
+
+  async getMainArticles(
+    project: string,
+    req: Request,
+  ): Promise<Response<Article>> {
     const [result, count] = await this.getArticlesQueryBuilder(
+      project,
       req,
     ).getManyAndCount();
     return { result, count };
   }
 
-  async getMyArticles(myId: number, req: Request): Promise<Response<Article>> {
-    const [result, count] = await this.getArticlesQueryBuilder(req)
+  async getMyArticles(
+    project: string,
+    myId: number,
+    req: Request,
+  ): Promise<Response<Article>> {
+    const [result, count] = await this.getArticlesQueryBuilder(project, req)
       .andWhere('ownerUser.id = :myId', { myId })
       .getManyAndCount();
     return { result, count };
   }
 
-  async getAllArticles(req: Request): Promise<Response<Article>> {
+  async getAllArticles(
+    project: string,
+    req: Request,
+  ): Promise<Response<Article>> {
     const [result, count] = await this.getArticlesQueryBuilder(
+      project,
       req,
     ).getManyAndCount();
     return { result, count };
   }
 
   async selectAuthArticles(
+    project: string,
     myId: number,
   ): Promise<{ view: number[]; up: number[]; down: number[] }> {
-    const views = await this.viewsRepository.findBy({ userId: myId });
-    const likes = await this.likesRepository.findBy({ userId: myId });
+    const views = await this.viewsRepositoryMap
+      .get(project)
+      .findBy({ userId: myId });
+    const likes = await this.likesRepositoryMap
+      .get(project)
+      .findBy({ userId: myId });
     return {
       view: views.map((view) => view.articleId),
       up: likes.filter((like) => like.type).map((like) => like.articleId),
@@ -62,21 +115,25 @@ export class ArticlesService {
     };
   }
 
-  selectArticleViews(articleId: number): Promise<View[]> {
-    return this.selectViewsQueryBuilder()
+  selectArticleViews(project: string, articleId: number): Promise<View[]> {
+    return this.selectViewsQueryBuilder(project)
       .where('view.articleId = :articleId', { articleId })
       .getMany();
   }
 
-  selectArticleLikes(articleId: number): Promise<Like[]> {
-    return this.selectLikesQueryBuilder()
+  selectArticleLikes(project: string, articleId: number): Promise<Like[]> {
+    return this.selectLikesQueryBuilder(project)
       .where('like.articleId = :articleId', { articleId })
       .getMany();
   }
 
-  async createArticle(dto: ExtCreateArticleDto): Promise<void> {
-    const article = await this.create(dto);
+  async createArticle(
+    project: string,
+    dto: ExtCreateArticleDto,
+  ): Promise<void> {
+    const article = await this.create(project, dto);
     this.mqttService.publishNotification(
+      project,
       article.id,
       0,
       dto.userId,
@@ -84,23 +141,26 @@ export class ArticlesService {
     );
   }
 
-  async editArticle(dto: ExtEditArticleDto): Promise<void> {
+  async editArticle(project: string, dto: ExtEditArticleDto): Promise<void> {
     const article = await this.checkArticleOwner(
+      project,
       dto.articleId,
       dto.myId,
       dto.hasRole,
     );
-    await this.edit(article, dto);
+    await this.edit(project, article, dto);
   }
 
-  async deleteArticle(dto: DeleteArticleDto): Promise<void> {
+  async deleteArticle(project: string, dto: DeleteArticleDto): Promise<void> {
     const article = await this.checkArticleOwner(
+      project,
       dto.articleId,
       dto.myId,
       dto.hasRole,
     );
-    await this.delete(article);
+    await this.delete(project, article);
     this.mqttService.unpublishNotification(
+      project,
       dto.articleId,
       0,
       article.userId,
@@ -108,19 +168,20 @@ export class ArticlesService {
     );
   }
 
-  async viewArticle(dto: ViewArticleDto): Promise<void> {
-    const view = await this.viewsRepository.findOneBy({
+  async viewArticle(project: string, dto: ViewArticleDto): Promise<void> {
+    const view = await this.viewsRepositoryMap.get(project).findOneBy({
       articleId: dto.articleId,
       userId: dto.myId,
     });
     if (view) {
       throw new AppException(ArticleError.ALREADY_VIEWED);
     }
-    const { id } = await this.addView(dto);
-    const body = await this.selectViewsQueryBuilder()
+    const { id } = await this.addView(project, dto);
+    const body = await this.selectViewsQueryBuilder(project)
       .where('view.id = :id', { id })
       .getOne();
     this.mqttService.publishEvent(
+      project,
       0,
       Event.VIEWS,
       dto.articleId,
@@ -128,27 +189,29 @@ export class ArticlesService {
     );
   }
 
-  async likeArticle(dto: ExtLikeArticleDto): Promise<void> {
-    const like = await this.likesRepository.findOneBy({
+  async likeArticle(project: string, dto: ExtLikeArticleDto): Promise<void> {
+    const like = await this.likesRepositoryMap.get(project).findOneBy({
       articleId: dto.articleId,
       userId: dto.myId,
     });
     const notify = !like || like.type !== dto.type;
     if (!like) {
-      const { id } = await this.addLike(dto);
-      const body = await this.selectLikesQueryBuilder()
+      const { id } = await this.addLike(project, dto);
+      const body = await this.selectLikesQueryBuilder(project)
         .where('like.id = :id', { id })
         .getOne();
       this.mqttService.publishEvent(
+        project,
         0,
         Event.LIKES,
         dto.articleId,
         JSON.stringify(body),
       );
     } else if (like.type !== dto.type) {
-      await this.updateLike(like, dto);
+      await this.updateLike(project, like, dto);
       const body = { id: like.id, type: like.type, toggle: true };
       this.mqttService.publishEvent(
+        project,
         0,
         Event.LIKES,
         dto.articleId,
@@ -156,8 +219,9 @@ export class ArticlesService {
       );
     } else {
       const body = { id: like.id, type: like.type };
-      await this.removeLike(like);
+      await this.removeLike(project, like);
       this.mqttService.publishEvent(
+        project,
         0,
         Event.LIKES,
         dto.articleId,
@@ -165,9 +229,10 @@ export class ArticlesService {
       );
     }
     if (notify) {
-      const article = await this.findArticleById(dto.articleId);
+      const article = await this.findArticleById(project, dto.articleId);
       if (article.userId !== dto.myId) {
         this.mqttService.publishNotification(
+          project,
           dto.articleId,
           article.userId,
           dto.myId,
@@ -177,104 +242,122 @@ export class ArticlesService {
     }
   }
 
-  async checkArticleExists(id: number): Promise<void> {
-    await this.articlesRepository.findOneByOrFail({ id });
+  async checkArticleExists(project: string, id: number): Promise<void> {
+    await this.articlesRepositoryMap.get(project).findOneByOrFail({ id });
   }
 
   async checkArticleOwner(
+    project: string,
     id: number,
     userId: number,
     hasRole: boolean,
   ): Promise<Article> {
-    const article = await this.articlesRepository.findOneBy({ id });
+    const article = await this.articlesRepositoryMap
+      .get(project)
+      .findOneBy({ id });
     if (article.userId !== userId && !hasRole) {
       throw new AppException(ArticleError.NOT_OWNER);
     }
     return article;
   }
 
-  findArticleById(id: number): Promise<Article> {
-    return this.articlesRepository.findOneBy({ id });
+  findArticleById(project: string, id: number): Promise<Article> {
+    return this.articlesRepositoryMap.get(project).findOneBy({ id });
   }
 
-  private async create(dto: ExtCreateArticleDto): Promise<Article> {
+  private async create(
+    project: string,
+    dto: ExtCreateArticleDto,
+  ): Promise<Article> {
     try {
-      const article = this.articlesRepository.create({
+      const article = this.articlesRepositoryMap.get(project).create({
         userId: dto.userId,
         text: dto.text,
         images: dto.images,
       });
-      await this.articlesRepository.save(article);
+      await this.articlesRepositoryMap.get(project).save(article);
       return article;
     } catch (error) {
       throw new AppException(ArticleError.CREATE_FAILED);
     }
   }
 
-  private async edit(article: Article, dto: ExtEditArticleDto): Promise<void> {
+  private async edit(
+    project: string,
+    article: Article,
+    dto: ExtEditArticleDto,
+  ): Promise<void> {
     try {
       article.text = dto.text;
       article.images = dto.images;
-      await this.articlesRepository.save(article);
+      await this.articlesRepositoryMap.get(project).save(article);
     } catch (error) {
       throw new AppException(ArticleError.EDIT_FAILED);
     }
   }
 
-  private async delete(article: Article): Promise<void> {
+  private async delete(project: string, article: Article): Promise<void> {
     try {
-      await this.articlesRepository.remove(article);
+      await this.articlesRepositoryMap.get(project).remove(article);
     } catch (error) {
       throw new AppException(ArticleError.DELETE_FAILED);
     }
   }
 
-  private async addView(dto: ViewArticleDto): Promise<View> {
+  private async addView(project: string, dto: ViewArticleDto): Promise<View> {
     try {
-      const view = this.viewsRepository.create({
+      const view = this.viewsRepositoryMap.get(project).create({
         articleId: dto.articleId,
         userId: dto.myId,
       });
-      await this.viewsRepository.save(view);
+      await this.viewsRepositoryMap.get(project).save(view);
       return view;
     } catch (error) {
       throw new AppException(ArticleError.ADD_VIEW_FAILED);
     }
   }
 
-  private async addLike(dto: ExtLikeArticleDto): Promise<Like> {
+  private async addLike(
+    project: string,
+    dto: ExtLikeArticleDto,
+  ): Promise<Like> {
     try {
-      const like = this.likesRepository.create({
+      const like = this.likesRepositoryMap.get(project).create({
         articleId: dto.articleId,
         userId: dto.myId,
         type: dto.type,
       });
-      await this.likesRepository.save(like);
+      await this.likesRepositoryMap.get(project).save(like);
       return like;
     } catch (error) {
       throw new AppException(ArticleError.ADD_LIKE_FAILED);
     }
   }
 
-  private async updateLike(like: Like, dto: ExtLikeArticleDto): Promise<void> {
+  private async updateLike(
+    project: string,
+    like: Like,
+    dto: ExtLikeArticleDto,
+  ): Promise<void> {
     try {
       like.type = dto.type;
-      await this.likesRepository.save(like);
+      await this.likesRepositoryMap.get(project).save(like);
     } catch (error) {
       throw new AppException(ArticleError.UPDATE_LIKE_FAILED);
     }
   }
 
-  private async removeLike(like: Like): Promise<void> {
+  private async removeLike(project: string, like: Like): Promise<void> {
     try {
-      await this.likesRepository.remove(like);
+      await this.likesRepositoryMap.get(project).remove(like);
     } catch (error) {
       throw new AppException(ArticleError.REMOVE_LIKE_FAILED);
     }
   }
 
-  private selectViewsQueryBuilder(): SelectQueryBuilder<View> {
-    return this.viewsRepository
+  private selectViewsQueryBuilder(project: string): SelectQueryBuilder<View> {
+    return this.viewsRepositoryMap
+      .get(project)
       .createQueryBuilder('view')
       .innerJoin('view.user', 'viewer')
       .orderBy('view.id', 'DESC')
@@ -287,8 +370,9 @@ export class ArticlesService {
       ]);
   }
 
-  private selectLikesQueryBuilder(): SelectQueryBuilder<Like> {
-    return this.likesRepository
+  private selectLikesQueryBuilder(project: string): SelectQueryBuilder<Like> {
+    return this.likesRepositoryMap
+      .get(project)
       .createQueryBuilder('like')
       .innerJoin('like.user', 'liker')
       .orderBy('like.id', 'DESC')
@@ -302,8 +386,12 @@ export class ArticlesService {
       ]);
   }
 
-  private getArticlesQueryBuilder(req: Request): SelectQueryBuilder<Article> {
-    return this.articlesRepository
+  private getArticlesQueryBuilder(
+    project: string,
+    req: Request,
+  ): SelectQueryBuilder<Article> {
+    return this.articlesRepositoryMap
+      .get(project)
       .createQueryBuilder('article')
       .innerJoin('article.user', 'ownerUser')
       .loadRelationCountAndMap('article.views', 'article.views')

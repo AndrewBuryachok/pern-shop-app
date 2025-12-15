@@ -18,82 +18,107 @@ import {
   ExtCreateTownDto,
   TownIdDto,
 } from './town.dto';
+import { ProjectDto } from '../../project.dto';
 import { Request, Response } from '../../common/interfaces';
 import { HasRole, MyId, Public, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
 
-@ApiTags('towns')
-@Controller('towns')
+@ApiTags(':project/towns')
+@Controller(':project/towns')
 export class TownsController {
   constructor(private townsService: TownsService) {}
 
   @Public()
   @Get()
-  getMainTowns(@Query() req: Request): Promise<Response<Town>> {
-    return this.townsService.getMainTowns(req);
+  getMainTowns(
+    @Param() { project }: ProjectDto,
+    @Query() req: Request,
+  ): Promise<Response<Town>> {
+    return this.townsService.getMainTowns(project, req);
   }
 
   @Get('my')
   getMyTowns(
+    @Param() { project }: ProjectDto,
     @MyId() myId: number,
     @Query() req: Request,
   ): Promise<Response<Town>> {
-    return this.townsService.getMyTowns(myId, req);
+    return this.townsService.getMyTowns(project, myId, req);
   }
 
   @Roles(Role.MODER)
   @Get('all')
-  getAllTowns(@Query() req: Request): Promise<Response<Town>> {
-    return this.townsService.getAllTowns(req);
+  getAllTowns(
+    @Param() { project }: ProjectDto,
+    @Query() req: Request,
+  ): Promise<Response<Town>> {
+    return this.townsService.getAllTowns(project, req);
   }
 
   @Public()
   @Get('all/select')
-  selectAllTowns(): Promise<Town[]> {
-    return this.townsService.selectAllTowns();
+  selectAllTowns(@Param() { project }: ProjectDto): Promise<Town[]> {
+    return this.townsService.selectAllTowns(project);
   }
 
   @Get('my/select')
-  selectMyTowns(@MyId() myId: number): Promise<Town[]> {
-    return this.townsService.selectMyTowns(myId);
+  selectMyTowns(
+    @Param() { project }: ProjectDto,
+    @MyId() myId: number,
+  ): Promise<Town[]> {
+    return this.townsService.selectMyTowns(project, myId);
   }
 
   @Public()
   @Get(':townId/users')
-  selectTownUsers(@Param() { townId }: TownIdDto): Promise<User[]> {
-    return this.townsService.selectTownUsers(townId);
+  selectTownUsers(
+    @Param() { project }: ProjectDto,
+    @Param() { townId }: TownIdDto,
+  ): Promise<User[]> {
+    return this.townsService.selectTownUsers(project, townId);
   }
 
   @Post()
   createMyTown(
+    @Param() { project }: ProjectDto,
     @MyId() myId: number,
     @Body() dto: CreateTownDto,
   ): Promise<void> {
-    return this.townsService.createTown({ ...dto, userId: myId });
+    return this.townsService.createTown(project, { ...dto, userId: myId });
   }
 
   @Roles(Role.MODER)
   @Post('all')
-  createUserTown(@Body() dto: ExtCreateTownDto): Promise<void> {
-    return this.townsService.createTown(dto);
+  createUserTown(
+    @Param() { project }: ProjectDto,
+    @Body() dto: ExtCreateTownDto,
+  ): Promise<void> {
+    return this.townsService.createTown(project, dto);
   }
 
   @Patch(':townId')
   editTown(
+    @Param() { project }: ProjectDto,
     @MyId() myId: number,
     @HasRole(Role.MODER) hasRole: boolean,
     @Param() { townId }: TownIdDto,
     @Body() dto: EditTownDto,
   ): Promise<void> {
-    return this.townsService.editTown({ ...dto, townId, myId, hasRole });
+    return this.townsService.editTown(project, {
+      ...dto,
+      townId,
+      myId,
+      hasRole,
+    });
   }
 
   @Delete(':townId')
   deleteTown(
+    @Param() { project }: ProjectDto,
     @MyId() myId: number,
     @HasRole(Role.MODER) hasRole: boolean,
     @Param() { townId }: TownIdDto,
   ): Promise<void> {
-    return this.townsService.deleteTown({ townId, myId, hasRole });
+    return this.townsService.deleteTown(project, { townId, myId, hasRole });
   }
 }

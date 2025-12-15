@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, IsNull, Repository, SelectQueryBuilder } from 'typeorm';
+import { Database } from '../../database.enum';
 import { Good } from './good.entity';
 import { GoodState } from './good-state.entity';
 import { Purchase } from '../purchases/purchase.entity';
@@ -21,25 +22,53 @@ import { Mode, Notification } from '../../common/enums';
 
 @Injectable()
 export class GoodsService {
+  private goodsRepositoryMap: Map<string, Repository<Good>>;
+  private goodsStatesRepositoryMap: Map<string, Repository<GoodState>>;
+
   constructor(
-    @InjectRepository(Good)
-    private goodsRepository: Repository<Good>,
-    @InjectRepository(GoodState)
-    private goodsStatesRepository: Repository<GoodState>,
+    @InjectRepository(Good, Database.DB1)
+    private goods1Repository: Repository<Good>,
+    @InjectRepository(Good, Database.DB2)
+    private goods2Repository: Repository<Good>,
+    @InjectRepository(GoodState, Database.DB1)
+    private goodsStates1Repository: Repository<GoodState>,
+    @InjectRepository(GoodState, Database.DB2)
+    private goodsStates2Repository: Repository<GoodState>,
     private shopsService: ShopsService,
     private transactionsService: TransactionsService,
     private mqttService: MqttService,
-  ) {}
+  ) {
+    this.goodsRepositoryMap = new Map(
+      [this.goods1Repository, this.goods2Repository].map(
+        (repository, index) => [
+          process.env.APP_PROJECTS.split(',')[index],
+          repository,
+        ],
+      ),
+    );
+    this.goodsStatesRepositoryMap = new Map(
+      [this.goodsStates1Repository, this.goodsStates2Repository].map(
+        (repository, index) => [
+          process.env.APP_PROJECTS.split(',')[index],
+          repository,
+        ],
+      ),
+    );
+  }
 
-  async getMainGoods(req: Request): Promise<Response<Good>> {
-    const [result, count] = await this.getGoodsQueryBuilder(req)
+  async getMainGoods(project: string, req: Request): Promise<Response<Good>> {
+    const [result, count] = await this.getGoodsQueryBuilder(project, req)
       .andWhere('good.amount > 0')
       .getManyAndCount();
     return { result, count };
   }
 
-  async getMyGoods(myId: number, req: Request): Promise<Response<Good>> {
-    const [result, count] = await this.getGoodsQueryBuilder(req)
+  async getMyGoods(
+    project: string,
+    myId: number,
+    req: Request,
+  ): Promise<Response<Good>> {
+    const [result, count] = await this.getGoodsQueryBuilder(project, req)
       .innerJoin('sellerAccount.cards', 'sellerCards')
       .andWhere('sellerCards.userId = :myId', { myId })
       .andWhere('sellerCards.completedAt IS NULL')
@@ -47,15 +76,20 @@ export class GoodsService {
     return { result, count };
   }
 
-  async getAllGoods(req: Request): Promise<Response<Good>> {
+  async getAllGoods(project: string, req: Request): Promise<Response<Good>> {
     const [result, count] = await this.getGoodsQueryBuilder(
+      project,
       req,
     ).getManyAndCount();
     return { result, count };
   }
 
-  async selectGoodStates(goodId: number): Promise<GoodState[]> {
-    const good = await this.goodsRepository
+  async selectGoodStates(
+    project: string,
+    goodId: number,
+  ): Promise<GoodState[]> {
+    const good = await this.goodsRepositoryMap
+      .get(project)
       .createQueryBuilder('good')
       .leftJoin('good.states', 'state')
       .where('good.id = :goodId', { goodId })
@@ -71,8 +105,12 @@ export class GoodsService {
     return good.states;
   }
 
-  async selectGoodPurchases(goodId: number): Promise<Purchase[]> {
-    const good = await this.goodsRepository
+  async selectGoodPurchases(
+    project: string,
+    goodId: number,
+  ): Promise<Purchase[]> {
+    const good = await this.goodsRepositoryMap
+      .get(project)
       .createQueryBuilder('good')
       .leftJoin('good.purchases', 'purchase')
       .leftJoin('purchase.card', 'card')
@@ -110,8 +148,9 @@ export class GoodsService {
     return good.purchases;
   }
 
-  async createGood(dto: ExtCreateGoodDto): Promise<void> {
+  async createGood(project: string, dto: ExtCreateGoodDto): Promise<void> {
     const shop = await this.shopsService.checkShopOwner(
+      project,
       dto.shopId,
       dto.myId,
       dto.hasRole,
@@ -119,8 +158,9 @@ export class GoodsService {
     const card = dto.hasRole
       ? shop.card
       : shop.card.account.cards.find((card) => card.userId === dto.myId);
-    const good = await this.create(dto, card.id);
+    const good = await this.create(project, dto, card.id);
     this.mqttService.publishNotification(
+      project,
       good.id,
       0,
       card.userId,
@@ -128,34 +168,54 @@ export class GoodsService {
     );
   }
 
-  async editGood(dto: ExtEditGoodDto): Promise<void> {
-    const good = await this.checkGoodOwner(dto.goodId, dto.myId, dto.hasRole);
-    await this.checkGoodNotBought(dto.goodId);
-    await this.edit(good, dto);
+  async editGood(project: string, dto: ExtEditGoodDto): Promise<void> {
+    const good = await this.checkGoodOwner(
+      project,
+      dto.goodId,
+      dto.myId,
+      dto.hasRole,
+    );
+    await this.checkGoodNotBought(project, dto.goodId);
+    await this.edit(project, good, dto);
   }
 
-  async updateGood(dto: ExtUpdateGoodDto): Promise<void> {
-    const good = await this.checkGoodOwner(dto.goodId, dto.myId, dto.hasRole);
-    await this.checkGoodBought(dto.goodId);
-    await this.update(good, dto);
+  async updateGood(project: string, dto: ExtUpdateGoodDto): Promise<void> {
+    const good = await this.checkGoodOwner(
+      project,
+      dto.goodId,
+      dto.myId,
+      dto.hasRole,
+    );
+    await this.checkGoodBought(project, dto.goodId);
+    await this.update(project, good, dto);
   }
 
-  async completeGood(dto: ExtGoodIdDto): Promise<void> {
-    const good = await this.checkGoodOwner(dto.goodId, dto.myId, dto.hasRole);
-    await this.checkGoodBought(dto.goodId);
-    await this.complete(good);
-    this.unpublishNotification(dto.goodId, good.card.userId);
+  async completeGood(project: string, dto: ExtGoodIdDto): Promise<void> {
+    const good = await this.checkGoodOwner(
+      project,
+      dto.goodId,
+      dto.myId,
+      dto.hasRole,
+    );
+    await this.checkGoodBought(project, dto.goodId);
+    await this.complete(project, good);
+    this.unpublishNotification(project, dto.goodId, good.card.userId);
   }
 
-  async deleteGood(dto: ExtGoodIdDto): Promise<void> {
-    const good = await this.checkGoodOwner(dto.goodId, dto.myId, dto.hasRole);
-    await this.checkGoodNotBought(dto.goodId);
-    await this.delete(good);
-    this.unpublishNotification(dto.goodId, good.card.userId);
+  async deleteGood(project: string, dto: ExtGoodIdDto): Promise<void> {
+    const good = await this.checkGoodOwner(
+      project,
+      dto.goodId,
+      dto.myId,
+      dto.hasRole,
+    );
+    await this.checkGoodNotBought(project, dto.goodId);
+    await this.delete(project, good);
+    this.unpublishNotification(project, dto.goodId, good.card.userId);
   }
 
-  async buyGood(dto: BuyGoodDto): Promise<[Good, number]> {
-    const good = await this.goodsRepository.findOne({
+  async buyGood(project: string, dto: BuyGoodDto): Promise<[Good, number]> {
+    const good = await this.goodsRepositoryMap.get(project).findOne({
       relations: ['card', 'shop'],
       where: { id: dto.goodId },
     });
@@ -165,18 +225,22 @@ export class GoodsService {
     if (good.completedAt || good.shop?.completedAt) {
       throw new AppException(GoodError.ALREADY_EXPIRED);
     }
-    const userId = await this.transactionsService.createTransferWithReturn({
-      myId: dto.myId,
-      hasRole: dto.hasRole,
-      senderCardId: dto.cardId,
-      receiverCardId: good.cardId,
-      sum: dto.amount * good.price,
-      description: 'купівля товару',
-      item: good.item,
-    });
-    await this.buy(good, dto.amount);
+    const userId = await this.transactionsService.createTransferWithReturn(
+      project,
+      {
+        myId: dto.myId,
+        hasRole: dto.hasRole,
+        senderCardId: dto.cardId,
+        receiverCardId: good.cardId,
+        sum: dto.amount * good.price,
+        description: 'купівля товару',
+        item: good.item,
+      },
+    );
+    await this.buy(project, good, dto.amount);
     if (!good.amount) {
       this.mqttService.publishNotification(
+        project,
         good.id,
         good.card.userId,
         0,
@@ -186,21 +250,22 @@ export class GoodsService {
     return [good, userId];
   }
 
-  async unbuyGood(id: number, amount: number): Promise<void> {
-    const good = await this.goodsRepository.findOneBy({ id });
-    await this.unbuy(good, amount);
+  async unbuyGood(project: string, id: number, amount: number): Promise<void> {
+    const good = await this.goodsRepositoryMap.get(project).findOneBy({ id });
+    await this.unbuy(project, good, amount);
   }
 
-  async checkGoodExists(id: number): Promise<void> {
-    await this.goodsRepository.findOneByOrFail({ id });
+  async checkGoodExists(project: string, id: number): Promise<void> {
+    await this.goodsRepositoryMap.get(project).findOneByOrFail({ id });
   }
 
   async checkGoodOwner(
+    project: string,
     id: number,
     userId: number,
     hasRole: boolean,
   ): Promise<Good> {
-    const good = await this.goodsRepository.findOne({
+    const good = await this.goodsRepositoryMap.get(project).findOne({
       relations: ['card', 'card.account', 'card.account.cards', 'shop'],
       where: { id, card: { account: { cards: { completedAt: IsNull() } } } },
     });
@@ -214,8 +279,8 @@ export class GoodsService {
     return good;
   }
 
-  private async checkGoodBought(id: number): Promise<void> {
-    const good = await this.goodsRepository.findOne({
+  private async checkGoodBought(project: string, id: number): Promise<void> {
+    const good = await this.goodsRepositoryMap.get(project).findOne({
       relations: ['purchases'],
       where: { id },
     });
@@ -224,8 +289,8 @@ export class GoodsService {
     }
   }
 
-  private async checkGoodNotBought(id: number): Promise<void> {
-    const good = await this.goodsRepository.findOne({
+  private async checkGoodNotBought(project: string, id: number): Promise<void> {
+    const good = await this.goodsRepositoryMap.get(project).findOne({
       relations: ['purchases'],
       where: { id },
     });
@@ -234,9 +299,13 @@ export class GoodsService {
     }
   }
 
-  private async create(dto: ExtCreateGoodDto, cardId: number): Promise<Good> {
+  private async create(
+    project: string,
+    dto: ExtCreateGoodDto,
+    cardId: number,
+  ): Promise<Good> {
     try {
-      const good = this.goodsRepository.create({
+      const good = this.goodsRepositoryMap.get(project).create({
         cardId,
         shopId: dto.shopId,
         item: dto.item,
@@ -246,19 +315,23 @@ export class GoodsService {
         kit: dto.kit,
         price: dto.price,
       });
-      await this.goodsRepository.save(good);
-      const goodState = this.goodsStatesRepository.create({
+      await this.goodsRepositoryMap.get(project).save(good);
+      const goodState = this.goodsStatesRepositoryMap.get(project).create({
         goodId: good.id,
         price: dto.price,
       });
-      await this.goodsStatesRepository.save(goodState);
+      await this.goodsStatesRepositoryMap.get(project).save(goodState);
       return good;
     } catch (error) {
       throw new AppException(GoodError.CREATE_FAILED);
     }
   }
 
-  private async edit(good: Good, dto: ExtEditGoodDto): Promise<void> {
+  private async edit(
+    project: string,
+    good: Good,
+    dto: ExtEditGoodDto,
+  ): Promise<void> {
     try {
       const equal = good.price === dto.price;
       good.item = dto.item;
@@ -267,75 +340,92 @@ export class GoodsService {
       good.intake = dto.intake;
       good.kit = dto.kit;
       good.price = dto.price;
-      await this.goodsRepository.save(good);
+      await this.goodsRepositoryMap.get(project).save(good);
       if (!equal) {
-        const goodState = this.goodsStatesRepository.create({
+        const goodState = this.goodsStatesRepositoryMap.get(project).create({
           goodId: good.id,
           price: good.price,
         });
-        await this.goodsStatesRepository.save(goodState);
+        await this.goodsStatesRepositoryMap.get(project).save(goodState);
       }
     } catch (error) {
       throw new AppException(GoodError.EDIT_FAILED);
     }
   }
 
-  private async update(good: Good, dto: ExtUpdateGoodDto): Promise<void> {
+  private async update(
+    project: string,
+    good: Good,
+    dto: ExtUpdateGoodDto,
+  ): Promise<void> {
     try {
       const equal = good.price === dto.price;
       good.amount = dto.amount;
       good.price = dto.price;
-      await this.goodsRepository.save(good);
+      await this.goodsRepositoryMap.get(project).save(good);
       if (!equal) {
-        const goodState = this.goodsStatesRepository.create({
+        const goodState = this.goodsStatesRepositoryMap.get(project).create({
           goodId: good.id,
           price: good.price,
         });
-        await this.goodsStatesRepository.save(goodState);
+        await this.goodsStatesRepositoryMap.get(project).save(goodState);
       }
     } catch (error) {
       throw new AppException(GoodError.UPDATE_FAILED);
     }
   }
 
-  private async complete(good: Good): Promise<void> {
+  private async complete(project: string, good: Good): Promise<void> {
     try {
       good.amount = 0;
       good.completedAt = new Date();
-      await this.goodsRepository.save(good);
+      await this.goodsRepositoryMap.get(project).save(good);
     } catch (error) {
       throw new AppException(GoodError.COMPLETE_FAILED);
     }
   }
 
-  private async delete(good: Good): Promise<void> {
+  private async delete(project: string, good: Good): Promise<void> {
     try {
-      await this.goodsRepository.remove(good);
+      await this.goodsRepositoryMap.get(project).remove(good);
     } catch (error) {
       throw new AppException(GoodError.DELETE_FAILED);
     }
   }
 
-  private async buy(good: Good, amount: number): Promise<void> {
+  private async buy(
+    project: string,
+    good: Good,
+    amount: number,
+  ): Promise<void> {
     try {
       good.amount -= amount;
-      await this.goodsRepository.save(good);
+      await this.goodsRepositoryMap.get(project).save(good);
     } catch (error) {
       throw new AppException(GoodError.BUY_FAILED);
     }
   }
 
-  private async unbuy(good: Good, amount: number): Promise<void> {
+  private async unbuy(
+    project: string,
+    good: Good,
+    amount: number,
+  ): Promise<void> {
     try {
       good.amount += amount;
-      await this.goodsRepository.save(good);
+      await this.goodsRepositoryMap.get(project).save(good);
     } catch (error) {
       throw new AppException(GoodError.UNBUY_FAILED);
     }
   }
 
-  private unpublishNotification(id: number, userId: number): void {
+  private unpublishNotification(
+    project: string,
+    id: number,
+    userId: number,
+  ): void {
     this.mqttService.unpublishNotification(
+      project,
       id,
       0,
       userId,
@@ -343,8 +433,12 @@ export class GoodsService {
     );
   }
 
-  private getGoodsQueryBuilder(req: Request): SelectQueryBuilder<Good> {
-    return this.goodsRepository
+  private getGoodsQueryBuilder(
+    project: string,
+    req: Request,
+  ): SelectQueryBuilder<Good> {
+    return this.goodsRepositoryMap
+      .get(project)
       .createQueryBuilder('good')
       .innerJoin('good.card', 'sellerCard')
       .innerJoin('sellerCard.account', 'sellerAccount')

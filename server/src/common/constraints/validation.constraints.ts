@@ -19,17 +19,30 @@ import { DeliveriesService } from '../../features/deliveries/deliveries.service'
 import { OrdersService } from '../../features/orders/orders.service';
 
 @Injectable()
+@ValidatorConstraint({ name: 'isProjectExists', async: false })
+export class IsProjectExists implements ValidatorConstraintInterface {
+  validate(value: string): boolean {
+    return process.env.APP_PROJECTS.split(',').includes(value);
+  }
+
+  defaultMessage(): string {
+    return 'Невідомий сервер';
+  }
+}
+
+@Injectable()
 @ValidatorConstraint({ name: 'isUserExists', async: true })
 export class IsUserExists implements ValidatorConstraintInterface {
   constructor(private usersService: UsersService) {}
 
   async validate(value: number): Promise<boolean> {
-    try {
-      await this.usersService.checkUserExists(value);
-    } catch (error) {
-      return false;
+    for (const project of process.env.APP_PROJECTS.split(',')) {
+      try {
+        await this.usersService.checkUserExists(project, value);
+        return true;
+      } catch (error) {}
     }
-    return true;
+    return false;
   }
 
   defaultMessage(): string {
@@ -43,12 +56,13 @@ export class IsMessageExists implements ValidatorConstraintInterface {
   constructor(private messagesService: MessagesService) {}
 
   async validate(value: number): Promise<boolean> {
-    try {
-      await this.messagesService.checkMessageExists(value);
-    } catch (error) {
-      return false;
+    for (const project of process.env.APP_PROJECTS.split(',')) {
+      try {
+        await this.messagesService.checkMessageExists(project, value);
+        return true;
+      } catch (error) {}
     }
-    return true;
+    return false;
   }
 
   defaultMessage(): string {
@@ -62,12 +76,13 @@ export class IsArticleExists implements ValidatorConstraintInterface {
   constructor(private articlesService: ArticlesService) {}
 
   async validate(value: number): Promise<boolean> {
-    try {
-      await this.articlesService.checkArticleExists(value);
-    } catch (error) {
-      return false;
+    for (const project of process.env.APP_PROJECTS.split(',')) {
+      try {
+        await this.articlesService.checkArticleExists(project, value);
+        return true;
+      } catch (error) {}
     }
-    return true;
+    return false;
   }
 
   defaultMessage(): string {
@@ -81,12 +96,13 @@ export class IsCommentExists implements ValidatorConstraintInterface {
   constructor(private commentsService: CommentsService) {}
 
   async validate(value: number): Promise<boolean> {
-    try {
-      await this.commentsService.checkCommentExists(value);
-    } catch (error) {
-      return false;
+    for (const project of process.env.APP_PROJECTS.split(',')) {
+      try {
+        await this.commentsService.checkCommentExists(project, value);
+        return true;
+      } catch (error) {}
     }
-    return true;
+    return false;
   }
 
   defaultMessage(): string {
@@ -100,12 +116,13 @@ export class IsCardExists implements ValidatorConstraintInterface {
   constructor(private cardsService: CardsService) {}
 
   async validate(value: number): Promise<boolean> {
-    try {
-      await this.cardsService.checkCardExists(value);
-    } catch (error) {
-      return false;
+    for (const project of process.env.APP_PROJECTS.split(',')) {
+      try {
+        await this.cardsService.checkCardExists(project, value);
+        return true;
+      } catch (error) {}
     }
-    return true;
+    return false;
   }
 
   defaultMessage(): string {
@@ -119,12 +136,13 @@ export class IsTransactionExists implements ValidatorConstraintInterface {
   constructor(private transactionsService: TransactionsService) {}
 
   async validate(value: number): Promise<boolean> {
-    try {
-      await this.transactionsService.checkTransactionExists(value);
-    } catch (error) {
-      return false;
+    for (const project of process.env.APP_PROJECTS.split(',')) {
+      try {
+        await this.transactionsService.checkTransactionExists(project, value);
+        return true;
+      } catch (error) {}
     }
-    return true;
+    return false;
   }
 
   defaultMessage(): string {
@@ -138,12 +156,13 @@ export class IsInvoiceExists implements ValidatorConstraintInterface {
   constructor(private invoicesService: InvoicesService) {}
 
   async validate(value: number): Promise<boolean> {
-    try {
-      await this.invoicesService.checkInvoiceExists(value);
-    } catch (error) {
-      return false;
+    for (const project of process.env.APP_PROJECTS.split(',')) {
+      try {
+        await this.invoicesService.checkInvoiceExists(project, value);
+        return true;
+      } catch (error) {}
     }
-    return true;
+    return false;
   }
 
   defaultMessage(): string {
@@ -157,12 +176,13 @@ export class IsTownExists implements ValidatorConstraintInterface {
   constructor(private townsService: TownsService) {}
 
   async validate(value: number): Promise<boolean> {
-    try {
-      await this.townsService.checkTownExists(value);
-    } catch (error) {
-      return false;
+    for (const project of process.env.APP_PROJECTS.split(',')) {
+      try {
+        await this.townsService.checkTownExists(project, value);
+        return true;
+      } catch (error) {}
     }
-    return true;
+    return false;
   }
 
   defaultMessage(): string {
@@ -176,12 +196,13 @@ export class IsShopExists implements ValidatorConstraintInterface {
   constructor(private shopsService: ShopsService) {}
 
   async validate(value: number): Promise<boolean> {
-    try {
-      await this.shopsService.checkShopExists(value);
-    } catch (error) {
-      return false;
+    for (const project of process.env.APP_PROJECTS.split(',')) {
+      try {
+        await this.shopsService.checkShopExists(project, value);
+        return true;
+      } catch (error) {}
     }
-    return true;
+    return false;
   }
 
   defaultMessage(): string {
@@ -195,12 +216,13 @@ export class IsStationExists implements ValidatorConstraintInterface {
   constructor(private stationsService: StationsService) {}
 
   async validate(value: number): Promise<boolean> {
-    try {
-      await this.stationsService.checkStationExists(value);
-    } catch (error) {
-      return false;
+    for (const project of process.env.APP_PROJECTS.split(',')) {
+      try {
+        await this.stationsService.checkStationExists(project, value);
+        return true;
+      } catch (error) {}
     }
-    return true;
+    return false;
   }
 
   defaultMessage(): string {
@@ -214,12 +236,13 @@ export class IsGoodExists implements ValidatorConstraintInterface {
   constructor(private goodsService: GoodsService) {}
 
   async validate(value: number): Promise<boolean> {
-    try {
-      await this.goodsService.checkGoodExists(value);
-    } catch (error) {
-      return false;
+    for (const project of process.env.APP_PROJECTS.split(',')) {
+      try {
+        await this.goodsService.checkGoodExists(project, value);
+        return true;
+      } catch (error) {}
     }
-    return true;
+    return false;
   }
 
   defaultMessage(): string {
@@ -233,12 +256,13 @@ export class IsPurchaseExists implements ValidatorConstraintInterface {
   constructor(private purchasesService: PurchasesService) {}
 
   async validate(value: number): Promise<boolean> {
-    try {
-      await this.purchasesService.checkPurchaseExists(value);
-    } catch (error) {
-      return false;
+    for (const project of process.env.APP_PROJECTS.split(',')) {
+      try {
+        await this.purchasesService.checkPurchaseExists(project, value);
+        return true;
+      } catch (error) {}
     }
-    return true;
+    return false;
   }
 
   defaultMessage(): string {
@@ -252,12 +276,13 @@ export class IsDeliveryExists implements ValidatorConstraintInterface {
   constructor(private deliveriesService: DeliveriesService) {}
 
   async validate(value: number): Promise<boolean> {
-    try {
-      await this.deliveriesService.checkDeliveryExists(value);
-    } catch (error) {
-      return false;
+    for (const project of process.env.APP_PROJECTS.split(',')) {
+      try {
+        await this.deliveriesService.checkDeliveryExists(project, value);
+        return true;
+      } catch (error) {}
     }
-    return true;
+    return false;
   }
 
   defaultMessage(): string {
@@ -271,12 +296,13 @@ export class IsOrderExists implements ValidatorConstraintInterface {
   constructor(private ordersService: OrdersService) {}
 
   async validate(value: number): Promise<boolean> {
-    try {
-      await this.ordersService.checkOrderExists(value);
-    } catch (error) {
-      return false;
+    for (const project of process.env.APP_PROJECTS.split(',')) {
+      try {
+        await this.ordersService.checkOrderExists(project, value);
+        return true;
+      } catch (error) {}
     }
-    return true;
+    return false;
   }
 
   defaultMessage(): string {

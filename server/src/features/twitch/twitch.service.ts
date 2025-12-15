@@ -12,22 +12,26 @@ export class TwitchService {
     private usersService: UsersService,
   ) {}
 
-  async handleEvent(type: string, twitch: string): Promise<void> {
-    const user = await this.usersService.findUserByTwitch(twitch);
+  async handleEvent(
+    project: string,
+    type: string,
+    twitch: string,
+  ): Promise<void> {
+    const user = await this.usersService.findUserByTwitch(project, twitch);
     if (type === 'stream.online') {
-      this.mqttService.publishStreamer(user.id, twitch);
+      this.mqttService.publishStreamer(project, user.id, twitch);
     } else if (type === 'stream.offline') {
-      this.mqttService.unpublishStreamer(user.id);
+      this.mqttService.unpublishStreamer(project, user.id);
     }
   }
 
-  async follow(twitch: string): Promise<void> {
+  async follow(project: string, twitch: string): Promise<void> {
     const token = await this.getToken();
     const userId = await this.getIdByTwitch(twitch, token);
     const subs = await this.getSubscriptions(token, userId);
     if (!subs.length) {
       for (const type of ['stream.online', 'stream.offline'] as const) {
-        await this.subscribe(type, userId, token);
+        await this.subscribe(project, type, userId, token);
       }
     }
   }
@@ -88,6 +92,7 @@ export class TwitchService {
   }
 
   private async subscribe(
+    project: string,
     type: 'stream.online' | 'stream.offline',
     userId: string,
     token: string,
@@ -100,7 +105,7 @@ export class TwitchService {
         condition: { broadcaster_user_id: userId },
         transport: {
           method: 'webhook',
-          callback: process.env.CALLBACK_URL,
+          callback: process.env.CALLBACK_URL.replace(':project', project),
           secret: process.env.CALLBACK_SECRET,
         },
       },

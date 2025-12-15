@@ -1,5 +1,6 @@
 import { forwardRef, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { Database } from '../../database.enum';
 import { Delivery } from './delivery.entity';
 import { PurchasesModule } from '../purchases/purchases.module';
 import { CardsModule } from '../cards/cards.module';
@@ -11,7 +12,9 @@ import { IsDeliveryExists } from '../../common/constraints';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Delivery]),
+    ...Object.values(Database).map((db) =>
+      TypeOrmModule.forFeature([Delivery], db),
+    ),
     forwardRef(() => PurchasesModule),
     CardsModule,
     TransactionsModule,

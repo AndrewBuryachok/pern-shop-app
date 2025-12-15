@@ -1,6 +1,7 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
+import { Database } from '../../database.enum';
 import { User } from './user.entity';
 import { MqttService } from '../mqtt/mqtt.service';
 import { TwitchService } from '../twitch/twitch.service';
@@ -23,24 +24,38 @@ import { Event } from '../../common/enums';
 
 @Injectable()
 export class UsersService {
+  private usersRepositoryMap: Map<string, Repository<User>>;
+
   constructor(
-    @InjectRepository(User)
-    private usersRepository: Repository<User>,
+    @InjectRepository(User, Database.DB1)
+    private users1Repository: Repository<User>,
+    @InjectRepository(User, Database.DB2)
+    private users2Repository: Repository<User>,
     @Inject(forwardRef(() => MqttService))
     private mqttService: MqttService,
     @Inject(forwardRef(() => TwitchService))
     private twitchService: TwitchService,
-  ) {}
+  ) {
+    this.usersRepositoryMap = new Map(
+      [this.users1Repository, this.users2Repository].map(
+        (repository, index) => [
+          process.env.APP_PROJECTS.split(',')[index],
+          repository,
+        ],
+      ),
+    );
+  }
 
-  async getMainUsers(req: Request): Promise<Response<User>> {
+  async getMainUsers(project: string, req: Request): Promise<Response<User>> {
     const [result, count] = await this.getUsersQueryBuilder(
+      project,
       req,
     ).getManyAndCount();
     return { result, count };
   }
 
-  async getTopUsers(req: Request): Promise<Response<User>> {
-    const [result, count] = await this.getUsersQueryBuilder(req)
+  async getTopUsers(project: string, req: Request): Promise<Response<User>> {
+    const [result, count] = await this.getUsersQueryBuilder(project, req)
       .orderBy('user_accounts_sum', 'DESC', 'NULLS LAST')
       .addSelect(
         (qb) =>
@@ -52,7 +67,8 @@ export class UsersService {
       )
       .getManyAndCount();
     if (result.length) {
-      const users = await this.usersRepository
+      const users = await this.usersRepositoryMap
+        .get(project)
         .createQueryBuilder('user')
         .where('user.id IN (:...ids)', { ids: result.map((user) => user.id) })
         .select('user.id', 'id')
@@ -72,59 +88,73 @@ export class UsersService {
     return { result, count };
   }
 
-  async getMyUsers(myId: number, req: Request): Promise<Response<User>> {
-    const [result, count] = await this.getUsersQueryBuilder(req)
+  async getMyUsers(
+    project: string,
+    myId: number,
+    req: Request,
+  ): Promise<Response<User>> {
+    const [result, count] = await this.getUsersQueryBuilder(project, req)
       .leftJoin('town.users', 'townUsers')
       .andWhere('townUsers.id = :myId', { myId })
       .getManyAndCount();
     return { result, count };
   }
 
-  async getBannedUsers(req: Request): Promise<Response<User>> {
-    const [result, count] = await this.getUsersQueryBuilder(req)
+  async getBannedUsers(project: string, req: Request): Promise<Response<User>> {
+    const [result, count] = await this.getUsersQueryBuilder(project, req)
       .andWhere('user.banned')
       .getManyAndCount();
     return { result, count };
   }
 
-  async getAllUsers(req: Request): Promise<Response<User>> {
+  async getAllUsers(project: string, req: Request): Promise<Response<User>> {
     const [result, count] = await this.getUsersQueryBuilder(
+      project,
       req,
     ).getManyAndCount();
     return { result, count };
   }
 
-  getFriendsQueryBuilder(req: Request): SelectQueryBuilder<User> {
-    return this.getUsersQueryBuilder(req);
+  getFriendsQueryBuilder(
+    project: string,
+    req: Request,
+  ): SelectQueryBuilder<User> {
+    return this.getUsersQueryBuilder(project, req);
   }
 
-  getResidentsQueryBuilder(req: Request): SelectQueryBuilder<User> {
-    return this.getUsersQueryBuilder(req);
+  getResidentsQueryBuilder(
+    project: string,
+    req: Request,
+  ): SelectQueryBuilder<User> {
+    return this.getUsersQueryBuilder(project, req);
   }
 
-  selectAllUsers(): Promise<User[]> {
-    return this.selectUsersQueryBuilder().getMany();
+  selectAllUsers(project: string): Promise<User[]> {
+    return this.selectUsersQueryBuilder(project).getMany();
   }
 
-  selectNotBannedUsers(): Promise<User[]> {
-    return this.selectUsersQueryBuilder().where('NOT user.banned').getMany();
+  selectNotBannedUsers(project: string): Promise<User[]> {
+    return this.selectUsersQueryBuilder(project)
+      .where('NOT user.banned')
+      .getMany();
   }
 
-  selectNotCitizensUsers(): Promise<User[]> {
-    return this.selectUsersQueryBuilder()
+  selectNotCitizensUsers(project: string): Promise<User[]> {
+    return this.selectUsersQueryBuilder(project)
       .where('user.townId IS NULL')
       .getMany();
   }
 
-  async selectNotFriendsUsers(myId: number): Promise<User[]> {
+  async selectNotFriendsUsers(project: string, myId: number): Promise<User[]> {
     const friends = (
-      await this.usersRepository.findOne({
+      await this.usersRepositoryMap.get(project).findOne({
         relations: ['friends'],
         where: { id: myId },
       })
     ).friends.map((friend) => friend.id);
     const offers = (
-      await this.usersRepository
+      await this.usersRepositoryMap
+        .get(project)
         .createQueryBuilder('user')
         .leftJoinAndMapMany(
           'user.offers',
@@ -136,26 +166,27 @@ export class UsersService {
         .select(['user.id', 'offer.receiverUserId'])
         .getOne()
     )['offers'].map((offer) => offer.receiverUserId);
-    const users = await this.selectUsersQueryBuilder().getMany();
+    const users = await this.selectUsersQueryBuilder(project).getMany();
     friends.push(myId);
     return users.filter(
       (user) => !friends.includes(user.id) && !offers.includes(user.id),
     );
   }
 
-  async getSingleUser(nick: string): Promise<User> {
-    const profile = await this.getUserProfile(nick);
-    const stats = await this.getUserStatsAndRates(profile.id);
+  async getSingleUser(project: string, nick: string): Promise<User> {
+    const profile = await this.getUserProfile(project, nick);
+    const stats = await this.getUserStatsAndRates(project, profile.id);
     return { ...profile, ...stats };
   }
 
-  async createUser(dto: CreateUserDto): Promise<User> {
-    await this.checkNickNotUsed(dto.nick);
-    const user = await this.create(dto);
-    const body = await this.selectUsersQueryBuilder()
+  async createUser(project: string, dto: CreateUserDto): Promise<User> {
+    await this.checkNickNotUsed(project, dto.nick);
+    const user = await this.create(project, dto);
+    const body = await this.selectUsersQueryBuilder(project)
       .where('user.id = :id', { id: user.id })
       .getOne();
     this.mqttService.publishEvent(
+      project,
       0,
       Event.USERS,
       user.id,
@@ -164,45 +195,57 @@ export class UsersService {
     return user;
   }
 
-  async addUserToken(dto: UpdateUserTokenDto): Promise<void> {
-    const user = await this.usersRepository.findOneBy({ id: dto.userId });
-    await this.addToken(user, dto.token);
+  async addUserToken(project: string, dto: UpdateUserTokenDto): Promise<void> {
+    const user = await this.usersRepositoryMap
+      .get(project)
+      .findOneBy({ id: dto.userId });
+    await this.addToken(project, user, dto.token);
   }
 
-  async removeUserToken(dto: UpdateUserTokenDto): Promise<void> {
-    const user = await this.usersRepository.findOneBy({ id: dto.userId });
-    await this.removeToken(user);
+  async removeUserToken(
+    project: string,
+    dto: UpdateUserTokenDto,
+  ): Promise<void> {
+    const user = await this.usersRepositoryMap
+      .get(project)
+      .findOneBy({ id: dto.userId });
+    await this.removeToken(project, user);
   }
 
-  async addUserOnline(id: number): Promise<void> {
-    const user = await this.usersRepository.findOneBy({ id });
+  async addUserOnline(project: string, id: number): Promise<void> {
+    const user = await this.usersRepositoryMap.get(project).findOneBy({ id });
     if (!user.type) {
-      await this.addOnline(user);
+      await this.addOnline(project, user);
     }
   }
 
-  async removeUserOnline(id: number): Promise<void> {
-    const user = await this.usersRepository.findOneBy({ id });
+  async removeUserOnline(project: string, id: number): Promise<void> {
+    const user = await this.usersRepositoryMap.get(project).findOneBy({ id });
     if (user.type) {
-      await this.removeOnline(user);
+      await this.removeOnline(project, user);
     }
   }
 
-  async addUserAttempts(user: User): Promise<void> {
-    await this.addAttempts(user);
+  async addUserAttempts(project: string, user: User): Promise<void> {
+    await this.addAttempts(project, user);
   }
 
-  async removeUserAttempts(user: User): Promise<void> {
-    await this.removeAttempts(user);
+  async removeUserAttempts(project: string, user: User): Promise<void> {
+    await this.removeAttempts(project, user);
   }
 
-  async editUserProfile(dto: ExtEditUserProfileDto): Promise<void> {
+  async editUserProfile(
+    project: string,
+    dto: ExtEditUserProfileDto,
+  ): Promise<void> {
     if (dto.userId !== dto.myId && !dto.hasRole) {
       throw new AppException(UserError.NOT_OWNER);
     }
-    const user = await this.usersRepository.findOneBy({ id: dto.userId });
+    const user = await this.usersRepositoryMap
+      .get(project)
+      .findOneBy({ id: dto.userId });
     if (user.nick !== dto.nick) {
-      await this.checkNickNotUsed(dto.nick);
+      await this.checkNickNotUsed(project, dto.nick);
     }
     if (
       user.roles.includes(Role.STREAMER) &&
@@ -216,13 +259,14 @@ export class UsersService {
       dto.twitch &&
       dto.twitch !== user.twitch
     ) {
-      await this.twitchService.follow(dto.twitch);
+      await this.twitchService.follow(project, dto.twitch);
     }
-    await this.editProfile(user, dto);
-    const body = await this.selectUsersQueryBuilder()
+    await this.editProfile(project, user, dto);
+    const body = await this.selectUsersQueryBuilder(project)
       .where('user.id = :id', { id: user.id })
       .getOne();
     this.mqttService.publishEvent(
+      project,
       0,
       Event.USERS,
       user.id,
@@ -230,101 +274,132 @@ export class UsersService {
     );
   }
 
-  async updateUserPassword(user: User, password: string): Promise<void> {
-    await this.updatePassword(user, password);
+  async updateUserPassword(
+    project: string,
+    user: User,
+    password: string,
+  ): Promise<void> {
+    await this.updatePassword(project, user, password);
   }
 
-  async editUserPassword(dto: ExtEditUserPasswordDto): Promise<void> {
-    const user = await this.usersRepository.findOneBy({ id: dto.userId });
+  async editUserPassword(
+    project: string,
+    dto: ExtEditUserPasswordDto,
+  ): Promise<void> {
+    const user = await this.usersRepositoryMap
+      .get(project)
+      .findOneBy({ id: dto.userId });
     const hash = await hashData(dto.password);
-    await this.updatePassword(user, hash);
+    await this.updatePassword(project, user, hash);
   }
 
-  async addUserBanned(dto: UserIdDto): Promise<void> {
-    const user = await this.usersRepository.findOneBy({ id: dto.userId });
+  async addUserBanned(project: string, dto: UserIdDto): Promise<void> {
+    const user = await this.usersRepositoryMap
+      .get(project)
+      .findOneBy({ id: dto.userId });
     if (user.banned) {
       throw new AppException(UserError.ALREADY_BANNED);
     }
-    await this.addBanned(user);
+    await this.addBanned(project, user);
   }
 
-  async removeUserBanned(dto: UserIdDto): Promise<void> {
-    const user = await this.usersRepository.findOneBy({ id: dto.userId });
+  async removeUserBanned(project: string, dto: UserIdDto): Promise<void> {
+    const user = await this.usersRepositoryMap
+      .get(project)
+      .findOneBy({ id: dto.userId });
     if (!user.banned) {
       throw new AppException(UserError.NOT_BANNED);
     }
-    await this.removeBanned(user);
+    await this.removeBanned(project, user);
   }
 
-  async addUserRole(dto: ExtUpdateUserRoleDto): Promise<void> {
-    const user = await this.usersRepository.findOneBy({ id: dto.userId });
+  async addUserRole(project: string, dto: ExtUpdateUserRoleDto): Promise<void> {
+    const user = await this.usersRepositoryMap
+      .get(project)
+      .findOneBy({ id: dto.userId });
     if (user.roles.includes(dto.role)) {
       throw new AppException(UserError.ALREADY_HAS_ROLE);
     }
     if (dto.role === Role.STREAMER && user.twitch) {
-      await this.twitchService.follow(user.twitch);
+      await this.twitchService.follow(project, user.twitch);
     }
-    await this.addRole(user, dto.role);
+    await this.addRole(project, user, dto.role);
   }
 
-  async removeUserRole(dto: ExtUpdateUserRoleDto): Promise<void> {
-    const user = await this.usersRepository.findOneBy({ id: dto.userId });
+  async removeUserRole(
+    project: string,
+    dto: ExtUpdateUserRoleDto,
+  ): Promise<void> {
+    const user = await this.usersRepositoryMap
+      .get(project)
+      .findOneBy({ id: dto.userId });
     if (!user.roles.includes(dto.role)) {
       throw new AppException(UserError.NOT_HAS_ROLE);
     }
     if (dto.role === Role.STREAMER && user.twitch) {
       await this.twitchService.unfollow(user.twitch);
     }
-    await this.removeRole(user, dto.role);
+    await this.removeRole(project, user, dto.role);
   }
 
-  async addUserTown(dto: UpdateUserTownDto): Promise<void> {
-    const user = await this.usersRepository.findOneBy({ id: dto.userId });
+  async addUserTown(project: string, dto: UpdateUserTownDto): Promise<void> {
+    const user = await this.usersRepositoryMap
+      .get(project)
+      .findOneBy({ id: dto.userId });
     if (user.townId) {
       throw new AppException(UserError.ALREADY_IN_TOWN);
     }
-    await this.addTown(user, dto.townId);
+    await this.addTown(project, user, dto.townId);
   }
 
-  async removeUserTown(dto: UpdateUserTownDto): Promise<void> {
-    const user = await this.usersRepository.findOneBy({ id: dto.userId });
+  async removeUserTown(project: string, dto: UpdateUserTownDto): Promise<void> {
+    const user = await this.usersRepositoryMap
+      .get(project)
+      .findOneBy({ id: dto.userId });
     if (user.townId !== dto.townId) {
       throw new AppException(UserError.NOT_IN_TOWN);
     }
-    await this.removeTown(user);
+    await this.removeTown(project, user);
   }
 
-  async addUserFriend(dto: UpdateUserFriendDto): Promise<void> {
-    const user = await this.usersRepository.findOne({
+  async addUserFriend(
+    project: string,
+    dto: UpdateUserFriendDto,
+  ): Promise<void> {
+    const user = await this.usersRepositoryMap.get(project).findOne({
       relations: ['friends'],
       where: { id: dto.senderUserId },
     });
     if (user.friends.find((friend) => friend.id === dto.receiverUserId)) {
       throw new AppException(UserError.ALREADY_HAS_FRIEND);
     }
-    await this.addFriend(user, dto.receiverUserId);
+    await this.addFriend(project, user, dto.receiverUserId);
   }
 
-  async removeUserFriend(dto: UpdateUserFriendDto): Promise<void> {
-    const user = await this.usersRepository.findOne({
+  async removeUserFriend(
+    project: string,
+    dto: UpdateUserFriendDto,
+  ): Promise<void> {
+    const user = await this.usersRepositoryMap.get(project).findOne({
       relations: ['friends'],
       where: { id: dto.senderUserId },
     });
     if (!user.friends.find((friend) => friend.id === dto.receiverUserId)) {
       throw new AppException(UserError.NOT_HAS_FRIEND);
     }
-    await this.removeFriend(user, dto.receiverUserId);
+    await this.removeFriend(project, user, dto.receiverUserId);
   }
 
-  async checkUserExists(id: number): Promise<void> {
-    await this.usersRepository.findOneByOrFail({ id });
+  async checkUserExists(project: string, id: number): Promise<void> {
+    await this.usersRepositoryMap.get(project).findOneByOrFail({ id });
   }
 
   async checkNotFriends(
+    project: string,
     senderUserId: number,
     receiverUserId: number,
   ): Promise<User> {
-    const user = await this.usersRepository.findOne({
+    const user = await this.usersRepositoryMap.get(project).findOne({
       relations: ['friends'],
       where: { id: senderUserId, friends: [{ id: receiverUserId }] },
     });
@@ -334,77 +409,81 @@ export class UsersService {
     return user;
   }
 
-  findUserById(id: number): Promise<User> {
-    return this.usersRepository.findOneBy({ id });
+  findUserById(project: string, id: number): Promise<User> {
+    return this.usersRepositoryMap.get(project).findOneBy({ id });
   }
 
-  findUserByNick(nick: string): Promise<User> {
-    return this.usersRepository.findOneBy({ nick });
+  findUserByNick(project: string, nick: string): Promise<User> {
+    return this.usersRepositoryMap.get(project).findOneBy({ nick });
   }
 
-  findUserByTwitch(twitch: string): Promise<User> {
-    return this.usersRepository.findOneBy({ twitch });
+  findUserByTwitch(project: string, twitch: string): Promise<User> {
+    return this.usersRepositoryMap.get(project).findOneBy({ twitch });
   }
 
-  private async checkNickNotUsed(nick: string): Promise<void> {
-    const user = await this.usersRepository.findOneBy({ nick });
+  private async checkNickNotUsed(project: string, nick: string): Promise<void> {
+    const user = await this.usersRepositoryMap.get(project).findOneBy({ nick });
     if (user) {
       throw new AppException(UserError.NICK_ALREADY_USED);
     }
   }
 
-  private async create(dto: CreateUserDto): Promise<User> {
+  private async create(project: string, dto: CreateUserDto): Promise<User> {
     try {
-      const user = this.usersRepository.create({
+      const user = this.usersRepositoryMap.get(project).create({
         nick: dto.nick,
         password: dto.password,
       });
-      await this.usersRepository.save(user);
+      await this.usersRepositoryMap.get(project).save(user);
       return user;
     } catch (error) {
       throw new AppException(UserError.CREATE_FAILED);
     }
   }
 
-  private async addToken(user: User, token: string): Promise<void> {
+  private async addToken(
+    project: string,
+    user: User,
+    token: string,
+  ): Promise<void> {
     try {
       user.token = token;
-      await this.usersRepository.save(user);
+      await this.usersRepositoryMap.get(project).save(user);
     } catch (error) {
       throw new AppException(UserError.ADD_TOKEN_FAILED);
     }
   }
 
-  private async removeToken(user: User): Promise<void> {
+  private async removeToken(project: string, user: User): Promise<void> {
     try {
       user.token = null;
-      await this.usersRepository.save(user);
+      await this.usersRepositoryMap.get(project).save(user);
     } catch (error) {
       throw new AppException(UserError.REMOVE_TOKEN_FAILED);
     }
   }
 
-  private async addOnline(user: User): Promise<void> {
+  private async addOnline(project: string, user: User): Promise<void> {
     try {
       user.type = true;
       user.onlineAt = new Date();
-      await this.usersRepository.save(user);
+      await this.usersRepositoryMap.get(project).save(user);
     } catch (error) {
       throw new AppException(UserError.ADD_ONLINE_FAILED);
     }
   }
 
-  private async removeOnline(user: User): Promise<void> {
+  private async removeOnline(project: string, user: User): Promise<void> {
     try {
       user.type = false;
       user.onlineAt = new Date();
-      await this.usersRepository.save(user);
+      await this.usersRepositoryMap.get(project).save(user);
     } catch (error) {
       throw new AppException(UserError.REMOVE_ONLINE_FAILED);
     }
   }
 
-  private async addAttempts(user: User): Promise<void> {
+  private async addAttempts(project: string, user: User): Promise<void> {
     try {
       user.attempts++;
       if (user.attempts >= 5) {
@@ -412,22 +491,23 @@ export class UsersService {
         user.blockedUntil = new Date();
         user.blockedUntil.setMinutes(user.blockedUntil.getMinutes() + 15);
       }
-      await this.usersRepository.save(user);
+      await this.usersRepositoryMap.get(project).save(user);
     } catch (error) {
       throw new AppException(UserError.ADD_ATTEMPTS_FAILED);
     }
   }
 
-  private async removeAttempts(user: User): Promise<void> {
+  private async removeAttempts(project: string, user: User): Promise<void> {
     try {
       user.attempts = 0;
-      await this.usersRepository.save(user);
+      await this.usersRepositoryMap.get(project).save(user);
     } catch (error) {
       throw new AppException(UserError.REMOVE_ATTEMPTS_FAILED);
     }
   }
 
   private async editProfile(
+    project: string,
     user: User,
     dto: ExtEditUserProfileDto,
   ): Promise<void> {
@@ -438,97 +518,122 @@ export class UsersService {
       user.discord = dto.discord;
       user.twitch = dto.twitch;
       user.youtube = dto.youtube;
-      await this.usersRepository.save(user);
+      await this.usersRepositoryMap.get(project).save(user);
     } catch (error) {
       throw new AppException(UserError.EDIT_PROFILE_FAILED);
     }
   }
 
-  private async updatePassword(user: User, password: string): Promise<void> {
+  private async updatePassword(
+    project: string,
+    user: User,
+    password: string,
+  ): Promise<void> {
     try {
       user.password = password;
-      await this.usersRepository.save(user);
+      await this.usersRepositoryMap.get(project).save(user);
     } catch (error) {
       throw new AppException(UserError.UPDATE_PASSWORD_FAILED);
     }
   }
 
-  private async addBanned(user: User): Promise<void> {
+  private async addBanned(project: string, user: User): Promise<void> {
     try {
       user.banned = true;
-      await this.usersRepository.save(user);
+      await this.usersRepositoryMap.get(project).save(user);
     } catch (error) {
       throw new AppException(UserError.ADD_BANNED_FAILED);
     }
   }
 
-  private async removeBanned(user: User): Promise<void> {
+  private async removeBanned(project: string, user: User): Promise<void> {
     try {
       user.banned = false;
-      await this.usersRepository.save(user);
+      await this.usersRepositoryMap.get(project).save(user);
     } catch (error) {
       throw new AppException(UserError.REMOVE_BANNED_FAILED);
     }
   }
 
-  private async addRole(user: User, role: Role): Promise<void> {
+  private async addRole(
+    project: string,
+    user: User,
+    role: Role,
+  ): Promise<void> {
     try {
       user.roles = user.roles.concat(role).sort();
-      await this.usersRepository.save(user);
+      await this.usersRepositoryMap.get(project).save(user);
     } catch (error) {
       throw new AppException(UserError.ADD_ROLE_FAILED);
     }
   }
 
-  private async removeRole(user: User, role: Role): Promise<void> {
+  private async removeRole(
+    project: string,
+    user: User,
+    role: Role,
+  ): Promise<void> {
     try {
       user.roles = user.roles.filter((value) => value !== role);
-      await this.usersRepository.save(user);
+      await this.usersRepositoryMap.get(project).save(user);
     } catch (error) {
       throw new AppException(UserError.REMOVE_ROLE_FAILED);
     }
   }
 
-  private async addTown(user: User, townId: number): Promise<void> {
+  private async addTown(
+    project: string,
+    user: User,
+    townId: number,
+  ): Promise<void> {
     try {
       user.townId = townId;
-      await this.usersRepository.save(user);
+      await this.usersRepositoryMap.get(project).save(user);
     } catch (error) {
       throw new AppException(UserError.ADD_TOWN_FAILED);
     }
   }
 
-  private async removeTown(user: User): Promise<void> {
+  private async removeTown(project: string, user: User): Promise<void> {
     try {
       user.townId = null;
-      await this.usersRepository.save(user);
+      await this.usersRepositoryMap.get(project).save(user);
     } catch (error) {
       throw new AppException(UserError.REMOVE_TOWN_FAILED);
     }
   }
 
-  private async addFriend(user: User, userId: number): Promise<void> {
+  private async addFriend(
+    project: string,
+    user: User,
+    userId: number,
+  ): Promise<void> {
     try {
       const friend = new User();
       friend.id = userId;
       user.friends.push(friend);
-      await this.usersRepository.save(user);
+      await this.usersRepositoryMap.get(project).save(user);
     } catch (error) {
       throw new AppException(UserError.ADD_FRIEND_FAILED);
     }
   }
 
-  private async removeFriend(user: User, userId: number): Promise<void> {
+  private async removeFriend(
+    project: string,
+    user: User,
+    userId: number,
+  ): Promise<void> {
     try {
       user.friends = user.friends.filter((user) => user.id !== userId);
-      await this.usersRepository.save(user);
+      await this.usersRepositoryMap.get(project).save(user);
     } catch (error) {
       throw new AppException(UserError.REMOVE_FRIEND_FAILED);
     }
   }
 
-  private selectUsersQueryBuilder(): SelectQueryBuilder<User> {
-    return this.usersRepository
+  private selectUsersQueryBuilder(project: string): SelectQueryBuilder<User> {
+    return this.usersRepositoryMap
+      .get(project)
       .createQueryBuilder('user')
       .orderBy('user.type', 'DESC')
       .addOrderBy('user.onlineAt', 'DESC')
@@ -536,8 +641,12 @@ export class UsersService {
       .select(['user.id', 'user.nick', 'user.avatar']);
   }
 
-  private getUsersQueryBuilder(req: Request): SelectQueryBuilder<User> {
-    return this.usersRepository
+  private getUsersQueryBuilder(
+    project: string,
+    req: Request,
+  ): SelectQueryBuilder<User> {
+    return this.usersRepositoryMap
+      .get(project)
       .createQueryBuilder('user')
       .leftJoin('user.town', 'town')
       .leftJoin('town.user', 'ownerUser')
@@ -612,8 +721,8 @@ export class UsersService {
       ]);
   }
 
-  private async getUserProfile(nick: string): Promise<User> {
-    const user = await this.getUsersQueryBuilder({})
+  private async getUserProfile(project: string, nick: string): Promise<User> {
+    const user = await this.getUsersQueryBuilder(project, {})
       .where('user.nick = :nick', { nick })
       .addSelect([
         'user.background',
@@ -625,7 +734,7 @@ export class UsersService {
     if (!user) {
       throw new AppException(UserError.UNKNOWN);
     }
-    user.friends = await this.selectUsersQueryBuilder()
+    user.friends = await this.selectUsersQueryBuilder(project)
       .innerJoinAndMapOne(
         'friend',
         'user.friends',
@@ -637,8 +746,12 @@ export class UsersService {
     return user;
   }
 
-  private async getUserStatsAndRates(userId: number): Promise<User> {
-    const goodsCount = await this.usersRepository
+  private async getUserStatsAndRates(
+    project: string,
+    userId: number,
+  ): Promise<User> {
+    const goodsCount = await this.usersRepositoryMap
+      .get(project)
       .createQueryBuilder('user')
       .leftJoin('user.cards', 'card')
       .leftJoinAndMapMany(
@@ -650,7 +763,8 @@ export class UsersService {
       .where('user.id = :userId', { userId })
       .select('COUNT(good.id)', 'goodsCount')
       .getRawOne();
-    const purchasesCount = await this.usersRepository
+    const purchasesCount = await this.usersRepositoryMap
+      .get(project)
       .createQueryBuilder('user')
       .leftJoin('user.cards', 'card')
       .leftJoinAndMapMany(
@@ -662,7 +776,8 @@ export class UsersService {
       .where('user.id = :userId', { userId })
       .select('COUNT(purchase.id)', 'purchasesCount')
       .getRawOne();
-    const deliveriesCount = await this.usersRepository
+    const deliveriesCount = await this.usersRepositoryMap
+      .get(project)
       .createQueryBuilder('user')
       .leftJoin('user.cards', 'card')
       .leftJoinAndMapMany(
@@ -674,7 +789,8 @@ export class UsersService {
       .where('user.id = :userId', { userId })
       .select('COUNT(delivery.id)', 'deliveriesCount')
       .getRawOne();
-    const ordersCount = await this.usersRepository
+    const ordersCount = await this.usersRepositoryMap
+      .get(project)
       .createQueryBuilder('user')
       .leftJoin('user.cards', 'card')
       .leftJoinAndMapMany(
@@ -686,7 +802,8 @@ export class UsersService {
       .where('user.id = :userId', { userId })
       .select('COUNT(order.id)', 'ordersCount')
       .getRawOne();
-    const goodsRate = await this.usersRepository
+    const goodsRate = await this.usersRepositoryMap
+      .get(project)
       .createQueryBuilder('user')
       .leftJoin('user.cards', 'card')
       .leftJoinAndMapMany(
@@ -699,7 +816,8 @@ export class UsersService {
       .where('user.id = :userId', { userId })
       .select('SUM(purchase.rate)', 'goodsRate')
       .getRawOne();
-    const purchasesRate = await this.usersRepository
+    const purchasesRate = await this.usersRepositoryMap
+      .get(project)
       .createQueryBuilder('user')
       .leftJoin('user.cards', 'card')
       .leftJoinAndMapMany(
@@ -711,7 +829,8 @@ export class UsersService {
       .where('user.id = :userId', { userId })
       .select('SUM(purchase.rate)', 'purchasesRate')
       .getRawOne();
-    const deliveriesRate = await this.usersRepository
+    const deliveriesRate = await this.usersRepositoryMap
+      .get(project)
       .createQueryBuilder('user')
       .leftJoin('user.cards', 'card')
       .leftJoinAndMapMany(
@@ -723,7 +842,8 @@ export class UsersService {
       .where('user.id = :userId', { userId })
       .select('AVG(delivery.rate)', 'deliveriesRate')
       .getRawOne();
-    const ordersRate = await this.usersRepository
+    const ordersRate = await this.usersRepositoryMap
+      .get(project)
       .createQueryBuilder('user')
       .leftJoin('user.cards', 'card')
       .leftJoinAndMapMany(

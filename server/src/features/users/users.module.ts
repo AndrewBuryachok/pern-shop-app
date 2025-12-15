@@ -1,5 +1,6 @@
 import { forwardRef, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { Database } from '../../database.enum';
 import { User } from './user.entity';
 import { MqttModule } from '../mqtt/mqtt.module';
 import { TwitchModule } from '../twitch/twitch.module';
@@ -9,7 +10,9 @@ import { IsUserExists } from '../../common/constraints';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User]),
+    ...Object.values(Database).map((db) =>
+      TypeOrmModule.forFeature([User], db),
+    ),
     forwardRef(() => MqttModule),
     forwardRef(() => TwitchModule),
   ],

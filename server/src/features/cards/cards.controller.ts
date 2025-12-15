@@ -20,93 +20,132 @@ import {
   UpdateCardUserDto,
 } from './card.dto';
 import { UserIdDto } from '../users/user.dto';
+import { ProjectDto } from '../../project.dto';
 import { Request, Response } from '../../common/interfaces';
 import { HasRole, MyId, Public, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
 
-@ApiTags('cards')
-@Controller('cards')
+@ApiTags(':project/cards')
+@Controller(':project/cards')
 export class CardsController {
   constructor(private cardsService: CardsService) {}
 
   @Get('my')
   getMyCards(
+    @Param() { project }: ProjectDto,
     @MyId() myId: number,
     @Query() req: Request,
   ): Promise<Response<Card>> {
-    return this.cardsService.getMyCards(myId, req);
+    return this.cardsService.getMyCards(project, myId, req);
   }
 
   @Roles(Role.MODER)
   @Get('all')
-  getAllCards(@Query() req: Request): Promise<Response<Card>> {
-    return this.cardsService.getAllCards(req);
+  getAllCards(
+    @Param() { project }: ProjectDto,
+    @Query() req: Request,
+  ): Promise<Response<Card>> {
+    return this.cardsService.getAllCards(project, req);
   }
 
   @Get('my/select')
-  selectMyCards(@MyId() myId: number): Promise<Card[]> {
-    return this.cardsService.selectUserCardsWithBalance(myId);
+  selectMyCards(
+    @Param() { project }: ProjectDto,
+    @MyId() myId: number,
+  ): Promise<Card[]> {
+    return this.cardsService.selectUserCardsWithBalance(project, myId);
   }
 
   @Public()
   @Get(':userId/select')
-  selectUserCards(@Param() { userId }: UserIdDto): Promise<Card[]> {
-    return this.cardsService.selectUserCards(userId);
+  selectUserCards(
+    @Param() { project }: ProjectDto,
+    @Param() { userId }: UserIdDto,
+  ): Promise<Card[]> {
+    return this.cardsService.selectUserCards(project, userId);
   }
 
   @Roles(Role.MODER, Role.BANKER)
   @Get(':userId/ext-select')
-  selectUserCardsWithBalance(@Param() { userId }: UserIdDto): Promise<Card[]> {
-    return this.cardsService.selectUserCardsWithBalance(userId);
+  selectUserCardsWithBalance(
+    @Param() { project }: ProjectDto,
+    @Param() { userId }: UserIdDto,
+  ): Promise<Card[]> {
+    return this.cardsService.selectUserCardsWithBalance(project, userId);
   }
 
   @Public()
   @Get(':cardId/users')
-  selectCardUsers(@Param() { cardId }: CardIdDto): Promise<User[]> {
-    return this.cardsService.selectCardUsers(cardId);
+  selectCardUsers(
+    @Param() { project }: ProjectDto,
+    @Param() { cardId }: CardIdDto,
+  ): Promise<User[]> {
+    return this.cardsService.selectCardUsers(project, cardId);
   }
 
   @Post()
   createMyCard(
+    @Param() { project }: ProjectDto,
     @MyId() myId: number,
     @Body() dto: CreateCardDto,
   ): Promise<void> {
-    return this.cardsService.createCard({ ...dto, userId: myId });
+    return this.cardsService.createCard(project, { ...dto, userId: myId });
   }
 
   @Roles(Role.MODER)
   @Post('all')
-  createUserCard(@Body() dto: ExtCreateCardDto): Promise<void> {
-    return this.cardsService.createCard(dto);
+  createUserCard(
+    @Param() { project }: ProjectDto,
+    @Body() dto: ExtCreateCardDto,
+  ): Promise<void> {
+    return this.cardsService.createCard(project, dto);
   }
 
   @Patch(':cardId')
   editCard(
+    @Param() { project }: ProjectDto,
     @MyId() myId: number,
     @HasRole(Role.MODER) hasRole: boolean,
     @Param() { cardId }: CardIdDto,
     @Body() dto: EditCardDto,
   ): Promise<void> {
-    return this.cardsService.editCard({ ...dto, cardId, myId, hasRole });
+    return this.cardsService.editCard(project, {
+      ...dto,
+      cardId,
+      myId,
+      hasRole,
+    });
   }
 
   @Post(':cardId/users')
   addCardUser(
+    @Param() { project }: ProjectDto,
     @MyId() myId: number,
     @HasRole(Role.MODER) hasRole: boolean,
     @Param() { cardId }: CardIdDto,
     @Body() dto: UpdateCardUserDto,
   ): Promise<void> {
-    return this.cardsService.addCardUser({ ...dto, cardId, myId, hasRole });
+    return this.cardsService.addCardUser(project, {
+      ...dto,
+      cardId,
+      myId,
+      hasRole,
+    });
   }
 
   @Delete(':cardId/users')
   removeCardUser(
+    @Param() { project }: ProjectDto,
     @MyId() myId: number,
     @HasRole(Role.MODER) hasRole: boolean,
     @Param() { cardId }: CardIdDto,
     @Body() dto: UpdateCardUserDto,
   ): Promise<void> {
-    return this.cardsService.removeCardUser({ ...dto, cardId, myId, hasRole });
+    return this.cardsService.removeCardUser(project, {
+      ...dto,
+      cardId,
+      myId,
+      hasRole,
+    });
   }
 }

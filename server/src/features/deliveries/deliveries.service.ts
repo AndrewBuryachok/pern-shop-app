@@ -1,6 +1,7 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, IsNull, Repository, SelectQueryBuilder } from 'typeorm';
+import { Database } from '../../database.enum';
 import { Delivery } from './delivery.entity';
 import { PurchasesService } from '../purchases/purchases.service';
 import { CardsService } from '../cards/cards.service';
@@ -21,18 +22,34 @@ import { Mode, Notification } from '../../common/enums';
 
 @Injectable()
 export class DeliveriesService {
+  private deliveriesRepositoryMap: Map<string, Repository<Delivery>>;
+
   constructor(
-    @InjectRepository(Delivery)
-    private deliveriesRepository: Repository<Delivery>,
+    @InjectRepository(Delivery, Database.DB1)
+    private deliveries1Repository: Repository<Delivery>,
+    @InjectRepository(Delivery, Database.DB2)
+    private deliveries2Repository: Repository<Delivery>,
     @Inject(forwardRef(() => PurchasesService))
     private purchasesService: PurchasesService,
     private cardsService: CardsService,
     private transactionsService: TransactionsService,
     private mqttService: MqttService,
-  ) {}
+  ) {
+    this.deliveriesRepositoryMap = new Map(
+      [this.deliveries1Repository, this.deliveries2Repository].map(
+        (repository, index) => [
+          process.env.APP_PROJECTS.split(',')[index],
+          repository,
+        ],
+      ),
+    );
+  }
 
-  async getMainDeliveries(req: Request): Promise<Response<Delivery>> {
-    const [result, count] = await this.getDeliveriesQueryBuilder(req)
+  async getMainDeliveries(
+    project: string,
+    req: Request,
+  ): Promise<Response<Delivery>> {
+    const [result, count] = await this.getDeliveriesQueryBuilder(project, req)
       .andWhere('delivery.status = :status', {
         status: Status.CREATED,
       })
@@ -41,10 +58,11 @@ export class DeliveriesService {
   }
 
   async getMyDeliveries(
+    project: string,
     myId: number,
     req: Request,
   ): Promise<Response<Delivery>> {
-    const [result, count] = await this.getDeliveriesQueryBuilder(req)
+    const [result, count] = await this.getDeliveriesQueryBuilder(project, req)
       .innerJoin('customerAccount.cards', 'customerCards')
       .andWhere('customerCards.userId = :myId', { myId })
       .andWhere('customerCards.completedAt IS NULL')
@@ -53,10 +71,11 @@ export class DeliveriesService {
   }
 
   async getTakenDeliveries(
+    project: string,
     myId: number,
     req: Request,
   ): Promise<Response<Delivery>> {
-    const [result, count] = await this.getDeliveriesQueryBuilder(req)
+    const [result, count] = await this.getDeliveriesQueryBuilder(project, req)
       .leftJoin('executorAccount.cards', 'executorCards')
       .andWhere('executorCards.userId = :myId', { myId })
       .andWhere('executorCards.completedAt IS NULL')
@@ -64,38 +83,48 @@ export class DeliveriesService {
     return { result, count };
   }
 
-  async getAllDeliveries(req: Request): Promise<Response<Delivery>> {
+  async getAllDeliveries(
+    project: string,
+    req: Request,
+  ): Promise<Response<Delivery>> {
     const [result, count] = await this.getDeliveriesQueryBuilder(
+      project,
       req,
     ).getManyAndCount();
     return { result, count };
   }
 
-  async createDelivery(dto: ExtCreateDeliveryDto): Promise<void> {
+  async createDelivery(
+    project: string,
+    dto: ExtCreateDeliveryDto,
+  ): Promise<void> {
     const purchase = await this.purchasesService.checkPurchaseOwner(
+      project,
       dto.purchaseId,
       dto.myId,
       dto.hasRole,
     );
-    const delivery = await this.deliveriesRepository.findOneBy({
+    const delivery = await this.deliveriesRepositoryMap.get(project).findOneBy({
       purchaseId: dto.purchaseId,
     });
     if (delivery) {
       throw new AppException(DeliveryError.ALREADY_EXISTS);
     }
     const card = await this.cardsService.checkCardUser(
+      project,
       dto.cardId,
       dto.myId,
       dto.hasRole,
     );
-    await this.transactionsService.createDecreaseTransaction({
+    await this.transactionsService.createDecreaseTransaction(project, {
       cardId: dto.cardId,
       sum: dto.sum,
       description: 'створення доставки',
       item: purchase.good.item,
     });
-    const result = await this.create(dto);
+    const result = await this.create(project, dto);
     this.mqttService.publishNotification(
+      project,
       result.id,
       0,
       card.userId,
@@ -103,8 +132,9 @@ export class DeliveriesService {
     );
   }
 
-  async editDelivery(dto: ExtEditDeliveryDto): Promise<void> {
+  async editDelivery(project: string, dto: ExtEditDeliveryDto): Promise<void> {
     const delivery = await this.checkDeliveryCustomer(
+      project,
       dto.deliveryId,
       dto.myId,
       dto.hasRole,
@@ -114,14 +144,14 @@ export class DeliveriesService {
     }
     if (delivery.sum !== dto.sum) {
       if (delivery.sum > dto.sum) {
-        await this.transactionsService.createIncreaseTransaction({
+        await this.transactionsService.createIncreaseTransaction(project, {
           cardId: delivery.customerCardId,
           sum: delivery.sum - dto.sum,
           description: 'редагування доставки',
           item: delivery.purchase.good.item,
         });
       } else {
-        await this.transactionsService.createDecreaseTransaction({
+        await this.transactionsService.createDecreaseTransaction(project, {
           cardId: delivery.customerCardId,
           sum: dto.sum - delivery.sum,
           description: 'редагування доставки',
@@ -129,24 +159,26 @@ export class DeliveriesService {
         });
       }
     }
-    await this.edit(delivery, dto);
+    await this.edit(project, delivery, dto);
   }
 
-  async takeDelivery(dto: ExtTakeDeliveryDto): Promise<void> {
+  async takeDelivery(project: string, dto: ExtTakeDeliveryDto): Promise<void> {
     const card = await this.cardsService.checkCardUser(
+      project,
       dto.cardId,
       dto.myId,
       dto.hasRole,
     );
-    const delivery = await this.deliveriesRepository.findOne({
+    const delivery = await this.deliveriesRepositoryMap.get(project).findOne({
       relations: ['customerCard'],
       where: { id: dto.deliveryId },
     });
     if (delivery.status !== Status.CREATED) {
       throw new AppException(DeliveryError.ALREADY_TAKEN);
     }
-    await this.take(delivery, dto.cardId);
+    await this.take(project, delivery, dto.cardId);
     this.mqttService.publishNotification(
+      project,
       dto.deliveryId,
       delivery.customerCard.userId,
       card.userId,
@@ -154,8 +186,9 @@ export class DeliveriesService {
     );
   }
 
-  async untakeDelivery(dto: ExtDeliveryIdDto): Promise<void> {
+  async untakeDelivery(project: string, dto: ExtDeliveryIdDto): Promise<void> {
     const delivery = await this.checkDeliveryExecutor(
+      project,
       dto.deliveryId,
       dto.myId,
       dto.hasRole,
@@ -164,8 +197,9 @@ export class DeliveriesService {
       throw new AppException(DeliveryError.NOT_TAKEN);
     }
     const userId = delivery.executorCard.userId;
-    await this.untake(delivery);
+    await this.untake(project, delivery);
     this.mqttService.publishNotification(
+      project,
       dto.deliveryId,
       delivery.customerCard.userId,
       userId,
@@ -173,8 +207,9 @@ export class DeliveriesService {
     );
   }
 
-  async executeDelivery(dto: ExtDeliveryIdDto): Promise<void> {
+  async executeDelivery(project: string, dto: ExtDeliveryIdDto): Promise<void> {
     const delivery = await this.checkDeliveryExecutor(
+      project,
       dto.deliveryId,
       dto.myId,
       dto.hasRole,
@@ -182,8 +217,9 @@ export class DeliveriesService {
     if (delivery.status !== Status.TAKEN) {
       throw new AppException(DeliveryError.NOT_TAKEN);
     }
-    await this.execute(delivery);
+    await this.execute(project, delivery);
     this.mqttService.publishNotification(
+      project,
       dto.deliveryId,
       delivery.customerCard.userId,
       delivery.executorCard.userId,
@@ -191,8 +227,12 @@ export class DeliveriesService {
     );
   }
 
-  async completeDelivery(dto: ExtCompleteDeliveryDto): Promise<void> {
+  async completeDelivery(
+    project: string,
+    dto: ExtCompleteDeliveryDto,
+  ): Promise<void> {
     const delivery = await this.checkDeliveryCustomer(
+      project,
       dto.deliveryId,
       dto.myId,
       dto.hasRole,
@@ -200,13 +240,13 @@ export class DeliveriesService {
     if (delivery.status !== Status.EXECUTED) {
       throw new AppException(DeliveryError.NOT_EXECUTED);
     }
-    await this.transactionsService.createIncreaseTransaction({
+    await this.transactionsService.createIncreaseTransaction(project, {
       cardId: delivery.customerCardId,
       sum: delivery.sum,
       description: 'завершення доставки',
       item: delivery.purchase.good.item,
     });
-    await this.transactionsService.createTransfer({
+    await this.transactionsService.createTransfer(project, {
       myId: dto.myId,
       hasRole: dto.hasRole,
       senderCardId: delivery.customerCardId,
@@ -215,9 +255,14 @@ export class DeliveriesService {
       description: `виконання доставки ${delivery.id}`,
       item: delivery.purchase.good.item,
     });
-    await this.complete(delivery, dto.rate);
-    this.unpublishNotification(dto.deliveryId, delivery.customerCard.userId);
+    await this.complete(project, delivery, dto.rate);
+    this.unpublishNotification(
+      project,
+      dto.deliveryId,
+      delivery.customerCard.userId,
+    );
     this.mqttService.publishNotification(
+      project,
       dto.deliveryId,
       delivery.executorCard.userId,
       delivery.customerCard.userId,
@@ -225,6 +270,7 @@ export class DeliveriesService {
     );
     if (dto.rate) {
       this.mqttService.publishNotification(
+        project,
         dto.deliveryId,
         delivery.executorCard.userId,
         delivery.customerCard.userId,
@@ -233,8 +279,9 @@ export class DeliveriesService {
     }
   }
 
-  async deleteDelivery(dto: ExtDeliveryIdDto): Promise<void> {
+  async deleteDelivery(project: string, dto: ExtDeliveryIdDto): Promise<void> {
     const delivery = await this.checkDeliveryCustomer(
+      project,
       dto.deliveryId,
       dto.myId,
       dto.hasRole,
@@ -242,26 +289,31 @@ export class DeliveriesService {
     if (delivery.status !== Status.CREATED) {
       throw new AppException(DeliveryError.ALREADY_TAKEN);
     }
-    await this.transactionsService.createIncreaseTransaction({
+    await this.transactionsService.createIncreaseTransaction(project, {
       cardId: delivery.customerCardId,
       sum: delivery.sum,
       description: 'видалення доставки',
       item: delivery.purchase.good.item,
     });
-    await this.delete(delivery);
-    this.unpublishNotification(dto.deliveryId, delivery.customerCard.userId);
+    await this.delete(project, delivery);
+    this.unpublishNotification(
+      project,
+      dto.deliveryId,
+      delivery.customerCard.userId,
+    );
   }
 
-  async checkDeliveryExists(id: number): Promise<void> {
-    await this.deliveriesRepository.findOneByOrFail({ id });
+  async checkDeliveryExists(project: string, id: number): Promise<void> {
+    await this.deliveriesRepositoryMap.get(project).findOneByOrFail({ id });
   }
 
   private async checkDeliveryCustomer(
+    project: string,
     id: number,
     userId: number,
     hasRole: boolean,
   ): Promise<Delivery> {
-    const delivery = await this.deliveriesRepository.findOne({
+    const delivery = await this.deliveriesRepositoryMap.get(project).findOne({
       relations: [
         'customerCard',
         'customerCard.account',
@@ -285,11 +337,12 @@ export class DeliveriesService {
   }
 
   private async checkDeliveryExecutor(
+    project: string,
     id: number,
     userId: number,
     hasRole: boolean,
   ): Promise<Delivery> {
-    const delivery = await this.deliveriesRepository.findOne({
+    const delivery = await this.deliveriesRepositoryMap.get(project).findOne({
       relations: [
         'executorCard',
         'executorCard.account',
@@ -310,15 +363,18 @@ export class DeliveriesService {
     return delivery;
   }
 
-  private async create(dto: ExtCreateDeliveryDto): Promise<Delivery> {
+  private async create(
+    project: string,
+    dto: ExtCreateDeliveryDto,
+  ): Promise<Delivery> {
     try {
-      const delivery = this.deliveriesRepository.create({
+      const delivery = this.deliveriesRepositoryMap.get(project).create({
         stationId: dto.stationId,
         customerCardId: dto.cardId,
         purchaseId: dto.purchaseId,
         sum: dto.sum,
       });
-      await this.deliveriesRepository.save(delivery);
+      await this.deliveriesRepositoryMap.get(project).save(delivery);
       return delivery;
     } catch (error) {
       throw new AppException(DeliveryError.CREATE_FAILED);
@@ -326,68 +382,82 @@ export class DeliveriesService {
   }
 
   private async edit(
+    project: string,
     delivery: Delivery,
     dto: ExtEditDeliveryDto,
   ): Promise<void> {
     try {
       delivery.sum = dto.sum;
-      await this.deliveriesRepository.save(delivery);
+      await this.deliveriesRepositoryMap.get(project).save(delivery);
     } catch (error) {
       throw new AppException(DeliveryError.EDIT_FAILED);
     }
   }
 
-  private async take(delivery: Delivery, cardId: number): Promise<void> {
+  private async take(
+    project: string,
+    delivery: Delivery,
+    cardId: number,
+  ): Promise<void> {
     try {
       delivery.executorCardId = cardId;
       delivery.status = Status.TAKEN;
-      await this.deliveriesRepository.save(delivery);
+      await this.deliveriesRepositoryMap.get(project).save(delivery);
     } catch (error) {
       throw new AppException(DeliveryError.TAKE_FAILED);
     }
   }
 
-  private async untake(delivery: Delivery): Promise<void> {
+  private async untake(project: string, delivery: Delivery): Promise<void> {
     try {
       delivery.executorCard = null;
       delivery.executorCardId = null;
       delivery.status = Status.CREATED;
-      await this.deliveriesRepository.save(delivery);
+      await this.deliveriesRepositoryMap.get(project).save(delivery);
     } catch (error) {
       throw new AppException(DeliveryError.UNTAKE_FAILED);
     }
   }
 
-  private async execute(delivery: Delivery): Promise<void> {
+  private async execute(project: string, delivery: Delivery): Promise<void> {
     try {
       delivery.status = Status.EXECUTED;
-      await this.deliveriesRepository.save(delivery);
+      await this.deliveriesRepositoryMap.get(project).save(delivery);
     } catch (error) {
       throw new AppException(DeliveryError.EXECUTE_FAILED);
     }
   }
 
-  private async complete(delivery: Delivery, rate: number): Promise<void> {
+  private async complete(
+    project: string,
+    delivery: Delivery,
+    rate: number,
+  ): Promise<void> {
     try {
       delivery.completedAt = new Date();
       delivery.status = Status.COMPLETED;
       delivery.rate = rate || null;
-      await this.deliveriesRepository.save(delivery);
+      await this.deliveriesRepositoryMap.get(project).save(delivery);
     } catch (error) {
       throw new AppException(DeliveryError.COMPLETE_FAILED);
     }
   }
 
-  private async delete(delivery: Delivery): Promise<void> {
+  private async delete(project: string, delivery: Delivery): Promise<void> {
     try {
-      await this.deliveriesRepository.remove(delivery);
+      await this.deliveriesRepositoryMap.get(project).remove(delivery);
     } catch (error) {
       throw new AppException(DeliveryError.DELETE_FAILED);
     }
   }
 
-  private unpublishNotification(id: number, userId: number): void {
+  private unpublishNotification(
+    project: string,
+    id: number,
+    userId: number,
+  ): void {
     this.mqttService.unpublishNotification(
+      project,
       id,
       0,
       userId,
@@ -396,9 +466,11 @@ export class DeliveriesService {
   }
 
   private getDeliveriesQueryBuilder(
+    project: string,
     req: Request,
   ): SelectQueryBuilder<Delivery> {
-    return this.deliveriesRepository
+    return this.deliveriesRepositoryMap
+      .get(project)
       .createQueryBuilder('delivery')
       .innerJoin('delivery.purchase', 'purchase')
       .innerJoin('purchase.good', 'good')

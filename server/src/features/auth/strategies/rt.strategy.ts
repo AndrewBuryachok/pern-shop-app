@@ -23,8 +23,9 @@ export class RtStrategy extends PassportStrategy(Strategy, 'jwt-refresh') {
   }
 
   async validate(req: Request, payload: JwtPayload): Promise<JwtPayload> {
+    const project = req.params.project;
+    const user = await this.usersService.findUserById(project, payload.sub);
     const token = req.get('Authorization').replace('Bearer', '').trim();
-    const user = await this.usersService.findUserById(payload.sub);
     if (!user || !user.token || !(await compareHash(token, user.token))) {
       throw new AppException(AuthError.INVALID_REFRESH_TOKEN);
     }

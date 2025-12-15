@@ -16,63 +16,79 @@ import {
   ExtCreateStationDto,
   StationIdDto,
 } from './station.dto';
+import { ProjectDto } from '../../project.dto';
 import { Request, Response } from '../../common/interfaces';
 import { HasRole, MyId, Public, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
 
-@ApiTags('stations')
-@Controller('stations')
+@ApiTags(':project/stations')
+@Controller(':project/stations')
 export class StationsController {
   constructor(private stationsService: StationsService) {}
 
   @Public()
   @Get()
-  getMainStations(@Query() req: Request): Promise<Response<Station>> {
-    return this.stationsService.getMainStations(req);
+  getMainStations(
+    @Param() { project }: ProjectDto,
+    @Query() req: Request,
+  ): Promise<Response<Station>> {
+    return this.stationsService.getMainStations(project, req);
   }
 
   @Get('my')
   getMyStations(
+    @Param() { project }: ProjectDto,
     @MyId() myId: number,
     @Query() req: Request,
   ): Promise<Response<Station>> {
-    return this.stationsService.getMyStations(myId, req);
+    return this.stationsService.getMyStations(project, myId, req);
   }
 
   @Roles(Role.MODER)
   @Get('all')
-  getAllStations(@Query() req: Request): Promise<Response<Station>> {
-    return this.stationsService.getAllStations(req);
+  getAllStations(
+    @Param() { project }: ProjectDto,
+    @Query() req: Request,
+  ): Promise<Response<Station>> {
+    return this.stationsService.getAllStations(project, req);
   }
 
   @Public()
   @Get('all/select')
-  selectAllStations(): Promise<Station[]> {
-    return this.stationsService.selectAllStations();
+  selectAllStations(@Param() { project }: ProjectDto): Promise<Station[]> {
+    return this.stationsService.selectAllStations(project);
   }
 
   @Post()
   createMyStation(
+    @Param() { project }: ProjectDto,
     @MyId() myId: number,
     @Body() dto: CreateStationDto,
   ): Promise<void> {
-    return this.stationsService.createStation({ ...dto, userId: myId });
+    return this.stationsService.createStation(project, {
+      ...dto,
+      userId: myId,
+    });
   }
 
   @Roles(Role.MODER)
   @Post('all')
-  createUserStation(@Body() dto: ExtCreateStationDto): Promise<void> {
-    return this.stationsService.createStation(dto);
+  createUserStation(
+    @Param() { project }: ProjectDto,
+    @Body() dto: ExtCreateStationDto,
+  ): Promise<void> {
+    return this.stationsService.createStation(project, dto);
   }
 
   @Patch(':stationId')
   editStation(
+    @Param() { project }: ProjectDto,
     @MyId() myId: number,
     @HasRole(Role.MODER) hasRole: boolean,
     @Param() { stationId }: StationIdDto,
     @Body() dto: EditStationDto,
   ): Promise<void> {
-    return this.stationsService.editStation({
+    return this.stationsService.editStation(project, {
       ...dto,
       stationId,
       myId,

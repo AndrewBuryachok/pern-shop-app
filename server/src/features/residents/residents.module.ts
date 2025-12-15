@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { Database } from '../../database.enum';
 import { Invitation } from './invitation.entity';
 import { Application } from './application.entity';
 import { UsersModule } from '../users/users.module';
@@ -12,7 +13,9 @@ import { ResidentsService } from './residents.service';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Invitation, Application]),
+    ...Object.values(Database).map((db) =>
+      TypeOrmModule.forFeature([Invitation, Application], db),
+    ),
     UsersModule,
     TownsModule,
     MqttModule,

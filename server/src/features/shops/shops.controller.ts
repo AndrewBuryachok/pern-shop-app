@@ -12,77 +12,99 @@ import { ShopsService } from './shops.service';
 import { Shop } from './shop.entity';
 import { Good } from '../goods/good.entity';
 import { CreateShopDto, EditShopDto, ShopIdDto } from './shop.dto';
+import { ProjectDto } from '../../project.dto';
 import { Request, Response } from '../../common/interfaces';
 import { HasRole, MyId, Public, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
 
-@ApiTags('shops')
-@Controller('shops')
+@ApiTags(':project/shops')
+@Controller(':project/shops')
 export class ShopsController {
   constructor(private shopsService: ShopsService) {}
 
   @Public()
   @Get()
-  getMainShops(@Query() req: Request): Promise<Response<Shop>> {
-    return this.shopsService.getMainShops(req);
+  getMainShops(
+    @Param() { project }: ProjectDto,
+    @Query() req: Request,
+  ): Promise<Response<Shop>> {
+    return this.shopsService.getMainShops(project, req);
   }
 
   @Get('my')
   getMyShops(
+    @Param() { project }: ProjectDto,
     @MyId() myId: number,
     @Query() req: Request,
   ): Promise<Response<Shop>> {
-    return this.shopsService.getMyShops(myId, req);
+    return this.shopsService.getMyShops(project, myId, req);
   }
 
   @Roles(Role.MODER)
   @Get('all')
-  getAllShops(@Query() req: Request): Promise<Response<Shop>> {
-    return this.shopsService.getAllShops(req);
+  getAllShops(
+    @Param() { project }: ProjectDto,
+    @Query() req: Request,
+  ): Promise<Response<Shop>> {
+    return this.shopsService.getAllShops(project, req);
   }
 
   @Public()
   @Get('all/select')
-  selectAllShops(): Promise<Shop[]> {
-    return this.shopsService.selectAllShops();
+  selectAllShops(@Param() { project }: ProjectDto): Promise<Shop[]> {
+    return this.shopsService.selectAllShops(project);
   }
 
   @Get('my/select')
-  selectMyShops(@MyId() myId: number): Promise<Shop[]> {
-    return this.shopsService.selectMyShops(myId);
+  selectMyShops(
+    @Param() { project }: ProjectDto,
+    @MyId() myId: number,
+  ): Promise<Shop[]> {
+    return this.shopsService.selectMyShops(project, myId);
   }
 
   @Public()
   @Get(':shopId/goods')
-  selectShopGoods(@Param() { shopId }: ShopIdDto): Promise<Good[]> {
-    return this.shopsService.selectShopGoods(shopId);
+  selectShopGoods(
+    @Param() { project }: ProjectDto,
+    @Param() { shopId }: ShopIdDto,
+  ): Promise<Good[]> {
+    return this.shopsService.selectShopGoods(project, shopId);
   }
 
   @Post()
   createShop(
+    @Param() { project }: ProjectDto,
     @MyId() myId: number,
     @HasRole(Role.MODER) hasRole: boolean,
     @Body() dto: CreateShopDto,
   ): Promise<void> {
-    return this.shopsService.createShop({ ...dto, myId, hasRole });
+    return this.shopsService.createShop(project, { ...dto, myId, hasRole });
   }
 
   @Patch(':shopId')
   editShop(
+    @Param() { project }: ProjectDto,
     @MyId() myId: number,
     @HasRole(Role.MODER) hasRole: boolean,
     @Param() { shopId }: ShopIdDto,
     @Body() dto: EditShopDto,
   ): Promise<void> {
-    return this.shopsService.editShop({ ...dto, shopId, myId, hasRole });
+    return this.shopsService.editShop(project, {
+      ...dto,
+      shopId,
+      myId,
+      hasRole,
+    });
   }
 
   @Post(':shopId')
   completeShop(
+    @Param() { project }: ProjectDto,
     @MyId() myId: number,
     @HasRole(Role.MODER) hasRole: boolean,
     @Param() { shopId }: ShopIdDto,
   ): Promise<void> {
-    return this.shopsService.completeShop({ shopId, myId, hasRole });
+    return this.shopsService.completeShop(project, { shopId, myId, hasRole });
   }
 }

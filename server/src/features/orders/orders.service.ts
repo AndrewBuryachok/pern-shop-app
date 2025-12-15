@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, IsNull, Repository, SelectQueryBuilder } from 'typeorm';
+import { Database } from '../../database.enum';
 import { Order } from './order.entity';
 import { CardsService } from '../cards/cards.service';
 import { TransactionsService } from '../transactions/transactions.service';
@@ -20,16 +21,29 @@ import { Mode, Notification } from '../../common/enums';
 
 @Injectable()
 export class OrdersService {
+  private ordersRepositoryMap: Map<string, Repository<Order>>;
+
   constructor(
-    @InjectRepository(Order)
-    private ordersRepository: Repository<Order>,
+    @InjectRepository(Order, Database.DB1)
+    private orders1Repository: Repository<Order>,
+    @InjectRepository(Order, Database.DB2)
+    private orders2Repository: Repository<Order>,
     private cardsService: CardsService,
     private transactionsService: TransactionsService,
     private mqttService: MqttService,
-  ) {}
+  ) {
+    this.ordersRepositoryMap = new Map(
+      [this.orders1Repository, this.orders2Repository].map(
+        (repository, index) => [
+          process.env.APP_PROJECTS.split(',')[index],
+          repository,
+        ],
+      ),
+    );
+  }
 
-  async getMainOrders(req: Request): Promise<Response<Order>> {
-    const [result, count] = await this.getOrdersQueryBuilder(req)
+  async getMainOrders(project: string, req: Request): Promise<Response<Order>> {
+    const [result, count] = await this.getOrdersQueryBuilder(project, req)
       .andWhere('order.status = :status', {
         status: Status.CREATED,
       })
@@ -37,8 +51,12 @@ export class OrdersService {
     return { result, count };
   }
 
-  async getMyOrders(myId: number, req: Request): Promise<Response<Order>> {
-    const [result, count] = await this.getOrdersQueryBuilder(req)
+  async getMyOrders(
+    project: string,
+    myId: number,
+    req: Request,
+  ): Promise<Response<Order>> {
+    const [result, count] = await this.getOrdersQueryBuilder(project, req)
       .innerJoin('customerAccount.cards', 'customerCards')
       .andWhere('customerCards.userId = :myId', { myId })
       .andWhere('customerCards.completedAt IS NULL')
@@ -46,8 +64,12 @@ export class OrdersService {
     return { result, count };
   }
 
-  async getTakenOrders(myId: number, req: Request): Promise<Response<Order>> {
-    const [result, count] = await this.getOrdersQueryBuilder(req)
+  async getTakenOrders(
+    project: string,
+    myId: number,
+    req: Request,
+  ): Promise<Response<Order>> {
+    const [result, count] = await this.getOrdersQueryBuilder(project, req)
       .leftJoin('executorAccount.cards', 'executorCards')
       .andWhere('executorCards.userId = :myId', { myId })
       .andWhere('executorCards.completedAt IS NULL')
@@ -55,27 +77,30 @@ export class OrdersService {
     return { result, count };
   }
 
-  async getAllOrders(req: Request): Promise<Response<Order>> {
+  async getAllOrders(project: string, req: Request): Promise<Response<Order>> {
     const [result, count] = await this.getOrdersQueryBuilder(
+      project,
       req,
     ).getManyAndCount();
     return { result, count };
   }
 
-  async createOrder(dto: ExtCreateOrderDto): Promise<void> {
+  async createOrder(project: string, dto: ExtCreateOrderDto): Promise<void> {
     const card = await this.cardsService.checkCardUser(
+      project,
       dto.cardId,
       dto.myId,
       dto.hasRole,
     );
-    await this.transactionsService.createDecreaseTransaction({
+    await this.transactionsService.createDecreaseTransaction(project, {
       cardId: dto.cardId,
       sum: dto.sum,
       description: 'створення замовлення',
       item: dto.item,
     });
-    const order = await this.create(dto);
+    const order = await this.create(project, dto);
     this.mqttService.publishNotification(
+      project,
       order.id,
       0,
       card.userId,
@@ -83,8 +108,9 @@ export class OrdersService {
     );
   }
 
-  async editOrder(dto: ExtEditOrderDto): Promise<void> {
+  async editOrder(project: string, dto: ExtEditOrderDto): Promise<void> {
     const order = await this.checkOrderCustomer(
+      project,
       dto.orderId,
       dto.myId,
       dto.hasRole,
@@ -94,14 +120,14 @@ export class OrdersService {
     }
     if (order.sum !== dto.sum) {
       if (order.sum > dto.sum) {
-        await this.transactionsService.createIncreaseTransaction({
+        await this.transactionsService.createIncreaseTransaction(project, {
           cardId: order.customerCardId,
           sum: order.sum - dto.sum,
           description: 'редагування замовлення',
           item: order.item,
         });
       } else {
-        await this.transactionsService.createDecreaseTransaction({
+        await this.transactionsService.createDecreaseTransaction(project, {
           cardId: order.customerCardId,
           sum: dto.sum - order.sum,
           description: 'редагування замовлення',
@@ -109,24 +135,26 @@ export class OrdersService {
         });
       }
     }
-    await this.edit(order, dto);
+    await this.edit(project, order, dto);
   }
 
-  async takeOrder(dto: ExtTakeOrderDto): Promise<void> {
+  async takeOrder(project: string, dto: ExtTakeOrderDto): Promise<void> {
     const card = await this.cardsService.checkCardUser(
+      project,
       dto.cardId,
       dto.myId,
       dto.hasRole,
     );
-    const order = await this.ordersRepository.findOne({
+    const order = await this.ordersRepositoryMap.get(project).findOne({
       relations: ['customerCard'],
       where: { id: dto.orderId },
     });
     if (order.status !== Status.CREATED) {
       throw new AppException(OrderError.ALREADY_TAKEN);
     }
-    await this.take(order, dto.cardId);
+    await this.take(project, order, dto.cardId);
     this.mqttService.publishNotification(
+      project,
       dto.orderId,
       order.customerCard.userId,
       card.userId,
@@ -134,8 +162,9 @@ export class OrdersService {
     );
   }
 
-  async untakeOrder(dto: ExtOrderIdDto): Promise<void> {
+  async untakeOrder(project: string, dto: ExtOrderIdDto): Promise<void> {
     const order = await this.checkOrderExecutor(
+      project,
       dto.orderId,
       dto.myId,
       dto.hasRole,
@@ -144,8 +173,9 @@ export class OrdersService {
       throw new AppException(OrderError.NOT_TAKEN);
     }
     const userId = order.executorCard.userId;
-    await this.untake(order);
+    await this.untake(project, order);
     this.mqttService.publishNotification(
+      project,
       dto.orderId,
       order.customerCard.userId,
       userId,
@@ -153,8 +183,9 @@ export class OrdersService {
     );
   }
 
-  async executeOrder(dto: ExtOrderIdDto): Promise<void> {
+  async executeOrder(project: string, dto: ExtOrderIdDto): Promise<void> {
     const order = await this.checkOrderExecutor(
+      project,
       dto.orderId,
       dto.myId,
       dto.hasRole,
@@ -162,8 +193,9 @@ export class OrdersService {
     if (order.status !== Status.TAKEN) {
       throw new AppException(OrderError.NOT_TAKEN);
     }
-    await this.execute(order);
+    await this.execute(project, order);
     this.mqttService.publishNotification(
+      project,
       dto.orderId,
       order.customerCard.userId,
       order.executorCard.userId,
@@ -171,8 +203,12 @@ export class OrdersService {
     );
   }
 
-  async completeOrder(dto: ExtCompleteOrderDto): Promise<void> {
+  async completeOrder(
+    project: string,
+    dto: ExtCompleteOrderDto,
+  ): Promise<void> {
     const order = await this.checkOrderCustomer(
+      project,
       dto.orderId,
       dto.myId,
       dto.hasRole,
@@ -180,13 +216,13 @@ export class OrdersService {
     if (order.status !== Status.EXECUTED) {
       throw new AppException(OrderError.NOT_EXECUTED);
     }
-    await this.transactionsService.createIncreaseTransaction({
+    await this.transactionsService.createIncreaseTransaction(project, {
       cardId: order.customerCardId,
       sum: order.sum,
       description: 'завершення замовлення',
       item: order.item,
     });
-    await this.transactionsService.createTransfer({
+    await this.transactionsService.createTransfer(project, {
       myId: dto.myId,
       hasRole: dto.hasRole,
       senderCardId: order.customerCardId,
@@ -195,9 +231,10 @@ export class OrdersService {
       description: 'виконання замовлення',
       item: order.item,
     });
-    await this.complete(order, dto.rate);
-    this.unpublishNotification(dto.orderId, order.customerCard.userId);
+    await this.complete(project, order, dto.rate);
+    this.unpublishNotification(project, dto.orderId, order.customerCard.userId);
     this.mqttService.publishNotification(
+      project,
       dto.orderId,
       order.executorCard.userId,
       order.customerCard.userId,
@@ -205,6 +242,7 @@ export class OrdersService {
     );
     if (dto.rate) {
       this.mqttService.publishNotification(
+        project,
         dto.orderId,
         order.executorCard.userId,
         order.customerCard.userId,
@@ -213,8 +251,9 @@ export class OrdersService {
     }
   }
 
-  async deleteOrder(dto: ExtOrderIdDto): Promise<void> {
+  async deleteOrder(project: string, dto: ExtOrderIdDto): Promise<void> {
     const order = await this.checkOrderCustomer(
+      project,
       dto.orderId,
       dto.myId,
       dto.hasRole,
@@ -222,26 +261,27 @@ export class OrdersService {
     if (order.status !== Status.CREATED) {
       throw new AppException(OrderError.ALREADY_TAKEN);
     }
-    await this.transactionsService.createIncreaseTransaction({
+    await this.transactionsService.createIncreaseTransaction(project, {
       cardId: order.customerCardId,
       sum: order.sum,
       description: 'видалення замовлення',
       item: order.item,
     });
-    await this.delete(order);
-    this.unpublishNotification(dto.orderId, order.customerCard.userId);
+    await this.delete(project, order);
+    this.unpublishNotification(project, dto.orderId, order.customerCard.userId);
   }
 
-  async checkOrderExists(id: number): Promise<void> {
-    await this.ordersRepository.findOneByOrFail({ id });
+  async checkOrderExists(project: string, id: number): Promise<void> {
+    await this.ordersRepositoryMap.get(project).findOneByOrFail({ id });
   }
 
   private async checkOrderCustomer(
+    project: string,
     id: number,
     userId: number,
     hasRole: boolean,
   ): Promise<Order> {
-    const order = await this.ordersRepository.findOne({
+    const order = await this.ordersRepositoryMap.get(project).findOne({
       relations: [
         'customerCard',
         'customerCard.account',
@@ -263,11 +303,12 @@ export class OrdersService {
   }
 
   private async checkOrderExecutor(
+    project: string,
     id: number,
     userId: number,
     hasRole: boolean,
   ): Promise<Order> {
-    const order = await this.ordersRepository.findOne({
+    const order = await this.ordersRepositoryMap.get(project).findOne({
       relations: [
         'executorCard',
         'executorCard.account',
@@ -288,9 +329,12 @@ export class OrdersService {
     return order;
   }
 
-  private async create(dto: ExtCreateOrderDto): Promise<Order> {
+  private async create(
+    project: string,
+    dto: ExtCreateOrderDto,
+  ): Promise<Order> {
     try {
-      const order = this.ordersRepository.create({
+      const order = this.ordersRepositoryMap.get(project).create({
         stationId: dto.stationId,
         customerCardId: dto.cardId,
         item: dto.item,
@@ -300,14 +344,18 @@ export class OrdersService {
         kit: dto.kit,
         sum: dto.sum,
       });
-      await this.ordersRepository.save(order);
+      await this.ordersRepositoryMap.get(project).save(order);
       return order;
     } catch (error) {
       throw new AppException(OrderError.CREATE_FAILED);
     }
   }
 
-  private async edit(order: Order, dto: ExtEditOrderDto): Promise<void> {
+  private async edit(
+    project: string,
+    order: Order,
+    dto: ExtEditOrderDto,
+  ): Promise<void> {
     try {
       order.item = dto.item;
       order.description = dto.description;
@@ -315,63 +363,76 @@ export class OrdersService {
       order.intake = dto.intake;
       order.kit = dto.kit;
       order.sum = dto.sum;
-      await this.ordersRepository.save(order);
+      await this.ordersRepositoryMap.get(project).save(order);
     } catch (error) {
       throw new AppException(OrderError.EDIT_FAILED);
     }
   }
 
-  private async take(order: Order, cardId: number): Promise<void> {
+  private async take(
+    project: string,
+    order: Order,
+    cardId: number,
+  ): Promise<void> {
     try {
       order.executorCardId = cardId;
       order.status = Status.TAKEN;
-      await this.ordersRepository.save(order);
+      await this.ordersRepositoryMap.get(project).save(order);
     } catch (error) {
       throw new AppException(OrderError.TAKE_FAILED);
     }
   }
 
-  private async untake(order: Order): Promise<void> {
+  private async untake(project: string, order: Order): Promise<void> {
     try {
       order.executorCard = null;
       order.executorCardId = null;
       order.status = Status.CREATED;
-      await this.ordersRepository.save(order);
+      await this.ordersRepositoryMap.get(project).save(order);
     } catch (error) {
       throw new AppException(OrderError.UNTAKE_FAILED);
     }
   }
 
-  private async execute(order: Order): Promise<void> {
+  private async execute(project: string, order: Order): Promise<void> {
     try {
       order.status = Status.EXECUTED;
-      await this.ordersRepository.save(order);
+      await this.ordersRepositoryMap.get(project).save(order);
     } catch (error) {
       throw new AppException(OrderError.EXECUTE_FAILED);
     }
   }
 
-  private async complete(order: Order, rate: number): Promise<void> {
+  private async complete(
+    project: string,
+    order: Order,
+    rate: number,
+  ): Promise<void> {
     try {
       order.completedAt = new Date();
       order.status = Status.COMPLETED;
       order.rate = rate || null;
-      await this.ordersRepository.save(order);
+      await this.ordersRepositoryMap.get(project).save(order);
     } catch (error) {
       throw new AppException(OrderError.COMPLETE_FAILED);
     }
   }
 
-  private async delete(order: Order): Promise<void> {
+  private async delete(project: string, order: Order): Promise<void> {
     try {
-      await this.ordersRepository.remove(order);
+      await this.ordersRepositoryMap.get(project).remove(order);
     } catch (error) {
       throw new AppException(OrderError.DELETE_FAILED);
     }
   }
 
-  private unpublishNotification(id: number, userId: number): void {
+  private unpublishNotification(
+    project: string,
+    id: number,
+    userId: number,
+  ): void {
     this.mqttService.unpublishNotification(
+      project,
       id,
       0,
       userId,
@@ -379,8 +440,12 @@ export class OrdersService {
     );
   }
 
-  private getOrdersQueryBuilder(req: Request): SelectQueryBuilder<Order> {
-    return this.ordersRepository
+  private getOrdersQueryBuilder(
+    project: string,
+    req: Request,
+  ): SelectQueryBuilder<Order> {
+    return this.ordersRepositoryMap
+      .get(project)
       .createQueryBuilder('order')
       .innerJoin('order.station', 'station')
       .innerJoin('station.user', 'ownerUser')

@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { Database } from './database.enum';
 import { AuthModule } from './features/auth/auth.module';
 import { UsersModule } from './features/users/users.module';
 import { MessagesModule } from './features/messages/messages.module';
@@ -21,21 +22,24 @@ import { OrdersModule } from './features/orders/orders.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
-    TypeOrmModule.forRootAsync({
-      imports: [ConfigModule],
-      inject: [ConfigService],
-      useFactory: (configService: ConfigService) => ({
-        type: 'postgres',
-        host: configService.get('DB_HOST'),
-        port: +configService.get('DB_PORT'),
-        username: configService.get('DB_USERNAME'),
-        password: configService.get('DB_PASSWORD'),
-        database: configService.get('DB_NAME'),
-        entities: [],
-        synchronize: true,
-        autoLoadEntities: true,
+    ...Object.values(Database).map((db, index) =>
+      TypeOrmModule.forRootAsync({
+        name: db,
+        imports: [ConfigModule],
+        inject: [ConfigService],
+        useFactory: (configService: ConfigService) => ({
+          type: 'postgres',
+          host: configService.get('DB_HOST').split(',')[index],
+          port: +configService.get('DB_PORT').split(',')[index],
+          username: configService.get('DB_USERNAME').split(',')[index],
+          password: configService.get('DB_PASSWORD').split(',')[index],
+          database: configService.get('DB_NAME').split(',')[index],
+          entities: [],
+          synchronize: true,
+          autoLoadEntities: true,
+        }),
       }),
-    }),
+    ),
     AuthModule,
     UsersModule,
     MessagesModule,

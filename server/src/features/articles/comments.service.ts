@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, SelectQueryBuilder } from 'typeorm';
+import { Database } from '../../database.enum';
 import { Comment } from './comment.entity';
 import { ArticlesService } from './articles.service';
 import { MqttService } from '../mqtt/mqtt.service';
@@ -15,24 +16,47 @@ import { Event, Notification } from '../../common/enums';
 
 @Injectable()
 export class CommentsService {
+  private commentsRepositoryMap: Map<string, Repository<Comment>>;
+
   constructor(
-    @InjectRepository(Comment)
-    private commentsRepository: Repository<Comment>,
+    @InjectRepository(Comment, Database.DB1)
+    private comments1Repository: Repository<Comment>,
+    @InjectRepository(Comment, Database.DB2)
+    private comments2Repository: Repository<Comment>,
     private articlesService: ArticlesService,
     private mqttService: MqttService,
-  ) {}
+  ) {
+    this.commentsRepositoryMap = new Map(
+      [this.comments1Repository, this.comments2Repository].map(
+        (repository, index) => [
+          process.env.APP_PROJECTS.split(',')[index],
+          repository,
+        ],
+      ),
+    );
+  }
 
-  selectArticleComments(articleId: number): Promise<Comment[]> {
-    return this.selectCommentsQueryBuilder()
+  selectArticleComments(
+    project: string,
+    articleId: number,
+  ): Promise<Comment[]> {
+    return this.selectCommentsQueryBuilder(project)
       .where('comment.articleId = :articleId', { articleId })
       .getMany();
   }
 
-  async createComment(dto: ExtCreateCommentDto): Promise<void> {
-    const { id } = await this.create(dto);
-    const article = await this.articlesService.findArticleById(dto.articleId);
+  async createComment(
+    project: string,
+    dto: ExtCreateCommentDto,
+  ): Promise<void> {
+    const { id } = await this.create(project, dto);
+    const article = await this.articlesService.findArticleById(
+      project,
+      dto.articleId,
+    );
     if (article.userId !== dto.myId) {
       this.mqttService.publishNotification(
+        project,
         dto.articleId,
         article.userId,
         dto.myId,
@@ -40,20 +64,22 @@ export class CommentsService {
       );
     }
     if (dto.commentId) {
-      const reply = await this.commentsRepository.findOneBy({
+      const reply = await this.commentsRepositoryMap.get(project).findOneBy({
         id: dto.commentId,
       });
       this.mqttService.publishNotification(
+        project,
         dto.articleId,
         reply.userId,
         dto.myId,
         Notification.REPLIED_COMMENT,
       );
     }
-    const body = await this.selectCommentsQueryBuilder()
+    const body = await this.selectCommentsQueryBuilder(project)
       .where('comment.id = :id', { id })
       .getOne();
     this.mqttService.publishEvent(
+      project,
       0,
       Event.COMMENTS,
       dto.articleId,
@@ -61,15 +87,17 @@ export class CommentsService {
     );
   }
 
-  async editComment(dto: ExtEditCommentDto): Promise<void> {
+  async editComment(project: string, dto: ExtEditCommentDto): Promise<void> {
     const comment = await this.checkCommentOwner(
+      project,
       dto.commentId,
       dto.myId,
       dto.hasRole,
     );
-    await this.edit(comment, dto);
+    await this.edit(project, comment, dto);
     const body = { id: dto.commentId, text: dto.text };
     this.mqttService.publishEvent(
+      project,
       0,
       Event.COMMENTS,
       comment.articleId,
@@ -77,15 +105,17 @@ export class CommentsService {
     );
   }
 
-  async deleteComment(dto: DeleteCommentDto): Promise<void> {
+  async deleteComment(project: string, dto: DeleteCommentDto): Promise<void> {
     const comment = await this.checkCommentOwner(
+      project,
       dto.commentId,
       dto.myId,
       dto.hasRole,
     );
-    await this.delete(comment);
+    await this.delete(project, comment);
     const body = { id: dto.commentId };
     this.mqttService.publishEvent(
+      project,
       0,
       Event.COMMENTS,
       comment.articleId,
@@ -93,56 +123,69 @@ export class CommentsService {
     );
   }
 
-  async checkCommentExists(id: number): Promise<void> {
-    await this.commentsRepository.findOneByOrFail({ id });
+  async checkCommentExists(project: string, id: number): Promise<void> {
+    await this.commentsRepositoryMap.get(project).findOneByOrFail({ id });
   }
 
   async checkCommentOwner(
+    project: string,
     id: number,
     userId: number,
     hasRole: boolean,
   ): Promise<Comment> {
-    const comment = await this.commentsRepository.findOneBy({ id });
+    const comment = await this.commentsRepositoryMap
+      .get(project)
+      .findOneBy({ id });
     if (comment.userId !== userId && !hasRole) {
       throw new AppException(CommentError.NOT_OWNER);
     }
     return comment;
   }
 
-  private async create(dto: ExtCreateCommentDto): Promise<Comment> {
+  private async create(
+    project: string,
+    dto: ExtCreateCommentDto,
+  ): Promise<Comment> {
     try {
-      const comment = this.commentsRepository.create({
+      const comment = this.commentsRepositoryMap.get(project).create({
         articleId: dto.articleId,
         replyId: dto.commentId || null,
         userId: dto.myId,
         text: dto.text,
       });
-      await this.commentsRepository.save(comment);
+      await this.commentsRepositoryMap.get(project).save(comment);
       return comment;
     } catch (error) {
       throw new AppException(CommentError.CREATE_FAILED);
     }
   }
 
-  private async edit(comment: Comment, dto: ExtEditCommentDto): Promise<void> {
+  private async edit(
+    project: string,
+    comment: Comment,
+    dto: ExtEditCommentDto,
+  ): Promise<void> {
     try {
       comment.text = dto.text;
-      await this.commentsRepository.save(comment);
+      await this.commentsRepositoryMap.get(project).save(comment);
     } catch (error) {
       throw new AppException(CommentError.EDIT_FAILED);
     }
   }
 
-  private async delete(comment: Comment): Promise<void> {
+  private async delete(project: string, comment: Comment): Promise<void> {
     try {
-      await this.commentsRepository.remove(comment);
+      await this.commentsRepositoryMap.get(project).remove(comment);
     } catch (error) {
       throw new AppException(CommentError.DELETE_FAILED);
     }
   }
 
-  private selectCommentsQueryBuilder(): SelectQueryBuilder<Comment> {
-    return this.commentsRepository
+  private selectCommentsQueryBuilder(
+    project: string,
+  ): SelectQueryBuilder<Comment> {
+    return this.commentsRepositoryMap
+      .get(project)
       .createQueryBuilder('comment')
       .leftJoin('comment.reply', 'reply')
       .leftJoin('reply.user', 'replier')

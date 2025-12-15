@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, IsNull, Repository, SelectQueryBuilder } from 'typeorm';
+import { Database } from '../../database.enum';
 import { Account } from './account.entity';
 import { Card } from './card.entity';
 import { User } from '../users/user.entity';
@@ -19,40 +20,69 @@ import { Notification } from '../../common/enums';
 
 @Injectable()
 export class CardsService {
-  constructor(
-    @InjectRepository(Account)
-    private accountsRepository: Repository<Account>,
-    @InjectRepository(Card)
-    private cardsRepository: Repository<Card>,
-    private mqttService: MqttService,
-  ) {}
+  private accountsRepositoryMap: Map<string, Repository<Account>>;
+  private cardsRepositoryMap: Map<string, Repository<Card>>;
 
-  async getMyCards(myId: number, req: Request): Promise<Response<Card>> {
-    const [result, count] = await this.getCardsQueryBuilder(req)
+  constructor(
+    @InjectRepository(Account, Database.DB1)
+    private accounts1Repository: Repository<Account>,
+    @InjectRepository(Account, Database.DB2)
+    private accounts2Repository: Repository<Account>,
+    @InjectRepository(Card, Database.DB1)
+    private cards1Repository: Repository<Card>,
+    @InjectRepository(Card, Database.DB2)
+    private cards2Repository: Repository<Card>,
+    private mqttService: MqttService,
+  ) {
+    this.accountsRepositoryMap = new Map(
+      [this.accounts1Repository, this.accounts2Repository].map(
+        (repository, index) => [
+          process.env.APP_PROJECTS.split(',')[index],
+          repository,
+        ],
+      ),
+    );
+    this.cardsRepositoryMap = new Map(
+      [this.cards1Repository, this.cards2Repository].map(
+        (repository, index) => [
+          process.env.APP_PROJECTS.split(',')[index],
+          repository,
+        ],
+      ),
+    );
+  }
+
+  async getMyCards(
+    project: string,
+    myId: number,
+    req: Request,
+  ): Promise<Response<Card>> {
+    const [result, count] = await this.getCardsQueryBuilder(project, req)
       .andWhere('card.userId = :myId', { myId })
       .getManyAndCount();
     return { result, count };
   }
 
-  async getAllCards(req: Request): Promise<Response<Card>> {
-    const [result, count] = await this.getCardsQueryBuilder(req)
+  async getAllCards(project: string, req: Request): Promise<Response<Card>> {
+    const [result, count] = await this.getCardsQueryBuilder(project, req)
       .andWhere('card.userId = account.userId')
       .getManyAndCount();
     return { result, count };
   }
 
-  selectUserCards(userId: number): Promise<Card[]> {
-    return this.selectCardsQueryBuilder(userId).getMany();
+  selectUserCards(project: string, userId: number): Promise<Card[]> {
+    return this.selectCardsQueryBuilder(project, userId).getMany();
   }
 
-  selectUserCardsWithBalance(userId: number): Promise<Card[]> {
-    return this.selectCardsQueryBuilder(userId)
+  selectUserCardsWithBalance(project: string, userId: number): Promise<Card[]> {
+    return this.selectCardsQueryBuilder(project, userId)
       .addSelect('account.balance')
       .getMany();
   }
 
-  async selectCardUsers(cardId: number): Promise<User[]> {
-    const card = await this.cardsRepository
+  async selectCardUsers(project: string, cardId: number): Promise<User[]> {
+    const card = await this.cardsRepositoryMap
+      .get(project)
       .createQueryBuilder('card')
       .innerJoin('card.account', 'account')
       .leftJoin('account.cards', 'subCard', 'subCard.completedAt IS NULL')
@@ -73,22 +103,35 @@ export class CardsService {
     return card.account.cards.map((card) => card.user);
   }
 
-  async createCard(dto: ExtCreateCardDto): Promise<void> {
-    await this.create(dto);
+  async createCard(project: string, dto: ExtCreateCardDto): Promise<void> {
+    await this.create(project, dto);
   }
 
-  async editCard(dto: ExtEditCardDto): Promise<void> {
-    const card = await this.checkCardOwner(dto.cardId, dto.myId, dto.hasRole);
-    await this.edit(card.account, dto);
+  async editCard(project: string, dto: ExtEditCardDto): Promise<void> {
+    const card = await this.checkCardOwner(
+      project,
+      dto.cardId,
+      dto.myId,
+      dto.hasRole,
+    );
+    await this.edit(project, card.account, dto);
   }
 
-  async addCardUser(dto: ExtUpdateCardUserDto): Promise<void> {
-    const card = await this.checkCardOwner(dto.cardId, dto.myId, dto.hasRole);
-    if (await this.findCardByAccountAndUser(card.accountId, dto.userId)) {
+  async addCardUser(project: string, dto: ExtUpdateCardUserDto): Promise<void> {
+    const card = await this.checkCardOwner(
+      project,
+      dto.cardId,
+      dto.myId,
+      dto.hasRole,
+    );
+    if (
+      await this.findCardByAccountAndUser(project, card.accountId, dto.userId)
+    ) {
       throw new AppException(CardError.ALREADY_IN_CARD);
     }
-    const subCard = await this.addUser(card.accountId, dto.userId);
+    const subCard = await this.addUser(project, card.accountId, dto.userId);
     this.mqttService.publishNotification(
+      project,
       subCard.id,
       dto.userId,
       card.account.userId,
@@ -96,20 +139,30 @@ export class CardsService {
     );
   }
 
-  async removeCardUser(dto: ExtUpdateCardUserDto): Promise<void> {
-    const card = await this.checkCardOwner(dto.cardId, dto.myId, dto.hasRole);
+  async removeCardUser(
+    project: string,
+    dto: ExtUpdateCardUserDto,
+  ): Promise<void> {
+    const card = await this.checkCardOwner(
+      project,
+      dto.cardId,
+      dto.myId,
+      dto.hasRole,
+    );
     if (dto.userId === dto.myId) {
       throw new AppException(CardError.OWNER);
     }
     const subCard = await this.findCardByAccountAndUser(
+      project,
       card.accountId,
       dto.userId,
     );
     if (!subCard) {
       throw new AppException(CardError.NOT_IN_CARD);
     }
-    await this.removeUser(subCard);
+    await this.removeUser(project, subCard);
     this.mqttService.publishNotification(
+      project,
       subCard.id,
       dto.userId,
       card.account.userId,
@@ -117,40 +170,47 @@ export class CardsService {
     );
   }
 
-  async increaseCardBalance(dto: UpdateCardBalanceDto): Promise<Card> {
-    const card = await this.cardsRepository.findOne({
+  async increaseCardBalance(
+    project: string,
+    dto: UpdateCardBalanceDto,
+  ): Promise<Card> {
+    const card = await this.cardsRepositoryMap.get(project).findOne({
       relations: ['account'],
       where: { id: dto.cardId },
     });
     if (card.account.balance + dto.sum > MAX_CARD_BALANCE) {
       throw new AppException(CardError.ALREADY_ENOUGH_BALANCE);
     }
-    await this.increaseBalance(card.account, dto.sum);
+    await this.increaseBalance(project, card.account, dto.sum);
     return card;
   }
 
-  async decreaseCardBalance(dto: UpdateCardBalanceDto): Promise<Card> {
-    const card = await this.cardsRepository.findOne({
+  async decreaseCardBalance(
+    project: string,
+    dto: UpdateCardBalanceDto,
+  ): Promise<Card> {
+    const card = await this.cardsRepositoryMap.get(project).findOne({
       relations: ['account'],
       where: { id: dto.cardId },
     });
     if (card.account.balance - dto.sum < MIN_CARD_BALANCE) {
       throw new AppException(CardError.NOT_ENOUGH_BALANCE);
     }
-    await this.decreaseBalance(card.account, dto.sum);
+    await this.decreaseBalance(project, card.account, dto.sum);
     return card;
   }
 
-  async checkCardExists(id: number): Promise<void> {
-    await this.cardsRepository.findOneByOrFail({ id });
+  async checkCardExists(project: string, id: number): Promise<void> {
+    await this.cardsRepositoryMap.get(project).findOneByOrFail({ id });
   }
 
   async checkCardOwner(
+    project: string,
     id: number,
     userId: number,
     hasRole: boolean,
   ): Promise<Card> {
-    const card = await this.cardsRepository.findOne({
+    const card = await this.cardsRepositoryMap.get(project).findOne({
       relations: ['account'],
       where: { id },
     });
@@ -161,11 +221,12 @@ export class CardsService {
   }
 
   async checkCardUser(
+    project: string,
     id: number,
     userId: number,
     hasRole: boolean,
   ): Promise<Card> {
-    const card = await this.cardsRepository.findOneBy({ id });
+    const card = await this.cardsRepositoryMap.get(project).findOneBy({ id });
     if (card.userId !== userId && !hasRole) {
       throw new AppException(CardError.NOT_USER);
     }
@@ -173,87 +234,108 @@ export class CardsService {
   }
 
   private findCardByAccountAndUser(
+    project: string,
     accountId: number,
     userId: number,
   ): Promise<Card> {
-    return this.cardsRepository.findOneBy({
+    return this.cardsRepositoryMap.get(project).findOneBy({
       accountId,
       userId,
       completedAt: IsNull(),
     });
   }
 
-  private async create(dto: ExtCreateCardDto): Promise<Card> {
+  private async create(project: string, dto: ExtCreateCardDto): Promise<Card> {
     try {
-      const account = this.accountsRepository.create({
+      const account = this.accountsRepositoryMap.get(project).create({
         userId: dto.userId,
         name: dto.name,
         color: dto.color,
       });
-      await this.accountsRepository.save(account);
-      const card = this.cardsRepository.create({
+      await this.accountsRepositoryMap.get(project).save(account);
+      const card = this.cardsRepositoryMap.get(project).create({
         accountId: account.id,
         userId: dto.userId,
       });
-      await this.cardsRepository.save(card);
+      await this.cardsRepositoryMap.get(project).save(card);
       return card;
     } catch (error) {
       throw new AppException(CardError.CREATE_FAILED);
     }
   }
 
-  private async edit(account: Account, dto: ExtEditCardDto): Promise<void> {
+  private async edit(
+    project: string,
+    account: Account,
+    dto: ExtEditCardDto,
+  ): Promise<void> {
     try {
       account.name = dto.name;
       account.color = dto.color;
-      await this.accountsRepository.save(account);
+      await this.accountsRepositoryMap.get(project).save(account);
     } catch (error) {
       throw new AppException(CardError.EDIT_FAILED);
     }
   }
 
-  private async addUser(accountId: number, userId: number): Promise<Card> {
+  private async addUser(
+    project: string,
+    accountId: number,
+    userId: number,
+  ): Promise<Card> {
     try {
-      const card = this.cardsRepository.create({
+      const card = this.cardsRepositoryMap.get(project).create({
         accountId,
         userId,
       });
-      await this.cardsRepository.save(card);
+      await this.cardsRepositoryMap.get(project).save(card);
       return card;
     } catch (error) {
       throw new AppException(CardError.ADD_USER_FAILED);
     }
   }
 
-  private async removeUser(card: Card): Promise<void> {
+  private async removeUser(project: string, card: Card): Promise<void> {
     try {
       card.completedAt = new Date();
-      await this.cardsRepository.save(card);
+      await this.cardsRepositoryMap.get(project).save(card);
     } catch (error) {
       throw new AppException(CardError.REMOVE_USER_FAILED);
     }
   }
 
-  private async increaseBalance(account: Account, sum: number): Promise<void> {
+  private async increaseBalance(
+    project: string,
+    account: Account,
+    sum: number,
+  ): Promise<void> {
     try {
       account.balance += sum;
-      await this.accountsRepository.save(account);
+      await this.accountsRepositoryMap.get(project).save(account);
     } catch (error) {
       throw new AppException(CardError.INCREASE_BALANCE_FAILED);
     }
   }
 
-  private async decreaseBalance(account: Account, sum: number): Promise<void> {
+  private async decreaseBalance(
+    project: string,
+    account: Account,
+    sum: number,
+  ): Promise<void> {
     try {
       account.balance -= sum;
-      await this.accountsRepository.save(account);
+      await this.accountsRepositoryMap.get(project).save(account);
     } catch (error) {
       throw new AppException(CardError.DECREASE_BALANCE_FAILED);
     }
   }
 
-  private selectCardsQueryBuilder(userId: number): SelectQueryBuilder<Card> {
-    return this.cardsRepository
+  private selectCardsQueryBuilder(
+    project: string,
+    userId: number,
+  ): SelectQueryBuilder<Card> {
+    return this.cardsRepositoryMap
+      .get(project)
       .createQueryBuilder('card')
       .innerJoin('card.account', 'account')
       .innerJoin('account.user', 'ownerUser')
@@ -271,8 +353,12 @@ export class CardsService {
       ]);
   }
 
-  private getCardsQueryBuilder(req: Request): SelectQueryBuilder<Card> {
-    return this.cardsRepository
+  private getCardsQueryBuilder(
+    project: string,
+    req: Request,
+  ): SelectQueryBuilder<Card> {
+    return this.cardsRepositoryMap
+      .get(project)
       .createQueryBuilder('card')
       .innerJoin('card.account', 'account')
       .innerJoin('account.user', 'ownerUser')

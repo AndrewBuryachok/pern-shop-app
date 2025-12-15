@@ -6,52 +6,67 @@ import { Event } from '../../common/enums';
 @Injectable()
 export class MqttService {
   private client: MqttClient;
-  private users = new Map<number, Date>();
-  private notifications = new Map<string, Date>();
-  private unnotifications = new Map<string, Date>();
+  private usersMap = new Map<string, Map<number, Date>>();
+  private notificationsMap = new Map<string, Map<string, Date>>();
+  private unnotificationsMap = new Map<string, Map<string, Date>>();
 
   constructor(
     @Inject(forwardRef(() => UsersService))
     private usersService: UsersService,
   ) {
+    const projects = process.env.APP_PROJECTS.split(',');
+    const topics = process.env.BROKER_TOPIC.split(',');
+    projects.forEach((project) => {
+      this.usersMap.set(project, new Map());
+      this.notificationsMap.set(project, new Map());
+      this.unnotificationsMap.set(project, new Map());
+    });
     this.client = connect(process.env.BROKER_URL);
     this.client.on('connect', () =>
-      this.client.subscribe([
-        process.env.BROKER_TOPIC + 'users/#',
-        process.env.BROKER_TOPIC + 'notifications/#',
-        process.env.BROKER_TOPIC + 'unnotifications/#',
-      ]),
+      this.client.subscribe(
+        topics.flatMap((topic) => [
+          topic + '/users/#',
+          topic + '/notifications/#',
+          topic + '/unnotifications/#',
+        ]),
+      ),
     );
     this.client.on('message', async (topic, message, packet) => {
+      const project = projects[topics.indexOf(topic.split('/')[0])];
       const userId = +topic.split('/')[2];
       const payload = message.toString();
       switch (topic.split('/')[1]) {
         case 'users':
           if (payload) {
-            if (!this.users.has(userId) && !packet.retain) {
-              await this.usersService.addUserOnline(userId);
+            if (!this.usersMap.get(project).has(userId) && !packet.retain) {
+              await this.usersService.addUserOnline(project, userId);
             }
-            this.users.set(userId, new Date());
+            this.usersMap.get(project).set(userId, new Date());
           } else {
-            if (this.users.has(userId) && !packet.retain) {
-              await this.usersService.removeUserOnline(userId);
+            if (this.usersMap.get(project).has(userId) && !packet.retain) {
+              await this.usersService.removeUserOnline(project, userId);
             }
-            this.users.delete(userId);
+            this.usersMap.get(project).delete(userId);
           }
           break;
         case 'notifications':
           const notification = topic.split('/').slice(2).join('/');
           if (payload) {
-            this.notifications.set(notification, new Date(payload));
+            this.notificationsMap
+              .get(project)
+              .set(notification, new Date(payload));
           } else {
-            this.notifications.delete(notification);
+            this.notificationsMap.get(project).delete(notification);
             if (!userId) {
-              for (const unnotification of this.unnotifications.keys()) {
+              for (const unnotification of this.unnotificationsMap
+                .get(project)
+                .keys()) {
                 if (
                   unnotification.split('/').slice(1).join('/') ===
                   notification.split('/').slice(1).join('/')
                 ) {
                   this.publishMessage(
+                    project,
                     `unnotifications/${unnotification}`,
                     '',
                     true,
@@ -64,9 +79,11 @@ export class MqttService {
         case 'unnotifications':
           const unnotification = topic.split('/').slice(2).join('/');
           if (payload) {
-            this.unnotifications.set(unnotification, new Date(payload));
+            this.unnotificationsMap
+              .get(project)
+              .set(unnotification, new Date(payload));
           } else {
-            this.unnotifications.delete(unnotification);
+            this.unnotificationsMap.get(project).delete(unnotification);
           }
           break;
         default:
@@ -75,41 +92,44 @@ export class MqttService {
     });
   }
 
-  getCurrentUsers(): number[] {
+  getCurrentUsers(project: string): number[] {
+    const users = this.usersMap.get(project);
     const result = [];
     const date = new Date();
     date.setMinutes(date.getMinutes() - 15);
-    for (const user of this.users.keys()) {
-      if (this.users.get(user).getTime() < date.getTime()) {
-        this.publishMessage(`users/${user}`, '', true);
+    for (const user of users.keys()) {
+      if (users.get(user).getTime() < date.getTime()) {
+        this.publishMessage(project, `users/${user}`, '', true);
         result.push(user);
       }
     }
     return result;
   }
 
-  getCurrentNotifications(): string[] {
+  getCurrentNotifications(project: string): string[] {
+    const notifications = this.notificationsMap.get(project);
     const result = [];
     const date = new Date();
     date.setDate(date.getDate() - 3);
-    for (const notification of this.notifications.keys()) {
-      if (this.notifications.get(notification).getTime() < date.getTime()) {
-        this.publishMessage(`notifications/${notification}`, '', true);
+    for (const notification of notifications.keys()) {
+      if (notifications.get(notification).getTime() < date.getTime()) {
+        this.publishMessage(project, `notifications/${notification}`, '', true);
         result.push(notification);
       }
     }
     return result;
   }
 
-  publishStreamer(id: number, twitch: string): void {
-    this.publishMessage(`streamers/${id}`, twitch, true);
+  publishStreamer(project: string, id: number, twitch: string): void {
+    this.publishMessage(project, `streamers/${id}`, twitch, true);
   }
 
-  unpublishStreamer(id: number): void {
-    this.publishMessage(`streamers/${id}`, '', true);
+  unpublishStreamer(project: string, id: number): void {
+    this.publishMessage(project, `streamers/${id}`, '', true);
   }
 
   publishNotification(
+    project: string,
     id: number,
     toUserId: number,
     fromUserId: number,
@@ -117,6 +137,7 @@ export class MqttService {
   ): void {
     const [action, page] = message.split(' ');
     this.publishMessage(
+      project,
       `notifications/${toUserId}/${page}/${id}/${action}/${fromUserId}`,
       new Date().toISOString(),
       true,
@@ -124,6 +145,7 @@ export class MqttService {
   }
 
   unpublishNotification(
+    project: string,
     id: number,
     toUserId: number,
     fromUserId: number,
@@ -131,23 +153,35 @@ export class MqttService {
   ): void {
     const [action, page] = message.split(' ');
     this.publishMessage(
+      project,
       `notifications/${toUserId}/${page}/${id}/${action}/${fromUserId}`,
       '',
       true,
     );
   }
 
-  publishEvent(userId: number, page: Event, id: number, body: string): void {
-    this.publishMessage(`events/${userId}/${page}/${id}`, body, false);
+  publishEvent(
+    project: string,
+    userId: number,
+    page: Event,
+    id: number,
+    body: string,
+  ): void {
+    this.publishMessage(project, `events/${userId}/${page}/${id}`, body, false);
   }
 
   private publishMessage(
+    project: string,
     topic: string,
     message: string,
     retain: boolean,
   ): void {
-    this.client.publish(process.env.BROKER_TOPIC + topic, message, {
-      retain,
-    });
+    const projects = process.env.APP_PROJECTS.split(',');
+    const topics = process.env.BROKER_TOPIC.split(',');
+    this.client.publish(
+      topics[projects.indexOf(project)] + '/' + topic,
+      message,
+      { retain },
+    );
   }
 }

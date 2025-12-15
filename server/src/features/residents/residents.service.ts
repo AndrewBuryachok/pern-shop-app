@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { Database } from '../../database.enum';
 import { Invitation } from './invitation.entity';
 import { Application } from './application.entity';
 import { User } from '../users/user.entity';
@@ -21,19 +22,47 @@ import { Notification } from '../../common/enums';
 
 @Injectable()
 export class ResidentsService {
+  private invitationsRepositoryMap: Map<string, Repository<Invitation>>;
+  private applicationsRepositoryMap: Map<string, Repository<Application>>;
+
   constructor(
-    @InjectRepository(Invitation)
-    private invitationsRepository: Repository<Invitation>,
-    @InjectRepository(Application)
-    private applicationsRepository: Repository<Application>,
+    @InjectRepository(Invitation, Database.DB1)
+    private invitations1Repository: Repository<Invitation>,
+    @InjectRepository(Invitation, Database.DB2)
+    private invitations2Repository: Repository<Invitation>,
+    @InjectRepository(Application, Database.DB1)
+    private applications1Repository: Repository<Application>,
+    @InjectRepository(Application, Database.DB2)
+    private applications2Repository: Repository<Application>,
     private usersService: UsersService,
     private townsService: TownsService,
     private mqttService: MqttService,
-  ) {}
+  ) {
+    this.invitationsRepositoryMap = new Map(
+      [this.invitations1Repository, this.invitations2Repository].map(
+        (repository, index) => [
+          process.env.APP_PROJECTS.split(',')[index],
+          repository,
+        ],
+      ),
+    );
+    this.applicationsRepositoryMap = new Map(
+      [this.applications1Repository, this.applications2Repository].map(
+        (repository, index) => [
+          process.env.APP_PROJECTS.split(',')[index],
+          repository,
+        ],
+      ),
+    );
+  }
 
-  async getMyResidents(myId: number, req: Request): Promise<Response<User>> {
+  async getMyResidents(
+    project: string,
+    myId: number,
+    req: Request,
+  ): Promise<Response<User>> {
     const [result, count] = await this.usersService
-      .getResidentsQueryBuilder(req)
+      .getResidentsQueryBuilder(project, req)
       .leftJoin('town.users', 'townUsers')
       .andWhere('townUsers.id = :myId', { myId })
       .getManyAndCount();
@@ -41,11 +70,12 @@ export class ResidentsService {
   }
 
   async getSentInvitations(
+    project: string,
     myId: number,
     req: Request,
   ): Promise<Response<User>> {
     const [result, count] = await this.usersService
-      .getResidentsQueryBuilder(req)
+      .getResidentsQueryBuilder(project, req)
       .leftJoinAndMapMany(
         'user.invitations',
         'invitations',
@@ -59,11 +89,12 @@ export class ResidentsService {
   }
 
   async getReceivedInvitations(
+    project: string,
     myId: number,
     req: Request,
   ): Promise<Response<Town>> {
     const [result, count] = await this.townsService
-      .getResidentsQueryBuilder(req)
+      .getResidentsQueryBuilder(project, req)
       .leftJoinAndMapMany(
         'town.invitations',
         'invitations',
@@ -76,11 +107,12 @@ export class ResidentsService {
   }
 
   async getSentApplications(
+    project: string,
     myId: number,
     req: Request,
   ): Promise<Response<Town>> {
     const [result, count] = await this.townsService
-      .getResidentsQueryBuilder(req)
+      .getResidentsQueryBuilder(project, req)
       .leftJoinAndMapMany(
         'town.applications',
         'applications',
@@ -93,11 +125,12 @@ export class ResidentsService {
   }
 
   async getReceivedApplications(
+    project: string,
     myId: number,
     req: Request,
   ): Promise<Response<User>> {
     const [result, count] = await this.usersService
-      .getResidentsQueryBuilder(req)
+      .getResidentsQueryBuilder(project, req)
       .leftJoinAndMapMany(
         'user.applications',
         'applications',
@@ -110,20 +143,24 @@ export class ResidentsService {
     return { result, count };
   }
 
-  async deleteResident(dto: UpdateResidentByUserDto): Promise<void> {
+  async deleteResident(
+    project: string,
+    dto: UpdateResidentByUserDto,
+  ): Promise<void> {
     const town =
       dto.userId === dto.myId
-        ? await this.townsService.checkInTown(dto.userId)
-        : await this.townsService.checkHaveTown(dto.myId);
+        ? await this.townsService.checkInTown(project, dto.userId)
+        : await this.townsService.checkHaveTown(project, dto.myId);
     if (town.userId === dto.userId) {
       throw new AppException(ResidentError.OWNER);
     }
-    await this.usersService.removeUserTown({
+    await this.usersService.removeUserTown(project, {
       userId: dto.userId,
       townId: town.id,
     });
     if (dto.userId === dto.myId) {
       this.mqttService.publishNotification(
+        project,
         dto.userId,
         town.userId,
         dto.myId,
@@ -131,6 +168,7 @@ export class ResidentsService {
       );
     } else {
       this.mqttService.publishNotification(
+        project,
         dto.userId,
         dto.userId,
         dto.myId,
@@ -139,12 +177,16 @@ export class ResidentsService {
     }
   }
 
-  async createResidentInvitation(dto: UpdateResidentByUserDto): Promise<void> {
-    const town = await this.townsService.checkHaveTown(dto.myId);
-    await this.townsService.checkNotInTown(dto.userId);
-    await this.checkInvitationNotExist(town.id, dto.userId);
-    await this.createInvitation(dto, town.id);
+  async createResidentInvitation(
+    project: string,
+    dto: UpdateResidentByUserDto,
+  ): Promise<void> {
+    const town = await this.townsService.checkHaveTown(project, dto.myId);
+    await this.townsService.checkNotInTown(project, dto.userId);
+    await this.checkInvitationNotExist(project, town.id, dto.userId);
+    await this.createInvitation(project, dto, town.id);
     this.mqttService.publishNotification(
+      project,
       town.id,
       dto.userId,
       dto.myId,
@@ -152,11 +194,19 @@ export class ResidentsService {
     );
   }
 
-  async cancelResidentInvitation(dto: UpdateResidentByUserDto): Promise<void> {
-    const town = await this.townsService.checkHaveTown(dto.myId);
-    const invitation = await this.checkInvitationExist(town.id, dto.userId);
-    await this.deleteInvitation(invitation);
+  async cancelResidentInvitation(
+    project: string,
+    dto: UpdateResidentByUserDto,
+  ): Promise<void> {
+    const town = await this.townsService.checkHaveTown(project, dto.myId);
+    const invitation = await this.checkInvitationExist(
+      project,
+      town.id,
+      dto.userId,
+    );
+    await this.deleteInvitation(project, invitation);
     this.mqttService.publishNotification(
+      project,
       town.id,
       dto.userId,
       dto.myId,
@@ -164,27 +214,49 @@ export class ResidentsService {
     );
   }
 
-  async acceptResidentInvitation(dto: UpdateResidentByTownDto): Promise<void> {
-    const invitation = await this.checkInvitationExist(dto.townId, dto.myId);
-    await this.usersService.addUserTown({
+  async acceptResidentInvitation(
+    project: string,
+    dto: UpdateResidentByTownDto,
+  ): Promise<void> {
+    const invitation = await this.checkInvitationExist(
+      project,
+      dto.townId,
+      dto.myId,
+    );
+    await this.usersService.addUserTown(project, {
       userId: dto.myId,
       townId: dto.townId,
     });
-    const userId = await this.townsService.findTownUserIdById(dto.townId);
+    const userId = await this.townsService.findTownUserIdById(
+      project,
+      dto.townId,
+    );
     this.mqttService.publishNotification(
+      project,
       dto.myId,
       userId,
       dto.myId,
       Notification.ACCEPTED_INVITATION,
     );
-    await this.deleteInvitation(invitation);
+    await this.deleteInvitation(project, invitation);
   }
 
-  async rejectResidentInvitation(dto: UpdateResidentByTownDto): Promise<void> {
-    const invitation = await this.checkInvitationExist(dto.townId, dto.myId);
-    await this.deleteInvitation(invitation);
-    const userId = await this.townsService.findTownUserIdById(dto.townId);
+  async rejectResidentInvitation(
+    project: string,
+    dto: UpdateResidentByTownDto,
+  ): Promise<void> {
+    const invitation = await this.checkInvitationExist(
+      project,
+      dto.townId,
+      dto.myId,
+    );
+    await this.deleteInvitation(project, invitation);
+    const userId = await this.townsService.findTownUserIdById(
+      project,
+      dto.townId,
+    );
     this.mqttService.publishNotification(
+      project,
       dto.myId,
       userId,
       dto.myId,
@@ -192,12 +264,19 @@ export class ResidentsService {
     );
   }
 
-  async createResidentApplication(dto: UpdateResidentByTownDto): Promise<void> {
-    await this.townsService.checkNotInTown(dto.myId);
-    await this.checkApplicationNotExist(dto.townId, dto.myId);
-    await this.createApplication(dto);
-    const userId = await this.townsService.findTownUserIdById(dto.townId);
+  async createResidentApplication(
+    project: string,
+    dto: UpdateResidentByTownDto,
+  ): Promise<void> {
+    await this.townsService.checkNotInTown(project, dto.myId);
+    await this.checkApplicationNotExist(project, dto.townId, dto.myId);
+    await this.createApplication(project, dto);
+    const userId = await this.townsService.findTownUserIdById(
+      project,
+      dto.townId,
+    );
     this.mqttService.publishNotification(
+      project,
       dto.myId,
       userId,
       dto.myId,
@@ -205,11 +284,22 @@ export class ResidentsService {
     );
   }
 
-  async cancelResidentApplication(dto: UpdateResidentByTownDto): Promise<void> {
-    const application = await this.checkApplicationExist(dto.townId, dto.myId);
-    await this.deleteApplication(application);
-    const userId = await this.townsService.findTownUserIdById(dto.townId);
+  async cancelResidentApplication(
+    project: string,
+    dto: UpdateResidentByTownDto,
+  ): Promise<void> {
+    const application = await this.checkApplicationExist(
+      project,
+      dto.townId,
+      dto.myId,
+    );
+    await this.deleteApplication(project, application);
+    const userId = await this.townsService.findTownUserIdById(
+      project,
+      dto.townId,
+    );
     this.mqttService.publishNotification(
+      project,
       dto.myId,
       userId,
       dto.myId,
@@ -217,27 +307,43 @@ export class ResidentsService {
     );
   }
 
-  async acceptResidentApplication(dto: UpdateResidentByUserDto): Promise<void> {
-    const town = await this.townsService.checkHaveTown(dto.myId);
-    const application = await this.checkApplicationExist(town.id, dto.userId);
-    await this.usersService.addUserTown({
+  async acceptResidentApplication(
+    project: string,
+    dto: UpdateResidentByUserDto,
+  ): Promise<void> {
+    const town = await this.townsService.checkHaveTown(project, dto.myId);
+    const application = await this.checkApplicationExist(
+      project,
+      town.id,
+      dto.userId,
+    );
+    await this.usersService.addUserTown(project, {
       userId: dto.userId,
       townId: town.id,
     });
     this.mqttService.publishNotification(
+      project,
       town.id,
       dto.userId,
       dto.myId,
       Notification.ACCEPTED_APPLICATION,
     );
-    await this.deleteApplication(application);
+    await this.deleteApplication(project, application);
   }
 
-  async rejectResidentApplication(dto: UpdateResidentByUserDto): Promise<void> {
-    const town = await this.townsService.checkHaveTown(dto.myId);
-    const application = await this.checkApplicationExist(town.id, dto.userId);
-    await this.deleteApplication(application);
+  async rejectResidentApplication(
+    project: string,
+    dto: UpdateResidentByUserDto,
+  ): Promise<void> {
+    const town = await this.townsService.checkHaveTown(project, dto.myId);
+    const application = await this.checkApplicationExist(
+      project,
+      town.id,
+      dto.userId,
+    );
+    await this.deleteApplication(project, application);
     this.mqttService.publishNotification(
+      project,
       town.id,
       dto.userId,
       dto.myId,
@@ -246,13 +352,16 @@ export class ResidentsService {
   }
 
   private async checkInvitationExist(
+    project: string,
     townId: number,
     userId: number,
   ): Promise<Invitation> {
-    const invitation = await this.invitationsRepository.findOneBy({
-      townId,
-      userId,
-    });
+    const invitation = await this.invitationsRepositoryMap
+      .get(project)
+      .findOneBy({
+        townId,
+        userId,
+      });
     if (!invitation) {
       throw new AppException(InvitationError.NOT_EXIST);
     }
@@ -260,26 +369,32 @@ export class ResidentsService {
   }
 
   private async checkInvitationNotExist(
+    project: string,
     townId: number,
     userId: number,
   ): Promise<void> {
-    const invitation = await this.invitationsRepository.findOneBy({
-      townId,
-      userId,
-    });
+    const invitation = await this.invitationsRepositoryMap
+      .get(project)
+      .findOneBy({
+        townId,
+        userId,
+      });
     if (invitation) {
       throw new AppException(InvitationError.ALREADY_EXIST);
     }
   }
 
   private async checkApplicationExist(
+    project: string,
     townId: number,
     userId: number,
   ): Promise<Application> {
-    const application = await this.applicationsRepository.findOneBy({
-      townId: townId,
-      userId: userId,
-    });
+    const application = await this.applicationsRepositoryMap
+      .get(project)
+      .findOneBy({
+        townId: townId,
+        userId: userId,
+      });
     if (!application) {
       throw new AppException(ApplicationError.NOT_EXIST);
     }
@@ -287,60 +402,71 @@ export class ResidentsService {
   }
 
   private async checkApplicationNotExist(
+    project: string,
     townId: number,
     userId: number,
   ): Promise<void> {
-    const application = await this.applicationsRepository.findOneBy({
-      townId: townId,
-      userId: userId,
-    });
+    const application = await this.applicationsRepositoryMap
+      .get(project)
+      .findOneBy({
+        townId: townId,
+        userId: userId,
+      });
     if (application) {
       throw new AppException(ApplicationError.ALREADY_EXIST);
     }
   }
 
   private async createInvitation(
+    project: string,
     dto: UpdateResidentByUserDto,
     townId: number,
   ): Promise<Invitation> {
     try {
-      const invitation = this.invitationsRepository.create({
+      const invitation = this.invitationsRepositoryMap.get(project).create({
         townId,
         userId: dto.userId,
       });
-      await this.invitationsRepository.save(invitation);
+      await this.invitationsRepositoryMap.get(project).save(invitation);
       return invitation;
     } catch (error) {
       throw new AppException(InvitationError.CREATE_FAILED);
     }
   }
 
-  private async deleteInvitation(invitation: Invitation): Promise<void> {
+  private async deleteInvitation(
+    project: string,
+    invitation: Invitation,
+  ): Promise<void> {
     try {
-      await this.invitationsRepository.remove(invitation);
+      await this.invitationsRepositoryMap.get(project).remove(invitation);
     } catch (error) {
       throw new AppException(InvitationError.DELETE_FAILED);
     }
   }
 
   private async createApplication(
+    project: string,
     dto: UpdateResidentByTownDto,
   ): Promise<Application> {
     try {
-      const application = this.applicationsRepository.create({
+      const application = this.applicationsRepositoryMap.get(project).create({
         townId: dto.townId,
         userId: dto.myId,
       });
-      await this.applicationsRepository.save(application);
+      await this.applicationsRepositoryMap.get(project).save(application);
       return application;
     } catch (error) {
       throw new AppException(ApplicationError.CREATE_FAILED);
     }
   }
 
-  private async deleteApplication(application: Application): Promise<void> {
+  private async deleteApplication(
+    project: string,
+    application: Application,
+  ): Promise<void> {
     try {
-      await this.applicationsRepository.remove(application);
+      await this.applicationsRepositoryMap.get(project).remove(application);
     } catch (error) {
       throw new AppException(ApplicationError.DELETE_FAILED);
     }

@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
+import { Request } from 'express';
 import { UsersService } from '../../users/users.service';
 import { ExtJwtPayload, JwtPayload } from '../auth.interface';
 import { AppException } from '../../../common/exceptions';
@@ -16,11 +17,13 @@ export class AtStrategy extends PassportStrategy(Strategy, 'jwt-access') {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       secretOrKey: configService.get('AT_SECRET'),
+      passReqToCallback: true,
     });
   }
 
-  async validate(payload: JwtPayload): Promise<ExtJwtPayload> {
-    const user = await this.usersService.findUserById(payload.sub);
+  async validate(req: Request, payload: JwtPayload): Promise<ExtJwtPayload> {
+    const project = req.params.project;
+    const user = await this.usersService.findUserById(project, payload.sub);
     if (!user) {
       throw new AppException(AuthError.INVALID_ACCESS_TOKEN);
     }

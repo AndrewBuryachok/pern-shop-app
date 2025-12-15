@@ -19,91 +19,120 @@ import {
   GoodIdDto,
   UpdateGoodDto,
 } from './good.dto';
+import { ProjectDto } from '../../project.dto';
 import { Request, Response } from '../../common/interfaces';
 import { HasRole, MyId, Public, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
 
-@ApiTags('goods')
-@Controller('goods')
+@ApiTags(':project/goods')
+@Controller(':project/goods')
 export class GoodsController {
   constructor(private goodsService: GoodsService) {}
 
   @Public()
   @Get()
-  getMainGoods(@Query() req: Request): Promise<Response<Good>> {
-    return this.goodsService.getMainGoods(req);
+  getMainGoods(
+    @Param() { project }: ProjectDto,
+    @Query() req: Request,
+  ): Promise<Response<Good>> {
+    return this.goodsService.getMainGoods(project, req);
   }
 
   @Get('my')
   getMyGoods(
+    @Param() { project }: ProjectDto,
     @MyId() myId: number,
     @Query() req: Request,
   ): Promise<Response<Good>> {
-    return this.goodsService.getMyGoods(myId, req);
+    return this.goodsService.getMyGoods(project, myId, req);
   }
 
   @Roles(Role.MODER)
   @Get('all')
-  getAllGoods(@Query() req: Request): Promise<Response<Good>> {
-    return this.goodsService.getAllGoods(req);
+  getAllGoods(
+    @Param() { project }: ProjectDto,
+    @Query() req: Request,
+  ): Promise<Response<Good>> {
+    return this.goodsService.getAllGoods(project, req);
   }
 
   @Public()
   @Get(':goodId/states')
-  selectGoodStates(@Param() { goodId }: GoodIdDto): Promise<GoodState[]> {
-    return this.goodsService.selectGoodStates(goodId);
+  selectGoodStates(
+    @Param() { project }: ProjectDto,
+    @Param() { goodId }: GoodIdDto,
+  ): Promise<GoodState[]> {
+    return this.goodsService.selectGoodStates(project, goodId);
   }
 
   @Public()
   @Get(':goodId/purchases')
-  selectGoodPurchases(@Param() { goodId }: GoodIdDto): Promise<Purchase[]> {
-    return this.goodsService.selectGoodPurchases(goodId);
+  selectGoodPurchases(
+    @Param() { project }: ProjectDto,
+    @Param() { goodId }: GoodIdDto,
+  ): Promise<Purchase[]> {
+    return this.goodsService.selectGoodPurchases(project, goodId);
   }
 
   @Post()
   createGood(
+    @Param() { project }: ProjectDto,
     @MyId() myId: number,
     @HasRole(Role.MODER) hasRole: boolean,
     @Body() dto: CreateGoodDto,
   ): Promise<void> {
-    return this.goodsService.createGood({ ...dto, myId, hasRole });
+    return this.goodsService.createGood(project, { ...dto, myId, hasRole });
   }
 
   @Patch(':goodId')
   editGood(
+    @Param() { project }: ProjectDto,
     @MyId() myId: number,
     @HasRole(Role.MODER) hasRole: boolean,
     @Param() { goodId }: GoodIdDto,
     @Body() dto: EditGoodDto,
   ): Promise<void> {
-    return this.goodsService.editGood({ ...dto, goodId, myId, hasRole });
+    return this.goodsService.editGood(project, {
+      ...dto,
+      goodId,
+      myId,
+      hasRole,
+    });
   }
 
   @Patch(':goodId/states')
   updateGood(
+    @Param() { project }: ProjectDto,
     @MyId() myId: number,
     @HasRole(Role.MODER) hasRole: boolean,
     @Param() { goodId }: GoodIdDto,
     @Body() dto: UpdateGoodDto,
   ): Promise<void> {
-    return this.goodsService.updateGood({ ...dto, goodId, myId, hasRole });
+    return this.goodsService.updateGood(project, {
+      ...dto,
+      goodId,
+      myId,
+      hasRole,
+    });
   }
 
   @Post(':goodId')
   completeGood(
+    @Param() { project }: ProjectDto,
     @MyId() myId: number,
     @HasRole(Role.MODER) hasRole: boolean,
     @Param() { goodId }: GoodIdDto,
   ): Promise<void> {
-    return this.goodsService.completeGood({ goodId, myId, hasRole });
+    return this.goodsService.completeGood(project, { goodId, myId, hasRole });
   }
 
   @Delete(':goodId')
   deleteGood(
+    @Param() { project }: ProjectDto,
     @MyId() myId: number,
     @HasRole(Role.MODER) hasRole: boolean,
     @Param() { goodId }: GoodIdDto,
   ): Promise<void> {
-    return this.goodsService.deleteGood({ goodId, myId, hasRole });
+    return this.goodsService.deleteGood(project, { goodId, myId, hasRole });
   }
 }
