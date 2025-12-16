@@ -20,5 +20,6 @@ import { IsInvoiceExists } from '../../common/constraints';
   ],
   controllers: [InvoicesController],
   providers: [InvoicesService, IsInvoiceExists],
+  exports: [InvoicesService],
 })
 export class InvoicesModule {}

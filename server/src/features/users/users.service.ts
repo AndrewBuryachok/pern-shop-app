@@ -179,6 +179,12 @@ export class UsersService {
     return { ...profile, ...stats };
   }
 
+  async selectSingleUser(project: string, nick: string): Promise<User> {
+    return this.selectUsersQueryBuilder(project)
+      .where('user.nick = :nick', { nick })
+      .getOne();
+  }
+
   async createUser(project: string, dto: CreateUserDto): Promise<User> {
     await this.checkNickNotUsed(project, dto.nick);
     const user = await this.create(project, dto);
