@@ -50,16 +50,13 @@ export class ArticlesService {
     return { result, count };
   }
 
-  async selectViewedArticles(myId: number): Promise<number[]> {
-    const views = await this.viewsRepository.findBy({ userId: myId });
-    return views.map((view) => view.articleId);
-  }
-
-  async selectLikedArticles(
+  async selectAuthArticles(
     myId: number,
-  ): Promise<{ up: number[]; down: number[] }> {
+  ): Promise<{ view: number[]; up: number[]; down: number[] }> {
+    const views = await this.viewsRepository.findBy({ userId: myId });
     const likes = await this.likesRepository.findBy({ userId: myId });
     return {
+      view: views.map((view) => view.articleId),
       up: likes.filter((like) => like.type).map((like) => like.articleId),
       down: likes.filter((like) => !like.type).map((like) => like.articleId),
     };

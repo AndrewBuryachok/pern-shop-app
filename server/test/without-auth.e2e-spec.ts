@@ -113,9 +113,9 @@ describe('Without Auth', () => {
       return request(app.getHttpServer()).get('/articles/my').expect(401);
     });
 
-    it('GET /articles/liked/select', async () => {
+    it('GET /articles/auth/select', async () => {
       return request(app.getHttpServer())
-        .get('/articles/liked/select')
+        .get('/articles/auth/select')
         .expect(401);
     });
 

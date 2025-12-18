@@ -399,19 +399,14 @@ describe('With Auth', () => {
         .expect('');
     });
 
-    it('GET /articles/viewed/select', async () => {
+    it('GET /articles/auth/select', async () => {
       return request(app.getHttpServer())
-        .get('/articles/viewed/select')
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect((res) => expect(res.body.length).toBeGreaterThan(0));
-    });
-
-    it('GET /articles/liked/select', async () => {
-      return request(app.getHttpServer())
-        .get('/articles/liked/select')
+        .get('/articles/auth/select')
         .set('Authorization', `Bearer ${user.access}`)
         .expect((res) =>
-          expect(res.body.up.length + res.body.down.length).toBeGreaterThan(0),
+          expect(
+            res.body.view.length + res.body.up.length + res.body.down.length,
+          ).toBeGreaterThan(0),
         );
     });
 

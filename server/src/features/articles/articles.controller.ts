@@ -49,16 +49,11 @@ export class ArticlesController {
     return this.articlesService.getAllArticles(req);
   }
 
-  @Get('viewed/select')
-  selectViewedArticles(@MyId() myId: number): Promise<number[]> {
-    return this.articlesService.selectViewedArticles(myId);
-  }
-
-  @Get('liked/select')
-  selectLikedArticles(
+  @Get('auth/select')
+  selectAuthArticles(
     @MyId() myId: number,
-  ): Promise<{ up: number[]; down: number[] }> {
-    return this.articlesService.selectLikedArticles(myId);
+  ): Promise<{ view: number[]; up: number[]; down: number[] }> {
+    return this.articlesService.selectAuthArticles(myId);
   }
 
   @Public()
