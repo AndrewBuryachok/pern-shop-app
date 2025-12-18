@@ -29,8 +29,7 @@ type Props = {
     upLiked: boolean;
     downLiked: boolean;
   };
-  isViewedLoading: boolean;
-  isLikedLoading: boolean;
+  isLoading: boolean;
   actions: IAction<Article>[];
 };
 
@@ -52,12 +51,7 @@ export default function ArticlePaper({ article, ...props }: Props) {
   const { ref, entry } = useIntersection();
 
   useEffect(() => {
-    if (
-      user &&
-      !article.viewed &&
-      !props.isViewedLoading &&
-      entry?.isIntersecting
-    ) {
+    if (user && !article.viewed && !props.isLoading && entry?.isIntersecting) {
       handleViewSubmit({ articleId: article.id });
     }
   }, [entry?.isIntersecting]);
@@ -82,7 +76,7 @@ export default function ArticlePaper({ article, ...props }: Props) {
                   leftIcon={<IconThumbUp size={16} />}
                   variant='light'
                   color={article.upLiked ? 'green' : 'gray'}
-                  loading={props.isLikedLoading}
+                  loading={props.isLoading}
                   onClick={() =>
                     user
                       ? handleLikeSubmit({ articleId: article.id, type: true })
@@ -105,7 +99,7 @@ export default function ArticlePaper({ article, ...props }: Props) {
                   leftIcon={<IconThumbDown size={16} />}
                   variant='light'
                   color={article.downLiked ? 'red' : 'gray'}
-                  loading={props.isLikedLoading}
+                  loading={props.isLoading}
                   onClick={() =>
                     user
                       ? handleLikeSubmit({ articleId: article.id, type: false })
@@ -138,7 +132,7 @@ export default function ArticlePaper({ article, ...props }: Props) {
                 leftIcon={<IconEye size={16} />}
                 variant='light'
                 color={article.viewed ? 'blue' : 'gray'}
-                loading={props.isViewedLoading}
+                loading={props.isLoading}
                 onClick={() => openViewArticleViewsModal(article)}
                 compact
               >

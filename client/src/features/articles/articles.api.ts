@@ -1,6 +1,6 @@
 import { emptyApi } from '../../app/empty.api';
 import { IRequest, IResponse } from '../../common/interfaces';
-import { Article } from './article.model';
+import { Article, AuthArticle } from './article.model';
 import { View } from './view.model';
 import { Like } from './like.model';
 import {
@@ -33,15 +33,9 @@ export const articlesApi = emptyApi.injectEndpoints({
       }),
       providesTags: ['Auth', 'Article'],
     }),
-    selectViewedArticles: build.query<number[], void>({
+    selectAuthArticles: build.query<AuthArticle, void>({
       query: () => ({
-        url: '/articles/viewed/select',
-      }),
-      providesTags: ['Auth'],
-    }),
-    selectLikedArticles: build.query<{ up: number[]; down: number[] }, void>({
-      query: () => ({
-        url: '/articles/liked/select',
+        url: '/articles/auth/select',
       }),
       providesTags: ['Auth'],
     }),
@@ -95,10 +89,10 @@ export const articlesApi = emptyApi.injectEndpoints({
       onQueryStarted(dto, { dispatch, queryFulfilled }) {
         const patchResult = dispatch(
           articlesApi.util.updateQueryData(
-            'selectViewedArticles',
+            'selectAuthArticles',
             undefined,
             (draft) => {
-              draft.push(dto.articleId);
+              draft.view.push(dto.articleId);
             },
           ),
         );
@@ -115,7 +109,7 @@ export const articlesApi = emptyApi.injectEndpoints({
       onQueryStarted(dto, { dispatch, queryFulfilled }) {
         const patchResult = dispatch(
           articlesApi.util.updateQueryData(
-            'selectLikedArticles',
+            'selectAuthArticles',
             undefined,
             (draft) => {
               if (dto.type) {
@@ -146,8 +140,7 @@ export const {
   useGetMainArticlesQuery,
   useGetMyArticlesQuery,
   useGetAllArticlesQuery,
-  useSelectViewedArticlesQuery,
-  useSelectLikedArticlesQuery,
+  useSelectAuthArticlesQuery,
   useSelectArticleViewsQuery,
   useSelectArticleLikesQuery,
   useCreateMyArticleMutation,

@@ -13,3 +13,9 @@ export interface Article {
   comments: number;
   comment?: SmComment;
 }
+
+export interface AuthArticle {
+  view: number[];
+  up: number[];
+  down: number[];
+}
