@@ -39,6 +39,39 @@ export class UsersService {
     return { result, count };
   }
 
+  async getTopUsers(req: Request): Promise<Response<User>> {
+    const [result, count] = await this.getUsersQueryBuilder(req)
+      .orderBy('user_accounts_sum', 'DESC', 'NULLS LAST')
+      .addSelect(
+        (qb) =>
+          qb
+            .select('SUM(account.balance)', 'user_accounts_sum')
+            .from('accounts', 'account')
+            .where('account.userId = user.id'),
+        'user_accounts_sum',
+      )
+      .getManyAndCount();
+    if (result.length) {
+      const users = await this.usersRepository
+        .createQueryBuilder('user')
+        .where('user.id IN (:...ids)', { ids: result.map((user) => user.id) })
+        .select('user.id', 'id')
+        .addSelect(
+          (qb) =>
+            qb
+              .select('SUM(account.balance)', 'balance')
+              .from('accounts', 'account')
+              .where('account.userId = user.id'),
+          'balance',
+        )
+        .getRawMany();
+      result.forEach((user) => {
+        user['balance'] = users.find((u) => u.id === user.id).balance;
+      });
+    }
+    return { result, count };
+  }
+
   async getMyUsers(myId: number, req: Request): Promise<Response<User>> {
     const [result, count] = await this.getUsersQueryBuilder(req)
       .leftJoin('town.users', 'townUsers')
