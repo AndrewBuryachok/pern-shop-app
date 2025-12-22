@@ -17,6 +17,12 @@ export const usersApi = emptyApi.injectEndpoints({
       }),
       providesTags: ['User'],
     }),
+    getTopUsers: build.query<IResponse<User>, IRequest>({
+      query: (req) => ({
+        url: `/users/top?${getQuery(req)}`,
+      }),
+      providesTags: ['User', 'Card'],
+    }),
     getMyUsers: build.query<IResponse<User>, IRequest>({
       query: (req) => ({
         url: `/users/my?${getQuery(req)}`,
@@ -115,6 +121,7 @@ export const usersApi = emptyApi.injectEndpoints({
 
 export const {
   useGetMainUsersQuery,
+  useGetTopUsersQuery,
   useGetMyUsersQuery,
   useGetBannedUsersQuery,
   useGetAllUsersQuery,

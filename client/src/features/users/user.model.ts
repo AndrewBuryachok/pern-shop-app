@@ -19,6 +19,7 @@ export interface User extends MdUser {
   createdAt: Date;
   onlineAt?: Date;
   town?: MdTown;
+  balance?: number;
 }
 
 export interface ExtUser extends User {

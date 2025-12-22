@@ -3,6 +3,7 @@ import {
   useGetAllUsersQuery,
   useGetBannedUsersQuery,
   useGetMainUsersQuery,
+  useGetTopUsersQuery,
 } from '../../features/users/users.api';
 import UsersTable from '../../features/users/UsersTable';
 import { addUserBannedButton } from '../../features/users/AddUserBannedModal';
@@ -29,6 +30,7 @@ export default function UsersPage() {
 
   const response = {
     main: useGetMainUsersQuery,
+    top: useGetTopUsersQuery,
     banned: useGetBannedUsersQuery,
     all: useGetAllUsersQuery,
   }[tab]!(search);

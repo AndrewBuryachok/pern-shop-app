@@ -137,7 +137,7 @@ export default function App() {
                             key={`${page.path} ${route.path}`}
                             {...route}
                             element={
-                              route.index ? (
+                              route.index || route.path === 'top' ? (
                                 <page.element />
                               ) : (
                                 <Protected role={route.role}>
