@@ -39,6 +39,10 @@ export default function EditUserProfileModal({ data: user }: Props) {
       ...rest,
       background: +background,
     }),
+    validate: {
+      nick: (value) =>
+        /^\.?\w+$/.test(value) ? null : t('errors.incorrect_nick'),
+    },
   });
 
   const [avatar] = useDebouncedValue(form.values.avatar, 500);

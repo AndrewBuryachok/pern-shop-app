@@ -32,7 +32,7 @@ export default function AuthModal() {
     },
     validate: {
       nick: (value) =>
-        /^\w+$/.test(value) ? null : t('errors.incorrect_nick'),
+        /^\.?\w+$/.test(value) ? null : t('errors.incorrect_nick'),
     },
   });
 
