@@ -22,6 +22,8 @@ import NotificationBadgeByPages from './NotificationBadgeByPages';
 
 type Props = {
   opened: boolean;
+  isMobile: boolean;
+  close: () => void;
 };
 
 export default function CustomNavbar(props: Props) {
@@ -143,7 +145,7 @@ export default function CustomNavbar(props: Props) {
                       component={Link}
                       to={`/${sublink.label}${sublink.sub || ''}`}
                       active={sublink.label === active}
-                      onClick={() =>
+                      onClick={() => {
                         notifications
                           .filter(
                             (notification) =>
@@ -153,8 +155,11 @@ export default function CustomNavbar(props: Props) {
                             dispatch(
                               publishNotificationWithUser(notification.key),
                             ),
-                          )
-                      }
+                          );
+                        if (props.isMobile) {
+                          props.close();
+                        }
+                      }}
                     />
                   ))}
                 </NavLink>
@@ -171,15 +176,18 @@ export default function CustomNavbar(props: Props) {
                   component={Link}
                   to={`/${link.label}`}
                   active={link.label === active}
-                  onClick={() =>
+                  onClick={() => {
                     notifications
                       .filter(
                         (notification) => notification.page === link.label,
                       )
                       .forEach((notification) =>
                         dispatch(publishNotificationWithUser(notification.key)),
-                      )
-                  }
+                      );
+                    if (props.isMobile) {
+                      props.close();
+                    }
+                  }}
                 />
               ),
             )}

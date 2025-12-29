@@ -123,7 +123,13 @@ export default function App() {
                   toggleA={toggleA}
                 />
               }
-              navbar={<CustomNavbar opened={openedN} />}
+              navbar={
+                <CustomNavbar
+                  opened={openedN}
+                  isMobile={!matches}
+                  close={closeN}
+                />
+              }
               aside={<CustomAside opened={openedA} />}
             >
               <Suspense fallback={<CustomLoader />}>
