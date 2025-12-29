@@ -1,6 +1,7 @@
 import { t } from 'i18next';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import { Select, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
@@ -30,6 +31,8 @@ type Props = IModal<Cell> & { hasRole: boolean };
 
 export default function ReserveCellModal({ data: cell, hasRole }: Props) {
   const [t] = useTranslation();
+
+  const navigate = useNavigate();
 
   const myCard = { balance: 0 };
 
@@ -67,7 +70,10 @@ export default function ReserveCellModal({ data: cell, hasRole }: Props) {
   const [createLease, { isLoading }] = useCreateLeaseMutation();
 
   const handleSubmit = async (dto: CreateLeaseDto) => {
-    await createLease(dto);
+    const data = await createLease(dto);
+    if (!('error' in data) && !hasRole) {
+      navigate('/leases/my');
+    }
   };
 
   return (

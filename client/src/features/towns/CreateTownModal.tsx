@@ -1,5 +1,6 @@
 import { t } from 'i18next';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import { NumberInput, Select, Textarea, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
@@ -27,6 +28,8 @@ type Props = { hasRole: boolean };
 export default function CreateTownModal({ hasRole }: Props) {
   const [t] = useTranslation();
 
+  const navigate = useNavigate();
+
   const form = useForm({
     initialValues: {
       user: '',
@@ -49,7 +52,10 @@ export default function CreateTownModal({ hasRole }: Props) {
     : useCreateMyTownMutation();
 
   const handleSubmit = async (dto: ExtCreateTownDto) => {
-    await createTown(dto);
+    const data = await createTown(dto);
+    if (!('error' in data) && !hasRole) {
+      navigate('/towns/my');
+    }
   };
 
   return (

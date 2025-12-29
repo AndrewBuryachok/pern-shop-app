@@ -1,6 +1,7 @@
 import { t } from 'i18next';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import { NumberInput, Radio, Select, Textarea } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
@@ -46,6 +47,8 @@ type Props = { hasRole: boolean };
 export default function CreateGoodModal({ hasRole }: Props) {
   const [t] = useTranslation();
 
+  const navigate = useNavigate();
+
   const places = ['shop', 'market', 'storage'] as const;
 
   const [place, setPlace] = useState<(typeof places)[number]>(places[0]);
@@ -89,18 +92,21 @@ export default function CreateGoodModal({ hasRole }: Props) {
     useCreateStorageGoodMutation();
 
   const handleSubmit = async (dto: CreateAnyGoodDto) => {
-    switch (place) {
-      case 'shop':
-        await createShopGood(dto);
-        break;
-      case 'market':
-        await createMarketGood(dto);
-        break;
-      case 'storage':
-        await createStorageGood(dto);
-        break;
-      default:
-        break;
+    const createGood = (() => {
+      switch (place) {
+        case 'shop':
+          return createShopGood;
+        case 'market':
+          return createMarketGood;
+        case 'storage':
+          return createStorageGood;
+        default:
+          return null;
+      }
+    })();
+    const data = await createGood!(dto);
+    if (!('error' in data) && !hasRole) {
+      navigate('/goods/my');
     }
   };
 

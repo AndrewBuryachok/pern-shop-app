@@ -1,6 +1,7 @@
 import { t } from 'i18next';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import { Select, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
@@ -20,6 +21,8 @@ type Props = { hasRole: boolean };
 
 export default function CreateStallModal({ hasRole }: Props) {
   const [t] = useTranslation();
+
+  const navigate = useNavigate();
 
   const form = useForm({
     initialValues: {
@@ -48,7 +51,10 @@ export default function CreateStallModal({ hasRole }: Props) {
   const [createStall, { isLoading }] = useCreateStallMutation();
 
   const handleSubmit = async (dto: CreateStallDto) => {
-    await createStall(dto);
+    const data = await createStall(dto);
+    if (!('error' in data) && !hasRole) {
+      navigate('/stalls/my');
+    }
   };
 
   return (

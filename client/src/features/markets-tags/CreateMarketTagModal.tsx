@@ -1,6 +1,7 @@
 import { t } from 'i18next';
 import { useTranslation } from 'react-i18next';
-import { NumberInput, Select, Textarea, TextInput } from '@mantine/core';
+import { useNavigate } from 'react-router-dom';
+import { NumberInput, Select, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { useCreateMarketTagMutation } from './markets-tags.api';
@@ -24,6 +25,8 @@ type Props = { hasRole: boolean };
 export default function CreateMarketTagModal({ hasRole }: Props) {
   const [t] = useTranslation();
 
+  const navigate = useNavigate();
+
   const form = useForm({
     initialValues: {
       market: '',
@@ -40,7 +43,10 @@ export default function CreateMarketTagModal({ hasRole }: Props) {
   const [createMarketTag, { isLoading }] = useCreateMarketTagMutation();
 
   const handleSubmit = async (dto: CreateMarketTagDto) => {
-    await createMarketTag(dto);
+    const data = await createMarketTag(dto);
+    if (!('error' in data) && !hasRole) {
+      navigate('/markets-tags/my');
+    }
   };
 
   return (

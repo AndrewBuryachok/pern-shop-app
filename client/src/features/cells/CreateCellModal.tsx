@@ -1,6 +1,7 @@
 import { t } from 'i18next';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import { Select, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
@@ -20,6 +21,8 @@ type Props = { hasRole: boolean };
 
 export default function CreateCellModal({ hasRole }: Props) {
   const [t] = useTranslation();
+
+  const navigate = useNavigate();
 
   const form = useForm({
     initialValues: {
@@ -50,7 +53,10 @@ export default function CreateCellModal({ hasRole }: Props) {
   const [createCell, { isLoading }] = useCreateCellMutation();
 
   const handleSubmit = async (dto: CreateCellDto) => {
-    await createCell(dto);
+    const data = await createCell(dto);
+    if (!('error' in data) && !hasRole) {
+      navigate('/cells/my');
+    }
   };
 
   return (

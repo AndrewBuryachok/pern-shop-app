@@ -1,6 +1,7 @@
 import { t } from 'i18next';
 import { useTranslation } from 'react-i18next';
-import { NumberInput, Select, Textarea, TextInput } from '@mantine/core';
+import { useNavigate } from 'react-router-dom';
+import { NumberInput, Select, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { useCreateStorageTagMutation } from './storages-tags.api';
@@ -24,6 +25,8 @@ type Props = { hasRole: boolean };
 export default function CreateStorageTagModal({ hasRole }: Props) {
   const [t] = useTranslation();
 
+  const navigate = useNavigate();
+
   const form = useForm({
     initialValues: {
       storage: '',
@@ -43,7 +46,10 @@ export default function CreateStorageTagModal({ hasRole }: Props) {
   const [createStorageTag, { isLoading }] = useCreateStorageTagMutation();
 
   const handleSubmit = async (dto: CreateStorageTagDto) => {
-    await createStorageTag(dto);
+    const data = await createStorageTag(dto);
+    if (!('error' in data) && !hasRole) {
+      navigate('/storages-tags/my');
+    }
   };
 
   return (

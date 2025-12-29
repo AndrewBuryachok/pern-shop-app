@@ -1,6 +1,7 @@
 import { t } from 'i18next';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import {
   CloseButton,
   Group,
@@ -46,6 +47,8 @@ type Props = IModal<Good> & { hasRole: boolean };
 
 export default function BuyGoodModal({ data: good, hasRole }: Props) {
   const [t] = useTranslation();
+
+  const navigate = useNavigate();
 
   const myCard = { balance: 0 };
 
@@ -102,7 +105,14 @@ export default function BuyGoodModal({ data: good, hasRole }: Props) {
   const [createPurchase, { isLoading }] = useCreatePurchaseMutation();
 
   const handleSubmit = async (dto: CreatePurchaseDto) => {
-    await createPurchase(dto);
+    const data = await createPurchase(dto);
+    if (!('error' in data) && !hasRole) {
+      if (dto.stationId && dto.price) {
+        navigate('/deliveries/my');
+      } else {
+        navigate('/purchases/my');
+      }
+    }
   };
 
   return (

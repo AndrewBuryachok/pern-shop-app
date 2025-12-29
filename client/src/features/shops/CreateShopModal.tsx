@@ -1,6 +1,7 @@
 import { t } from 'i18next';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import { NumberInput, Select, Textarea, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
@@ -30,6 +31,8 @@ type Props = { hasRole: boolean };
 export default function CreateShopModal({ hasRole }: Props) {
   const [t] = useTranslation();
 
+  const navigate = useNavigate();
+
   const form = useForm({
     initialValues: {
       user: '',
@@ -58,7 +61,10 @@ export default function CreateShopModal({ hasRole }: Props) {
   const [createShop, { isLoading }] = useCreateShopMutation();
 
   const handleSubmit = async (dto: CreateShopDto) => {
-    await createShop(dto);
+    const data = await createShop(dto);
+    if (!('error' in data) && !hasRole) {
+      navigate('/shops/my');
+    }
   };
 
   return (

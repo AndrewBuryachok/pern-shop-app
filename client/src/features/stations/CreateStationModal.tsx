@@ -1,5 +1,6 @@
 import { t } from 'i18next';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import { NumberInput, Select, Textarea, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
@@ -24,6 +25,8 @@ type Props = { hasRole: boolean };
 export default function CreateStationModal({ hasRole }: Props) {
   const [t] = useTranslation();
 
+  const navigate = useNavigate();
+
   const form = useForm({
     initialValues: {
       user: '',
@@ -43,7 +46,10 @@ export default function CreateStationModal({ hasRole }: Props) {
   const [createStation, { isLoading }] = useCreateStationMutation();
 
   const handleSubmit = async (dto: ExtCreateStationDto) => {
-    await createStation(dto);
+    const data = await createStation(dto);
+    if (!('error' in data) && !hasRole) {
+      navigate('/stations/my');
+    }
   };
 
   return (

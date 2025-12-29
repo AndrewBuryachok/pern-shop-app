@@ -1,6 +1,7 @@
 import { t } from 'i18next';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import { Select, Textarea, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
@@ -33,6 +34,8 @@ type Props = IModal<Order> & { hasRole: boolean };
 export default function TakeOrderModal({ data: order, hasRole }: Props) {
   const [t] = useTranslation();
 
+  const navigate = useNavigate();
+
   const form = useForm({
     initialValues: {
       orderId: order.id,
@@ -58,7 +61,10 @@ export default function TakeOrderModal({ data: order, hasRole }: Props) {
   const [takeOrder, { isLoading }] = useTakeOrderMutation();
 
   const handleSubmit = async (dto: TakeOrderDto) => {
-    await takeOrder(dto);
+    const data = await takeOrder(dto);
+    if (!('error' in data) && !hasRole) {
+      navigate('/orders/taken');
+    }
   };
 
   return (

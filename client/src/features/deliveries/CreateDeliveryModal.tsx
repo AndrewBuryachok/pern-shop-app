@@ -1,6 +1,7 @@
 import { t } from 'i18next';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import { NumberInput, Select } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
@@ -37,6 +38,8 @@ type Props = { hasRole: boolean };
 
 export default function CreateDeliveryModal({ hasRole }: Props) {
   const [t] = useTranslation();
+
+  const navigate = useNavigate();
 
   const myCard = { balance: 0 };
 
@@ -91,7 +94,10 @@ export default function CreateDeliveryModal({ hasRole }: Props) {
   const [createDelivery, { isLoading }] = useCreateDeliveryMutation();
 
   const handleSubmit = async (dto: CreateDeliveryDto) => {
-    await createDelivery(dto);
+    const data = await createDelivery(dto);
+    if (!('error' in data) && !hasRole) {
+      navigate('/deliveries/my');
+    }
   };
 
   return (
