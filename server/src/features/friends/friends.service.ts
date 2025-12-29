@@ -61,6 +61,9 @@ export class FriendsService {
   }
 
   async addFriend(dto: UpdateFriendDto): Promise<void> {
+    if (dto.userId === dto.myId) {
+      throw new AppException(FriendError.SELF);
+    }
     const offer1 = await this.offersRepository.findOneBy({
       senderUserId: dto.myId,
       receiverUserId: dto.userId,

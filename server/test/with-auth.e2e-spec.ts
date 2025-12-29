@@ -296,7 +296,7 @@ describe('With Auth', () => {
   describe('Friends', () => {
     it('POST /friends/:friendId', async () => {
       return request(app.getHttpServer())
-        .post(`/friends/${user.id}`)
+        .post(`/friends/${admin.id}`)
         .set('Authorization', `Bearer ${user.access}`)
         .expect('');
     });
@@ -311,14 +311,14 @@ describe('With Auth', () => {
     it('GET /friends/received', async () => {
       return request(app.getHttpServer())
         .get('/friends/received')
-        .set('Authorization', `Bearer ${user.access}`)
+        .set('Authorization', `Bearer ${admin.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
 
     it('POST /friends/:friendId', async () => {
       return request(app.getHttpServer())
         .post(`/friends/${user.id}`)
-        .set('Authorization', `Bearer ${user.access}`)
+        .set('Authorization', `Bearer ${admin.access}`)
         .expect('');
     });
 
@@ -331,7 +331,7 @@ describe('With Auth', () => {
 
     it('DELETE /friends/:friendId', async () => {
       return request(app.getHttpServer())
-        .delete(`/friends/${user.id}`)
+        .delete(`/friends/${admin.id}`)
         .set('Authorization', `Bearer ${user.access}`)
         .expect('');
     });

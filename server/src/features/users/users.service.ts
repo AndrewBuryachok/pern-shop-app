@@ -137,6 +137,7 @@ export class UsersService {
         .getOne()
     )['offers'].map((offer) => offer.receiverUserId);
     const users = await this.selectUsersQueryBuilder().getMany();
+    friends.push(myId);
     return users.filter(
       (user) => !friends.includes(user.id) && !offers.includes(user.id),
     );
