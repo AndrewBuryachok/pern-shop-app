@@ -8,11 +8,18 @@ export class AtGuard extends AuthGuard('jwt-access') {
     super();
   }
 
-  canActivate(context: ExecutionContext) {
+  async canActivate(context: ExecutionContext) {
     const isPublic = this.reflector.getAllAndOverride<boolean>('isPublic', [
       context.getHandler(),
       context.getClass(),
     ]);
-    return isPublic || super.canActivate(context);
+    try {
+      return (await super.canActivate(context)) as boolean;
+    } catch (error) {
+      if (isPublic) {
+        return isPublic;
+      }
+      throw error;
+    }
   }
 }
