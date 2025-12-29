@@ -44,7 +44,7 @@ import { Item } from '../../features/things/item.enum';
 export const IsNick = () => (target: object, key: string) => {
   IsNotEmpty()(target, key);
   IsString()(target, key);
-  Matches(/^\w+$/)(target, key);
+  Matches(/^\.?\w+$/)(target, key);
   MinLength(MIN_NICK_LENGTH)(target, key);
   MaxLength(MAX_NICK_LENGTH)(target, key);
 };
