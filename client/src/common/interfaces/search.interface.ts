@@ -10,13 +10,7 @@ export interface ISearch {
   roles?: string[];
   town?: string | null;
   shop?: string | null;
-  market?: string | null;
-  storage?: string | null;
   station?: string | null;
-  marketTag?: string | null;
-  storageTag?: string | null;
-  stall?: string | null;
-  cell?: string | null;
   item?: string | null;
   description?: string;
   type?: string | null;

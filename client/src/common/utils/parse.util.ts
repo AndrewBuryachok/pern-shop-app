@@ -1,8 +1,6 @@
 import { t } from 'i18next';
 import { MdCard } from '../../features/cards/card.model';
 import { SmPlace } from '../../features/places/place.model';
-import { MdStall } from '../../features/stalls/stall.model';
-import { MdCell } from '../../features/cells/cell.model';
 import { SmPurchaseWithoutPrice } from '../../features/purchases/purchase.model';
 import { Color, kits, statuses } from '../constants';
 
@@ -36,12 +34,6 @@ export const parseCard = (card: MdCard) =>
 
 export const parsePlace = (place: SmPlace) =>
   `${place.name} (${place.x} ${place.y})`;
-
-export const parseStall = (stall: MdStall) =>
-  `${parsePlace(stall.market)} #${stall.name}`;
-
-export const parseCell = (cell: MdCell) =>
-  `${parsePlace(cell.storage)} #${cell.name}`;
 
 export const parseItem = (item: string) => t(`constants.items.${item}`);
 

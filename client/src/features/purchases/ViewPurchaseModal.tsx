@@ -8,11 +8,9 @@ import CustomAvatar from '../../common/components/CustomAvatar';
 import ThingImage from '../../common/components/ThingImage';
 import {
   parseCard,
-  parseCell,
   parseItem,
   parsePlace,
   parsePurchaseAmount,
-  parseStall,
   parseStatus,
   parseTime,
 } from '../../common/utils';
@@ -88,56 +86,18 @@ export default function ViewPurchaseModal({ data: purchase }: Props) {
           />
         </>
       )}
-      {purchase.good.shop && (
-        <TextInput
-          label={t('columns.shop')}
-          value={parsePlace(purchase.good.shop)}
-          readOnly
-        />
-      )}
-      {purchase.good.rent && (
-        <TextInput
-          label={t('columns.market')}
-          value={parseStall(purchase.good.rent.stall)}
-          readOnly
-        />
-      )}
-      {purchase.good.lease && (
-        <TextInput
-          label={t('columns.storage')}
-          value={parseCell(purchase.good.lease.cell)}
-          readOnly
-        />
-      )}
-      {purchase.good.shop && (
-        <TextInput
-          label={t('columns.owner')}
-          icon={<CustomAvatar {...purchase.good.shop.card.user} />}
-          iconWidth={48}
-          value={parseCard(purchase.good.shop.card)}
-          readOnly
-        />
-      )}
-      {purchase.good.rent && (
-        <TextInput
-          label={t('columns.owner')}
-          icon={<CustomAvatar {...purchase.good.rent.stall.market.card.user} />}
-          iconWidth={48}
-          value={parseCard(purchase.good.rent.stall.market.card)}
-          readOnly
-        />
-      )}
-      {purchase.good.lease && (
-        <TextInput
-          label={t('columns.owner')}
-          icon={
-            <CustomAvatar {...purchase.good.lease.cell.storage.card.user} />
-          }
-          iconWidth={48}
-          value={parseCard(purchase.good.lease.cell.storage.card)}
-          readOnly
-        />
-      )}
+      <TextInput
+        label={t('columns.shop')}
+        value={parsePlace(purchase.good.shop)}
+        readOnly
+      />
+      <TextInput
+        label={t('columns.owner')}
+        icon={<CustomAvatar {...purchase.good.shop.card.user} />}
+        iconWidth={48}
+        value={parseCard(purchase.good.shop.card)}
+        readOnly
+      />
       <TextInput
         label={t('columns.created')}
         value={parseTime(purchase.createdAt)}

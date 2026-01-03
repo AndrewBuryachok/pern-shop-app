@@ -23,7 +23,7 @@ export default function PurchasesTable({ actions = [], ...props }: Props) {
         'item',
         'amount',
         'sum',
-        'place',
+        'shop',
         'created',
         'action',
       ]}
@@ -51,21 +51,7 @@ export default function PurchasesTable({ actions = [], ...props }: Props) {
             />
           </td>
           <td>
-            {purchase.good.shop && (
-              <PlaceWithDoubleAvatar {...purchase.good.shop} />
-            )}
-            {purchase.good.rent && (
-              <PlaceWithDoubleAvatar
-                {...purchase.good.rent.stall.market}
-                container={purchase.good.rent.stall.name}
-              />
-            )}
-            {purchase.good.lease && (
-              <PlaceWithDoubleAvatar
-                {...purchase.good.lease.cell.storage}
-                container={purchase.good.lease.cell.name}
-              />
-            )}
+            <PlaceWithDoubleAvatar {...purchase.good.shop} />
           </td>
           <td>
             <DateText date={purchase.createdAt} />

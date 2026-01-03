@@ -6,8 +6,6 @@ import { IModal } from '../../common/interfaces';
 import { ExtPlace, PlaceType } from './place.model';
 import { useSelectTownUsersQuery } from '../towns/towns.api';
 import { useSelectShopGoodsQuery } from '../shops/shops.api';
-import { useSelectMarketStallsQuery } from '../stalls/stalls.api';
-import { useSelectStorageCellsQuery } from '../cells/cells.api';
 import RefetchAction from '../../common/components/RefetchAction';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import { UsersItem } from '../../common/components/UsersItem';
@@ -15,7 +13,6 @@ import { ThingsItemWithAmount } from '../../common/components/ThingsItemWithAmou
 import {
   parseCard,
   parseTime,
-  viewContainers,
   viewThings,
   viewUsers,
 } from '../../common/utils';
@@ -32,21 +29,12 @@ export default function PlaceModal({ data: place }: Props) {
       ? ThingsItemWithAmount
       : undefined;
 
-  const { data: townsUsers, ...townsUsersResponse } = useSelectTownUsersQuery(
-    place.id,
-    { skip: place.type !== PlaceType.TOWNS },
-  );
+  const { data: users, ...usersResponse } = useSelectTownUsersQuery(place.id, {
+    skip: place.type !== PlaceType.TOWNS,
+  });
   const { data: goods, ...goodsResponse } = useSelectShopGoodsQuery(place.id, {
     skip: place.type !== PlaceType.SHOPS,
   });
-  const { data: stalls, ...stallsResponse } = useSelectMarketStallsQuery(
-    place.id,
-    { skip: place.type !== PlaceType.MARKETS },
-  );
-  const { data: cells, ...cellsResponse } = useSelectStorageCellsQuery(
-    place.id,
-    { skip: place.type !== PlaceType.STORAGES },
-  );
 
   return (
     <Stack spacing={8}>
@@ -58,7 +46,7 @@ export default function PlaceModal({ data: place }: Props) {
         value={place.card ? parseCard(place.card) : place.user.nick}
         readOnly
       />
-      <TextInput label={t('columns.place')} value={place.name} readOnly />
+      <TextInput label={t('columns.name')} value={place.name} readOnly />
       <Textarea
         label={t('columns.description')}
         value={place.description || '-'}
@@ -81,10 +69,10 @@ export default function PlaceModal({ data: place }: Props) {
       {place.type === PlaceType.TOWNS && (
         <Select
           label={t('columns.users')}
-          placeholder={`${t('components.total')}: ${townsUsers?.length || 0}`}
-          rightSection={<RefetchAction {...townsUsersResponse} />}
+          placeholder={`${t('components.total')}: ${users?.length || 0}`}
+          rightSection={<RefetchAction {...usersResponse} />}
           itemComponent={component}
-          data={viewUsers(townsUsers || [])}
+          data={viewUsers(users || [])}
           limit={20}
           searchable
         />
@@ -96,28 +84,6 @@ export default function PlaceModal({ data: place }: Props) {
           rightSection={<RefetchAction {...goodsResponse} />}
           itemComponent={component}
           data={viewThings(goods || [])}
-          limit={20}
-          searchable
-        />
-      )}
-      {place.type === PlaceType.MARKETS && (
-        <Select
-          label={t('columns.stalls')}
-          placeholder={`${t('components.total')}: ${stalls?.length || 0}`}
-          rightSection={<RefetchAction {...stallsResponse} />}
-          itemComponent={component}
-          data={viewContainers(stalls || [])}
-          limit={20}
-          searchable
-        />
-      )}
-      {place.type === PlaceType.STORAGES && (
-        <Select
-          label={t('columns.cells')}
-          placeholder={`${t('components.total')}: ${cells?.length || 0}`}
-          rightSection={<RefetchAction {...cellsResponse} />}
-          itemComponent={component}
-          data={viewContainers(cells || [])}
           limit={20}
           searchable
         />

@@ -28,26 +28,8 @@ export const getQuery = (req: IRequest) => {
   if (req?.shop) {
     query.append('shop', req.shop);
   }
-  if (req?.market) {
-    query.append('market', req.market);
-  }
-  if (req?.storage) {
-    query.append('storage', req.storage);
-  }
   if (req?.station) {
     query.append('station', req.station);
-  }
-  if (req?.marketTag) {
-    query.append('marketTag', req.marketTag);
-  }
-  if (req?.storageTag) {
-    query.append('storageTag', req.storageTag);
-  }
-  if (req?.stall) {
-    query.append('stall', req.stall);
-  }
-  if (req?.cell) {
-    query.append('cell', req.cell);
   }
   if (req?.item) {
     query.append('item', req.item);

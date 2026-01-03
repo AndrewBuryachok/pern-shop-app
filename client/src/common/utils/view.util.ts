@@ -1,7 +1,5 @@
 import { t } from 'i18next';
 import { SmUser } from '../../features/users/user.model';
-import { SmTag } from '../../features/tags/tag.model';
-import { Container } from '../../features/containers/container.model';
 import { MdThing } from '../../features/things/thing.model';
 import { State } from '../../features/states/state.model';
 import { parseItem } from './parse.util';
@@ -21,20 +19,6 @@ export const viewUsers = (users: SmUser[]) =>
     nick: user.nick,
     value: `${user.id}`,
     label: user.nick,
-    disabled: true,
-  }));
-
-export const viewTags = (tags: SmTag[]) =>
-  tags.map((tag) => ({
-    value: `${tag.id}`,
-    label: `${tag.name} ${tag.price} ${t('constants.currency')}`,
-    disabled: true,
-  }));
-
-export const viewContainers = (containers: Container[]) =>
-  containers.map((container) => ({
-    value: `${container.id}`,
-    label: `#${container.name}`,
     disabled: true,
   }));
 

@@ -32,8 +32,6 @@ export interface PlaceWithCard extends Place {
 export enum PlaceType {
   TOWNS = 'towns',
   SHOPS = 'shops',
-  MARKETS = 'markets',
-  STORAGES = 'storages',
   STATIONS = 'stations',
 }
 

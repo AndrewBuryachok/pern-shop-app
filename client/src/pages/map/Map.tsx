@@ -6,8 +6,6 @@ import { useDocumentTitle, useElementSize } from '@mantine/hooks';
 import { ExtPlace, PlaceType } from '../../features/places/place.model';
 import { useGetMainTownsQuery } from '../../features/towns/towns.api';
 import { useGetMainShopsQuery } from '../../features/shops/shops.api';
-import { useGetMainMarketsQuery } from '../../features/markets/markets.api';
-import { useGetMainStoragesQuery } from '../../features/storages/storages.api';
 import { useGetMainStationsQuery } from '../../features/stations/stations.api';
 import PlacePath from '../../features/places/PlacePath';
 import { colors } from '../../common/constants';
@@ -50,26 +48,11 @@ export default function Map() {
     data: data3,
     isFetching: isFetching3,
     refetch: refetch3,
-  } = useGetMainMarketsQuery({
-    page: 0,
-  });
-  const {
-    data: data4,
-    isFetching: isFetching4,
-    refetch: refetch4,
-  } = useGetMainStoragesQuery({
-    page: 0,
-  });
-  const {
-    data: data5,
-    isFetching: isFetching5,
-    refetch: refetch5,
   } = useGetMainStationsQuery({
     page: 0,
   });
 
-  const isFetching =
-    isFetching1 || isFetching2 || isFetching3 || isFetching4 || isFetching5;
+  const isFetching = isFetching1 || isFetching2 || isFetching3;
 
   const refetch = () => {
     if (!isFetching) {
@@ -79,14 +62,8 @@ export default function Map() {
       if (places.includes(PlaceType.SHOPS)) {
         refetch2();
       }
-      if (places.includes(PlaceType.MARKETS)) {
-        refetch3();
-      }
-      if (places.includes(PlaceType.STORAGES)) {
-        refetch4();
-      }
       if (places.includes(PlaceType.STATIONS)) {
-        refetch5();
+        refetch3();
       }
     }
   };
@@ -97,13 +74,7 @@ export default function Map() {
   const shops = data2?.result.map(
     (p) => ({ ...p, user: p.card.user, type: PlaceType.SHOPS } as ExtPlace),
   );
-  const markets = data3?.result.map(
-    (p) => ({ ...p, user: p.card.user, type: PlaceType.MARKETS } as ExtPlace),
-  );
-  const storages = data4?.result.map(
-    (p) => ({ ...p, user: p.card.user, type: PlaceType.STORAGES } as ExtPlace),
-  );
-  const stations = data5?.result.map(
+  const stations = data3?.result.map(
     (p) => ({ ...p, type: PlaceType.STATIONS } as ExtPlace),
   );
 
@@ -149,7 +120,7 @@ export default function Map() {
               onClick={refetch}
             ></circle>
             {!isFetching &&
-              [towns, shops, markets, storages, stations].map((allPlaces) =>
+              [towns, shops, stations].map((allPlaces) =>
                 allPlaces
                   ?.filter((place) => places.includes(place.type))
                   .map((place) => <PlacePath key={place.id} data={place} />),

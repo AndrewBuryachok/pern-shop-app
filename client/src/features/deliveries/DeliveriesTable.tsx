@@ -24,7 +24,7 @@ export default function DeliveriesTable({ actions = [], ...props }: Props) {
         'amount',
         'price',
         'status',
-        'place',
+        'shop',
         'station',
         'action',
       ]}
@@ -48,21 +48,7 @@ export default function DeliveriesTable({ actions = [], ...props }: Props) {
             <StatusBadgeWithAvatar {...delivery} />
           </td>
           <td>
-            {delivery.purchase.good.shop && (
-              <PlaceWithDoubleAvatar {...delivery.purchase.good.shop} />
-            )}
-            {delivery.purchase.good.rent && (
-              <PlaceWithDoubleAvatar
-                {...delivery.purchase.good.rent.stall.market}
-                container={delivery.purchase.good.rent.stall.name}
-              />
-            )}
-            {delivery.purchase.good.lease && (
-              <PlaceWithDoubleAvatar
-                {...delivery.purchase.good.lease.cell.storage}
-                container={delivery.purchase.good.lease.cell.name}
-              />
-            )}
+            <PlaceWithDoubleAvatar {...delivery.purchase.good.shop} />
           </td>
           <td>
             <PlaceWithSingleAvatar {...delivery.station} />

@@ -3,9 +3,7 @@ import { SmPlaceWithCard } from '../../features/places/place.model';
 import PlaceText from './PlaceText';
 import AvatarWithDoubleText from './AvatarWithDoubleText';
 
-type Props = SmPlaceWithCard & {
-  container?: number;
-};
+type Props = SmPlaceWithCard;
 
 export default function PlaceWithDoubleAvatar(props: Props) {
   return (

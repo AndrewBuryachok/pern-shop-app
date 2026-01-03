@@ -1,40 +1,21 @@
 import { t } from 'i18next';
-import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { NumberInput, Radio, Select, Textarea } from '@mantine/core';
+import { NumberInput, Select, Textarea } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
-import {
-  useCreateMarketGoodMutation,
-  useCreateShopGoodMutation,
-  useCreateStorageGoodMutation,
-} from './goods.api';
+import { useCreateGoodMutation } from './goods.api';
 import {
   useSelectAllShopsQuery,
   useSelectMyShopsQuery,
 } from '../shops/shops.api';
-import {
-  useSelectAllRentsQuery,
-  useSelectMyRentsQuery,
-} from '../rents/rents.api';
-import {
-  useSelectAllLeasesQuery,
-  useSelectMyLeasesQuery,
-} from '../leases/leases.api';
-import { CreateAnyGoodDto } from './good.dto';
+import { CreateGoodDto } from './good.dto';
 import CustomForm from '../../common/components/CustomForm';
 import RefetchAction from '../../common/components/RefetchAction';
 import ThingImage from '../../common/components/ThingImage';
 import { ThingsItem } from '../../common/components/ThingsItem';
 import { PlacesItem } from '../../common/components/PlacesItem';
-import {
-  selectItems,
-  selectKits,
-  selectLeases,
-  selectRents,
-  selectShops,
-} from '../../common/utils';
+import { selectItems, selectKits, selectShops } from '../../common/utils';
 import {
   MAX_AMOUNT_VALUE,
   MAX_DESCRIPTION_LENGTH,
@@ -49,15 +30,9 @@ export default function CreateGoodModal({ hasRole }: Props) {
 
   const navigate = useNavigate();
 
-  const places = ['shop', 'market', 'storage'] as const;
-
-  const [place, setPlace] = useState<(typeof places)[number]>(places[0]);
-
   const form = useForm({
     initialValues: {
       shop: '',
-      rent: '',
-      lease: '',
       item: '',
       description: '',
       amount: 1,
@@ -65,11 +40,9 @@ export default function CreateGoodModal({ hasRole }: Props) {
       kit: '',
       price: 1,
     },
-    transformValues: ({ shop, rent, lease, kit, ...rest }) => ({
+    transformValues: ({ shop, kit, ...rest }) => ({
       ...rest,
       shopId: +shop,
-      rentId: +rent,
-      leaseId: +lease,
       kit: +kit,
     }),
   });
@@ -77,34 +50,11 @@ export default function CreateGoodModal({ hasRole }: Props) {
   const { data: shops, ...shopsResponse } = hasRole
     ? useSelectAllShopsQuery()
     : useSelectMyShopsQuery();
-  const { data: rents, ...rentsResponse } = hasRole
-    ? useSelectAllRentsQuery()
-    : useSelectMyRentsQuery();
-  const { data: leases, ...leasesResponse } = hasRole
-    ? useSelectAllLeasesQuery()
-    : useSelectMyLeasesQuery();
 
-  const [createShopGood, { isLoading: isShopLoading }] =
-    useCreateShopGoodMutation();
-  const [createMarketGood, { isLoading: isMarketLoading }] =
-    useCreateMarketGoodMutation();
-  const [createStorageGood, { isLoading: isStorageLoading }] =
-    useCreateStorageGoodMutation();
+  const [createGood, { isLoading }] = useCreateGoodMutation();
 
-  const handleSubmit = async (dto: CreateAnyGoodDto) => {
-    const createGood = (() => {
-      switch (place) {
-        case 'shop':
-          return createShopGood;
-        case 'market':
-          return createMarketGood;
-        case 'storage':
-          return createStorageGood;
-        default:
-          return null;
-      }
-    })();
-    const data = await createGood!(dto);
+  const handleSubmit = async (dto: CreateGoodDto) => {
+    const data = await createGood(dto);
     if (!('error' in data) && !hasRole) {
       navigate('/goods/my');
     }
@@ -113,61 +63,21 @@ export default function CreateGoodModal({ hasRole }: Props) {
   return (
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
-      isLoading={isShopLoading || isMarketLoading || isStorageLoading}
+      isLoading={isLoading}
       text={t('actions.create') + ' ' + t('modals.goods')}
     >
-      <Radio.Group
-        label={t('columns.place')}
-        spacing='md'
-        value={place}
-        onChange={(value) => setPlace(value as (typeof places)[number])}
-      >
-        {places.map((place) => (
-          <Radio key={place} label={t(`columns.${place}`)} value={place} />
-        ))}
-      </Radio.Group>
-      {place === 'shop' && (
-        <Select
-          label={t('columns.shop')}
-          placeholder={t('columns.shop')}
-          rightSection={<RefetchAction {...shopsResponse} />}
-          itemComponent={PlacesItem}
-          data={selectShops(shops)}
-          limit={20}
-          searchable
-          required
-          readOnly={shopsResponse.isFetching}
-          {...form.getInputProps('shop')}
-        />
-      )}
-      {place === 'market' && (
-        <Select
-          label={t('columns.rent')}
-          placeholder={t('columns.rent')}
-          rightSection={<RefetchAction {...rentsResponse} />}
-          itemComponent={PlacesItem}
-          data={selectRents(rents)}
-          limit={20}
-          searchable
-          required
-          readOnly={rentsResponse.isFetching}
-          {...form.getInputProps('rent')}
-        />
-      )}
-      {place === 'storage' && (
-        <Select
-          label={t('columns.lease')}
-          placeholder={t('columns.lease')}
-          rightSection={<RefetchAction {...leasesResponse} />}
-          itemComponent={PlacesItem}
-          data={selectLeases(leases)}
-          limit={20}
-          searchable
-          required
-          readOnly={leasesResponse.isFetching}
-          {...form.getInputProps('lease')}
-        />
-      )}
+      <Select
+        label={t('columns.shop')}
+        placeholder={t('columns.shop')}
+        rightSection={<RefetchAction {...shopsResponse} />}
+        itemComponent={PlacesItem}
+        data={selectShops(shops)}
+        limit={20}
+        searchable
+        required
+        readOnly={shopsResponse.isFetching}
+        {...form.getInputProps('shop')}
+      />
       <Select
         label={t('columns.item')}
         placeholder={t('columns.item')}

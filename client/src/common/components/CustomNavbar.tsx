@@ -4,10 +4,7 @@ import { Navbar, NavLink, ScrollArea } from '@mantine/core';
 import {
   IconArticle,
   IconBasket,
-  IconBuildingCircus,
   IconBuildingSkyscraper,
-  IconBuildingStore,
-  IconBuildingWarehouse,
   IconMailbox,
   IconMap,
   IconUsers,
@@ -51,7 +48,11 @@ export default function CustomNavbar(props: Props) {
     {
       label: 'trading',
       icon: IconBasket,
-      nested: [{ label: 'goods' }, { label: 'purchases', sub: '/my' }],
+      nested: [
+        { label: 'goods' },
+        { label: 'purchases', sub: '/my' },
+        { label: 'shops' },
+      ],
     },
     {
       label: 'mail',
@@ -61,10 +62,6 @@ export default function CustomNavbar(props: Props) {
         { label: 'orders' },
         { label: 'stations' },
       ],
-    },
-    {
-      label: 'map',
-      icon: IconMap,
     },
     {
       label: 'towns',
@@ -77,28 +74,8 @@ export default function CustomNavbar(props: Props) {
       ],
     },
     {
-      label: 'shops',
-      icon: IconBuildingStore,
-    },
-    {
-      label: 'markets',
-      icon: IconBuildingCircus,
-      nested: [
-        { label: 'rents' },
-        { label: 'stalls' },
-        { label: 'markets-tags' },
-        { label: 'markets' },
-      ],
-    },
-    {
-      label: 'storages',
-      icon: IconBuildingWarehouse,
-      nested: [
-        { label: 'leases' },
-        { label: 'cells' },
-        { label: 'storages-tags' },
-        { label: 'storages' },
-      ],
+      label: 'map',
+      icon: IconMap,
     },
     {
       label: 'users',

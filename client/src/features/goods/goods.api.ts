@@ -4,9 +4,7 @@ import { Good } from './good.model';
 import { State } from '../states/state.model';
 import { MdPurchase } from '../purchases/purchase.model';
 import {
-  CreateMarketGoodDto,
-  CreateShopGoodDto,
-  CreateStorageGoodDto,
+  CreateGoodDto,
   EditGoodDto,
   GoodIdDto,
   UpdateGoodDto,
@@ -45,25 +43,9 @@ export const goodsApi = emptyApi.injectEndpoints({
       }),
       providesTags: ['Purchase'],
     }),
-    createShopGood: build.mutation<void, CreateShopGoodDto>({
+    createGood: build.mutation<void, CreateGoodDto>({
       query: (dto) => ({
-        url: '/goods/shops',
-        method: 'POST',
-        body: dto,
-      }),
-      invalidatesTags: ['Good'],
-    }),
-    createMarketGood: build.mutation<void, CreateMarketGoodDto>({
-      query: (dto) => ({
-        url: '/goods/markets',
-        method: 'POST',
-        body: dto,
-      }),
-      invalidatesTags: ['Good'],
-    }),
-    createStorageGood: build.mutation<void, CreateStorageGoodDto>({
-      query: (dto) => ({
-        url: '/goods/storages',
+        url: '/goods',
         method: 'POST',
         body: dto,
       }),
@@ -108,9 +90,7 @@ export const {
   useGetAllGoodsQuery,
   useSelectGoodStatesQuery,
   useSelectGoodPurchasesQuery,
-  useCreateShopGoodMutation,
-  useCreateMarketGoodMutation,
-  useCreateStorageGoodMutation,
+  useCreateGoodMutation,
   useEditGoodMutation,
   useUpdateGoodMutation,
   useCompleteGoodMutation,

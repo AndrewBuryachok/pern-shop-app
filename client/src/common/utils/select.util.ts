@@ -3,13 +3,7 @@ import { SmUser } from '../../features/users/user.model';
 import { LgCard, LgCardWithBalance } from '../../features/cards/card.model';
 import { SmTown } from '../../features/towns/town.model';
 import { SmShop } from '../../features/shops/shop.model';
-import { SmMarket } from '../../features/markets/market.model';
-import { SmStorage } from '../../features/storages/storage.model';
 import { SmStation } from '../../features/stations/station.model';
-import { SmTag } from '../../features/tags/tag.model';
-import { Container } from '../../features/containers/container.model';
-import { SelectRent } from '../../features/rents/rent.model';
-import { SelectLease } from '../../features/leases/lease.model';
 import { SmPurchaseWithPrice } from '../../features/purchases/purchase.model';
 import { parseItem, parsePlace } from './parse.util';
 import { backgrounds, colors, items, kits, Role, statuses } from '../constants';
@@ -59,53 +53,11 @@ export const selectShops = (shops?: SmShop[]) =>
     label: parsePlace(shop),
   })) || [];
 
-export const selectMarkets = (markets?: SmMarket[]) =>
-  markets?.map((market) => ({
-    ...market,
-    value: `${market.id}`,
-    label: parsePlace(market),
-  })) || [];
-
-export const selectStorages = (storages?: SmStorage[]) =>
-  storages?.map((storage) => ({
-    ...storage,
-    value: `${storage.id}`,
-    label: parsePlace(storage),
-  })) || [];
-
 export const selectStations = (stations?: SmStation[]) =>
   stations?.map((station) => ({
     ...station,
     value: `${station.id}`,
     label: parsePlace(station),
-  })) || [];
-
-export const selectTags = (tags?: SmTag[]) =>
-  tags?.map((tag) => ({
-    value: `${tag.id}`,
-    label: `${tag.name} ${tag.price} ${t('constants.currency')}`,
-  })) || [];
-
-export const selectContainers = (containers?: Container[]) =>
-  containers?.map((container) => ({
-    value: `${container.id}`,
-    label: `#${container.name}`,
-  })) || [];
-
-export const selectRents = (rents?: SelectRent[]) =>
-  rents?.map((rent) => ({
-    ...rent.stall.market,
-    container: rent.stall.name,
-    value: `${rent.id}`,
-    label: `${parsePlace(rent.stall.market)} #${rent.stall.name}`,
-  })) || [];
-
-export const selectLeases = (leases?: SelectLease[]) =>
-  leases?.map((lease) => ({
-    ...lease.cell.storage,
-    container: lease.cell.name,
-    value: `${lease.id}`,
-    label: `${parsePlace(lease.cell.storage)} #${lease.cell.name}`,
   })) || [];
 
 export const selectPurchases = (purchases?: SmPurchaseWithPrice[]) =>

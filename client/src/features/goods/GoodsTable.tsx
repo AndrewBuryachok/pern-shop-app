@@ -24,7 +24,7 @@ export default function GoodsTable({ actions = [], ...props }: Props) {
         'item',
         'amount',
         'price',
-        'place',
+        'shop',
         'purchases',
         'created',
         'action',
@@ -46,19 +46,7 @@ export default function GoodsTable({ actions = [], ...props }: Props) {
             <PriceText {...good} />
           </td>
           <td>
-            {good.shop && <PlaceWithDoubleAvatar {...good.shop} />}
-            {good.rent && (
-              <PlaceWithDoubleAvatar
-                {...good.rent.stall.market}
-                container={good.rent.stall.name}
-              />
-            )}
-            {good.lease && (
-              <PlaceWithDoubleAvatar
-                {...good.lease.cell.storage}
-                container={good.lease.cell.name}
-              />
-            )}
+            <PlaceWithDoubleAvatar {...good.shop} />
           </td>
           <td>
             <CustomAnchor

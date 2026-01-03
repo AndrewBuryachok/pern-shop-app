@@ -11,10 +11,8 @@ import ThingImage from '../../common/components/ThingImage';
 import { StatesItem } from '../../common/components/StatesItem';
 import {
   parseCard,
-  parseCell,
   parseItem,
   parsePlace,
-  parseStall,
   parseThingAmount,
   parseTime,
   viewStates,
@@ -69,54 +67,18 @@ export default function ViewGoodModal({ data: good }: Props) {
         limit={20}
         searchable
       />
-      {good.shop && (
-        <TextInput
-          label={t('columns.shop')}
-          value={parsePlace(good.shop)}
-          readOnly
-        />
-      )}
-      {good.rent && (
-        <TextInput
-          label={t('columns.market')}
-          value={parseStall(good.rent.stall)}
-          readOnly
-        />
-      )}
-      {good.lease && (
-        <TextInput
-          label={t('columns.storage')}
-          value={parseCell(good.lease.cell)}
-          readOnly
-        />
-      )}
-      {good.shop && (
-        <TextInput
-          label={t('columns.owner')}
-          icon={<CustomAvatar {...good.shop.card.user} />}
-          iconWidth={48}
-          value={parseCard(good.shop.card)}
-          readOnly
-        />
-      )}
-      {good.rent && (
-        <TextInput
-          label={t('columns.owner')}
-          icon={<CustomAvatar {...good.rent.stall.market.card.user} />}
-          iconWidth={48}
-          value={parseCard(good.rent.stall.market.card)}
-          readOnly
-        />
-      )}
-      {good.lease && (
-        <TextInput
-          label={t('columns.owner')}
-          icon={<CustomAvatar {...good.lease.cell.storage.card.user} />}
-          iconWidth={48}
-          value={parseCard(good.lease.cell.storage.card)}
-          readOnly
-        />
-      )}
+      <TextInput
+        label={t('columns.shop')}
+        value={parsePlace(good.shop)}
+        readOnly
+      />
+      <TextInput
+        label={t('columns.owner')}
+        icon={<CustomAvatar {...good.shop.card.user} />}
+        iconWidth={48}
+        value={parseCard(good.shop.card)}
+        readOnly
+      />
       <TextInput
         label={t('columns.created')}
         value={parseTime(good.createdAt)}

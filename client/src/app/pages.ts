@@ -19,19 +19,7 @@ const ApplicationsPage = lazy(
   () => import('../pages/applications/ApplicationsPage'),
 );
 const ShopsPage = lazy(() => import('../pages/shops/ShopsPage'));
-const MarketsPage = lazy(() => import('../pages/markets/MarketsPage'));
-const StoragesPage = lazy(() => import('../pages/storages/StoragesPage'));
 const StationsPage = lazy(() => import('../pages/stations/StationsPage'));
-const MarketsTagsPage = lazy(
-  () => import('../pages/markets-tags/MarketsTagsPage'),
-);
-const StoragesTagsPage = lazy(
-  () => import('../pages/storages-tags/StoragesTagsPage'),
-);
-const StallsPage = lazy(() => import('../pages/stalls/StallsPage'));
-const CellsPage = lazy(() => import('../pages/cells/CellsPage'));
-const RentsPage = lazy(() => import('../pages/rents/RentsPage'));
-const LeasesPage = lazy(() => import('../pages/leases/LeasesPage'));
 const GoodsPage = lazy(() => import('../pages/goods/GoodsPage'));
 const PurchasesPage = lazy(() => import('../pages/purchases/PurchasesPage'));
 const DeliveriesPage = lazy(() => import('../pages/deliveries/DeliveriesPage'));
@@ -124,85 +112,11 @@ export const pages = [
     ],
   },
   {
-    path: 'markets',
-    element: MarketsPage,
-    nested: [
-      { index: true },
-      { path: 'my' },
-      { path: 'all', role: Role.MODER },
-    ],
-  },
-  {
-    path: 'storages',
-    element: StoragesPage,
-    nested: [
-      { index: true },
-      { path: 'my' },
-      { path: 'all', role: Role.MODER },
-    ],
-  },
-  {
     path: 'stations',
     element: StationsPage,
     nested: [
       { index: true },
       { path: 'my' },
-      { path: 'all', role: Role.MODER },
-    ],
-  },
-  {
-    path: 'markets-tags',
-    element: MarketsTagsPage,
-    nested: [
-      { index: true },
-      { path: 'my' },
-      { path: 'all', role: Role.MODER },
-    ],
-  },
-  {
-    path: 'storages-tags',
-    element: StoragesTagsPage,
-    nested: [
-      { index: true },
-      { path: 'my' },
-      { path: 'all', role: Role.MODER },
-    ],
-  },
-  {
-    path: 'stalls',
-    element: StallsPage,
-    nested: [
-      { index: true },
-      { path: 'my' },
-      { path: 'all', role: Role.MODER },
-    ],
-  },
-  {
-    path: 'cells',
-    element: CellsPage,
-    nested: [
-      { index: true },
-      { path: 'my' },
-      { path: 'all', role: Role.MODER },
-    ],
-  },
-  {
-    path: 'rents',
-    element: RentsPage,
-    nested: [
-      { index: true },
-      { path: 'my' },
-      { path: 'received' },
-      { path: 'all', role: Role.MODER },
-    ],
-  },
-  {
-    path: 'leases',
-    element: LeasesPage,
-    nested: [
-      { index: true },
-      { path: 'my' },
-      { path: 'received' },
       { path: 'all', role: Role.MODER },
     ],
   },

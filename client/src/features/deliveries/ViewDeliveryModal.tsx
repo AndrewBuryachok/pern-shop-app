@@ -8,11 +8,9 @@ import CustomAvatar from '../../common/components/CustomAvatar';
 import ThingImage from '../../common/components/ThingImage';
 import {
   parseCard,
-  parseCell,
   parseItem,
   parsePlace,
   parsePurchaseAmount,
-  parseStall,
   parseStatus,
   parseTime,
 } from '../../common/utils';
@@ -71,62 +69,18 @@ export default function ViewDeliveryModal({ data: delivery }: Props) {
         value={delivery.executorCard ? parseCard(delivery.executorCard) : '-'}
         readOnly
       />
-      {delivery.purchase.good.shop && (
-        <TextInput
-          label={t('columns.shop')}
-          value={parsePlace(delivery.purchase.good.shop)}
-          readOnly
-        />
-      )}
-      {delivery.purchase.good.rent && (
-        <TextInput
-          label={t('columns.market')}
-          value={parseStall(delivery.purchase.good.rent.stall)}
-          readOnly
-        />
-      )}
-      {delivery.purchase.good.lease && (
-        <TextInput
-          label={t('columns.storage')}
-          value={parseCell(delivery.purchase.good.lease.cell)}
-          readOnly
-        />
-      )}
-      {delivery.purchase.good.shop && (
-        <TextInput
-          label={t('columns.owner')}
-          icon={<CustomAvatar {...delivery.purchase.good.shop.card.user} />}
-          iconWidth={48}
-          value={parseCard(delivery.purchase.good.shop.card)}
-          readOnly
-        />
-      )}
-      {delivery.purchase.good.rent && (
-        <TextInput
-          label={t('columns.owner')}
-          icon={
-            <CustomAvatar
-              {...delivery.purchase.good.rent.stall.market.card.user}
-            />
-          }
-          iconWidth={48}
-          value={parseCard(delivery.purchase.good.rent.stall.market.card)}
-          readOnly
-        />
-      )}
-      {delivery.purchase.good.lease && (
-        <TextInput
-          label={t('columns.owner')}
-          icon={
-            <CustomAvatar
-              {...delivery.purchase.good.lease.cell.storage.card.user}
-            />
-          }
-          iconWidth={48}
-          value={parseCard(delivery.purchase.good.lease.cell.storage.card)}
-          readOnly
-        />
-      )}
+      <TextInput
+        label={t('columns.shop')}
+        value={parsePlace(delivery.purchase.good.shop)}
+        readOnly
+      />
+      <TextInput
+        label={t('columns.owner')}
+        icon={<CustomAvatar {...delivery.purchase.good.shop.card.user} />}
+        iconWidth={48}
+        value={parseCard(delivery.purchase.good.shop.card)}
+        readOnly
+      />
       <TextInput
         label={t('columns.station')}
         value={parsePlace(delivery.station)}
