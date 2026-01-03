@@ -13,24 +13,14 @@ import { Payment } from '../../features/payments/payment.entity';
 import { Invoice } from '../../features/invoices/invoice.entity';
 import { Town } from '../../features/towns/town.entity';
 import { Shop } from '../../features/shops/shop.entity';
-import { Market } from '../../features/markets/market.entity';
-import { Storage } from '../../features/storages/storage.entity';
 import { Station } from '../../features/stations/station.entity';
-import { MarketTag } from '../../features/markets-tags/market-tag.entity';
-import { StorageTag } from '../../features/storages-tags/storage-tag.entity';
-import { MarketTagState } from '../../features/markets-tags/market-tag-state.entity';
-import { StorageTagState } from '../../features/storages-tags/storage-tag-state.entity';
-import { Stall } from '../../features/stalls/stall.entity';
-import { Cell } from '../../features/cells/cell.entity';
-import { Rent } from '../../features/rents/rent.entity';
-import { Lease } from '../../features/leases/lease.entity';
 import { Good } from '../../features/goods/good.entity';
 import { GoodState } from '../../features/goods/good-state.entity';
 import { Purchase } from '../../features/purchases/purchase.entity';
 import { Delivery } from '../../features/deliveries/delivery.entity';
 import { Order } from '../../features/orders/order.entity';
 import { Status } from '../../features/transportations/status.enum';
-import { getDateWeekAfter, hashData } from '../../common/utils';
+import { hashData } from '../../common/utils';
 
 export default class AppSeed implements Seeder {
   public async run(factory: Factory) {
@@ -170,138 +160,16 @@ export default class AppSeed implements Seeder {
         return shop;
       })
       .makeMany(10);
-    const markets = await factory(Market)()
-      .map(async (market) => {
-        market.card = faker.helpers.arrayElement(cards);
-        market.stalls = [];
-        return market;
-      })
-      .makeMany(10);
-    const storages = await factory(Storage)()
-      .map(async (storage) => {
-        storage.card = faker.helpers.arrayElement(cards);
-        storage.cells = [];
-        return storage;
-      })
-      .makeMany(10);
     const stations = await factory(Station)()
       .map(async (station) => {
         station.user = faker.helpers.arrayElement(users);
         return station;
       })
       .makeMany(10);
-    const marketsTags = await factory(MarketTag)()
-      .map(async (marketTag) => {
-        marketTag.market = faker.helpers.arrayElement(markets);
-        return marketTag;
-      })
-      .makeMany(20);
-    const storagesTags = await factory(StorageTag)()
-      .map(async (storageTag) => {
-        storageTag.storage = faker.helpers.arrayElement(storages);
-        return storageTag;
-      })
-      .makeMany(20);
-    let marketTagId = 0;
-    const marketsTagsStates = await factory(MarketTagState)()
-      .map(async (marketTagState) => {
-        marketTagState.marketTag = marketsTags[marketTagId++];
-        marketTagState.price = marketTagState.marketTag.price;
-        return marketTagState;
-      })
-      .makeMany(marketsTags.length);
-    let storageTagId = 0;
-    const storagesTagsStates = await factory(StorageTagState)()
-      .map(async (storageTagState) => {
-        storageTagState.storageTag = storagesTags[storageTagId++];
-        storageTagState.price = storageTagState.storageTag.price;
-        return storageTagState;
-      })
-      .makeMany(storagesTags.length);
-    const stalls = await factory(Stall)()
-      .map(async (stall) => {
-        stall.marketTag = faker.helpers.arrayElement(marketsTags);
-        stall.market = stall.marketTag.market;
-        stall.market.stalls.push(stall);
-        stall.name = stall.market.stalls.length;
-        return stall;
-      })
-      .makeMany(40);
-    const cells = await factory(Cell)()
-      .map(async (cell) => {
-        cell.storageTag = faker.helpers.arrayElement(storagesTags);
-        cell.storage = cell.storageTag.storage;
-        cell.storage.cells.push(cell);
-        cell.name = cell.storage.cells.length;
-        return cell;
-      })
-      .makeMany(40);
-    id = 1;
-    const rents = await factory(Rent)()
-      .map(async (rent) => {
-        rent.stall = faker.helpers.arrayElement(
-          stalls.filter((stall) => !stall.reservedUntil),
-        );
-        rent.stall.reservedUntil = getDateWeekAfter();
-        rent.card = faker.helpers.arrayElement(
-          cards.filter(
-            (card) => card.account.balance >= rent.stall.marketTag.price,
-          ),
-        );
-        rent.sum = rent.stall.marketTag.price;
-        const payment = await factory(Payment)().make({
-          senderCard: rent.card,
-          receiverCard: rent.stall.market.card,
-          sum: rent.stall.marketTag.price,
-          description: `оренда палатки ${id++}`,
-        });
-        payments.push(payment);
-        rent.card.account.balance -= rent.stall.marketTag.price;
-        rent.stall.market.card.account.balance += rent.stall.marketTag.price;
-        return rent;
-      })
-      .makeMany(10);
-    id = 1;
-    const leases = await factory(Lease)()
-      .map(async (lease) => {
-        lease.cell = faker.helpers.arrayElement(
-          cells.filter((cell) => !cell.reservedUntil),
-        );
-        lease.cell.reservedUntil = getDateWeekAfter();
-        lease.card = faker.helpers.arrayElement(
-          cards.filter(
-            (card) => card.account.balance >= lease.cell.storageTag.price,
-          ),
-        );
-        lease.sum = lease.cell.storageTag.price;
-        const payment = await factory(Payment)().make({
-          senderCard: lease.card,
-          receiverCard: lease.cell.storage.card,
-          sum: lease.cell.storageTag.price,
-          description: `оренда комірки ${id++}`,
-        });
-        payments.push(payment);
-        lease.card.account.balance -= lease.cell.storageTag.price;
-        lease.cell.storage.card.account.balance += lease.cell.storageTag.price;
-        return lease;
-      })
-      .makeMany(10);
     const goods = await factory(Good)()
       .map(async (good) => {
-        switch (Math.floor(Math.random() * 3)) {
-          case 0:
-            good.shop = faker.helpers.arrayElement(shops);
-            good.card = good.shop.card;
-            break;
-          case 1:
-            good.rent = faker.helpers.arrayElement(rents);
-            good.card = good.rent.card;
-            break;
-          case 2:
-            good.lease = faker.helpers.arrayElement(leases);
-            good.card = good.lease.card;
-            break;
-        }
+        good.shop = faker.helpers.arrayElement(shops);
+        good.card = good.shop.card;
         return good;
       })
       .makeMany(20);
@@ -421,49 +289,9 @@ export default class AppSeed implements Seeder {
       .map(async () => shops[id++])
       .createMany(shops.length);
     id = 0;
-    await factory(Market)()
-      .map(async () => markets[id++])
-      .createMany(markets.length);
-    id = 0;
-    await factory(Storage)()
-      .map(async () => storages[id++])
-      .createMany(storages.length);
-    id = 0;
     await factory(Station)()
       .map(async () => stations[id++])
       .createMany(stations.length);
-    id = 0;
-    await factory(MarketTag)()
-      .map(async () => marketsTags[id++])
-      .createMany(marketsTags.length);
-    id = 0;
-    await factory(StorageTag)()
-      .map(async () => storagesTags[id++])
-      .createMany(storagesTags.length);
-    id = 0;
-    await factory(MarketTagState)()
-      .map(async () => marketsTagsStates[id++])
-      .createMany(marketsTagsStates.length);
-    id = 0;
-    await factory(StorageTagState)()
-      .map(async () => storagesTagsStates[id++])
-      .createMany(storagesTagsStates.length);
-    id = 0;
-    await factory(Stall)()
-      .map(async () => stalls[id++])
-      .createMany(stalls.length);
-    id = 0;
-    await factory(Cell)()
-      .map(async () => cells[id++])
-      .createMany(cells.length);
-    id = 0;
-    await factory(Rent)()
-      .map(async () => rents[id++])
-      .createMany(rents.length);
-    id = 0;
-    await factory(Lease)()
-      .map(async () => leases[id++])
-      .createMany(leases.length);
     id = 0;
     await factory(Good)()
       .map(async () => goods[id++])

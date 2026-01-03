@@ -9,8 +9,6 @@ import {
 import { Thing } from '../things/thing.entity';
 import { Card } from '../cards/card.entity';
 import { Shop } from '../shops/shop.entity';
-import { Rent } from '../rents/rent.entity';
-import { Lease } from '../leases/lease.entity';
 import { GoodState } from './good-state.entity';
 import { Purchase } from '../purchases/purchase.entity';
 
@@ -23,26 +21,12 @@ export class Good extends Thing {
   @JoinColumn({ name: 'card_id' })
   card: Card;
 
-  @Column({ name: 'shop_id', nullable: true })
-  shopId?: number;
+  @Column({ name: 'shop_id' })
+  shopId: number;
 
-  @ManyToOne(() => Shop, { nullable: true })
+  @ManyToOne(() => Shop, { nullable: false })
   @JoinColumn({ name: 'shop_id' })
-  shop?: Shop;
-
-  @Column({ name: 'rent_id', nullable: true })
-  rentId?: number;
-
-  @ManyToOne(() => Rent, { nullable: true })
-  @JoinColumn({ name: 'rent_id' })
-  rent?: Rent;
-
-  @Column({ name: 'lease_id', nullable: true })
-  leaseId?: number;
-
-  @ManyToOne(() => Lease, { nullable: true })
-  @JoinColumn({ name: 'lease_id' })
-  lease?: Lease;
+  shop: Shop;
 
   @OneToMany(() => GoodState, (goodState) => goodState.good)
   states: GoodState[];

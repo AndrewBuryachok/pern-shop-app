@@ -31,24 +31,10 @@ describe('With Auth', () => {
   let invoicesId: number;
   let townId: number;
   let shopId: number;
-  let marketId: number;
-  let storageId: number;
   let stationId: number;
-  let marketTagId: number;
-  let storageTagId: number;
-  let stallId: number;
-  let cellId: number;
-  let rentId: number;
-  let leaseId: number;
-  let shopGoodsId: number[];
-  let marketGoodsId: number[];
-  let storageGoodsId: number[];
-  let shopsPurchasesId: number[];
-  let marketsPurchasesId: number[];
-  let storagesPurchasesId: number[];
-  let shopsDeliveriesId: number[];
-  let marketsDeliveriesId: number[];
-  let storagesDeliveriesId: number[];
+  let goodsId: number[];
+  let purchasesId: number[];
+  let deliveriesId: number[];
   let ordersId: number[];
 
   beforeAll(async () => {
@@ -949,146 +935,6 @@ describe('With Auth', () => {
     });
   });
 
-  describe('Markets', () => {
-    it('POST /markets', async () => {
-      return request(app.getHttpServer())
-        .post('/markets')
-        .set('Authorization', `Bearer ${user.access}`)
-        .send({
-          cardId,
-          name: 'My Market',
-          description: '',
-          x: -500,
-          y: 500,
-        })
-        .expect('');
-    });
-
-    it('GET /markets', async () => {
-      return request(app.getHttpServer())
-        .get('/markets')
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
-    });
-
-    it('GET /markets/my', async () => {
-      return request(app.getHttpServer())
-        .get('/markets/my')
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0))
-        .then((res) => (marketId = res.body.result[0].id));
-    });
-
-    it('GET /markets/all', async () => {
-      return request(app.getHttpServer())
-        .get('/markets/all')
-        .set('Authorization', `Bearer ${moder.access}`)
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
-    });
-
-    it('GET /markets/main/select', async () => {
-      return request(app.getHttpServer())
-        .get('/markets/main/select')
-        .expect((res) => expect(res.body.length).toBeGreaterThan(0));
-    });
-
-    it('GET /markets/my/select', async () => {
-      return request(app.getHttpServer())
-        .get('/markets/my/select')
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect((res) => expect(res.body.length).toBeGreaterThan(0));
-    });
-
-    it('GET /markets/all/select', async () => {
-      return request(app.getHttpServer())
-        .get('/markets/all/select')
-        .set('Authorization', `Bearer ${moder.access}`)
-        .expect((res) => expect(res.body.length).toBeGreaterThan(0));
-    });
-
-    it('PATCH /markets/:marketId', async () => {
-      return request(app.getHttpServer())
-        .patch(`/markets/${marketId}`)
-        .set('Authorization', `Bearer ${user.access}`)
-        .send({
-          name: 'My Market',
-          description: '',
-          x: -500,
-          y: 500,
-        })
-        .expect('');
-    });
-  });
-
-  describe('Storages', () => {
-    it('POST /storages', async () => {
-      return request(app.getHttpServer())
-        .post('/storages')
-        .set('Authorization', `Bearer ${user.access}`)
-        .send({
-          cardId,
-          name: 'My Storage',
-          description: '',
-          x: -500,
-          y: -500,
-        })
-        .expect('');
-    });
-
-    it('GET /storages', async () => {
-      return request(app.getHttpServer())
-        .get('/storages')
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
-    });
-
-    it('GET /storages/my', async () => {
-      return request(app.getHttpServer())
-        .get('/storages/my')
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0))
-        .then((res) => (storageId = res.body.result[0].id));
-    });
-
-    it('GET /storages/all', async () => {
-      return request(app.getHttpServer())
-        .get('/storages/all')
-        .set('Authorization', `Bearer ${moder.access}`)
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
-    });
-
-    it('GET /storages/main/select', async () => {
-      return request(app.getHttpServer())
-        .get('/storages/main/select')
-        .expect((res) => expect(res.body.length).toBeGreaterThan(0));
-    });
-
-    it('GET /storages/my/select', async () => {
-      return request(app.getHttpServer())
-        .get('/storages/my/select')
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect((res) => expect(res.body.length).toBeGreaterThan(0));
-    });
-
-    it('GET /storages/all/select', async () => {
-      return request(app.getHttpServer())
-        .get('/storages/all/select')
-        .set('Authorization', `Bearer ${moder.access}`)
-        .expect((res) => expect(res.body.length).toBeGreaterThan(0));
-    });
-
-    it('PATCH /storages/:storageId', async () => {
-      return request(app.getHttpServer())
-        .patch(`/storages/${storageId}`)
-        .set('Authorization', `Bearer ${user.access}`)
-        .send({
-          name: 'My Storage',
-          description: '',
-          x: -500,
-          y: -500,
-        })
-        .expect('');
-    });
-  });
-
   describe('Stations', () => {
     it('POST /stations', async () => {
       return request(app.getHttpServer())
@@ -1144,404 +990,10 @@ describe('With Auth', () => {
     });
   });
 
-  describe('Markets Tags', () => {
-    it('POST /markets-tags', async () => {
+  describe('Goods', () => {
+    it('POST /goods', async () => {
       return request(app.getHttpServer())
-        .post('/markets-tags')
-        .set('Authorization', `Bearer ${user.access}`)
-        .send({
-          marketId,
-          name: 'My Tag',
-          price: 5,
-        })
-        .expect('');
-    });
-
-    it('GET /markets-tags', async () => {
-      return request(app.getHttpServer())
-        .get('/markets-tags')
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
-    });
-
-    it('GET /markets-tags/my', async () => {
-      return request(app.getHttpServer())
-        .get('/markets-tags/my')
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0))
-        .then((res) => (marketTagId = res.body.result[0].id));
-    });
-
-    it('GET /markets-tags/all', async () => {
-      return request(app.getHttpServer())
-        .get('/markets-tags/all')
-        .set('Authorization', `Bearer ${moder.access}`)
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
-    });
-
-    it('GET /markets-tags/:marketId/select', async () => {
-      return request(app.getHttpServer())
-        .get(`/markets-tags/${marketId}/select`)
-        .expect((res) => expect(res.body.length).toBeGreaterThan(0));
-    });
-
-    it('PATCH /markets-tags/:marketTagId', async () => {
-      return request(app.getHttpServer())
-        .patch(`/markets-tags/${marketTagId}`)
-        .set('Authorization', `Bearer ${user.access}`)
-        .send({
-          name: 'My Tag',
-          price: 10,
-        })
-        .expect('');
-    });
-
-    it('GET /markets-tags/:marketTagId/states', async () => {
-      return request(app.getHttpServer())
-        .get(`/markets-tags/${marketTagId}/states`)
-        .expect((res) => expect(res.body.length).toBeGreaterThan(0));
-    });
-  });
-
-  describe('Storages Tags', () => {
-    it('POST /storages-tags', async () => {
-      return request(app.getHttpServer())
-        .post('/storages-tags')
-        .set('Authorization', `Bearer ${user.access}`)
-        .send({
-          storageId,
-          name: 'My Tag',
-          price: 5,
-        })
-        .expect('');
-    });
-
-    it('GET /storages-tags', async () => {
-      return request(app.getHttpServer())
-        .get('/storages-tags')
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
-    });
-
-    it('GET /storages-tags/my', async () => {
-      return request(app.getHttpServer())
-        .get('/storages-tags/my')
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0))
-        .then((res) => (storageTagId = res.body.result[0].id));
-    });
-
-    it('GET /storages-tags/all', async () => {
-      return request(app.getHttpServer())
-        .get('/storages-tags/all')
-        .set('Authorization', `Bearer ${moder.access}`)
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
-    });
-
-    it('GET /storages-tags/:storageId/select', async () => {
-      return request(app.getHttpServer())
-        .get(`/storages-tags/${storageId}/select`)
-        .expect((res) => expect(res.body.length).toBeGreaterThan(0));
-    });
-
-    it('PATCH /storages-tags/:storageTagId', async () => {
-      return request(app.getHttpServer())
-        .patch(`/storages-tags/${storageTagId}`)
-        .set('Authorization', `Bearer ${user.access}`)
-        .send({
-          name: 'My Tag',
-          price: 10,
-        })
-        .expect('');
-    });
-
-    it('GET /storages-tags/:storageTagId/states', async () => {
-      return request(app.getHttpServer())
-        .get(`/storages-tags/${storageTagId}/states`)
-        .expect((res) => expect(res.body.length).toBeGreaterThan(0));
-    });
-  });
-
-  describe('Stalls', () => {
-    it('POST /stalls', async () => {
-      return request(app.getHttpServer())
-        .post('/stalls')
-        .set('Authorization', `Bearer ${user.access}`)
-        .send({ marketTagId })
-        .expect('');
-    });
-
-    it('GET /stalls', async () => {
-      return request(app.getHttpServer())
-        .get('/stalls')
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
-    });
-
-    it('GET /stalls/my', async () => {
-      return request(app.getHttpServer())
-        .get('/stalls/my')
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0))
-        .then((res) => (stallId = res.body.result[0].id));
-    });
-
-    it('GET /stalls/all', async () => {
-      return request(app.getHttpServer())
-        .get('/stalls/all')
-        .set('Authorization', `Bearer ${moder.access}`)
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
-    });
-
-    it('GET /stalls/:marketId/markets', async () => {
-      return request(app.getHttpServer())
-        .get(`/stalls/${marketId}/markets`)
-        .expect((res) => expect(res.body.length).toBeGreaterThan(0));
-    });
-
-    it('GET /stalls/:marketTagId/tags', async () => {
-      return request(app.getHttpServer())
-        .get(`/stalls/${marketTagId}/tags`)
-        .expect((res) => expect(res.body.length).toBeGreaterThan(0));
-    });
-
-    it('GET /stalls/:stallId/tag', async () => {
-      return request(app.getHttpServer())
-        .get(`/stalls/${stallId}/tag`)
-        .expect((res) => expect(res.body.id).toBeGreaterThan(0));
-    });
-  });
-
-  describe('Cells', () => {
-    it('POST /cells', async () => {
-      return request(app.getHttpServer())
-        .post('/cells')
-        .set('Authorization', `Bearer ${user.access}`)
-        .send({ storageTagId })
-        .expect('');
-    });
-
-    it('GET /cells', async () => {
-      return request(app.getHttpServer())
-        .get('/cells')
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
-    });
-
-    it('GET /cells/my', async () => {
-      return request(app.getHttpServer())
-        .get('/cells/my')
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0))
-        .then((res) => (cellId = res.body.result[0].id));
-    });
-
-    it('GET /cells/all', async () => {
-      return request(app.getHttpServer())
-        .get('/cells/all')
-        .set('Authorization', `Bearer ${moder.access}`)
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
-    });
-
-    it('GET /cells/:storageId/storages', async () => {
-      return request(app.getHttpServer())
-        .get(`/cells/${storageId}/storages`)
-        .expect((res) => expect(res.body.length).toBeGreaterThan(0));
-    });
-
-    it('GET /cells/:storageTagId/tags', async () => {
-      return request(app.getHttpServer())
-        .get(`/cells/${storageTagId}/tags`)
-        .expect((res) => expect(res.body.length).toBeGreaterThan(0));
-    });
-
-    it('GET /cells/:cellId/tag', async () => {
-      return request(app.getHttpServer())
-        .get(`/cells/${cellId}/tag`)
-        .expect((res) => expect(res.body.id).toBeGreaterThan(0));
-    });
-  });
-
-  describe('Rents', () => {
-    it('POST /rents', async () => {
-      return request(app.getHttpServer())
-        .post('/rents')
-        .set('Authorization', `Bearer ${user.access}`)
-        .send({ stallId, cardId })
-        .expect('');
-    });
-
-    it('GET /rents', async () => {
-      return request(app.getHttpServer())
-        .get('/rents')
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
-    });
-
-    it('GET /rents/my', async () => {
-      return request(app.getHttpServer())
-        .get('/rents/my')
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0))
-        .then((res) => (rentId = res.body.result[0].id));
-    });
-
-    it('GET /rents/received', async () => {
-      return request(app.getHttpServer())
-        .get('/rents/received')
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
-    });
-
-    it('GET /rents/all', async () => {
-      return request(app.getHttpServer())
-        .get('/rents/all')
-        .set('Authorization', `Bearer ${moder.access}`)
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
-    });
-
-    it('GET /rents/my/select', async () => {
-      return request(app.getHttpServer())
-        .get('/rents/my/select')
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect((res) => expect(res.body.length).toBeGreaterThan(0));
-    });
-
-    it('GET /rents/all/select', async () => {
-      return request(app.getHttpServer())
-        .get('/rents/all/select')
-        .set('Authorization', `Bearer ${moder.access}`)
-        .expect((res) => expect(res.body.length).toBeGreaterThan(0));
-    });
-
-    it('POST /goods/markets', async () => {
-      return request(app.getHttpServer())
-        .post('/goods/markets')
-        .set('Authorization', `Bearer ${user.access}`)
-        .send({
-          rentId,
-          item: Item.STONE,
-          description: '',
-          amount: 2,
-          intake: 1,
-          kit: 1,
-          price: 5,
-        })
-        .expect('');
-    });
-
-    it('POST /goods/markets', async () => {
-      return request(app.getHttpServer())
-        .post('/goods/markets')
-        .set('Authorization', `Bearer ${user.access}`)
-        .send({
-          rentId,
-          item: Item.STONE,
-          description: '',
-          amount: 2,
-          intake: 1,
-          kit: 1,
-          price: 5,
-        })
-        .expect('');
-    });
-
-    it('GET /rents/:rentId/things', async () => {
-      return request(app.getHttpServer())
-        .get(`/rents/${rentId}/things`)
-        .expect((res) => expect(res.body.length).toBeGreaterThan(0));
-    });
-  });
-
-  describe('Leases', () => {
-    it('POST /leases', async () => {
-      return request(app.getHttpServer())
-        .post('/leases')
-        .set('Authorization', `Bearer ${user.access}`)
-        .send({ cellId, cardId })
-        .expect('');
-    });
-
-    it('GET /leases', async () => {
-      return request(app.getHttpServer())
-        .get('/leases')
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
-    });
-
-    it('GET /leases/my', async () => {
-      return request(app.getHttpServer())
-        .get('/leases/my')
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0))
-        .then((res) => (leaseId = res.body.result[0].id));
-    });
-
-    it('GET /leases/received', async () => {
-      return request(app.getHttpServer())
-        .get('/leases/received')
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
-    });
-
-    it('GET /leases/all', async () => {
-      return request(app.getHttpServer())
-        .get('/leases/all')
-        .set('Authorization', `Bearer ${moder.access}`)
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
-    });
-
-    it('GET /leases/my/select', async () => {
-      return request(app.getHttpServer())
-        .get('/leases/my/select')
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect((res) => expect(res.body.length).toBeGreaterThan(0));
-    });
-
-    it('GET /leases/all/select', async () => {
-      return request(app.getHttpServer())
-        .get('/leases/all/select')
-        .set('Authorization', `Bearer ${moder.access}`)
-        .expect((res) => expect(res.body.length).toBeGreaterThan(0));
-    });
-
-    it('POST /goods/storages', async () => {
-      return request(app.getHttpServer())
-        .post('/goods/storages')
-        .set('Authorization', `Bearer ${user.access}`)
-        .send({
-          leaseId,
-          item: Item.STONE,
-          description: '',
-          amount: 2,
-          intake: 1,
-          kit: 1,
-          price: 5,
-        })
-        .expect('');
-    });
-
-    it('POST /goods/storages', async () => {
-      return request(app.getHttpServer())
-        .post('/goods/storages')
-        .set('Authorization', `Bearer ${user.access}`)
-        .send({
-          leaseId,
-          item: Item.STONE,
-          description: '',
-          amount: 2,
-          intake: 1,
-          kit: 1,
-          price: 5,
-        })
-        .expect('');
-    });
-
-    it('GET /leases/:leaseId/things', async () => {
-      return request(app.getHttpServer())
-        .get(`/leases/${leaseId}/things`)
-        .expect((res) => expect(res.body.length).toBeGreaterThan(0));
-    });
-  });
-
-  describe('Shops Goods', () => {
-    it('POST /goods/shops', async () => {
-      return request(app.getHttpServer())
-        .post('/goods/shops')
+        .post('/goods')
         .set('Authorization', `Bearer ${user.access}`)
         .send({
           shopId,
@@ -1555,9 +1007,9 @@ describe('With Auth', () => {
         .expect('');
     });
 
-    it('POST /goods/shops', async () => {
+    it('POST /goods', async () => {
       return request(app.getHttpServer())
-        .post('/goods/shops')
+        .post('/goods')
         .set('Authorization', `Bearer ${user.access}`)
         .send({
           shopId,
@@ -1582,7 +1034,7 @@ describe('With Auth', () => {
         .get(`/goods/my?shop=${shopId}`)
         .set('Authorization', `Bearer ${user.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0))
-        .then((res) => (shopGoodsId = res.body.result.map((g) => g.id)));
+        .then((res) => (goodsId = res.body.result.map((g) => g.id)));
     });
 
     it('GET /goods/all', async () => {
@@ -1603,7 +1055,7 @@ describe('With Auth', () => {
         .post('/purchases')
         .set('Authorization', `Bearer ${user.access}`)
         .send({
-          goodId: shopGoodsId[0],
+          goodId: goodsId[0],
           cardId,
           amount: 1,
           rate: 5,
@@ -1618,7 +1070,7 @@ describe('With Auth', () => {
         .post('/purchases')
         .set('Authorization', `Bearer ${user.access}`)
         .send({
-          goodId: shopGoodsId[0],
+          goodId: goodsId[0],
           cardId,
           amount: 1,
           rate: 5,
@@ -1630,7 +1082,7 @@ describe('With Auth', () => {
 
     it('PATCH /goods/:goodId', async () => {
       return request(app.getHttpServer())
-        .patch(`/goods/${shopGoodsId[1]}`)
+        .patch(`/goods/${goodsId[1]}`)
         .set('Authorization', `Bearer ${user.access}`)
         .send({
           item: Item.STONE,
@@ -1645,7 +1097,7 @@ describe('With Auth', () => {
 
     it('PATCH /goods/:goodId/states', async () => {
       return request(app.getHttpServer())
-        .patch(`/goods/${shopGoodsId[0]}/states`)
+        .patch(`/goods/${goodsId[0]}/states`)
         .set('Authorization', `Bearer ${user.access}`)
         .send({ amount: 1, price: 10 })
         .expect('');
@@ -1653,252 +1105,32 @@ describe('With Auth', () => {
 
     it('DELETE /goods/:goodId', async () => {
       return request(app.getHttpServer())
-        .delete(`/goods/${shopGoodsId[1]}`)
+        .delete(`/goods/${goodsId[1]}`)
         .set('Authorization', `Bearer ${user.access}`)
         .expect('');
     });
 
     it('POST /goods/:goodId', async () => {
       return request(app.getHttpServer())
-        .post(`/goods/${shopGoodsId[0]}`)
+        .post(`/goods/${goodsId[0]}`)
         .set('Authorization', `Bearer ${user.access}`)
         .expect('');
     });
 
     it('GET /goods/:goodId/states', async () => {
       return request(app.getHttpServer())
-        .get(`/goods/${shopGoodsId[0]}/states`)
+        .get(`/goods/${goodsId[0]}/states`)
         .expect((res) => expect(res.body.length).toBeGreaterThan(0));
     });
   });
 
-  describe('Markets Goods', () => {
-    it('GET /goods', async () => {
-      return request(app.getHttpServer())
-        .get('/goods')
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
-    });
-
-    it('GET /goods/my', async () => {
-      return request(app.getHttpServer())
-        .get(`/goods/my?market=${marketId}`)
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0))
-        .then((res) => (marketGoodsId = res.body.result.map((g) => g.id)));
-    });
-
-    it('GET /goods/all', async () => {
-      return request(app.getHttpServer())
-        .get('/goods/all')
-        .set('Authorization', `Bearer ${moder.access}`)
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
-    });
-
-    it('POST /purchases', async () => {
-      return request(app.getHttpServer())
-        .post('/purchases')
-        .set('Authorization', `Bearer ${user.access}`)
-        .send({
-          goodId: marketGoodsId[0],
-          cardId,
-          amount: 1,
-          rate: 5,
-          stationId,
-          price: 10,
-        })
-        .expect('');
-    });
-
-    it('POST /purchases', async () => {
-      return request(app.getHttpServer())
-        .post('/purchases')
-        .set('Authorization', `Bearer ${user.access}`)
-        .send({
-          goodId: marketGoodsId[0],
-          cardId,
-          amount: 1,
-          rate: 5,
-          stationId: 0,
-          price: 0,
-        })
-        .expect('');
-    });
-
-    it('PATCH /goods/:goodId', async () => {
-      return request(app.getHttpServer())
-        .patch(`/goods/${marketGoodsId[1]}`)
-        .set('Authorization', `Bearer ${user.access}`)
-        .send({
-          item: Item.STONE,
-          description: '',
-          amount: 2,
-          intake: 1,
-          kit: 1,
-          price: 10,
-        })
-        .expect('');
-    });
-
-    it('PATCH /goods/:goodId/states', async () => {
-      return request(app.getHttpServer())
-        .patch(`/goods/${marketGoodsId[0]}/states`)
-        .set('Authorization', `Bearer ${user.access}`)
-        .send({ amount: 1, price: 10 })
-        .expect('');
-    });
-
-    it('DELETE /goods/:goodId', async () => {
-      return request(app.getHttpServer())
-        .delete(`/goods/${marketGoodsId[1]}`)
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect('');
-    });
-
-    it('POST /goods/:goodId', async () => {
-      return request(app.getHttpServer())
-        .post(`/goods/${marketGoodsId[0]}`)
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect('');
-    });
-
-    it('GET /goods/:goodId/states', async () => {
-      return request(app.getHttpServer())
-        .get(`/goods/${marketGoodsId[0]}/states`)
-        .expect((res) => expect(res.body.length).toBeGreaterThan(0));
-    });
-
-    it('POST /rents/:rentId/continue', async () => {
-      return request(app.getHttpServer())
-        .post(`/rents/${rentId}/continue`)
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect('');
-    });
-
-    it('POST /rents/:rentId', async () => {
-      return request(app.getHttpServer())
-        .post(`/rents/${rentId}`)
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect('');
-    });
-  });
-
-  describe('Storages Goods', () => {
-    it('GET /goods', async () => {
-      return request(app.getHttpServer())
-        .get('/goods')
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
-    });
-
-    it('GET /goods/my', async () => {
-      return request(app.getHttpServer())
-        .get(`/goods/my?storage=${storageId}`)
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0))
-        .then((res) => (storageGoodsId = res.body.result.map((g) => g.id)));
-    });
-
-    it('GET /goods/all', async () => {
-      return request(app.getHttpServer())
-        .get('/goods/all')
-        .set('Authorization', `Bearer ${moder.access}`)
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
-    });
-
-    it('POST /purchases', async () => {
-      return request(app.getHttpServer())
-        .post('/purchases')
-        .set('Authorization', `Bearer ${user.access}`)
-        .send({
-          goodId: storageGoodsId[0],
-          cardId,
-          amount: 1,
-          rate: 5,
-          stationId,
-          price: 10,
-        })
-        .expect('');
-    });
-
-    it('POST /purchases', async () => {
-      return request(app.getHttpServer())
-        .post('/purchases')
-        .set('Authorization', `Bearer ${user.access}`)
-        .send({
-          goodId: storageGoodsId[0],
-          cardId,
-          amount: 1,
-          rate: 5,
-          stationId: 0,
-          price: 0,
-        })
-        .expect('');
-    });
-
-    it('PATCH /goods/:goodId', async () => {
-      return request(app.getHttpServer())
-        .patch(`/goods/${storageGoodsId[1]}`)
-        .set('Authorization', `Bearer ${user.access}`)
-        .send({
-          item: Item.STONE,
-          description: '',
-          amount: 2,
-          intake: 1,
-          kit: 1,
-          price: 10,
-        })
-        .expect('');
-    });
-
-    it('PATCH /goods/:goodId/states', async () => {
-      return request(app.getHttpServer())
-        .patch(`/goods/${storageGoodsId[0]}/states`)
-        .set('Authorization', `Bearer ${user.access}`)
-        .send({ amount: 1, price: 10 })
-        .expect('');
-    });
-
-    it('DELETE /goods/:goodId', async () => {
-      return request(app.getHttpServer())
-        .delete(`/goods/${storageGoodsId[1]}`)
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect('');
-    });
-
-    it('POST /goods/:goodId', async () => {
-      return request(app.getHttpServer())
-        .post(`/goods/${storageGoodsId[0]}`)
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect('');
-    });
-
-    it('GET /goods/:goodId/states', async () => {
-      return request(app.getHttpServer())
-        .get(`/goods/${storageGoodsId[0]}/states`)
-        .expect((res) => expect(res.body.length).toBeGreaterThan(0));
-    });
-
-    it('POST /leases/:leaseId/continue', async () => {
-      return request(app.getHttpServer())
-        .post(`/leases/${leaseId}/continue`)
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect('');
-    });
-
-    it('POST /leases/:leaseId', async () => {
-      return request(app.getHttpServer())
-        .post(`/leases/${leaseId}`)
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect('');
-    });
-  });
-
-  describe('Shops Purchases', () => {
+  describe('Purchases', () => {
     it('GET /purchases/my', async () => {
       return request(app.getHttpServer())
         .get(`/purchases/my?shop=${shopId}`)
         .set('Authorization', `Bearer ${user.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0))
-        .then((res) => (shopsPurchasesId = res.body.result.map((b) => b.id)));
+        .then((res) => (purchasesId = res.body.result.map((b) => b.id)));
     });
 
     it('GET /purchases/all', async () => {
@@ -1924,93 +1156,17 @@ describe('With Auth', () => {
 
     it('GET /goods/:goodId/purchases', async () => {
       return request(app.getHttpServer())
-        .get(`/goods/${shopGoodsId[0]}/purchases`)
+        .get(`/goods/${goodsId[0]}/purchases`)
         .expect((res) => expect(res.body.length).toBeGreaterThan(0));
     });
   });
 
-  describe('Markets Purchases', () => {
-    it('GET /purchases/my', async () => {
-      return request(app.getHttpServer())
-        .get(`/purchases/my?market=${marketId}`)
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0))
-        .then((res) => (marketsPurchasesId = res.body.result.map((t) => t.id)));
-    });
-
-    it('GET /purchases/all', async () => {
-      return request(app.getHttpServer())
-        .get('/purchases/all')
-        .set('Authorization', `Bearer ${moder.access}`)
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
-    });
-
-    it('GET /purchases/my/select', async () => {
-      return request(app.getHttpServer())
-        .get('/purchases/my/select')
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect((res) => expect(res.body.length).toBeGreaterThan(0));
-    });
-
-    it('GET /purchases/:userId/select', async () => {
-      return request(app.getHttpServer())
-        .get(`/purchases/${user.id}/select`)
-        .set('Authorization', `Bearer ${moder.access}`)
-        .expect((res) => expect(res.body.length).toBeGreaterThan(0));
-    });
-
-    it('GET /goods/:goodId/purchases', async () => {
-      return request(app.getHttpServer())
-        .get(`/goods/${marketGoodsId[0]}/purchases`)
-        .expect((res) => expect(res.body.length).toBeGreaterThan(0));
-    });
-  });
-
-  describe('Storages Purchases', () => {
-    it('GET /purchases/my', async () => {
-      return request(app.getHttpServer())
-        .get(`/purchases/my?storage=${storageId}`)
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0))
-        .then(
-          (res) => (storagesPurchasesId = res.body.result.map((s) => s.id)),
-        );
-    });
-
-    it('GET /purchases/all', async () => {
-      return request(app.getHttpServer())
-        .get('/purchases/all')
-        .set('Authorization', `Bearer ${moder.access}`)
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
-    });
-
-    it('GET /purchases/my/select', async () => {
-      return request(app.getHttpServer())
-        .get('/purchases/my/select')
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect((res) => expect(res.body.length).toBeGreaterThan(0));
-    });
-
-    it('GET /purchases/:userId/select', async () => {
-      return request(app.getHttpServer())
-        .get(`/purchases/${user.id}/select`)
-        .set('Authorization', `Bearer ${moder.access}`)
-        .expect((res) => expect(res.body.length).toBeGreaterThan(0));
-    });
-
-    it('GET /goods/:goodId/purchases', async () => {
-      return request(app.getHttpServer())
-        .get(`/goods/${storageGoodsId[0]}/purchases`)
-        .expect((res) => expect(res.body.length).toBeGreaterThan(0));
-    });
-  });
-
-  describe('Shops Deliveries', () => {
+  describe('Deliveries', () => {
     it('POST /deliveries', async () => {
       return request(app.getHttpServer())
         .post('/deliveries')
         .set('Authorization', `Bearer ${user.access}`)
-        .send({ purchaseId: shopsPurchasesId[0], stationId, cardId, price: 10 })
+        .send({ purchaseId: purchasesId[0], stationId, cardId, price: 10 })
         .expect('');
     });
 
@@ -2025,12 +1181,12 @@ describe('With Auth', () => {
         .get(`/deliveries/my?shop=${shopId}`)
         .set('Authorization', `Bearer ${user.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0))
-        .then((res) => (shopsDeliveriesId = res.body.result.map((d) => d.id)));
+        .then((res) => (deliveriesId = res.body.result.map((d) => d.id)));
     });
 
     it('PATCH /deliveries/:deliveryId', async () => {
       return request(app.getHttpServer())
-        .patch(`/deliveries/${shopsDeliveriesId[0]}`)
+        .patch(`/deliveries/${deliveriesId[0]}`)
         .set('Authorization', `Bearer ${user.access}`)
         .send({ price: 10 })
         .expect('');
@@ -2038,7 +1194,7 @@ describe('With Auth', () => {
 
     it('POST /deliveries/:deliveryId/take', async () => {
       return request(app.getHttpServer())
-        .post(`/deliveries/${shopsDeliveriesId[0]}/take`)
+        .post(`/deliveries/${deliveriesId[0]}/take`)
         .set('Authorization', `Bearer ${user.access}`)
         .send({ cardId })
         .expect('');
@@ -2060,14 +1216,14 @@ describe('With Auth', () => {
 
     it('POST /deliveries/:deliveryId/execute', async () => {
       return request(app.getHttpServer())
-        .post(`/deliveries/${shopsDeliveriesId[0]}/execute`)
+        .post(`/deliveries/${deliveriesId[0]}/execute`)
         .set('Authorization', `Bearer ${user.access}`)
         .expect('');
     });
 
     it('POST /deliveries/:deliveryId', async () => {
       return request(app.getHttpServer())
-        .post(`/deliveries/${shopsDeliveriesId[0]}`)
+        .post(`/deliveries/${deliveriesId[0]}`)
         .set('Authorization', `Bearer ${user.access}`)
         .send({ rate: 5 })
         .expect('');
@@ -2075,7 +1231,7 @@ describe('With Auth', () => {
 
     it('POST /deliveries/:deliveryId/take', async () => {
       return request(app.getHttpServer())
-        .post(`/deliveries/${shopsDeliveriesId[1]}/take`)
+        .post(`/deliveries/${deliveriesId[1]}/take`)
         .set('Authorization', `Bearer ${user.access}`)
         .send({ cardId })
         .expect('');
@@ -2083,231 +1239,21 @@ describe('With Auth', () => {
 
     it('DELETE /deliveries/:shopDeliveryId/take', async () => {
       return request(app.getHttpServer())
-        .delete(`/deliveries/${shopsDeliveriesId[1]}/take`)
+        .delete(`/deliveries/${deliveriesId[1]}/take`)
         .set('Authorization', `Bearer ${user.access}`)
         .expect('');
     });
 
     it('DELETE /deliveries/:deliveryId', async () => {
       return request(app.getHttpServer())
-        .delete(`/deliveries/${shopsDeliveriesId[1]}`)
+        .delete(`/deliveries/${deliveriesId[1]}`)
         .set('Authorization', `Bearer ${user.access}`)
         .expect('');
     });
 
     it('DELETE /purchases/:purchaseId', async () => {
       return request(app.getHttpServer())
-        .delete(`/purchases/${shopsPurchasesId[1]}`)
-        .set('Authorization', `Bearer ${moder.access}`)
-        .expect('');
-    });
-  });
-
-  describe('Markets Deliveries', () => {
-    it('POST /deliveries', async () => {
-      return request(app.getHttpServer())
-        .post('/deliveries')
-        .set('Authorization', `Bearer ${user.access}`)
-        .send({
-          purchaseId: marketsPurchasesId[0],
-          stationId,
-          cardId,
-          price: 10,
-        })
-        .expect('');
-    });
-
-    it('GET /deliveries', async () => {
-      return request(app.getHttpServer())
-        .get('/deliveries')
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
-    });
-
-    it('GET /deliveries/my', async () => {
-      return request(app.getHttpServer())
-        .get(`/deliveries/my?market=${marketId}`)
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0))
-        .then(
-          (res) => (marketsDeliveriesId = res.body.result.map((d) => d.id)),
-        );
-    });
-
-    it('PATCH /deliveries/:deliveryId', async () => {
-      return request(app.getHttpServer())
-        .patch(`/deliveries/${marketsDeliveriesId[0]}`)
-        .set('Authorization', `Bearer ${user.access}`)
-        .send({ price: 10 })
-        .expect('');
-    });
-
-    it('POST /deliveries/:deliveryId/take', async () => {
-      return request(app.getHttpServer())
-        .post(`/deliveries/${marketsDeliveriesId[0]}/take`)
-        .set('Authorization', `Bearer ${user.access}`)
-        .send({ cardId })
-        .expect('');
-    });
-
-    it('GET /deliveries/taken', async () => {
-      return request(app.getHttpServer())
-        .get('/deliveries/taken')
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
-    });
-
-    it('GET /deliveries/all', async () => {
-      return request(app.getHttpServer())
-        .get('/deliveries/all')
-        .set('Authorization', `Bearer ${moder.access}`)
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
-    });
-
-    it('POST /deliveries/:deliveryId/execute', async () => {
-      return request(app.getHttpServer())
-        .post(`/deliveries/${marketsDeliveriesId[0]}/execute`)
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect('');
-    });
-
-    it('POST /deliveries/:deliveryId', async () => {
-      return request(app.getHttpServer())
-        .post(`/deliveries/${marketsDeliveriesId[0]}`)
-        .set('Authorization', `Bearer ${user.access}`)
-        .send({ rate: 5 })
-        .expect('');
-    });
-
-    it('POST /deliveries/:deliveryId/take', async () => {
-      return request(app.getHttpServer())
-        .post(`/deliveries/${marketsDeliveriesId[1]}/take`)
-        .set('Authorization', `Bearer ${user.access}`)
-        .send({ cardId })
-        .expect('');
-    });
-
-    it('DELETE /deliveries/:deliveryId/take', async () => {
-      return request(app.getHttpServer())
-        .delete(`/deliveries/${marketsDeliveriesId[1]}/take`)
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect('');
-    });
-
-    it('DELETE /deliveries/:deliveryId', async () => {
-      return request(app.getHttpServer())
-        .delete(`/deliveries/${marketsDeliveriesId[1]}`)
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect('');
-    });
-
-    it('DELETE /purchases/:purchaseId', async () => {
-      return request(app.getHttpServer())
-        .delete(`/purchases/${marketsPurchasesId[1]}`)
-        .set('Authorization', `Bearer ${moder.access}`)
-        .expect('');
-    });
-  });
-
-  describe('Storages Deliveries', () => {
-    it('POST /deliveries', async () => {
-      return request(app.getHttpServer())
-        .post('/deliveries')
-        .set('Authorization', `Bearer ${user.access}`)
-        .send({
-          purchaseId: storagesPurchasesId[0],
-          stationId,
-          cardId,
-          price: 10,
-        })
-        .expect('');
-    });
-
-    it('GET /deliveries', async () => {
-      return request(app.getHttpServer())
-        .get('/deliveries')
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
-    });
-
-    it('GET /deliveries/my', async () => {
-      return request(app.getHttpServer())
-        .get(`/deliveries/my?storage=${storageId}`)
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0))
-        .then(
-          (res) => (storagesDeliveriesId = res.body.result.map((d) => d.id)),
-        );
-    });
-
-    it('PATCH /deliveries/:storageDeliveryId', async () => {
-      return request(app.getHttpServer())
-        .patch(`/deliveries/${storagesDeliveriesId[0]}`)
-        .set('Authorization', `Bearer ${user.access}`)
-        .send({ price: 10 })
-        .expect('');
-    });
-
-    it('POST /deliveries/:storageDeliveryId/take', async () => {
-      return request(app.getHttpServer())
-        .post(`/deliveries/${storagesDeliveriesId[0]}/take`)
-        .set('Authorization', `Bearer ${user.access}`)
-        .send({ cardId })
-        .expect('');
-    });
-
-    it('GET /deliveries/taken', async () => {
-      return request(app.getHttpServer())
-        .get('/deliveries/taken')
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
-    });
-
-    it('GET /deliveries/all', async () => {
-      return request(app.getHttpServer())
-        .get('/deliveries/all')
-        .set('Authorization', `Bearer ${moder.access}`)
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
-    });
-
-    it('POST /deliveries/:storageDeliveryId/execute', async () => {
-      return request(app.getHttpServer())
-        .post(`/deliveries/${storagesDeliveriesId[0]}/execute`)
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect('');
-    });
-
-    it('POST /deliveries/:storageDeliveryId', async () => {
-      return request(app.getHttpServer())
-        .post(`/deliveries/${storagesDeliveriesId[0]}`)
-        .set('Authorization', `Bearer ${user.access}`)
-        .send({ rate: 5 })
-        .expect('');
-    });
-
-    it('POST /deliveries/:storageDeliveryId/take', async () => {
-      return request(app.getHttpServer())
-        .post(`/deliveries/${storagesDeliveriesId[1]}/take`)
-        .set('Authorization', `Bearer ${user.access}`)
-        .send({ cardId })
-        .expect('');
-    });
-
-    it('DELETE /deliveries/:storageDeliveryId/take', async () => {
-      return request(app.getHttpServer())
-        .delete(`/deliveries/${storagesDeliveriesId[1]}/take`)
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect('');
-    });
-
-    it('DELETE /deliveries/:storageDeliveryId', async () => {
-      return request(app.getHttpServer())
-        .delete(`/deliveries/${storagesDeliveriesId[1]}`)
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect('');
-    });
-
-    it('DELETE /purchases/:purchaseId', async () => {
-      return request(app.getHttpServer())
-        .delete(`/purchases/${storagesPurchasesId[1]}`)
+        .delete(`/purchases/${purchasesId[1]}`)
         .set('Authorization', `Bearer ${moder.access}`)
         .expect('');
     });

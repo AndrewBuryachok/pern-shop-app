@@ -73,43 +73,7 @@ export class Request {
   @IsOptional()
   @IsInt()
   @Type(() => Number)
-  market?: number;
-
-  @ApiProperty({ required: false })
-  @IsOptional()
-  @IsInt()
-  @Type(() => Number)
-  storage?: number;
-
-  @ApiProperty({ required: false })
-  @IsOptional()
-  @IsInt()
-  @Type(() => Number)
   station?: number;
-
-  @ApiProperty({ required: false })
-  @IsOptional()
-  @IsInt()
-  @Type(() => Number)
-  marketTag?: number;
-
-  @ApiProperty({ required: false })
-  @IsOptional()
-  @IsInt()
-  @Type(() => Number)
-  storageTag?: number;
-
-  @ApiProperty({ required: false })
-  @IsOptional()
-  @IsInt()
-  @Type(() => Number)
-  stall?: number;
-
-  @ApiProperty({ required: false })
-  @IsOptional()
-  @IsInt()
-  @Type(() => Number)
-  cell?: number;
 
   @ApiProperty({ required: false })
   @IsOptional()

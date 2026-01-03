@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ScheduleModule } from 'nest-schedule';
 import { AuthModule } from './features/auth/auth.module';
 import { UsersModule } from './features/users/users.module';
 import { MessagesModule } from './features/messages/messages.module';
@@ -14,15 +13,7 @@ import { InvoicesModule } from './features/invoices/invoices.module';
 import { TownsModule } from './features/towns/towns.module';
 import { ResidentsModule } from './features/residents/residents.module';
 import { ShopsModule } from './features/shops/shops.module';
-import { MarketsModule } from './features/markets/markets.module';
-import { StoragesModule } from './features/storages/storages.module';
 import { StationsModule } from './features/stations/stations.module';
-import { MarketsTagsModule } from './features/markets-tags/markets-tags.module';
-import { StoragesTagsModule } from './features/storages-tags/storages-tags.module';
-import { StallsModule } from './features/stalls/stalls.module';
-import { CellsModule } from './features/cells/cells.module';
-import { RentsModule } from './features/rents/rents.module';
-import { LeasesModule } from './features/leases/leases.module';
 import { GoodsModule } from './features/goods/goods.module';
 import { PurchasesModule } from './features/purchases/purchases.module';
 import { DeliveriesModule } from './features/deliveries/deliveries.module';
@@ -46,7 +37,6 @@ import { OrdersModule } from './features/orders/orders.module';
         autoLoadEntities: true,
       }),
     }),
-    ScheduleModule.register(),
     AuthModule,
     UsersModule,
     MessagesModule,
@@ -59,15 +49,7 @@ import { OrdersModule } from './features/orders/orders.module';
     TownsModule,
     ResidentsModule,
     ShopsModule,
-    MarketsModule,
-    StoragesModule,
     StationsModule,
-    MarketsTagsModule,
-    StoragesTagsModule,
-    StallsModule,
-    CellsModule,
-    RentsModule,
-    LeasesModule,
     GoodsModule,
     PurchasesModule,
     DeliveriesModule,

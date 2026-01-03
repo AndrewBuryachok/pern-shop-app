@@ -384,22 +384,10 @@ export class DeliveriesService {
       .createQueryBuilder('delivery')
       .innerJoin('delivery.purchase', 'purchase')
       .innerJoin('purchase.good', 'good')
-      .leftJoin('good.shop', 'shop')
-      .leftJoin('shop.card', 'shopCard')
-      .leftJoin('shopCard.account', 'shopAccount')
-      .leftJoin('shopCard.user', 'shopUser')
-      .leftJoin('good.rent', 'rent')
-      .leftJoin('rent.stall', 'stall')
-      .leftJoin('stall.market', 'market')
-      .leftJoin('market.card', 'marketCard')
-      .leftJoin('marketCard.account', 'marketAccount')
-      .leftJoin('marketCard.user', 'marketUser')
-      .leftJoin('good.lease', 'lease')
-      .leftJoin('lease.cell', 'cell')
-      .leftJoin('cell.storage', 'storage')
-      .leftJoin('storage.card', 'storageCard')
-      .leftJoin('storageCard.account', 'storageAccount')
-      .leftJoin('storageCard.user', 'storageUser')
+      .innerJoin('good.shop', 'shop')
+      .innerJoin('shop.card', 'shopCard')
+      .innerJoin('shopCard.account', 'shopAccount')
+      .innerJoin('shopCard.user', 'shopUser')
       .innerJoin('delivery.station', 'station')
       .innerJoin('station.user', 'stationUser')
       .innerJoin('delivery.customerCard', 'customerCard')
@@ -439,8 +427,6 @@ export class DeliveriesService {
                     new Brackets((qb) =>
                       qb
                         .where('shopUser.id = :userId')
-                        .orWhere('marketUser.id = :userId')
-                        .orWhere('storageUser.id = :userId')
                         .orWhere('stationUser.id = :userId'),
                     ),
                   ),
@@ -471,14 +457,7 @@ export class DeliveriesService {
               new Brackets((qb) =>
                 qb
                   .where(`${!req.mode || req.mode === Mode.OWNER}`)
-                  .andWhere(
-                    new Brackets((qb) =>
-                      qb
-                        .where('shopCard.id = :cardId')
-                        .orWhere('marketCard.id = :cardId')
-                        .orWhere('storageCard.id = :cardId'),
-                    ),
-                  ),
+                  .andWhere('shopCard.id = :cardId'),
               ),
             ),
         ),
@@ -494,36 +473,8 @@ export class DeliveriesService {
       .andWhere(
         new Brackets((qb) =>
           qb
-            .where(`${!req.market}`)
-            .orWhere('market.id = :marketId', { marketId: req.market }),
-        ),
-      )
-      .andWhere(
-        new Brackets((qb) =>
-          qb
-            .where(`${!req.storage}`)
-            .orWhere('storage.id = :storageId', { storageId: req.storage }),
-        ),
-      )
-      .andWhere(
-        new Brackets((qb) =>
-          qb
             .where(`${!req.station}`)
             .orWhere('station.id = :stationId', { stationId: req.station }),
-        ),
-      )
-      .andWhere(
-        new Brackets((qb) =>
-          qb
-            .where(`${!req.stall}`)
-            .orWhere('stall.id = :stallId', { stallId: req.stall }),
-        ),
-      )
-      .andWhere(
-        new Brackets((qb) =>
-          qb
-            .where(`${!req.cell}`)
-            .orWhere('cell.id = :cellId', { cellId: req.cell }),
         ),
       )
       .andWhere(
@@ -657,34 +608,6 @@ export class DeliveriesService {
         'shop.name',
         'shop.x',
         'shop.y',
-        'rent.id',
-        'stall.id',
-        'market.id',
-        'marketCard.id',
-        'marketAccount.id',
-        'marketAccount.name',
-        'marketAccount.color',
-        'marketUser.id',
-        'marketUser.nick',
-        'marketUser.avatar',
-        'market.name',
-        'market.x',
-        'market.y',
-        'stall.name',
-        'lease.id',
-        'cell.id',
-        'storage.id',
-        'storageCard.id',
-        'storageAccount.id',
-        'storageAccount.name',
-        'storageAccount.color',
-        'storageUser.id',
-        'storageUser.nick',
-        'storageUser.avatar',
-        'storage.name',
-        'storage.x',
-        'storage.y',
-        'cell.name',
         'good.item',
         'good.description',
         'good.intake',

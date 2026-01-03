@@ -14,9 +14,7 @@ import { Good } from './good.entity';
 import { GoodState } from './good-state.entity';
 import { Purchase } from '../purchases/purchase.entity';
 import {
-  CreateMarketGoodDto,
-  CreateShopGoodDto,
-  CreateStorageGoodDto,
+  CreateGoodDto,
   EditGoodDto,
   GoodIdDto,
   UpdateGoodDto,
@@ -62,31 +60,13 @@ export class GoodsController {
     return this.goodsService.selectGoodPurchases(goodId);
   }
 
-  @Post('shops')
-  createShopGood(
+  @Post()
+  createGood(
     @MyId() myId: number,
     @HasRole(Role.MODER) hasRole: boolean,
-    @Body() dto: CreateShopGoodDto,
+    @Body() dto: CreateGoodDto,
   ): Promise<void> {
-    return this.goodsService.createShopGood({ ...dto, myId, hasRole });
-  }
-
-  @Post('markets')
-  createMarketGood(
-    @MyId() myId: number,
-    @HasRole(Role.MODER) hasRole: boolean,
-    @Body() dto: CreateMarketGoodDto,
-  ): Promise<void> {
-    return this.goodsService.createMarketGood({ ...dto, myId, hasRole });
-  }
-
-  @Post('storages')
-  createStorageGood(
-    @MyId() myId: number,
-    @HasRole(Role.MODER) hasRole: boolean,
-    @Body() dto: CreateStorageGoodDto,
-  ): Promise<void> {
-    return this.goodsService.createStorageGood({ ...dto, myId, hasRole });
+    return this.goodsService.createGood({ ...dto, myId, hasRole });
   }
 
   @Patch(':goodId')

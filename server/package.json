@@ -39,7 +39,6 @@
     "faker": "^6.6.6",
     "morgan": "^1.10.0",
     "mqtt": "^5.1.4",
-    "nest-schedule": "^0.6.4",
     "passport": "^0.6.0",
     "passport-jwt": "^4.0.1",
     "pg": "^8.8.0",
