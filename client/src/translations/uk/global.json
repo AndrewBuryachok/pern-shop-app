@@ -1999,7 +1999,24 @@
       "waxed_copper_chain": "Вощений мідний ланцюг",
       "waxed_exposed_copper_chain": "Вощений наражений мідний ланцюг",
       "waxed_weathered_copper_chain": "Вощений вивітрений мідний ланцюг",
-      "waxed_oxidized_copper_chain": "Вощений окиснений мідний ланцюг"
+      "waxed_oxidized_copper_chain": "Вощений окиснений мідний ланцюг",
+      "camel_husk_spawn_egg": "Яйце виклику верблюда-висушня",
+      "nautilus_spawn_egg": "Яйце виклику навтилуса",
+      "parched_spawn_egg": "Яйце виклику засушня",
+      "zombie_nautilus_spawn_egg": "Яйце виклику зомбонавтилуса",
+      "netherite_horse_armor": "Незеритові кінські обладунки",
+      "wooden_spear": "Дерев'яний спис",
+      "stone_spear": "Кам'яний спис",
+      "copper_spear": "Мідний спис",
+      "iron_spear": "Залізний спис",
+      "golden_spear": "Золотий спис",
+      "diamond_spear": "Діамантовий спис",
+      "netherite_spear": "Незеритовий спис",
+      "copper_nautilus_armor": "Мідні обладунки навтилуса",
+      "iron_nautilus_armor": "Залізні обладунки навтилуса",
+      "golden_nautilus_armor": "Золоті обладунки навтилуса",
+      "diamond_nautilus_armor": "Діамантові обладунки навтилуса",
+      "netherite_nautilus_armor": "Незеритові обладунки навтилуса"
     }
   }
 }
