@@ -9,7 +9,7 @@ import { Role } from '../constants';
 
 type Props = {
   children: ReactNode;
-  role?: Role;
+  roles?: Role[];
 };
 
 export default function Protected(props: Props) {
@@ -19,8 +19,8 @@ export default function Protected(props: Props) {
 
   const [opened, { close }] = useDisclosure(true);
 
-  if (isUserNotHasRole(props.role)) {
-    if (!props.role) {
+  if (isUserNotHasRole(props.roles)) {
+    if (!props.roles) {
       return (
         <Modal
           title={t('modals.auth')}

@@ -34,8 +34,8 @@ export const pages = [
     nested: [
       { index: true },
       { path: 'top' },
-      { path: 'banned', role: Role.MODER },
-      { path: 'all', role: Role.ADMIN },
+      { path: 'banned', roles: [Role.MODER] },
+      { path: 'all', roles: [Role.ADMIN] },
     ],
   },
   { path: 'users/:nick', element: SingleUser },
@@ -55,28 +55,28 @@ export const pages = [
     nested: [
       { index: true },
       { path: 'my' },
-      { path: 'all', role: Role.MODER },
+      { path: 'all', roles: [Role.MODER] },
     ],
   },
   {
     path: 'cards',
     element: CardsPage,
-    nested: [{ path: 'my' }, { path: 'all', role: Role.MODER }],
+    nested: [{ path: 'my' }, { path: 'all', roles: [Role.MODER] }],
   },
   {
     path: 'exchanges',
     element: ExchangesPage,
-    nested: [{ path: 'my' }, { path: 'all', role: Role.BANKER }],
+    nested: [{ path: 'my' }, { path: 'all', roles: [Role.BANKER] }],
   },
   {
     path: 'payments',
     element: PaymentsPage,
-    nested: [{ path: 'my' }, { path: 'all', role: Role.MODER }],
+    nested: [{ path: 'my' }, { path: 'all', roles: [Role.MODER] }],
   },
   {
     path: 'invoices',
     element: InvoicesPage,
-    nested: [{ path: 'my' }, { path: 'all', role: Role.MODER }],
+    nested: [{ path: 'my' }, { path: 'all', roles: [Role.MODER] }],
   },
   {
     path: 'towns',
@@ -84,7 +84,7 @@ export const pages = [
     nested: [
       { index: true },
       { path: 'my' },
-      { path: 'all', role: Role.MODER },
+      { path: 'all', roles: [Role.MODER] },
     ],
   },
   {
@@ -108,7 +108,7 @@ export const pages = [
     nested: [
       { index: true },
       { path: 'my' },
-      { path: 'all', role: Role.MODER },
+      { path: 'all', roles: [Role.MODER] },
     ],
   },
   {
@@ -117,7 +117,7 @@ export const pages = [
     nested: [
       { index: true },
       { path: 'my' },
-      { path: 'all', role: Role.MODER },
+      { path: 'all', roles: [Role.MODER] },
     ],
   },
   {
@@ -126,13 +126,13 @@ export const pages = [
     nested: [
       { index: true },
       { path: 'my' },
-      { path: 'all', role: Role.MODER },
+      { path: 'all', roles: [Role.MODER] },
     ],
   },
   {
     path: 'purchases',
     element: PurchasesPage,
-    nested: [{ path: 'my' }, { path: 'all', role: Role.MODER }],
+    nested: [{ path: 'my' }, { path: 'all', roles: [Role.MODER] }],
   },
   {
     path: 'deliveries',
@@ -141,7 +141,7 @@ export const pages = [
       { index: true },
       { path: 'my' },
       { path: 'taken' },
-      { path: 'all', role: Role.MODER },
+      { path: 'all', roles: [Role.MODER] },
     ],
   },
   {
@@ -151,7 +151,7 @@ export const pages = [
       { index: true },
       { path: 'my' },
       { path: 'taken' },
-      { path: 'all', role: Role.MODER },
+      { path: 'all', roles: [Role.MODER] },
     ],
   },
   { path: '*', element: NotFound },

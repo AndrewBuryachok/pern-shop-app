@@ -12,12 +12,12 @@ export * from './upload.util';
 export const customMin = (required: number, optional?: number) =>
   optional === undefined ? required : Math.min(required, optional);
 
-export const isUserHasRole = (role?: Role) => {
+export const isUserHasRole = (roles?: Role[]) => {
   const user = getCurrentUser();
   return (
     user &&
-    (!role || [Role.ADMIN, role].some((role) => user.roles.includes(role)))
+    (!roles || [...roles, Role.ADMIN].some((role) => user.roles.includes(role)))
   );
 };
 
-export const isUserNotHasRole = (role?: Role) => !isUserHasRole(role);
+export const isUserNotHasRole = (roles?: Role[]) => !isUserHasRole(roles);

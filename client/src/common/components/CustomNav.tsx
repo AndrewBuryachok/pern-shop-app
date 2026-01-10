@@ -11,7 +11,7 @@ type Props = INav;
 export default function CustomNav(props: Props) {
   const [t] = useTranslation();
 
-  const notHasRole = isUserNotHasRole(props.button?.role);
+  const notHasRole = isUserNotHasRole(props.button?.roles);
 
   const active = useLocation().pathname.split('/');
 
@@ -35,7 +35,7 @@ export default function CustomNav(props: Props) {
           disabled={
             link.path !== 'main' &&
             link.path !== 'top' &&
-            isUserNotHasRole(link.role)
+            isUserNotHasRole(link.roles)
           }
           compact
         >
