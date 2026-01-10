@@ -16,12 +16,11 @@ export const MyId = createParamDecorator(
   },
 );
 
-export const HasRole = createParamDecorator(
-  (role: Role, context: ExecutionContext) => {
+export const HasRole = (...roles: Role[]) =>
+  createParamDecorator((roles: Role[], context: ExecutionContext) => {
     const request = context.switchToHttp().getRequest();
     const user = request.user as ExtJwtPayload;
-    return [role, Role.ADMIN].some((role) => user.roles.includes(role));
-  },
-);
+    return [...roles, Role.ADMIN].some((role) => user.roles.includes(role));
+  })(roles);
 
 export const Roles = (...roles: Role[]) => SetMetadata('roles', roles);
