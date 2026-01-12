@@ -5,6 +5,7 @@ import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
 import { Invoice } from './invoice.model';
+import { getCurrentUser } from '../auth/auth.slice';
 import { useDeleteInvoiceMutation } from './invoices.api';
 import { DeleteInvoiceDto } from './invoice.dto';
 import CustomForm from '../../common/components/CustomForm';
@@ -63,12 +64,22 @@ export default function DeleteInvoiceModal({ data: invoice }: Props) {
   );
 }
 
-export const deleteInvoiceAction = {
+export const deleteInvoiceFactory = (hasRole: boolean) => ({
   open: (invoice: Invoice) =>
     openModal({
       title: t('actions.delete') + ' ' + t('modals.invoices'),
       children: <DeleteInvoiceModal data={invoice} />,
     }),
-  disable: (invoice: Invoice) => !!invoice.completedAt,
+  disable: (invoice: Invoice) => {
+    const user = getCurrentUser()!;
+    return (
+      (invoice.senderCard.user.id !== user.id && !hasRole) ||
+      !!invoice.completedAt
+    );
+  },
   color: Color.RED,
-};
+});
+
+export const deleteMyInvoiceAction = deleteInvoiceFactory(false);
+
+export const deleteUserInvoiceAction = deleteInvoiceFactory(true);

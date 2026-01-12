@@ -5,12 +5,18 @@ import {
   useGetMyInvoicesQuery,
 } from '../../features/invoices/invoices.api';
 import InvoicesTable from '../../features/invoices/InvoicesTable';
-import { createInvoiceButton } from '../../features/invoices/CreateInvoiceModal';
+import {
+  createMyInvoiceButton,
+  createUserInvoiceButton,
+} from '../../features/invoices/CreateInvoiceModal';
 import {
   completeMyInvoiceAction,
   completeUserInvoiceAction,
 } from '../../features/invoices/CompleteInvoiceModal';
-import { deleteInvoiceAction } from '../../features/invoices/DeleteInvoiceModal';
+import {
+  deleteMyInvoiceAction,
+  deleteUserInvoiceAction,
+} from '../../features/invoices/DeleteInvoiceModal';
 
 export default function InvoicesPage() {
   const tab = useLocation().pathname.split('/')[2] || 'main';
@@ -37,11 +43,13 @@ export default function InvoicesPage() {
     all: useGetAllInvoicesQuery,
   }[tab]!(search);
 
-  const button = { all: createInvoiceButton }[tab];
+  const button = { my: createMyInvoiceButton, all: createUserInvoiceButton }[
+    tab
+  ];
 
   const actions = {
-    my: [completeMyInvoiceAction],
-    all: [completeUserInvoiceAction, deleteInvoiceAction],
+    my: [completeMyInvoiceAction, deleteMyInvoiceAction],
+    all: [completeUserInvoiceAction, deleteUserInvoiceAction],
   }[tab];
 
   return (

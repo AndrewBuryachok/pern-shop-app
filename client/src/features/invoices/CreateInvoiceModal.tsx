@@ -5,7 +5,10 @@ import { NumberInput, Select, Textarea } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { useCreateInvoiceMutation } from './invoices.api';
-import { useSelectUserCardsWithBalanceQuery } from '../cards/cards.api';
+import {
+  useSelectMyCardsQuery,
+  useSelectUserCardsWithBalanceQuery,
+} from '../cards/cards.api';
 import { useSelectAllUsersQuery } from '../users/users.api';
 import { CreateInvoiceDto } from './invoice.dto';
 import CustomForm from '../../common/components/CustomForm';
@@ -16,7 +19,9 @@ import { CardsItem } from '../../common/components/CardsItem';
 import { selectCardsWithBalance, selectUsers } from '../../common/utils';
 import { MAX_DESCRIPTION_LENGTH, MAX_SUM_VALUE } from '../../common/constants';
 
-export default function CreateInvoiceModal() {
+type Props = { hasRole: boolean };
+
+export default function CreateInvoiceModal({ hasRole }: Props) {
   const [t] = useTranslation();
 
   const form = useForm({
@@ -40,10 +45,11 @@ export default function CreateInvoiceModal() {
   );
 
   const { data: users, ...usersResponse } = useSelectAllUsersQuery();
-  const { data: cards, ...cardsResponse } = useSelectUserCardsWithBalanceQuery(
-    +form.values.senderUser,
-    { skip: !form.values.senderUser },
-  );
+  const { data: cards, ...cardsResponse } = hasRole
+    ? useSelectUserCardsWithBalanceQuery(+form.values.senderUser, {
+        skip: !form.values.senderUser,
+      })
+    : useSelectMyCardsQuery();
 
   const senderUser = users?.find((user) => user.id === +form.values.senderUser);
   const receiverUser = users?.find(
@@ -62,25 +68,30 @@ export default function CreateInvoiceModal() {
       isLoading={isLoading}
       text={t('actions.create') + ' ' + t('modals.invoices')}
     >
-      <Select
-        label={t('columns.sender')}
-        placeholder={t('columns.sender')}
-        icon={senderUser && <CustomAvatar {...senderUser} />}
-        iconWidth={48}
-        rightSection={<RefetchAction {...usersResponse} />}
-        itemComponent={UsersItem}
-        data={selectUsers(users)}
-        limit={20}
-        searchable
-        required
-        readOnly={usersResponse.isFetching}
-        {...form.getInputProps('senderUser')}
-      />
+      {hasRole && (
+        <Select
+          label={t('columns.sender')}
+          placeholder={t('columns.sender')}
+          icon={senderUser && <CustomAvatar {...senderUser} />}
+          iconWidth={48}
+          rightSection={<RefetchAction {...usersResponse} />}
+          itemComponent={UsersItem}
+          data={selectUsers(users)}
+          limit={20}
+          searchable
+          required
+          readOnly={usersResponse.isFetching}
+          {...form.getInputProps('senderUser')}
+        />
+      )}
       <Select
         label={t('columns.card')}
         placeholder={t('columns.card')}
         rightSection={
-          <RefetchAction {...cardsResponse} skip={!form.values.senderUser} />
+          <RefetchAction
+            {...cardsResponse}
+            skip={!form.values.senderUser && hasRole}
+          />
         }
         itemComponent={CardsItem}
         data={selectCardsWithBalance(cards)}
@@ -122,11 +133,15 @@ export default function CreateInvoiceModal() {
   );
 }
 
-export const createInvoiceButton = {
+export const createInvoiceFactory = (hasRole: boolean) => ({
   label: 'create',
   open: () =>
     openModal({
       title: t('actions.create') + ' ' + t('modals.invoices'),
-      children: <CreateInvoiceModal />,
+      children: <CreateInvoiceModal hasRole={hasRole} />,
     }),
-};
+});
+
+export const createMyInvoiceButton = createInvoiceFactory(false);
+
+export const createUserInvoiceButton = createInvoiceFactory(true);
