@@ -83,6 +83,9 @@ export default function CreateTownModal({ hasRole }: Props) {
       <TextInput
         label={t('columns.name')}
         placeholder={t('columns.name')}
+        description={
+          form.values.name && form.values.name.length + '/' + MAX_NAME_LENGTH
+        }
         required
         minLength={MIN_NAME_LENGTH}
         maxLength={MAX_NAME_LENGTH}
@@ -91,6 +94,10 @@ export default function CreateTownModal({ hasRole }: Props) {
       <Textarea
         label={t('columns.description')}
         placeholder={t('columns.description')}
+        description={
+          form.values.description &&
+          form.values.description.length + '/' + MAX_DESCRIPTION_LENGTH
+        }
         maxLength={MAX_DESCRIPTION_LENGTH}
         {...form.getInputProps('description')}
       />

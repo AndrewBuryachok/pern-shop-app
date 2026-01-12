@@ -36,6 +36,10 @@ export default function UpdatePasswordModal() {
       <PasswordInput
         label={t('columns.oldpassword')}
         placeholder={t('columns.oldpassword')}
+        description={
+          form.values.oldPassword &&
+          form.values.oldPassword.length + '/' + MAX_PASSWORD_LENGTH
+        }
         required
         minLength={MIN_PASSWORD_LENGTH}
         maxLength={MAX_PASSWORD_LENGTH}
@@ -44,6 +48,10 @@ export default function UpdatePasswordModal() {
       <PasswordInput
         label={t('columns.newpassword')}
         placeholder={t('columns.newpassword')}
+        description={
+          form.values.newPassword &&
+          form.values.newPassword.length + '/' + MAX_PASSWORD_LENGTH
+        }
         required
         minLength={MIN_PASSWORD_LENGTH}
         maxLength={MAX_PASSWORD_LENGTH}

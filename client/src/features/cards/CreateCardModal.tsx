@@ -74,6 +74,9 @@ export default function CreateCardModal({ hasRole }: Props) {
       <TextInput
         label={t('columns.name')}
         placeholder={t('columns.name')}
+        description={
+          form.values.name && form.values.name.length + '/' + MAX_NAME_LENGTH
+        }
         required
         minLength={MIN_NAME_LENGTH}
         maxLength={MAX_NAME_LENGTH}

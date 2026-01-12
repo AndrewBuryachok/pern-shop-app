@@ -48,6 +48,9 @@ export default function EditCommentModal({ data: comment }: Props) {
       <Textarea
         label={t('columns.text')}
         placeholder={t('columns.text')}
+        description={
+          form.values.text && form.values.text.length + '/' + MAX_TEXT_LENGTH
+        }
         required
         autosize
         maxLength={MAX_TEXT_LENGTH}

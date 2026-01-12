@@ -57,6 +57,9 @@ export default function AuthModal() {
       <TextInput
         label={t('columns.nick')}
         placeholder={t('columns.nick')}
+        description={
+          form.values.nick && form.values.nick.length + '/' + MAX_NICK_LENGTH
+        }
         required
         minLength={MIN_NICK_LENGTH}
         maxLength={MAX_NICK_LENGTH}
@@ -65,6 +68,10 @@ export default function AuthModal() {
       <PasswordInput
         label={t('columns.password')}
         placeholder={t('columns.password')}
+        description={
+          form.values.password &&
+          form.values.password.length + '/' + MAX_PASSWORD_LENGTH
+        }
         required
         minLength={MIN_PASSWORD_LENGTH}
         maxLength={MAX_PASSWORD_LENGTH}

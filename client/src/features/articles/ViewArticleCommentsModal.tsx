@@ -82,6 +82,9 @@ export default function ViewArticleCommentsModal({ data: article }: Props) {
       <form onSubmit={form.onSubmit(handleSubmit)}>
         <Textarea
           placeholder={t('columns.reply')}
+          description={
+            form.values.text && form.values.text.length + '/' + MAX_TEXT_LENGTH
+          }
           rightSection={
             <ActionIcon size={24} type='submit' disabled={!user || isLoading}>
               <IconSend size={16} />

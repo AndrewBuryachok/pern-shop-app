@@ -49,6 +49,10 @@ export default function EditUserPasswordModal({ data: user }: Props) {
       <PasswordInput
         label={t('columns.password')}
         placeholder={t('columns.password')}
+        description={
+          form.values.password &&
+          form.values.password.length + '/' + MAX_PASSWORD_LENGTH
+        }
         required
         minLength={MIN_PASSWORD_LENGTH}
         maxLength={MAX_PASSWORD_LENGTH}
