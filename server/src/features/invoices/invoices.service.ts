@@ -2,9 +2,14 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { Invoice } from './invoice.entity';
+import { CardsService } from '../cards/cards.service';
 import { PaymentsService } from '../payments/payments.service';
 import { MqttService } from '../mqtt/mqtt.service';
-import { ExtCompleteInvoiceDto, ExtCreateInvoiceDto } from './invoice.dto';
+import {
+  DeleteInvoiceDto,
+  ExtCompleteInvoiceDto,
+  ExtCreateInvoiceDto,
+} from './invoice.dto';
 import { Request, Response } from '../../common/interfaces';
 import { AppException } from '../../common/exceptions';
 import { InvoiceError } from './invoice-error.enum';
@@ -15,6 +20,7 @@ export class InvoicesService {
   constructor(
     @InjectRepository(Invoice)
     private invoicesRepository: Repository<Invoice>,
+    private cardsService: CardsService,
     private paymentsService: PaymentsService,
     private mqttService: MqttService,
   ) {}
@@ -56,11 +62,16 @@ export class InvoicesService {
   }
 
   async createInvoice(dto: ExtCreateInvoiceDto): Promise<void> {
+    const card = await this.cardsService.checkCardUser(
+      dto.senderCardId,
+      dto.myId,
+      dto.hasRole,
+    );
     const invoice = await this.create(dto);
     this.mqttService.publishNotification(
       invoice.id,
       dto.receiverUserId,
-      dto.myId,
+      card.userId,
       Notification.CREATED_INVOICE,
     );
   }
@@ -71,9 +82,6 @@ export class InvoicesService {
       dto.myId,
       dto.hasRole,
     );
-    if (invoice.completedAt) {
-      throw new AppException(InvoiceError.ALREADY_COMPLETED);
-    }
     await this.paymentsService.createPayment({
       myId: dto.myId,
       hasRole: dto.hasRole,
@@ -91,17 +99,15 @@ export class InvoicesService {
     );
   }
 
-  async deleteInvoice(id: number): Promise<void> {
-    const invoice = await this.invoicesRepository.findOne({
-      relations: ['senderCard'],
-      where: { id },
-    });
-    if (invoice.completedAt) {
-      throw new AppException(InvoiceError.ALREADY_COMPLETED);
-    }
+  async deleteInvoice(dto: DeleteInvoiceDto): Promise<void> {
+    const invoice = await this.checkInvoiceSender(
+      dto.invoiceId,
+      dto.myId,
+      dto.hasRole,
+    );
     await this.delete(invoice);
     this.mqttService.publishNotification(
-      id,
+      dto.invoiceId,
       invoice.receiverUserId,
       invoice.senderCard.userId,
       Notification.DELETED_INVOICE,
@@ -110,6 +116,22 @@ export class InvoicesService {
 
   async checkInvoiceExists(id: number): Promise<void> {
     await this.invoicesRepository.findOneByOrFail({ id });
+  }
+
+  async checkInvoiceSender(
+    id: number,
+    userId: number,
+    hasRole: boolean,
+  ): Promise<Invoice> {
+    const invoice = await this.invoicesRepository.findOne({
+      relations: ['senderCard'],
+      where: { id },
+    });
+    if (invoice.senderCard.userId !== userId && !hasRole) {
+      throw new AppException(InvoiceError.NOT_SENDER);
+    }
+    this.checkInvoiceNotCompleted(invoice);
+    return invoice;
   }
 
   async checkInvoiceReceiver(
@@ -124,7 +146,14 @@ export class InvoicesService {
     if (invoice.receiverUserId !== userId && !hasRole) {
       throw new AppException(InvoiceError.NOT_RECEIVER);
     }
+    this.checkInvoiceNotCompleted(invoice);
     return invoice;
+  }
+
+  checkInvoiceNotCompleted(invoice: Invoice): void {
+    if (invoice.completedAt) {
+      throw new AppException(InvoiceError.ALREADY_COMPLETED);
+    }
   }
 
   private async create(dto: ExtCreateInvoiceDto): Promise<Invoice> {

@@ -38,13 +38,13 @@ export class InvoicesController {
     return this.invoicesService.getAllInvoices(req);
   }
 
-  @Roles(Role.MODER)
   @Post()
   createInvoice(
     @MyId() myId: number,
+    @HasRole(Role.MODER) hasRole: boolean,
     @Body() dto: CreateInvoiceDto,
   ): Promise<void> {
-    return this.invoicesService.createInvoice({ ...dto, myId });
+    return this.invoicesService.createInvoice({ ...dto, myId, hasRole });
   }
 
   @Post(':invoiceId')
@@ -62,9 +62,12 @@ export class InvoicesController {
     });
   }
 
-  @Roles(Role.MODER)
   @Delete(':invoiceId')
-  deleteInvoice(@Param() { invoiceId }: InvoiceIdDto): Promise<void> {
-    return this.invoicesService.deleteInvoice(invoiceId);
+  deleteInvoice(
+    @MyId() myId: number,
+    @HasRole(Role.MODER) hasRole: boolean,
+    @Param() { invoiceId }: InvoiceIdDto,
+  ): Promise<void> {
+    return this.invoicesService.deleteInvoice({ invoiceId, myId, hasRole });
   }
 }

@@ -624,7 +624,7 @@ describe('With Auth', () => {
     it('POST /invoices', async () => {
       return request(app.getHttpServer())
         .post('/invoices')
-        .set('Authorization', `Bearer ${moder.access}`)
+        .set('Authorization', `Bearer ${user.access}`)
         .send({
           senderCardId: cardId,
           receiverUserId: user.id,
@@ -637,7 +637,7 @@ describe('With Auth', () => {
     it('POST /invoices', async () => {
       return request(app.getHttpServer())
         .post('/invoices')
-        .set('Authorization', `Bearer ${moder.access}`)
+        .set('Authorization', `Bearer ${user.access}`)
         .send({
           senderCardId: cardId,
           receiverUserId: user.id,
@@ -665,7 +665,7 @@ describe('With Auth', () => {
     it('DELETE /invoices/:invoiceId', async () => {
       return request(app.getHttpServer())
         .delete(`/invoices/${invoicesId[0]}`)
-        .set('Authorization', `Bearer ${moder.access}`)
+        .set('Authorization', `Bearer ${user.access}`)
         .expect('');
     });
 
