@@ -38,7 +38,7 @@ export default function DeleteOrderModal({ data: order }: Props) {
     >
       <TextInput
         label={t('columns.customer')}
-        description={`${t('information.increase')} ${order.price} ${t(
+        description={`${t('information.increase')} ${order.sum} ${t(
           'constants.currency',
         )}`}
         icon={<CustomAvatar {...order.customerCard.user} />}
@@ -64,8 +64,8 @@ export default function DeleteOrderModal({ data: order }: Props) {
         readOnly
       />
       <TextInput
-        label={t('columns.price')}
-        value={`${order.price} ${t('constants.currency')}`}
+        label={t('columns.sum')}
+        value={`${order.sum} ${t('constants.currency')}`}
         readOnly
       />
     </CustomForm>

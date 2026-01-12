@@ -69,8 +69,8 @@ export default function CompleteDeliveryModal({ data: delivery }: Props) {
         readOnly
       />
       <TextInput
-        label={t('columns.price')}
-        value={`${delivery.price} ${t('constants.currency')}`}
+        label={t('columns.sum')}
+        value={`${delivery.sum} ${t('constants.currency')}`}
         readOnly
       />
       <Input.Wrapper label={t('columns.rate')}>

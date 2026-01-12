@@ -4,7 +4,7 @@ import CustomTable from '../../common/components/CustomTable';
 import AvatarWithDoubleText from '../../common/components/AvatarWithDoubleText';
 import ThingImageWithText from '../../common/components/ThingImageWithText';
 import SingleText from '../../common/components/SingleText';
-import PriceText from '../../common/components/PriceText';
+import SumText from '../../common/components/SumText';
 import StatusBadgeWithAvatar from '../../common/components/StatusBadgeWithAvatar';
 import PlaceWithDoubleAvatar from '../../common/components/PlaceWithDoubleAvatar';
 import PlaceWithSingleAvatar from '../../common/components/PlaceWithSingleAvatar';
@@ -22,7 +22,7 @@ export default function DeliveriesTable({ actions = [], ...props }: Props) {
         'customer',
         'item',
         'amount',
-        'price',
+        'sum',
         'status',
         'shop',
         'station',
@@ -42,7 +42,11 @@ export default function DeliveriesTable({ actions = [], ...props }: Props) {
             <SingleText text={parsePurchaseAmount(delivery.purchase)} />
           </td>
           <td>
-            <PriceText {...delivery} />
+            <SumText
+              fromId={delivery.customerCard.id}
+              toId={delivery.executorCard?.user.id || 0}
+              sum={delivery.sum}
+            />
           </td>
           <td>
             <StatusBadgeWithAvatar {...delivery} />

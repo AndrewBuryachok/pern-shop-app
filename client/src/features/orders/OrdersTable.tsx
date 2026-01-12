@@ -4,7 +4,7 @@ import CustomTable from '../../common/components/CustomTable';
 import AvatarWithDoubleText from '../../common/components/AvatarWithDoubleText';
 import ThingImageWithText from '../../common/components/ThingImageWithText';
 import SingleText from '../../common/components/SingleText';
-import PriceText from '../../common/components/PriceText';
+import SumText from '../../common/components/SumText';
 import StatusBadgeWithAvatar from '../../common/components/StatusBadgeWithAvatar';
 import PlaceWithSingleAvatar from '../../common/components/PlaceWithSingleAvatar';
 import CustomActions from '../../common/components/CustomActions';
@@ -21,7 +21,7 @@ export default function OrdersTable({ actions = [], ...props }: Props) {
         'customer',
         'item',
         'amount',
-        'price',
+        'sum',
         'status',
         'station',
         'action',
@@ -40,7 +40,11 @@ export default function OrdersTable({ actions = [], ...props }: Props) {
             <SingleText text={parseThingAmount(order)} />
           </td>
           <td>
-            <PriceText {...order} />
+            <SumText
+              fromId={order.customerCard.id}
+              toId={order.executorCard?.id || 0}
+              sum={order.sum}
+            />
           </td>
           <td>
             <StatusBadgeWithAvatar {...order} />

@@ -49,8 +49,8 @@ export default function ViewDeliveryModal({ data: delivery }: Props) {
         readOnly
       />
       <TextInput
-        label={t('columns.price')}
-        value={`${delivery.price} ${t('constants.currency')}`}
+        label={t('columns.sum')}
+        value={`${delivery.sum} ${t('constants.currency')}`}
         readOnly
       />
       <TextInput

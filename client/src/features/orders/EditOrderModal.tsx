@@ -25,7 +25,7 @@ import {
   MAX_AMOUNT_VALUE,
   MAX_DESCRIPTION_LENGTH,
   MAX_INTAKE_VALUE,
-  MAX_PRICE_VALUE,
+  MAX_SUM_VALUE,
   Status,
 } from '../../common/constants';
 
@@ -44,14 +44,13 @@ export default function EditOrderModal({ data: order, hasRole }: Props) {
       amount: order.amount,
       intake: order.intake,
       kit: `${order.kit}`,
-      price: order.price,
+      sum: order.sum,
       card: `${order.customerCard.id}`,
     },
     transformValues: ({ kit, card, ...rest }) => ({ ...rest, kit: +kit }),
     validate: {
       card: (_, values) =>
-        order.price < values.price &&
-        myCard.balance < values.price - order.price
+        order.sum < values.sum && myCard.balance < values.sum - order.sum
           ? t('errors.not_enough_balance')
           : null,
     },
@@ -120,22 +119,20 @@ export default function EditOrderModal({ data: order, hasRole }: Props) {
         {...form.getInputProps('kit')}
       />
       <NumberInput
-        label={t('columns.price')}
-        placeholder={t('columns.price')}
+        label={t('columns.sum')}
+        placeholder={t('columns.sum')}
         required
         min={1}
-        max={MAX_PRICE_VALUE}
-        {...form.getInputProps('price')}
+        max={MAX_SUM_VALUE}
+        {...form.getInputProps('sum')}
       />
       <Select
         label={t('columns.card')}
         description={`${
-          order.price > form.values.price
+          order.sum > form.values.sum
             ? t('information.increase')
             : t('information.decrease')
-        } ${Math.abs(order.price - form.values.price)} ${t(
-          'constants.currency',
-        )}`}
+        } ${Math.abs(order.sum - form.values.sum)} ${t('constants.currency')}`}
         rightSection={<RefetchAction {...cardsResponse} />}
         data={selectCardsWithBalance(cards)}
         readOnly

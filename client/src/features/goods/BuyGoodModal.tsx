@@ -61,7 +61,7 @@ export default function BuyGoodModal({ data: good, hasRole }: Props) {
       rate: 0,
       delivery: '0',
       station: '',
-      price: 0,
+      sum: 0,
     },
     transformValues: ({ user, card, delivery, station, ...rest }) => ({
       ...rest,
@@ -70,7 +70,7 @@ export default function BuyGoodModal({ data: good, hasRole }: Props) {
     }),
     validate: {
       card: (_, values) =>
-        myCard.balance < values.amount * good.price + values.price
+        myCard.balance < values.amount * good.price + values.sum
           ? t('errors.not_enough_balance')
           : null,
     },
@@ -80,7 +80,7 @@ export default function BuyGoodModal({ data: good, hasRole }: Props) {
 
   useEffect(() => {
     form.setFieldValue('station', '');
-    form.setFieldValue('price', +form.values.delivery);
+    form.setFieldValue('sum', +form.values.delivery);
   }, [form.values.delivery]);
 
   const { data: users, ...usersResponse } = useSelectAllUsersQuery(undefined, {
@@ -100,14 +100,14 @@ export default function BuyGoodModal({ data: good, hasRole }: Props) {
   const card = cards?.find((card) => card.id === +form.values.card);
   myCard.balance = card?.account.balance || 0;
   const maxAmount =
-    card && Math.floor((card.account.balance - form.values.price) / good.price);
+    card && Math.floor((card.account.balance - form.values.sum) / good.price);
 
   const [createPurchase, { isLoading }] = useCreatePurchaseMutation();
 
   const handleSubmit = async (dto: CreatePurchaseDto) => {
     const data = await createPurchase(dto);
     if (!('error' in data) && !hasRole) {
-      if (dto.stationId && dto.price) {
+      if (dto.stationId && dto.sum) {
         navigate('/deliveries/my');
       } else {
         navigate('/purchases/my');
@@ -170,7 +170,7 @@ export default function BuyGoodModal({ data: good, hasRole }: Props) {
         label={t('columns.card')}
         placeholder={t('columns.card')}
         description={`${t('information.decrease')} ${
-          form.values.amount * good.price + form.values.price
+          form.values.amount * good.price + form.values.sum
         } ${t('constants.currency')}`}
         rightSection={
           <RefetchAction
@@ -227,15 +227,15 @@ export default function BuyGoodModal({ data: good, hasRole }: Props) {
             {...form.getInputProps('station')}
           />
           <NumberInput
-            label={t('columns.price')}
-            placeholder={t('columns.price')}
+            label={t('columns.sum')}
+            placeholder={t('columns.sum')}
             required
             min={1}
             max={customMin(
               MAX_PRICE_VALUE,
               myCard.balance - form.values.amount * good.price,
             )}
-            {...form.getInputProps('price')}
+            {...form.getInputProps('sum')}
           />
         </>
       )}

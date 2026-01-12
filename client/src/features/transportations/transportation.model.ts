@@ -10,7 +10,7 @@ export interface SmTransportation {
 export interface Transportation extends SmTransportation {
   station: MdStation;
   customerCard: MdCard;
-  price: number;
+  sum: number;
   createdAt: Date;
   completedAt?: Date;
   rate?: number;

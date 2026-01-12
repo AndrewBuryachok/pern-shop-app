@@ -38,7 +38,7 @@ export default function DeleteDeliveryModal({ data: delivery }: Props) {
     >
       <TextInput
         label={t('columns.customer')}
-        description={`${t('information.increase')} ${delivery.price} ${t(
+        description={`${t('information.increase')} ${delivery.sum} ${t(
           'constants.currency',
         )}`}
         icon={<CustomAvatar {...delivery.customerCard.user} />}
@@ -64,8 +64,8 @@ export default function DeleteDeliveryModal({ data: delivery }: Props) {
         readOnly
       />
       <TextInput
-        label={t('columns.price')}
-        value={`${delivery.price} ${t('constants.currency')}`}
+        label={t('columns.sum')}
+        value={`${delivery.sum} ${t('constants.currency')}`}
         readOnly
       />
     </CustomForm>

@@ -61,8 +61,8 @@ export default function ExecuteOrderModal({ data: order }: Props) {
         readOnly
       />
       <TextInput
-        label={t('columns.price')}
-        value={`${order.price} ${t('constants.currency')}`}
+        label={t('columns.sum')}
+        value={`${order.sum} ${t('constants.currency')}`}
         readOnly
       />
     </CustomForm>

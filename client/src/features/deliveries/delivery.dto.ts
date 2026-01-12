@@ -1,16 +1,15 @@
 import {
   CompleteTransportationDto,
+  CreateTransportationDto,
+  EditTransportationDto,
   TakeTransportationDto,
 } from '../transportations/transportation.dto';
-import { EditStateDto } from '../states/state.dto';
 
-export interface CreateDeliveryDto extends EditStateDto {
+export interface CreateDeliveryDto extends CreateTransportationDto {
   purchaseId: number;
-  stationId: number;
-  cardId: number;
 }
 
-export interface EditDeliveryDto extends EditStateDto {
+export interface EditDeliveryDto extends EditTransportationDto {
   deliveryId: number;
 }
 

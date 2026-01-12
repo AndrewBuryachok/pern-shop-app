@@ -21,7 +21,7 @@ import {
   parsePurchaseAmount,
   selectCardsWithBalance,
 } from '../../common/utils';
-import { Color, MAX_PRICE_VALUE, Status } from '../../common/constants';
+import { Color, MAX_SUM_VALUE, Status } from '../../common/constants';
 
 type Props = IModal<Delivery> & { hasRole: boolean };
 
@@ -33,14 +33,13 @@ export default function EditDeliveryModal({ data: delivery, hasRole }: Props) {
   const form = useForm({
     initialValues: {
       deliveryId: delivery.id,
-      price: delivery.price,
+      sum: delivery.sum,
       card: `${delivery.customerCard.id}`,
     },
     transformValues: ({ card, ...rest }) => ({ ...rest }),
     validate: {
       card: (_, values) =>
-        delivery.price < values.price &&
-        myCard.balance < values.price - delivery.price
+        delivery.sum < values.sum && myCard.balance < values.sum - delivery.sum
           ? t('errors.not_enough_balance')
           : null,
     },
@@ -91,20 +90,20 @@ export default function EditDeliveryModal({ data: delivery, hasRole }: Props) {
         readOnly
       />
       <NumberInput
-        label={t('columns.price')}
-        placeholder={t('columns.price')}
+        label={t('columns.sum')}
+        placeholder={t('columns.sum')}
         required
         min={1}
-        max={MAX_PRICE_VALUE}
-        {...form.getInputProps('price')}
+        max={MAX_SUM_VALUE}
+        {...form.getInputProps('sum')}
       />
       <Select
         label={t('columns.card')}
         description={`${
-          delivery.price > form.values.price
+          delivery.sum > form.values.sum
             ? t('information.increase')
             : t('information.decrease')
-        } ${Math.abs(delivery.price - form.values.price)} ${t(
+        } ${Math.abs(delivery.sum - form.values.sum)} ${t(
           'constants.currency',
         )}`}
         rightSection={<RefetchAction {...cardsResponse} />}

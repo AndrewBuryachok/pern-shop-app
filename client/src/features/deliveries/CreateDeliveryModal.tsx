@@ -32,7 +32,7 @@ import {
   selectStations,
   selectUsers,
 } from '../../common/utils';
-import { MAX_PRICE_VALUE } from '../../common/constants';
+import { MAX_SUM_VALUE } from '../../common/constants';
 
 type Props = { hasRole: boolean };
 
@@ -49,7 +49,7 @@ export default function CreateDeliveryModal({ hasRole }: Props) {
       purchase: '',
       station: '',
       card: '',
-      price: 1,
+      sum: 1,
     },
     transformValues: ({ user, purchase, station, card, ...rest }) => ({
       ...rest,
@@ -59,7 +59,7 @@ export default function CreateDeliveryModal({ hasRole }: Props) {
     }),
     validate: {
       card: (_, values) =>
-        myCard.balance < values.price ? t('errors.not_enough_balance') : null,
+        myCard.balance < values.sum ? t('errors.not_enough_balance') : null,
     },
   });
 
@@ -156,7 +156,7 @@ export default function CreateDeliveryModal({ hasRole }: Props) {
       <Select
         label={t('columns.card')}
         placeholder={t('columns.card')}
-        description={`${t('information.decrease')} ${form.values.price} ${t(
+        description={`${t('information.decrease')} ${form.values.sum} ${t(
           'constants.currency',
         )}`}
         rightSection={
@@ -174,12 +174,12 @@ export default function CreateDeliveryModal({ hasRole }: Props) {
         {...form.getInputProps('card')}
       />
       <NumberInput
-        label={t('columns.price')}
-        placeholder={t('columns.price')}
+        label={t('columns.sum')}
+        placeholder={t('columns.sum')}
         required
         min={1}
-        max={customMin(MAX_PRICE_VALUE, myCard.balance)}
-        {...form.getInputProps('price')}
+        max={customMin(MAX_SUM_VALUE, myCard.balance)}
+        {...form.getInputProps('sum')}
       />
     </CustomForm>
   );

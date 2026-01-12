@@ -4,7 +4,7 @@ export interface CreatePurchaseDto {
   amount: number;
   rate: number;
   stationId: number;
-  price: number;
+  sum: number;
 }
 
 export interface PurchaseIdDto {
