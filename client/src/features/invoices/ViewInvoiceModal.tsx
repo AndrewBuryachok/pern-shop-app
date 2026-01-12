@@ -50,7 +50,7 @@ export default function ViewInvoiceModal({ data: invoice }: Props) {
         readOnly
       />
       <TextInput
-        label={t('columns.completed')}
+        label={t('columns.paid')}
         value={parseTime(invoice.completedAt)}
         readOnly
       />

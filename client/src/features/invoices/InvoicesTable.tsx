@@ -15,14 +15,7 @@ export default function InvoicesTable({ actions = [], ...props }: Props) {
   return (
     <CustomTable
       minWidth={900}
-      columns={[
-        'sender',
-        'receiver',
-        'sum',
-        'description',
-        'completed',
-        'action',
-      ]}
+      columns={['sender', 'receiver', 'sum', 'description', 'paid', 'action']}
       {...props}
     >
       {props.data?.result.map((invoice) => (
