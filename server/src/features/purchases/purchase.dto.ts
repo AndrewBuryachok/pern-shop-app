@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Validate, ValidateIf } from 'class-validator';
 import { Type } from 'class-transformer';
-import { IsAmount, IsId, IsPrice, IsRate } from '../../common/decorators';
+import { IsAmount, IsId, IsRate, IsSum } from '../../common/decorators';
 import {
   IsCardExists,
   IsGoodExists,
@@ -45,8 +45,8 @@ export class CreatePurchaseDto {
 
   @ApiProperty()
   @ValidateIf((_, value) => value !== 0)
-  @IsPrice()
-  price: number;
+  @IsSum()
+  sum: number;
 }
 
 export class ExtCreatePurchaseDto extends CreatePurchaseDto {

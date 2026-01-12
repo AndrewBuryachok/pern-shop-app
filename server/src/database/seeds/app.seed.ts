@@ -220,8 +220,8 @@ export default class AppSeed implements Seeder {
         delivery.customerCard = faker.helpers.arrayElement(cards);
         delivery.purchase = purchases[purchaseId++];
         const maxPrice = delivery.customerCard.account.balance / 2;
-        delivery.price = Math.floor(Math.random() * maxPrice) + 1;
-        delivery.customerCard.account.balance -= delivery.price;
+        delivery.sum = Math.floor(Math.random() * maxPrice) + 1;
+        delivery.customerCard.account.balance -= delivery.sum;
         if (delivery.status !== Status.CREATED) {
           delivery.executorCard = faker.helpers.arrayElement(cards);
         }
@@ -229,11 +229,11 @@ export default class AppSeed implements Seeder {
           const payment = await factory(Payment)().make({
             senderCard: delivery.customerCard,
             receiverCard: delivery.executorCard,
-            sum: delivery.price,
+            sum: delivery.sum,
             description: `виконання доставки ${id}`,
           });
           payments.push(payment);
-          delivery.executorCard.account.balance += delivery.price;
+          delivery.executorCard.account.balance += delivery.sum;
         }
         id++;
         return delivery;
@@ -245,8 +245,8 @@ export default class AppSeed implements Seeder {
         order.station = faker.helpers.arrayElement(stations);
         order.customerCard = faker.helpers.arrayElement(cards);
         const maxPrice = order.customerCard.account.balance / 2;
-        order.price = Math.floor(Math.random() * maxPrice) + 1;
-        order.customerCard.account.balance -= order.price;
+        order.sum = Math.floor(Math.random() * maxPrice) + 1;
+        order.customerCard.account.balance -= order.sum;
         if (order.status !== Status.CREATED) {
           order.executorCard = faker.helpers.arrayElement(cards);
         }
@@ -254,11 +254,11 @@ export default class AppSeed implements Seeder {
           const payment = await factory(Payment)().make({
             senderCard: order.customerCard,
             receiverCard: order.executorCard,
-            sum: order.price,
+            sum: order.sum,
             description: `виконання замовлення ${id}`,
           });
           payments.push(payment);
-          order.executorCard.account.balance += order.price;
+          order.executorCard.account.balance += order.sum;
         }
         id++;
         return order;

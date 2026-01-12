@@ -1,17 +1,22 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Validate } from 'class-validator';
 import { Type } from 'class-transformer';
-import { IsId } from '../../common/decorators';
 import {
-  IsCardExists,
-  IsOrderExists,
-  IsStationExists,
-} from '../../common/constraints';
+  IsAmount,
+  IsDescription,
+  IsId,
+  IsIntake,
+  IsItem,
+  IsKit,
+} from '../../common/decorators';
+import { IsOrderExists } from '../../common/constraints';
 import {
   CompleteTransportationDto,
+  CreateTransportationDto,
+  EditTransportationDto,
   TakeTransportationDto,
 } from '../transportations/transportation.dto';
-import { CreateThingDto } from '../things/thing.dto';
+import { Item } from '../things/item.enum';
 
 export class OrderIdDto {
   @ApiProperty()
@@ -26,16 +31,26 @@ export class ExtOrderIdDto extends OrderIdDto {
   hasRole: boolean;
 }
 
-export class CreateOrderDto extends CreateThingDto {
+export class CreateOrderDto extends CreateTransportationDto {
   @ApiProperty()
-  @IsId()
-  @Validate(IsStationExists)
-  stationId: number;
+  @IsItem()
+  item: Item;
 
   @ApiProperty()
-  @IsId()
-  @Validate(IsCardExists)
-  cardId: number;
+  @IsDescription()
+  description: string;
+
+  @ApiProperty()
+  @IsAmount()
+  amount: number;
+
+  @ApiProperty()
+  @IsIntake()
+  intake: number;
+
+  @ApiProperty()
+  @IsKit()
+  kit: number;
 }
 
 export class ExtCreateOrderDto extends CreateOrderDto {
@@ -43,7 +58,27 @@ export class ExtCreateOrderDto extends CreateOrderDto {
   hasRole: boolean;
 }
 
-export class EditOrderDto extends CreateThingDto {}
+export class EditOrderDto extends EditTransportationDto {
+  @ApiProperty()
+  @IsItem()
+  item: Item;
+
+  @ApiProperty()
+  @IsDescription()
+  description: string;
+
+  @ApiProperty()
+  @IsAmount()
+  amount: number;
+
+  @ApiProperty()
+  @IsIntake()
+  intake: number;
+
+  @ApiProperty()
+  @IsKit()
+  kit: number;
+}
 
 export class ExtEditOrderDto extends EditOrderDto {
   orderId: number;

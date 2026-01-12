@@ -1076,7 +1076,7 @@ describe('With Auth', () => {
           amount: 1,
           rate: 5,
           stationId,
-          price: 10,
+          sum: 10,
         })
         .expect('');
     });
@@ -1091,7 +1091,7 @@ describe('With Auth', () => {
           amount: 1,
           rate: 5,
           stationId: 0,
-          price: 0,
+          sum: 0,
         })
         .expect('');
     });
@@ -1182,7 +1182,7 @@ describe('With Auth', () => {
       return request(app.getHttpServer())
         .post('/deliveries')
         .set('Authorization', `Bearer ${user.access}`)
-        .send({ purchaseId: purchasesId[0], stationId, cardId, price: 10 })
+        .send({ purchaseId: purchasesId[0], stationId, cardId, sum: 10 })
         .expect('');
     });
 
@@ -1204,7 +1204,7 @@ describe('With Auth', () => {
       return request(app.getHttpServer())
         .patch(`/deliveries/${deliveriesId[0]}`)
         .set('Authorization', `Bearer ${user.access}`)
-        .send({ price: 10 })
+        .send({ sum: 10 })
         .expect('');
     });
 
@@ -1288,7 +1288,7 @@ describe('With Auth', () => {
           amount: 1,
           intake: 1,
           kit: 1,
-          price: 10,
+          sum: 10,
         })
         .expect('');
     });
@@ -1305,7 +1305,7 @@ describe('With Auth', () => {
           amount: 1,
           intake: 1,
           kit: 1,
-          price: 10,
+          sum: 10,
         })
         .expect('');
     });
@@ -1334,7 +1334,7 @@ describe('With Auth', () => {
           amount: 1,
           intake: 1,
           kit: 1,
-          price: 10,
+          sum: 10,
         })
         .expect('');
     });

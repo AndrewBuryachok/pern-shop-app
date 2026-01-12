@@ -28,7 +28,7 @@ export abstract class Transportation {
   customerCard: Card;
 
   @Column()
-  price: number;
+  sum: number;
 
   @Column({
     type: 'enum',

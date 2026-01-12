@@ -83,10 +83,7 @@ export class DeliveriesService {
     if (delivery) {
       throw new AppException(DeliveryError.ALREADY_EXISTS);
     }
-    const card = await this.cardsService.decreaseCardBalance({
-      ...dto,
-      sum: dto.price,
-    });
+    const card = await this.cardsService.decreaseCardBalance(dto);
     const result = await this.create(dto);
     this.mqttService.publishNotification(
       result.id,
@@ -105,16 +102,16 @@ export class DeliveriesService {
     if (delivery.status !== Status.CREATED) {
       throw new AppException(DeliveryError.ALREADY_TAKEN);
     }
-    if (dto.price !== delivery.price) {
-      if (dto.price < delivery.price) {
+    if (delivery.sum !== dto.sum) {
+      if (delivery.sum > dto.sum) {
         await this.cardsService.increaseCardBalance({
           cardId: delivery.customerCardId,
-          sum: delivery.price - dto.price,
+          sum: delivery.sum - dto.sum,
         });
       } else {
         await this.cardsService.decreaseCardBalance({
           cardId: delivery.customerCardId,
-          sum: dto.price - delivery.price,
+          sum: dto.sum - delivery.sum,
         });
       }
     }
@@ -191,14 +188,14 @@ export class DeliveriesService {
     }
     await this.cardsService.increaseCardBalance({
       cardId: delivery.customerCardId,
-      sum: delivery.price,
+      sum: delivery.sum,
     });
     await this.paymentsService.createPayment({
       myId: dto.myId,
       hasRole: dto.hasRole,
       senderCardId: delivery.customerCardId,
       receiverCardId: delivery.executorCardId,
-      sum: delivery.price,
+      sum: delivery.sum,
       description: `виконання доставки ${delivery.id}`,
     });
     await this.complete(delivery, dto.rate);
@@ -230,7 +227,7 @@ export class DeliveriesService {
     }
     await this.cardsService.increaseCardBalance({
       cardId: delivery.customerCardId,
-      sum: delivery.price,
+      sum: delivery.sum,
     });
     await this.delete(delivery);
     this.unpublishNotification(dto.deliveryId, delivery.customerCard.userId);
@@ -298,7 +295,7 @@ export class DeliveriesService {
         stationId: dto.stationId,
         customerCardId: dto.cardId,
         purchaseId: dto.purchaseId,
-        price: dto.price,
+        sum: dto.sum,
       });
       await this.deliveriesRepository.save(delivery);
       return delivery;
@@ -312,7 +309,7 @@ export class DeliveriesService {
     dto: ExtEditDeliveryDto,
   ): Promise<void> {
     try {
-      delivery.price = dto.price;
+      delivery.sum = dto.sum;
       await this.deliveriesRepository.save(delivery);
     } catch (error) {
       throw new AppException(DeliveryError.EDIT_FAILED);
@@ -532,15 +529,15 @@ export class DeliveriesService {
       )
       .andWhere(
         new Brackets((qb) =>
-          qb.where(`${!req.minPrice}`).orWhere('delivery.price >= :minPrice', {
-            minPrice: req.minPrice,
+          qb.where(`${!req.minSum}`).orWhere('delivery.sum >= :minSum', {
+            minSum: req.minSum,
           }),
         ),
       )
       .andWhere(
         new Brackets((qb) =>
-          qb.where(`${!req.maxPrice}`).orWhere('delivery.price <= :maxPrice', {
-            maxPrice: req.maxPrice,
+          qb.where(`${!req.maxSum}`).orWhere('delivery.sum <= :maxSum', {
+            maxSum: req.maxSum,
           }),
         ),
       )
@@ -627,7 +624,7 @@ export class DeliveriesService {
         'customerUser.id',
         'customerUser.nick',
         'customerUser.avatar',
-        'delivery.price',
+        'delivery.sum',
         'delivery.status',
         'executorCard.id',
         'executorAccount.id',

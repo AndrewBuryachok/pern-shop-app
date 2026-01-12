@@ -63,10 +63,7 @@ export class OrdersService {
   }
 
   async createOrder(dto: ExtCreateOrderDto): Promise<void> {
-    const card = await this.cardsService.decreaseCardBalance({
-      ...dto,
-      sum: dto.price,
-    });
+    const card = await this.cardsService.decreaseCardBalance(dto);
     const order = await this.create(dto);
     this.mqttService.publishNotification(
       order.id,
@@ -85,16 +82,16 @@ export class OrdersService {
     if (order.status !== Status.CREATED) {
       throw new AppException(OrderError.ALREADY_TAKEN);
     }
-    if (dto.price !== order.price) {
-      if (dto.price < order.price) {
+    if (order.sum !== dto.sum) {
+      if (order.sum > dto.sum) {
         await this.cardsService.increaseCardBalance({
           cardId: order.customerCardId,
-          sum: order.price - dto.price,
+          sum: order.sum - dto.sum,
         });
       } else {
         await this.cardsService.decreaseCardBalance({
           cardId: order.customerCardId,
-          sum: dto.price - order.price,
+          sum: dto.sum - order.sum,
         });
       }
     }
@@ -171,14 +168,14 @@ export class OrdersService {
     }
     await this.cardsService.increaseCardBalance({
       cardId: order.customerCardId,
-      sum: order.price,
+      sum: order.sum,
     });
     await this.paymentsService.createPayment({
       myId: dto.myId,
       hasRole: dto.hasRole,
       senderCardId: order.customerCardId,
       receiverCardId: order.executorCardId,
-      sum: order.price,
+      sum: order.sum,
       description: `виконання замовлення ${order.id}`,
     });
     await this.complete(order, dto.rate);
@@ -210,7 +207,7 @@ export class OrdersService {
     }
     await this.cardsService.increaseCardBalance({
       cardId: order.customerCardId,
-      sum: order.price,
+      sum: order.sum,
     });
     await this.delete(order);
     this.unpublishNotification(dto.orderId, order.customerCard.userId);
@@ -282,7 +279,7 @@ export class OrdersService {
         amount: dto.amount,
         intake: dto.intake,
         kit: dto.kit,
-        price: dto.price,
+        sum: dto.sum,
       });
       await this.ordersRepository.save(order);
       return order;
@@ -298,7 +295,7 @@ export class OrdersService {
       order.amount = dto.amount;
       order.intake = dto.intake;
       order.kit = dto.kit;
-      order.price = dto.price;
+      order.sum = dto.sum;
       await this.ordersRepository.save(order);
     } catch (error) {
       throw new AppException(OrderError.EDIT_FAILED);
@@ -487,15 +484,15 @@ export class OrdersService {
       .andWhere(
         new Brackets((qb) =>
           qb
-            .where(`${!req.minPrice}`)
-            .orWhere('order.price >= :minPrice', { minPrice: req.minPrice }),
+            .where(`${!req.minSum}`)
+            .orWhere('order.sum >= :minSum', { minSum: req.minSum }),
         ),
       )
       .andWhere(
         new Brackets((qb) =>
           qb
-            .where(`${!req.maxPrice}`)
-            .orWhere('order.price <= :maxPrice', { maxPrice: req.maxPrice }),
+            .where(`${!req.maxSum}`)
+            .orWhere('order.sum <= :maxSum', { maxSum: req.maxSum }),
         ),
       )
       .andWhere(
@@ -564,7 +561,7 @@ export class OrdersService {
         'order.amount',
         'order.intake',
         'order.kit',
-        'order.price',
+        'order.sum',
         'order.status',
         'executorCard.id',
         'executorAccount.id',

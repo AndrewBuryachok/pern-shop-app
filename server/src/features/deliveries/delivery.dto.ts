@@ -2,17 +2,13 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Validate } from 'class-validator';
 import { Type } from 'class-transformer';
 import { IsId } from '../../common/decorators';
-import {
-  IsCardExists,
-  IsDeliveryExists,
-  IsPurchaseExists,
-  IsStationExists,
-} from '../../common/constraints';
+import { IsDeliveryExists, IsPurchaseExists } from '../../common/constraints';
 import {
   CompleteTransportationDto,
+  CreateTransportationDto,
+  EditTransportationDto,
   TakeTransportationDto,
 } from '../transportations/transportation.dto';
-import { EditStateDto } from '../states/state.dto';
 
 export class DeliveryIdDto {
   @ApiProperty()
@@ -27,21 +23,11 @@ export class ExtDeliveryIdDto extends DeliveryIdDto {
   hasRole: boolean;
 }
 
-export class CreateDeliveryDto extends EditStateDto {
+export class CreateDeliveryDto extends CreateTransportationDto {
   @ApiProperty()
   @IsId()
   @Validate(IsPurchaseExists)
   purchaseId: number;
-
-  @ApiProperty()
-  @IsId()
-  @Validate(IsStationExists)
-  stationId: number;
-
-  @ApiProperty()
-  @IsId()
-  @Validate(IsCardExists)
-  cardId: number;
 }
 
 export class ExtCreateDeliveryDto extends CreateDeliveryDto {
@@ -49,7 +35,7 @@ export class ExtCreateDeliveryDto extends CreateDeliveryDto {
   hasRole: boolean;
 }
 
-export class EditDeliveryDto extends EditStateDto {}
+export class EditDeliveryDto extends EditTransportationDto {}
 
 export class ExtEditDeliveryDto extends EditDeliveryDto {
   deliveryId: number;

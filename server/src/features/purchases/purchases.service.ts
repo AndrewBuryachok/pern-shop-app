@@ -88,7 +88,7 @@ export class PurchasesService {
         Notification.RATED_PURCHASE,
       );
     }
-    if (dto.stationId && dto.price) {
+    if (dto.stationId && dto.sum) {
       await this.deliveriesService.createDelivery({
         ...dto,
         purchaseId: purchase.id,
