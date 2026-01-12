@@ -32,7 +32,7 @@
     "cards": "Карти",
     "exchanges": "Транзакції",
     "payments": "Перекази",
-    "invoices": "Штрафи",
+    "invoices": "Інвойси",
     "map": "Мапа",
     "towns": "Міста",
     "residents": "Жителі",
@@ -196,7 +196,7 @@
     "cards": "Карту",
     "exchanges": "Транзакцію",
     "payments": "Переказ",
-    "invoices": "Штраф",
+    "invoices": "Інвойс",
     "towns": "Місто",
     "residents": "Жителя",
     "invitations": "Запрошення",
@@ -244,9 +244,9 @@
       "created": "створив вам переказ"
     },
     "invoices": {
-      "created": "створив вам штраф",
-      "completed": "завершив ваш штраф",
-      "deleted": "видалив ваш штраф"
+      "created": "створив вам інвойс",
+      "completed": "завершив ваш інвойс",
+      "deleted": "видалив ваш інвойс"
     },
     "towns": {
       "created": "створив місто",
