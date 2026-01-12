@@ -135,7 +135,7 @@ export default class AppSeed implements Seeder {
             senderCard: invoice.receiverCard,
             receiverCard: invoice.senderCard,
             sum: invoice.sum,
-            description: `оплата штрафу ${id++}`,
+            description: `оплата інвойсу ${id++}`,
           });
           payments.push(payment);
           invoice.receiverCard.account.balance -= invoice.sum;

@@ -167,7 +167,7 @@ export class IsInvoiceExists implements ValidatorConstraintInterface {
   }
 
   defaultMessage(): string {
-    return 'Невідомий штраф';
+    return 'Невідомий інвойс';
   }
 }
 
