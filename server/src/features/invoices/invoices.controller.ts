@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Param,
+  Patch,
   Post,
   Query,
 } from '@nestjs/common';
@@ -13,6 +14,7 @@ import { Invoice } from './invoice.entity';
 import {
   CompleteInvoiceDto,
   CreateInvoiceDto,
+  EditInvoiceDto,
   InvoiceIdDto,
 } from './invoice.dto';
 import { Request, Response } from '../../common/interfaces';
@@ -45,6 +47,21 @@ export class InvoicesController {
     @Body() dto: CreateInvoiceDto,
   ): Promise<void> {
     return this.invoicesService.createInvoice({ ...dto, myId, hasRole });
+  }
+
+  @Patch(':invoiceId')
+  editInvoice(
+    @MyId() myId: number,
+    @HasRole(Role.MODER) hasRole: boolean,
+    @Param() { invoiceId }: InvoiceIdDto,
+    @Body() dto: EditInvoiceDto,
+  ): Promise<void> {
+    return this.invoicesService.editInvoice({
+      ...dto,
+      invoiceId,
+      myId,
+      hasRole,
+    });
   }
 
   @Post(':invoiceId')

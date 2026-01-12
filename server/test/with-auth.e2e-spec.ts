@@ -655,6 +655,22 @@ describe('With Auth', () => {
         .then((res) => (invoicesId = res.body.result.map((i) => i.id)));
     });
 
+    it('PATCH /invoices/:invoiceId', async () => {
+      return request(app.getHttpServer())
+        .patch(`/invoices/${invoicesId[0]}`)
+        .set('Authorization', `Bearer ${user.access}`)
+        .send({ sum: 10, description: '' })
+        .expect('');
+    });
+
+    it('PATCH /invoices/:invoiceId', async () => {
+      return request(app.getHttpServer())
+        .patch(`/invoices/${invoicesId[1]}`)
+        .set('Authorization', `Bearer ${user.access}`)
+        .send({ sum: 10, description: '' })
+        .expect('');
+    });
+
     it('GET /invoices/all', async () => {
       return request(app.getHttpServer())
         .get('/invoices/all')

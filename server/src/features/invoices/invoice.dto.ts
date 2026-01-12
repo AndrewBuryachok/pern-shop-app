@@ -16,7 +16,23 @@ export class InvoiceIdDto {
   invoiceId: number;
 }
 
-export class CreateInvoiceDto {
+export class EditInvoiceDto {
+  @ApiProperty()
+  @IsSum()
+  sum: number;
+
+  @ApiProperty()
+  @IsDescription()
+  description: string;
+}
+
+export class ExtEditInvoiceDto extends EditInvoiceDto {
+  invoiceId: number;
+  myId: number;
+  hasRole: boolean;
+}
+
+export class CreateInvoiceDto extends EditInvoiceDto {
   @ApiProperty()
   @IsId()
   @Validate(IsCardExists)
@@ -26,14 +42,6 @@ export class CreateInvoiceDto {
   @IsId()
   @Validate(IsUserExists)
   receiverUserId: number;
-
-  @ApiProperty()
-  @IsSum()
-  sum: number;
-
-  @ApiProperty()
-  @IsDescription()
-  description: string;
 }
 
 export class ExtCreateInvoiceDto extends CreateInvoiceDto {

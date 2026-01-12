@@ -9,6 +9,7 @@ import {
   DeleteInvoiceDto,
   ExtCompleteInvoiceDto,
   ExtCreateInvoiceDto,
+  ExtEditInvoiceDto,
 } from './invoice.dto';
 import { Request, Response } from '../../common/interfaces';
 import { AppException } from '../../common/exceptions';
@@ -74,6 +75,15 @@ export class InvoicesService {
       card.userId,
       Notification.CREATED_INVOICE,
     );
+  }
+
+  async editInvoice(dto: ExtEditInvoiceDto): Promise<void> {
+    const invoice = await this.checkInvoiceSender(
+      dto.invoiceId,
+      dto.myId,
+      dto.hasRole,
+    );
+    await this.edit(invoice, dto);
   }
 
   async completeInvoice(dto: ExtCompleteInvoiceDto): Promise<void> {
@@ -168,6 +178,16 @@ export class InvoicesService {
       return invoice;
     } catch (error) {
       throw new AppException(InvoiceError.CREATE_FAILED);
+    }
+  }
+
+  private async edit(invoice: Invoice, dto: ExtEditInvoiceDto): Promise<void> {
+    try {
+      invoice.sum = dto.sum;
+      invoice.description = dto.description;
+      await this.invoicesRepository.save(invoice);
+    } catch (error) {
+      throw new AppException(InvoiceError.EDIT_FAILED);
     }
   }
 
