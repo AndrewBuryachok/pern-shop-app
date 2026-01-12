@@ -5,6 +5,7 @@ import {
   CompleteInvoiceDto,
   CreateInvoiceDto,
   DeleteInvoiceDto,
+  EditInvoiceDto,
 } from './invoice.dto';
 import { getQuery } from '../../common/utils';
 
@@ -26,6 +27,14 @@ export const invoicesApi = emptyApi.injectEndpoints({
       query: (dto) => ({
         url: '/invoices',
         method: 'POST',
+        body: dto,
+      }),
+      invalidatesTags: ['Invoice'],
+    }),
+    editInvoice: build.mutation<void, EditInvoiceDto>({
+      query: ({ invoiceId, ...dto }) => ({
+        url: `/invoices/${invoiceId}`,
+        method: 'PATCH',
         body: dto,
       }),
       invalidatesTags: ['Invoice'],
@@ -52,6 +61,7 @@ export const {
   useGetMyInvoicesQuery,
   useGetAllInvoicesQuery,
   useCreateInvoiceMutation,
+  useEditInvoiceMutation,
   useCompleteInvoiceMutation,
   useDeleteInvoiceMutation,
 } = invoicesApi;

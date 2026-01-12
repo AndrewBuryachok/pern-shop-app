@@ -10,6 +10,10 @@ import {
   createUserInvoiceButton,
 } from '../../features/invoices/CreateInvoiceModal';
 import {
+  editMyInvoiceAction,
+  editUserInvoiceAction,
+} from '../../features/invoices/EditInvoiceModal';
+import {
   completeMyInvoiceAction,
   completeUserInvoiceAction,
 } from '../../features/invoices/CompleteInvoiceModal';
@@ -48,8 +52,12 @@ export default function InvoicesPage() {
   ];
 
   const actions = {
-    my: [completeMyInvoiceAction, deleteMyInvoiceAction],
-    all: [completeUserInvoiceAction, deleteUserInvoiceAction],
+    my: [editMyInvoiceAction, completeMyInvoiceAction, deleteMyInvoiceAction],
+    all: [
+      editUserInvoiceAction,
+      completeUserInvoiceAction,
+      deleteUserInvoiceAction,
+    ],
   }[tab];
 
   return (
