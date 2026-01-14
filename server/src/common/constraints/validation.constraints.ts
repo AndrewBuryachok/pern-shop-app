@@ -8,7 +8,6 @@ import { MessagesService } from '../../features/messages/messages.service';
 import { ArticlesService } from '../../features/articles/articles.service';
 import { CommentsService } from '../../features/articles/comments.service';
 import { CardsService } from '../../features/cards/cards.service';
-import { ExchangesService } from '../../features/exchanges/exchanges.service';
 import { TransactionsService } from '../../features/transactions/transactions.service';
 import { InvoicesService } from '../../features/invoices/invoices.service';
 import { TownsService } from '../../features/towns/towns.service';
@@ -111,25 +110,6 @@ export class IsCardExists implements ValidatorConstraintInterface {
 
   defaultMessage(): string {
     return 'Невідома карта';
-  }
-}
-
-@Injectable()
-@ValidatorConstraint({ name: 'isExchangeExists', async: true })
-export class IsExchangeExists implements ValidatorConstraintInterface {
-  constructor(private exchangesService: ExchangesService) {}
-
-  async validate(value: number): Promise<boolean> {
-    try {
-      await this.exchangesService.checkExchangeExists(value);
-    } catch (error) {
-      return false;
-    }
-    return true;
-  }
-
-  defaultMessage(): string {
-    return 'Невідома транзакція';
   }
 }
 

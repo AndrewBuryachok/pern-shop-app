@@ -8,7 +8,6 @@ import { Like } from '../../features/articles/like.entity';
 import { Comment } from '../../features/articles/comment.entity';
 import { Account } from '../../features/cards/account.entity';
 import { Card } from '../../features/cards/card.entity';
-import { Exchange } from '../../features/exchanges/exchange.entity';
 import { Transaction } from '../../features/transactions/transaction.entity';
 import { Invoice } from '../../features/invoices/invoice.entity';
 import { Town } from '../../features/towns/town.entity';
@@ -94,22 +93,6 @@ export default class AppSeed implements Seeder {
         return card;
       })
       .makeMany(80);
-    const exchanges = await factory(Exchange)()
-      .map(async (exchange) => {
-        exchange.executorUser = faker.helpers.arrayElement(users);
-        exchange.customerCard = faker.helpers.arrayElement(
-          cards.filter(
-            (card) => exchange.type || card.account.balance >= exchange.sum,
-          ),
-        );
-        if (exchange.type) {
-          exchange.customerCard.account.balance += exchange.sum;
-        } else {
-          exchange.customerCard.account.balance -= exchange.sum;
-        }
-        return exchange;
-      })
-      .makeMany(40);
     const transactions = await factory(Transaction)()
       .map(async (transaction) => {
         transaction.senderCard = faker.helpers.arrayElement(
@@ -272,10 +255,6 @@ export default class AppSeed implements Seeder {
     await factory(Card)()
       .map(async () => cards[id++])
       .createMany(cards.length);
-    id = 0;
-    await factory(Exchange)()
-      .map(async () => exchanges[id++])
-      .createMany(exchanges.length);
     id = 0;
     await factory(Transaction)()
       .map(async () => transactions[id++])

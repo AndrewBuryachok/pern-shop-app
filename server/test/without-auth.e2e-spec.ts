@@ -151,19 +151,6 @@ describe('Without Auth', () => {
     });
   });
 
-  describe('Exchanges', () => {
-    it('GET /exchanges/my', async () => {
-      return request(app.getHttpServer()).get('/exchanges/my').expect(401);
-    });
-
-    it('GET /exchanges/all', async () => {
-      return request(app.getHttpServer())
-        .get('/exchanges/all')
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect(403);
-    });
-  });
-
   describe('Transactions', () => {
     it('GET /transactions/my', async () => {
       return request(app.getHttpServer()).get('/transactions/my').expect(401);

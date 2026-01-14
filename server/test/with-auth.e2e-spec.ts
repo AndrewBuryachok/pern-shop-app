@@ -26,7 +26,6 @@ describe('With Auth', () => {
   let articlesId: number[];
   let commentId: number;
   let cardId: number;
-  let exchangesId: number;
   let transactionsId: number;
   let invoicesId: number;
   let townId: number;
@@ -526,46 +525,6 @@ describe('With Auth', () => {
         .delete(`/cards/${cardId}/users`)
         .set('Authorization', `Bearer ${user.access}`)
         .send({ userId: admin.id })
-        .expect('');
-    });
-  });
-
-  describe('Exchanges', () => {
-    it('POST /exchanges', async () => {
-      return request(app.getHttpServer())
-        .post('/exchanges')
-        .set('Authorization', `Bearer ${banker.access}`)
-        .send({ cardId, type: true, sum: 100 })
-        .expect('');
-    });
-
-    it('POST /exchanges', async () => {
-      return request(app.getHttpServer())
-        .post('/exchanges')
-        .set('Authorization', `Bearer ${banker.access}`)
-        .send({ cardId, type: true, sum: 100 })
-        .expect('');
-    });
-
-    it('GET /exchanges/my', async () => {
-      return request(app.getHttpServer())
-        .get('/exchanges/my')
-        .set('Authorization', `Bearer ${user.access}`)
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0));
-    });
-
-    it('GET /exchanges/all', async () => {
-      return request(app.getHttpServer())
-        .get('/exchanges/all')
-        .set('Authorization', `Bearer ${banker.access}`)
-        .expect((res) => expect(res.body.count).toBeGreaterThan(0))
-        .then((res) => (exchangesId = res.body.result.map((e) => e.id)));
-    });
-
-    it('DELETE /exchanges/:exchangeId', async () => {
-      return request(app.getHttpServer())
-        .delete(`/exchanges/${exchangesId[0]}`)
-        .set('Authorization', `Bearer ${banker.access}`)
         .expect('');
     });
   });

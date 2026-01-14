@@ -7,7 +7,6 @@ import { MessagesModule } from './features/messages/messages.module';
 import { FriendsModule } from './features/friends/friends.module';
 import { ArticlesModule } from './features/articles/articles.module';
 import { CardsModule } from './features/cards/cards.module';
-import { ExchangesModule } from './features/exchanges/exchanges.module';
 import { TransactionsModule } from './features/transactions/transactions.module';
 import { InvoicesModule } from './features/invoices/invoices.module';
 import { TownsModule } from './features/towns/towns.module';
@@ -43,7 +42,6 @@ import { OrdersModule } from './features/orders/orders.module';
     FriendsModule,
     ArticlesModule,
     CardsModule,
-    ExchangesModule,
     TransactionsModule,
     InvoicesModule,
     TownsModule,
