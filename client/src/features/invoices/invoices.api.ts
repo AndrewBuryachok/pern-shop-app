@@ -45,7 +45,7 @@ export const invoicesApi = emptyApi.injectEndpoints({
         method: 'POST',
         body: dto,
       }),
-      invalidatesTags: ['Invoice', 'Payment', 'Card'],
+      invalidatesTags: ['Invoice', 'Transaction', 'Card'],
     }),
     deleteInvoice: build.mutation<void, DeleteInvoiceDto>({
       query: ({ invoiceId }) => ({

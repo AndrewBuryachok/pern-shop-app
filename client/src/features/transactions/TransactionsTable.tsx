@@ -1,16 +1,16 @@
 import { ITableWithActions } from '../../common/interfaces';
-import { Payment } from './payment.model';
+import { Transaction } from './transaction.model';
 import CustomTable from '../../common/components/CustomTable';
 import AvatarWithDoubleText from '../../common/components/AvatarWithDoubleText';
 import SumText from '../../common/components/SumText';
 import SingleText from '../../common/components/SingleText';
 import DateText from '../../common/components/DateText';
 import CustomActions from '../../common/components/CustomActions';
-import { viewPaymentAction } from './ViewPaymentModal';
+import { viewTransactionAction } from './ViewTransactionModal';
 
-type Props = ITableWithActions<Payment>;
+type Props = ITableWithActions<Transaction>;
 
-export default function PaymentsTable({ actions = [], ...props }: Props) {
+export default function TransactionsTable({ actions = [], ...props }: Props) {
   return (
     <CustomTable
       minWidth={900}
@@ -24,31 +24,31 @@ export default function PaymentsTable({ actions = [], ...props }: Props) {
       ]}
       {...props}
     >
-      {props.data?.result.map((payment) => (
-        <tr key={payment.id}>
+      {props.data?.result.map((transaction) => (
+        <tr key={transaction.id}>
           <td>
-            <AvatarWithDoubleText {...payment.senderCard} />
+            <AvatarWithDoubleText {...transaction.senderCard} />
           </td>
           <td>
-            <AvatarWithDoubleText {...payment.receiverCard} />
+            <AvatarWithDoubleText {...transaction.receiverCard} />
           </td>
           <td>
             <SumText
-              fromId={payment.senderCard.user.id}
-              toId={payment.receiverCard.user.id}
-              sum={payment.sum}
+              fromId={transaction.senderCard.user.id}
+              toId={transaction.receiverCard.user.id}
+              sum={transaction.sum}
             />
           </td>
           <td>
-            <SingleText text={payment.description || '-'} />
+            <SingleText text={transaction.description || '-'} />
           </td>
           <td>
-            <DateText date={payment.createdAt} />
+            <DateText date={transaction.createdAt} />
           </td>
           <td>
             <CustomActions
-              data={payment}
-              actions={[viewPaymentAction, ...actions]}
+              data={transaction}
+              actions={[viewTransactionAction, ...actions]}
             />
           </td>
         </tr>

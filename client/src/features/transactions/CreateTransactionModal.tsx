@@ -4,14 +4,14 @@ import { useTranslation } from 'react-i18next';
 import { NumberInput, Select, Textarea } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
-import { useCreatePaymentMutation } from './payments.api';
+import { useCreateTransactionMutation } from './transactions.api';
 import { useSelectAllUsersQuery } from '../users/users.api';
 import {
   useSelectMyCardsQuery,
   useSelectUserCardsQuery,
   useSelectUserCardsWithBalanceQuery,
 } from '../cards/cards.api';
-import { CreatePaymentDto } from './payment.dto';
+import { CreateTransactionDto } from './transaction.dto';
 import CustomForm from '../../common/components/CustomForm';
 import RefetchAction from '../../common/components/RefetchAction';
 import CustomAvatar from '../../common/components/CustomAvatar';
@@ -27,7 +27,7 @@ import { MAX_DESCRIPTION_LENGTH, MAX_SUM_VALUE } from '../../common/constants';
 
 type Props = { hasRole: boolean };
 
-export default function CreatePaymentModal({ hasRole }: Props) {
+export default function CreateTransactionModal({ hasRole }: Props) {
   const [t] = useTranslation();
 
   const form = useForm({
@@ -80,17 +80,17 @@ export default function CreatePaymentModal({ hasRole }: Props) {
   const card = senderCards?.find((card) => card.id === +form.values.senderCard);
   const maxSum = card?.account.balance;
 
-  const [createPayment, { isLoading }] = useCreatePaymentMutation();
+  const [createTransaction, { isLoading }] = useCreateTransactionMutation();
 
-  const handleSubmit = async (dto: CreatePaymentDto) => {
-    await createPayment(dto);
+  const handleSubmit = async (dto: CreateTransactionDto) => {
+    await createTransaction(dto);
   };
 
   return (
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={t('actions.create') + ' ' + t('modals.payments')}
+      text={t('actions.create') + ' ' + t('modals.transactions')}
     >
       {hasRole && (
         <Select
@@ -180,15 +180,15 @@ export default function CreatePaymentModal({ hasRole }: Props) {
   );
 }
 
-export const createPaymentFactory = (hasRole: boolean) => ({
+export const createTransactionFactory = (hasRole: boolean) => ({
   label: 'create',
   open: () =>
     openModal({
-      title: t('actions.create') + ' ' + t('modals.payments'),
-      children: <CreatePaymentModal hasRole={hasRole} />,
+      title: t('actions.create') + ' ' + t('modals.transactions'),
+      children: <CreateTransactionModal hasRole={hasRole} />,
     }),
 });
 
-export const createMyPaymentButton = createPaymentFactory(false);
+export const createMyTransactionButton = createTransactionFactory(false);
 
-export const createUserPaymentButton = createPaymentFactory(true);
+export const createUserTransactionButton = createTransactionFactory(true);

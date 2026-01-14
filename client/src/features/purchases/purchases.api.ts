@@ -36,7 +36,7 @@ export const purchasesApi = emptyApi.injectEndpoints({
         method: 'POST',
         body: dto,
       }),
-      invalidatesTags: ['Purchase', 'Good', 'Payment', 'Card'],
+      invalidatesTags: ['Purchase', 'Good', 'Transaction', 'Card'],
     }),
     deletePurchase: build.mutation<void, PurchaseIdDto>({
       query: ({ purchaseId }) => ({

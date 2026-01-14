@@ -31,7 +31,7 @@
     "wallet": "Гаманець",
     "cards": "Карти",
     "exchanges": "Транзакції",
-    "payments": "Перекази",
+    "transactions": "Транзакції",
     "invoices": "Інвойси",
     "map": "Мапа",
     "towns": "Міста",
@@ -197,7 +197,7 @@
     "comments": "Коментар",
     "cards": "Карту",
     "exchanges": "Транзакцію",
-    "payments": "Переказ",
+    "transactions": "Транзакцію",
     "invoices": "Інвойс",
     "towns": "Місто",
     "residents": "Жителя",
@@ -242,8 +242,8 @@
     "exchanges": {
       "created": "створив вам транзакцію"
     },
-    "payments": {
-      "created": "створив вам переказ"
+    "transactions": {
+      "created": "створив вам транзакцію"
     },
     "invoices": {
       "created": "створив вам інвойс",

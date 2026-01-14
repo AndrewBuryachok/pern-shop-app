@@ -8,7 +8,9 @@ const FriendsPage = lazy(() => import('../pages/friends/FriendsPage'));
 const ArticlesPage = lazy(() => import('../pages/articles/ArticlesPage'));
 const CardsPage = lazy(() => import('../pages/cards/CardsPage'));
 const ExchangesPage = lazy(() => import('../pages/exchanges/ExchangesPage'));
-const PaymentsPage = lazy(() => import('../pages/payments/PaymentsPage'));
+const TransactionsPage = lazy(
+  () => import('../pages/transactions/TransactionsPage'),
+);
 const InvoicesPage = lazy(() => import('../pages/invoices/InvoicesPage'));
 const TownsPage = lazy(() => import('../pages/towns/TownsPage'));
 const ResidentsPage = lazy(() => import('../pages/residents/ResidentsPage'));
@@ -69,8 +71,8 @@ export const pages = [
     nested: [{ path: 'my' }, { path: 'all', roles: [Role.BANKER] }],
   },
   {
-    path: 'payments',
-    element: PaymentsPage,
+    path: 'transactions',
+    element: TransactionsPage,
     nested: [{ path: 'my' }, { path: 'all', roles: [Role.MODER] }],
   },
   {

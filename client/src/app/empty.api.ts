@@ -14,7 +14,7 @@ export const emptyApi = createApi({
     'Comment',
     'Card',
     'Exchange',
-    'Payment',
+    'Transaction',
     'Invoice',
     'Town',
     'Resident',

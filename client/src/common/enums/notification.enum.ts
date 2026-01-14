@@ -12,7 +12,7 @@ export const notifications = [
   'added cards my',
   'removed cards my',
   'created exchanges my',
-  'created payments my',
+  'created transactions my',
   'created invoices my',
   'completed invoices my',
   'deleted invoices my',

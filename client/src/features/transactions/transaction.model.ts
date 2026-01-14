@@ -1,6 +1,6 @@
 import { MdCard } from '../cards/card.model';
 
-export interface Payment {
+export interface Transaction {
   id: number;
   senderCard: MdCard;
   receiverCard: MdCard;

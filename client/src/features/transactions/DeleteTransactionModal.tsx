@@ -4,75 +4,75 @@ import { Textarea, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
 import { IModal } from '../../common/interfaces';
-import { Payment } from './payment.model';
-import { useDeletePaymentMutation } from './payments.api';
-import { DeletePaymentDto } from './payment.dto';
+import { Transaction } from './transaction.model';
+import { useDeleteTransactionMutation } from './transactions.api';
+import { DeleteTransactionDto } from './transaction.dto';
 import CustomForm from '../../common/components/CustomForm';
 import CustomAvatar from '../../common/components/CustomAvatar';
 import { parseCard, parseTime } from '../../common/utils';
 import { Color } from '../../common/constants';
 
-type Props = IModal<Payment>;
+type Props = IModal<Transaction>;
 
-export default function DeletePaymentModal({ data: payment }: Props) {
+export default function DeleteTransactionModal({ data: transaction }: Props) {
   const [t] = useTranslation();
 
   const form = useForm({
     initialValues: {
-      paymentId: payment.id,
+      transactionId: transaction.id,
     },
   });
 
-  const [deletePayment, { isLoading }] = useDeletePaymentMutation();
+  const [deleteTransaction, { isLoading }] = useDeleteTransactionMutation();
 
-  const handleSubmit = async (dto: DeletePaymentDto) => {
-    await deletePayment(dto);
+  const handleSubmit = async (dto: DeleteTransactionDto) => {
+    await deleteTransaction(dto);
   };
 
   return (
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={t('actions.delete') + ' ' + t('modals.payments')}
+      text={t('actions.delete') + ' ' + t('modals.transactions')}
     >
       <TextInput
         label={t('columns.sender')}
-        icon={<CustomAvatar {...payment.senderCard.user} />}
+        icon={<CustomAvatar {...transaction.senderCard.user} />}
         iconWidth={48}
-        value={parseCard(payment.senderCard)}
+        value={parseCard(transaction.senderCard)}
         readOnly
       />
       <TextInput
         label={t('columns.receiver')}
-        icon={<CustomAvatar {...payment.receiverCard.user} />}
+        icon={<CustomAvatar {...transaction.receiverCard.user} />}
         iconWidth={48}
-        value={parseCard(payment.receiverCard)}
+        value={parseCard(transaction.receiverCard)}
         readOnly
       />
       <TextInput
         label={t('columns.sum')}
-        value={`${payment.sum} ${t('constants.currency')}`}
+        value={`${transaction.sum} ${t('constants.currency')}`}
         readOnly
       />
       <Textarea
         label={t('columns.description')}
-        value={payment.description || '-'}
+        value={transaction.description || '-'}
         readOnly
       />
       <TextInput
         label={t('columns.created')}
-        value={parseTime(payment.createdAt)}
+        value={parseTime(transaction.createdAt)}
         readOnly
       />
     </CustomForm>
   );
 }
 
-export const deletePaymentAction = {
-  open: (payment: Payment) =>
+export const deleteTransactionAction = {
+  open: (transaction: Transaction) =>
     openModal({
-      title: t('actions.delete') + ' ' + t('modals.payments'),
-      children: <DeletePaymentModal data={payment} />,
+      title: t('actions.delete') + ' ' + t('modals.transactions'),
+      children: <DeleteTransactionModal data={transaction} />,
     }),
   disable: () => false,
   color: Color.RED,

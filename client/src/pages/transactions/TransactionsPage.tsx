@@ -1,17 +1,17 @@
 import { useLocation, useSearchParams } from 'react-router-dom';
 import { Mode } from '../../common/enums';
 import {
-  useGetAllPaymentsQuery,
-  useGetMyPaymentsQuery,
-} from '../../features/payments/payments.api';
-import PaymentsTable from '../../features/payments/PaymentsTable';
+  useGetAllTransactionsQuery,
+  useGetMyTransactionsQuery,
+} from '../../features/transactions/transactions.api';
+import TransactionsTable from '../../features/transactions/TransactionsTable';
 import {
-  createMyPaymentButton,
-  createUserPaymentButton,
-} from '../../features/payments/CreatePaymentModal';
-import { deletePaymentAction } from '../../features/payments/DeletePaymentModal';
+  createMyTransactionButton,
+  createUserTransactionButton,
+} from '../../features/transactions/CreateTransactionModal';
+import { deleteTransactionAction } from '../../features/transactions/DeleteTransactionModal';
 
-export default function PaymentsPage() {
+export default function TransactionsPage() {
   const tab = useLocation().pathname.split('/')[2] || 'main';
 
   const [searchParams] = useSearchParams();
@@ -31,19 +31,19 @@ export default function PaymentsPage() {
   };
 
   const response = {
-    my: useGetMyPaymentsQuery,
-    all: useGetAllPaymentsQuery,
+    my: useGetMyTransactionsQuery,
+    all: useGetAllTransactionsQuery,
   }[tab]!(search);
 
   const button = {
-    my: createMyPaymentButton,
-    all: createUserPaymentButton,
+    my: createMyTransactionButton,
+    all: createUserTransactionButton,
   }[tab];
 
-  const actions = { all: [deletePaymentAction] }[tab];
+  const actions = { all: [deleteTransactionAction] }[tab];
 
   return (
-    <PaymentsTable
+    <TransactionsTable
       {...response}
       search={search}
       button={button}

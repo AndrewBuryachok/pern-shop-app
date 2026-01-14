@@ -42,7 +42,7 @@ export const deliveriesApi = emptyApi.injectEndpoints({
         method: 'POST',
         body: dto,
       }),
-      invalidatesTags: ['Delivery', 'Payment', 'Card'],
+      invalidatesTags: ['Delivery', 'Card'],
     }),
     editDelivery: build.mutation<void, EditDeliveryDto>({
       query: ({ deliveryId, ...dto }) => ({
@@ -80,7 +80,7 @@ export const deliveriesApi = emptyApi.injectEndpoints({
         method: 'POST',
         body: dto,
       }),
-      invalidatesTags: ['Delivery', 'Payment', 'Card'],
+      invalidatesTags: ['Delivery', 'Transaction', 'Card'],
     }),
     deleteDelivery: build.mutation<void, DeliveryIdDto>({
       query: ({ deliveryId }) => ({
