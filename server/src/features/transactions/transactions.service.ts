@@ -24,8 +24,8 @@ export class TransactionsService {
     req: Request,
   ): Promise<Response<Transaction>> {
     const [result, count] = await this.getTransactionsQueryBuilder(req)
-      .innerJoin('senderAccount.cards', 'senderCards')
-      .innerJoin('receiverAccount.cards', 'receiverCards')
+      .leftJoin('senderAccount.cards', 'senderCards')
+      .leftJoin('receiverAccount.cards', 'receiverCards')
       .andWhere(
         new Brackets((qb) =>
           qb
@@ -132,12 +132,13 @@ export class TransactionsService {
   ): SelectQueryBuilder<Transaction> {
     return this.transactionsRepository
       .createQueryBuilder('transaction')
-      .innerJoin('transaction.senderCard', 'senderCard')
-      .innerJoin('senderCard.account', 'senderAccount')
-      .innerJoin('senderCard.user', 'senderUser')
-      .innerJoin('transaction.receiverCard', 'receiverCard')
-      .innerJoin('receiverCard.account', 'receiverAccount')
-      .innerJoin('receiverCard.user', 'receiverUser')
+      .leftJoin('transaction.executorUser', 'executorUser')
+      .leftJoin('transaction.senderCard', 'senderCard')
+      .leftJoin('senderCard.account', 'senderAccount')
+      .leftJoin('senderCard.user', 'senderUser')
+      .leftJoin('transaction.receiverCard', 'receiverCard')
+      .leftJoin('receiverCard.account', 'receiverAccount')
+      .leftJoin('receiverCard.user', 'receiverUser')
       .where(
         new Brackets((qb) =>
           qb
@@ -149,6 +150,13 @@ export class TransactionsService {
         new Brackets((qb) =>
           qb
             .where(`${!req.user}`)
+            .orWhere(
+              new Brackets((qb) =>
+                qb
+                  .where(`${!req.mode || req.mode === Mode.EXECUTOR}`)
+                  .andWhere('executorUser.id = :userId'),
+              ),
+            )
             .orWhere(
               new Brackets((qb) =>
                 qb
@@ -233,6 +241,9 @@ export class TransactionsService {
       .take(req.take)
       .select([
         'transaction.id',
+        'executorUser.id',
+        'executorUser.nick',
+        'executorUser.avatar',
         'senderCard.id',
         'senderAccount.id',
         'senderAccount.name',
