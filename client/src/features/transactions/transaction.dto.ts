@@ -1,4 +1,4 @@
-export interface CreateTransactionDto {
+export interface CreateTransferDto {
   senderCardId: number;
   receiverCardId: number;
   sum: number;

@@ -1,7 +1,7 @@
 import { emptyApi } from '../../app/empty.api';
 import { IRequest, IResponse } from '../../common/interfaces';
 import { Transaction } from './transaction.model';
-import { CreateTransactionDto, DeleteTransactionDto } from './transaction.dto';
+import { CreateTransferDto, DeleteTransactionDto } from './transaction.dto';
 import { getQuery } from '../../common/utils';
 
 export const transactionsApi = emptyApi.injectEndpoints({
@@ -18,7 +18,7 @@ export const transactionsApi = emptyApi.injectEndpoints({
       }),
       providesTags: ['Auth', 'Transaction'],
     }),
-    createTransaction: build.mutation<void, CreateTransactionDto>({
+    createTransaction: build.mutation<void, CreateTransferDto>({
       query: (dto) => ({
         url: '/transactions',
         method: 'POST',

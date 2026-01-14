@@ -11,7 +11,7 @@ import {
   useSelectUserCardsQuery,
   useSelectUserCardsWithBalanceQuery,
 } from '../cards/cards.api';
-import { CreateTransactionDto } from './transaction.dto';
+import { CreateTransferDto } from './transaction.dto';
 import CustomForm from '../../common/components/CustomForm';
 import RefetchAction from '../../common/components/RefetchAction';
 import CustomAvatar from '../../common/components/CustomAvatar';
@@ -82,7 +82,7 @@ export default function CreateTransactionModal({ hasRole }: Props) {
 
   const [createTransaction, { isLoading }] = useCreateTransactionMutation();
 
-  const handleSubmit = async (dto: CreateTransactionDto) => {
+  const handleSubmit = async (dto: CreateTransferDto) => {
     await createTransaction(dto);
   };
 
