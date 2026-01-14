@@ -10,7 +10,7 @@ import {
 import { ApiTags } from '@nestjs/swagger';
 import { TransactionsService } from './transactions.service';
 import { Transaction } from './transaction.entity';
-import { CreateTransactionDto, TransactionIdDto } from './transaction.dto';
+import { CreateTransferDto, TransactionIdDto } from './transaction.dto';
 import { Request, Response } from '../../common/interfaces';
 import { HasRole, MyId, Roles } from '../../common/decorators';
 import { Role } from '../users/role.enum';
@@ -38,7 +38,7 @@ export class TransactionsController {
   createTransaction(
     @MyId() myId: number,
     @HasRole(Role.MODER) hasRole: boolean,
-    @Body() dto: CreateTransactionDto,
+    @Body() dto: CreateTransferDto,
   ): Promise<void> {
     return this.transactionsService.createTransaction({
       ...dto,

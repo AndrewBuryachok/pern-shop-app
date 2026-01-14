@@ -12,7 +12,7 @@ export class TransactionIdDto {
   transactionId: number;
 }
 
-export class CreateTransactionDto {
+export class CreateTransferDto {
   @ApiProperty()
   @IsId()
   @Validate(IsCardExists)
@@ -32,7 +32,7 @@ export class CreateTransactionDto {
   description: string;
 }
 
-export class ExtCreateTransactionDto extends CreateTransactionDto {
+export class ExtCreateTransferDto extends CreateTransferDto {
   myId: number;
   hasRole: boolean;
 }

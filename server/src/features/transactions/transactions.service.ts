@@ -4,7 +4,7 @@ import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { Transaction } from './transaction.entity';
 import { CardsService } from '../cards/cards.service';
 import { MqttService } from '../mqtt/mqtt.service';
-import { ExtCreateTransactionDto } from './transaction.dto';
+import { ExtCreateTransferDto } from './transaction.dto';
 import { Request, Response } from '../../common/interfaces';
 import { AppException } from '../../common/exceptions';
 import { TransactionError } from './transaction-error.enum';
@@ -57,12 +57,12 @@ export class TransactionsService {
     return { result, count };
   }
 
-  async createTransaction(dto: ExtCreateTransactionDto): Promise<void> {
+  async createTransaction(dto: ExtCreateTransferDto): Promise<void> {
     await this.createTransactionWithReturn(dto);
   }
 
   async createTransactionWithReturn(
-    dto: ExtCreateTransactionDto,
+    dto: ExtCreateTransferDto,
   ): Promise<number> {
     await this.cardsService.checkCardUser(
       dto.senderCardId,
@@ -104,7 +104,7 @@ export class TransactionsService {
     await this.transactionsRepository.findOneByOrFail({ id });
   }
 
-  private async create(dto: ExtCreateTransactionDto): Promise<Transaction> {
+  private async create(dto: ExtCreateTransferDto): Promise<Transaction> {
     try {
       const transaction = this.transactionsRepository.create({
         senderCardId: dto.senderCardId,
