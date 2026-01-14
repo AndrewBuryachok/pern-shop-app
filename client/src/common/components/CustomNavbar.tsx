@@ -41,7 +41,6 @@ export default function CustomNavbar(props: Props) {
       nested: [
         { label: 'cards', sub: '/my' },
         { label: 'transactions', sub: '/my' },
-        { label: 'exchanges', sub: '/my' },
         { label: 'invoices', sub: '/my' },
       ],
     },

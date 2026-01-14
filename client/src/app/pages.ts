@@ -7,7 +7,6 @@ const ChatsPage = lazy(() => import('../pages/chats/ChatsPage'));
 const FriendsPage = lazy(() => import('../pages/friends/FriendsPage'));
 const ArticlesPage = lazy(() => import('../pages/articles/ArticlesPage'));
 const CardsPage = lazy(() => import('../pages/cards/CardsPage'));
-const ExchangesPage = lazy(() => import('../pages/exchanges/ExchangesPage'));
 const TransactionsPage = lazy(
   () => import('../pages/transactions/TransactionsPage'),
 );
@@ -64,11 +63,6 @@ export const pages = [
     path: 'cards',
     element: CardsPage,
     nested: [{ path: 'my' }, { path: 'all', roles: [Role.MODER] }],
-  },
-  {
-    path: 'exchanges',
-    element: ExchangesPage,
-    nested: [{ path: 'my' }, { path: 'all', roles: [Role.BANKER] }],
   },
   {
     path: 'transactions',

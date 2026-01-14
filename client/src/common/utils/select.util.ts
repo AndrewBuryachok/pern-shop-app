@@ -97,14 +97,6 @@ export const searchTypes = () =>
       value: `${index * 2 - 1}`,
     }));
 
-export const selectExchangeTypes = () =>
-  ['decrease', 'increase'].map((type, index) => ({
-    text: t(`constants.${type}`),
-    color: `${index * 2 + 1}`,
-    value: `${index}`,
-    label: t(`constants.${type}`),
-  }));
-
 export const selectItems = () =>
   items.map((item) => ({
     item: item,

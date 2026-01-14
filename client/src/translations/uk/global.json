@@ -30,7 +30,6 @@
     "likes": "Вподобання",
     "wallet": "Гаманець",
     "cards": "Карти",
-    "exchanges": "Транзакції",
     "transactions": "Транзакції",
     "invoices": "Інвойси",
     "map": "Мапа",
@@ -196,7 +195,6 @@
     "articles": "Публікацію",
     "comments": "Коментар",
     "cards": "Карту",
-    "exchanges": "Транзакцію",
     "transactions": "Транзакцію",
     "invoices": "Інвойс",
     "towns": "Місто",
@@ -238,9 +236,6 @@
     "cards": {
       "added": "додав вас в карту",
       "removed": "прибрав вас із карти"
-    },
-    "exchanges": {
-      "created": "створив вам транзакцію"
     },
     "transactions": {
       "created": "створив вам транзакцію"
@@ -305,8 +300,6 @@
   },
   "constants": {
     "currency": "діам",
-    "increase": "Покласти",
-    "decrease": "Вивести",
     "up": "Палець догори",
     "down": "Палець донизу",
     "backgrounds": {
