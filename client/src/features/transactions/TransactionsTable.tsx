@@ -2,6 +2,7 @@ import { ITableWithActions } from '../../common/interfaces';
 import { Transaction } from './transaction.model';
 import CustomTable from '../../common/components/CustomTable';
 import AvatarWithDoubleText from '../../common/components/AvatarWithDoubleText';
+import AvatarWithSingleText from '../../common/components/AvatarWithSingleText';
 import SumText from '../../common/components/SumText';
 import SingleText from '../../common/components/SingleText';
 import DateText from '../../common/components/DateText';
@@ -27,15 +28,23 @@ export default function TransactionsTable({ actions = [], ...props }: Props) {
       {props.data?.result.map((transaction) => (
         <tr key={transaction.id}>
           <td>
-            <AvatarWithDoubleText {...transaction.senderCard} />
+            {transaction.senderCard ? (
+              <AvatarWithDoubleText {...transaction.senderCard} />
+            ) : (
+              <AvatarWithSingleText {...transaction.executorUser!} />
+            )}
           </td>
           <td>
-            <AvatarWithDoubleText {...transaction.receiverCard} />
+            {transaction.receiverCard ? (
+              <AvatarWithDoubleText {...transaction.receiverCard} />
+            ) : (
+              <AvatarWithSingleText {...transaction.executorUser!} />
+            )}
           </td>
           <td>
             <SumText
-              fromId={transaction.senderCard.user.id}
-              toId={transaction.receiverCard.user.id}
+              fromId={transaction.senderCard?.user.id || 0}
+              toId={transaction.receiverCard?.user.id || 0}
               sum={transaction.sum}
             />
           </td>

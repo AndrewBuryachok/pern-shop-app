@@ -37,16 +37,32 @@ export default function DeleteTransactionModal({ data: transaction }: Props) {
     >
       <TextInput
         label={t('columns.sender')}
-        icon={<CustomAvatar {...transaction.senderCard.user} />}
+        icon={
+          <CustomAvatar
+            {...(transaction.senderCard?.user || transaction.executorUser!)}
+          />
+        }
         iconWidth={48}
-        value={parseCard(transaction.senderCard)}
+        value={
+          transaction.senderCard
+            ? parseCard(transaction.senderCard)
+            : transaction.executorUser!.nick
+        }
         readOnly
       />
       <TextInput
         label={t('columns.receiver')}
-        icon={<CustomAvatar {...transaction.receiverCard.user} />}
+        icon={
+          <CustomAvatar
+            {...(transaction.receiverCard?.user || transaction.executorUser!)}
+          />
+        }
         iconWidth={48}
-        value={parseCard(transaction.receiverCard)}
+        value={
+          transaction.receiverCard
+            ? parseCard(transaction.receiverCard)
+            : transaction.executorUser!.nick
+        }
         readOnly
       />
       <TextInput
