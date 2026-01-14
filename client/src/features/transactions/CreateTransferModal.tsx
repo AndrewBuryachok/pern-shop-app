@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { NumberInput, Select, Textarea } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
-import { useCreateTransactionMutation } from './transactions.api';
+import { useCreateTransferMutation } from './transactions.api';
 import { useSelectAllUsersQuery } from '../users/users.api';
 import {
   useSelectMyCardsQuery,
@@ -27,7 +27,7 @@ import { MAX_DESCRIPTION_LENGTH, MAX_SUM_VALUE } from '../../common/constants';
 
 type Props = { hasRole: boolean };
 
-export default function CreateTransactionModal({ hasRole }: Props) {
+export default function CreateTransferModal({ hasRole }: Props) {
   const [t] = useTranslation();
 
   const form = useForm({
@@ -80,17 +80,17 @@ export default function CreateTransactionModal({ hasRole }: Props) {
   const card = senderCards?.find((card) => card.id === +form.values.senderCard);
   const maxSum = card?.account.balance;
 
-  const [createTransaction, { isLoading }] = useCreateTransactionMutation();
+  const [createTransfer, { isLoading }] = useCreateTransferMutation();
 
   const handleSubmit = async (dto: CreateTransferDto) => {
-    await createTransaction(dto);
+    await createTransfer(dto);
   };
 
   return (
     <CustomForm
       onSubmit={form.onSubmit(handleSubmit)}
       isLoading={isLoading}
-      text={t('actions.create') + ' ' + t('modals.transactions')}
+      text={t('actions.create') + ' ' + t('modals.transfers')}
     >
       {hasRole && (
         <Select
@@ -180,15 +180,15 @@ export default function CreateTransactionModal({ hasRole }: Props) {
   );
 }
 
-export const createTransactionFactory = (hasRole: boolean) => ({
+export const createTransferFactory = (hasRole: boolean) => ({
   label: 'create',
   open: () =>
     openModal({
-      title: t('actions.create') + ' ' + t('modals.transactions'),
-      children: <CreateTransactionModal hasRole={hasRole} />,
+      title: t('actions.create') + ' ' + t('modals.transfers'),
+      children: <CreateTransferModal hasRole={hasRole} />,
     }),
 });
 
-export const createMyTransactionButton = createTransactionFactory(false);
+export const createMyTransferButton = createTransferFactory(false);
 
-export const createUserTransactionButton = createTransactionFactory(true);
+export const createUserTransferButton = createTransferFactory(true);

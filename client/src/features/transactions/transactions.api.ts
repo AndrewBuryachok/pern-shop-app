@@ -18,9 +18,9 @@ export const transactionsApi = emptyApi.injectEndpoints({
       }),
       providesTags: ['Auth', 'Transaction'],
     }),
-    createTransaction: build.mutation<void, CreateTransferDto>({
+    createTransfer: build.mutation<void, CreateTransferDto>({
       query: (dto) => ({
-        url: '/transactions',
+        url: '/transactions/transfer',
         method: 'POST',
         body: dto,
       }),
@@ -39,6 +39,6 @@ export const transactionsApi = emptyApi.injectEndpoints({
 export const {
   useGetMyTransactionsQuery,
   useGetAllTransactionsQuery,
-  useCreateTransactionMutation,
+  useCreateTransferMutation,
   useDeleteTransactionMutation,
 } = transactionsApi;

@@ -6,9 +6,9 @@ import {
 } from '../../features/transactions/transactions.api';
 import TransactionsTable from '../../features/transactions/TransactionsTable';
 import {
-  createMyTransactionButton,
-  createUserTransactionButton,
-} from '../../features/transactions/CreateTransactionModal';
+  createMyTransferButton,
+  createUserTransferButton,
+} from '../../features/transactions/CreateTransferModal';
 import { deleteTransactionAction } from '../../features/transactions/DeleteTransactionModal';
 
 export default function TransactionsPage() {
@@ -36,8 +36,8 @@ export default function TransactionsPage() {
   }[tab]!(search);
 
   const button = {
-    my: createMyTransactionButton,
-    all: createUserTransactionButton,
+    my: createMyTransferButton,
+    all: createUserTransferButton,
   }[tab];
 
   const actions = { all: [deleteTransactionAction] }[tab];

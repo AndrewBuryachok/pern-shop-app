@@ -196,6 +196,7 @@
     "comments": "Коментар",
     "cards": "Карту",
     "transactions": "Транзакцію",
+    "transfers": "Переказ",
     "invoices": "Інвойс",
     "towns": "Місто",
     "residents": "Жителя",
@@ -238,7 +239,7 @@
       "removed": "прибрав вас із карти"
     },
     "transactions": {
-      "created": "створив вам транзакцію"
+      "transferred": "переказав вам діаманти"
     },
     "invoices": {
       "created": "створив вам інвойс",
