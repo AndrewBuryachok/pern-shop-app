@@ -94,14 +94,14 @@ export default class AppSeed implements Seeder {
       })
       .makeMany(80);
     const transactions = await factory(Transaction)()
-      .map(async (transaction) => {
-        transaction.senderCard = faker.helpers.arrayElement(
-          cards.filter((card) => card.account.balance >= transaction.sum),
+      .map(async (transfer) => {
+        transfer.senderCard = faker.helpers.arrayElement(
+          cards.filter((card) => card.account.balance >= transfer.sum),
         );
-        transaction.receiverCard = faker.helpers.arrayElement(cards);
-        transaction.senderCard.account.balance -= transaction.sum;
-        transaction.receiverCard.account.balance += transaction.sum;
-        return transaction;
+        transfer.receiverCard = faker.helpers.arrayElement(cards);
+        transfer.senderCard.account.balance -= transfer.sum;
+        transfer.receiverCard.account.balance += transfer.sum;
+        return transfer;
       })
       .makeMany(40);
     let id = 1;
@@ -114,13 +114,13 @@ export default class AppSeed implements Seeder {
             cards.filter((card) => card.account.balance >= invoice.sum),
           );
           invoice.receiverUser = invoice.receiverCard.user;
-          const transaction = await factory(Transaction)().make({
+          const transfer = await factory(Transaction)().make({
             senderCard: invoice.receiverCard,
             receiverCard: invoice.senderCard,
             sum: invoice.sum,
             description: `оплата інвойсу ${id++}`,
           });
-          transactions.push(transaction);
+          transactions.push(transfer);
           invoice.receiverCard.account.balance -= invoice.sum;
           invoice.senderCard.account.balance += invoice.sum;
         }
@@ -182,13 +182,13 @@ export default class AppSeed implements Seeder {
               ),
           ) + 1;
         purchase.good.amount -= purchase.amount;
-        const transaction = await factory(Transaction)().make({
+        const transfer = await factory(Transaction)().make({
           senderCard: purchase.card,
           receiverCard: purchase.good.card,
           sum: purchase.amount * purchase.good.price,
           description: `купівля товару ${id++}`,
         });
-        transactions.push(transaction);
+        transactions.push(transfer);
         purchase.card.account.balance -= purchase.amount * purchase.good.price;
         purchase.good.card.account.balance +=
           purchase.amount * purchase.good.price;
@@ -209,13 +209,13 @@ export default class AppSeed implements Seeder {
           delivery.executorCard = faker.helpers.arrayElement(cards);
         }
         if (delivery.status === Status.COMPLETED) {
-          const transaction = await factory(Transaction)().make({
+          const transfer = await factory(Transaction)().make({
             senderCard: delivery.customerCard,
             receiverCard: delivery.executorCard,
             sum: delivery.sum,
             description: `виконання доставки ${id}`,
           });
-          transactions.push(transaction);
+          transactions.push(transfer);
           delivery.executorCard.account.balance += delivery.sum;
         }
         id++;
@@ -234,13 +234,13 @@ export default class AppSeed implements Seeder {
           order.executorCard = faker.helpers.arrayElement(cards);
         }
         if (order.status === Status.COMPLETED) {
-          const transaction = await factory(Transaction)().make({
+          const transfer = await factory(Transaction)().make({
             senderCard: order.customerCard,
             receiverCard: order.executorCard,
             sum: order.sum,
             description: `виконання замовлення ${id}`,
           });
-          transactions.push(transaction);
+          transactions.push(transfer);
           order.executorCard.account.balance += order.sum;
         }
         id++;

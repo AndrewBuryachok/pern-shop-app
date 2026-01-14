@@ -530,9 +530,9 @@ describe('With Auth', () => {
   });
 
   describe('Transactions', () => {
-    it('POST /transactions', async () => {
+    it('POST /transactions/transfer', async () => {
       return request(app.getHttpServer())
-        .post('/transactions')
+        .post('/transactions/transfer')
         .set('Authorization', `Bearer ${user.access}`)
         .send({
           senderCardId: cardId,
@@ -543,9 +543,9 @@ describe('With Auth', () => {
         .expect('');
     });
 
-    it('POST /transactions', async () => {
+    it('POST /transactions/transfer', async () => {
       return request(app.getHttpServer())
-        .post('/transactions')
+        .post('/transactions/transfer')
         .set('Authorization', `Bearer ${user.access}`)
         .send({
           senderCardId: cardId,

@@ -190,7 +190,7 @@ export class DeliveriesService {
       cardId: delivery.customerCardId,
       sum: delivery.sum,
     });
-    await this.transactionsService.createTransaction({
+    await this.transactionsService.createTransfer({
       myId: dto.myId,
       hasRole: dto.hasRole,
       senderCardId: delivery.customerCardId,

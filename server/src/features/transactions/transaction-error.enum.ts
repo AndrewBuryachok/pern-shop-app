@@ -1,4 +1,4 @@
 export enum TransactionError {
-  CREATE_FAILED = '500: Не вдалося створити транзакцію',
+  TRANSFER_FAILED = '500: Не вдалося переказати діаманти',
   DELETE_FAILED = '500: Не вдалося видалити транзакцію',
 }

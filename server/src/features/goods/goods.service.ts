@@ -165,7 +165,7 @@ export class GoodsService {
     if (good.completedAt || good.shop?.completedAt) {
       throw new AppException(GoodError.ALREADY_EXPIRED);
     }
-    const userId = await this.transactionsService.createTransactionWithReturn({
+    const userId = await this.transactionsService.createTransferWithReturn({
       myId: dto.myId,
       hasRole: dto.hasRole,
       senderCardId: dto.cardId,

@@ -57,13 +57,11 @@ export class TransactionsService {
     return { result, count };
   }
 
-  async createTransaction(dto: ExtCreateTransferDto): Promise<void> {
-    await this.createTransactionWithReturn(dto);
+  async createTransfer(dto: ExtCreateTransferDto): Promise<void> {
+    await this.createTransferWithReturn(dto);
   }
 
-  async createTransactionWithReturn(
-    dto: ExtCreateTransferDto,
-  ): Promise<number> {
+  async createTransferWithReturn(dto: ExtCreateTransferDto): Promise<number> {
     await this.cardsService.checkCardUser(
       dto.senderCardId,
       dto.myId,
@@ -77,12 +75,12 @@ export class TransactionsService {
       ...dto,
       cardId: dto.receiverCardId,
     });
-    const transaction = await this.create(dto);
+    const transfer = await this.transfer(dto);
     this.mqttService.publishNotification(
-      transaction.id,
+      transfer.id,
       receiverCard.userId,
       senderCard.userId,
-      Notification.CREATED_TRANSACTION,
+      Notification.TRANSFERRED_TRANSACTION,
     );
     return senderCard.userId;
   }
@@ -104,18 +102,18 @@ export class TransactionsService {
     await this.transactionsRepository.findOneByOrFail({ id });
   }
 
-  private async create(dto: ExtCreateTransferDto): Promise<Transaction> {
+  private async transfer(dto: ExtCreateTransferDto): Promise<Transaction> {
     try {
-      const transaction = this.transactionsRepository.create({
+      const transfer = this.transactionsRepository.create({
         senderCardId: dto.senderCardId,
         receiverCardId: dto.receiverCardId,
         sum: dto.sum,
         description: dto.description,
       });
-      await this.transactionsRepository.save(transaction);
-      return transaction;
+      await this.transactionsRepository.save(transfer);
+      return transfer;
     } catch (error) {
-      throw new AppException(TransactionError.CREATE_FAILED);
+      throw new AppException(TransactionError.TRANSFER_FAILED);
     }
   }
 

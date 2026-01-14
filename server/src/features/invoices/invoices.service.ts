@@ -92,7 +92,7 @@ export class InvoicesService {
       dto.myId,
       dto.hasRole,
     );
-    await this.transactionsService.createTransaction({
+    await this.transactionsService.createTransfer({
       myId: dto.myId,
       hasRole: dto.hasRole,
       senderCardId: dto.cardId,

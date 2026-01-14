@@ -34,13 +34,13 @@ export class TransactionsController {
     return this.transactionsService.getAllTransactions(req);
   }
 
-  @Post()
-  createTransaction(
+  @Post('transfer')
+  createTransfer(
     @MyId() myId: number,
     @HasRole(Role.MODER) hasRole: boolean,
     @Body() dto: CreateTransferDto,
   ): Promise<void> {
-    return this.transactionsService.createTransaction({
+    return this.transactionsService.createTransfer({
       ...dto,
       myId,
       hasRole,
