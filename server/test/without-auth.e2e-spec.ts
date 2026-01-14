@@ -164,14 +164,14 @@ describe('Without Auth', () => {
     });
   });
 
-  describe('Payments', () => {
-    it('GET /payments/my', async () => {
-      return request(app.getHttpServer()).get('/payments/my').expect(401);
+  describe('Transactions', () => {
+    it('GET /transactions/my', async () => {
+      return request(app.getHttpServer()).get('/transactions/my').expect(401);
     });
 
-    it('GET /payments/all', async () => {
+    it('GET /transactions/all', async () => {
       return request(app.getHttpServer())
-        .get('/payments/all')
+        .get('/transactions/all')
         .set('Authorization', `Bearer ${user.access}`)
         .expect(403);
     });

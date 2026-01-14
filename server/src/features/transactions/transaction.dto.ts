@@ -2,17 +2,17 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Validate } from 'class-validator';
 import { Type } from 'class-transformer';
 import { IsDescription, IsId, IsSum } from '../../common/decorators';
-import { IsCardExists, IsPaymentExists } from '../../common/constraints';
+import { IsCardExists, IsTransactionExists } from '../../common/constraints';
 
-export class PaymentIdDto {
+export class TransactionIdDto {
   @ApiProperty()
   @IsId()
-  @Validate(IsPaymentExists)
+  @Validate(IsTransactionExists)
   @Type(() => Number)
-  paymentId: number;
+  transactionId: number;
 }
 
-export class CreatePaymentDto {
+export class CreateTransactionDto {
   @ApiProperty()
   @IsId()
   @Validate(IsCardExists)
@@ -32,7 +32,7 @@ export class CreatePaymentDto {
   description: string;
 }
 
-export class ExtCreatePaymentDto extends CreatePaymentDto {
+export class ExtCreateTransactionDto extends CreateTransactionDto {
   myId: number;
   hasRole: boolean;
 }

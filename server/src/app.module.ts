@@ -8,7 +8,7 @@ import { FriendsModule } from './features/friends/friends.module';
 import { ArticlesModule } from './features/articles/articles.module';
 import { CardsModule } from './features/cards/cards.module';
 import { ExchangesModule } from './features/exchanges/exchanges.module';
-import { PaymentsModule } from './features/payments/payments.module';
+import { TransactionsModule } from './features/transactions/transactions.module';
 import { InvoicesModule } from './features/invoices/invoices.module';
 import { TownsModule } from './features/towns/towns.module';
 import { ResidentsModule } from './features/residents/residents.module';
@@ -44,7 +44,7 @@ import { OrdersModule } from './features/orders/orders.module';
     ArticlesModule,
     CardsModule,
     ExchangesModule,
-    PaymentsModule,
+    TransactionsModule,
     InvoicesModule,
     TownsModule,
     ResidentsModule,

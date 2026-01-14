@@ -1,26 +1,29 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
-import { Payment } from './payment.entity';
+import { Transaction } from './transaction.entity';
 import { CardsService } from '../cards/cards.service';
 import { MqttService } from '../mqtt/mqtt.service';
-import { ExtCreatePaymentDto } from './payment.dto';
+import { ExtCreateTransactionDto } from './transaction.dto';
 import { Request, Response } from '../../common/interfaces';
 import { AppException } from '../../common/exceptions';
-import { PaymentError } from './payment-error.enum';
+import { TransactionError } from './transaction-error.enum';
 import { Mode, Notification } from '../../common/enums';
 
 @Injectable()
-export class PaymentsService {
+export class TransactionsService {
   constructor(
-    @InjectRepository(Payment)
-    private paymentsRepository: Repository<Payment>,
+    @InjectRepository(Transaction)
+    private transactionsRepository: Repository<Transaction>,
     private cardsService: CardsService,
     private mqttService: MqttService,
   ) {}
 
-  async getMyPayments(myId: number, req: Request): Promise<Response<Payment>> {
-    const [result, count] = await this.getPaymentsQueryBuilder(req)
+  async getMyTransactions(
+    myId: number,
+    req: Request,
+  ): Promise<Response<Transaction>> {
+    const [result, count] = await this.getTransactionsQueryBuilder(req)
       .innerJoin('senderAccount.cards', 'senderCards')
       .innerJoin('receiverAccount.cards', 'receiverCards')
       .andWhere(
@@ -47,18 +50,20 @@ export class PaymentsService {
     return { result, count };
   }
 
-  async getAllPayments(req: Request): Promise<Response<Payment>> {
-    const [result, count] = await this.getPaymentsQueryBuilder(
+  async getAllTransactions(req: Request): Promise<Response<Transaction>> {
+    const [result, count] = await this.getTransactionsQueryBuilder(
       req,
     ).getManyAndCount();
     return { result, count };
   }
 
-  async createPayment(dto: ExtCreatePaymentDto): Promise<void> {
-    await this.createPaymentWithReturn(dto);
+  async createTransaction(dto: ExtCreateTransactionDto): Promise<void> {
+    await this.createTransactionWithReturn(dto);
   }
 
-  async createPaymentWithReturn(dto: ExtCreatePaymentDto): Promise<number> {
+  async createTransactionWithReturn(
+    dto: ExtCreateTransactionDto,
+  ): Promise<number> {
     await this.cardsService.checkCardUser(
       dto.senderCardId,
       dto.myId,
@@ -72,68 +77,72 @@ export class PaymentsService {
       ...dto,
       cardId: dto.receiverCardId,
     });
-    const payment = await this.create(dto);
+    const transaction = await this.create(dto);
     this.mqttService.publishNotification(
-      payment.id,
+      transaction.id,
       receiverCard.userId,
       senderCard.userId,
-      Notification.CREATED_PAYMENT,
+      Notification.CREATED_TRANSACTION,
     );
     return senderCard.userId;
   }
 
-  async deletePayment(id: number): Promise<void> {
-    const payment = await this.paymentsRepository.findOneBy({ id });
+  async deleteTransaction(id: number): Promise<void> {
+    const transaction = await this.transactionsRepository.findOneBy({ id });
     await this.cardsService.decreaseCardBalance({
-      ...payment,
-      cardId: payment.receiverCardId,
+      ...transaction,
+      cardId: transaction.receiverCardId,
     });
     await this.cardsService.increaseCardBalance({
-      ...payment,
-      cardId: payment.senderCardId,
+      ...transaction,
+      cardId: transaction.senderCardId,
     });
-    await this.delete(payment);
+    await this.delete(transaction);
   }
 
-  async checkPaymentExists(id: number): Promise<void> {
-    await this.paymentsRepository.findOneByOrFail({ id });
+  async checkTransactionExists(id: number): Promise<void> {
+    await this.transactionsRepository.findOneByOrFail({ id });
   }
 
-  private async create(dto: ExtCreatePaymentDto): Promise<Payment> {
+  private async create(dto: ExtCreateTransactionDto): Promise<Transaction> {
     try {
-      const payment = this.paymentsRepository.create({
+      const transaction = this.transactionsRepository.create({
         senderCardId: dto.senderCardId,
         receiverCardId: dto.receiverCardId,
         sum: dto.sum,
         description: dto.description,
       });
-      await this.paymentsRepository.save(payment);
-      return payment;
+      await this.transactionsRepository.save(transaction);
+      return transaction;
     } catch (error) {
-      throw new AppException(PaymentError.CREATE_FAILED);
+      throw new AppException(TransactionError.CREATE_FAILED);
     }
   }
 
-  private async delete(payment: Payment): Promise<void> {
+  private async delete(transaction: Transaction): Promise<void> {
     try {
-      await this.paymentsRepository.remove(payment);
+      await this.transactionsRepository.remove(transaction);
     } catch (error) {
-      throw new AppException(PaymentError.DELETE_FAILED);
+      throw new AppException(TransactionError.DELETE_FAILED);
     }
   }
 
-  private getPaymentsQueryBuilder(req: Request): SelectQueryBuilder<Payment> {
-    return this.paymentsRepository
-      .createQueryBuilder('payment')
-      .innerJoin('payment.senderCard', 'senderCard')
+  private getTransactionsQueryBuilder(
+    req: Request,
+  ): SelectQueryBuilder<Transaction> {
+    return this.transactionsRepository
+      .createQueryBuilder('transaction')
+      .innerJoin('transaction.senderCard', 'senderCard')
       .innerJoin('senderCard.account', 'senderAccount')
       .innerJoin('senderCard.user', 'senderUser')
-      .innerJoin('payment.receiverCard', 'receiverCard')
+      .innerJoin('transaction.receiverCard', 'receiverCard')
       .innerJoin('receiverCard.account', 'receiverAccount')
       .innerJoin('receiverCard.user', 'receiverUser')
       .where(
         new Brackets((qb) =>
-          qb.where(`${!req.id}`).orWhere('payment.id = :id', { id: req.id }),
+          qb
+            .where(`${!req.id}`)
+            .orWhere('transaction.id = :id', { id: req.id }),
         ),
       )
       .andWhere(
@@ -182,7 +191,7 @@ export class PaymentsService {
         new Brackets((qb) =>
           qb
             .where(`${!req.description}`)
-            .orWhere('payment.description ILIKE :description', {
+            .orWhere('transaction.description ILIKE :description', {
               description: req.description,
             }),
         ),
@@ -191,35 +200,39 @@ export class PaymentsService {
         new Brackets((qb) =>
           qb
             .where(`${!req.minSum}`)
-            .orWhere('payment.sum >= :minSum', { minSum: req.minSum }),
+            .orWhere('transaction.sum >= :minSum', { minSum: req.minSum }),
         ),
       )
       .andWhere(
         new Brackets((qb) =>
           qb
             .where(`${!req.maxSum}`)
-            .orWhere('payment.sum <= :maxSum', { maxSum: req.maxSum }),
+            .orWhere('transaction.sum <= :maxSum', { maxSum: req.maxSum }),
         ),
       )
       .andWhere(
         new Brackets((qb) =>
           qb
             .where(`${!req.minDate}`)
-            .orWhere('payment.createdAt >= :minDate', { minDate: req.minDate }),
+            .orWhere('transaction.createdAt >= :minDate', {
+              minDate: req.minDate,
+            }),
         ),
       )
       .andWhere(
         new Brackets((qb) =>
           qb
             .where(`${!req.maxDate}`)
-            .orWhere('payment.createdAt <= :maxDate', { maxDate: req.maxDate }),
+            .orWhere('transaction.createdAt <= :maxDate', {
+              maxDate: req.maxDate,
+            }),
         ),
       )
-      .orderBy('payment.id', 'DESC')
+      .orderBy('transaction.id', 'DESC')
       .skip(req.skip)
       .take(req.take)
       .select([
-        'payment.id',
+        'transaction.id',
         'senderCard.id',
         'senderAccount.id',
         'senderAccount.name',
@@ -234,9 +247,9 @@ export class PaymentsService {
         'receiverUser.id',
         'receiverUser.nick',
         'receiverUser.avatar',
-        'payment.sum',
-        'payment.description',
-        'payment.createdAt',
+        'transaction.sum',
+        'transaction.description',
+        'transaction.createdAt',
       ]);
   }
 }

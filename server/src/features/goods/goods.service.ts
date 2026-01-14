@@ -5,7 +5,7 @@ import { Good } from './good.entity';
 import { GoodState } from './good-state.entity';
 import { Purchase } from '../purchases/purchase.entity';
 import { ShopsService } from '../shops/shops.service';
-import { PaymentsService } from '../payments/payments.service';
+import { TransactionsService } from '../transactions/transactions.service';
 import { MqttService } from '../mqtt/mqtt.service';
 import {
   BuyGoodDto,
@@ -27,7 +27,7 @@ export class GoodsService {
     @InjectRepository(GoodState)
     private goodsStatesRepository: Repository<GoodState>,
     private shopsService: ShopsService,
-    private paymentsService: PaymentsService,
+    private transactionsService: TransactionsService,
     private mqttService: MqttService,
   ) {}
 
@@ -165,7 +165,7 @@ export class GoodsService {
     if (good.completedAt || good.shop?.completedAt) {
       throw new AppException(GoodError.ALREADY_EXPIRED);
     }
-    const userId = await this.paymentsService.createPaymentWithReturn({
+    const userId = await this.transactionsService.createTransactionWithReturn({
       myId: dto.myId,
       hasRole: dto.hasRole,
       senderCardId: dto.cardId,

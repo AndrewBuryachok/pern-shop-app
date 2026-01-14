@@ -4,7 +4,7 @@ import { Brackets, IsNull, Repository, SelectQueryBuilder } from 'typeorm';
 import { Delivery } from './delivery.entity';
 import { PurchasesService } from '../purchases/purchases.service';
 import { CardsService } from '../cards/cards.service';
-import { PaymentsService } from '../payments/payments.service';
+import { TransactionsService } from '../transactions/transactions.service';
 import { MqttService } from '../mqtt/mqtt.service';
 import {
   ExtCompleteDeliveryDto,
@@ -27,7 +27,7 @@ export class DeliveriesService {
     @Inject(forwardRef(() => PurchasesService))
     private purchasesService: PurchasesService,
     private cardsService: CardsService,
-    private paymentsService: PaymentsService,
+    private transactionsService: TransactionsService,
     private mqttService: MqttService,
   ) {}
 
@@ -190,7 +190,7 @@ export class DeliveriesService {
       cardId: delivery.customerCardId,
       sum: delivery.sum,
     });
-    await this.paymentsService.createPayment({
+    await this.transactionsService.createTransaction({
       myId: dto.myId,
       hasRole: dto.hasRole,
       senderCardId: delivery.customerCardId,

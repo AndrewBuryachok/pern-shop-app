@@ -9,7 +9,7 @@ import { ArticlesService } from '../../features/articles/articles.service';
 import { CommentsService } from '../../features/articles/comments.service';
 import { CardsService } from '../../features/cards/cards.service';
 import { ExchangesService } from '../../features/exchanges/exchanges.service';
-import { PaymentsService } from '../../features/payments/payments.service';
+import { TransactionsService } from '../../features/transactions/transactions.service';
 import { InvoicesService } from '../../features/invoices/invoices.service';
 import { TownsService } from '../../features/towns/towns.service';
 import { ShopsService } from '../../features/shops/shops.service';
@@ -134,13 +134,13 @@ export class IsExchangeExists implements ValidatorConstraintInterface {
 }
 
 @Injectable()
-@ValidatorConstraint({ name: 'isPaymentExists', async: true })
-export class IsPaymentExists implements ValidatorConstraintInterface {
-  constructor(private paymentsService: PaymentsService) {}
+@ValidatorConstraint({ name: 'isTransactionExists', async: true })
+export class IsTransactionExists implements ValidatorConstraintInterface {
+  constructor(private transactionsService: TransactionsService) {}
 
   async validate(value: number): Promise<boolean> {
     try {
-      await this.paymentsService.checkPaymentExists(value);
+      await this.transactionsService.checkTransactionExists(value);
     } catch (error) {
       return false;
     }
@@ -148,7 +148,7 @@ export class IsPaymentExists implements ValidatorConstraintInterface {
   }
 
   defaultMessage(): string {
-    return 'Невідомий переказ';
+    return 'Невідома транзакція';
   }
 }
 

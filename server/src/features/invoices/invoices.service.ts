@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { Invoice } from './invoice.entity';
 import { CardsService } from '../cards/cards.service';
-import { PaymentsService } from '../payments/payments.service';
+import { TransactionsService } from '../transactions/transactions.service';
 import { MqttService } from '../mqtt/mqtt.service';
 import {
   DeleteInvoiceDto,
@@ -22,7 +22,7 @@ export class InvoicesService {
     @InjectRepository(Invoice)
     private invoicesRepository: Repository<Invoice>,
     private cardsService: CardsService,
-    private paymentsService: PaymentsService,
+    private transactionsService: TransactionsService,
     private mqttService: MqttService,
   ) {}
 
@@ -92,7 +92,7 @@ export class InvoicesService {
       dto.myId,
       dto.hasRole,
     );
-    await this.paymentsService.createPayment({
+    await this.transactionsService.createTransaction({
       myId: dto.myId,
       hasRole: dto.hasRole,
       senderCardId: dto.cardId,

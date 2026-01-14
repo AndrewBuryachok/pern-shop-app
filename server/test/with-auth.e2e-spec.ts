@@ -27,7 +27,7 @@ describe('With Auth', () => {
   let commentId: number;
   let cardId: number;
   let exchangesId: number;
-  let paymentsId: number;
+  let transactionsId: number;
   let invoicesId: number;
   let townId: number;
   let shopId: number;
@@ -570,10 +570,10 @@ describe('With Auth', () => {
     });
   });
 
-  describe('Payments', () => {
-    it('POST /payments', async () => {
+  describe('Transactions', () => {
+    it('POST /transactions', async () => {
       return request(app.getHttpServer())
-        .post('/payments')
+        .post('/transactions')
         .set('Authorization', `Bearer ${user.access}`)
         .send({
           senderCardId: cardId,
@@ -584,9 +584,9 @@ describe('With Auth', () => {
         .expect('');
     });
 
-    it('POST /payments', async () => {
+    it('POST /transactions', async () => {
       return request(app.getHttpServer())
-        .post('/payments')
+        .post('/transactions')
         .set('Authorization', `Bearer ${user.access}`)
         .send({
           senderCardId: cardId,
@@ -597,24 +597,24 @@ describe('With Auth', () => {
         .expect('');
     });
 
-    it('GET /payments/my', async () => {
+    it('GET /transactions/my', async () => {
       return request(app.getHttpServer())
-        .get('/payments/my')
+        .get('/transactions/my')
         .set('Authorization', `Bearer ${user.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0));
     });
 
-    it('GET /payments/all', async () => {
+    it('GET /transactions/all', async () => {
       return request(app.getHttpServer())
-        .get('/payments/all')
+        .get('/transactions/all')
         .set('Authorization', `Bearer ${moder.access}`)
         .expect((res) => expect(res.body.count).toBeGreaterThan(0))
-        .then((res) => (paymentsId = res.body.result.map((p) => p.id)));
+        .then((res) => (transactionsId = res.body.result.map((p) => p.id)));
     });
 
-    it('DELETE /payments/:paymentId', async () => {
+    it('DELETE /transactions/:transactionId', async () => {
       return request(app.getHttpServer())
-        .delete(`/payments/${paymentsId[0]}`)
+        .delete(`/transactions/${transactionsId[0]}`)
         .set('Authorization', `Bearer ${moder.access}`)
         .expect('');
     });

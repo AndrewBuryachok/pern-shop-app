@@ -3,7 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Delivery } from './delivery.entity';
 import { PurchasesModule } from '../purchases/purchases.module';
 import { CardsModule } from '../cards/cards.module';
-import { PaymentsModule } from '../payments/payments.module';
+import { TransactionsModule } from '../transactions/transactions.module';
 import { MqttModule } from '../mqtt/mqtt.module';
 import { DeliveriesController } from './deliveries.controller';
 import { DeliveriesService } from './deliveries.service';
@@ -14,7 +14,7 @@ import { IsDeliveryExists } from '../../common/constraints';
     TypeOrmModule.forFeature([Delivery]),
     forwardRef(() => PurchasesModule),
     CardsModule,
-    PaymentsModule,
+    TransactionsModule,
     MqttModule,
   ],
   controllers: [DeliveriesController],

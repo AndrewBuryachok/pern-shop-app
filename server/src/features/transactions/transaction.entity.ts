@@ -8,8 +8,8 @@ import {
 } from 'typeorm';
 import { Card } from '../cards/card.entity';
 
-@Entity('payments')
-export class Payment {
+@Entity('transactions')
+export class Transaction {
   @PrimaryGeneratedColumn()
   id: number;
 

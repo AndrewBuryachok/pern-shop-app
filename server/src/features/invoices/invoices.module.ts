@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Invoice } from './invoice.entity';
 import { CardsModule } from '../cards/cards.module';
-import { PaymentsModule } from '../payments/payments.module';
+import { TransactionsModule } from '../transactions/transactions.module';
 import { MqttModule } from '../mqtt/mqtt.module';
 import { InvoicesController } from './invoices.controller';
 import { InvoicesService } from './invoices.service';
@@ -12,7 +12,7 @@ import { IsInvoiceExists } from '../../common/constraints';
   imports: [
     TypeOrmModule.forFeature([Invoice]),
     CardsModule,
-    PaymentsModule,
+    TransactionsModule,
     MqttModule,
   ],
   controllers: [InvoicesController],
