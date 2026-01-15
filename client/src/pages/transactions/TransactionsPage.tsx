@@ -5,10 +5,8 @@ import {
   useGetMyTransactionsQuery,
 } from '../../features/transactions/transactions.api';
 import TransactionsTable from '../../features/transactions/TransactionsTable';
-import {
-  createMyTransferButton,
-  createUserTransferButton,
-} from '../../features/transactions/CreateTransferModal';
+import { createTransferButton } from '../../features/transactions/CreateTransferModal';
+import { createTransactionButton } from '../../features/transactions/CreateTransactionModal';
 import { deleteTransactionAction } from '../../features/transactions/DeleteTransactionModal';
 
 export default function TransactionsPage() {
@@ -36,8 +34,8 @@ export default function TransactionsPage() {
   }[tab]!(search);
 
   const button = {
-    my: createMyTransferButton,
-    all: createUserTransferButton,
+    my: createTransferButton,
+    all: createTransactionButton,
   }[tab];
 
   const actions = { all: [deleteTransactionAction] }[tab];

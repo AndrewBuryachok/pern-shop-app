@@ -1,7 +1,11 @@
 import { emptyApi } from '../../app/empty.api';
 import { IRequest, IResponse } from '../../common/interfaces';
 import { Transaction } from './transaction.model';
-import { CreateTransferDto, DeleteTransactionDto } from './transaction.dto';
+import {
+  CreateTransactionDto,
+  CreateTransferDto,
+  DeleteTransactionDto,
+} from './transaction.dto';
 import { getQuery } from '../../common/utils';
 
 export const transactionsApi = emptyApi.injectEndpoints({
@@ -17,6 +21,22 @@ export const transactionsApi = emptyApi.injectEndpoints({
         url: `/transactions/all?${getQuery(req)}`,
       }),
       providesTags: ['Auth', 'Transaction'],
+    }),
+    createDeposit: build.mutation<void, CreateTransactionDto>({
+      query: (dto) => ({
+        url: '/transactions/deposit',
+        method: 'POST',
+        body: dto,
+      }),
+      invalidatesTags: ['Transaction', 'Card'],
+    }),
+    createWithdraw: build.mutation<void, CreateTransactionDto>({
+      query: (dto) => ({
+        url: '/transactions/withdraw',
+        method: 'POST',
+        body: dto,
+      }),
+      invalidatesTags: ['Transaction', 'Card'],
     }),
     createTransfer: build.mutation<void, CreateTransferDto>({
       query: (dto) => ({
@@ -39,6 +59,8 @@ export const transactionsApi = emptyApi.injectEndpoints({
 export const {
   useGetMyTransactionsQuery,
   useGetAllTransactionsQuery,
+  useCreateDepositMutation,
+  useCreateWithdrawMutation,
   useCreateTransferMutation,
   useDeleteTransactionMutation,
 } = transactionsApi;

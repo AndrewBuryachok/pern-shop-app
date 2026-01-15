@@ -44,10 +44,10 @@ export default function CustomNav(props: Props) {
       ))}
       {props.button && (
         <Button
-          leftIcon={<IconPlus size={16} />}
+          leftIcon={props.button.icon ?? <IconPlus size={16} />}
           color='green'
-          onClick={props.button.open}
           disabled={notHasRole}
+          onClick={props.button.open}
           compact
         >
           {t(`actions.${props.button.label}`)}

@@ -11,6 +11,7 @@ export const notifications = [
   'replied articles main',
   'added cards my',
   'removed cards my',
+  'created transactions my',
   'transferred transactions my',
   'created invoices my',
   'completed invoices my',

@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { NumberInput, Select, Textarea } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { openModal } from '@mantine/modals';
+import { IconArrowsRightLeft } from '@tabler/icons';
 import { useCreateTransferMutation } from './transactions.api';
 import { useSelectAllUsersQuery } from '../users/users.api';
 import {
@@ -180,15 +181,12 @@ export default function CreateTransferModal({ hasRole }: Props) {
   );
 }
 
-export const createTransferFactory = (hasRole: boolean) => ({
-  label: 'create',
+export const createTransferButton = {
+  label: 'transfer',
+  icon: <IconArrowsRightLeft size={16} />,
   open: () =>
     openModal({
       title: t('actions.create') + ' ' + t('modals.transfers'),
-      children: <CreateTransferModal hasRole={hasRole} />,
+      children: <CreateTransferModal hasRole={false} />,
     }),
-});
-
-export const createMyTransferButton = createTransferFactory(false);
-
-export const createUserTransferButton = createTransferFactory(true);
+};
