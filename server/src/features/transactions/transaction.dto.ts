@@ -12,6 +12,23 @@ export class TransactionIdDto {
   transactionId: number;
 }
 
+export class CreateTransactionDto {
+  @ApiProperty()
+  @IsId()
+  @Validate(IsCardExists)
+  cardId: number;
+
+  @ApiProperty()
+  @IsSum()
+  sum: number;
+}
+
+export class CreateTransactionWithDescriptionDto extends CreateTransactionDto {
+  @ApiProperty()
+  @IsDescription()
+  description: string;
+}
+
 export class CreateTransferDto {
   @ApiProperty()
   @IsId()

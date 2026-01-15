@@ -63,7 +63,15 @@ export class OrdersService {
   }
 
   async createOrder(dto: ExtCreateOrderDto): Promise<void> {
-    const card = await this.cardsService.decreaseCardBalance(dto);
+    const card = await this.cardsService.checkCardUser(
+      dto.cardId,
+      dto.myId,
+      dto.hasRole,
+    );
+    await this.transactionsService.createDecreaseTransaction({
+      ...dto,
+      description: 'створення замовлення',
+    });
     const order = await this.create(dto);
     this.mqttService.publishNotification(
       order.id,
@@ -84,14 +92,16 @@ export class OrdersService {
     }
     if (order.sum !== dto.sum) {
       if (order.sum > dto.sum) {
-        await this.cardsService.increaseCardBalance({
+        await this.transactionsService.createIncreaseTransaction({
           cardId: order.customerCardId,
           sum: order.sum - dto.sum,
+          description: 'редагування замовлення',
         });
       } else {
-        await this.cardsService.decreaseCardBalance({
+        await this.transactionsService.createDecreaseTransaction({
           cardId: order.customerCardId,
           sum: dto.sum - order.sum,
+          description: 'редагування замовлення',
         });
       }
     }
@@ -166,9 +176,10 @@ export class OrdersService {
     if (order.status !== Status.EXECUTED) {
       throw new AppException(OrderError.NOT_EXECUTED);
     }
-    await this.cardsService.increaseCardBalance({
+    await this.transactionsService.createIncreaseTransaction({
       cardId: order.customerCardId,
       sum: order.sum,
+      description: 'завершення замовлення',
     });
     await this.transactionsService.createTransfer({
       myId: dto.myId,
@@ -205,9 +216,10 @@ export class OrdersService {
     if (order.status !== Status.CREATED) {
       throw new AppException(OrderError.ALREADY_TAKEN);
     }
-    await this.cardsService.increaseCardBalance({
+    await this.transactionsService.createIncreaseTransaction({
       cardId: order.customerCardId,
       sum: order.sum,
+      description: 'видалення замовлення',
     });
     await this.delete(order);
     this.unpublishNotification(dto.orderId, order.customerCard.userId);

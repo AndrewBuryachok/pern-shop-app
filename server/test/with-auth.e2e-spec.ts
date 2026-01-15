@@ -530,6 +530,22 @@ describe('With Auth', () => {
   });
 
   describe('Transactions', () => {
+    it('POST /transactions/deposit', async () => {
+      return request(app.getHttpServer())
+        .post('/transactions/deposit')
+        .set('Authorization', `Bearer ${moder.access}`)
+        .send({ cardId, sum: 100 })
+        .expect('');
+    });
+
+    it('POST /transactions/withdraw', async () => {
+      return request(app.getHttpServer())
+        .post('/transactions/withdraw')
+        .set('Authorization', `Bearer ${moder.access}`)
+        .send({ cardId, sum: 10 })
+        .expect('');
+    });
+
     it('POST /transactions/transfer', async () => {
       return request(app.getHttpServer())
         .post('/transactions/transfer')
@@ -573,7 +589,14 @@ describe('With Auth', () => {
 
     it('DELETE /transactions/:transactionId', async () => {
       return request(app.getHttpServer())
-        .delete(`/transactions/${transactionsId[0]}`)
+        .delete(`/transactions/${transactionsId[1]}`)
+        .set('Authorization', `Bearer ${moder.access}`)
+        .expect('');
+    });
+
+    it('DELETE /transactions/:transactionId', async () => {
+      return request(app.getHttpServer())
+        .delete(`/transactions/${transactionsId[2]}`)
         .set('Authorization', `Bearer ${moder.access}`)
         .expect('');
     });

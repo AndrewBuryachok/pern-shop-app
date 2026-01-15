@@ -4,7 +4,11 @@ import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { Transaction } from './transaction.entity';
 import { CardsService } from '../cards/cards.service';
 import { MqttService } from '../mqtt/mqtt.service';
-import { ExtCreateTransferDto } from './transaction.dto';
+import {
+  CreateTransactionDto,
+  CreateTransactionWithDescriptionDto,
+  ExtCreateTransferDto,
+} from './transaction.dto';
 import { Request, Response } from '../../common/interfaces';
 import { AppException } from '../../common/exceptions';
 import { TransactionError } from './transaction-error.enum';
@@ -57,6 +61,61 @@ export class TransactionsService {
     return { result, count };
   }
 
+  async createDeposit(myId: number, dto: CreateTransactionDto): Promise<void> {
+    await this.createIncreaseTransaction(
+      { ...dto, description: 'внесення діамантів' },
+      myId,
+    );
+  }
+
+  async createWithdraw(myId: number, dto: CreateTransactionDto): Promise<void> {
+    await this.createDecreaseTransaction(
+      { ...dto, description: 'зняття діамантів' },
+      myId,
+    );
+  }
+
+  async createIncreaseTransaction(
+    dto: CreateTransactionWithDescriptionDto,
+    myId?: number,
+  ): Promise<void> {
+    const card = await this.cardsService.increaseCardBalance(dto);
+    const userId = myId || card.userId;
+    const transaction = await this.createIncrease(userId, dto);
+    this.publishCreateTransactionNotification(
+      transaction.id,
+      card.userId,
+      userId,
+    );
+  }
+
+  async createDecreaseTransaction(
+    dto: CreateTransactionWithDescriptionDto,
+    myId?: number,
+  ): Promise<void> {
+    const card = await this.cardsService.decreaseCardBalance(dto);
+    const userId = myId || card.userId;
+    const transaction = await this.createDecrease(userId, dto);
+    this.publishCreateTransactionNotification(
+      transaction.id,
+      card.userId,
+      userId,
+    );
+  }
+
+  publishCreateTransactionNotification(
+    id: number,
+    toUserId: number,
+    fromUserId: number,
+  ): void {
+    this.mqttService.publishNotification(
+      id,
+      toUserId,
+      fromUserId,
+      Notification.CREATED_TRANSACTION,
+    );
+  }
+
   async createTransfer(dto: ExtCreateTransferDto): Promise<void> {
     await this.createTransferWithReturn(dto);
   }
@@ -87,19 +146,59 @@ export class TransactionsService {
 
   async deleteTransaction(id: number): Promise<void> {
     const transaction = await this.transactionsRepository.findOneBy({ id });
-    await this.cardsService.decreaseCardBalance({
-      ...transaction,
-      cardId: transaction.receiverCardId,
-    });
-    await this.cardsService.increaseCardBalance({
-      ...transaction,
-      cardId: transaction.senderCardId,
-    });
+    if (transaction.receiverCardId) {
+      await this.cardsService.decreaseCardBalance({
+        ...transaction,
+        cardId: transaction.receiverCardId,
+      });
+    }
+    if (transaction.senderCardId) {
+      await this.cardsService.increaseCardBalance({
+        ...transaction,
+        cardId: transaction.senderCardId,
+      });
+    }
     await this.delete(transaction);
   }
 
   async checkTransactionExists(id: number): Promise<void> {
     await this.transactionsRepository.findOneByOrFail({ id });
+  }
+
+  private async createIncrease(
+    executorUserId: number,
+    dto: CreateTransactionWithDescriptionDto,
+  ): Promise<Transaction> {
+    try {
+      const transaction = this.transactionsRepository.create({
+        executorUserId,
+        receiverCardId: dto.cardId,
+        sum: dto.sum,
+        description: dto.description,
+      });
+      await this.transactionsRepository.save(transaction);
+      return transaction;
+    } catch (error) {
+      throw new AppException(TransactionError.INCREASE_FAILED);
+    }
+  }
+
+  private async createDecrease(
+    executorUserId: number,
+    dto: CreateTransactionWithDescriptionDto,
+  ): Promise<Transaction> {
+    try {
+      const transaction = this.transactionsRepository.create({
+        executorUserId,
+        senderCardId: dto.cardId,
+        sum: dto.sum,
+        description: dto.description,
+      });
+      await this.transactionsRepository.save(transaction);
+      return transaction;
+    } catch (error) {
+      throw new AppException(TransactionError.DECREASE_FAILED);
+    }
   }
 
   private async transfer(dto: ExtCreateTransferDto): Promise<Transaction> {

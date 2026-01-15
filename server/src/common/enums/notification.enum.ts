@@ -11,6 +11,7 @@ export enum Notification {
   REPLIED_COMMENT = 'replied articles',
   ADDED_CARD = 'added cards',
   REMOVED_CARD = 'removed cards',
+  CREATED_TRANSACTION = 'created transactions',
   TRANSFERRED_TRANSACTION = 'transferred transactions',
   CREATED_INVOICE = 'created invoices',
   COMPLETED_INVOICE = 'completed invoices',

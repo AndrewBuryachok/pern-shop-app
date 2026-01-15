@@ -83,7 +83,15 @@ export class DeliveriesService {
     if (delivery) {
       throw new AppException(DeliveryError.ALREADY_EXISTS);
     }
-    const card = await this.cardsService.decreaseCardBalance(dto);
+    const card = await this.cardsService.checkCardUser(
+      dto.cardId,
+      dto.myId,
+      dto.hasRole,
+    );
+    await this.transactionsService.createDecreaseTransaction({
+      ...dto,
+      description: 'створення доставки',
+    });
     const result = await this.create(dto);
     this.mqttService.publishNotification(
       result.id,
@@ -104,14 +112,16 @@ export class DeliveriesService {
     }
     if (delivery.sum !== dto.sum) {
       if (delivery.sum > dto.sum) {
-        await this.cardsService.increaseCardBalance({
+        await this.transactionsService.createIncreaseTransaction({
           cardId: delivery.customerCardId,
           sum: delivery.sum - dto.sum,
+          description: 'редагування доставки',
         });
       } else {
-        await this.cardsService.decreaseCardBalance({
+        await this.transactionsService.createDecreaseTransaction({
           cardId: delivery.customerCardId,
           sum: dto.sum - delivery.sum,
+          description: 'редагування доставки',
         });
       }
     }
@@ -186,9 +196,10 @@ export class DeliveriesService {
     if (delivery.status !== Status.EXECUTED) {
       throw new AppException(DeliveryError.NOT_EXECUTED);
     }
-    await this.cardsService.increaseCardBalance({
+    await this.transactionsService.createIncreaseTransaction({
       cardId: delivery.customerCardId,
       sum: delivery.sum,
+      description: 'завершення доставки',
     });
     await this.transactionsService.createTransfer({
       myId: dto.myId,
@@ -225,9 +236,10 @@ export class DeliveriesService {
     if (delivery.status !== Status.CREATED) {
       throw new AppException(DeliveryError.ALREADY_TAKEN);
     }
-    await this.cardsService.increaseCardBalance({
+    await this.transactionsService.createIncreaseTransaction({
       cardId: delivery.customerCardId,
       sum: delivery.sum,
+      description: 'видалення доставки',
     });
     await this.delete(delivery);
     this.unpublishNotification(dto.deliveryId, delivery.customerCard.userId);

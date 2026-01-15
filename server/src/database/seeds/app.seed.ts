@@ -94,7 +94,27 @@ export default class AppSeed implements Seeder {
       })
       .makeMany(80);
     const transactions = await factory(Transaction)()
+      .map(async (transaction) => {
+        transaction.executorUser = faker.helpers.arrayElement(users);
+        transaction.sum = Math.floor(Math.random() * 1000) + 1;
+        if (Math.floor(Math.random() * 8) !== 0) {
+          transaction.description = 'внесення діамантів';
+          transaction.receiverCard = faker.helpers.arrayElement(cards);
+          transaction.receiverCard.account.balance += transaction.sum;
+        } else {
+          transaction.description = 'зняття діамантів';
+          transaction.senderCard = faker.helpers.arrayElement(
+            cards.filter((card) => card.account.balance >= transaction.sum),
+          );
+          transaction.senderCard.account.balance -= transaction.sum;
+        }
+        return transaction;
+      })
+      .makeMany(40);
+    const transfers = await factory(Transaction)()
       .map(async (transfer) => {
+        transfer.sum = Math.floor(Math.random() * 400) + 1;
+        transfer.description = faker.lorem.words(2);
         transfer.senderCard = faker.helpers.arrayElement(
           cards.filter((card) => card.account.balance >= transfer.sum),
         );
@@ -104,6 +124,7 @@ export default class AppSeed implements Seeder {
         return transfer;
       })
       .makeMany(40);
+    transactions.push(...transfers);
     let id = 1;
     const invoices = await factory(Invoice)()
       .map(async (invoice) => {
@@ -204,11 +225,25 @@ export default class AppSeed implements Seeder {
         delivery.purchase = purchases[purchaseId++];
         const maxPrice = delivery.customerCard.account.balance / 2;
         delivery.sum = Math.floor(Math.random() * maxPrice) + 1;
+        const transaction = await factory(Transaction)().make({
+          executorUser: delivery.customerCard.user,
+          senderCard: delivery.customerCard,
+          sum: delivery.sum,
+          description: `створення доставки ${id}`,
+        });
+        transactions.push(transaction);
         delivery.customerCard.account.balance -= delivery.sum;
         if (delivery.status !== Status.CREATED) {
           delivery.executorCard = faker.helpers.arrayElement(cards);
         }
         if (delivery.status === Status.COMPLETED) {
+          const transaction = await factory(Transaction)().make({
+            executorUser: delivery.customerCard.user,
+            receiverCard: delivery.customerCard,
+            sum: delivery.sum,
+            description: `завершення доставки ${id}`,
+          });
+          transactions.push(transaction);
           const transfer = await factory(Transaction)().make({
             senderCard: delivery.customerCard,
             receiverCard: delivery.executorCard,
@@ -229,11 +264,25 @@ export default class AppSeed implements Seeder {
         order.customerCard = faker.helpers.arrayElement(cards);
         const maxPrice = order.customerCard.account.balance / 2;
         order.sum = Math.floor(Math.random() * maxPrice) + 1;
+        const transaction = await factory(Transaction)().make({
+          executorUser: order.customerCard.user,
+          senderCard: order.customerCard,
+          sum: order.sum,
+          description: `створення замовлення ${id}`,
+        });
+        transactions.push(transaction);
         order.customerCard.account.balance -= order.sum;
         if (order.status !== Status.CREATED) {
           order.executorCard = faker.helpers.arrayElement(cards);
         }
         if (order.status === Status.COMPLETED) {
+          const transaction = await factory(Transaction)().make({
+            executorUser: order.customerCard.user,
+            receiverCard: order.customerCard,
+            sum: order.sum,
+            description: `завершення замовлення ${id}`,
+          });
+          transactions.push(transaction);
           const transfer = await factory(Transaction)().make({
             senderCard: order.customerCard,
             receiverCard: order.executorCard,
