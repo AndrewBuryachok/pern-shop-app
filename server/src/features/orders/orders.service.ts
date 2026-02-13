@@ -69,8 +69,10 @@ export class OrdersService {
       dto.hasRole,
     );
     await this.transactionsService.createDecreaseTransaction({
-      ...dto,
+      cardId: dto.cardId,
+      sum: dto.sum,
       description: 'створення замовлення',
+      item: dto.item,
     });
     const order = await this.create(dto);
     this.mqttService.publishNotification(
@@ -96,12 +98,14 @@ export class OrdersService {
           cardId: order.customerCardId,
           sum: order.sum - dto.sum,
           description: 'редагування замовлення',
+          item: order.item,
         });
       } else {
         await this.transactionsService.createDecreaseTransaction({
           cardId: order.customerCardId,
           sum: dto.sum - order.sum,
           description: 'редагування замовлення',
+          item: order.item,
         });
       }
     }
@@ -180,6 +184,7 @@ export class OrdersService {
       cardId: order.customerCardId,
       sum: order.sum,
       description: 'завершення замовлення',
+      item: order.item,
     });
     await this.transactionsService.createTransfer({
       myId: dto.myId,
@@ -187,7 +192,8 @@ export class OrdersService {
       senderCardId: order.customerCardId,
       receiverCardId: order.executorCardId,
       sum: order.sum,
-      description: `виконання замовлення ${order.id}`,
+      description: 'виконання замовлення',
+      item: order.item,
     });
     await this.complete(order, dto.rate);
     this.unpublishNotification(dto.orderId, order.customerCard.userId);
@@ -220,6 +226,7 @@ export class OrdersService {
       cardId: order.customerCardId,
       sum: order.sum,
       description: 'видалення замовлення',
+      item: order.item,
     });
     await this.delete(order);
     this.unpublishNotification(dto.orderId, order.customerCard.userId);

@@ -8,6 +8,7 @@ import {
 } from 'typeorm';
 import { User } from '../users/user.entity';
 import { Card } from '../cards/card.entity';
+import { Item } from '../things/item.enum';
 
 @Entity('transactions')
 export class Transaction {
@@ -40,6 +41,9 @@ export class Transaction {
 
   @Column()
   description: string;
+
+  @Column({ type: 'enum', enum: Item, nullable: true })
+  item: Item;
 
   @CreateDateColumn({ type: 'timestamptz', name: 'created_at' })
   createdAt: Date;

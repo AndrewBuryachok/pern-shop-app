@@ -98,7 +98,7 @@ export class InvoicesService {
       senderCardId: dto.cardId,
       receiverCardId: invoice.senderCardId,
       sum: invoice.sum,
-      description: `оплата інвойсу ${invoice.id}`,
+      description: invoice.description,
     });
     await this.complete(invoice, dto.cardId);
     this.mqttService.publishNotification(

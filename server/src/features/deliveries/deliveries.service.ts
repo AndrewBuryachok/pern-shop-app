@@ -72,7 +72,7 @@ export class DeliveriesService {
   }
 
   async createDelivery(dto: ExtCreateDeliveryDto): Promise<void> {
-    await this.purchasesService.checkPurchaseOwner(
+    const purchase = await this.purchasesService.checkPurchaseOwner(
       dto.purchaseId,
       dto.myId,
       dto.hasRole,
@@ -89,8 +89,10 @@ export class DeliveriesService {
       dto.hasRole,
     );
     await this.transactionsService.createDecreaseTransaction({
-      ...dto,
+      cardId: dto.cardId,
+      sum: dto.sum,
       description: 'створення доставки',
+      item: purchase.good.item,
     });
     const result = await this.create(dto);
     this.mqttService.publishNotification(
@@ -116,12 +118,14 @@ export class DeliveriesService {
           cardId: delivery.customerCardId,
           sum: delivery.sum - dto.sum,
           description: 'редагування доставки',
+          item: delivery.purchase.good.item,
         });
       } else {
         await this.transactionsService.createDecreaseTransaction({
           cardId: delivery.customerCardId,
           sum: dto.sum - delivery.sum,
           description: 'редагування доставки',
+          item: delivery.purchase.good.item,
         });
       }
     }
@@ -200,6 +204,7 @@ export class DeliveriesService {
       cardId: delivery.customerCardId,
       sum: delivery.sum,
       description: 'завершення доставки',
+      item: delivery.purchase.good.item,
     });
     await this.transactionsService.createTransfer({
       myId: dto.myId,
@@ -208,6 +213,7 @@ export class DeliveriesService {
       receiverCardId: delivery.executorCardId,
       sum: delivery.sum,
       description: `виконання доставки ${delivery.id}`,
+      item: delivery.purchase.good.item,
     });
     await this.complete(delivery, dto.rate);
     this.unpublishNotification(dto.deliveryId, delivery.customerCard.userId);
@@ -240,6 +246,7 @@ export class DeliveriesService {
       cardId: delivery.customerCardId,
       sum: delivery.sum,
       description: 'видалення доставки',
+      item: delivery.purchase.good.item,
     });
     await this.delete(delivery);
     this.unpublishNotification(dto.deliveryId, delivery.customerCard.userId);
@@ -260,6 +267,8 @@ export class DeliveriesService {
         'customerCard.account',
         'customerCard.account.cards',
         'executorCard',
+        'purchase',
+        'purchase.good',
       ],
       where: {
         id,

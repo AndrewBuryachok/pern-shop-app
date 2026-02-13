@@ -125,7 +125,6 @@ export default class AppSeed implements Seeder {
       })
       .makeMany(40);
     transactions.push(...transfers);
-    let id = 1;
     const invoices = await factory(Invoice)()
       .map(async (invoice) => {
         invoice.senderCard = faker.helpers.arrayElement(cards);
@@ -139,7 +138,7 @@ export default class AppSeed implements Seeder {
             senderCard: invoice.receiverCard,
             receiverCard: invoice.senderCard,
             sum: invoice.sum,
-            description: `оплата інвойсу ${id++}`,
+            description: invoice.description,
           });
           transactions.push(transfer);
           invoice.receiverCard.account.balance -= invoice.sum;
@@ -185,7 +184,6 @@ export default class AppSeed implements Seeder {
         return goodState;
       })
       .makeMany(goods.length);
-    id = 1;
     const purchases = await factory(Purchase)()
       .map(async (purchase) => {
         purchase.good = faker.helpers.arrayElement(
@@ -207,7 +205,8 @@ export default class AppSeed implements Seeder {
           senderCard: purchase.card,
           receiverCard: purchase.good.card,
           sum: purchase.amount * purchase.good.price,
-          description: `купівля товару ${id++}`,
+          description: 'купівля товару',
+          item: purchase.good.item,
         });
         transactions.push(transfer);
         purchase.card.account.balance -= purchase.amount * purchase.good.price;
@@ -217,7 +216,6 @@ export default class AppSeed implements Seeder {
       })
       .makeMany(60);
     let purchaseId = 0;
-    id = 1;
     const deliveries = await factory(Delivery)()
       .map(async (delivery) => {
         delivery.station = faker.helpers.arrayElement(stations);
@@ -229,7 +227,8 @@ export default class AppSeed implements Seeder {
           executorUser: delivery.customerCard.user,
           senderCard: delivery.customerCard,
           sum: delivery.sum,
-          description: `створення доставки ${id}`,
+          description: 'створення доставки',
+          item: delivery.purchase.good.item,
         });
         transactions.push(transaction);
         delivery.customerCard.account.balance -= delivery.sum;
@@ -241,23 +240,23 @@ export default class AppSeed implements Seeder {
             executorUser: delivery.customerCard.user,
             receiverCard: delivery.customerCard,
             sum: delivery.sum,
-            description: `завершення доставки ${id}`,
+            description: 'завершення доставки',
+            item: delivery.purchase.good.item,
           });
           transactions.push(transaction);
           const transfer = await factory(Transaction)().make({
             senderCard: delivery.customerCard,
             receiverCard: delivery.executorCard,
             sum: delivery.sum,
-            description: `виконання доставки ${id}`,
+            description: 'виконання доставки',
+            item: delivery.purchase.good.item,
           });
           transactions.push(transfer);
           delivery.executorCard.account.balance += delivery.sum;
         }
-        id++;
         return delivery;
       })
       .makeMany(30);
-    id = 1;
     const orders = await factory(Order)()
       .map(async (order) => {
         order.station = faker.helpers.arrayElement(stations);
@@ -268,7 +267,8 @@ export default class AppSeed implements Seeder {
           executorUser: order.customerCard.user,
           senderCard: order.customerCard,
           sum: order.sum,
-          description: `створення замовлення ${id}`,
+          description: 'створення замовлення',
+          item: order.item,
         });
         transactions.push(transaction);
         order.customerCard.account.balance -= order.sum;
@@ -280,23 +280,24 @@ export default class AppSeed implements Seeder {
             executorUser: order.customerCard.user,
             receiverCard: order.customerCard,
             sum: order.sum,
-            description: `завершення замовлення ${id}`,
+            description: 'завершення замовлення',
+            item: order.item,
           });
           transactions.push(transaction);
           const transfer = await factory(Transaction)().make({
             senderCard: order.customerCard,
             receiverCard: order.executorCard,
             sum: order.sum,
-            description: `виконання замовлення ${id}`,
+            description: 'виконання замовлення',
+            item: order.item,
           });
           transactions.push(transfer);
           order.executorCard.account.balance += order.sum;
         }
-        id++;
         return order;
       })
       .makeMany(10);
-    id = 0;
+    let id = 0;
     await factory(Account)()
       .map(async () => accounts[id++])
       .createMany(accounts.length);

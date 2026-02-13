@@ -112,7 +112,7 @@ export class PurchasesService {
     hasRole: boolean,
   ): Promise<Purchase> {
     const purchase = await this.purchasesRepository.findOne({
-      relations: ['card', 'card.account', 'card.account.cards'],
+      relations: ['card', 'card.account', 'card.account.cards', 'good'],
       where: { id, card: { account: { cards: { completedAt: IsNull() } } } },
     });
     const card = purchase.card.account.cards.find(

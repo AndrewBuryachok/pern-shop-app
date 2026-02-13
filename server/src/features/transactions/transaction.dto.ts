@@ -3,6 +3,7 @@ import { Validate } from 'class-validator';
 import { Type } from 'class-transformer';
 import { IsDescription, IsId, IsSum } from '../../common/decorators';
 import { IsCardExists, IsTransactionExists } from '../../common/constraints';
+import { Item } from '../things/item.enum';
 
 export class TransactionIdDto {
   @ApiProperty()
@@ -24,9 +25,8 @@ export class CreateTransactionDto {
 }
 
 export class CreateTransactionWithDescriptionDto extends CreateTransactionDto {
-  @ApiProperty()
-  @IsDescription()
   description: string;
+  item?: Item;
 }
 
 export class CreateTransferDto {
@@ -50,6 +50,7 @@ export class CreateTransferDto {
 }
 
 export class ExtCreateTransferDto extends CreateTransferDto {
+  item?: Item;
   myId: number;
   hasRole: boolean;
 }

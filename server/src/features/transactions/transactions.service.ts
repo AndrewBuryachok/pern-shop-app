@@ -175,6 +175,7 @@ export class TransactionsService {
         receiverCardId: dto.cardId,
         sum: dto.sum,
         description: dto.description,
+        item: dto.item,
       });
       await this.transactionsRepository.save(transaction);
       return transaction;
@@ -193,6 +194,7 @@ export class TransactionsService {
         senderCardId: dto.cardId,
         sum: dto.sum,
         description: dto.description,
+        item: dto.item,
       });
       await this.transactionsRepository.save(transaction);
       return transaction;
@@ -208,6 +210,7 @@ export class TransactionsService {
         receiverCardId: dto.receiverCardId,
         sum: dto.sum,
         description: dto.description,
+        item: dto.item,
       });
       await this.transactionsRepository.save(transfer);
       return transfer;
@@ -357,6 +360,7 @@ export class TransactionsService {
         'receiverUser.avatar',
         'transaction.sum',
         'transaction.description',
+        'transaction.item',
         'transaction.createdAt',
       ]);
   }
