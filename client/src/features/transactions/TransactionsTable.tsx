@@ -1,9 +1,11 @@
+import { Group } from '@mantine/core';
 import { ITableWithActions } from '../../common/interfaces';
 import { Transaction } from './transaction.model';
 import CustomTable from '../../common/components/CustomTable';
 import AvatarWithDoubleText from '../../common/components/AvatarWithDoubleText';
 import AvatarWithSingleText from '../../common/components/AvatarWithSingleText';
 import SumText from '../../common/components/SumText';
+import ThingImage from '../../common/components/ThingImage';
 import SingleText from '../../common/components/SingleText';
 import DateText from '../../common/components/DateText';
 import CustomActions from '../../common/components/CustomActions';
@@ -49,7 +51,10 @@ export default function TransactionsTable({ actions = [], ...props }: Props) {
             />
           </td>
           <td>
-            <SingleText text={transaction.description || '-'} />
+            <Group spacing={8}>
+              {transaction.item && <ThingImage item={transaction.item} />}
+              <SingleText text={transaction.description || '-'} />
+            </Group>
           </td>
           <td>
             <DateText date={transaction.createdAt} />

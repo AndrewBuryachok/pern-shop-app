@@ -9,6 +9,7 @@ import { useDeleteTransactionMutation } from './transactions.api';
 import { DeleteTransactionDto } from './transaction.dto';
 import CustomForm from '../../common/components/CustomForm';
 import CustomAvatar from '../../common/components/CustomAvatar';
+import ThingImage from '../../common/components/ThingImage';
 import { parseCard, parseTime } from '../../common/utils';
 import { Color } from '../../common/constants';
 
@@ -72,6 +73,8 @@ export default function DeleteTransactionModal({ data: transaction }: Props) {
       />
       <Textarea
         label={t('columns.description')}
+        icon={transaction.item && <ThingImage item={transaction.item} />}
+        iconWidth={48}
         value={transaction.description || '-'}
         readOnly
       />

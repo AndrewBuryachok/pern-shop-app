@@ -8,5 +8,6 @@ export interface Transaction {
   receiverCard?: MdCard;
   sum: number;
   description: string;
+  item?: string;
   createdAt: Date;
 }
