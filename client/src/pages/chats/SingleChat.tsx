@@ -115,6 +115,10 @@ export default function SingleChat() {
         <form onSubmit={form.onSubmit(handleSubmit)}>
           <Textarea
             placeholder={t('columns.text')}
+            description={
+              form.values.text &&
+              form.values.text.length + '/' + MAX_TEXT_LENGTH
+            }
             rightSection={
               <ActionIcon size={24} type='submit' disabled={isLoading}>
                 <IconSend size={16} />

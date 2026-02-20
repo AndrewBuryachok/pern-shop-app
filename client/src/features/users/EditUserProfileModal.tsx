@@ -59,6 +59,9 @@ export default function EditUserProfileModal({ data: user }: Props) {
       <TextInput
         label={t('columns.nick')}
         placeholder={t('columns.nick')}
+        description={
+          form.values.nick && form.values.nick.length + '/' + MAX_NICK_LENGTH
+        }
         required
         minLength={MIN_NICK_LENGTH}
         maxLength={MAX_NICK_LENGTH}
@@ -67,6 +70,10 @@ export default function EditUserProfileModal({ data: user }: Props) {
       <TextInput
         label={t('columns.avatar')}
         placeholder={t('columns.avatar')}
+        description={
+          form.values.avatar &&
+          form.values.avatar.length + '/' + MAX_NICK_LENGTH
+        }
         minLength={MIN_NICK_LENGTH}
         maxLength={MAX_NICK_LENGTH}
         {...form.getInputProps('avatar')}
@@ -87,18 +94,30 @@ export default function EditUserProfileModal({ data: user }: Props) {
       <TextInput
         label={t('columns.discord')}
         placeholder={t('columns.discord')}
+        description={
+          form.values.discord &&
+          form.values.discord.length + '/' + MAX_CONTACT_LENGTH
+        }
         maxLength={MAX_CONTACT_LENGTH}
         {...form.getInputProps('discord')}
       />
       <TextInput
         label={t('columns.twitch')}
         placeholder={t('columns.twitch')}
+        description={
+          form.values.twitch &&
+          form.values.twitch.length + '/' + MAX_CONTACT_LENGTH
+        }
         maxLength={MAX_CONTACT_LENGTH}
         {...form.getInputProps('twitch')}
       />
       <TextInput
         label={t('columns.youtube')}
         placeholder={t('columns.youtube')}
+        description={
+          form.values.youtube &&
+          form.values.youtube.length + '/' + MAX_CONTACT_LENGTH
+        }
         maxLength={MAX_CONTACT_LENGTH}
         {...form.getInputProps('youtube')}
       />

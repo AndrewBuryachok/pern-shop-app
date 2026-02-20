@@ -289,6 +289,9 @@ export default function SearchModal(props: Props) {
         <Textarea
           label={t('columns.description')}
           placeholder={t('columns.description')}
+          description={
+            form.values.description!.length + '/' + MAX_DESCRIPTION_LENGTH
+          }
           maxLength={MAX_DESCRIPTION_LENGTH}
           {...form.getInputProps('description')}
         />
