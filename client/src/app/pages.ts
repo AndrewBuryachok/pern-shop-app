@@ -72,7 +72,7 @@ export const pages = [
   {
     path: 'invoices',
     element: InvoicesPage,
-    nested: [{ path: 'my' }, { path: 'all', roles: [Role.MODER] }],
+    nested: [{ path: 'my' }, { path: 'all', roles: [Role.MODER, Role.CONSUL] }],
   },
   {
     path: 'towns',
@@ -80,7 +80,7 @@ export const pages = [
     nested: [
       { index: true },
       { path: 'my' },
-      { path: 'all', roles: [Role.MODER] },
+      { path: 'all', roles: [Role.MODER, Role.CONSUL] },
     ],
   },
   {
@@ -104,7 +104,7 @@ export const pages = [
     nested: [
       { index: true },
       { path: 'my' },
-      { path: 'all', roles: [Role.MODER] },
+      { path: 'all', roles: [Role.MODER, Role.CONSUL] },
     ],
   },
   {
@@ -113,7 +113,7 @@ export const pages = [
     nested: [
       { index: true },
       { path: 'my' },
-      { path: 'all', roles: [Role.MODER] },
+      { path: 'all', roles: [Role.MODER, Role.CONSUL] },
     ],
   },
   {
