@@ -97,8 +97,8 @@ export default function CreateGoodModal({ hasRole }: Props) {
         {...form.getInputProps('description')}
       />
       <NumberInput
-        label={t('columns.amount')}
-        placeholder={t('columns.amount')}
+        label={t('columns.stock')}
+        placeholder={t('columns.stock')}
         required
         min={1}
         max={MAX_AMOUNT_VALUE}

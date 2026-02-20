@@ -49,7 +49,7 @@ export default function ViewGoodModal({ data: good }: Props) {
         readOnly
       />
       <TextInput
-        label={t('columns.amount')}
+        label={t('columns.stock')}
         value={parseThingAmount(good)}
         readOnly
       />

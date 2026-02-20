@@ -63,13 +63,13 @@ export default function UpdateGoodModal({ data: good }: Props) {
         readOnly
       />
       <TextInput
-        label={t('columns.amount')}
+        label={t('columns.stock')}
         value={parseThingAmount(good)}
         readOnly
       />
       <NumberInput
-        label={t('columns.amount')}
-        placeholder={t('columns.amount')}
+        label={t('columns.stock')}
+        placeholder={t('columns.stock')}
         required
         min={0}
         max={MAX_AMOUNT_VALUE}

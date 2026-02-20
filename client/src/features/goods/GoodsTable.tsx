@@ -1,28 +1,30 @@
+import { useTranslation } from 'react-i18next';
 import { ITableWithActions } from '../../common/interfaces';
 import { Good } from './good.model';
 import CustomTable from '../../common/components/CustomTable';
 import AvatarWithDoubleText from '../../common/components/AvatarWithDoubleText';
 import ThingImageWithText from '../../common/components/ThingImageWithText';
 import SingleText from '../../common/components/SingleText';
-import PriceText from '../../common/components/PriceText';
 import PlaceWithDoubleAvatar from '../../common/components/PlaceWithDoubleAvatar';
 import CustomAnchor from '../../common/components/CustomAnchor';
 import DateText from '../../common/components/DateText';
 import CustomActions from '../../common/components/CustomActions';
 import { viewGoodAction } from './ViewGoodModal';
 import { openViewGoodPurchasesModal } from './ViewGoodPurchasesModal';
-import { parseThingAmount } from '../../common/utils';
+import { parseThingAmount, parseThingKit } from '../../common/utils';
 
 type Props = ITableWithActions<Good>;
 
 export default function GoodsTable({ actions = [], ...props }: Props) {
+  const [t] = useTranslation();
+
   return (
     <CustomTable
       minWidth={1000}
       columns={[
         'seller',
         'item',
-        'amount',
+        'stock',
         'price',
         'shop',
         'purchases',
@@ -43,7 +45,11 @@ export default function GoodsTable({ actions = [], ...props }: Props) {
             <SingleText text={parseThingAmount(good)} />
           </td>
           <td>
-            <PriceText {...good} />
+            <SingleText
+              text={`${good.price} ${t('constants.currency')} / ${
+                good.intake
+              } ${parseThingKit(good.kit)}`}
+            />
           </td>
           <td>
             <PlaceWithDoubleAvatar {...good.shop} />

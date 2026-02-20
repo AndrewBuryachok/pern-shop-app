@@ -36,6 +36,7 @@ import {
   parseCard,
   parseItem,
   parseThingAmount,
+  parseThingKit,
   selectCardsWithBalance,
   selectDeliveries,
   selectStations,
@@ -141,7 +142,7 @@ export default function BuyGoodModal({ data: good, hasRole }: Props) {
         readOnly
       />
       <TextInput
-        label={t('columns.amount')}
+        label={t('columns.stock')}
         value={parseThingAmount(good)}
         readOnly
       />
@@ -189,6 +190,9 @@ export default function BuyGoodModal({ data: good, hasRole }: Props) {
       <NumberInput
         label={t('columns.amount')}
         placeholder={t('columns.amount')}
+        description={`${t('information.buy')} ${
+          form.values.amount * good.intake
+        } ${parseThingKit(good.kit)}`}
         required
         min={1}
         max={customMin(good.amount, maxAmount)}

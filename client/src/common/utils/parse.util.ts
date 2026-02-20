@@ -15,8 +15,8 @@ export const parseCoordinates = ({ x, y }: Coordinates) =>
       ? Color.GREEN
       : Color.BLUE
     : x >= 0
-    ? Color.RED
-    : Color.YELLOW;
+      ? Color.RED
+      : Color.YELLOW;
 
 export const parseDate = (date: Date) => ({
   date: new Date(date).toLocaleDateString('uk'),
@@ -41,15 +41,13 @@ export const parseThingAmount = (data: {
   amount: number;
   intake: number;
   kit: number;
-}) =>
-  `${data.amount} * ${data.intake} ${t(
-    `constants.kits.${kits[data.kit - 1]}`,
-  )}`;
+}) => `${data.amount} * ${data.intake} ${parseThingKit(data.kit)}`;
+
+export const parseThingKit = (kit: number) =>
+  t(`constants.kits.${kits[kit - 1]}`);
 
 export const parsePurchaseAmount = (purchase: SmPurchaseWithoutPrice) =>
-  `${purchase.amount} * ${purchase.good.intake} ${t(
-    `constants.kits.${kits[purchase.good.kit - 1]}`,
-  )}`;
+  `${purchase.amount} * ${purchase.good.intake} ${parseThingKit(purchase.good.kit)}`;
 
 export const parseStatus = (status: number) =>
   t(`constants.statuses.${statuses[status - 1]}`);

@@ -56,7 +56,7 @@ export default function DeleteGoodModal({ data: good }: Props) {
         readOnly
       />
       <TextInput
-        label={t('columns.amount')}
+        label={t('columns.stock')}
         value={parseThingAmount(good)}
         readOnly
       />
