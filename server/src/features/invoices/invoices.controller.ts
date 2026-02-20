@@ -34,7 +34,7 @@ export class InvoicesController {
     return this.invoicesService.getMyInvoices(myId, req);
   }
 
-  @Roles(Role.MODER)
+  @Roles(Role.MODER, Role.CONSUL)
   @Get('all')
   getAllInvoices(@Query() req: Request): Promise<Response<Invoice>> {
     return this.invoicesService.getAllInvoices(req);
@@ -43,7 +43,7 @@ export class InvoicesController {
   @Post()
   createInvoice(
     @MyId() myId: number,
-    @HasRole(Role.MODER) hasRole: boolean,
+    @HasRole(Role.MODER, Role.CONSUL) hasRole: boolean,
     @Body() dto: CreateInvoiceDto,
   ): Promise<void> {
     return this.invoicesService.createInvoice({ ...dto, myId, hasRole });
@@ -52,7 +52,7 @@ export class InvoicesController {
   @Patch(':invoiceId')
   editInvoice(
     @MyId() myId: number,
-    @HasRole(Role.MODER) hasRole: boolean,
+    @HasRole(Role.MODER, Role.CONSUL) hasRole: boolean,
     @Param() { invoiceId }: InvoiceIdDto,
     @Body() dto: EditInvoiceDto,
   ): Promise<void> {
@@ -67,7 +67,7 @@ export class InvoicesController {
   @Post(':invoiceId')
   completeInvoice(
     @MyId() myId: number,
-    @HasRole(Role.MODER) hasRole: boolean,
+    @HasRole(Role.MODER, Role.CONSUL) hasRole: boolean,
     @Param() { invoiceId }: InvoiceIdDto,
     @Body() dto: CompleteInvoiceDto,
   ): Promise<void> {
@@ -82,7 +82,7 @@ export class InvoicesController {
   @Delete(':invoiceId')
   deleteInvoice(
     @MyId() myId: number,
-    @HasRole(Role.MODER) hasRole: boolean,
+    @HasRole(Role.MODER, Role.CONSUL) hasRole: boolean,
     @Param() { invoiceId }: InvoiceIdDto,
   ): Promise<void> {
     return this.invoicesService.deleteInvoice({ invoiceId, myId, hasRole });

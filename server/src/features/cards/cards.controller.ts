@@ -54,7 +54,7 @@ export class CardsController {
     return this.cardsService.selectUserCards(userId);
   }
 
-  @Roles(Role.MODER, Role.BANKER)
+  @Roles(Role.MODER, Role.BANKER, Role.CONSUL)
   @Get(':userId/ext-select')
   selectUserCardsWithBalance(@Param() { userId }: UserIdDto): Promise<Card[]> {
     return this.cardsService.selectUserCardsWithBalance(userId);

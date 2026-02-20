@@ -41,7 +41,7 @@ export class TownsController {
     return this.townsService.getMyTowns(myId, req);
   }
 
-  @Roles(Role.MODER)
+  @Roles(Role.MODER, Role.CONSUL)
   @Get('all')
   getAllTowns(@Query() req: Request): Promise<Response<Town>> {
     return this.townsService.getAllTowns(req);
@@ -72,7 +72,7 @@ export class TownsController {
     return this.townsService.createTown({ ...dto, userId: myId });
   }
 
-  @Roles(Role.MODER)
+  @Roles(Role.MODER, Role.CONSUL)
   @Post('all')
   createUserTown(@Body() dto: ExtCreateTownDto): Promise<void> {
     return this.townsService.createTown(dto);
@@ -81,7 +81,7 @@ export class TownsController {
   @Patch(':townId')
   editTown(
     @MyId() myId: number,
-    @HasRole(Role.MODER) hasRole: boolean,
+    @HasRole(Role.MODER, Role.CONSUL) hasRole: boolean,
     @Param() { townId }: TownIdDto,
     @Body() dto: EditTownDto,
   ): Promise<void> {
@@ -91,7 +91,7 @@ export class TownsController {
   @Delete(':townId')
   deleteTown(
     @MyId() myId: number,
-    @HasRole(Role.MODER) hasRole: boolean,
+    @HasRole(Role.MODER, Role.CONSUL) hasRole: boolean,
     @Param() { townId }: TownIdDto,
   ): Promise<void> {
     return this.townsService.deleteTown({ townId, myId, hasRole });
