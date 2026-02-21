@@ -10,5 +10,6 @@ import { IsStationExists } from '../../common/constraints';
   imports: [TypeOrmModule.forFeature([Station]), MqttModule],
   controllers: [StationsController],
   providers: [StationsService, IsStationExists],
+  exports: [StationsService],
 })
 export class StationsModule {}

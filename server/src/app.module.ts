@@ -17,6 +17,8 @@ import { GoodsModule } from './features/goods/goods.module';
 import { PurchasesModule } from './features/purchases/purchases.module';
 import { DeliveriesModule } from './features/deliveries/deliveries.module';
 import { OrdersModule } from './features/orders/orders.module';
+import { ForumController } from './features/forum/forum.controller';
+import { ForumService } from './features/forum/forum.service';
 
 @Module({
   imports: [
@@ -53,5 +55,7 @@ import { OrdersModule } from './features/orders/orders.module';
     DeliveriesModule,
     OrdersModule,
   ],
+  controllers: [ForumController],
+  providers: [ForumService],
 })
 export class AppModule {}
