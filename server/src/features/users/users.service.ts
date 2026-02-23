@@ -47,7 +47,10 @@ export class UsersService {
           qb
             .select('SUM(account.balance)', 'user_accounts_sum')
             .from('accounts', 'account')
-            .where('account.userId = user.id'),
+            .where('account.userId = user.id')
+            .andWhere('account.id NOT IN (:...accounts)', {
+              accounts: process.env.EXCLUDED_ACCOUNTS.split(','),
+            }),
         'user_accounts_sum',
       )
       .getManyAndCount();
@@ -61,7 +64,10 @@ export class UsersService {
             qb
               .select('SUM(account.balance)', 'balance')
               .from('accounts', 'account')
-              .where('account.userId = user.id'),
+              .where('account.userId = user.id')
+              .andWhere('account.id NOT IN (:...accounts)', {
+                accounts: process.env.EXCLUDED_ACCOUNTS.split(','),
+              }),
           'balance',
         )
         .getRawMany();
